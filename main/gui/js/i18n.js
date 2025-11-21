@@ -1,24 +1,21 @@
-<<<<<<< HEAD
-// i18n (Internationalization) Manager
-class I18nManager {
+// i18n (internationalization) system for IVIDS
+class I18n {
     constructor() {
-        this.currentLang = 'en';
+        this.currentLanguage = 'en';
         this.translations = {};
-        this.availableLanguages = ['en', 'es', 'fr', 'nl', 'de']; // Languages with files
-        this.init();
+        this.availableLanguages = ['en', 'es', 'fr', 'de', 'nl'];
     }
 
     async init() {
-        // Load saved language or default to English
+        // Load saved language or use default
         const savedSettings = localStorage.getItem('ivids-settings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
-            if (settings.language && this.availableLanguages.includes(settings.language)) {
-                this.currentLang = settings.language;
-            }
+            this.currentLanguage = settings.language || 'en';
         }
 
-        await this.loadLanguage(this.currentLang);
+        // Load the current language
+        await this.loadLanguage(this.currentLanguage);
     }
 
     async loadLanguage(lang) {
@@ -29,49 +26,51 @@ class I18nManager {
 
         try {
             const response = await fetch(`lang/${lang}.json`);
-            this.translations = await response.json();
-            this.currentLang = lang;
-            document.documentElement.setAttribute('lang', lang);
+            if (!response.ok) throw new Error(`Failed to load ${lang}.json`);
 
-            // Apply translations to the DOM
+            this.translations = await response.json();
+            this.currentLanguage = lang;
+
+            // Apply translations to the page
             this.applyTranslations();
 
-            // Trigger custom event for language change
-            window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+            console.log(`Loaded language: ${lang}`);
         } catch (error) {
-            console.error(`Failed to load language file for ${lang}:`, error);
+            console.error(`Error loading language ${lang}:`, error);
+
+            // If not English, try falling back to English
             if (lang !== 'en') {
-                // Fallback to English
+                console.log('Falling back to English...');
                 await this.loadLanguage('en');
             }
         }
     }
 
+    async setLanguage(lang) {
+        await this.loadLanguage(lang);
+    }
+
     applyTranslations() {
         // Find all elements with data-i18n attribute
         const elements = document.querySelectorAll('[data-i18n]');
+
         elements.forEach(element => {
             const key = element.getAttribute('data-i18n');
-            const translation = this.t(key);
+            const translation = this.getTranslation(key);
 
-            // Update text content or placeholder
-            if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
-                element.placeholder = translation;
-            } else {
-                element.textContent = translation;
+            if (translation) {
+                // Handle input placeholders
+                if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
+                    element.placeholder = translation;
+                } else {
+                    element.textContent = translation;
+                }
             }
-        });
-
-        // Also support translating element titles via data-i18n-title
-        const titleElements = document.querySelectorAll('[data-i18n-title]');
-        titleElements.forEach(el => {
-            const key = el.getAttribute('data-i18n-title');
-            const translation = this.t(key);
-            if (translation) el.title = translation;
         });
     }
 
-    t(key) {
+    getTranslation(key) {
+        // Support nested keys like "app.name" or "nav.home"
         const keys = key.split('.');
         let value = this.translations;
 
@@ -80,128 +79,26 @@ class I18nManager {
                 value = value[k];
             } else {
                 console.warn(`Translation key not found: ${key}`);
-                return key;
+                return null;
             }
         }
 
         return value;
-    }
-
-    getAvailableLanguages() {
-        return this.availableLanguages;
-    }
-
-    getCurrentLanguage() {
-        return this.currentLang;
-    }
-
-    async setLanguage(lang) {
-        await this.loadLanguage(lang);
-    }
-}
-
-// Create global instance
-window.i18n = new I18nManager();
-
-// Export for use in modules
-export { I18nManager };
-=======
-// i18n (Internationalization) Manager
-class I18nManager {
-    constructor() {
-        this.currentLang = 'en';
-        this.translations = {};
-        this.availableLanguages = ['en', 'es', 'fr']; // Only languages with files
-        this.init();
-    }
-
-    async init() {
-        // Load saved language or default to English
-        const savedSettings = localStorage.getItem('ivids-settings');
-        if (savedSettings) {
-            const settings = JSON.parse(savedSettings);
-            if (settings.language && this.availableLanguages.includes(settings.language)) {
-                this.currentLang = settings.language;
-            }
-        }
-
-        await this.loadLanguage(this.currentLang);
-    }
-
-    async loadLanguage(lang) {
-        if (!this.availableLanguages.includes(lang)) {
-            console.warn(`Language ${lang} not available, falling back to English`);
-            lang = 'en';
-        }
-
-        try {
-            const response = await fetch(`lang/${lang}.json`);
-            this.translations = await response.json();
-            this.currentLang = lang;
-            document.documentElement.setAttribute('lang', lang);
-
-            // Apply translations to the DOM
-            this.applyTranslations();
-
-            // Trigger custom event for language change
-            window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
-        } catch (error) {
-            console.error(`Failed to load language file for ${lang}:`, error);
-            if (lang !== 'en') {
-                // Fallback to English
-                await this.loadLanguage('en');
-            }
-        }
-    }
-
-    applyTranslations() {
-        // Find all elements with data-i18n attribute
-        const elements = document.querySelectorAll('[data-i18n]');
-        elements.forEach(element => {
-            const key = element.getAttribute('data-i18n');
-            const translation = this.t(key);
-
-            // Update text content or placeholder
-            if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
-                element.placeholder = translation;
-            } else {
-                element.textContent = translation;
-            }
-        });
     }
 
     t(key) {
-        const keys = key.split('.');
-        let value = this.translations;
-
-        for (const k of keys) {
-            if (value && typeof value === 'object' && k in value) {
-                value = value[k];
-            } else {
-                console.warn(`Translation key not found: ${key}`);
-                return key;
-            }
-        }
-
-        return value;
-    }
-
-    getAvailableLanguages() {
-        return this.availableLanguages;
-    }
-
-    getCurrentLanguage() {
-        return this.currentLang;
-    }
-
-    async setLanguage(lang) {
-        await this.loadLanguage(lang);
+        return this.getTranslation(key) || key;
     }
 }
 
-// Create global instance
-window.i18n = new I18nManager();
+// Create global i18n instance
+window.i18n = new I18n();
 
-// Export for use in modules
-export { I18nManager };
->>>>>>> 9cb739138d9b59ab65cad410bc39d6c60fb358f3
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => window.i18n.init());
+} else {
+    window.i18n.init();
+}
+
+export default window.i18n;

@@ -1,143 +1,32 @@
-<<<<<<< HEAD
 <div class="details-page" id="details-bg">
-    <div class="details-content">
-        <h1 class="details-title" id="details-title"></h1>
-            <div id="details-genres" class="details-genres" aria-hidden="true"></div>
-        <div class="details-meta">
-            <span id="details-date"></span>
-            <span id="details-rating"></span>
+    <div class="details-layout">
+        <div class="details-top">
+            <div class="details-info">
+                <h1 class="details-title" id="details-title"></h1>
+                <div id="details-genres" class="details-genres" aria-hidden="true"></div>
+                <div class="details-meta">
+                    <span id="details-date"></span>
+                    <span id="details-rating"></span>
+                </div>
+                <p class="details-overview" id="details-overview"></p>
+                <div class="details-actions">
+                    <button class="btn btn-primary focusable" id="details-play">Play</button>
+                    <button class="btn btn-secondary focusable" id="details-back">Back</button>
+                </div>
+            </div>
+
         </div>
-        <p class="details-overview" id="details-overview"></p>
-        <button class="btn btn-primary focusable" id="details-play">Play</button>
-        <button class="btn btn-secondary focusable" id="details-back">Back</button>
+        <div class="details-bottom">
+            <div class="details-seasons" id="seasons-container" style="display: none;">
+                <h3 class="seasons-header">Seasons</h3>
+                <div id="seasons-list" class="seasons-list-content"></div>
+            </div>
+            <div id="details-episodes" class="episodes-list"></div>
+        </div>
     </div>
 </div>
 
 <style>
-    .details-page {
-        height: 100vh;
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        display: flex;
-        align-items: center;
-        padding-left: 50px;
-    }
-
-    .details-page::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to right, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 0.4));
-    }
-
-    .details-content {
-        position: relative;
-        z-index: 10;
-        max-width: 700px;
-    }
-
-    .details-title {
-        font-size: 50px;
-        margin-bottom: 20px;
-    }
-
-    .details-meta {
-        font-size: 18px;
-        color: #aaa;
-        margin-bottom: 20px;
-    }
-
-    .details-overview {
-        font-size: 20px;
-        line-height: 1.5;
-        margin-bottom: 30px;
-    }
-
-    .details-genres {
-        margin: 12px 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        z-index: 11;
-    }
-
-    .genre-chip {
-        display: inline-block;
-        background: rgba(255,255,255,0.08);
-        color: #fff;
-        padding: 6px 10px;
-        border-radius: 12px;
-        font-size: 14px;
-        line-height: 1;
-        border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    /* Adult (18+) chip style - same shape as genre chips but orange */
-    .genre-chip.adult {
-        background: #ff9a3d; /* orange */
-        color: #111;
-        border: 1px solid rgba(0,0,0,0.12);
-    }
-=======
-<div class="details-page" id="details-bg">
-    <div class="details-content">
-        <h1 class="details-title" id="details-title"></h1>
-        <div class="details-meta">
-            <span id="details-date"></span>
-            <span id="details-rating"></span>
-        </div>
-        <p class="details-overview" id="details-overview"></p>
-        <button class="btn btn-primary focusable" id="details-play">Play</button>
-        <button class="btn btn-secondary focusable" id="details-back">Back</button>
-    </div>
-</div>
-
-<style>
-    .details-page {
-        height: 100vh;
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        display: flex;
-        align-items: center;
-        padding-left: 50px;
-    }
-
-    .details-page::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to right, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 0.4));
-    }
-
-    .details-content {
-        position: relative;
-        z-index: 10;
-        max-width: 700px;
-    }
-
-    .details-title {
-        font-size: 50px;
-        margin-bottom: 20px;
-    }
-
-    .details-meta {
-        font-size: 18px;
-        color: #aaa;
-        margin-bottom: 20px;
-    }
-
-    .details-overview {
-        font-size: 20px;
-        line-height: 1.5;
-        margin-bottom: 30px;
-    }
->>>>>>> 9cb739138d9b59ab65cad410bc39d6c60fb358f3
+    /* Moved specific styles to style.css, keeping structure-critical ones here if needed, 
+       but user requested fixing style file, so I will move most to style.css */
 </style>

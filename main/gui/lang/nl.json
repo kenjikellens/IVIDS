@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "IVIDS",
+        "tagline": "Uw entertainmentcentrum"
+    },
+    "nav": {
+        "home": "Startpagina",
+        "movies": "Films",
+        "series": "Series",
+        "search": "Zoeken",
+        "settings": "Instellingen"
+    },
+    "settings": {
+        "title": "Instellingen",
+        "subtitle": "Configureer uw IVIDS-ervaring",
+        "appearance": "Uiterlijk",
+        "language": "Taal",
+        "languageDesc": "Kies uw voorkeurstaal",
+        "accentColor": "Accentkleur",
+        "accentColorDesc": "Kies uw voorkeur themakleur",
+        "saved": "Instellingen opgeslagen!",
+        "reset": "Terugzetten naar standaard!"
+    },
+    "home": {
+        "welcome": "Welkom bij IVIDS",
+        "trending": "Nu Trending",
+        "popular": "Populair",
+        "newReleases": "Nieuwe Releases"
+    },
+    "search": {
+        "placeholder": "Zoek naar films, series...",
+        "button": "Zoeken",
+        "noResults": "Geen resultaten gevonden"
+    },
+    "player": {
+        "play": "Afspelen",
+        "pause": "Pauze",
+        "stop": "Stoppen",
+        "moreInfo": "Meer Info"
+    }
+}

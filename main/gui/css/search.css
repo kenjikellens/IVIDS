@@ -1,0 +1,53 @@
+/* Search Page Styles */
+
+.search-container {
+    padding: 120px 60px 60px 60px;
+    min-height: 100vh;
+    background: radial-gradient(circle at top center, rgba(70, 211, 105, 0.15), transparent 60%);
+    animation: fadeIn 0.6s ease-out;
+}
+
+.search-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 100;
+}
+
+#search-input {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px 30px;
+    font-size: 24px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: #fff;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#search-input:focus,
+#search-input.focused {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 30px rgba(70, 211, 105, 0.25), 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+#search-btn {
+    padding: 20px 40px;
+    font-size: 20px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: #000;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}

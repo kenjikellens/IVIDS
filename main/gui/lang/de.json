@@ -1,0 +1,41 @@
+{
+    "app": {
+        "name": "IVIDS",
+        "tagline": "Ihr Unterhaltungszentrum"
+    },
+    "nav": {
+        "home": "Startseite",
+        "movies": "Filme",
+        "series": "Serien",
+        "search": "Suche",
+        "settings": "Einstellungen"
+    },
+    "settings": {
+        "title": "Einstellungen",
+        "subtitle": "Konfigurieren Sie Ihr IVIDS-Erlebnis",
+        "appearance": "Aussehen",
+        "language": "Sprache",
+        "languageDesc": "Wählen Sie Ihre bevorzugte Sprache",
+        "accentColor": "Akzentfarbe",
+        "accentColorDesc": "Wählen Sie Ihre bevorzugte Themenfarbe",
+        "saved": "Einstellungen gespeichert!",
+        "reset": "Auf Standard zurücksetzen!"
+    },
+    "home": {
+        "welcome": "Willkommen bei IVIDS",
+        "trending": "Jetzt im Trend",
+        "popular": "Beliebt",
+        "newReleases": "Neue Veröffentlichungen"
+    },
+    "search": {
+        "placeholder": "Suche nach Filmen, Serien...",
+        "button": "Suchen",
+        "noResults": "Keine Ergebnisse gefunden"
+    },
+    "player": {
+        "play": "Abspielen",
+        "pause": "Pause",
+        "stop": "Stoppen",
+        "moreInfo": "Mehr Info"
+    }
+}
