@@ -36,9 +36,21 @@ export const SpatialNav = {
             return;
         }
 
+        // Map modern key names to legacy keyCode values for older TV remotes
+        const KEY_MAP = {
+            ArrowLeft: 37,
+            ArrowUp: 38,
+            ArrowRight: 39,
+            ArrowDown: 40,
+            Enter: 13,
+            Escape: 8,
+            Back: 10009 // some TVs send "Back" as a string
+        };
+        const keyCode = e.keyCode || KEY_MAP[e.key];
+
         let nextElement = null;
 
-        switch (e.keyCode) {
+        switch (keyCode) {
             case 37: // LEFT
                 nextElement = this.findNext(current, 'left');
                 break;
@@ -58,7 +70,7 @@ export const SpatialNav = {
                 }
                 break;
             case 10009: // RETURN / BACK (Tizen)
-            case 8: // Backspace (PC)
+            case 8: // Backspace (PC) / Escape
                 if (this.onBack) {
                     this.onBack();
                 }
