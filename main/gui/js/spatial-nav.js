@@ -29,12 +29,18 @@ export const SpatialNav = {
         }
     },
 
+    refocus() {
+        const current = document.querySelector('.focused');
+        if (!current || !document.body.contains(current)) {
+            this.focusFirst();
+        } else {
+            current.focus();
+            current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        }
+    },
+
     handleKey(e) {
         const current = document.querySelector('.focused');
-        if (!current) {
-            this.focusFirst();
-            return;
-        }
 
         // Map modern key names to legacy keyCode values for older TV remotes
         const KEY_MAP = {
@@ -47,6 +53,16 @@ export const SpatialNav = {
             Back: 10009 // some TVs send "Back" as a string
         };
         const keyCode = e.keyCode || KEY_MAP[e.key];
+
+        // Always prevent default scrolling for arrow keys
+        if (keyCode >= 37 && keyCode <= 40) {
+            e.preventDefault();
+        }
+
+        if (!current) {
+            this.focusFirst();
+            return;
+        }
 
         let nextElement = null;
 
@@ -78,7 +94,6 @@ export const SpatialNav = {
         }
 
         if (nextElement) {
-            e.preventDefault();
             this.setFocus(nextElement);
         }
     },
@@ -128,9 +143,16 @@ export const SpatialNav = {
                     break;
             }
 
-            if (isValid && dist < minDistance) {
-                minDistance = dist;
-                bestCandidate = el;
+            if (isValid) {
+                // Prioritize content over navbar when navigating from content
+                if (el.closest('.navbar') && !current.closest('.navbar')) {
+                    dist += 10000;
+                }
+
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    bestCandidate = el;
+                }
             }
         });
 

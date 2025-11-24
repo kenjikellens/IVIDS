@@ -19,6 +19,8 @@ export function addToRecentlyWatched(item) {
             backdrop_path: item.backdrop_path,
             media_type: item.media_type || item.type,
             overview: item.overview,
+            season: item.season,
+            episode: item.episode,
             timestamp: Date.now()
         });
 
@@ -42,6 +44,11 @@ export function getRecentlyWatched() {
         console.error('Error loading recently watched:', e);
         return [];
     }
+}
+
+export function getWatchedItem(id, type) {
+    const recentlyWatched = getRecentlyWatched();
+    return recentlyWatched.find(i => i.id == id && i.media_type == type);
 }
 
 export function clearRecentlyWatched() {

@@ -84,6 +84,24 @@
     font-size: 16px;
 }
 
+.rating-chip {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.rating-chip.rating-R,
+.rating-chip.rating-TV-MA {
+    background-color: #ff4500;
+    /* Orange-Red */
+    border-color: #ff4500;
+    color: #fff;
+}
+
 .details-genres {
     display: flex;
     flex-wrap: wrap;
@@ -254,4 +272,124 @@
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Add to Playlist Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    /* Higher than navbar */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #222;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    border: 1px solid #444;
+}
+
+.modal-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.playlist-selection-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.playlist-option {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: #ddd;
+}
+
+.playlist-option:hover,
+.playlist-option:focus {
+    background-color: #333;
+    color: white;
+    outline: none;
+}
+
+.playlist-option:last-child {
+    border-bottom: none;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancel {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background-color: #666;
+}
+
+/* Recommendations Section */
+.recommendations-section {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.recommendations-header {
+    font-size: 24px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    color: #fff;
+}
+
+.row-posters {
+    display: flex;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    padding: 20px 0;
+    gap: 15px;
+}
+
+.row-posters::-webkit-scrollbar {
+    display: none;
+}
+
+.row-posters .poster {
+    max-height: 200px;
+    object-fit: contain;
+    margin-right: 10px;
+    width: 100%;
+    transition: transform 450ms;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.row-posters .poster:hover,
+.row-posters .poster:focus {
+    transform: scale(1.08);
+    opacity: 1;
+    outline: none;
+    border: 2px solid var(--primary-color);
 }

@@ -1,43 +1,71 @@
 import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
+import { HeroSlider } from '../js/hero-slider.js';
 
 export async function init() {
-    const [popular, topRated, action, comedy] = await Promise.all([
-        Api.fetchTrending(), // Reusing trending for now, ideally filter by movie
+    const [
+        popular, topRated, action, comedy,
+        adventure, animation, crime, documentary, drama, family, fantasy, history, horror, music, mystery, romance, scifi, thriller, war, western, anime
+    ] = await Promise.all([
+        Api.fetchTrending(),
         Api.fetchTopRated(),
         Api.fetchActionMovies(),
-        Api.fetchComedyMovies()
+        Api.fetchComedyMovies(),
+        Api.fetchAdventureMovies(),
+        Api.fetchAnimationMovies(),
+        Api.fetchCrimeMovies(),
+        Api.fetchDocumentaryMovies(),
+        Api.fetchDramaMovies(),
+        Api.fetchFamilyMovies(),
+        Api.fetchFantasyMovies(),
+        Api.fetchHistoryMovies(),
+        Api.fetchHorrorMovies(),
+        Api.fetchMusicMovies(),
+        Api.fetchMysteryMovies(),
+        Api.fetchRomanceMovies(),
+        Api.fetchSciFiMovies(),
+        Api.fetchThrillerMovies(),
+        Api.fetchWarMovies(),
+        Api.fetchWesternMovies(),
+        Api.fetchAnimeMovies()
     ]);
 
     // Filter for movies only just in case
     const movies = popular.filter(m => m.media_type === 'movie' || !m.media_type);
 
     if (movies && movies.length > 0) {
-        setupHero(movies[0]);
-        setupRow('popular-movies-row', movies.slice(1));
+        new HeroSlider(movies.slice(0, 5), {
+            containerId: 'hero-movies',
+            titleId: 'hero-title-movies',
+            descId: 'hero-desc-movies',
+            playBtnId: 'hero-play-movies',
+            detailsBtnId: 'hero-details-movies'
+        });
+        setupRow('popular-movies-row', movies.slice(5));
     }
     if (topRated) setupRow('top-rated-movies-row', topRated);
     if (action) setupRow('action-movies-row', action);
     if (comedy) setupRow('comedy-movies-row', comedy);
+    if (adventure) setupRow('adventure-movies-row', adventure);
+    if (animation) setupRow('animation-movies-row', animation);
+    if (crime) setupRow('crime-movies-row', crime);
+    if (documentary) setupRow('documentary-movies-row', documentary);
+    if (drama) setupRow('drama-movies-row', drama);
+    if (family) setupRow('family-movies-row', family);
+    if (fantasy) setupRow('fantasy-movies-row', fantasy);
+    if (history) setupRow('history-movies-row', history);
+    if (horror) setupRow('horror-movies-row', horror);
+    if (music) setupRow('music-movies-row', music);
+    if (mystery) setupRow('mystery-movies-row', mystery);
+    if (romance) setupRow('romance-movies-row', romance);
+    if (scifi) setupRow('scifi-movies-row', scifi);
+    if (thriller) setupRow('thriller-movies-row', thriller);
+    if (war) setupRow('war-movies-row', war);
+    if (western) setupRow('western-movies-row', western);
+    if (anime) setupRow('anime-movies-row', anime);
 }
 
-function setupHero(item) {
-    const hero = document.getElementById('hero-movies');
-    const title = document.getElementById('hero-title-movies');
-    const desc = document.getElementById('hero-desc-movies');
-    const playBtn = document.getElementById('hero-play-movies');
-    const detailsBtn = document.getElementById('hero-details-movies');
-
-    title.textContent = item.title || item.name;
-    desc.textContent = truncate(item.overview, 150);
-
-    if (item.backdrop_path) {
-        hero.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url(${Api.getImageUrl(item.backdrop_path)})`;
-    }
-
-    playBtn.onclick = () => Router.loadPage('player', { id: item.id, type: 'movie' });
-    detailsBtn.onclick = () => Router.loadPage('details', { id: item.id, type: 'movie' });
-}
+// Removed setupHero
 
 function setupRow(elementId, items) {
     const rowPosters = document.getElementById(elementId);
@@ -51,24 +79,6 @@ function setupRow(elementId, items) {
         container.className = 'row-container';
         rowPosters.parentNode.insertBefore(container, rowPosters);
         container.appendChild(rowPosters);
-
-        // Add Buttons
-        const leftBtn = document.createElement('button');
-        leftBtn.className = 'handle handle-left focusable';
-        leftBtn.innerHTML = '&#8249;';
-        leftBtn.onclick = () => {
-            rowPosters.scrollBy({ left: -500, behavior: 'smooth' });
-        };
-
-        const rightBtn = document.createElement('button');
-        rightBtn.className = 'handle handle-right focusable';
-        rightBtn.innerHTML = '&#8250;';
-        rightBtn.onclick = () => {
-            rowPosters.scrollBy({ left: 500, behavior: 'smooth' });
-        };
-
-        container.prepend(leftBtn);
-        container.appendChild(rightBtn);
     }
 
     items.forEach(item => {

@@ -1,278 +1,4 @@
-/* Global Styles */
-:root {
-    --background-color: #141414;
-    --text-color: #e5e5e5;
-    --primary-color: #46d369;
-    /* Green Accent */
-    --focus-border-color: #ffffff;
-    --card-bg: #2f2f2f;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-}
-
-/* Custom Scrollbar Styling - HIDDEN */
-::-webkit-scrollbar {
-    display: none;
-}
-
-/* App Container */
-#app {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Main View (Scrollable Area) */
-#main-view {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
-    scroll-behavior: smooth;
-    padding-top: 0;
-}
-
-/* Navigation Bar */
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 20%, rgba(0, 0, 0, 0));
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    padding: 0 60px;
-    animation: slideDown 0.8s ease-out;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
-}
-
-.logo {
-    color: var(--primary-color);
-    font-size: 30px;
-    font-weight: bold;
-    margin-right: 40px;
-    text-shadow: 0 0 10px rgba(70, 211, 105, 0.3);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), text-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.logo:hover {
-    transform: scale(1.1);
-    text-shadow: 0 0 20px var(--primary-color), 0 0 40px rgba(70, 211, 105, 0.6);
-}
-
-.nav-links {
-    display: flex;
-    gap: 20px;
-    flex: 1;
-}
-
-.nav-item {
-    color: var(--text-color);
-    text-decoration: none;
-    font-size: 18px;
-    padding: 5px 10px;
-    border: 2px solid transparent;
-    transition: color 0.3s, transform 0.2s;
-    position: relative;
-}
-
-.nav-item::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 50%;
-    background-color: var(--primary-color);
-    transition: width 0.3s ease, left 0.3s ease;
-    box-shadow: 0 0 10px var(--primary-color);
-}
-
-.nav-item:hover {
-    color: #fff;
-    transform: translateY(-2px);
-}
-
-.nav-item:hover::after {
-    width: 100%;
-    left: 0;
-}
-
-.nav-item.focused {
-    border-color: var(--primary-color);
-    background-color: rgba(70, 211, 105, 0.1);
-    box-shadow: 0 0 15px rgba(70, 211, 105, 0.2);
-    border-radius: 4px;
-}
-
-.nav-item.active::after {
-    width: 100%;
-    left: 0;
-}
-
-.nav-item.active {
-    color: #fff;
-}
-
-/* Navigation Utilities */
-.nav-utilities {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.theme-toggle,
-.settings-btn {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-}
-
-.theme-toggle:hover,
-.settings-btn:hover {
-    background: rgba(70, 211, 105, 0.2);
-    border-color: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(70, 211, 105, 0.3);
-}
-
-.theme-toggle.focused,
-.settings-btn.focused {
-    background: rgba(70, 211, 105, 0.2);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(70, 211, 105, 0.4);
-}
-
-.theme-icon,
-.settings-icon {
-    color: var(--text-color);
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.theme-toggle:hover .theme-icon,
-.settings-btn:hover .settings-icon {
-    color: var(--primary-color);
-    transform: rotate(20deg);
-}
-
-.settings-btn:hover .settings-icon {
-    transform: rotate(90deg);
-}
-
-/* Language Selector */
-.lang-select {
-    margin-left: auto;
-    background: rgba(0, 0, 0, 0.5);
-    color: var(--text-color);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: border-color 0.3s;
-}
-
-.lang-select:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-.lang-select option {
-    background-color: #000;
-    color: #fff;
-}
-
-/* Hero Section */
-.hero {
-    height: 85vh;
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
-    padding-left: 60px;
-    padding-bottom: 150px;
-}
-
-.hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 20rem;
-    background: linear-gradient(to top, var(--background-color), transparent);
-}
-
-.hero-content {
-    z-index: 10;
-    max-width: 800px;
-    margin-top: 0;
-    padding-top: 0;
-}
-
-.hero-title {
-    font-size: 60px;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.hero-desc {
-    font-size: 20px;
-    margin-bottom: 30px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    line-height: 1.4;
-}
-
-.btn {
-    padding: 12px 35px;
-    font-size: 22px;
-    border: none;
-    cursor: pointer;
-    margin-right: 15px;
-    border-radius: 4px;
-    border: 2px solid transparent;
-    transition: transform 0.2s, background-color 0.2s;
-}
+/* gui/css/style.css */
 
 .btn-primary {
     background-color: #fff;
@@ -287,15 +13,22 @@ body {
 .btn-secondary {
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
+    position: relative;
+    z-index: 20;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
 .btn-secondary:hover {
     background-color: rgba(109, 109, 110, 0.9);
 }
 
-.btn.focused {
+.btn.focused,
+.btn:focus {
     border-color: var(--focus-border-color);
     transform: scale(1.05);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-color);
 }
 
 /* Rows */
@@ -371,8 +104,8 @@ body {
 }
 
 .poster {
-    width: 200px;
-    height: 300px;
+    width: 150px;
+    height: 225px;
     object-fit: cover;
     border-radius: 4px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -382,11 +115,13 @@ body {
 }
 
 .poster:hover,
-.poster.focused {
+.poster.focused,
+.poster:focus {
     transform: scale(1.1);
     z-index: 100;
-    border-color: var(--focus-border-color);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-color), 0 10px 20px rgba(0, 0, 0, 0.8);
+    outline: none;
 }
 
 /* Animations */
@@ -422,616 +157,454 @@ body {
     animation-delay: 0.5s;
 }
 
-/* Search Page Styling */
-.search-container {
-    padding: 120px 60px 60px 60px;
-    min-height: 100vh;
-    background: radial-gradient(circle at top center, rgba(70, 211, 105, 0.15), transparent 60%);
-    animation: fadeIn 0.6s ease-out;
-}
-
-.search-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 60px;
+/* Hero Section */
+.hero {
+    height: 85vh;
     position: relative;
-    z-index: 100;
-}
-
-#search-input {
-    width: 100%;
-    max-width: 600px;
-    padding: 20px 30px;
-    font-size: 24px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    color: #fff;
-    backdrop-filter: blur(12px);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-#search-input:focus,
-#search-input.focused {
-    outline: none;
-    border-color: var(--primary-color);
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 0 30px rgba(70, 211, 105, 0.25), 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform: translateY(-2px);
-}
-
-#search-btn {
-    padding: 20px 40px;
-    font-size: 20px;
-    font-weight: 600;
-    background: var(--primary-color);
-    color: #000;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    grid-column: 1 / -1;
-    text-align: center;
-    font-size: 24px;
-    color: #888;
-    margin-top: 50px;
-}
-
-/* Player */
-.video-container {
-    width: 100%;
-    height: 100%;
-    background: black;
-}
-
-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* Episodes List */
-.episodes-list {
-    margin-top: 40px;
-    margin-bottom: 40px;
-    width: 100%;
-    max-width: 900px;
-}
-
-.episodes-title {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #fff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
-}
-
-.episode-item {
-    display: flex;
-    gap: 20px;
-    padding: 15px;
-    margin-bottom: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 2px solid transparent;
-}
-
-.episode-item:hover,
-.episode-item.focused {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.01);
-    border-color: var(--primary-color);
-}
-
-.episode-image {
-    width: 200px;
-    height: 112px;
-    /* 16:9 aspect ratio */
     background-size: cover;
     background-position: center;
-    border-radius: 4px;
-    flex-shrink: 0;
-    background-color: #000;
-}
-
-.episode-info {
-    flex: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: flex-end;
+    padding-left: 60px;
+    padding-bottom: 150px;
 }
 
-.episode-header {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 8px;
-}
-
-.episode-number {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-.episode-name {
-    font-size: 20px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.episode-overview {
-    font-size: 14px;
-    color: #aaa;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Details Page New Layout */
-.details-page {
-    min-height: 100vh;
-    height: auto;
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: top center;
-    position: relative;
-    padding-top: 100px;
-    /* Navbar space */
-    padding-bottom: 50px;
-}
-
-/* Background Fade Effect (Hero Style) */
-.details-page::after {
+.hero::after {
     content: '';
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 60vw;
-    max-height: 100vh;
-    background: linear-gradient(to bottom, rgba(20, 20, 20, 0) 40%, var(--background-color) 90%);
-    z-index: 1;
-    pointer-events: none;
+    height: 20rem;
+    background: linear-gradient(to top, var(--background-color), transparent);
 }
 
-/* Dark overlay for readability */
-.details-page::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    /* General darkening */
-    z-index: 0;
-}
-
-.details-layout {
-    position: relative;
+.hero-content {
     z-index: 10;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
-
-.details-top {
-    display: flex;
-    gap: 60px;
-    align-items: flex-start;
-}
-
-.details-info {
-    flex: 1;
     max-width: 800px;
+    margin-top: 0;
+    padding-top: 0;
 }
 
-.details-title {
-    font-size: 50px;
+.hero-title {
+    font-size: 60px;
     margin-bottom: 20px;
-    font-weight: bold;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    /* gui/css/style.css */
 
-.details-meta {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    color: #aaa;
-    font-size: 18px;
-}
+    .btn-primary {
+        background-color: #fff;
+        color: black;
+        font-weight: bold;
+    }
 
-.date-box {
-    background: var(--primary-color);
-    color: #000;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 16px;
-}
+    .btn-primary:hover {
+        background-color: #c0c0c0;
+    }
 
-.details-genres {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+    .btn-secondary {
+        background-color: rgba(109, 109, 110, 0.7);
+        color: white;
+        position: relative;
+        z-index: 20;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out forwards;
+    }
 
-.genre-chip {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 14px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
+    .btn-secondary:hover {
+        background-color: rgba(109, 109, 110, 0.9);
+    }
 
-.details-overview {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #ddd;
-    margin-bottom: 30px;
-}
+    .btn.focused,
+    .btn:focus {
+        border-color: var(--focus-border-color);
+        transform: scale(1.05);
+        outline: none;
+        box-shadow: 0 0 0 3px var(--primary-color);
+    }
 
-.details-actions {
-    display: flex;
-    gap: 20px;
-}
+    /* Rows */
+    .row {
+        padding: 20px 50px;
+        position: relative;
+        z-index: 20;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out forwards;
+    }
 
-/* Seasons List Horizontal */
-.details-seasons {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    background: transparent;
-    padding: 0;
-    border: none;
-    backdrop-filter: none;
-    max-height: none;
-    overflow: visible;
-    margin-bottom: 20px;
-}
+    .row-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+        font-weight: bold;
+        color: #e5e5e5;
+    }
 
-.seasons-header {
-    font-size: 24px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
-}
+    .row-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
 
-.seasons-list-content {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    scrollbar-width: none;
-}
+    .row-posters {
+        display: flex;
+        gap: 15px;
+        overflow-x: auto;
+        padding: 20px 0;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
 
-.seasons-list-content::-webkit-scrollbar {
-    display: none;
-}
+    .row-posters::-webkit-scrollbar {
+        display: none;
+    }
 
-.season-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ccc;
-    padding: 10px 20px;
-    text-align: center;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 16px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
+    .handle {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        font-size: 3rem;
+        cursor: pointer;
+        padding: 0 10px;
+        z-index: 50;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s, background-color 0.3s;
+        border-radius: 4px;
+    }
 
-.season-btn:hover,
-.season-btn.focused {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary-color);
-    color: #fff;
-    transform: scale(1.05);
-}
+    .row-container:hover .handle {
+        opacity: 1;
+    }
 
-.season-btn.active {
-    background: var(--primary-color);
-    color: #000;
-    border-color: var(--primary-color);
-    font-weight: bold;
-}
+    .handle:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
+    }
 
-/* Bottom Section (Episodes) */
-.details-bottom {
-    width: 100%;
-    color: #fff;
-}
+    .handle-left {
+        left: -40px;
+    }
 
-.episode-overview {
-    font-size: 14px;
-    color: #aaa;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+    .handle-right {
+        right: -40px;
+    }
 
-/* Details Page New Layout */
-.details-page {
-    min-height: 100vh;
-    height: auto;
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: top center;
-    position: relative;
-    padding-top: 100px;
-    /* Navbar space */
-    padding-bottom: 50px;
-}
+    .poster {
+        width: 150px;
+        height: 225px;
+        object-fit: cover;
+        border-radius: 4px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 3px solid transparent;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
 
-/* Background Fade Effect (Hero Style) */
-.details-page::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60vw;
-    max-height: 100vh;
-    background: linear-gradient(to bottom, rgba(20, 20, 20, 0) 40%, var(--background-color) 90%);
-    z-index: 1;
-    pointer-events: none;
-}
+    .poster:hover,
+    .poster.focused,
+    .poster:focus {
+        transform: scale(1.1);
+        z-index: 100;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px var(--primary-color), 0 10px 20px rgba(0, 0, 0, 0.8);
+        outline: none;
+    }
 
-/* Dark overlay for readability */
-.details-page::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    /* General darkening */
-    z-index: 0;
-}
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-.details-layout {
-    position: relative;
-    z-index: 10;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-.details-top {
-    display: flex;
-    gap: 60px;
-    align-items: flex-start;
-}
+    .row:nth-child(1) {
+        animation-delay: 0.1s;
+    }
 
-.details-info {
-    flex: 1;
-    max-width: 800px;
-}
+    .row:nth-child(2) {
+        animation-delay: 0.2s;
+    }
 
-.details-title {
-    font-size: 50px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
+    .row:nth-child(3) {
+        animation-delay: 0.3s;
+    }
 
-.details-meta {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    color: #aaa;
-    font-size: 18px;
-}
+    .row:nth-child(4) {
+        animation-delay: 0.4s;
+    }
 
-.date-box {
-    background: var(--primary-color);
-    color: #000;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 16px;
-}
+    .row:nth-child(5) {
+        animation-delay: 0.5s;
+    }
 
-.details-genres {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+    /* Hero Section */
+    .hero {
+        height: 85vh;
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: flex-end;
+        padding-left: 60px;
+        padding-bottom: 150px;
+    }
 
-.genre-chip {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 14px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
+    .hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 20rem;
+        background: linear-gradient(to top, var(--background-color), transparent);
+    }
 
-.details-overview {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #ddd;
-    margin-bottom: 30px;
-}
+    .hero-content {
+        z-index: 10;
+        max-width: 800px;
+        margin-top: 0;
+        padding-top: 0;
+    }
 
-.details-actions {
-    display: flex;
-    gap: 20px;
-}
+    .hero-title {
+        font-size: 60px;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
 
-/* Seasons List Horizontal */
-.details-seasons {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    background: transparent;
-    padding: 0;
-    border: none;
-    backdrop-filter: none;
-    max-height: none;
-    overflow: visible;
-    margin-bottom: 20px;
-}
+    .hero-desc {
+        font-size: 16px;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        line-height: 1.4;
+    }
 
-.seasons-header {
-    font-size: 24px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
-}
+    /* Loading Spinner */
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+    }
 
-.seasons-list-content {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    scrollbar-width: none;
-}
+    .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out forwards;
+    }
 
-.seasons-list-content::-webkit-scrollbar {
-    display: none;
-}
+    .btn-secondary:hover {
+        background-color: rgba(109, 109, 110, 0.9);
+    }
 
-.season-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ccc;
-    padding: 10px 20px;
-    text-align: center;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 16px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
+    .btn.focused,
+    .btn:focus {
+        border-color: var(--focus-border-color);
+        transform: scale(1.05);
+        outline: none;
+        box-shadow: 0 0 0 3px var(--primary-color);
+    }
 
-.season-btn:hover,
-.season-btn.focused {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary-color);
-    color: #fff;
-    transform: scale(1.05);
-}
+    /* Rows */
+    .row {
+        padding: 20px 50px;
+        position: relative;
+        z-index: 20;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out forwards;
+    }
 
-.season-btn.active {
-    background: var(--primary-color);
-    color: #000;
-    border-color: var(--primary-color);
-    font-weight: bold;
-}
+    .row-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+        font-weight: bold;
+        color: #e5e5e5;
+    }
 
-/* Bottom Section (Episodes) */
-.details-bottom {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    .row-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
 
-.episodes-list {
-    width: 100%;
-    max-width: 900px;
-}
+    .row-posters {
+        display: flex;
+        gap: 15px;
+        overflow-x: auto;
+        padding: 20px 0;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
 
-.episodes-list {
-    flex: 1;
-    min-width: 0;
-}
+    .row-posters::-webkit-scrollbar {
+        display: none;
+    }
 
-.details-actions {
-    display: flex;
-    gap: 20px;
-}
+    .handle {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        font-size: 3rem;
+        cursor: pointer;
+        padding: 0 10px;
+        z-index: 50;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s, background-color 0.3s;
+        border-radius: 4px;
+    }
 
-/* Seasons List Sidebar */
-.details-seasons {
-    width: 250px;
-    flex-shrink: 0;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    max-height: 600px;
-    overflow-y: auto;
-}
+    .row-container:hover .handle {
+        opacity: 1;
+    }
 
-.seasons-header {
-    font-size: 24px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
-}
+    .handle:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
+    }
 
-.seasons-list-content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+    .handle-left {
+        left: -40px;
+    }
 
-.season-btn {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ccc;
-    padding: 12px 15px;
-    text-align: left;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 16px;
-}
+    .handle-right {
+        right: -40px;
+    }
 
-.season-btn:hover,
-.season-btn.focused {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary-color);
-    color: #fff;
-    transform: translateX(5px);
-}
+    .poster {
+        width: 150px;
+        height: 225px;
+        object-fit: cover;
+        border-radius: 4px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 3px solid transparent;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
 
-.season-btn.active {
-    background: var(--primary-color);
-    color: #000;
-    border-color: var(--primary-color);
-    font-weight: bold;
-}
+    .poster:hover,
+    .poster.focused,
+    .poster:focus {
+        transform: scale(1.1);
+        z-index: 100;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px var(--primary-color), 0 10px 20px rgba(0, 0, 0, 0.8);
+        outline: none;
+    }
 
-/* Bottom Section (Episodes) */
-.details-bottom {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    align-items: flex-start;
-    max-width: 1400px;
-    margin: 0 auto;
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .row:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .row:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .row:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .row:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .row:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    /* Hero Section */
+    .hero {
+        height: 85vh;
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: flex-end;
+        padding-left: 60px;
+        padding-bottom: 150px;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 20rem;
+        background: linear-gradient(to top, var(--background-color), transparent);
+    }
+
+    .hero-content {
+        z-index: 10;
+        max-width: 800px;
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    .hero-title {
+        font-size: 60px;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .hero-desc {
+        font-size: 16px;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        line-height: 1.4;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+    }
+
+    .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 200px;
+        color: var(--text-color);
+        font-size: 1.2rem;
+    }
+
+    .loading img {
+        width: 50px;
+        height: 50px;
+    }
 }

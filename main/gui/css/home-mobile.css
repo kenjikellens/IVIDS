@@ -1,0 +1,42 @@
+/* Mobile/Small Tablet (< 768px) OR Portrait Mode (Width < 75% Height) */
+@media (max-width: 768px),
+(max-aspect-ratio: 3/4) {
+
+    /* Hero Section */
+    .hero {
+        height: 50vh;
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 80px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+        /* Relative sizing */
+    }
+
+    .hero-desc {
+        font-size: 1rem;
+        max-width: 100%;
+    }
+
+    /* Rows */
+    .row {
+        padding: 15px 10px;
+    }
+
+    .row-title {
+        font-size: 1.2rem;
+    }
+
+    .row-posters {
+        gap: 8px;
+        padding: 10px 0;
+    }
+
+    /* Posters */
+    .poster {
+        width: 100px;
+        height: 150px;
+    }
+}

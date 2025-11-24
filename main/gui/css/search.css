@@ -1,10 +1,127 @@
 /* Search Page Styles */
 
-.search-container {
-    padding: 120px 60px 60px 60px;
+.search-page-layout {
+    display: flex;
     min-height: 100vh;
-    background: radial-gradient(circle at top center, rgba(70, 211, 105, 0.15), transparent 60%);
+    padding-top: 80px;
+    /* Space for navbar */
+    background: radial-gradient(circle at top center, rgba(var(--primary-rgb), 0.15), transparent 60%);
     animation: fadeIn 0.6s ease-out;
+}
+
+/* Sidebar Styles */
+.filters-sidebar {
+    width: 300px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    top: 80px;
+    z-index: 90;
+}
+
+.filters-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.filter-group {
+    margin-bottom: 25px;
+}
+
+.filter-group h4 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #ddd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+}
+
+.filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-options.scrollable {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Custom Scrollbar for filters */
+.filter-options.scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filter-options.scrollable::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-options.scrollable::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ccc;
+    transition: color 0.2s;
+}
+
+.filter-checkbox:hover {
+    color: #fff;
+}
+
+.filter-checkbox input[type="checkbox"],
+.filter-checkbox input[type="radio"] {
+    accent-color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* New Filter Inputs */
+.filter-select,
+.filter-input {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Main Content Styles */
+.search-content {
+    flex: 1;
+    margin-left: 300px;
+    /* Width of sidebar */
+    padding: 40px;
+}
+
+.search-box-container {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto 40px;
 }
 
 .search-box {
@@ -12,19 +129,17 @@
     justify-content: center;
     align-items: center;
     gap: 15px;
-    margin-bottom: 60px;
     position: relative;
-    z-index: 100;
+    z-index: 80;
 }
 
 #search-input {
     width: 100%;
-    max-width: 600px;
-    padding: 20px 30px;
-    font-size: 24px;
+    padding: 15px 25px;
+    font-size: 20px;
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    border-radius: 12px;
     color: #fff;
     backdrop-filter: blur(12px);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -36,18 +151,195 @@
     outline: none;
     border-color: var(--primary-color);
     background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 0 30px rgba(70, 211, 105, 0.25), 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.25), 0 10px 30px rgba(0, 0, 0, 0.5);
     transform: translateY(-2px);
 }
 
 #search-btn {
-    padding: 20px 40px;
-    font-size: 20px;
+    padding: 15px 30px;
+    font-size: 18px;
     font-weight: 600;
     background: var(--primary-color);
     color: #000;
     border: none;
-    border-radius: 16px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#search-btn:hover,
+#search-btn:focus,
+#search-btn.focused {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 12px;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover,
+.icon-btn:focus {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.icon-btn .icon {
+    font-size: 24px;
+    color: #fff;
+}
+
+/* Recent Searches */
+.recent-searches {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 0 0 12px 12px;
+    margin-top: 5px;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.recent-searches.hidden {
+    display: none;
+}
+
+.recent-search-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ccc;
+    transition: background 0.2s;
+}
+
+.recent-search-item:hover,
+.recent-search-item:focus {
+    background: #333;
+    color: #fff;
+    outline: none;
+}
+
+.recent-search-item .icon {
+    opacity: 0.5;
+}
+
+/* Search Results Grid */
+#search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+}
+
+.poster {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 3px solid transparent;
+    cursor: pointer;
+    position: relative;
+}
+
+.poster:hover,
+.poster.focused,
+.poster:focus {
+    transform: scale(1.05);
+    z-index: 100;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-color), 0 10px 20px rgba(0, 0, 0, 0.8);
+    outline: none;
+}
+
+/* List View Styles */
+#search-results.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#search-results.list-view .poster {
+    width: 100px;
+    aspect-ratio: 2/3;
+    margin-right: 20px;
+    float: left;
+    /* Simple way to have text wrap or sit beside */
+}
+
+/* Better List View Item Container */
+.list-item {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: background 0.2s;
+}
+
+.list-item:hover,
+.list-item:focus-within {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.list-item .poster {
+    width: 120px;
+    border-radius: 0;
+    margin: 0;
+}
+
+.list-item-details {
+    padding: 20px;
+    flex: 1;
+}
+
+.list-item-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.list-item-meta {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.list-item-overview {
+    font-size: 14px;
+    color: #ccc;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Watched Indicator */
+.watched-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--primary-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid var(--primary-color);
+    z-index: 10;
 }

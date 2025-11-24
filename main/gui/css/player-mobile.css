@@ -1,0 +1,33 @@
+/* Mobile/Small Tablet (< 768px) OR Portrait Mode (Width < 75% Height) */
+@media (max-width: 768px),
+(max-aspect-ratio: 3/4) {
+
+    .video-container {
+        height: 56.25vw;
+        /* 16:9 Aspect Ratio based on width */
+        max-height: 100vh;
+    }
+
+    .episodes-list {
+        margin-top: 20px;
+        padding: 0 15px;
+    }
+
+    .episodes-title {
+        font-size: 1.5rem;
+    }
+
+    .episode-item {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .episode-image {
+        width: 100%;
+        height: 150px;
+    }
+
+    .episode-name {
+        font-size: 1.2rem;
+    }
+}

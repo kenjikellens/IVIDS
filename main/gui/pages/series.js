@@ -1,35 +1,56 @@
 import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
+import { HeroSlider } from '../js/hero-slider.js';
 
 export async function init() {
-    const [popular] = await Promise.all([
-        Api.fetchPopularTV()
+    const [
+        popular, actionAdventure, animation, crime, documentary, drama, family, kids, mystery, reality, scifiFantasy, soap, warPolitics, western, anime
+    ] = await Promise.all([
+        Api.fetchPopularTV(),
+        Api.fetchActionAdventureSeries(),
+        Api.fetchAnimationSeries(),
+        Api.fetchCrimeSeries(),
+        Api.fetchDocumentarySeries(),
+        Api.fetchDramaSeries(),
+        Api.fetchFamilySeries(),
+        Api.fetchKidsSeries(),
+        Api.fetchMysterySeries(),
+        Api.fetchRealitySeries(),
+        Api.fetchSciFiFantasySeries(),
+        Api.fetchSoapSeries(),
+        Api.fetchWarPoliticsSeries(),
+        Api.fetchWesternSeries(),
+        Api.fetchAnimeSeries()
     ]);
 
     if (popular && popular.length > 0) {
-        setupHero(popular[0]);
-        setupRow('popular-series-row', popular.slice(1));
-        setupRow('top-rated-series-row', popular.slice(5).reverse()); // Mocking a second row for now
-    }
-}
-
-function setupHero(item) {
-    const hero = document.getElementById('hero-series');
-    const title = document.getElementById('hero-title-series');
-    const desc = document.getElementById('hero-desc-series');
-    const playBtn = document.getElementById('hero-play-series');
-    const detailsBtn = document.getElementById('hero-details-series');
-
-    title.textContent = item.title || item.name;
-    desc.textContent = truncate(item.overview, 150);
-
-    if (item.backdrop_path) {
-        hero.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url(${Api.getImageUrl(item.backdrop_path)})`;
+        new HeroSlider(popular.slice(0, 5), {
+            containerId: 'hero-series',
+            titleId: 'hero-title-series',
+            descId: 'hero-desc-series',
+            playBtnId: 'hero-play-series',
+            detailsBtnId: 'hero-details-series'
+        });
+        setupRow('popular-series-row', popular.slice(5));
     }
 
-    playBtn.onclick = () => Router.loadPage('player', { id: item.id, type: 'tv' });
-    detailsBtn.onclick = () => Router.loadPage('details', { id: item.id, type: 'tv' });
+    if (actionAdventure) setupRow('action-adventure-series-row', actionAdventure);
+    if (animation) setupRow('animation-series-row', animation);
+    if (crime) setupRow('crime-series-row', crime);
+    if (documentary) setupRow('documentary-series-row', documentary);
+    if (drama) setupRow('drama-series-row', drama);
+    if (family) setupRow('family-series-row', family);
+    if (kids) setupRow('kids-series-row', kids);
+    if (mystery) setupRow('mystery-series-row', mystery);
+    if (reality) setupRow('reality-series-row', reality);
+    if (scifiFantasy) setupRow('scifi-fantasy-series-row', scifiFantasy);
+    if (soap) setupRow('soap-series-row', soap);
+    if (warPolitics) setupRow('war-politics-series-row', warPolitics);
+    if (western) setupRow('western-series-row', western);
+    if (anime) setupRow('anime-series-row', anime);
 }
+
+// Removed setupHero
 
 function setupRow(elementId, items) {
     const rowPosters = document.getElementById(elementId);
@@ -43,24 +64,6 @@ function setupRow(elementId, items) {
         container.className = 'row-container';
         rowPosters.parentNode.insertBefore(container, rowPosters);
         container.appendChild(rowPosters);
-
-        // Add Buttons
-        const leftBtn = document.createElement('button');
-        leftBtn.className = 'handle handle-left focusable';
-        leftBtn.innerHTML = '&#8249;';
-        leftBtn.onclick = () => {
-            rowPosters.scrollBy({ left: -500, behavior: 'smooth' });
-        };
-
-        const rightBtn = document.createElement('button');
-        rightBtn.className = 'handle handle-right focusable';
-        rightBtn.innerHTML = '&#8250;';
-        rightBtn.onclick = () => {
-            rowPosters.scrollBy({ left: 500, behavior: 'smooth' });
-        };
-
-        container.prepend(leftBtn);
-        container.appendChild(rightBtn);
     }
 
     items.forEach(item => {
