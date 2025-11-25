@@ -1,0 +1,312 @@
+<div class="settings-container">
+    <div class="settings-header">
+        <h1 data-i18n="settings.title">Settings</h1>
+        <p data-i18n="settings.subtitle">Configure your IVIDS experience</p>
+    </div>
+
+    <!-- Appearance Settings -->
+    <div class="settings-section">
+        <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 7.02944 12 3ZM12 3V12M12 3C14.5013 3 16.7386 4.21128 18.1792 6.08296"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span data-i18n="settings.appearance">Appearance</span>
+        </h2>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.language">Language</div>
+                <div class="setting-description" data-i18n="settings.languageDesc">Choose your preferred language</div>
+            </div>
+            <div class="setting-control">
+                <select id="language-select" class="focusable">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="nl">Nederlands</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="setting-item color-setting">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.accentColor">Accent Color</div>
+                <div class="setting-description" data-i18n="settings.accentColorDesc">Choose your preferred theme color
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="preset-color focusable active" data-color="#46d369" style="background: #46d369;"
+                    title="Green"></div>
+                <div class="preset-color focusable" data-color="#e50914" style="background: #e50914;" title="Red"></div>
+                <div class="preset-color focusable" data-color="#00d4ff" style="background: #00d4ff;" title="Cyan">
+                </div>
+                <div class="preset-color focusable" data-color="#9146ff" style="background: #9146ff;" title="Purple">
+                </div>
+                <div class="preset-color focusable" data-color="#ff6b35" style="background: #ff6b35;" title="Orange">
+                </div>
+                <div class="preset-color focusable" data-color="#ffd700" style="background: #ffd700;" title="Gold">
+                </div>
+                <button class="reset-color-btn focusable" id="reset-theme-btn" title="Reset to Default Green">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        stroke="currentColor" stroke-width="2.5">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M3 3v5h5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Save Notification -->
+<div class="save-notification" id="save-notification">
+    ✓ Settings saved!
+</div>
+
+<style>
+    .settings-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 100px 60px 60px 60px;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .settings-header {
+        margin-bottom: 40px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 20px;
+    }
+
+    .settings-header h1 {
+        font-size: 42px;
+        color: var(--primary-color);
+        text-shadow: 0 0 20px rgba(var(--primary-color-rgb), 0.3);
+        margin-bottom: 10px;
+    }
+
+    .settings-header p {
+        font-size: 16px;
+        color: #999;
+    }
+
+    .settings-section {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .settings-section:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 25px rgba(var(--primary-color-rgb), 0.15);
+    }
+
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-icon {
+        width: 28px;
+        height: 28px;
+        color: var(--primary-color);
+    }
+
+    .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .setting-item.color-setting {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px 0;
+    }
+
+    .setting-item:last-child {
+        border-bottom: none;
+    }
+
+    .setting-info {
+        flex: 1;
+    }
+
+    .setting-label {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+
+    .setting-description {
+        font-size: 14px;
+        color: #888;
+    }
+
+    .setting-control {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Select Dropdown */
+    select {
+        background: rgba(0, 0, 0, 0.4);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        min-width: 200px;
+        transition: all 0.3s ease;
+    }
+
+    select:hover,
+    select:focus,
+    select.focused {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 0.2);
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    select option {
+        background-color: #000;
+        color: #fff;
+    }
+
+    /* Color Row for TV - Horizontal Layout */
+    .color-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .preset-color {
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        cursor: pointer;
+        border: 4px solid transparent;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        position: relative;
+    }
+
+    .preset-color:hover,
+    .preset-color.focused {
+        border-color: #fff;
+        transform: scale(1.15);
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .preset-color.active {
+        border-color: #fff;
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .preset-color.active::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 32px;
+        color: #fff;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        font-weight: bold;
+    }
+
+    /* Reset Color Button */
+    .reset-color-btn {
+        width: 70px;
+        height: 70px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 4px solid var(--border-color);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .reset-color-btn:hover,
+    .reset-color-btn.focused {
+        background: rgba(255, 100, 100, 0.2);
+        border-color: #ff6464;
+        transform: scale(1.15);
+        box-shadow: 0 6px 20px rgba(255, 100, 100, 0.4);
+    }
+
+    .reset-color-btn svg {
+        transition: transform 0.5s ease;
+    }
+
+    .reset-color-btn:hover svg,
+    .reset-color-btn.focused svg {
+        transform: rotate(-360deg);
+    }
+
+    /* Save Notification */
+    .save-notification {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: var(--primary-color);
+        color: #000;
+        padding: 15px 25px;
+        border-radius: 8px;
+        font-weight: bold;
+        box-shadow: 0 5px 20px rgba(var(--primary-color-rgb), 0.4);
+        animation: slideIn 0.3s ease-out;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: 10000;
+    }
+
+    .save-notification.show {
+        opacity: 1;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+</style>
