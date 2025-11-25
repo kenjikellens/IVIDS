@@ -1,0 +1,70 @@
+<div class="search-page-layout">
+    <div class="filters-sidebar">
+        <h3>Filters</h3>
+
+        <div class="filter-group">
+            <h4>Sort By</h4>
+            <div class="filter-options">
+                <select id="sort-by" class="focusable filter-select">
+                    <option value="popularity.desc">Popularity</option>
+                    <option value="vote_average.desc">Top Rated</option>
+                    <option value="primary_release_date.desc">Newest</option>
+                    <option value="vote_count.desc">Most Voted</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>Year</h4>
+            <div class="filter-options">
+                <input type="number" id="year-filter" class="focusable filter-input" placeholder="e.g. 2023" min="1900"
+                    max="2099">
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>Type</h4>
+            <div class="filter-options">
+                <label class="filter-checkbox">
+                    <input type="radio" name="media-type" value="movie" checked> Movie
+                </label>
+                <label class="filter-checkbox">
+                    <input type="radio" name="media-type" value="tv"> Series
+                </label>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>Genres</h4>
+            <div id="genre-filters" class="filter-options scrollable">
+                <!-- Genres injected here -->
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>Age Rating</h4>
+            <div id="cert-filters" class="filter-options">
+                <!-- Certifications injected here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="search-content">
+        <div class="search-box-container">
+            <div class="search-box">
+                <input type="text" id="search-input" class="focusable" placeholder="Search for movies or series..."
+                    data-i18n="search.placeholder">
+                <button id="search-btn" class="focusable" data-i18n="search.button">Search</button>
+                <button id="view-toggle-btn" class="focusable icon-btn" title="Toggle View">
+                    <span class="icon">⊞</span>
+                </button>
+            </div>
+            <div id="recent-searches" class="recent-searches hidden">
+                <!-- Recent searches injected here -->
+            </div>
+        </div>
+        <div id="search-results" class="search-results">
+            <!-- Results injected here -->
+        </div>
+    </div>
+</div>

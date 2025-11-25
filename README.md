@@ -15,53 +15,23 @@ It features a customizable UI with language and accent color settings, and a mod
 
 ## Overview of Pages
 
-Here is what you can find in the application:
+### 📚 **Detailed Page Guides**
 
-### 🏠 **Home**
-The landing page featuring a dynamic hero slider and curated rows of content:
-- **Trending & Popular**: See what's hot right now.
-- **New Releases**: Fresh content from 2025.
-- **Studios**: Dedicated rows for Disney, Marvel, Pixar, Studio Ghibli, and Netflix Originals.
-- **Regional**: Bollywood, Korean Content, and Anime.
-- **Genres**: Horror, Sci-Fi, Thriller, Romance, and more.
+For a comprehensive breakdown of every page, its structure, and functionality, please refer to the following guides:
 
-### 🎬 **Movies**
-A dedicated section for film enthusiasts:
-- Browse movies by specific genres (Action, Comedy, Drama, etc.).
-- Filter by Top Rated or Popularity.
+-   **[📖 Full Page Guide](PAGES_GUIDE.md)**: Detailed explanation of Home, Movies, Series, Search, Details, Player, and Playlists.
+-   **[⚙️ Settings Guide](SETTINGS_README.md)**: In-depth documentation of the Settings system, including language and theming options.
 
-### 📺 **Series**
-A dedicated section for TV show bingers:
-- Browse TV shows by genre (Animation, Crime, Reality, Soap, etc.).
-- Find new series to watch.
+### Quick Overview
 
-### 🔍 **Search**
-Find exactly what you're looking for:
-- Search by title for movies and TV shows.
-- **Note**: This is the only place where 18+ content can be found (if explicitly searched).
-
-### 📄 **Details**
-Comprehensive information about any title:
-- **Overview**: Plot summary, release year, and genres.
-- **Ratings**: Content rating (e.g., PG-13, R, TV-MA) displayed with specific styling.
-- **Seasons & Episodes**: For TV shows, browse and select specific episodes.
-- **Actions**: Play, Add to Playlist, or Resume watching.
-
-### ⏯️ **Player**
-The video playback interface:
-- Stream the selected movie or episode.
-- Supports full-screen viewing.
-
-### 💾 **Playlists**
-Manage your personal collections:
-- Create new playlists (e.g., "Weekend Watch", "Favorites").
-- Add or remove items from your playlists.
-
-### ⚙️ **Settings**
-Customize your experience:
-- **Language**: Change the interface language (English, Spanish, French, German, etc.).
-- **Appearance**: Toggle Light/Dark mode and choose a custom accent color.
-- **Reset**: Clear local storage or reset settings to default.
+-   **🏠 Home**: Landing page with trending content and curated rows.
+-   **🎬 Movies**: Dedicated section for film enthusiasts.
+-   **📺 Series**: Dedicated section for TV show lovers.
+-   **🔍 Search**: Find content with advanced filters.
+-   **📄 Details**: Info, ratings, seasons, and playback options.
+-   **⏯️ Player**: Full-screen video playback interface.
+-   **💾 Playlists**: Manage personal collections.
+-   **⚙️ Settings**: Customize language and appearance.
 
 ## Getting Started
 
