@@ -32,7 +32,7 @@ For a comprehensive breakdown of every page, its structure, and functionality, p
 -   **⏯️ Player**: Full-screen video playback interface.
 -   **💾 Playlists**: Manage personal collections.
 -   **⚙️ Settings**: Customize language and appearance.
--   *languages:* English, Francais, Nederlands, Deutch, Espagnõl.
+-   *Languages:* English, Francais, Nederlands, Deutsch, Espagnõl.
 
 ## Getting Started
 
@@ -71,4 +71,5 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 *IVIDS is not affiliated with Netflix, TMDb, or vidsrc.to.*
+
 
