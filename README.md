@@ -1,7 +1,7 @@
 # IVIDS
 
 IVIDS is a premium web application inspired by modern streaming platforms that lets you browse, search, and stream movies and TV series using third-party APIs.
-It features a customizable UI with language and accent color settings, and a modern, responsive design.
+It features a customizable UI with language and accent color settings, and a modern design.
 
 ## Features
 
@@ -32,6 +32,7 @@ For a comprehensive breakdown of every page, its structure, and functionality, p
 -   **⏯️ Player**: Full-screen video playback interface.
 -   **💾 Playlists**: Manage personal collections.
 -   **⚙️ Settings**: Customize language and appearance.
+-   *languages:* English, Francais, Nederlands, Deutch, Espagnõl.
 
 ## Getting Started
 
@@ -70,3 +71,4 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 *IVIDS is not affiliated with Netflix, TMDb, or vidsrc.to.*
+
