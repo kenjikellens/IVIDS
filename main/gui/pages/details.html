@@ -1,0 +1,52 @@
+<div class="details-page" id="details-bg">
+    <div class="details-layout">
+        <div class="details-top">
+            <div class="details-info">
+                <h1 class="details-title" id="details-title"></h1>
+                <div id="details-genres" class="details-genres" aria-hidden="true"></div>
+                <div class="details-meta">
+                    <span id="details-date"></span>
+                    <span id="details-rating"></span>
+                </div>
+                <p class="details-overview" id="details-overview"></p>
+                <div class="details-actions">
+                    <button class="btn btn-primary focusable" id="details-play" data-i18n="details.play">Play</button>
+                    <button class="btn btn-secondary focusable" id="details-playlist"
+                        data-i18n="details.addToPlaylist">Add to Playlist</button>
+                    <button class="btn btn-secondary focusable" id="details-back" data-i18n="details.back">Back</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="details-bottom">
+            <div class="details-seasons" id="seasons-container" style="display: none;">
+                <h3 class="seasons-header" data-i18n="details.seasons">Seasons</h3>
+                <div id="seasons-list" class="seasons-list-content"></div>
+            </div>
+            <div id="details-episodes" class="episodes-list"></div>
+        </div>
+
+        <div id="recommendations-container" class="recommendations-section" style="display: none;">
+            <h3 class="recommendations-header" data-i18n="details.recommendations">You Might Also Like</h3>
+            <div id="recommendations-row" class="row-posters"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Add to Playlist Modal -->
+<div id="add-to-playlist-modal" class="modal">
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="details.addToPlaylist">Add to Playlist</h2>
+        <div id="playlist-selection-list" class="playlist-selection-list">
+            <!-- Playlists to select will be injected here -->
+        </div>
+        <div class="modal-actions">
+            <button id="add-to-playlist-cancel" class="btn-cancel focusable" data-i18n="details.cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Moved specific styles to style.css, keeping structure-critical ones here if needed, 
+       but user requested fixing style file, so I will move most to style.css */
+</style>
