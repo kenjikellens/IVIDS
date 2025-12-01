@@ -1,0 +1,30 @@
+/* Custom Cursor Styles */
+
+/* Apply custom cursor to the entire app */
+html,
+body,
+#app {
+    cursor: url('../images/cursor.svg'), auto !important;
+}
+
+/* 
+   Force all interactive elements to use the custom cursor 
+   instead of the browser's default 'pointer' (hand) cursor.
+*/
+a,
+button,
+.btn,
+.poster,
+.episode-item,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+select,
+.clickable {
+    cursor: url('../images/cursor.svg'), auto !important;
+}
+
+/* Ensure no element overrides this with 'pointer' */
+* {
+    cursor: inherit;
+}
