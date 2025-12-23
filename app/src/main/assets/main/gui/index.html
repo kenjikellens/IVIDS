@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IVIDS</title>
+    <link rel="icon" type="image/ico" href="images/icon.ico">
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/loader.css">
+    <link rel="stylesheet" href="css/splash.css">
+    <link rel="stylesheet" href="css/error.css">
+
+    <!-- Page Specific CSS (Dynamic) -->
+    <link rel="stylesheet" id="page-css" href="">
+</head>
+
+<body>
+
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1 class="splash-logo">IVIDS</h1>
+            <div class="splash-loader-container">
+                <div class="ivids-loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Confirmation Modal */ -->
+    <div id="exit-modal">
+        <div class="exit-modal-content">
+            <div class="exit-modal-title" data-i18n="exit.title">Exit Application?</div>
+            <div class="exit-modal-message" data-i18n="exit.message">Are you sure you want to exit?</div>
+            <div class="exit-modal-actions">
+                <button id="exit-btn-cancel" class="exit-btn exit-btn-cancel focusable"
+                    data-i18n="exit.cancel">Cancel</button>
+                <button id="exit-btn-confirm" class="exit-btn exit-btn-confirm focusable"
+                    data-i18n="exit.confirm">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app">
+        <!-- Navigation Bar (Loaded Dynamically) -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content Area -->
+        <div id="main-view"></div>
+    </div>
+
+    <!-- Tizen Web Device API -->
+    <script src="$WEBAPIS/webapis/webapis.js"></script>
+
+    <!-- Scripts -->
+    <script type="module" src="js/loader.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+<script>
+    // FIX voor Fetch op Android TV / file:// schema
+    const originalFetch = window.fetch;
+    window.fetch = function (url, options) {
+        if (typeof url === 'string' && (url.startsWith('lang/') || url.startsWith('pages/') || url.startsWith('components/') || url.startsWith('file:'))) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        json: () => Promise.resolve(JSON.parse(xhr.responseText)),
+                        text: () => Promise.resolve(xhr.responseText)
+                    });
+                };
+                xhr.onerror = () => reject(new Error('Local fetch failed'));
+                xhr.open('GET', url);
+                xhr.send();
+            });
+        }
+        return originalFetch(url, options);
+    };
+</script>
+
+</html>

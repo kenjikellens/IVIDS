@@ -1,0 +1,432 @@
+/* Global Styles */
+:root {
+    --background-color: #141414;
+    --text-color: #e5e5e5;
+    --primary-color: #46d369;
+    --primary-rgb: 70, 211, 105;
+    --focus-border-color: #ffffff;
+    --card-bg: #2f2f2f;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: default !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+.active-typing {
+    border-color: var(--primary-color) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+}
+
+/* App Container */
+#app {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+@media (orientation: portrait) {
+    #app {
+        flex-direction: column;
+    }
+
+    #main-view {
+        padding-top: 0 !important;
+        padding-bottom: 80px !important;
+    }
+}
+
+/* Main View (Scrollable Area) */
+#main-view {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    scroll-behavior: smooth;
+    padding-top: 0;
+    /* Hide scrollbars for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+/* Hide scrollbars for Chrome, Safari and Opera */
+#main-view::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ensure rows have height for LazyLoader even when empty */
+.row-posters {
+    min-height: 243px;
+    /* 203px poster + 40px padding */
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 2rem;
+    font-size: 1.125rem;
+    cursor: pointer;
+    margin-right: 1rem;
+    border-radius: 0.25rem;
+    /* Consistent thin border to avoid layout shifts */
+    border: 0.0625rem solid rgba(255, 255, 255, 0.2);
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover,
+.btn:focus,
+.btn.focused {
+    border-color: #fff;
+    /* Use box-shadow to achieve the "thicker" look without moving code */
+    box-shadow: 0 0 0 0.1875rem #fff;
+    outline: none;
+}
+
+.btn-primary {
+    background-color: #fff;
+    color: black;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #e6e6e6;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    /* Changed from white to transparent idle border as per user request */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary.focused {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-color: #fff;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Poster Styles */
+.poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2px;
+    transition: opacity 0.3s ease;
+    display: block;
+}
+
+
+/* Skeleton Poster */
+.skeleton-poster {
+    width: 135px;
+    height: 203px;
+    border-radius: 4px;
+    background-color: #2f2f2f;
+    position: relative;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+    /* Minimal border for spacing */
+    padding: 0;
+    cursor: pointer;
+    transition: box-shadow 0.2s, background-color 0.2s;
+}
+
+.skeleton-poster:hover,
+.skeleton-poster.focused,
+.skeleton-poster:focus {
+    z-index: 100;
+    box-shadow: 0 0 0 5px #fff;
+    background-color: #3d3d3d;
+    outline: none;
+    border-color: transparent;
+}
+
+
+.poster-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 135px;
+    height: 203px;
+    background-color: #2f2f2f;
+    border: 2px solid transparent;
+    /* Minimal border for spacing */
+    border-radius: 4px;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: box-shadow 0.2s, background-color 0.2s;
+}
+
+.poster-wrapper:hover,
+.poster-wrapper.focused,
+.poster-wrapper:focus {
+    z-index: 100;
+    box-shadow: 0 0 0 5px #fff;
+    outline: none;
+    background-color: #3d3d3d;
+    border-color: transparent;
+}
+
+/* Responsive Scaling */
+@media (max-width: 1400px) {
+
+    .poster-wrapper,
+    .skeleton-poster {
+        width: 104px;
+        height: 156px;
+    }
+
+    .row-posters {
+        min-height: 196px;
+    }
+}
+
+@media (max-width: 1000px) {
+
+    .poster-wrapper,
+    .skeleton-poster {
+        width: 86px;
+        height: 129px;
+    }
+
+    .row-posters {
+        min-height: 169px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .poster-wrapper,
+    .skeleton-poster {
+        width: 68px;
+        height: 102px;
+    }
+
+    .row-posters {
+        min-height: 142px;
+    }
+}
+
+/* Mobile Portrait Override */
+@media (orientation: portrait) {
+
+    .poster-wrapper,
+    .skeleton-poster {
+        width: 104px;
+        height: 156px;
+    }
+
+    .row-posters {
+        min-height: 196px;
+    }
+}
+
+.poster-overlay {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Watched Episode Indicator */
+.episode-item.watched {
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.episode-item.watched .episode-number {
+    color: var(--primary-color);
+}
+
+/* Error Modal moved to error.css */
+
+/* Player Controls */
+.player-controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    display: flex;
+    gap: 15px;
+}
+
+.btn-back,
+.btn-next {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.btn-back:hover,
+.btn-back:focus,
+.btn-next:hover,
+.btn-next:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+    outline: none;
+}
+
+.btn-next {
+    background-color: rgba(var(--primary-rgb), 0.2);
+    border-color: var(--primary-color);
+}
+
+.btn-next:hover,
+.btn-next:focus {
+    background-color: var(--primary-color);
+    color: black;
+}
+
+/* Screensaver Overlay */
+#screensaver-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: opacity 1s ease-in-out;
+}
+
+#screensaver-overlay.active {
+    opacity: 0.8;
+    pointer-events: auto;
+}
+
+/* Exit Confirmation Modal */
+#exit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+#exit-modal.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.exit-modal-content {
+    background-color: #222;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-width: 90%;
+    width: 400px;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#exit-modal.visible .exit-modal-content {
+    opacity: 1;
+}
+
+.exit-modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.exit-modal-message {
+    font-size: 1.1rem;
+    color: #aaa;
+    margin-bottom: 2rem;
+}
+
+.exit-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.exit-btn {
+    padding: 0.8rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.exit-btn-cancel {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.exit-btn-confirm {
+    background-color: var(--primary-color);
+    color: #000;
+}
+
+.exit-btn:hover,
+.exit-btn:focus,
+.exit-btn.focused {
+    border-color: #fff;
+    outline: none;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}

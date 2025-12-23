@@ -1,0 +1,74 @@
+<div class="profiles-container">
+    <h1 class="profiles-title" data-i18n="profiles.title">Who's watching?</h1>
+
+    <div id="profiles-grid" class="profiles-grid">
+        <!-- Profiles will be injected here -->
+    </div>
+
+</div>
+
+<!-- Create/Edit Profile Modal -->
+<div id="profile-modal" class="modal-overlay">
+    <div class="modal-content profile-modal-content">
+        <h2 id="modal-title" class="modal-title">Create Profile</h2>
+
+        <div class="modal-body">
+            <div class="input-group">
+                <label for="profile-name" data-i18n="profiles.nameLabel">Name</label>
+                <input type="text" id="profile-name" class="focusable" placeholder="Enter name" readonly
+                    data-nav-down="#color-opt-1" inputmode="none">
+            </div>
+
+            <div class="input-group">
+                <label data-i18n="profiles.colorLabel">Profile Color</label>
+                <div id="color-picker" class="color-picker">
+                    <div id="color-opt-1" class="color-option focusable" data-color="#E50914"
+                        style="background: #E50914;" data-nav-up="#profile-name" data-nav-down="#profile-pin"></div>
+                    <div id="color-opt-2" class="color-option focusable" data-color="#2B90D9"
+                        style="background: #2B90D9;" data-nav-up="#profile-name" data-nav-down="#profile-pin"></div>
+                    <div id="color-opt-3" class="color-option focusable" data-color="#3DB049"
+                        style="background: #3DB049;" data-nav-up="#profile-name" data-nav-down="#profile-pin"></div>
+                    <div id="color-opt-4" class="color-option focusable" data-color="#F5A623"
+                        style="background: #F5A623;" data-nav-up="#profile-name" data-nav-down="#profile-pin"></div>
+                    <div id="color-opt-5" class="color-option focusable" data-color="#A633CC"
+                        style="background: #A633CC;" data-nav-up="#profile-name" data-nav-down="#profile-pin"></div>
+                </div>
+            </div>
+
+            <div class="input-group" id="pin-input-group">
+                <label for="profile-pin" data-i18n="profiles.pinLabel">PIN (Optional)</label>
+                <input type="password" id="profile-pin" class="focusable" placeholder="4 digits" maxlength="4" readonly
+                    data-nav-up="#color-opt-3" data-nav-down="#save-profile-btn" inputmode="none">
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button id="delete-profile-btn" class="btn btn-danger focusable" data-i18n="profiles.delete"
+                data-nav-up="#profile-pin" data-nav-right="#cancel-profile-btn" style="display: none;">Delete</button>
+            <button id="cancel-profile-btn" class="btn btn-secondary focusable" data-i18n="profiles.cancel"
+                data-nav-up="#profile-pin" data-nav-left="#delete-profile-btn"
+                data-nav-right="#save-profile-btn">Cancel</button>
+            <button id="save-profile-btn" class="btn btn-primary focusable" data-i18n="profiles.save"
+                data-nav-up="#profile-pin" data-nav-left="#cancel-profile-btn">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- PIN Entry Modal -->
+<div id="pin-modal" class="modal-overlay">
+    <div class="modal-content pin-modal-content">
+        <h2 id="pin-modal-title" class="modal-title">Enter PIN</h2>
+        <p id="pin-message" class="pin-message"></p>
+
+        <div class="pin-digits">
+            <input type="number" id="pin-digit-1" class="pin-digit focusable" maxlength="1" inputmode="none">
+            <input type="number" id="pin-digit-2" class="pin-digit focusable" maxlength="1" inputmode="none">
+            <input type="number" id="pin-digit-3" class="pin-digit focusable" maxlength="1" inputmode="none">
+            <input type="number" id="pin-digit-4" class="pin-digit focusable" maxlength="1" inputmode="none">
+        </div>
+
+        <div class="modal-footer">
+            <button id="cancel-pin-btn" class="btn btn-secondary focusable" data-i18n="profiles.cancel">Cancel</button>
+        </div>
+    </div>
+</div>

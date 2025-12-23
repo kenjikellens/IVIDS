@@ -1,0 +1,493 @@
+.profiles-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+    padding: 2%;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+#sidebar-container {
+    display: none !important;
+}
+
+.profiles-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 500;
+    margin-bottom: 3vh;
+    text-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.5);
+    animation: fadeInDown 0.8s ease-out;
+    text-align: center;
+}
+
+.profiles-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2.5rem;
+    max-width: 90%;
+    margin-bottom: 4vh;
+    align-items: flex-start;
+}
+
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+    flex: 0 0 15%;
+    min-width: 9.375rem;
+    /* ~150px converted to rem */
+    padding-bottom: 1rem;
+}
+
+.profile-card.focusable:focus,
+.profile-card:focus,
+.profile-card.focused,
+.profile-card:hover {
+    outline: none;
+}
+
+.profile-avatar-container {
+    position: relative;
+    width: clamp(6.25rem, 12vw, 11.25rem);
+    height: clamp(6.25rem, 12vw, 11.25rem);
+    border-radius: 8%;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.5);
+    border: 0.25rem solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profile-card.focusable:focus .profile-avatar-container,
+.profile-card:focus .profile-avatar-container,
+.profile-card.focused .profile-avatar-container,
+.profile-card:hover .profile-avatar-container {
+    border-color: #fff;
+    box-shadow: 0 0 0 0.3rem #fff;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    /* Dynamic Font Size */
+    font-weight: bold;
+    color: #fff;
+    background: #555;
+}
+
+.profile-name {
+    font-size: 1.5rem;
+    color: #808080;
+    transition: color 0.3s;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.5rem;
+}
+
+.profile-card.focusable:focus .profile-name,
+.profile-card:focus .profile-name,
+.profile-card.focused .profile-name,
+.profile-card:hover .profile-name {
+    color: #fff;
+}
+
+/* Edit Mode Overlays */
+.profile-edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.edit-mode .profile-edit-overlay {
+    opacity: 1;
+}
+
+.edit-icon {
+    font-size: 2.5rem;
+    color: #fff;
+    border: 0.125rem solid #fff;
+    border-radius: 50%;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(0.5rem);
+}
+
+.modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: #181818;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border-radius: 0.75rem;
+    width: 90%;
+    max-width: 80%;
+    /* Preferred % for container width */
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 1);
+    border: 0.0625rem solid rgba(255, 255, 255, 0.1);
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) #181818;
+}
+
+.modal-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+    color: #b3b3b3;
+}
+
+.input-group input {
+    background: #333;
+    border: 0.0625rem solid transparent;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    color: #fff;
+    font-size: 1.2rem;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color, #E50914);
+    outline: none;
+}
+
+.color-picker {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* In case many colors are added */
+}
+
+.color-option {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 0.1875rem solid rgba(255, 255, 255, 0.1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-option.focusable:focus,
+.color-option.focused,
+.color-option:hover {
+    border-color: #fff;
+    outline: none;
+    box-shadow: 0 0 1rem rgba(255, 255, 255, 0.4);
+    z-index: 2;
+}
+
+.color-option.selected {
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.color-option.selected::after {
+    content: '\2713';
+    /* Unicode Checkmark */
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.5);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    /* Better centering for TV/Remote use */
+    gap: 1.5rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+    width: 100%;
+    /* Fill container */
+}
+
+.btn {
+    padding: 0.8rem 2.5rem;
+    font-size: 1.2rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+    transition: filter 0.2s, box-shadow 0.2s;
+}
+
+.btn.focusable:focus,
+.btn.focused,
+.btn:hover {
+    outline: 0.125rem solid #fff;
+}
+
+.btn-primary {
+    background: rgba(255, 255, 255, 0.5);
+    /* Exactly 50% opacity white */
+    color: #000;
+}
+
+.btn-primary:focus,
+.btn-primary.focused {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 1.25rem rgba(255, 255, 255, 0.4);
+    border-color: #fff;
+}
+
+.btn-secondary {
+    background: #333;
+    color: #fff;
+}
+
+.btn-danger {
+    background: #e50914;
+    color: #fff;
+}
+
+.btn-danger:focus,
+.btn-danger.focused {
+    background: #f40b17;
+    box-shadow: 0 0 1.25rem rgba(229, 9, 20, 0.5);
+    border-color: #fff;
+}
+
+/* PIN Modal */
+.pin-inputs {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.pin-digit {
+    width: 4rem;
+    height: 5rem;
+    background: #333;
+    border: 0.125rem solid #444;
+    border-radius: 0.5rem;
+    font-size: 2.5rem;
+    text-align: center;
+    color: #fff;
+}
+
+.pin-digit.focusable:focus,
+.pin-digit:focus,
+.pin-digit.focused {
+    border-color: var(--primary-color, #E50914);
+    outline: none;
+}
+
+.pin-message {
+    text-align: center;
+    color: #cc3333;
+    height: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Profile Management Controls */
+.profile-manage-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Ensure they stay vertically centered despite different sizes */
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    width: 100%;
+}
+
+.profile-card.focusable:focus .profile-manage-controls,
+.profile-card.focused .profile-manage-controls,
+.profile-card:hover .profile-manage-controls {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.manage-btn {
+    width: 3.5rem;
+    /* Larger Edit button */
+    height: 3.5rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(42, 42, 42, 0.8);
+    border: 0.125rem solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    backdrop-filter: blur(0.25rem);
+    padding: 0;
+}
+
+.move-left-btn,
+.move-right-btn {
+    width: 2.8rem;
+    /* Smaller Move buttons */
+    height: 2.8rem;
+}
+
+.manage-btn img {
+    width: 45%;
+    /* Relative size to parent */
+    height: 45%;
+    object-fit: contain;
+    opacity: 0.9;
+}
+
+.manage-btn.focusable:focus,
+.manage-btn.focused,
+.manage-btn:hover {
+    border-color: var(--primary-color, #fff);
+    background: var(--primary-color, #fff);
+    box-shadow: 0 0 1rem rgba(var(--primary-rgb), 0.4);
+    outline: none;
+}
+
+.manage-btn.focusable:focus img,
+.manage-btn.focused img,
+.manage-btn:hover img {
+    filter: invert(0);
+    opacity: 1;
+}
+
+.move-left-btn img {
+    transform: rotate(180deg);
+}
+
+/* Portrait Responsiveness */
+@media (orientation: portrait) {
+    .profiles-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem;
+        max-width: 95%;
+    }
+
+    .profile-card {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .profile-avatar-container {
+        width: 35vw;
+        height: 35vw;
+    }
+
+    .profile-avatar {
+        font-size: 15vw;
+        /* Even more dynamic in portrait */
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 2rem 1.5rem;
+    }
+
+    .profile-manage-controls {
+        gap: 1rem;
+    }
+
+    .manage-btn {
+        width: 3rem;
+        height: 3rem;
+        padding: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) and (orientation: portrait) {
+    .profiles-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .profile-avatar-container {
+        width: 40vw;
+        height: 40vw;
+    }
+}

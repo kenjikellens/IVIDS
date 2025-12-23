@@ -1,0 +1,69 @@
+<div class="settings-container">
+    <div class="settings-header">
+        <h1 data-i18n="settings.title">Settings</h1>
+        <p data-i18n="settings.subtitle">Configure your IVIDS experience</p>
+    </div>
+
+    <!-- Appearance Settings -->
+    <div class="settings-section">
+        <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 7.02944 12 3ZM12 3V12M12 3C14.5013 3 16.7386 4.21128 18.1792 6.08296"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span data-i18n="settings.appearance">Appearance</span>
+        </h2>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.language">Language</div>
+                <div class="setting-description" data-i18n="settings.languageDesc">Choose your preferred language</div>
+            </div>
+            <div class="setting-control language-selector">
+                <button id="prev-lang-btn" class="square-nav-btn focusable" title="Previous">
+                    <span class="nav-icon prev"></span>
+                </button>
+                <span id="current-language-text" class="language-text">Loading...</span>
+                <button id="next-lang-btn" class="square-nav-btn focusable" title="Next">
+                    <span class="nav-icon next"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="setting-item color-setting">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.accentColor">Accent Color</div>
+                <div class="setting-description" data-i18n="settings.accentColorDesc">Choose your preferred theme color
+                </div>
+            </div>
+
+            <!-- Landscape Mode: Grid of Colors -->
+            <div class="color-row landscape-only" id="landscape-color-container">
+                <!-- Colors will be injected here by JS -->
+            </div>
+
+            <!-- Portrait Mode: Trigger Button -->
+            <div class="portrait-color-trigger portrait-only focusable" id="portrait-color-trigger" tabindex="0">
+                <div class="trigger-preview" id="trigger-color-preview"></div>
+                <div class="trigger-icon"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Color Selection Modal (Portrait) -->
+<div class="color-modal-overlay" id="color-modal">
+    <div class="color-modal-content">
+        <h3 data-i18n="settings.selectColor">Select Color</h3>
+        <div class="color-row modal-colors" id="modal-color-container">
+            <!-- Colors will be injected here by JS -->
+        </div>
+        <button class="modal-close-btn focusable" id="modal-close-btn" data-i18n="common.close">Close</button>
+    </div>
+</div>
+
+<!-- Save Notification -->
+<div class="save-notification" id="save-notification">
+    ✓ Settings saved!
+</div>

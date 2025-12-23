@@ -1,0 +1,576 @@
+/* Details Page Styles - Flexible TV/Phone First */
+
+.details-page {
+    min-height: 100vh;
+    height: auto;
+    background-color: var(--background-color);
+    position: relative;
+    padding-top: 10vh;
+    padding-bottom: 5vh;
+    box-sizing: border-box;
+}
+
+/* Remove Background Overlay and Fade */
+.details-page::after,
+.details-page::before {
+    display: none;
+}
+
+.details-layout {
+    position: relative;
+    z-index: 10;
+    max-width: 95vw;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+}
+
+.details-top {
+    display: flex;
+    gap: 4vw;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2vh;
+}
+
+.details-info {
+    flex: 1;
+    max-width: 60%;
+    padding-top: 2vh;
+    padding-left: 3vw;
+}
+
+.details-hero-poster {
+    width: 19vw;
+    height: auto;
+    aspect-ratio: 2/3;
+    border-radius: 1.5vh;
+    box-shadow: 0 1vh 4vh rgba(0, 0, 0, 0.6);
+    border: 0.3vh solid rgba(255, 255, 255, 0.1);
+    object-fit: cover;
+    margin-right: 4vw;
+}
+
+.details-title {
+    font-size: 4vw;
+    line-height: 1.2;
+    margin-bottom: 2vh;
+    font-weight: 800;
+    text-shadow: 0 0.2vh 0.5vh rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.details-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5vw;
+    margin-bottom: 3vh;
+    color: #aaa;
+    font-size: 1.5vw;
+}
+
+.date-box {
+    background: var(--primary-color);
+    color: #000;
+    padding: 0.5vh 1vw;
+    border-radius: 0.8vh;
+    font-weight: 800;
+    font-size: 1.2vw;
+}
+
+.rating-chip {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5vh 1vw;
+    border-radius: 0.8vh;
+    font-weight: 700;
+    font-size: 1.2vw;
+    color: #fff;
+    border: 0.2vh solid rgba(255, 255, 255, 0.2);
+}
+
+.rating-chip.rating-R,
+.rating-chip.rating-TV-MA {
+    background-color: #ff4500;
+    border-color: #ff4500;
+    color: #fff;
+}
+
+.details-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1vw;
+    margin-bottom: 3vh;
+}
+
+.genre-chip {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.8vh 1.5vw;
+    border-radius: 2vh;
+    font-size: 1.1vw;
+    backdrop-filter: blur(1vh);
+    border: 0.2vh solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.details-overview {
+    font-size: 1.4vw;
+    line-height: 1.6;
+    color: #ddd;
+    margin-bottom: 4vh;
+    max-width: 90%;
+}
+
+.details-actions {
+    display: flex;
+    gap: 0.8vw;
+}
+
+/* Page specific buttons */
+.details-actions .btn {
+    border-color: transparent;
+    height: 7vh;
+    font-size: 1.3vw;
+    padding: 0 2.5vw;
+    border-radius: 1.2vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#details-play {
+    background-color: rgba(var(--primary-rgb), 0.25) !important;
+    color: #fff !important;
+    font-weight: 800 !important;
+}
+
+#details-playlist,
+#details-back {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+.details-actions .btn:hover,
+.details-actions .btn.focused {
+    border-color: #fff;
+    box-shadow: 0 0 0 0.3vh #fff;
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+/* Bottom Section */
+.details-bottom {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 3vw;
+    align-items: flex-start;
+}
+
+/* Seasons List Sidebar */
+.details-seasons {
+    width: 20vw;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2vh 1.5vw;
+    border-radius: 1.5vh;
+    border: 0.2vh solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(1vh);
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.seasons-header {
+    font-size: 1.8vw;
+    margin-bottom: 2vh;
+    border-bottom: 0.2vh solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1vh;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.seasons-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.season-btn {
+    background: transparent;
+    border: 0.2vh solid rgba(255, 255, 255, 0.15);
+    color: #ccc;
+    padding: 1.5vh 1.5vw;
+    text-align: left;
+    border-radius: 1vh;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.2vw;
+    font-weight: 500;
+}
+
+.season-btn:hover,
+.season-btn.focused {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+    color: #fff;
+}
+
+.season-btn.active {
+    background: var(--primary-color);
+    color: #000;
+    border-color: var(--primary-color);
+    font-weight: 800;
+}
+
+/* Episodes List */
+.episodes-list {
+    flex: 1;
+    min-width: 0;
+    padding-left: 2vw;
+}
+
+.episodes-title {
+    font-size: 2.2vw;
+    margin-bottom: 3vh;
+    color: #fff;
+    border-bottom: 0.2vh solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1.5vh;
+    font-weight: 700;
+}
+
+.episode-item {
+    display: flex;
+    gap: 2vw;
+    padding: 2vh;
+    margin-bottom: 2vh;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 1.5vh;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 0.3vh solid transparent;
+}
+
+.episode-item:hover,
+.episode-item.focused {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
+}
+
+.episode-image {
+    width: 18vw;
+    height: 10.125vw;
+    /* 16:9 aspect ratio */
+    background-size: cover;
+    background-position: center;
+    border-radius: 1vh;
+    flex-shrink: 0;
+    background-color: #000;
+    border: 0.1vh solid rgba(255, 255, 255, 0.1);
+}
+
+.episode-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.episode-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1vw;
+    margin-bottom: 1vh;
+}
+
+.episode-number {
+    font-size: 1.5vw;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.episode-name {
+    font-size: 1.5vw;
+    font-weight: 700;
+    color: #fff;
+}
+
+.episode-overview {
+    font-size: 1.1vw;
+    color: #aaa;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Playlist Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(1vh);
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    padding: 4vh 4vw;
+    border-radius: 2vh;
+    width: 40vw;
+    max-width: 90%;
+    text-align: center;
+    border: 0.2vh solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4vh 10vh rgba(0, 0, 0, 0.5);
+}
+
+.modal-title {
+    margin-top: 0;
+    margin-bottom: 3vh;
+    color: white;
+    font-size: 2vw;
+    font-weight: 700;
+}
+
+.playlist-selection-list {
+    max-height: 40vh;
+    overflow-y: auto;
+    margin-bottom: 3vh;
+    text-align: left;
+}
+
+.playlist-option {
+    padding: 2vh 2vw;
+    border-bottom: 0.1vh solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: #ccc;
+    font-size: 1.3vw;
+    border-radius: 1vh;
+}
+
+.playlist-option:hover,
+.playlist-option:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    outline: none;
+}
+
+.recommendations-header {
+    font-size: 2.2vw;
+    font-weight: 800;
+    margin-bottom: 3vh;
+    padding-bottom: 1.5vh;
+    color: #fff;
+    border-bottom: 0.2vh solid rgba(255, 255, 255, 0.15);
+    text-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.5);
+}
+
+.row-posters {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 2vw;
+    padding: 2vh 0.5vw;
+    height: 35vh;
+    /* Enough for poster + scaling */
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.row-posters .poster {
+    width: 12vw;
+    min-width: 12vw;
+    height: 18vw;
+    /* 2:3 ratio */
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    object-fit: cover;
+    border-radius: 1vh;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 1vh 3vh rgba(0, 0, 0, 0.4);
+    border: 0.4vh solid transparent;
+    box-sizing: border-box;
+}
+
+.row-posters .poster:hover,
+.row-posters .poster:focus {
+    border-color: #fff;
+    outline: none;
+    z-index: 10;
+    box-shadow: 0 2vh 5vh rgba(0, 0, 0, 0.6);
+}
+
+/* Portrait / Mobile Overrides */
+@media (orientation: portrait) {
+    .details-page {
+        padding-top: 5vh;
+        padding-bottom: 10vh;
+        /* Space for bottom nav or just breathing room */
+    }
+
+    .details-layout {
+        padding: 0 4vw;
+        gap: 2vh;
+        max-width: 100vw;
+    }
+
+    .details-top {
+        flex-direction: column;
+        gap: 3vh;
+        align-items: center;
+    }
+
+    .details-info {
+        max-width: 100%;
+        padding-top: 0;
+        padding-left: 0;
+        order: 2;
+        text-align: center;
+        width: 100%;
+    }
+
+
+    .details-hero-poster {
+        width: 50vw;
+        margin-bottom: 2vh;
+        margin-right: 0;
+        order: 1;
+    }
+
+    .details-title {
+        font-size: 7vw;
+        margin-bottom: 1.5vh;
+    }
+
+    .details-meta {
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 3.5vw;
+        gap: 3vw;
+    }
+
+
+    .date-box {
+        padding: 1vh 2vw;
+        border-radius: 1vh;
+        font-size: 3vw;
+    }
+
+    .rating-chip {
+        padding: 1vh 2vw;
+        border-radius: 1vh;
+        font-size: 3vw;
+    }
+
+    .details-genres {
+        justify-content: center;
+        gap: 1.5vh;
+    }
+
+
+    .genre-chip {
+        padding: 1vh 3vw;
+        font-size: 3vw;
+        border-radius: 3vh;
+    }
+
+    .details-overview {
+        font-size: 3.5vw;
+        max-width: 100%;
+        margin-bottom: 3vh;
+        text-align: left;
+    }
+
+    .details-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2vh;
+        width: 100%;
+    }
+
+    .details-actions .btn {
+        width: 100%;
+        height: 7vh;
+        font-size: 4vw;
+    }
+
+    .details-bottom {
+        flex-direction: column;
+        gap: 4vh;
+    }
+
+    .details-seasons {
+        width: 100%;
+        max-height: 25vh;
+        padding: 2vh 3vw;
+    }
+
+    .seasons-header {
+        font-size: 5vw;
+    }
+
+    .season-btn {
+        font-size: 4vw;
+        padding: 2vh 3vw;
+    }
+
+    .episodes-title {
+        font-size: 5vw;
+    }
+
+    .episode-item {
+        flex-direction: column;
+        gap: 1.5vh;
+        padding: 2vh;
+    }
+
+    .episode-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
+    }
+
+    .episode-header {
+        gap: 2vw;
+    }
+
+    .episode-number {
+        font-size: 4vw;
+    }
+
+    .episode-name {
+        font-size: 4vw;
+    }
+
+    .episode-overview {
+        font-size: 3.2vw;
+    }
+
+    /* Recommendations Adjustments */
+    .recommendations-header {
+        font-size: 5vw;
+        margin-top: 3vh;
+    }
+
+    .row-posters .poster {
+        width: 30vw;
+        min-width: 30vw;
+        height: 45vw;
+    }
+}

@@ -1,0 +1,54 @@
+<div class="page-container" style="padding: 0; height: 100%;">
+    <div id="playlist-details-view" class="playlist-details-container">
+        <!-- Cinematic Background -->
+        <div class="playlist-backdrop" id="playlist-backdrop">
+            <div class="backdrop-overlay"></div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="playlist-content-wrapper">
+            <!-- Sidebar -->
+            <div class="playlist-sidebar">
+                <h1 class="playlist-title" id="playlist-title">Playlist Name</h1>
+                <div class="playlist-meta-row">
+                    <span class="meta-item" id="playlist-count">0 items</span>
+                </div>
+
+                <div class="playlist-actions-sidebar">
+                    <button id="play-all-btn" class="action-btn primary focusable" data-i18n="playlists.playAll">
+                        <span class="icon"><img src="images/play.svg" alt="Play"></span> Play All
+                    </button>
+                    <button id="edit-info-btn" class="action-btn secondary focusable" data-i18n="playlists.editInfo">
+                        <span class="icon"><img src="images/edit.svg" alt="Edit"></span> Edit Info
+                    </button>
+                    <button id="back-btn" class="action-btn secondary focusable" data-i18n="details.back">
+                        <span class="icon"><img src="images/back.svg" alt="Back"></span> Back
+                    </button>
+                    <button id="delete-playlist-btn" class="action-btn secondary focusable"
+                        data-i18n="playlists.delete">
+                        <span class="icon">🗑</span> Delete Playlist
+                    </button>
+                </div>
+            </div>
+
+            <!-- Items Grid -->
+            <div class="playlist-items-section">
+                <div id="playlist-items-container" class="playlist-items-grid">
+                    <!-- Items injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title">Remove Item</h2>
+            <p class="modal-message">Are you sure you want to remove this item from the playlist?</p>
+            <div class="modal-actions">
+                <button id="modal-cancel-btn" class="action-btn secondary focusable">Cancel</button>
+                <button id="modal-confirm-btn" class="action-btn primary focusable">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>

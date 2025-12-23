@@ -1,0 +1,26 @@
+<div class="playlists-container">
+    <header class="page-header">
+        <h1 class="page-title" data-i18n="playlists.title">My Playlists</h1>
+        <button id="create-playlist-btn" class="btn btn-primary focusable" data-i18n="playlists.create">
+            <span class="icon">+</span> Create New
+        </button>
+    </header>
+
+    <div id="playlists-grid" class="playlists-grid">
+        <!-- Playlists will be injected here -->
+    </div>
+</div>
+
+<!-- Create Playlist Modal -->
+<div id="create-playlist-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 data-i18n="playlists.create_new">Create New Playlist</h2>
+        <div class="input-group">
+            <input type="text" id="new-playlist-name" class="focusable" placeholder="Playlist Name" maxlength="30">
+        </div>
+        <div class="modal-actions">
+            <button id="cancel-create-btn" class="btn btn-secondary focusable" data-i18n="common.cancel">Cancel</button>
+            <button id="confirm-create-btn" class="btn btn-primary focusable" data-i18n="common.create">Create</button>
+        </div>
+    </div>
+</div>

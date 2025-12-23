@@ -1,0 +1,160 @@
+<div class="search-page-layout">
+    <div class="search-main">
+        <div class="search-top-bar">
+            <div class="search-box">
+                <div class="input-wrapper">
+                    <img src="images/search.svg" class="search-icon" alt="Search">
+                    <input type="text" id="search-input" class="focusable" placeholder="Search for movies or series..."
+                        data-i18n="search.placeholder" readonly>
+                </div>
+                <div class="search-actions">
+                    <button id="search-btn" class="primary-btn focusable" title="Search">
+                        <img src="images/search.svg" class="filter-icon" alt="Search">
+                    </button>
+                    <button id="filter-btn" class="icon-btn focusable" title="Filters">
+                        <img src="images/filter.svg" class="filter-icon" alt="Filters">
+                    </button>
+                </div>
+            </div>
+
+            <div id="recent-searches-row" class="recent-searches-row hidden">
+                <span class="recent-label" data-i18n="search.recent">Recent:</span>
+                <div id="recent-list" class="recent-list">
+                    <!-- Recent items -->
+                </div>
+            </div>
+        </div>
+
+        <div id="search-results-container" class="results-container">
+            <div id="search-results" class="search-results-grid">
+                <!-- Results injected here -->
+            </div>
+            <div id="scroll-anchor"></div>
+        </div>
+    </div>
+
+    <!-- Filter Modal (Replaces Sidebar) -->
+    <div id="filter-modal" class="modal-overlay">
+        <div class="modal-content large-modal">
+            <h2 class="modal-title" data-i18n="search.filters">Filters</h2>
+
+            <div class="modal-scroll-area">
+                <div class="filter-main-grid">
+                    <!-- Row 1: Content Type & Year -->
+                    <!-- Content Type -->
+                    <div class="filter-group">
+                        <h3 data-i18n="search.type">Content Type</h3>
+                        <div class="filter-options horizontal">
+                            <label class="filter-chip focusable" tabindex="0">
+                                <input type="radio" name="media-type" value="movie" checked>
+                                <span data-i18n="search.movies">Movies</span>
+                            </label>
+                            <label class="filter-chip focusable" tabindex="0">
+                                <input type="radio" name="media-type" value="tv">
+                                <span data-i18n="search.series">Series</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Year -->
+                    <div class="filter-group">
+                        <h3 data-i18n="search.year">Year</h3>
+                        <input type="number" id="year-filter" class="focusable filter-input" placeholder="e.g. 2024"
+                            data-i18n="search.year" min="1900" max="2100" readonly>
+                    </div>
+
+                    <!-- Row 2: Sort & Country -->
+                    <div class="filter-group">
+                        <h3 data-i18n="search.sortBy">Sort By</h3>
+                        <button id="sort-by-btn" class="focusable filter-select-btn">
+                            <span id="sort-by-label" data-i18n="search.popularity">Popularity</span>
+                            <span class="icon">❯</span>
+                        </button>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3 data-i18n="search.country">Production Country</h3>
+                        <button id="country-select-btn" class="focusable filter-select-btn">
+                            <span id="country-label" data-i18n="search.allCountries">All Countries</span>
+                            <span class="icon">❯</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Full Width Sections -->
+                <div class="filter-group">
+                    <div class="group-header">
+                        <h3 data-i18n="search.genres">Genres</h3>
+                        <span id="genre-count" class="badge"></span>
+                    </div>
+                    <button id="genre-select-btn" class="focusable filter-select-btn">
+                        <span data-i18n="search.selectGenres">Select Genres</span>
+                        <span class="icon">❯</span>
+                    </button>
+                </div>
+
+                <!-- Age Rating -->
+                <div class="filter-group">
+                    <h3 data-i18n="search.rating">Age Rating</h3>
+                    <div id="cert-filters" class="filter-chips-grid">
+                        <!-- Certs injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="clear-filters-btn" class="focusable ghost-btn" data-i18n="search.clearFilters">Clear
+                    All</button>
+                <button id="cancel-filters-btn" class="focusable small-btn" data-i18n="search.cancel">Cancel</button>
+                <button id="close-filters-btn" class="focusable primary-btn" data-i18n="search.apply">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Genre Selection Modal -->
+    <div id="genre-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title" data-i18n="search.genres">Select Genres</h2>
+            <div id="genre-filters" class="genre-grid">
+                <!-- Genres injected here -->
+            </div>
+            <div class="modal-actions">
+                <button id="genre-done-btn" class="focusable primary-btn" data-i18n="search.done">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Select Modals -->
+    <div id="sort-modal" class="modal-overlay">
+        <div class="modal-content small-modal">
+            <h2 class="modal-title" data-i18n="search.sortBy">Sort By</h2>
+            <div class="select-options-list" id="sort-options-list">
+                <div class="select-item focusable" data-value="popularity.desc" data-i18n="search.popularity">Popularity
+                </div>
+                <div class="select-item focusable" data-value="vote_average.desc" data-i18n="search.topRated">Top Rated
+                </div>
+                <div class="select-item focusable" data-value="primary_release_date.desc" data-i18n="search.newest">
+                    Newest</div>
+                <div class="select-item focusable" data-value="vote_count.desc" data-i18n="search.mostVoted">Most Voted
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="sort-confirm-btn" class="primary-btn focusable" data-i18n="search.confirm">Confirm</button>
+                <button id="sort-cancel-btn" class="small-btn focusable" data-i18n="search.cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="country-modal" class="modal-overlay">
+        <div class="modal-content large-modal">
+            <h2 class="modal-title" data-i18n="search.country">Production Country</h2>
+            <div class="modal-search-wrapper">
+                <input type="text" id="country-search-input" class="focusable modal-search-input"
+                    placeholder="Search countries..." data-i18n="search.searchCountries" readonly>
+            </div>
+            <div id="country-options-list" class="select-options-grid scrollable">
+                <!-- Countries injected here -->
+            </div>
+        </div>
+    </div>
+</div>

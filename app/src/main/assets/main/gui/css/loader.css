@@ -1,0 +1,93 @@
+/* 
+   IVIDS ADAPTIVE LOADER (Windows 10 Style)
+   USABLE VIA: <div class="ivids-loader"></div>
+   Functionality (dot injection) is handled by loader.js
+*/
+
+.ivids-loader,
+.windows-loader {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: clamp(30px, 5vw, 60px);
+    height: clamp(30px, 5vw, 60px);
+    vertical-align: middle;
+}
+
+.spinner {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    animation: win11-rotate 2s linear infinite;
+}
+
+.spinner circle {
+    fill: none;
+    stroke: var(--primary-color, #46d369);
+    stroke-width: 6px;
+    stroke-linecap: round;
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+    animation: win11-dash 1.5s ease-in-out infinite;
+}
+
+@keyframes win11-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes win11-dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+/* Overlay Styles */
+.loading-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Utility to center a loader in its container */
+.loader-center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+}
+
+/* Poster Loader Specifics */
+.poster-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    /* Direct size instead of scale */
+    height: 30px;
+    z-index: 5;
+    transform-origin: center;
+}
