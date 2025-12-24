@@ -37,7 +37,7 @@ Global translation system (`lang/*.json`) allows for easy localization across mu
 ### Option 1: Install via APK (Android)
 The easiest way to get started on Android devices:
 1. Navigate to the `IVIDS` folder
-2. Find the APK file: `app/build/outputs/apk/debug/IVIDS-v0.1.0.apk`
+2. Find the APK file: `IVIDS/IVIDS-v0.1.0.apk`
 3. Transfer it to your Android device and install
 
 ### Option 2: Run via Web Server
