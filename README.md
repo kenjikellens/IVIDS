@@ -33,4 +33,14 @@ Global translation system (`lang/*.json`) allows for easy localization across mu
     - `lang/`: JSON translation files.
 
 ## 🛠️ Getting Started
-Simply serve the `assets/main/gui` directory via a web server or load `index.html` in a compatible web-view environment.
+
+### Option 1: Install via APK (Android)
+The easiest way to get started on Android devices:
+1. Navigate to the `IVIDS` folder
+2. Find the APK file: `app/build/outputs/apk/debug/IVIDS-v0.1.0.apk`
+3. Transfer it to your Android device and install
+
+### Option 2: Run via Web Server
+For development or other platforms:
+- Serve the `assets/main/gui` directory via a web server
+- Or load `index.html` in a compatible web-view environment
