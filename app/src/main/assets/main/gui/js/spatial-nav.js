@@ -3,6 +3,7 @@ export const SpatialNav = {
     focusableSelector: '.focusable',
     focusTrapContainer: null,
     currentPageLogic: null,
+    lastFocusedElement: null,
     _initialized: false,
 
     isPortrait() {
@@ -41,33 +42,15 @@ export const SpatialNav = {
     isVisible(el) {
         if (!el) return false;
 
-        // Use standard check if available
-        if (typeof el.checkVisibility === 'function') {
-            try {
-                if (!el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) {
-                    // Double check with offset dimensions just in case checkVisibility is flaky
-                    if (el.offsetWidth > 0 && el.offsetHeight > 0) {
-                        // If it has size but checkVisibility says no, trust checkVisibility unless it's a known false negative case
-                        // However, let's be safe and check parents manually if we suspect issues
-                    } else {
-                        return false;
-                    }
-                }
-            } catch (e) { }
-        }
+        // FASTEST CHECK: offsetParent is null if display:none or parent is display:none
+        if (el.offsetParent === null && el.style.position !== 'fixed') return false;
 
+        // Size check
         if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
 
-        const style = window.getComputedStyle(el);
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-
-        // Quick check for hidden parents (very common for modals)
-        let p = el.parentElement;
-        while (p && p !== document.body) {
-            const ps = window.getComputedStyle(p);
-            if (ps.display === 'none' || ps.visibility === 'hidden') return false;
-            p = p.parentElement;
-        }
+        // Skip expensive computed style checks for common elements if checking visibility heavily
+        // We only do the deep check if strictly necessary or for specific edge cases
+        if (el.style.opacity === '0' || el.style.visibility === 'hidden') return false;
 
         return true;
     },
@@ -83,28 +66,25 @@ export const SpatialNav = {
             }
         }
 
-        const elements = Array.from(scope.querySelectorAll(this.focusableSelector))
-            .filter(el => this.isVisible(el));
-
-        if (elements.length === 0) return;
-
-        // Priorities
-        const priorities = ['#search-input', '#search-btn', '.hero-play', '.play-btn'];
-        for (const sel of priorities) {
-            const el = scope.querySelector(sel);
+        const elements = Array.from(scope.querySelectorAll(this.focusableSelector));
+        // Find first visible without filtering all (performance optimization)
+        for (const el of elements) {
             if (this.isVisible(el)) {
                 this.setFocus(el);
                 return;
             }
         }
-
-        this.setFocus(elements[0]);
     },
 
     setFocus(element) {
         if (!element || !this.isVisible(element)) return;
 
+        // Track last focus BEFORE updating
         const current = document.querySelector('.focused');
+        if (current && current !== element) {
+            this.lastFocusedElement = current;
+        }
+
         if (current && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
             if (!this.isPortrait()) {
                 current.readOnly = true;
@@ -113,7 +93,12 @@ export const SpatialNav = {
             }
         }
 
+        // Optimization: Use classList directly on the known current instead of querySelectorAll
+        if (current) current.classList.remove('focused');
+
+        // Fail-safe cleanup
         document.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+
         element.classList.add('focused');
 
         if (this.isPortrait() && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
@@ -124,7 +109,15 @@ export const SpatialNav = {
         }
 
         this.centerElement(element);
-        element.focus();
+        element.focus({ preventScroll: true }); // Prevent browser auto-scroll, we handle it
+    },
+
+    refocus() {
+        if (this.lastFocusedElement && this.isVisible(this.lastFocusedElement)) {
+            this.setFocus(this.lastFocusedElement);
+        } else {
+            this.focusFirst();
+        }
     },
 
     centerElement(el) {
@@ -133,25 +126,25 @@ export const SpatialNav = {
         // 1. Vertical centering in #main-view
         const mainView = document.getElementById('main-view');
         if (mainView && mainView.contains(el)) {
-            const elRect = el.getBoundingClientRect();
-            const viewRect = mainView.getBoundingClientRect();
+            // Optimization: Minimal rect calculation
+            const elTop = el.offsetTop;
+            const elHeight = el.offsetHeight;
+            const viewHeight = mainView.clientHeight;
 
-            // Calculate target scroll position:
-            // Current Scroll + (Element Viewport Center - Viewport Center)
-            const elCenterY = elRect.top + elRect.height / 2;
-            const viewCenterY = viewRect.top + viewRect.height / 2;
-            const deltaY = elCenterY - viewCenterY;
-            const targetScrollTop = mainView.scrollTop + deltaY;
-
-            mainView.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
-        }
-
-        // Horizontal centering removed as per user request ("not as width")
-        // Just ensure it's in view horizontally if it's off-screen
-        try {
-            el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-        } catch (e) {
-            el.scrollIntoView(false);
+            // Simple centering logic without getBoundingClientRect if possible
+            // But mainView might be scrolled, so we need relative position
+            // Using scrollIntoView is usually GPU accelerated and smoother on TV
+            try {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            } catch (e) {
+                el.scrollIntoView(false);
+            }
+        } else {
+            try {
+                el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+            } catch (e) {
+                el.scrollIntoView(false);
+            }
         }
     },
 
@@ -169,6 +162,15 @@ export const SpatialNav = {
         };
 
         const keyCode = e.keyCode || KEY_MAP[e.key];
+
+        // Performance: Don't querySelector if we don't handle the key
+        const isNav = (keyCode >= 37 && keyCode <= 40);
+        const isAction = (keyCode === 13);
+        const isBack = (keyCode === 8 || keyCode === 27 || keyCode === 10009 || keyCode === 4);
+        const isNum = ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105));
+
+        if (!isNav && !isAction && !isBack && !isNum) return;
+
         const current = document.querySelector('.focused');
 
         if (!current || !this.isVisible(current)) {
@@ -177,16 +179,22 @@ export const SpatialNav = {
         }
 
         // Navigation keys
-        if (keyCode >= 37 && keyCode <= 40) {
+        if (isNav) {
             e.preventDefault();
+            // Throttle massive fast scrolling
+            if (this.loadingNav) return;
+
             const directions = { 37: 'left', 38: 'up', 39: 'right', 40: 'down' };
             const next = this.findNext(current, directions[keyCode]);
-            if (next) this.setFocus(next);
+
+            if (next) {
+                this.setFocus(next);
+            }
             return;
         }
 
         // Action keys
-        if (keyCode === 13) {
+        if (isAction) {
             if (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA') {
                 if (current.readOnly) {
                     current.readOnly = false;
@@ -212,7 +220,7 @@ export const SpatialNav = {
         }
 
         // Back keys
-        if (keyCode === 8 || keyCode === 27 || keyCode === 10009 || keyCode === 4) {
+        if (isBack) {
             if (keyCode === 8 && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
                 if (!current.readOnly) {
                     // Manual backspace handling for some TVs if needed
@@ -231,8 +239,7 @@ export const SpatialNav = {
         }
 
         // Numeric keys (0-9)
-        const isNumeric = (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105);
-        if (isNumeric && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
+        if (isNum && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
             if (!current.readOnly) {
                 const char = (keyCode >= 96) ? String(keyCode - 96) : String(keyCode - 48);
 
@@ -261,14 +268,18 @@ export const SpatialNav = {
 
         // Logic to prevent jumping between Sidebar and Main Content on Up/Down
         let searchScope = scope;
+        let isScoped = false;
+
         if (!this.focusTrapContainer && (direction === 'up' || direction === 'down')) {
             const mainView = document.getElementById('main-view');
             const sidebar = document.getElementById('sidebar-container');
 
             if (mainView && mainView.contains(current)) {
                 searchScope = mainView;
+                isScoped = true;
             } else if (sidebar && sidebar.contains(current)) {
                 searchScope = sidebar;
+                isScoped = true;
             }
         }
 
@@ -278,46 +289,68 @@ export const SpatialNav = {
             y: rect.top + rect.height / 2
         };
 
-        const candidates = Array.from(searchScope.querySelectorAll(this.focusableSelector))
-            .filter(el => el !== current && this.isVisible(el));
+        // Get Candidates - Optimization: Don't use Array.from(...).filter() which is slow
+        // Instead, loop manually and fail fast
+        const allElements = searchScope.querySelectorAll(this.focusableSelector);
 
         let best = null;
         let minScore = Infinity;
 
-        candidates.forEach(el => {
-            const elRect = el.getBoundingClientRect();
+        // Pre-calculate loop variables
+        let el, elRect, dx, dy, mainDist, crossDist, score;
+        const weight = (direction === 'up' || direction === 'down') ? 2.5 : 4;
+
+        for (let i = 0; i < allElements.length; i++) {
+            el = allElements[i];
+            if (el === current) continue;
+
+            // Fast visibility check first
+            if (el.offsetParent === null) continue;
+
+            elRect = el.getBoundingClientRect();
+
+            // Optimization: Direction pre-check using rects before expensive logic
+            // This filters out 50%+ of candidates instantly without math
+            if (direction === 'left' && elRect.left >= rect.left) continue;
+            if (direction === 'right' && elRect.right <= rect.right) continue;
+            if (direction === 'up' && elRect.top >= rect.top) continue;
+            if (direction === 'down' && elRect.bottom <= rect.bottom) continue;
+
+            // Only now do we check strict visibility (costly) if needed, but we used offsetParent above
+            // so we can likely skip full isVisible() if we trust the loop
+
             const elCenter = {
                 x: elRect.left + elRect.width / 2,
                 y: elRect.top + elRect.height / 2
             };
 
-            const dx = elCenter.x - center.x;
-            const dy = elCenter.y - center.y;
+            dx = elCenter.x - center.x;
+            dy = elCenter.y - center.y;
 
             let isPossible = false;
-            switch (direction) {
-                case 'left': if (dx < -1) isPossible = true; break;
-                case 'right': if (dx > 1) isPossible = true; break;
-                case 'up': if (dy < -1) isPossible = true; break;
-                case 'down': if (dy > 1) isPossible = true; break;
-            }
+            // Strict direction check
+            if (direction === 'left' && dx < -1) isPossible = true;
+            else if (direction === 'right' && dx > 1) isPossible = true;
+            else if (direction === 'up' && dy < -1) isPossible = true;
+            else if (direction === 'down' && dy > 1) isPossible = true;
 
             if (isPossible) {
-                // Scoring function: balance distance and alignment
-                const mainDist = direction === 'left' || direction === 'right' ? Math.abs(dx) : Math.abs(dy);
-                const crossDist = direction === 'left' || direction === 'right' ? Math.abs(dy) : Math.abs(dx);
+                if (direction === 'left' || direction === 'right') {
+                    mainDist = Math.abs(dx);
+                    crossDist = Math.abs(dy);
+                } else {
+                    mainDist = Math.abs(dy);
+                    crossDist = Math.abs(dx);
+                }
 
-                // Use distance-squared for more aggressive proximity preference
-                // But keep cross-axis penalty higher to favor alignment on the main axis
-                const crossPenalty = (direction === 'up' || direction === 'down') ? 2.5 : 4;
-                const score = (mainDist * mainDist) + (crossDist * crossDist * crossPenalty);
+                score = (mainDist * mainDist) + (crossDist * crossDist * weight);
 
                 if (score < minScore) {
                     minScore = score;
                     best = el;
                 }
             }
-        });
+        }
 
         return best;
     }

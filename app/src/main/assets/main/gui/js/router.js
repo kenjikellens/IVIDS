@@ -45,14 +45,14 @@ export const Router = {
             try {
                 const pageCssLink = document.getElementById('page-css');
                 if (pageCssLink) {
-                    pageCssLink.href = `css/${pageName}.css?t=${Date.now()}`;
+                    pageCssLink.href = `css/${pageName}.css`;
                 }
             } catch (cssError) {
                 console.error('Error updating page CSS:', cssError);
             }
 
             // 1. Fetch HTML with Timeout
-            const fetchPromise = fetch(`pages/${pageName}.html?t=${Date.now()}`);
+            const fetchPromise = fetch(`pages/${pageName}.html`);
             const timeoutPromise = new Promise((_, reject) =>
                 setTimeout(() => reject(new Error('Request timed out')), 10000)
             );
@@ -69,7 +69,7 @@ export const Router = {
 
             // 2. Load JS Module
             try {
-                const module = await import(`../pages/${pageName}.js?t=${Date.now()}`);
+                const module = await import(`../pages/${pageName}.js`);
 
                 // 3. Initialize Page
                 if (module && module.init) {
@@ -80,7 +80,7 @@ export const Router = {
 
                 // 4. Load Spatial Navigation Logic
                 try {
-                    const navModule = await import(`../../logic/spatial-nav/spatial-nav-${pageName}.js?t=${Date.now()}`);
+                    const navModule = await import(`../../logic/spatial-nav/spatial-nav-${pageName}.js`);
                     const logicKey = `spatialNav${pageName.charAt(0).toUpperCase()}${pageName.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase())}`;
                     if (navModule && navModule[logicKey]) {
                         SpatialNav.setPageLogic(navModule[logicKey]);
