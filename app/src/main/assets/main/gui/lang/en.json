@@ -32,7 +32,22 @@
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
-        "selectColor": "Select Color"
+        "selectColor": "Select Color",
+        "updates": "App Updates",
+        "updateMode": "Update Mode",
+        "updateModeDesc": "Choose how the app handles updates",
+        "checkNow": "Update Check",
+        "checkNowDesc": "Manually search for new app versions",
+        "checkButton": "CheckNow ›",
+        "check": "Check",
+        "checking": "Searching...",
+        "updateFound": "Update Available",
+        "updateNow": "Install Now ›",
+        "mode": {
+            "auto": "Auto",
+            "manual": "Manual",
+            "none": "Off"
+        }
     },
     "common": {
         "close": "Close"

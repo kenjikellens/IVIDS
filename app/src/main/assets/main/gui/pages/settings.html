@@ -21,13 +21,9 @@
                 <div class="setting-description" data-i18n="settings.languageDesc">Choose your preferred language</div>
             </div>
             <div class="setting-control language-selector">
-                <button id="prev-lang-btn" class="square-nav-btn focusable" title="Previous">
-                    <span class="nav-icon prev"></span>
-                </button>
+                <button id="prev-lang-btn" class="arrow-btn focusable">‹</button>
                 <span id="current-language-text" class="language-text">Loading...</span>
-                <button id="next-lang-btn" class="square-nav-btn focusable" title="Next">
-                    <span class="nav-icon next"></span>
-                </button>
+                <button id="next-lang-btn" class="arrow-btn focusable">›</button>
             </div>
         </div>
 
@@ -47,6 +43,54 @@
             <div class="portrait-color-trigger portrait-only focusable" id="portrait-color-trigger" tabindex="0">
                 <div class="trigger-preview" id="trigger-color-preview"></div>
                 <div class="trigger-icon"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Updates Settings -->
+    <div id="app-updates-section" class="settings-section">
+        <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 15L12 3M12 15L8 11M12 15L16 11M2 17L2 18C2 19.6569 3.34315 21 5 21L19 21C20.6569 21 22 19.6569 22 18L22 17"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span data-i18n="settings.updates">App Updates</span>
+        </h2>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.updateMode">Update Mode</div>
+                <div class="setting-description" data-i18n="settings.updateModeDesc">Choose how the app handles updates
+                </div>
+            </div>
+            <div class="setting-control mode-selector">
+                <button id="prev-update-mode-btn" class="arrow-btn focusable">‹</button>
+                <span id="current-update-mode-text" class="mode-text">Manual</span>
+                <button id="next-update-mode-btn" class="arrow-btn focusable">›</button>
+            </div>
+        </div>
+
+        <div id="manual-check-container" class="setting-item" style="display: none;">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.checkNow">Check for Updates</div>
+                <div class="setting-description" data-i18n="settings.checkNowDesc">Manually check if a new version is
+                    available</div>
+            </div>
+            <div class="setting-control">
+                <button id="check-updates-btn" class="accent-btn focusable" data-i18n="settings.checkButton">Controleren
+                    ›</button>
+            </div>
+        </div>
+
+        <div id="update-available-container" class="setting-item" style="display: none;">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.updateFound">New Version Available</div>
+                <div class="setting-description" id="update-version-text">v1.1.0</div>
+            </div>
+            <div class="setting-control">
+                <button id="install-update-btn" class="accent-btn focusable highlight" data-i18n="settings.updateNow">Nu
+                    Installeren ›</button>
             </div>
         </div>
     </div>

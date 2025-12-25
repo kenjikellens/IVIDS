@@ -1,0 +1,160 @@
+package com.kenjigames.ivids;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.util.Log;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
+
+import androidx.core.content.FileProvider;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class UpdateManager {
+    private static final String TAG = "UpdateManager";
+    private static final String GITHUB_API_URL = "https://api.github.com/repos/kenjigames/IVIDS/releases/latest";
+
+    private final Activity mActivity;
+    private final WebView mWebView;
+    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+
+    private String mDownloadUrl = null;
+    private String mLatestVersion = null;
+
+    public UpdateManager(Activity activity, WebView webView) {
+        this.mActivity = activity;
+        this.mWebView = webView;
+    }
+
+    @JavascriptInterface
+    public void checkForUpdates() {
+        Log.d(TAG, "Checking for updates...");
+        mExecutor.execute(() -> {
+            try {
+                URL url = new URL(GITHUB_API_URL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
+
+                if (conn.getResponseCode() == 200) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    JSONObject json = new JSONObject(response.toString());
+                    mLatestVersion = json.getString("tag_name");
+                    JSONArray assets = json.getJSONArray("assets");
+
+                    mDownloadUrl = null;
+                    for (int i = 0; i < assets.length(); i++) {
+                        JSONObject asset = assets.getJSONObject(i);
+                        String name = asset.getString("name");
+                        if (name.endsWith(".apk")) {
+                            mDownloadUrl = asset.getString("browser_download_url");
+                            break;
+                        }
+                    }
+
+                    if (mDownloadUrl != null) {
+                        Log.d(TAG, "Update found: " + mLatestVersion);
+                        notifyWebFoundUpdate(mLatestVersion);
+                    } else {
+                        Log.d(TAG, "No APK found in latest release");
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking for updates", e);
+            }
+        });
+    }
+
+    @JavascriptInterface
+    public void downloadAndInstall() {
+        if (mDownloadUrl == null) {
+            Log.e(TAG, "No download URL available");
+            return;
+        }
+
+        Log.d(TAG, "Starting download: " + mDownloadUrl);
+        mExecutor.execute(() -> {
+            try {
+                URL url = new URL(mDownloadUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.connect();
+
+                File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+                if (!downloadDir.exists())
+                    downloadDir.mkdirs();
+
+                File apkFile = new File(downloadDir, "IVIDS-update.apk");
+                if (apkFile.exists())
+                    apkFile.delete();
+
+                InputStream is = new BufferedInputStream(url.openStream());
+                FileOutputStream fos = new FileOutputStream(apkFile);
+
+                byte[] data = new byte[8192];
+                int count;
+                while ((count = is.read(data)) != -1) {
+                    fos.write(data, 0, count);
+                }
+
+                fos.flush();
+                fos.close();
+                is.close();
+
+                Log.d(TAG, "Download complete: " + apkFile.getAbsolutePath());
+                installApk(apkFile);
+            } catch (Exception e) {
+                Log.e(TAG, "Error downloading update", e);
+            }
+        });
+    }
+
+    private void installApk(File apkFile) {
+        try {
+            Uri apkUri = FileProvider.getUriForFile(mActivity,
+                    mActivity.getPackageName() + ".fileprovider", apkFile);
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+
+            mActivity.startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting installation", e);
+        }
+    }
+
+    private void notifyWebFoundUpdate(String version) {
+        mActivity.runOnUiThread(() -> {
+            // Call JavaScript function to signal update available
+            mWebView.evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound('" + version + "');",
+                    null);
+        });
+    }
+}

@@ -38,7 +38,22 @@
         "saved": "Einstellungen gespeichert!",
         "reset": "Auf Standard zurücksetzen!",
         "cancel": "Abbrechen",
-        "selectColor": "Farbe wählen"
+        "selectColor": "Farbe wählen",
+        "updates": "App-Updates",
+        "updateMode": "Update-Modus",
+        "updateModeDesc": "Wählen Sie, wie die App mit Updates umgeht",
+        "checkNow": "Update-Prüfung",
+        "checkNowDesc": "Manuell nach neuen Versionen suchen",
+        "checkButton": "Prüfen ›",
+        "check": "Prüfen",
+        "checking": "Prüfung...",
+        "updateFound": "Update verfügbar",
+        "updateNow": "Jetzt Installieren ›",
+        "mode": {
+            "auto": "Auto",
+            "manual": "Manuell",
+            "none": "Aus"
+        }
     },
     "common": {
         "close": "Schließen"

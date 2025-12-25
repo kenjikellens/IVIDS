@@ -38,7 +38,22 @@
         "saved": "Instellingen opgeslagen!",
         "reset": "Terugzetten naar standaard!",
         "cancel": "Annuleren",
-        "selectColor": "Kleur kiezen"
+        "selectColor": "Kleur kiezen",
+        "updates": "App Updates",
+        "updateMode": "Update Modus",
+        "updateModeDesc": "Kies hoe de app omgaat met updates",
+        "checkNow": "Update Controle",
+        "checkNowDesc": "Handmatig zoeken naar nieuwe app-versies",
+        "checkButton": "Controleren ›",
+        "check": "Controleren",
+        "checking": "Zoeken...",
+        "updateFound": "Update Beschikbaar",
+        "updateNow": "Nu Installeren ›",
+        "mode": {
+            "auto": "Auto",
+            "manual": "Handmatig",
+            "none": "Uit"
+        }
     },
     "common": {
         "close": "Sluiten"

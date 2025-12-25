@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         AD_HOSTS.add("ad.adjuggler.net");
         AD_HOSTS.add("ad.adtoma.com");
         AD_HOSTS.add("ad.adserver.com");
-        
+
         // Added VidSrc specific ad/tracking hosts
         AD_HOSTS.add("vidsrc.xyz");
         AD_HOSTS.add("vidplay.site");
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         AD_HOSTS.add("streamtape.com");
         AD_HOSTS.add("mixdrop.co");
         AD_HOSTS.add("gogoplay.io");
-        
+
         // More general ad hosts
         AD_HOSTS.add("adswizz.com");
         AD_HOSTS.add("smartadserver.com");
@@ -244,12 +244,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private WebView mWebView;
+    private UpdateManager mUpdateManager;
 
     private void simulateClick(float x, float y) {
         try {
             long duration = android.os.SystemClock.uptimeMillis();
-            android.view.MotionEvent downEvent = android.view.MotionEvent.obtain(duration, duration, android.view.MotionEvent.ACTION_DOWN, x, y, 0);
-            android.view.MotionEvent upEvent = android.view.MotionEvent.obtain(duration, duration + 100, android.view.MotionEvent.ACTION_UP, x, y, 0);
+            android.view.MotionEvent downEvent = android.view.MotionEvent.obtain(duration, duration,
+                    android.view.MotionEvent.ACTION_DOWN, x, y, 0);
+            android.view.MotionEvent upEvent = android.view.MotionEvent.obtain(duration, duration + 100,
+                    android.view.MotionEvent.ACTION_UP, x, y, 0);
             mWebView.dispatchTouchEvent(downEvent);
             mWebView.dispatchTouchEvent(upEvent);
             downEvent.recycle();
@@ -263,7 +266,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean dispatchKeyEvent(android.view.KeyEvent event) {
         int keyCode = event.getKeyCode();
         if (event.getAction() == android.view.KeyEvent.ACTION_DOWN) {
-            if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER || keyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+            if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER
+                    || keyCode == android.view.KeyEvent.KEYCODE_ENTER) {
                 String url = mWebView.getUrl();
                 if (url != null && !url.contains("file:///android_asset/")) {
                     // We are in the player iframe or external content
@@ -301,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
                 }, 4000); // 4 seconds delay to allow buffer/loading
             }
         }
-        
+
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
@@ -311,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                 // view.loadUrl("file:///android_asset/error.html");
             }
         }
-        
+
         @Override
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
@@ -321,9 +325,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private boolean isAd(@Nullable String host) {
-            if (host == null) return false;
+            if (host == null)
+                return false;
             for (String adHost : AD_HOSTS) {
-                if (host.contains(adHost)) return true;
+                if (host.contains(adHost))
+                    return true;
             }
             return false;
         }
@@ -332,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         mWebView = new WebView(this);
         setContentView(mWebView);
 
@@ -346,15 +352,20 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDatabaseEnabled(true);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
         webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        
+
         // Block popups
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
         webSettings.setSupportMultipleWindows(false);
 
         mWebView.setWebViewClient(new AdBlockingWebViewClient());
+
+        mUpdateManager = new UpdateManager(this, mWebView);
+        mWebView.addJavascriptInterface(mUpdateManager, "AndroidUpdate");
+
         mWebView.setWebChromeClient(new android.webkit.WebChromeClient() {
             @Override
-            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, android.os.Message resultMsg) {
+            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture,
+                    android.os.Message resultMsg) {
                 // Return false to prevent window creation (blocks popups)
                 return false;
             }
@@ -367,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        
+
         mWebView.loadUrl("file:///android_asset/main/gui/index.html");
     }
 }

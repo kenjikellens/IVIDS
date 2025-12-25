@@ -85,6 +85,33 @@ function initServices() {
 
     // Initialize Screensaver
     Screensaver.init();
+
+    // Check for updates on boot
+    initUpdateCheck();
+}
+
+function initUpdateCheck() {
+    // Global state for update findings
+    window.latestFoundVersion = null;
+    window.onUpdateFound = (version) => {
+        window.latestFoundVersion = version;
+        console.log('App: Update found globally:', version);
+    };
+
+    try {
+        const savedSettings = localStorage.getItem('ivids-settings');
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            if (settings.updateMode === 'auto' || settings.updateMode === 'manual') {
+                if (window.AndroidUpdate) {
+                    console.log('App: Triggering startup update check');
+                    window.AndroidUpdate.checkForUpdates();
+                }
+            }
+        }
+    } catch (e) {
+        console.error('App: Error in initUpdateCheck', e);
+    }
 }
 
 function initUI() {
@@ -259,6 +286,14 @@ function initNetworkListeners() {
         ErrorHandler.hide();
         console.log('Back online');
     });
+
+    // Track when the app goes into the background
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            console.log('App: Saving last active timestamp');
+            localStorage.setItem('ivids-last-active', Date.now());
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -273,8 +308,19 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const currentProfile = localStorage.getItem('ivids-current-profile');
             const lastRouteData = localStorage.getItem('ivids-last-route');
+            const lastActive = localStorage.getItem('ivids-last-active');
 
-            if (!currentProfile) {
+            // Reset profile if inactive for more than 3 minutes
+            if (lastActive) {
+                const threeMinutes = 3 * 60 * 1000;
+                const inactiveTime = Date.now() - parseInt(lastActive);
+                if (inactiveTime > threeMinutes) {
+                    console.log(`App: Inactive for ${Math.round(inactiveTime / 1000)}s. Resetting to profiles.`);
+                    localStorage.removeItem('ivids-current-profile');
+                }
+            }
+
+            if (!localStorage.getItem('ivids-current-profile')) {
                 // No profile selected, go to profiles screen
                 Router.loadPage('profiles');
             } else {

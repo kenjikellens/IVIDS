@@ -100,9 +100,8 @@ export async function init(params) {
             // - same-origin: to allow the player to access its own resources
             // - forms: for player controls
             // - pointer-lock: for video controls
-            // - top-navigation: to allow some players to redirect back
-            // We EXCLUDE 'allow-popups' and 'allow-modals' to block ads.
-            // iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation');
+            // We EXCLUDE 'allow-popups', 'allow-modals', and 'allow-top-navigation' to block ads and redirects.
+            iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts');
 
             iframe.style.position = "absolute";
             iframe.style.top = "0";

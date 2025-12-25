@@ -35,6 +35,23 @@ class SettingsManager {
         this.isSelectingLanguage = false;
         this.tempLanguageIndex = -1;
 
+        this.updateModes = [
+            { id: 'auto', name: 'Auto' },
+            { id: 'manual', name: 'Manual' },
+            { id: 'none', name: 'Off' }
+        ];
+
+        // Global callback with session persistence
+        window.onUpdateFound = (version) => {
+            window.latestFoundVersion = version;
+            this.handleUpdateFound(version);
+        };
+
+        // If update was already found before settings page opened
+        if (window.latestFoundVersion) {
+            setTimeout(() => this.handleUpdateFound(window.latestFoundVersion), 100);
+        }
+
         this.initializeUI();
         this.attachEventListeners();
         this.applySettings();
@@ -44,7 +61,8 @@ class SettingsManager {
     loadSettings() {
         const defaultSettings = {
             language: 'en',
-            accentColor: '#46d369'
+            accentColor: '#46d369',
+            updateMode: 'manual'
         };
 
         try {
@@ -65,6 +83,13 @@ class SettingsManager {
 
     // Initialize UI with saved settings
     initializeUI() {
+        // Platform check: Hide updates section if not on Android APK
+        const updatesSection = document.getElementById('app-updates-section');
+        if (updatesSection && !window.AndroidUpdate) {
+            console.log('Settings: Hiding App Updates section (Web version)');
+            updatesSection.style.display = 'none';
+        }
+
         const languageText = document.getElementById('current-language-text');
         if (languageText) {
             const currentLang = this.languages.find(l => l.id === this.settings.language) || this.languages[0];
@@ -73,6 +98,27 @@ class SettingsManager {
 
         this.renderColors();
         this.updateAccentColor(this.settings.accentColor);
+        this.updateUpdateUI();
+    }
+
+    updateUpdateUI() {
+        const modeText = document.getElementById('current-update-mode-text');
+        if (modeText) {
+            const currentMode = this.updateModes.find(m => m.id === this.settings.updateMode) || this.updateModes[1];
+            modeText.textContent = window.i18n?.t(`settings.mode.${currentMode.id}`) || currentMode.name;
+        }
+
+        const manualContainer = document.getElementById('manual-check-container');
+        if (manualContainer) {
+            manualContainer.style.display = this.settings.updateMode === 'manual' ? 'flex' : 'none';
+
+            // Re-apply translations specifically for the button to be sure
+            const checkBtn = document.getElementById('check-updates-btn');
+            if (checkBtn && window.i18n) {
+                checkBtn.textContent = window.i18n.t('settings.checkButton');
+                checkBtn.style.display = 'inline-flex'; // Force visibility
+            }
+        }
     }
 
     renderColors() {
@@ -144,6 +190,81 @@ class SettingsManager {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) this.closeModal();
             });
+        }
+
+        // Update mode listeners
+        const prevUpdateBtn = document.getElementById('prev-update-mode-btn');
+        const nextUpdateBtn = document.getElementById('next-update-mode-btn');
+        if (prevUpdateBtn) prevUpdateBtn.addEventListener('click', () => this.cycleUpdateMode(-1));
+        if (nextUpdateBtn) nextUpdateBtn.addEventListener('click', () => this.cycleUpdateMode(1));
+
+        // Manual check listener
+        const checkBtn = document.getElementById('check-updates-btn');
+        if (checkBtn) {
+            checkBtn.addEventListener('click', () => {
+                if (window.AndroidUpdate) {
+                    checkBtn.disabled = true;
+                    checkBtn.textContent = '...';
+                    window.AndroidUpdate.checkForUpdates();
+
+                    // Reset button after 10s if no response
+                    setTimeout(() => {
+                        if (checkBtn.disabled) {
+                            checkBtn.disabled = false;
+                            checkBtn.textContent = window.i18n?.t('settings.checkButton');
+                        }
+                    }, 10000);
+                } else {
+                    // Feedback for web version
+                    console.warn('Settings: AndroidUpdate bridge not found (Web version)');
+                    const originalText = checkBtn.textContent;
+                    checkBtn.textContent = 'Web Mode ›';
+                    setTimeout(() => {
+                        checkBtn.textContent = originalText;
+                    }, 2000);
+                }
+            });
+        }
+
+        // Install update listener
+        const installBtn = document.getElementById('install-update-btn');
+        if (installBtn) {
+            installBtn.addEventListener('click', () => {
+                if (window.AndroidUpdate) {
+                    window.AndroidUpdate.downloadAndInstall();
+                }
+            });
+        }
+    }
+
+    cycleUpdateMode(direction) {
+        let currentIndex = this.updateModes.findIndex(m => m.id === this.settings.updateMode);
+        if (currentIndex === -1) currentIndex = 1;
+
+        const nextIndex = (currentIndex + direction + this.updateModes.length) % this.updateModes.length;
+        this.settings.updateMode = this.updateModes[nextIndex].id;
+        this.saveSettings();
+        this.updateUpdateUI();
+    }
+
+    handleUpdateFound(version) {
+        const updateContainer = document.getElementById('update-available-container');
+        const versionText = document.getElementById('update-version-text');
+        const checkBtn = document.getElementById('check-updates-btn');
+
+        if (checkBtn) {
+            checkBtn.disabled = false;
+            checkBtn.textContent = window.i18n?.t('settings.checkButton');
+        }
+
+        if (updateContainer && versionText) {
+            versionText.textContent = version;
+            updateContainer.style.display = 'flex';
+
+            // If auto-update is on, trigger download immediately
+            if (this.settings.updateMode === 'auto' && window.AndroidUpdate) {
+                window.AndroidUpdate.downloadAndInstall();
+            }
         }
     }
 
