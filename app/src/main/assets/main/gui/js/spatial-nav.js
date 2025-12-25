@@ -98,8 +98,16 @@ export const SpatialNav = {
 
         // Fail-safe cleanup
         document.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+        document.querySelectorAll('.focused-within').forEach(el => el.classList.remove('focused-within'));
 
         element.classList.add('focused');
+
+        // Add focused-within to all parents
+        let parent = element.parentElement;
+        while (parent && parent !== document.body) {
+            parent.classList.add('focused-within');
+            parent = parent.parentElement;
+        }
 
         if (this.isPortrait() && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
             element.readOnly = false;

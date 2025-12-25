@@ -198,6 +198,9 @@
         "save": "Guardar",
         "delete": "Eliminar",
         "cancel": "Cancelar",
+        "deleteConfirmTitle": "Eliminar perfil",
+        "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar a {name}?",
+        "confirmDelete": "Eliminar",
         "enterPin": "Introduce el PIN para {name}",
         "incorrectPin": "PIN incorrecto. Inténtalo de nuevo."
     }

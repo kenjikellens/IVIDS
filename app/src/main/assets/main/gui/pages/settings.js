@@ -41,6 +41,9 @@ class SettingsManager {
             { id: 'none', name: 'Off' }
         ];
 
+        this.activeSelector = null;
+        this.originalValue = null;
+
         // Global callback with session persistence
         window.onUpdateFound = (version) => {
             window.latestFoundVersion = version;
@@ -160,15 +163,71 @@ class SettingsManager {
 
     // Attach event listeners
     attachEventListeners() {
-        const prevBtn = document.getElementById('prev-lang-btn');
-        const nextBtn = document.getElementById('next-lang-btn');
+        // Language Selector
+        const langSelector = document.getElementById('language-selector');
+        if (langSelector) {
+            langSelector.addEventListener('keydown', (e) => {
+                const isActive = langSelector.classList.contains('active');
 
-        if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.cycleLanguage(-1));
-        }
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (!isActive) {
+                        // Activate
+                        this.activeSelector = 'language';
+                        this.originalValue = this.settings.language;
+                        langSelector.classList.add('active');
+                        if (window.navigator.vibrate) window.navigator.vibrate(20);
+                    } else {
+                        // Confirm
+                        this.activeSelector = null;
+                        langSelector.classList.remove('active');
+                        // Trigger full application with current ID
+                        this.cycleLanguage(0, true);
+                        if (window.navigator.vibrate) window.navigator.vibrate(20);
+                    }
+                } else if (isActive) {
+                    // Prevent default for ALL nav keys when active
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                        e.preventDefault();
+                    }
 
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.cycleLanguage(1));
+                    if (e.key === 'ArrowLeft') this.cycleLanguage(-1, false);
+                    if (e.key === 'ArrowRight') this.cycleLanguage(1, false);
+
+                    if (e.key === 'Backspace' || e.key === 'Escape') {
+                        e.preventDefault();
+                        // Cancel
+                        this.settings.language = this.originalValue;
+                        this.activeSelector = null;
+                        langSelector.classList.remove('active');
+                        this.initializeUI();
+                    }
+                }
+            });
+
+            // Mouse/Touch activation only, Enter is handled by keydown
+            langSelector.addEventListener('click', (e) => {
+                // If it was a keyboard-triggered click, ignore it (we handle Enter in keydown)
+                if (e.detail === 0) return;
+
+                // Check if specific arrow was clicked
+                if (e.target.classList.contains('left-arrow')) {
+                    this.cycleLanguage(-1, true); // Direct save on arrow click
+                    return;
+                }
+                if (e.target.classList.contains('right-arrow')) {
+                    this.cycleLanguage(1, true); // Direct save on arrow click
+                    return;
+                }
+
+                if (!langSelector.classList.contains('active')) {
+                    this.activeSelector = 'language';
+                    this.originalValue = this.settings.language;
+                    langSelector.classList.add('active');
+                } else {
+                    this.cycleLanguage(1, false);
+                }
+            });
         }
 
         // Portrait triggers
@@ -192,11 +251,69 @@ class SettingsManager {
             });
         }
 
-        // Update mode listeners
-        const prevUpdateBtn = document.getElementById('prev-update-mode-btn');
-        const nextUpdateBtn = document.getElementById('next-update-mode-btn');
-        if (prevUpdateBtn) prevUpdateBtn.addEventListener('click', () => this.cycleUpdateMode(-1));
-        if (nextUpdateBtn) nextUpdateBtn.addEventListener('click', () => this.cycleUpdateMode(1));
+        // Update mode selector
+        const updateModeSelector = document.getElementById('update-mode-selector');
+        if (updateModeSelector) {
+            updateModeSelector.addEventListener('keydown', (e) => {
+                const isActive = updateModeSelector.classList.contains('active');
+
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (!isActive) {
+                        // Activate
+                        this.activeSelector = 'updateMode';
+                        this.originalValue = this.settings.updateMode;
+                        updateModeSelector.classList.add('active');
+                        if (window.navigator.vibrate) window.navigator.vibrate(20);
+                    } else {
+                        // Confirm
+                        this.activeSelector = null;
+                        updateModeSelector.classList.remove('active');
+                        this.saveSettings();
+                        if (window.navigator.vibrate) window.navigator.vibrate(20);
+                    }
+                } else if (isActive) {
+                    // Prevent default for ALL nav keys when active
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                        e.preventDefault();
+                    }
+
+                    if (e.key === 'ArrowLeft') this.cycleUpdateMode(-1, false);
+                    if (e.key === 'ArrowRight') this.cycleUpdateMode(1, false);
+
+                    if (e.key === 'Backspace' || e.key === 'Escape') {
+                        e.preventDefault();
+                        // Cancel
+                        this.settings.updateMode = this.originalValue;
+                        this.activeSelector = null;
+                        updateModeSelector.classList.remove('active');
+                        this.updateUpdateUI();
+                    }
+                }
+            });
+            updateModeSelector.addEventListener('click', (e) => {
+                // If it was a keyboard-triggered click, ignore it
+                if (e.detail === 0) return;
+
+                // Check if specific arrow was clicked
+                if (e.target.classList.contains('left-arrow')) {
+                    this.cycleUpdateMode(-1, true); // Direct save on arrow click
+                    return;
+                }
+                if (e.target.classList.contains('right-arrow')) {
+                    this.cycleUpdateMode(1, true); // Direct save on arrow click
+                    return;
+                }
+
+                if (!updateModeSelector.classList.contains('active')) {
+                    this.activeSelector = 'updateMode';
+                    this.originalValue = this.settings.updateMode;
+                    updateModeSelector.classList.add('active');
+                } else {
+                    this.cycleUpdateMode(1, false);
+                }
+            });
+        }
 
         // Manual check listener
         const checkBtn = document.getElementById('check-updates-btn');
@@ -237,13 +354,13 @@ class SettingsManager {
         }
     }
 
-    cycleUpdateMode(direction) {
+    cycleUpdateMode(direction, shouldSave = true) {
         let currentIndex = this.updateModes.findIndex(m => m.id === this.settings.updateMode);
         if (currentIndex === -1) currentIndex = 1;
 
         const nextIndex = (currentIndex + direction + this.updateModes.length) % this.updateModes.length;
         this.settings.updateMode = this.updateModes[nextIndex].id;
-        this.saveSettings();
+        if (shouldSave) this.saveSettings();
         this.updateUpdateUI();
     }
 
@@ -289,7 +406,7 @@ class SettingsManager {
         }
     }
 
-    async cycleLanguage(direction) {
+    async cycleLanguage(direction, shouldSave = true) {
         let currentIndex = this.languages.findIndex(l => l.id === this.settings.language);
         if (currentIndex === -1) currentIndex = 0;
 
@@ -297,13 +414,14 @@ class SettingsManager {
         const selectedLang = this.languages[nextIndex];
 
         this.settings.language = selectedLang.id;
-        this.saveSettings();
-
-        if (window.i18n) {
-            try {
-                await window.i18n.setLanguage(selectedLang.id);
-            } catch (e) {
-                console.error('Failed to set language:', e);
+        if (shouldSave) {
+            this.saveSettings();
+            if (window.i18n) {
+                try {
+                    await window.i18n.setLanguage(selectedLang.id);
+                } catch (e) {
+                    console.error('Failed to set language:', e);
+                }
             }
         }
         this.initializeUI();

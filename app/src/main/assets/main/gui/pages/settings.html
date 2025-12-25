@@ -20,10 +20,12 @@
                 <div class="setting-label" data-i18n="settings.language">Language</div>
                 <div class="setting-description" data-i18n="settings.languageDesc">Choose your preferred language</div>
             </div>
-            <div class="setting-control language-selector">
-                <button id="prev-lang-btn" class="arrow-btn focusable">‹</button>
-                <span id="current-language-text" class="language-text">Loading...</span>
-                <button id="next-lang-btn" class="arrow-btn focusable">›</button>
+            <div class="setting-control">
+                <div id="language-selector" class="cycle-selector focusable" tabindex="0">
+                    <span class="cycle-arrow left-arrow">‹</span>
+                    <span id="current-language-text" class="language-text">Loading...</span>
+                    <span class="cycle-arrow right-arrow">›</span>
+                </div>
             </div>
         </div>
 
@@ -64,10 +66,12 @@
                 <div class="setting-description" data-i18n="settings.updateModeDesc">Choose how the app handles updates
                 </div>
             </div>
-            <div class="setting-control mode-selector">
-                <button id="prev-update-mode-btn" class="arrow-btn focusable">‹</button>
-                <span id="current-update-mode-text" class="mode-text">Manual</span>
-                <button id="next-update-mode-btn" class="arrow-btn focusable">›</button>
+            <div class="setting-control">
+                <div id="update-mode-selector" class="cycle-selector focusable" tabindex="0">
+                    <span class="cycle-arrow left-arrow">‹</span>
+                    <span id="current-update-mode-text" class="mode-text">Manual</span>
+                    <span class="cycle-arrow right-arrow">›</span>
+                </div>
             </div>
         </div>
 

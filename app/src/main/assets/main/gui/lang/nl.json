@@ -207,6 +207,9 @@
         "save": "Opslaan",
         "delete": "Verwijderen",
         "cancel": "Annuleren",
+        "deleteConfirmTitle": "Profiel verwijderen",
+        "deleteConfirmMessage": "Weet u zeker dat u {name} wilt verwijderen?",
+        "confirmDelete": "Verwijderen",
         "enterPin": "Voer de PIN in voor {name}",
         "incorrectPin": "Onjuiste PIN. Probeer het opnieuw."
     }

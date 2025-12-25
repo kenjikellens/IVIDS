@@ -132,7 +132,95 @@ export const init = async (params) => {
         if (moveRight) moveRight.onclick = (e) => { e.stopPropagation(); reorderProfile(index, 1); };
         if (edit) edit.onclick = (e) => { e.stopPropagation(); showProfileModal(getUserIndex(index)); };
 
+        // Mobile Drag-and-Drop
+        let longPressTimer;
+        let isDragging = false;
+        let startX, startY;
+
+        card.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.manage-btn')) return;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+
+            longPressTimer = setTimeout(() => {
+                isDragging = true;
+                card.classList.add('dragging');
+                if (window.navigator.vibrate) window.navigator.vibrate(50);
+            }, 500);
+        }, { passive: true });
+
+        card.addEventListener('touchmove', (e) => {
+            if (!isDragging) {
+                const dx = Math.abs(e.touches[0].clientX - startX);
+                const dy = Math.abs(e.touches[0].clientY - startY);
+                if (dx > 10 || dy > 10) clearTimeout(longPressTimer);
+                return;
+            }
+
+            e.preventDefault(); // Prevent scrolling while dragging
+
+            const touch = e.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetCard = target ? target.closest('.profile-card') : null;
+
+            if (targetCard && targetCard !== card && targetCard.id.startsWith('profile-card-')) {
+                const targetIndex = parseInt(targetCard.dataset.index);
+                if (!isNaN(targetIndex)) {
+                    // Visual feedback: we could swap them in the DOM here for "premium" feel
+                    // but calling reorderProfile frequently might be heavy.
+                    // For now, let's just mark the target.
+                    document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('drag-over'));
+                    targetCard.classList.add('drag-over');
+                }
+            }
+        }, { passive: false });
+
+        card.addEventListener('touchend', (e) => {
+            clearTimeout(longPressTimer);
+            if (!isDragging) return;
+
+            isDragging = false;
+            card.classList.remove('dragging');
+            document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('drag-over'));
+
+            const touch = e.changedTouches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetCard = target ? target.closest('.profile-card') : null;
+
+            if (targetCard && targetCard !== card && targetCard.id.startsWith('profile-card-')) {
+                const targetIndex = parseInt(targetCard.dataset.index);
+                if (!isNaN(targetIndex)) {
+                    const direction = targetIndex - index;
+                    // We don't have a multi-swap reorderProfile, so let's call it 
+                    // or implement a direct swap/move logic
+                    moveProfileToIndex(index, targetIndex);
+                }
+            }
+        });
+
         return card;
+    };
+
+    const moveProfileToIndex = (fromIndex, toIndex) => {
+        // Reconstruct common list
+        const displayList = [...profiles];
+        displayList.splice(guestPos, 0, { id: 'guest', name: 'Guest', color: '#555' });
+
+        // Move item
+        const item = displayList.splice(fromIndex, 1)[0];
+        displayList.splice(toIndex, 0, item);
+
+        // Persist back
+        const newGuestPos = displayList.findIndex(p => p.id === 'guest');
+        const newProfiles = displayList.filter(p => p.id !== 'guest');
+
+        localStorage.setItem('ivids-profiles', JSON.stringify(newProfiles));
+        localStorage.setItem('ivids-guest-pos', newGuestPos);
+
+        profiles = newProfiles;
+        guestPos = newGuestPos;
+
+        renderProfiles();
     };
 
     /**
@@ -236,7 +324,7 @@ export const init = async (params) => {
                 deleteBtn.style.display = 'block';
                 deleteBtn.onclick = (e) => {
                     e.stopPropagation();
-                    deleteProfile(index);
+                    showDeleteConfirmation(index);
                 };
             }
             if (cancelBtn) cancelBtn.dataset.navLeft = '#delete-profile-btn';
@@ -283,9 +371,6 @@ export const init = async (params) => {
         const profileToDelete = profiles[index];
         const currentProfile = JSON.parse(localStorage.getItem('ivids-current-profile'));
 
-        // Confirmation (simple for now, can be improved)
-        if (!confirm(`Are you sure you want to delete ${profileToDelete.name}?`)) return;
-
         profiles.splice(index, 1);
         localStorage.setItem('ivids-profiles', JSON.stringify(profiles));
 
@@ -295,10 +380,40 @@ export const init = async (params) => {
             localStorage.removeItem('ivids-last-route');
         }
 
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        if (deleteConfirmModal) deleteConfirmModal.classList.remove('active');
+
         const profileModal = document.getElementById('profile-modal');
         if (profileModal) profileModal.classList.remove('active');
+
         SpatialNav.clearFocusTrap();
         renderProfiles();
+    };
+
+    const showDeleteConfirmation = (index) => {
+        const profileToDelete = profiles[index];
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const deleteConfirmMessage = document.getElementById('delete-confirm-message');
+        const confirmBtn = document.getElementById('confirm-delete-btn');
+        const cancelBtn = document.getElementById('cancel-delete-btn');
+
+        let message = window.i18n.t('profiles.deleteConfirmMessage');
+        message = message.replace('{name}', profileToDelete.name);
+        deleteConfirmMessage.textContent = message;
+
+        deleteConfirmModal.classList.add('active');
+        SpatialNav.setFocusTrap(deleteConfirmModal);
+        SpatialNav.setFocus(cancelBtn); // Safety first, focus cancel by default
+
+        confirmBtn.onclick = () => deleteProfile(index);
+        cancelBtn.onclick = () => {
+            deleteConfirmModal.classList.remove('active');
+            SpatialNav.clearFocusTrap();
+            // Go back to profile modal
+            const profileModal = document.getElementById('profile-modal');
+            SpatialNav.setFocusTrap(profileModal);
+            SpatialNav.setFocus(document.getElementById('delete-profile-btn'));
+        };
     };
 
     const showPinModal = (profile) => {

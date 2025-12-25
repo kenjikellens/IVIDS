@@ -201,6 +201,9 @@
         "save": "Save",
         "delete": "Delete",
         "cancel": "Cancel",
+        "deleteConfirmTitle": "Delete Profile",
+        "deleteConfirmMessage": "Are you sure you want to delete {name}?",
+        "confirmDelete": "Delete",
         "enterPin": "Enter PIN for {name}",
         "incorrectPin": "Incorrect PIN. Try again."
     }

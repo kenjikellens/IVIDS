@@ -71,7 +71,9 @@
 .profile-card.focusable:focus .profile-avatar-container,
 .profile-card:focus .profile-avatar-container,
 .profile-card.focused .profile-avatar-container,
-.profile-card:hover .profile-avatar-container {
+.profile-card:hover .profile-avatar-container,
+.profile-card.focused-within .profile-avatar-container,
+.profile-card:focus-within .profile-avatar-container {
     border-color: #fff;
     box-shadow: 0 0 0 0.3rem #fff;
 }
@@ -104,8 +106,23 @@
 .profile-card.focusable:focus .profile-name,
 .profile-card:focus .profile-name,
 .profile-card.focused .profile-name,
-.profile-card:hover .profile-name {
+.profile-card:hover .profile-name,
+.profile-card.focused-within .profile-name,
+.profile-card:focus-within .profile-name {
     color: #fff;
+}
+
+/* Drag and Drop */
+.profile-card.dragging {
+    opacity: 0.5;
+    transform: scale(1.1);
+    z-index: 2000;
+    pointer-events: none;
+}
+
+.profile-card.drag-over .profile-avatar-container {
+    border-color: var(--primary-color, #E50914);
+    box-shadow: 0 0 1.5rem var(--primary-color, #E50914);
 }
 
 /* Edit Mode Overlays */
@@ -341,6 +358,13 @@
     margin-bottom: 1rem;
 }
 
+.delete-confirm-message {
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 2rem 0;
+    color: #e0e0e0;
+}
+
 /* Animations */
 @keyframes fadeInDown {
     from {
@@ -382,7 +406,9 @@
 
 .profile-card.focusable:focus .profile-manage-controls,
 .profile-card.focused .profile-manage-controls,
-.profile-card:hover .profile-manage-controls {
+.profile-card:hover .profile-manage-controls,
+.profile-card.focused-within .profile-manage-controls,
+.profile-card:focus-within .profile-manage-controls {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);

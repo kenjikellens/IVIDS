@@ -198,6 +198,9 @@
         "save": "Speichern",
         "delete": "Löschen",
         "cancel": "Abbrechen",
+        "deleteConfirmTitle": "Profil löschen",
+        "deleteConfirmMessage": "Sind Sie sicher, dass Sie {name} löschen möchten?",
+        "confirmDelete": "Löschen",
         "enterPin": "PIN für {name} eingeben",
         "incorrectPin": "Falsche PIN. Versuche es erneut."
     }
