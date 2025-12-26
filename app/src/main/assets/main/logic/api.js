@@ -44,7 +44,19 @@ export const Api = {
     STILL_SIZE,
     DETAIL_POSTER_SIZE,
 
-    getImageUrl: (path, size = POSTER_SIZE) => path ? `${IMAGE_BASE_PATH}/${size}${path}` : 'assets/placeholder.png',
+    getRecommendedPosterSize: () => {
+        const width = window.innerWidth;
+        if (width > 1400) return POSTER_SIZE; // w342
+        if (width > 1000) return 'w185';
+        if (width > 700) return 'w154';
+        return 'w92';
+    },
+
+    getImageUrl: (path, size = null) => {
+        if (!path) return 'assets/placeholder.png';
+        const finalSize = size || Api.getRecommendedPosterSize();
+        return `${IMAGE_BASE_PATH}/${finalSize}${path}`;
+    },
 
     async fetchTrending() {
         try {
