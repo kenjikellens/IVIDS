@@ -18,6 +18,12 @@ window.closeSettingsModal = () => settingsManagerInstance?.closeModal();
 window.setPendingSetting = (key, value, el) => settingsManagerInstance?.setPending(key, value, el);
 window.applyPendingSetting = (key) => settingsManagerInstance?.applyPending(key);
 
+// Update Callbacks
+window.onUpdateStatus = (statusKey) => settingsManagerInstance?.handleUpdateStatus(statusKey);
+window.onUpdateFound = (version) => settingsManagerInstance?.handleUpdateFound(version);
+window.onNoUpdateFound = () => settingsManagerInstance?.handleNoUpdateFound();
+window.onUpdateCheckError = () => settingsManagerInstance?.handleUpdateError();
+
 class SettingsManager {
     constructor() {
         this.settings = this.loadSettings();
@@ -50,12 +56,18 @@ class SettingsManager {
         if (checkBtn) {
             checkBtn.onclick = () => {
                 if (window.AndroidUpdate) {
-                    checkBtn.disabled = true;
-                    // Inject loader container if not exists
+                    checkBtn.style.display = 'none';
+                    const statusText = document.getElementById('update-status-text');
+                    if (statusText) {
+                        statusText.style.display = 'inline-block';
+                        statusText.textContent = window.i18n?.t('settings.updateStatus.connecting-api') || 'Connecting...';
+                    }
+
+                    // Inject loader container
                     let loaderContainer = document.getElementById('update-loader-container');
                     if (loaderContainer) {
+                        loaderContainer.style.display = 'flex';
                         loaderContainer.innerHTML = '<div class="ivids-loader"></div>';
-                        // Trigger loader.js logic if available globaly
                         if (window.LoaderManager && window.LoaderManager.createLoader) {
                             const loaderEl = loaderContainer.querySelector('.ivids-loader');
                             window.LoaderManager.createLoader(loaderEl);
@@ -179,5 +191,68 @@ class SettingsManager {
         mainDoc.documentElement.setAttribute('lang', this.settings.language);
     }
 
+    handleUpdateStatus(statusKey) {
+        console.log('Update Status:', statusKey);
+        const statusText = document.getElementById('update-status-text');
+        if (statusText) {
+            statusText.textContent = window.i18n?.t(`settings.updateStatus.${statusKey}`) || statusKey;
+        }
+    }
 
+    handleUpdateFound(version) {
+        console.log('Update Found:', version);
+        const statusText = document.getElementById('update-status-text');
+        const loaderContainer = document.getElementById('update-loader-container');
+        const checkBtn = document.getElementById('check-updates-btn');
+
+        if (statusText) statusText.textContent = (window.i18n?.t('settings.updateFound') || 'Update Found') + ': ' + version;
+        if (loaderContainer) loaderContainer.style.display = 'none';
+
+        if (checkBtn) {
+            checkBtn.style.display = 'inline-block';
+            checkBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
+            checkBtn.onclick = () => {
+                if (window.AndroidUpdate) {
+                    window.AndroidUpdate.downloadAndInstall();
+                }
+            };
+        }
+    }
+
+    handleNoUpdateFound() {
+        console.log('No update found');
+        const statusText = document.getElementById('update-status-text');
+        const loaderContainer = document.getElementById('update-loader-container');
+        const checkBtn = document.getElementById('check-updates-btn');
+
+        if (statusText) statusText.textContent = window.i18n?.t('settings.noUpdate') || 'Up to date';
+        if (loaderContainer) loaderContainer.style.display = 'none';
+
+        setTimeout(() => {
+            if (checkBtn) {
+                checkBtn.style.display = 'inline-block';
+                checkBtn.textContent = window.i18n?.t('settings.checkButton') || 'Check Now';
+                this.initializeUI(); // Re-bind original click
+            }
+            if (statusText) statusText.style.display = 'none';
+        }, 3000);
+    }
+
+    handleUpdateError() {
+        console.error('Update check error');
+        const statusText = document.getElementById('update-status-text');
+        const loaderContainer = document.getElementById('update-loader-container');
+        const checkBtn = document.getElementById('check-updates-btn');
+
+        if (statusText) statusText.textContent = window.i18n?.t('settings.updateError') || 'Error checking';
+        if (loaderContainer) loaderContainer.style.display = 'none';
+
+        setTimeout(() => {
+            if (checkBtn) {
+                checkBtn.style.display = 'inline-block';
+                this.initializeUI(); // Re-bind original click
+            }
+            if (statusText) statusText.style.display = 'none';
+        }, 3000);
+    }
 }

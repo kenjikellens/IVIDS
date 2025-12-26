@@ -47,6 +47,7 @@ public class UpdateManager {
         mExecutor.execute(() -> {
             try {
                 URL url = new URL(GITHUB_API_URL);
+                notifyWebUpdateStatus("connecting-api");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
@@ -63,6 +64,7 @@ public class UpdateManager {
                     reader.close();
 
                     JSONArray releases = new JSONArray(response.toString());
+                    notifyWebUpdateStatus("fetching-releases");
                     if (releases.length() == 0) {
                         Log.d(TAG, "No releases found");
                         notifyWebNoUpdateFound();
@@ -80,6 +82,7 @@ public class UpdateManager {
 
                     if (isNewerVersion(currentVersion, mLatestVersion)) {
                         Log.d(TAG, "New update found: " + mLatestVersion + ". Searching for APK in main branch...");
+                        notifyWebUpdateStatus("searching-apk");
 
                         // New logic: Fetch repo contents from main branch
                         URL contentsUrl = new URL("https://api.github.com/repos/kenjikellens/IVIDS/contents/?ref=main");
@@ -137,6 +140,7 @@ public class UpdateManager {
 
     private boolean isNewerVersion(String current, String latest) {
         try {
+            notifyWebUpdateStatus("comparing-versions");
             // Remove 'v' prefix if present
             String c = current.startsWith("v") ? current.substring(1) : current;
             String l = latest.startsWith("v") ? latest.substring(1) : latest;
@@ -173,6 +177,7 @@ public class UpdateManager {
         mExecutor.execute(() -> {
             try {
                 URL url = new URL(mDownloadUrl);
+                notifyWebUpdateStatus("downloading");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty("User-Agent", "IVIDS-Android-App");
                 conn.connect();
@@ -208,6 +213,7 @@ public class UpdateManager {
 
     private void installApk(File apkFile) {
         try {
+            notifyWebUpdateStatus("installing");
             Uri apkUri = FileProvider.getUriForFile(mActivity,
                     mActivity.getPackageName() + ".fileprovider", apkFile);
 
@@ -236,6 +242,13 @@ public class UpdateManager {
     private void notifyWebNoUpdateFound() {
         mActivity.runOnUiThread(() -> {
             mWebView.evaluateJavascript("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();", null);
+        });
+    }
+
+    private void notifyWebUpdateStatus(String statusKey) {
+        mActivity.runOnUiThread(() -> {
+            mWebView.evaluateJavascript("if(typeof onUpdateStatus === 'function') onUpdateStatus('" + statusKey + "');",
+                    null);
         });
     }
 

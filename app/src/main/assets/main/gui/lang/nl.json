@@ -55,6 +55,14 @@
             "auto": "Auto",
             "manual": "Handmatig",
             "none": "Uit"
+        },
+        "updateStatus": {
+            "connecting-api": "Verbinden met server...",
+            "fetching-releases": "Controleren op releases...",
+            "searching-apk": "Updatepakket zoeken...",
+            "comparing-versions": "Versie verifiëren...",
+            "downloading": "Update downloaden...",
+            "installing": "Installatie voorbereiden..."
         }
     },
     "common": {

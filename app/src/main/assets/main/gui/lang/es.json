@@ -55,6 +55,14 @@
             "auto": "Auto",
             "manual": "Manual",
             "none": "Desactivado"
+        },
+        "updateStatus": {
+            "connecting-api": "Conectando al servidor...",
+            "fetching-releases": "Buscando versiones...",
+            "searching-apk": "Localizando paquete de actualización...",
+            "comparing-versions": "Verificando versión...",
+            "downloading": "Descargando actualización...",
+            "installing": "Preparando instalación..."
         }
     },
     "common": {

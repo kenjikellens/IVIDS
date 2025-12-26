@@ -55,6 +55,14 @@
             "auto": "Auto",
             "manual": "Manuell",
             "none": "Aus"
+        },
+        "updateStatus": {
+            "connecting-api": "Verbindung zum Server wird hergestellt...",
+            "fetching-releases": "Suche nach Versionen...",
+            "searching-apk": "Update-Paket wird lokalisiert...",
+            "comparing-versions": "Version wird verifiziert...",
+            "downloading": "Update wird heruntergeladen...",
+            "installing": "Installation wird vorbereitet..."
         }
     },
     "common": {
