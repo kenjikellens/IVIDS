@@ -72,33 +72,56 @@ public class UpdateManager {
                     // The first release in the array is the most recent (stable or pre-release)
                     JSONObject json = releases.getJSONObject(0);
                     mLatestVersion = json.getString("tag_name");
-                    JSONArray assets = json.getJSONArray("assets");
 
-                    mDownloadUrl = null;
-                    for (int i = 0; i < assets.length(); i++) {
-                        JSONObject asset = assets.getJSONObject(i);
-                        String name = asset.getString("name");
-                        if (name.toLowerCase().endsWith(".apk")) {
-                            mDownloadUrl = asset.getString("browser_download_url");
-                            break;
-                        }
-                    }
+                    String currentVersion = mActivity.getPackageManager()
+                            .getPackageInfo(mActivity.getPackageName(), 0).versionName;
 
-                    if (mDownloadUrl != null) {
-                        String currentVersion = mActivity.getPackageManager()
-                                .getPackageInfo(mActivity.getPackageName(), 0).versionName;
+                    Log.d(TAG, "Current version: " + currentVersion + ", Latest version: " + mLatestVersion);
 
-                        Log.d(TAG, "Current version: " + currentVersion + ", Latest version: " + mLatestVersion);
+                    if (isNewerVersion(currentVersion, mLatestVersion)) {
+                        Log.d(TAG, "New update found: " + mLatestVersion + ". Searching for APK in main branch...");
 
-                        if (isNewerVersion(currentVersion, mLatestVersion)) {
-                            Log.d(TAG, "New update found: " + mLatestVersion);
-                            notifyWebFoundUpdate(mLatestVersion);
+                        // New logic: Fetch repo contents from main branch
+                        URL contentsUrl = new URL("https://api.github.com/repos/kenjikellens/IVIDS/contents/?ref=main");
+                        HttpURLConnection contentsConn = (HttpURLConnection) contentsUrl.openConnection();
+                        contentsConn.setRequestMethod("GET");
+                        contentsConn.setRequestProperty("Accept", "application/vnd.github.v3+json");
+                        contentsConn.setRequestProperty("User-Agent", "IVIDS-Android-App");
+
+                        if (contentsConn.getResponseCode() == 200) {
+                            BufferedReader contentsReader = new BufferedReader(
+                                    new InputStreamReader(contentsConn.getInputStream()));
+                            StringBuilder contentsResponse = new StringBuilder();
+                            String cLine;
+                            while ((cLine = contentsReader.readLine()) != null) {
+                                contentsResponse.append(cLine);
+                            }
+                            contentsReader.close();
+
+                            JSONArray contents = new JSONArray(contentsResponse.toString());
+                            mDownloadUrl = null;
+                            for (int i = 0; i < contents.length(); i++) {
+                                JSONObject asset = contents.getJSONObject(i);
+                                String name = asset.getString("name");
+                                if (name.toLowerCase().endsWith(".apk")) {
+                                    mDownloadUrl = asset.getString("download_url");
+                                    break;
+                                }
+                            }
+
+                            if (mDownloadUrl != null) {
+                                Log.d(TAG, "Found APK in main branch: " + mDownloadUrl);
+                                notifyWebFoundUpdate(mLatestVersion);
+                            } else {
+                                Log.d(TAG, "No APK found in main branch");
+                                notifyWebNoUpdateFound();
+                            }
                         } else {
-                            Log.d(TAG, "App is up to date");
-                            notifyWebNoUpdateFound();
+                            Log.e(TAG, "GitHub Contents API returned error: " + contentsConn.getResponseCode());
+                            notifyWebUpdateError();
                         }
                     } else {
-                        Log.d(TAG, "No APK found in latest release");
+                        Log.d(TAG, "App is up to date");
                         notifyWebNoUpdateFound();
                     }
                 } else {
