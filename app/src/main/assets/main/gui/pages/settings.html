@@ -21,30 +21,26 @@
                 <div class="setting-description" data-i18n="settings.languageDesc">Choose your preferred language</div>
             </div>
             <div class="setting-control">
-                <div id="language-selector" class="cycle-selector focusable" tabindex="0">
-                    <span class="cycle-arrow left-arrow">‹</span>
-                    <span id="current-language-text" class="language-text">Loading...</span>
-                    <span class="cycle-arrow right-arrow">›</span>
-                </div>
+                <div id="current-language-display" class="current-value-display">English</div>
+                <button id="edit-language-btn" class="edit-trigger focusable"
+                    onclick="openSettingsModal('language-modal')">
+                    <div class="edit-icon"></div>
+                </button>
             </div>
         </div>
 
-        <div class="setting-item color-setting">
+        <div class="setting-item">
             <div class="setting-info">
                 <div class="setting-label" data-i18n="settings.accentColor">Accent Color</div>
                 <div class="setting-description" data-i18n="settings.accentColorDesc">Choose your preferred theme color
                 </div>
             </div>
-
-            <!-- Landscape Mode: Grid of Colors -->
-            <div class="color-row landscape-only" id="landscape-color-container">
-                <!-- Colors will be injected here by JS -->
-            </div>
-
-            <!-- Portrait Mode: Trigger Button -->
-            <div class="portrait-color-trigger portrait-only focusable" id="portrait-color-trigger" tabindex="0">
-                <div class="trigger-preview" id="trigger-color-preview"></div>
-                <div class="trigger-icon"></div>
+            <div class="setting-control">
+                <div id="current-color-display" class="current-value-display"
+                    style="border-bottom: 3px solid var(--primary-color)">Accent</div>
+                <button id="edit-color-btn" class="edit-trigger focusable" onclick="openSettingsModal('color-modal')">
+                    <div class="edit-icon"></div>
+                </button>
             </div>
         </div>
     </div>
@@ -67,51 +63,116 @@
                 </div>
             </div>
             <div class="setting-control">
-                <div id="update-mode-selector" class="cycle-selector focusable" tabindex="0">
-                    <span class="cycle-arrow left-arrow">‹</span>
-                    <span id="current-update-mode-text" class="mode-text">Manual</span>
-                    <span class="cycle-arrow right-arrow">›</span>
-                </div>
+                <div id="current-update-mode-display" class="current-value-display">Manual</div>
+                <button id="edit-update-mode-btn" class="edit-trigger focusable"
+                    onclick="openSettingsModal('update-mode-modal')">
+                    <div class="edit-icon"></div>
+                </button>
             </div>
         </div>
 
         <div id="manual-check-container" class="setting-item" style="display: none;">
             <div class="setting-info">
                 <div class="setting-label" data-i18n="settings.checkNow">Check for Updates</div>
-                <div class="setting-description" data-i18n="settings.checkNowDesc">Manually check if a new version is
-                    available</div>
+                <div class="setting-description" data-i18n="settings.checkNowDesc">Manually search for updates</div>
             </div>
-            <div class="setting-control">
-                <button id="check-updates-btn" class="accent-btn focusable" data-i18n="settings.checkButton">Controleren
-                    ›</button>
-            </div>
-        </div>
-
-        <div id="update-available-container" class="setting-item" style="display: none;">
-            <div class="setting-info">
-                <div class="setting-label" data-i18n="settings.updateFound">New Version Available</div>
-                <div class="setting-description" id="update-version-text">v1.1.0</div>
-            </div>
-            <div class="setting-control">
-                <button id="install-update-btn" class="accent-btn focusable highlight" data-i18n="settings.updateNow">Nu
-                    Installeren ›</button>
+            <div class="setting-control update-control">
+                <div id="update-loader-container" class="loader-inline-container"></div>
+                <button id="check-updates-btn" class="action-btn focusable" data-i18n="settings.checkButton">Check
+                    Now</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Color Selection Modal (Portrait) -->
-<div class="color-modal-overlay" id="color-modal">
-    <div class="color-modal-content">
-        <h3 data-i18n="settings.selectColor">Select Color</h3>
-        <div class="color-row modal-colors" id="modal-color-container">
-            <!-- Colors will be injected here by JS -->
+<!-- Language Modal -->
+<div id="language-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="settings.language">Language</h2>
+        <div class="modal-body">
+            <div id="language-options" class="option-grid">
+                <div class="option-chip focusable" data-value="en" onclick="setPendingSetting('language', 'en', this)">
+                    English</div>
+                <div class="option-chip focusable" data-value="es" onclick="setPendingSetting('language', 'es', this)">
+                    Español</div>
+                <div class="option-chip focusable" data-value="fr" onclick="setPendingSetting('language', 'fr', this)">
+                    Français</div>
+                <div class="option-chip focusable" data-value="de" onclick="setPendingSetting('language', 'de', this)">
+                    Deutsch</div>
+                <div class="option-chip focusable" data-value="nl" onclick="setPendingSetting('language', 'nl', this)">
+                    Nederlands</div>
+            </div>
         </div>
-        <button class="modal-close-btn focusable" id="modal-close-btn" data-i18n="common.close">Close</button>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
+                data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" onclick="applyPendingSetting('language')"
+                data-i18n="common.apply">Apply</button>
+        </div>
     </div>
 </div>
 
-<!-- Save Notification -->
-<div class="save-notification" id="save-notification">
-    ✓ Settings saved!
+<!-- Color Modal -->
+<div id="color-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="settings.accentColor">Accent Color</h2>
+        <div class="modal-body">
+            <div id="color-options" class="option-grid color-option-grid">
+                <div class="option-chip focusable color-only" data-value="#46d369"
+                    onclick="setPendingSetting('accentColor', '#46d369', this)">
+                    <div class="color-dot" style="background-color: #46d369"></div>
+                </div>
+                <div class="option-chip focusable color-only" data-value="#e50914"
+                    onclick="setPendingSetting('accentColor', '#e50914', this)">
+                    <div class="color-dot" style="background-color: #e50914"></div>
+                </div>
+                <div class="option-chip focusable color-only" data-value="#00d4ff"
+                    onclick="setPendingSetting('accentColor', '#00d4ff', this)">
+                    <div class="color-dot" style="background-color: #00d4ff"></div>
+                </div>
+                <div class="option-chip focusable color-only" data-value="#9146ff"
+                    onclick="setPendingSetting('accentColor', '#9146ff', this)">
+                    <div class="color-dot" style="background-color: #9146ff"></div>
+                </div>
+                <div class="option-chip focusable color-only" data-value="#ff6b35"
+                    onclick="setPendingSetting('accentColor', '#ff6b35', this)">
+                    <div class="color-dot" style="background-color: #ff6b35"></div>
+                </div>
+                <div class="option-chip focusable color-only" data-value="#ffd700"
+                    onclick="setPendingSetting('accentColor', '#ffd700', this)">
+                    <div class="color-dot" style="background-color: #ffd700"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
+                data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" onclick="applyPendingSetting('accentColor')"
+                data-i18n="common.apply">Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- Update Mode Modal -->
+<div id="update-mode-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="settings.updateMode">Update Mode</h2>
+        <div class="modal-body">
+            <div id="update-mode-options" class="option-grid">
+                <div class="option-chip focusable" data-value="auto"
+                    onclick="setPendingSetting('updateMode', 'auto', this)" data-i18n="settings.mode.auto">Auto</div>
+                <div class="option-chip focusable" data-value="manual"
+                    onclick="setPendingSetting('updateMode', 'manual', this)" data-i18n="settings.mode.manual">Manual
+                </div>
+                <div class="option-chip focusable" data-value="none"
+                    onclick="setPendingSetting('updateMode', 'none', this)" data-i18n="settings.mode.none">Off</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
+                data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" onclick="applyPendingSetting('updateMode')"
+                data-i18n="common.apply">Apply</button>
+        </div>
+    </div>
 </div>

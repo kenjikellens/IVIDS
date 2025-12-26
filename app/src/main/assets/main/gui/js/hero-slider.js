@@ -48,7 +48,7 @@ export class HeroSlider {
         if (!item) return;
 
         // Preload image
-        const imageUrl = Api.getImageUrl(item.backdrop_path);
+        const imageUrl = Api.getImageUrl(item.backdrop_path, Api.BACKDROP_SIZE);
         const img = new Image();
         img.src = imageUrl;
 

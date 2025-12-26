@@ -157,7 +157,7 @@ function render(item, type) {
         const poster = document.getElementById('details-poster');
         if (poster && item.poster_path) {
             try {
-                poster.src = Api.getImageUrl(item.poster_path);
+                poster.src = Api.getImageUrl(item.poster_path, Api.DETAIL_POSTER_SIZE);
             } catch (pError) {
                 console.error('Error setting poster image:', pError);
             }
@@ -488,7 +488,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 const episodeNumber = episode.episode_number || '?';
                 const episodeName = episode.name || I18n.t('details.untitled');
                 const episodeOverview = episode.overview || I18n.t('details.noDescription');
-                const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path) : '';
+                const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.STILL_SIZE) : '';
 
                 el.innerHTML = `
                     <div class="episode-image" style="${stillPath ? `background-image: url('${stillPath}')` : ''}"></div>

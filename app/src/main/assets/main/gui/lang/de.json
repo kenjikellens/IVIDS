@@ -44,11 +44,13 @@
         "updateModeDesc": "Wählen Sie, wie die App mit Updates umgeht",
         "checkNow": "Update-Prüfung",
         "checkNowDesc": "Manuell nach neuen Versionen suchen",
-        "checkButton": "Prüfen ›",
+        "checkButton": "Prüfen",
         "check": "Prüfen",
         "checking": "Prüfung...",
         "updateFound": "Update verfügbar",
-        "updateNow": "Jetzt Installieren ›",
+        "updateNow": "Jetzt Installieren",
+        "noUpdate": "Aktuell",
+        "updateError": "Fehler bei Prüfung",
         "mode": {
             "auto": "Auto",
             "manual": "Manuell",
@@ -56,7 +58,9 @@
         }
     },
     "common": {
-        "close": "Schließen"
+        "close": "Schließen",
+        "apply": "Anwenden",
+        "cancel": "Abbrechen"
     },
     "home": {
         "welcome": "Willkommen bei IVIDS",

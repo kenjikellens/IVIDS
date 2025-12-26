@@ -44,11 +44,13 @@
         "updateModeDesc": "Kies hoe de app omgaat met updates",
         "checkNow": "Update Controle",
         "checkNowDesc": "Handmatig zoeken naar nieuwe app-versies",
-        "checkButton": "Controleren ›",
+        "checkButton": "Controleren",
         "check": "Controleren",
         "checking": "Zoeken...",
         "updateFound": "Update Beschikbaar",
-        "updateNow": "Nu Installeren ›",
+        "updateNow": "Nu Installeren",
+        "noUpdate": "Up-to-date",
+        "updateError": "Fout bij controle",
         "mode": {
             "auto": "Auto",
             "manual": "Handmatig",
@@ -56,7 +58,9 @@
         }
     },
     "common": {
-        "close": "Sluiten"
+        "close": "Sluiten",
+        "apply": "Toepassen",
+        "cancel": "Annuleren"
     },
     "home": {
         "welcome": "Welkom bij IVIDS",

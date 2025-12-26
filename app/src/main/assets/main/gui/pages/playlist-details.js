@@ -37,7 +37,7 @@ function render() {
     if (backdropEl) {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
-            const backdropUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, 'original');
+            const backdropUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.BACKDROP_SIZE);
             backdropEl.innerHTML = `
                 <img src="${backdropUrl}" alt="Backdrop">
                 <div class="backdrop-overlay"></div>

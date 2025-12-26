@@ -1,7 +1,13 @@
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
 const BASE_URL = 'https://api.themoviedb.org/3';
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
+const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
 const VIDSRC_BASE_URL = 'https://vidsrc.net/embed';
+
+// Image Size Constants
+const POSTER_SIZE = 'w342';       // Standard poster size for grids
+const BACKDROP_SIZE = 'w1280';    // High res for backgrounds
+const STILL_SIZE = 'w300';        // Small stills for episode lists
+const DETAIL_POSTER_SIZE = 'w500'; // Medium size for details page
 
 // Helper for network timeouts
 async function fetchWithTimeout(resource, options = {}) {
@@ -32,7 +38,13 @@ function shuffleArray(array) {
 
 export const Api = {
     getApiKey: () => API_KEY,
-    getImageUrl: (path) => path ? `${IMAGE_BASE_URL}${path}` : 'assets/placeholder.png',
+    // Size constants
+    POSTER_SIZE,
+    BACKDROP_SIZE,
+    STILL_SIZE,
+    DETAIL_POSTER_SIZE,
+
+    getImageUrl: (path, size = POSTER_SIZE) => path ? `${IMAGE_BASE_PATH}/${size}${path}` : 'assets/placeholder.png',
 
     async fetchTrending() {
         try {

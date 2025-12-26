@@ -44,11 +44,13 @@
         "updateModeDesc": "Choisir comment l'application gère les mises à jour",
         "checkNow": "Contrôle de mise à jour",
         "checkNowDesc": "Rechercher manuellement des mises à jour",
-        "checkButton": "Vérifier ›",
+        "checkButton": "Vérifier",
         "check": "Vérifier",
         "checking": "Vérification...",
         "updateFound": "Update Disponible",
-        "updateNow": "Installer ›",
+        "updateNow": "Installer",
+        "noUpdate": "À jour",
+        "updateError": "Erreur lors de la vérification",
         "mode": {
             "auto": "Auto",
             "manual": "Manuel",
@@ -56,7 +58,9 @@
         }
     },
     "common": {
-        "close": "Fermer"
+        "close": "Fermer",
+        "apply": "Appliquer",
+        "cancel": "Annuler"
     },
     "home": {
         "welcome": "Bienvenue sur IVIDS",

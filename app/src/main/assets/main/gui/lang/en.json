@@ -38,11 +38,13 @@
         "updateModeDesc": "Choose how the app handles updates",
         "checkNow": "Update Check",
         "checkNowDesc": "Manually search for new app versions",
-        "checkButton": "CheckNow ›",
+        "checkButton": "Check Now",
         "check": "Check",
         "checking": "Searching...",
         "updateFound": "Update Available",
-        "updateNow": "Install Now ›",
+        "updateNow": "Install Now",
+        "noUpdate": "Up to date",
+        "updateError": "Error checking",
         "mode": {
             "auto": "Auto",
             "manual": "Manual",
@@ -50,7 +52,9 @@
         }
     },
     "common": {
-        "close": "Close"
+        "close": "Close",
+        "apply": "Apply",
+        "cancel": "Cancel"
     },
     "home": {
         "welcome": "Welcome to IVIDS",
