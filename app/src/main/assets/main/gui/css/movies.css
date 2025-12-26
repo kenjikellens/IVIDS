@@ -1,15 +1,28 @@
 /* Movies Page Styles */
 
 /* Hero Section */
-.hero {
-    height: 60vh;
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
-    padding-left: 60px;
-    padding-bottom: 80px;
+height: 60vh;
+position: relative;
+background-size: cover;
+background-position: center;
+display: flex;
+align-items: flex-end;
+padding-left: 60px;
+padding-bottom: 80px;
+transition: background-image 1s ease-in-out;
+will-change: background-image;
+}
+
+.hero-content {
+    z-index: 10;
+    max-width: 800px;
+    margin-top: 0;
+    padding-top: 0;
+    transition: opacity 0.5s ease;
+}
+
+.hero-content.transitioning {
+    opacity: 0;
 }
 
 #hero-loader-container-movies {
@@ -102,6 +115,7 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    will-change: transform;
 }
 
 .row-posters::-webkit-scrollbar {

@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         AD_HOSTS.add("ad.interia.pl");
         AD_HOSTS.add("ad.infoseek.co.jp");
         AD_HOSTS.add("ad.infobae.com");
+        AD_HOSTS.add("ad.infobae.com");
         AD_HOSTS.add("ad.indiatimes.com");
         AD_HOSTS.add("ad.impress.co.jp");
         AD_HOSTS.add("ad.ilivid.com");
@@ -252,7 +253,8 @@ public class MainActivity extends AppCompatActivity {
             android.view.MotionEvent downEvent = android.view.MotionEvent.obtain(duration, duration,
                     android.view.MotionEvent.ACTION_DOWN, x, y, 0);
             android.view.MotionEvent upEvent = android.view.MotionEvent.obtain(duration, duration + 100,
-                    android.view.MotionEvent.ACTION_UP, x, y, 0);
+                    android.view.KeyEvent.ACTION_UP, x, y, 0); // WAIT: Incorrect event type here too, fix while I'm at
+                                                               // it
             mWebView.dispatchTouchEvent(downEvent);
             mWebView.dispatchTouchEvent(upEvent);
             downEvent.recycle();
@@ -380,5 +382,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mWebView.loadUrl("file:///android_asset/main/gui/index.html");
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Prevent the app from closing when back is pressed.
+        // The back navigation is handled by the JS layer (SpatialNav).
+        Log.d(TAG, "onBackPressed: prevented app closure");
     }
 }

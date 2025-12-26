@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.kenjigames.ivids"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.kenjigames.ivids"

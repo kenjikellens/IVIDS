@@ -154,10 +154,19 @@ function render(item, type) {
             overview.textContent = item.overview || I18n.t('details.noDescription');
         }
 
+        if (bg && item.backdrop_path) {
+            const backdropUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
+            bg.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url(${backdropUrl})`;
+            bg.style.backgroundSize = 'cover';
+            bg.style.backgroundPosition = 'center';
+            bg.style.willChange = 'background-image';
+        }
+
         const poster = document.getElementById('details-poster');
         if (poster && item.poster_path) {
             try {
-                poster.src = Api.getImageUrl(item.poster_path, Api.DETAIL_POSTER_SIZE);
+                poster.src = Api.getImageUrl(item.poster_path, Api.getRecommendedDetailPosterSize());
+                poster.style.willChange = 'transform';
             } catch (pError) {
                 console.error('Error setting poster image:', pError);
             }
@@ -229,7 +238,7 @@ function renderRecommendations(items) {
 
             const img = document.createElement('img');
             img.className = 'poster focusable';
-            img.src = Api.getImageUrl(item.poster_path);
+            img.src = Api.getImageUrl(item.poster_path, Api.getRecommendedPosterSize());
             img.alt = item.title || item.name;
             img.tabIndex = 0;
 
@@ -491,7 +500,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.STILL_SIZE) : '';
 
                 el.innerHTML = `
-                    <div class="episode-image" style="${stillPath ? `background-image: url('${stillPath}')` : ''}"></div>
+                    <div class="episode-image" style="${stillPath ? `background-image: url('${stillPath}')` : ''}; will-change: transform;"></div>
                     <div class="episode-info">
                         <div class="episode-header">
                             <span class="episode-number">${episodeNumber}.</span>

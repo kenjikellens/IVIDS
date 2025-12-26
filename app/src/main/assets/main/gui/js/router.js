@@ -194,10 +194,38 @@ export const Router = {
         }
     },
 
-    goBack() {
+    goBack(fallbackPage = null, fallbackParams = {}) {
         if (this.history.length > 0) {
             const lastPage = this.history.pop();
             this.loadPage(lastPage.page, lastPage.params, false);
+        } else {
+            // No history (likely after reload)
+            const fallback = fallbackPage || this.getFallbackPage(this.currentPage, this.params);
+            if (fallback) {
+                console.log(`No history, using fallback: ${fallback}`);
+                this.loadPage(fallback, fallbackParams, false);
+            } else if (this.currentPage !== 'home') {
+                // Absolute fallback to home
+                this.loadPage('home', {}, false);
+            } else {
+                console.log('Already on home and no history. App will not close.');
+            }
         }
+    },
+
+    getFallbackPage(currentPage, params) {
+        const fallbacks = {
+            'player': 'details',
+            'details': 'home',
+            'playlist-details': 'playlists',
+            'playlists': 'home',
+            'settings': 'home',
+            'account': 'home',
+            'search': 'home',
+            'movies': 'home',
+            'series': 'home'
+        };
+
+        return fallbacks[currentPage] || 'home';
     }
 };

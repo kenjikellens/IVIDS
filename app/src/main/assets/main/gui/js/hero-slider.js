@@ -48,30 +48,17 @@ export class HeroSlider {
         if (!item) return;
 
         // Preload image
-        const imageUrl = Api.getImageUrl(item.backdrop_path, Api.BACKDROP_SIZE);
+        const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
         const img = new Image();
         img.src = imageUrl;
 
         img.onload = () => {
             if (this.isDestroyed) return;
-            // Apply transition to background
-            if (this.container) {
-                this.container.style.transition = 'background-image 1s ease-in-out';
-                this.container.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url(${imageUrl})`;
-            }
-
-            // Hide loader container on first load
-            if (this.container) {
-                const loader = this.container.querySelector('.loader-center-container');
-                if (loader) {
-                    loader.style.display = 'none';
-                }
-            }
 
             // Signal Splash that first hero is loaded
             Splash.signalContentLoaded();
 
-            // Update Content with fade effect
+            // Update Content
             this.updateContent(item);
         };
 
@@ -91,15 +78,18 @@ export class HeroSlider {
     updateContent(item) {
         if (this.isDestroyed) return;
 
-        const elements = [this.titleEl, this.descEl];
+        // Apply background to container immediately with CSS transition handling the rest
+        if (this.container) {
+            const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
+            this.container.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url(${imageUrl})`;
 
-        // Fade out
-        elements.forEach(el => {
-            if (el) {
-                el.style.transition = 'opacity 0.5s ease';
-                el.style.opacity = 0;
-            }
-        });
+            // Hide initial loader
+            const loader = this.container.querySelector('.loader-center-container');
+            if (loader) loader.style.display = 'none';
+        }
+
+        const content = this.container ? this.container.querySelector('.hero-content') : null;
+        if (content) content.classList.add('transitioning');
 
         setTimeout(() => {
             if (this.isDestroyed) return;
@@ -116,10 +106,7 @@ export class HeroSlider {
                 this.detailsBtn.onclick = () => Router.loadPage('details', { id: item.id, type: item.media_type || (item.name ? 'tv' : 'movie') });
             }
 
-            // Fade in
-            elements.forEach(el => {
-                if (el) el.style.opacity = 1;
-            });
+            if (content) content.classList.remove('transitioning');
         }, 500);
     }
 

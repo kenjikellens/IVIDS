@@ -54,6 +54,23 @@
     }
 }
 
+/* Shimmer Effect for Skeletons */
+@keyframes shimmer {
+    0% {
+        background-position: -468px 0;
+    }
+
+    100% {
+        background-position: 468px 0;
+    }
+}
+
+.skeleton-poster {
+    background: #2f2f2f linear-gradient(to right, #2f2f2f 8%, #3d3d3d 18%, #2f2f2f 33%);
+    background-size: 800px 104px;
+    animation: shimmer 2s infinite linear;
+}
+
 /* Overlay Styles */
 .loading-overlay {
     background: rgba(0, 0, 0, 0.7);

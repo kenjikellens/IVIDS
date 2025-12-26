@@ -51,7 +51,7 @@ function createPlaylistCard(playlist) {
     card.dataset.id = playlist.id;
 
     // Get cover image from first item or use placeholder
-    let imageUrl = 'images/placeholder-playlist.png';
+    let imageUrl = 'images/placeholder-playlist.svg';
     if (playlist.items && playlist.items.length > 0) {
         const firstItem = playlist.items[0];
         if (firstItem.backdrop_path || firstItem.poster_path) {

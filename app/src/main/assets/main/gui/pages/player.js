@@ -136,7 +136,7 @@ export async function init(params) {
                         // Restore header when leaving player
                         const header = document.getElementById('header');
                         if (header) header.style.display = '';
-                        Router.goBack();
+                        Router.goBack('details', { id: params.id, type: params.type });
                     } catch (backError) {
                         console.error('Error handling back button:', backError);
                     }

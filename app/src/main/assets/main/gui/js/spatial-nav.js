@@ -102,12 +102,16 @@ export const SpatialNav = {
 
         element.classList.add('focused');
 
-        // Add focused-within to all parents
+        // We rely on CSS :focus-within for most things, 
+        // but keep a minimal class for legacy or complex container styling if absolutely needed.
+        // However, let's try to remove this manual loop for better performance.
+        /*
         let parent = element.parentElement;
         while (parent && parent !== document.body) {
             parent.classList.add('focused-within');
             parent = parent.parentElement;
         }
+        */
 
         if (this.isPortrait() && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
             element.readOnly = false;

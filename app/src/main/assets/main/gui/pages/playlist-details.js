@@ -37,7 +37,7 @@ function render() {
     if (backdropEl) {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
-            const backdropUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.BACKDROP_SIZE);
+            const backdropUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.getRecommendedBackdropSize());
             backdropEl.innerHTML = `
                 <img src="${backdropUrl}" alt="Backdrop">
                 <div class="backdrop-overlay"></div>
@@ -197,7 +197,7 @@ function attachListeners(playlist) {
 
     if (backBtn) {
         backBtn.addEventListener('click', () => {
-            Router.goBack();
+            Router.goBack('playlists');
         });
         backBtn.addEventListener('keydown', handleLeftNav);
     }

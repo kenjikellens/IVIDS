@@ -44,17 +44,63 @@ export const Api = {
     STILL_SIZE,
     DETAIL_POSTER_SIZE,
 
+    isTV: () => {
+        const ua = navigator.userAgent.toLowerCase();
+        return ua.includes('tizen') || ua.includes('webos') || ua.includes('android tv') || ua.includes('smarttv') || !!window.tizen;
+    },
+
     getRecommendedPosterSize: () => {
         const width = window.innerWidth;
-        if (width > 1400) return POSTER_SIZE; // w342
-        if (width > 1000) return 'w185';
-        if (width > 700) return 'w154';
-        return 'w92';
+        const dpr = window.devicePixelRatio || 1;
+        const effectiveWidth = width * dpr;
+
+        // On TV, we prioritize performance over pixel-perfection
+        if (Api.isTV()) {
+            if (width > 1400) return 'w342';
+            return 'w185';
+        }
+
+        // Standard grid posters are small (~150px-200px)
+        if (effectiveWidth > 1000) return 'w342';
+        if (effectiveWidth > 600) return 'w185';
+        return 'w154';
+    },
+
+    getRecommendedDetailPosterSize: () => {
+        const width = window.innerWidth;
+        const dpr = window.devicePixelRatio || 1;
+        const effectiveWidth = width * dpr;
+
+        // Detail posters are larger (~300px-500px)
+        if (effectiveWidth > 1400) return 'w500';
+        if (effectiveWidth > 800) return 'w342';
+        return 'w185';
+    },
+
+    getRecommendedBackdropSize: () => {
+        const width = window.innerWidth;
+        const dpr = window.devicePixelRatio || 1;
+        const effectiveWidth = width * dpr;
+
+        // On TV, we strongly prefer w780 over w1280 for memory/performance
+        if (Api.isTV()) {
+            return 'w780';
+        }
+
+        // Hero backdrops fill the screen
+        if (effectiveWidth > 1600) return BACKDROP_SIZE; // w1280
+        if (effectiveWidth > 600) return 'w780';
+        return 'w300';
     },
 
     getImageUrl: (path, size = null) => {
         if (!path) return 'assets/placeholder.png';
-        const finalSize = size || Api.getRecommendedPosterSize();
+
+        let finalSize = size;
+        if (!finalSize) {
+            finalSize = Api.getRecommendedPosterSize();
+        }
+
         return `${IMAGE_BASE_PATH}/${finalSize}${path}`;
     },
 

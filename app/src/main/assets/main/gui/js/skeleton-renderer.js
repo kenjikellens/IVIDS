@@ -26,9 +26,9 @@ export function renderSkeletonRow(elementId, count = 20) {
         skeleton.className = 'skeleton-poster focusable';
         skeleton.setAttribute('aria-hidden', 'true'); // Placeholder only
 
-        // Add loader
+        // We use a CSS-only shimmer effect instead of injecting multiple loader dots
+        // but we'll keep the simple loader element if the user wants the "IVIDS" spinner look
         const loader = createLoaderElement();
-        loader.classList.add('poster-loader');
         skeleton.appendChild(loader);
 
         rowPosters.appendChild(skeleton);

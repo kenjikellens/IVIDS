@@ -152,20 +152,8 @@ function initNavigation() {
                     return;
                 }
 
-                if (Router.history.length > 0) {
-                    Router.goBack();
-                } else if (Router.currentPage === 'home') {
-                    // Check if exit modal is visible
-                    const exitModal = document.getElementById('exit-modal');
-                    if (exitModal && exitModal.classList.contains('visible')) {
-                        // If visible, close it (Cancel action)
-                        closeExitModal();
-                        return;
-                    }
-
-                    // Show Exit Modal
-                    showExitModal();
-                }
+                // Use Router's consolidated back logic (handles history + fallbacks)
+                Router.goBack();
             } catch (backError) {
                 console.error('Error handling back navigation:', backError);
             }
