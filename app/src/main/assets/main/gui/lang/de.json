@@ -51,7 +51,7 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manuell",
-            "advanced": "Erweitert",
+            "advanced": "Erweitert / Entwickler",
             "none": "Aus"
         },
         "updateStatus": {

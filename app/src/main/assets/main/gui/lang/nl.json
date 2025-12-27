@@ -51,7 +51,7 @@
         "mode": {
             "auto": "Auto",
             "manual": "Handmatig",
-            "advanced": "Geavanceerd",
+            "advanced": "Geavanceerd / Developer",
             "none": "Uit"
         },
         "updateStatus": {

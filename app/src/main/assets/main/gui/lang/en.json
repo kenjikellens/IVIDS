@@ -51,7 +51,7 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manual",
-            "advanced": "Advanced",
+            "advanced": "Advanced / Developer",
             "none": "Off"
         },
         "updateStatus": {
