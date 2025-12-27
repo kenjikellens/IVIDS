@@ -21,12 +21,6 @@
         "editProfile": "Modifier le profil",
         "currentProfile": "Profil actuel"
     },
-    "exit": {
-        "title": "Quitter l'application ?",
-        "message": "Êtes-vous sûr de vouloir quitter ?",
-        "confirm": "Quitter",
-        "cancel": "Annuler"
-    },
     "settings": {
         "title": "Paramètres",
         "subtitle": "Configurez votre expérience IVIDS",

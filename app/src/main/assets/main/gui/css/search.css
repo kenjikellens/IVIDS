@@ -345,7 +345,6 @@
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    backdrop-filter: blur(2vh);
     animation: fadeIn 0.3s ease-out;
 }
 

@@ -168,7 +168,6 @@
     display: none;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(0.5rem);
 }
 
 .modal-overlay.active {
@@ -427,7 +426,6 @@
     justify-content: center;
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s;
-    backdrop-filter: blur(0.25rem);
     padding: 0;
 }
 

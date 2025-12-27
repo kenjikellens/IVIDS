@@ -3,6 +3,8 @@ package com.kenjigames.ivids;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -12,15 +14,18 @@ import android.webkit.WebView;
 import androidx.core.content.FileProvider;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,24 +49,32 @@ public class UpdateManager {
     @JavascriptInterface
     public void checkForUpdates() {
         Log.d(TAG, "Checking for updates...");
+
+        if (!isNetworkAvailable()) {
+            Log.e(TAG, "No network connection available.");
+            notifyWebUpdateError();
+            return;
+        }
+
         mExecutor.execute(() -> {
+            HttpURLConnection conn = null;
+            BufferedReader reader = null;
             try {
                 URL url = new URL(GITHUB_API_URL);
                 notifyWebUpdateStatus("connecting-api");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
-                // GitHub API requires a User-Agent header
                 conn.setRequestProperty("User-Agent", "IVIDS-Android-App");
 
-                if (conn.getResponseCode() == 200) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                int responseCode = conn.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     StringBuilder response = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    reader.close();
 
                     JSONArray releases = new JSONArray(response.toString());
                     notifyWebUpdateStatus("fetching-releases");
@@ -71,9 +84,8 @@ public class UpdateManager {
                         return;
                     }
 
-                    // The first release in the array is the most recent (stable or pre-release)
-                    JSONObject json = releases.getJSONObject(0);
-                    mLatestVersion = json.getString("tag_name");
+                    JSONObject latestRelease = releases.getJSONObject(0);
+                    mLatestVersion = latestRelease.getString("tag_name");
 
                     String currentVersion = mActivity.getPackageManager()
                             .getPackageInfo(mActivity.getPackageName(), 0).versionName;
@@ -81,66 +93,69 @@ public class UpdateManager {
                     Log.d(TAG, "Current version: " + currentVersion + ", Latest version: " + mLatestVersion);
 
                     if (isNewerVersion(currentVersion, mLatestVersion)) {
-                        Log.d(TAG, "New update found: " + mLatestVersion + ". Searching for APK in main branch...");
-                        notifyWebUpdateStatus("searching-apk");
-
-                        // New logic: Fetch repo contents from main branch
-                        URL contentsUrl = new URL("https://api.github.com/repos/kenjikellens/IVIDS/contents/?ref=main");
-                        HttpURLConnection contentsConn = (HttpURLConnection) contentsUrl.openConnection();
-                        contentsConn.setRequestMethod("GET");
-                        contentsConn.setRequestProperty("Accept", "application/vnd.github.v3+json");
-                        contentsConn.setRequestProperty("User-Agent", "IVIDS-Android-App");
-
-                        if (contentsConn.getResponseCode() == 200) {
-                            BufferedReader contentsReader = new BufferedReader(
-                                    new InputStreamReader(contentsConn.getInputStream()));
-                            StringBuilder contentsResponse = new StringBuilder();
-                            String cLine;
-                            while ((cLine = contentsReader.readLine()) != null) {
-                                contentsResponse.append(cLine);
+                        Log.d(TAG, "New update found: " + mLatestVersion);
+                        JSONArray assets = latestRelease.getJSONArray("assets");
+                        for (int i = 0; i < assets.length(); i++) {
+                            JSONObject asset = assets.getJSONObject(i);
+                            if (asset.getString("name").toLowerCase().endsWith(".apk")) {
+                                mDownloadUrl = asset.getString("browser_download_url");
+                                break;
                             }
-                            contentsReader.close();
+                        }
 
-                            JSONArray contents = new JSONArray(contentsResponse.toString());
-                            mDownloadUrl = null;
-                            for (int i = 0; i < contents.length(); i++) {
-                                JSONObject asset = contents.getJSONObject(i);
-                                String name = asset.getString("name");
-                                if (name.toLowerCase().endsWith(".apk")) {
-                                    mDownloadUrl = asset.getString("download_url");
-                                    break;
-                                }
-                            }
-
-                            if (mDownloadUrl != null) {
-                                Log.d(TAG, "Found APK in main branch: " + mDownloadUrl);
-                                notifyWebFoundUpdate(mLatestVersion);
-                            } else {
-                                Log.d(TAG, "No APK found in main branch");
-                                notifyWebNoUpdateFound();
-                            }
+                        if (mDownloadUrl != null) {
+                            Log.d(TAG, "Found APK download URL: " + mDownloadUrl);
+                            notifyWebFoundUpdate(mLatestVersion);
                         } else {
-                            Log.e(TAG, "GitHub Contents API returned error: " + contentsConn.getResponseCode());
-                            notifyWebUpdateError();
+                            Log.e(TAG, "No APK found in the latest release");
+                            notifyWebNoUpdateFound();
                         }
                     } else {
                         Log.d(TAG, "App is up to date");
                         notifyWebNoUpdateFound();
                     }
                 } else {
-                    Log.e(TAG, "GitHub API returned error: " + conn.getResponseCode());
+                    Log.e(TAG, "GitHub API returned error: " + responseCode);
                     notifyWebUpdateError();
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error checking for updates", e);
+            } catch (MalformedURLException e) {
+                Log.e(TAG, "Invalid URL", e);
                 notifyWebUpdateError();
+            } catch (IOException e) {
+                Log.e(TAG, "Error connecting to GitHub API", e);
+                notifyWebUpdateError();
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing JSON response", e);
+                notifyWebUpdateError();
+            } catch (Exception e) {
+                Log.e(TAG, "An unexpected error occurred while checking for updates", e);
+                notifyWebUpdateError();
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error closing reader", e);
+                    }
+                }
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
         });
     }
 
     private boolean isNewerVersion(String current, String latest) {
+        // ... (existing implementation is reasonably robust)
         try {
             notifyWebUpdateStatus("comparing-versions");
+
+            // Special case: if current is "1.0", it's a legacy incorrect version
+            // and should be considered older than any "v0.x.x" release.
+            if ("1.0".equals(current) || "1.0.0".equals(current)) {
+                return true;
+            }
+
             // Remove 'v' prefix if present
             String c = current.startsWith("v") ? current.substring(1) : current;
             String l = latest.startsWith("v") ? latest.substring(1) : latest;
@@ -158,7 +173,7 @@ public class UpdateManager {
                 if (cPart > lPart)
                     return false;
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             Log.e(TAG, "Error comparing versions", e);
             // Fallback: simple string comparison if parsing fails
             return !current.equals(latest);
@@ -170,43 +185,68 @@ public class UpdateManager {
     public void downloadAndInstall() {
         if (mDownloadUrl == null) {
             Log.e(TAG, "No download URL available");
+            notifyWebUpdateError();
             return;
         }
 
         Log.d(TAG, "Starting download: " + mDownloadUrl);
         mExecutor.execute(() -> {
+            HttpURLConnection conn = null;
+            InputStream is = null;
+            FileOutputStream fos = null;
             try {
                 URL url = new URL(mDownloadUrl);
                 notifyWebUpdateStatus("downloading");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("User-Agent", "IVIDS-Android-App");
+                conn = (HttpURLConnection) url.openConnection();
                 conn.connect();
 
+
                 File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
-                if (!downloadDir.exists())
+                if (!downloadDir.exists()) {
                     downloadDir.mkdirs();
+                }
 
                 File apkFile = new File(downloadDir, "IVIDS-update.apk");
-                if (apkFile.exists())
+                if (apkFile.exists()) {
                     apkFile.delete();
+                }
 
-                InputStream is = new BufferedInputStream(conn.getInputStream());
-                FileOutputStream fos = new FileOutputStream(apkFile);
+                is = new BufferedInputStream(conn.getInputStream());
+                fos = new FileOutputStream(apkFile);
 
                 byte[] data = new byte[8192];
                 int count;
+                long total = 0;
+                int fileLength = conn.getContentLength();
                 while ((count = is.read(data)) != -1) {
+                    total += count;
+                    // publishing the progress....
+                    if (fileLength > 0) {
+                        final int progress = (int) (total * 100 / fileLength);
+                        mActivity.runOnUiThread(() -> {
+                            mWebView.evaluateJavascript("if(typeof onUpdateProgress === 'function') onUpdateProgress(" + progress + ");", null);
+                        });
+                    }
                     fos.write(data, 0, count);
                 }
 
-                fos.flush();
-                fos.close();
-                is.close();
-
                 Log.d(TAG, "Download complete: " + apkFile.getAbsolutePath());
                 installApk(apkFile);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 Log.e(TAG, "Error downloading update", e);
+                notifyWebUpdateError();
+            } finally {
+                try {
+                    if (fos != null)
+                        fos.close();
+                    if (is != null)
+                        is.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "Error closing streams", e);
+                }
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
         });
     }
@@ -222,39 +262,39 @@ public class UpdateManager {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
-
             mActivity.startActivity(intent);
         } catch (Exception e) {
             Log.e(TAG, "Error starting installation", e);
+            notifyWebUpdateError();
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            return false;
+        }
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void shutdown() {
+        mExecutor.shutdown();
+    }
+
     private void notifyWebFoundUpdate(String version) {
-        mActivity.runOnUiThread(() -> {
-            mWebView.evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound('" + version + "');",
-                    null);
-        });
+        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound('" + version + "');", null));
     }
 
     private void notifyWebNoUpdateFound() {
-        mActivity.runOnUiThread(() -> {
-            mWebView.evaluateJavascript("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();", null);
-        });
+        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();", null));
     }
 
     private void notifyWebUpdateStatus(String statusKey) {
-        mActivity.runOnUiThread(() -> {
-            mWebView.evaluateJavascript("if(typeof onUpdateStatus === 'function') onUpdateStatus('" + statusKey + "');",
-                    null);
-        });
+        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onUpdateStatus === 'function') onUpdateStatus('" + statusKey + "');", null));
     }
 
     private void notifyWebUpdateError() {
-        mActivity.runOnUiThread(() -> {
-            mWebView.evaluateJavascript("if(typeof onUpdateCheckError === 'function') onUpdateCheckError();", null);
-        });
+        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onUpdateCheckError === 'function') onUpdateCheckError();", null));
     }
 }

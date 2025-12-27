@@ -21,12 +21,6 @@
         "editProfile": "Editar perfil",
         "currentProfile": "Perfil actual"
     },
-    "exit": {
-        "title": "¿Salir de la aplicación?",
-        "message": "¿Estás seguro de que quieres salir?",
-        "confirm": "Salir",
-        "cancel": "Cancelar"
-    },
     "settings": {
         "title": "Configuración",
         "subtitle": "Configura tu experiencia IVIDS",

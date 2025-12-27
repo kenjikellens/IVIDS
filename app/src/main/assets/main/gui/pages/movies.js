@@ -3,12 +3,11 @@ import { Router } from '../js/router.js';
 import { HeroSlider } from '../js/hero-slider.js';
 import { createLoaderElement } from '../js/loader.js';
 import { renderSkeletonRow } from '../js/skeleton-renderer.js';
-import { LazyLoader } from '../js/lazy-loader.js';
+import { lazyLoader } from '../js/lazy-loader.js';
+import { domRecycler } from '../js/dom-recycler.js';
 
 export async function init() {
     try {
-        const lazyLoader = new LazyLoader();
-
         // 1. Fetch Popular (Trending) Movies for Hero
         let popular = [];
         try { popular = await Api.fetchTrending(); } catch (e) { console.error(e); }
@@ -18,10 +17,10 @@ export async function init() {
 
         if (movies && movies.length > 0) {
             new HeroSlider(movies.slice(0, 5), {
-                containerId: 'hero-movies',
-                titleId: 'hero-title-movies',
-                descId: 'hero-desc-movies',
-                playBtnId: 'play-btn-movies'
+                containerId: 'hero',
+                titleId: 'hero-title',
+                descId: 'hero-desc',
+                playBtnId: 'play-btn'
             });
             setupRow('popular-movies-row', movies.slice(5));
         }
@@ -84,6 +83,9 @@ function setupRow(elementId, items) {
         container.className = 'row-container';
         rowPosters.parentNode.insertBefore(container, rowPosters);
         container.appendChild(rowPosters);
+
+        // Observe row container for DOM recycling
+        domRecycler.observe(container);
     }
 
     // Get existing skeleton or poster buttons
@@ -121,12 +123,13 @@ function setupRow(elementId, items) {
             if (loader.parentNode) loader.parentNode.removeChild(loader);
             img.style.opacity = '1';
         };
-        img.src = Api.getImageUrl(item.poster_path);
+        img.dataset.src = Api.getImageUrl(item.poster_path);
         img.alt = item.title || item.name;
 
-        btn.onclick = () => Router.loadPage('details', { id: item.id, type: 'movie' });
-
         btn.appendChild(img);
+
+        // Observe for lazy loading
+        lazyLoader.observeItem(btn);
     });
 
     // Remove any remaining skeletons

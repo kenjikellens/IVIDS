@@ -5,12 +5,11 @@ import { HeroSlider } from '../js/hero-slider.js';
 import { ErrorHandler } from '../js/error-handler.js';
 import { createLoaderElement } from '../js/loader.js';
 import { renderSkeletonRow } from '../js/skeleton-renderer.js';
-import { LazyLoader } from '../js/lazy-loader.js';
+import { lazyLoader } from '../js/lazy-loader.js';
+import { domRecycler } from '../js/dom-recycler.js';
 
 export async function init() {
     try {
-        const lazyLoader = new LazyLoader();
-
         // 1. Load Hero and Recently Watched immediately
         let recentlyWatched = [];
         try { recentlyWatched = getRecentlyWatched(); } catch (e) { console.error(e); }
@@ -134,6 +133,9 @@ function setupRow(elementId, items) {
                 container.className = 'row-container';
                 rowPosters.parentNode.insertBefore(container, rowPosters);
                 container.appendChild(rowPosters);
+
+                // Observe container for DOM recycling (pruning off-screen rows)
+                domRecycler.observe(container);
             }
         } catch (containerError) {
             console.error('Error creating row container:', containerError);
@@ -172,8 +174,10 @@ function setupRow(elementId, items) {
                     if (loader.parentNode) loader.parentNode.removeChild(loader);
                     img.style.opacity = '1';
                 };
-                img.src = Api.getImageUrl(item.poster_path);
+                img.dataset.src = Api.getImageUrl(item.poster_path);
                 img.alt = item.title || item.name || 'Unknown';
+
+                btn.appendChild(img);
 
                 // Determine type
                 let type = item.media_type;
@@ -191,7 +195,8 @@ function setupRow(elementId, items) {
                     }
                 };
 
-                btn.appendChild(img);
+                // Observe the container for lazy loading the image
+                lazyLoader.observeItem(btn);
             } catch (itemError) {
                 console.error('Error rendering poster item:', itemError);
             }

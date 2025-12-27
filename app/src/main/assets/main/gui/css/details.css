@@ -110,7 +110,6 @@
     padding: 0.8vh 1.5vw;
     border-radius: 2vh;
     font-size: 1.1vw;
-    backdrop-filter: blur(1vh);
     border: 0.2vh solid rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.8);
 }
@@ -178,9 +177,9 @@
     padding: 2vh 1.5vw;
     border-radius: 1.5vh;
     border: 0.2vh solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(1vh);
     max-height: 60vh;
     overflow-y: auto;
+    transform: translate3d(0, 0, 0);
 }
 
 .seasons-header {
@@ -320,7 +319,6 @@
     background-color: rgba(0, 0, 0, 0.85);
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(1vh);
 }
 
 .modal-content {

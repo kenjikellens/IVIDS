@@ -1,3 +1,5 @@
+import { cacheManager } from './cache-manager.js';
+
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
@@ -93,18 +95,43 @@ export const Api = {
         return 'w300';
     },
 
+    /**
+     * Optimized image URL generation.
+     * TMDB CDN automatically serves WebP if the browser sends the correct Accept header.
+     * Here we focus on ensuring size mapping is precise for the current screen.
+     */
     getImageUrl: (path, size = null) => {
         if (!path) return 'assets/placeholder.png';
 
-        let finalSize = size;
-        if (!finalSize) {
-            finalSize = Api.getRecommendedPosterSize();
-        }
+        // Prefer dynamic recommended size if none provided
+        let finalSize = size || Api.getRecommendedPosterSize();
 
-        return `${IMAGE_BASE_PATH}/${finalSize}${path}`;
+        // Security: Ensure path doesn't already contain base (idempotency)
+        const cleanPath = path.startsWith('/') ? path : `/${path}`;
+
+        // Return path - Browser headers (Accept: image/webp) handle the format switch
+        return `${IMAGE_BASE_PATH}/${finalSize}${cleanPath}`;
+    },
+
+    /**
+     * Network pre-warm / pre-fetch for images.
+     * Can be used to warm the CDN connection for high-priority images (e.g. Hero).
+     */
+    prefetchImage: (path, size = null) => {
+        if (!path) return;
+        const url = Api.getImageUrl(path, size);
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = url;
+        document.head.appendChild(link);
     },
 
     async fetchTrending() {
+        const cacheKey = 'trending_all_week';
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return shuffleArray([...cached]);
+
         try {
             const response = await fetchWithTimeout(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false`);
             const data = await response.json();
@@ -116,6 +143,10 @@ export const Api = {
                 return releaseDate && releaseDate <= today;
             });
 
+            if (filtered.length > 0) {
+                cacheManager.set(cacheKey, filtered, 15);
+            }
+
             return shuffleArray(filtered);
         } catch (error) {
             console.error('Error fetching trending:', error);
@@ -124,11 +155,20 @@ export const Api = {
     },
 
     async fetchTopRated() {
+        const cacheKey = 'movie_top_rated';
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return shuffleArray([...cached]);
+
         try {
             const today = getTodayDate();
             const response = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}`);
             const data = await response.json();
-            return shuffleArray(data.results);
+
+            if (data && data.results) {
+                cacheManager.set(cacheKey, data.results, 60); // Top rated changes slowly, cache for 1 hour
+                return shuffleArray(data.results);
+            }
+            return [];
         } catch (error) {
             console.error('Error fetching top rated:', error);
             return [];
@@ -136,6 +176,10 @@ export const Api = {
     },
 
     async _fetchDiscover(type, params) {
+        const cacheKey = `discover_${type}_${params}`;
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return shuffleArray([...cached]); // Return a shuffled clone
+
         try {
             const today = getTodayDate();
             // Add release date filter based on type to ensure only released/aired content
@@ -146,7 +190,12 @@ export const Api = {
             // Always exclude adult content from browse/discovery pages
             const response = await fetch(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}`);
             const data = await response.json();
-            return shuffleArray(data.results);
+
+            if (data && data.results) {
+                cacheManager.set(cacheKey, data.results, 15); // Cache for 15 minutes
+                return shuffleArray(data.results);
+            }
+            return [];
         } catch (error) {
             console.error(`Error fetching ${type} with params ${params}:`, error);
             return [];
@@ -215,11 +264,20 @@ export const Api = {
     fetchKoreanSeries() { return this._fetchDiscover('tv', 'with_original_language=ko&sort_by=popularity.desc'); },
 
     async fetchPopularTV() {
+        const cacheKey = 'tv_popular';
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return shuffleArray([...cached]);
+
         try {
             const today = getTodayDate();
             const response = await fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
             const data = await response.json();
-            return shuffleArray(data.results);
+
+            if (data && data.results) {
+                cacheManager.set(cacheKey, data.results, 15);
+                return shuffleArray(data.results);
+            }
+            return [];
         } catch (error) {
             console.error('Error fetching popular TV:', error);
             return [];
@@ -227,11 +285,20 @@ export const Api = {
     },
 
     async fetchTopRatedTV() {
+        const cacheKey = 'tv_top_rated';
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return shuffleArray([...cached]);
+
         try {
             const today = getTodayDate();
             const response = await fetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
             const data = await response.json();
-            return shuffleArray(data.results);
+
+            if (data && data.results) {
+                cacheManager.set(cacheKey, data.results, 60);
+                return shuffleArray(data.results);
+            }
+            return [];
         } catch (error) {
             console.error('Error fetching top rated TV:', error);
             return [];

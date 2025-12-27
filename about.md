@@ -1026,6 +1026,25 @@ try {
    - Optional PIN for parental controls
    - Per-profile settings isolation
 
+### Performance Optimization Roadmap (Q1 2025)
+
+To ensure a premium, "wow" experience on all hardware (especially lower-powered Smart TVs), the following optimizations are being implemented:
+
+1.  **Layout Stability (CLS Optimization)**:
+    - Pre-defined `min-height` and fixed aspect ratios for all content containers.
+    - Ensures the UI doesn't "jump" when images or API data loads.
+    - Verified by checking for layout shifts during page transitions.
+
+2.  **Smart Lazy Loading**:
+    - Intersection Observer API to only render and fetch images that are actually in the viewport.
+    - Virtualized rows for high-count lists (Search results) to keep DOM node count low.
+    - Drastic reduction in memory footprint and initial CPU load.
+
+3.  **Hardware Acceleration (GPU)**:
+    - Transitioning all animations to `transform` and `opacity` properties.
+    - Utilizing `translate3d(0,0,0)` to force GPU layers where necessary.
+    - Removal of expensive filters like `backdrop-filter` on mobile/TV to maintain 60fps.
+
 ### Planned Features (2025+)
 
 | Feature | Priority | Description |

@@ -3,6 +3,8 @@ import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { getWatchedItem } from '../../logic/recentlyWatched.js';
 import { getLoaderHtml } from '../js/loader.js';
+import { lazyLoader } from '../js/lazy-loader.js';
+import { debounce } from '../js/utils/debounce.js';
 
 let currentFilters = {
     type: 'movie',
@@ -48,11 +50,25 @@ export async function init() {
         // Initialize UI with current filters
         await renderAllFilters(currentFilters);
 
-        input.onchange = () => performSearch(input.value, true);
+        // Debounce search input to avoid API spamming
+        const debouncedSearch = debounce((val) => {
+            performSearch(val, true);
+        }, 500);
+
+        input.oninput = (e) => debouncedSearch(e.target.value);
+
+        // Instant search for onchange (Enter key)
+        input.onchange = () => {
+            performSearch(input.value, true);
+        };
+
         yearInput.onchange = () => {
             pendingFilters.year = yearInput.value ? parseInt(yearInput.value) : null;
         };
-        countrySearchInput.onchange = () => filterCountries(countrySearchInput.value);
+
+        if (countrySearchInput) {
+            countrySearchInput.oninput = () => filterCountries(countrySearchInput.value);
+        }
 
         // Filter Modal Handlers
         if (filterBtn && filterModal) {
@@ -196,21 +212,6 @@ export async function init() {
                     closeCountryModal();
                 }
             };
-        }
-
-        const filterCountries = (query) => {
-            const items = document.querySelectorAll('#country-options-list .select-item');
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                const visible = text.includes(query.toLowerCase());
-                item.style.display = visible ? 'flex' : 'none';
-                if (visible) item.classList.add('focusable');
-                else item.classList.remove('focusable');
-            });
-        };
-
-        if (countrySearchInput) {
-            countrySearchInput.oninput = () => filterCountries(countrySearchInput.value);
         }
 
         // Global Back Handler
@@ -453,20 +454,32 @@ function renderResultItems(items, container) {
     items.forEach(item => {
         if (!item.poster_path) return;
         const isWatched = getWatchedItem(item.id, item.media_type || currentFilters.type);
-        const watchedHtml = isWatched ? `<div class="watched-pill">${window.i18n.t('search.watched')}</div>` : '';
 
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'poster-wrapper focusable';
-        btn.innerHTML = `
-            <img class="poster-img" src="${Api.getImageUrl(item.poster_path)}" alt="${item.name || item.title}">
-            ${watchedHtml}
-        `;
+        const img = document.createElement('img');
+        img.className = 'poster-img';
+        img.dataset.src = Api.getImageUrl(item.poster_path);
+        img.alt = item.name || item.title;
+        img.style.opacity = '0';
+
+        btn.appendChild(img);
+        if (isWatched) {
+            const watched = document.createElement('div');
+            watched.className = 'watched-pill';
+            watched.textContent = window.i18n.t('search.watched');
+            btn.appendChild(watched);
+        }
+
+        container.appendChild(btn);
+
+        // Observe for lazy loading
+        lazyLoader.observeItem(btn);
 
         btn.onclick = () => {
             Router.loadPage('details', { id: item.id, type: item.media_type || currentFilters.type });
         };
-        container.appendChild(btn);
     });
 }
 
@@ -515,5 +528,16 @@ function renderRecentSearches() {
                 performSearch(item.textContent, true);
             }
         };
+    });
+}
+
+function filterCountries(query) {
+    const items = document.querySelectorAll('#country-options-list .select-item');
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const visible = text.includes(query.toLowerCase());
+        item.style.display = visible ? 'flex' : 'none';
+        if (visible) item.classList.add('focusable');
+        else item.classList.remove('focusable');
     });
 }

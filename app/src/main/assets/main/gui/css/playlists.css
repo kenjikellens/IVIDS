@@ -167,7 +167,6 @@
     /* Changed to fixed to cover entire screen */
     inset: 0;
     background-color: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;

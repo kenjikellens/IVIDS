@@ -39,7 +39,6 @@
 
 .settings-section {
     background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(1rem);
     border: 0.0625rem solid rgba(255, 255, 255, 0.1);
     border-radius: 1.2vw;
     padding: 2.5vw;
@@ -158,7 +157,6 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(1.5vh);
     z-index: 10000;
     display: none;
     /* Controlled by JS */

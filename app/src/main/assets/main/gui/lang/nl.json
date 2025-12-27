@@ -21,12 +21,6 @@
         "editProfile": "Profiel bewerken",
         "currentProfile": "Huidig profiel"
     },
-    "exit": {
-        "title": "Applicatie afsluiten",
-        "message": "Weet u zeker dat u wilt afsluiten?",
-        "confirm": "Afsluiten",
-        "cancel": "Annuleren"
-    },
     "settings": {
         "title": "Instellingen",
         "subtitle": "Configureer uw IVIDS-ervaring",
