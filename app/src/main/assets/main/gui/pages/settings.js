@@ -54,31 +54,40 @@ class SettingsManager {
 
         const checkBtn = document.getElementById('check-updates-btn');
         if (checkBtn) {
-            checkBtn.onclick = () => {
-                if (window.AndroidUpdate) {
-                    checkBtn.style.display = 'none';
-                    const statusText = document.getElementById('update-status-text');
-                    if (statusText) {
-                        statusText.style.display = 'inline-block';
-                        statusText.textContent = window.i18n?.t('settings.updateStatus.connecting-api') || 'Connecting...';
-                    }
-
-                    // Inject loader container
-                    let loaderContainer = document.getElementById('update-loader-container');
-                    if (loaderContainer) {
-                        loaderContainer.style.display = 'flex';
-                        loaderContainer.innerHTML = '<div class="ivids-loader"></div>';
-                        if (window.LoaderManager && window.LoaderManager.createLoader) {
-                            const loaderEl = loaderContainer.querySelector('.ivids-loader');
-                            window.LoaderManager.createLoader(loaderEl);
-                        }
-                    }
-                    window.AndroidUpdate.checkForUpdates();
-                }
-            };
+            checkBtn.onclick = () => this.handleMainUpdateAction();
         }
 
         this.updateDisplays();
+    }
+
+    handleMainUpdateAction() {
+        if (!window.AndroidUpdate) return;
+
+        const checkBtn = document.getElementById('check-updates-btn');
+        if (checkBtn) checkBtn.style.display = 'none';
+
+        const statusText = document.getElementById('update-status-text');
+        if (statusText) {
+            statusText.style.display = 'inline-block';
+            statusText.textContent = window.i18n?.t('settings.updateStatus.connecting-api') || 'Connecting...';
+        }
+
+        // Inject loader container
+        let loaderContainer = document.getElementById('update-loader-container');
+        if (loaderContainer) {
+            loaderContainer.style.display = 'flex';
+            loaderContainer.innerHTML = '<div class="ivids-loader"></div>';
+            if (window.LoaderManager && window.LoaderManager.createLoader) {
+                const loaderEl = loaderContainer.querySelector('.ivids-loader');
+                window.LoaderManager.createLoader(loaderEl);
+            }
+        }
+
+        if (this.settings.updateMode === 'advanced') {
+            window.AndroidUpdate.downloadFromRepo();
+        } else {
+            window.AndroidUpdate.checkForUpdates();
+        }
     }
 
     updateDisplays() {
@@ -100,7 +109,25 @@ class SettingsManager {
         }
 
         const manualContainer = document.getElementById('manual-check-container');
-        if (manualContainer) manualContainer.style.display = this.settings.updateMode === 'manual' ? 'flex' : 'none';
+        if (manualContainer) {
+            const isManualOrAdvanced = this.settings.updateMode === 'manual' || this.settings.updateMode === 'advanced';
+            manualContainer.style.display = isManualOrAdvanced ? 'flex' : 'none';
+
+            // Update button text and description if in advanced mode
+            const checkBtn = document.getElementById('check-updates-btn');
+            const checkLabel = manualContainer.querySelector('.setting-label');
+            const checkDesc = manualContainer.querySelector('.setting-description');
+
+            if (this.settings.updateMode === 'advanced') {
+                if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.downloadButton') || 'Download';
+                if (checkLabel) checkLabel.textContent = window.i18n?.t('settings.downloadRepo') || 'Download from Repo';
+                if (checkDesc) checkDesc.textContent = window.i18n?.t('settings.downloadRepoDesc') || 'Download latest APK directly';
+            } else {
+                if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.checkButton') || 'Check Now';
+                if (checkLabel) checkLabel.textContent = window.i18n?.t('settings.checkNow') || 'Check for Updates';
+                if (checkDesc) checkDesc.textContent = window.i18n?.t('settings.checkNowDesc') || 'Manually search for updates';
+            }
+        }
     }
 
     openModal(modalId) {

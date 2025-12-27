@@ -44,10 +44,14 @@
         "updateFound": "Update Beschikbaar",
         "updateNow": "Nu Installeren",
         "noUpdate": "Up-to-date",
-        "updateError": "Fout bij controle",
+        "updateError": "Fout bij controleren",
+        "downloadButton": "Downloaden",
+        "downloadRepo": "Downloaden van Repo",
+        "downloadRepoDesc": "Download de nieuwste APK rechtstreeks",
         "mode": {
             "auto": "Auto",
             "manual": "Handmatig",
+            "advanced": "Geavanceerd",
             "none": "Uit"
         },
         "updateStatus": {

@@ -45,9 +45,13 @@
         "updateNow": "Install Now",
         "noUpdate": "Up to date",
         "updateError": "Error checking",
+        "downloadButton": "Download",
+        "downloadRepo": "Download from Repo",
+        "downloadRepoDesc": "Download latest APK directly",
         "mode": {
             "auto": "Auto",
             "manual": "Manual",
+            "advanced": "Advanced",
             "none": "Off"
         },
         "updateStatus": {

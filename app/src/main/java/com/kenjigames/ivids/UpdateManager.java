@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,6 +34,7 @@ import java.util.concurrent.Executors;
 public class UpdateManager {
     private static final String TAG = "UpdateManager";
     private static final String GITHUB_API_URL = "https://api.github.com/repos/kenjikellens/IVIDS/releases";
+    private static final String REPO_APK_URL = "https://github.com/kenjikellens/IVIDS/raw/main/IVIDS.apk";
 
     private final Activity mActivity;
     private final WebView mWebView;
@@ -60,7 +62,7 @@ public class UpdateManager {
             HttpURLConnection conn = null;
             BufferedReader reader = null;
             try {
-                URL url = new URL(GITHUB_API_URL);
+                URL url = URI.create(GITHUB_API_URL).toURL();
                 notifyWebUpdateStatus("connecting-api");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -182,6 +184,13 @@ public class UpdateManager {
     }
 
     @JavascriptInterface
+    public void downloadFromRepo() {
+        Log.d(TAG, "Requesting direct download from repository...");
+        mDownloadUrl = REPO_APK_URL;
+        downloadAndInstall();
+    }
+
+    @JavascriptInterface
     public void downloadAndInstall() {
         if (mDownloadUrl == null) {
             Log.e(TAG, "No download URL available");
@@ -195,11 +204,10 @@ public class UpdateManager {
             InputStream is = null;
             FileOutputStream fos = null;
             try {
-                URL url = new URL(mDownloadUrl);
+                URL url = URI.create(mDownloadUrl).toURL();
                 notifyWebUpdateStatus("downloading");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.connect();
-
 
                 File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
                 if (!downloadDir.exists()) {
@@ -224,7 +232,9 @@ public class UpdateManager {
                     if (fileLength > 0) {
                         final int progress = (int) (total * 100 / fileLength);
                         mActivity.runOnUiThread(() -> {
-                            mWebView.evaluateJavascript("if(typeof onUpdateProgress === 'function') onUpdateProgress(" + progress + ");", null);
+                            mWebView.evaluateJavascript(
+                                    "if(typeof onUpdateProgress === 'function') onUpdateProgress(" + progress + ");",
+                                    null);
                         });
                     }
                     fos.write(data, 0, count);
@@ -270,7 +280,8 @@ public class UpdateManager {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) mActivity
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) {
             return false;
         }
@@ -283,18 +294,22 @@ public class UpdateManager {
     }
 
     private void notifyWebFoundUpdate(String version) {
-        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound('" + version + "');", null));
+        mActivity.runOnUiThread(() -> mWebView
+                .evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound('" + version + "');", null));
     }
 
     private void notifyWebNoUpdateFound() {
-        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();", null));
+        mActivity.runOnUiThread(() -> mWebView
+                .evaluateJavascript("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();", null));
     }
 
     private void notifyWebUpdateStatus(String statusKey) {
-        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onUpdateStatus === 'function') onUpdateStatus('" + statusKey + "');", null));
+        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript(
+                "if(typeof onUpdateStatus === 'function') onUpdateStatus('" + statusKey + "');", null));
     }
 
     private void notifyWebUpdateError() {
-        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript("if(typeof onUpdateCheckError === 'function') onUpdateCheckError();", null));
+        mActivity.runOnUiThread(() -> mWebView
+                .evaluateJavascript("if(typeof onUpdateCheckError === 'function') onUpdateCheckError();", null));
     }
 }

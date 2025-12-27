@@ -45,9 +45,13 @@
         "updateNow": "Jetzt Installieren",
         "noUpdate": "Aktuell",
         "updateError": "Fehler bei Prüfung",
+        "downloadButton": "Herunterladen",
+        "downloadRepo": "Von Repo herunterladen",
+        "downloadRepoDesc": "Die neueste APK direkt herunterladen",
         "mode": {
             "auto": "Auto",
             "manual": "Manuell",
+            "advanced": "Erweitert",
             "none": "Aus"
         },
         "updateStatus": {

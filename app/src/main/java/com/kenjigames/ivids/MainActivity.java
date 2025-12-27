@@ -253,8 +253,7 @@ public class MainActivity extends AppCompatActivity {
             android.view.MotionEvent downEvent = android.view.MotionEvent.obtain(duration, duration,
                     android.view.MotionEvent.ACTION_DOWN, x, y, 0);
             android.view.MotionEvent upEvent = android.view.MotionEvent.obtain(duration, duration + 100,
-                    android.view.KeyEvent.ACTION_UP, x, y, 0); // WAIT: Incorrect event type here too, fix while I'm at
-                                                               // it
+                    android.view.MotionEvent.ACTION_UP, x, y, 0);
             mWebView.dispatchTouchEvent(downEvent);
             mWebView.dispatchTouchEvent(upEvent);
             downEvent.recycle();
