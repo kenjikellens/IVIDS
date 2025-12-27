@@ -16,9 +16,11 @@
 7. [Content API Layer](#-content-api-layer-tmdb-integration)
 8. [User Data Management](#-user-data-management)
 9. [File-by-File Technical Reference](#-file-by-file-technical-reference)
-10. [Design System & CSS Architecture](#-design-system--css-architecture)
-11. [AI Agent Implementation Standards](#-ai-agent-implementation-standards)
-12. [Implementation History & Roadmap](#-implementation-history--roadmap)
+10. [Performance & Optimization](#-performance--optimization)
+11. [Design System & CSS Architecture](#-design-system--css-architecture)
+12. [AI Agent Implementation Standards](#-ai-agent-implementation-standards)
+13. [Implementation History & Roadmap](#-implementation-history--roadmap)
+14. [Quick Reference Cheat Sheet](#-quick-reference-cheat-sheet)
 
 ---
 
@@ -741,7 +743,9 @@ PlaylistService.delete(playlistId);
 | **`loader.js`** | Loading indicators | `getLoaderHtml()` |
 | **`hero-slider.js`** | Hero image carousel | `HeroSlider.init()`, `HeroSlider.next()` |
 | **`lazy-loader.js`** | Image lazy loading | `LazyLoader.observe()` |
+| **`dom-recycler.js`** | DOM memory optimization | `DomRecycler.observe()` |
 | **`skeleton-renderer.js`** | Skeleton placeholders | `renderSkeletons()` |
+| **`debounce.js`** | Input search optimization | `debounce()` |
 
 ### `/gui/pages` — Feature Modules
 
@@ -766,6 +770,7 @@ PlaylistService.delete(playlistId);
 | **`api.js`** | TMDB API wrapper with all fetch methods |
 | **`playlists.js`** | Playlist CRUD operations with localStorage |
 | **`recentlyWatched.js`** | Watch history tracking |
+| **`cache-manager.js`** | Hybrid (Mem+Storage) API response caching |
 | **`language-manager.js`** | Translation file loading utilities |
 
 ### `/logic/spatial-nav` — Page-Specific Navigation
@@ -804,6 +809,31 @@ All JSON files follow the same nested structure with keys like:
 - `settings.title`, `settings.accentColor`
 - `search.placeholder`, `search.noResults`
 - `details.play`, `details.addToPlaylist`
+
+---
+
+## 🚀 Performance & Optimization
+
+To ensure a "wow" experience on all hardware, including lower-powered Smart TVs, IVIDS employs several advanced optimization techniques:
+
+### 1. DOM Recycling & Memory Management (`DomRecycler`)
+The [dom-recycler.js](file:///app/src/main/assets/main/gui/js/dom-recycler.js) uses the **Intersection Observer API** to optimize memory usage in long lists.
+- **Pruning**: Off-screen elements are hidden (`visibility: hidden`) to reduce the painting workload.
+- **Restoration**: Elements are restored as they enter the viewport margin.
+- **Impact**: Drastic reduction in memory footprint and smoother scrolling on high-count lists like search results.
+
+### 2. Hybrid API Caching (`CacheManager`)
+The [cache-manager.js](file:///app/src/main/assets/main/logic/cache-manager.js) implements a dual-layer caching strategy:
+- **In-Memory Cache**: Lightning-fast access for repeated requests in the same session.
+- **SessionStorage Cache**: Persists data across page refreshes but clears on app restart.
+- **TTL Support**: Each item has a configurable Time-To-Live (default: 10 mins) to ensure data freshness.
+
+### 3. Input Debouncing
+The [debounce.js](file:///app/src/main/assets/main/gui/js/utils/debounce.js) utility prevents excessive API calls and UI lag during fast typing in search fields.
+
+### 4. Hardware Acceleration (GPU) & Layout Stability
+- **GPU Layers**: All animations use `transform` and `opacity` to leverage hardware acceleration.
+- **CLS Optimization**: Pre-defined `min-height` and fixed aspect ratios for content containers prevent layout shifts.
 
 ---
 
@@ -1026,24 +1056,26 @@ try {
    - Optional PIN for parental controls
    - Per-profile settings isolation
 
-### Performance Optimization Roadmap (Q1 2025)
+### Performance Optimizations (Q1 2025)
 
-To ensure a premium, "wow" experience on all hardware (especially lower-powered Smart TVs), the following optimizations are being implemented:
+To ensure a premium, "wow" experience on all hardware, the following optimizations have been implemented:
 
-1.  **Layout Stability (CLS Optimization)**:
+1.  **Layout Stability (CLS Optimization)**: ✅ Complete
     - Pre-defined `min-height` and fixed aspect ratios for all content containers.
-    - Ensures the UI doesn't "jump" when images or API data loads.
     - Verified by checking for layout shifts during page transitions.
 
-2.  **Smart Lazy Loading**:
-    - Intersection Observer API to only render and fetch images that are actually in the viewport.
-    - Virtualized rows for high-count lists (Search results) to keep DOM node count low.
+2.  **Smart Lazy Loading & DOM Recycling**: ✅ Complete
+    - `DomRecycler` for virtualization of high-count lists.
+    - `LazyLoader` for image viewport detection.
     - Drastic reduction in memory footprint and initial CPU load.
 
-3.  **Hardware Acceleration (GPU)**:
-    - Transitioning all animations to `transform` and `opacity` properties.
-    - Utilizing `translate3d(0,0,0)` to force GPU layers where necessary.
-    - Removal of expensive filters like `backdrop-filter` on mobile/TV to maintain 60fps.
+3.  **Hybrid Caching System**: ✅ Complete
+    - `CacheManager` with TTL-based Memory + SessionStorage strategy.
+    - Prevents redundant API calls and ensures instant navigation for recently viewed content.
+
+4.  **Hardware Acceleration (GPU)**: ✅ Complete
+    - Transitioned all animations to `transform` and `opacity` properties.
+    - Utilizes `translate3d(0,0,0)` to force GPU layers where necessary.
 
 ### Planned Features (2025+)
 
