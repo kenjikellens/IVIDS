@@ -11,17 +11,36 @@ const BACKDROP_SIZE = 'w1280';    // High res for backgrounds
 const STILL_SIZE = 'w300';        // Small stills for episode lists
 const DETAIL_POSTER_SIZE = 'w500'; // Medium size for details page
 
-// Helper for network timeouts
-async function fetchWithTimeout(resource, options = {}) {
-    const { timeout = 8000 } = options;
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    const response = await fetch(resource, {
-        ...options,
-        signal: controller.signal
-    });
-    clearTimeout(id);
-    return response;
+// Helper for network timeouts and retries
+async function fetchWithRetry(resource, options = {}) {
+    const { timeout = 8000, retries = 2 } = options;
+    let lastError;
+
+    for (let i = 0; i <= retries; i++) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        try {
+            const response = await fetch(resource, {
+                ...options,
+                signal: controller.signal
+            });
+            clearTimeout(id);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return response;
+        } catch (error) {
+            clearTimeout(id);
+            lastError = error;
+            if (i < retries) {
+                // Wait slightly before retrying (exponential backoff)
+                await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
+            }
+        }
+    }
+    throw lastError;
 }
 
 // Helper function to get today's date in YYYY-MM-DD format
@@ -100,11 +119,21 @@ export const Api = {
      * TMDB CDN automatically serves WebP if the browser sends the correct Accept header.
      * Here we focus on ensuring size mapping is precise for the current screen.
      */
+    // Cached recommended sizes to avoid recalculation
+    _recommendedSizes: {},
+
     getImageUrl: (path, size = null) => {
         if (!path) return 'assets/placeholder.png';
 
         // Prefer dynamic recommended size if none provided
-        let finalSize = size || Api.getRecommendedPosterSize();
+        let finalSize = size;
+        if (!finalSize) {
+            const screenKey = `${window.innerWidth}x${window.devicePixelRatio || 1}`;
+            if (!Api._recommendedSizes[screenKey]) {
+                Api._recommendedSizes[screenKey] = Api.getRecommendedPosterSize();
+            }
+            finalSize = Api._recommendedSizes[screenKey];
+        }
 
         // Security: Ensure path doesn't already contain base (idempotency)
         const cleanPath = path.startsWith('/') ? path : `/${path}`;
@@ -133,9 +162,11 @@ export const Api = {
         if (cached) return shuffleArray([...cached]);
 
         try {
-            const response = await fetchWithTimeout(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false`);
+            const response = await fetchWithRetry(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false`);
             const data = await response.json();
             const today = getTodayDate();
+
+            if (!data || !data.results) return [];
 
             // Filter by release dates - only show released/aired content
             const filtered = data.results.filter(item => {
@@ -161,7 +192,7 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}`);
+            const response = await fetchWithRetry(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -188,7 +219,7 @@ export const Api = {
                 : `first_air_date.lte=${today}`;
 
             // Always exclude adult content from browse/discovery pages
-            const response = await fetch(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}`);
+            const response = await fetchWithRetry(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -270,7 +301,7 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
+            const response = await fetchWithRetry(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -291,7 +322,7 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await fetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
+            const response = await fetchWithRetry(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -310,9 +341,11 @@ export const Api = {
         try {
             // Note: include_adult is NOT set to false here intentionally
             // Adult content can be found via explicit search only
-            const response = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
+            const response = await fetchWithRetry(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
             const data = await response.json();
             const today = getTodayDate();
+
+            if (!data || !data.results) return [];
 
             // Filter by release dates - only show released/aired content
             const filtered = data.results.filter(item => {
@@ -330,9 +363,11 @@ export const Api = {
     async fetchRecommendations(id, type) {
         if (API_KEY.includes('TODO')) return [];
         try {
-            const response = await fetch(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=false`);
+            const response = await fetchWithRetry(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=false`);
             const data = await response.json();
             const today = getTodayDate();
+
+            if (!data || !data.results) return [];
 
             // Filter by release dates - only show released/aired content
             const filtered = (data.results || []).filter(item => {
@@ -351,7 +386,7 @@ export const Api = {
         if (API_KEY.includes('TODO')) return null;
         try {
             const append = type === 'movie' ? 'release_dates' : 'content_ratings';
-            const response = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}`);
+            const response = await fetchWithRetry(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching details:', error);
@@ -362,7 +397,7 @@ export const Api = {
     async getSeasonDetails(seriesId, seasonNumber) {
         if (API_KEY.includes('TODO')) return null;
         try {
-            const response = await fetch(`${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?api_key=${API_KEY}`);
+            const response = await fetchWithRetry(`${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?api_key=${API_KEY}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching season details:', error);
@@ -419,7 +454,7 @@ export const Api = {
 
     async fetchCountries() {
         try {
-            const response = await fetch(`${BASE_URL}/configuration/countries?api_key=${API_KEY}`);
+            const response = await fetchWithRetry(`${BASE_URL}/configuration/countries?api_key=${API_KEY}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching countries:', error);
@@ -429,7 +464,7 @@ export const Api = {
 
     async fetchWatchProviders(type = 'movie', region = 'US') {
         try {
-            const response = await fetch(`${BASE_URL}/watch/providers/${type}?api_key=${API_KEY}&watch_region=${region}`);
+            const response = await fetchWithRetry(`${BASE_URL}/watch/providers/${type}?api_key=${API_KEY}&watch_region=${region}`);
             const data = await response.json();
             return data.results || [];
         } catch (error) {
@@ -478,8 +513,9 @@ export const Api = {
 
             const type = filters.type || 'movie';
 
-            const response = await fetch(`${BASE_URL}/discover/${type}?${params.toString()}`);
+            const response = await fetchWithRetry(`${BASE_URL}/discover/${type}?${params.toString()}`);
             const data = await response.json();
+            if (!data || !data.results) return [];
             return data.results.map(item => ({ ...item, media_type: type }));
         } catch (error) {
             console.error('Error discovering content:', error);

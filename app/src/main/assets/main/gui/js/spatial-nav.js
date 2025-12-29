@@ -19,7 +19,51 @@ export const SpatialNav = {
         this._initialized = true;
 
         window.addEventListener('keydown', (e) => this.handleKey(e));
+
+        // Add mouse support for focus and input activation
+        window.addEventListener('mousedown', (e) => {
+            const target = e.target.closest(this.focusableSelector);
+            if (target) {
+                this.setFocus(target);
+
+                // If it's an input, we also want to activate it for mouse users
+                if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+                    if (target.readOnly) {
+                        target.readOnly = false;
+                        target.removeAttribute('inputmode');
+                        target.classList.add('active-typing');
+                    }
+                }
+            } else {
+                // If clicked on non-focusable, check if we should deactivate current input
+                const current = document.querySelector('.focused');
+                if (current && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
+                    if (!current.readOnly) {
+                        current.readOnly = true;
+                        current.classList.remove('active-typing');
+                        current.dispatchEvent(new Event('change', { bubbles: true }));
+                        current.blur();
+                    }
+                }
+            }
+        });
+
+        // Ensure all currently focusable elements have a tabindex
+        this.ensureTabindex();
+
+        // Monitor DOM changes to apply tabindex to new elements (like those in modals)
+        const observer = new MutationObserver(() => this.ensureTabindex());
+        observer.observe(document.body, { childList: true, subtree: true });
+
         this.focusFirst();
+    },
+
+    ensureTabindex() {
+        document.querySelectorAll(this.focusableSelector).forEach(el => {
+            if (!el.hasAttribute('tabindex')) {
+                el.setAttribute('tabindex', '-1');
+            }
+        });
     },
 
     setPageLogic(logic) {
@@ -29,6 +73,8 @@ export const SpatialNav = {
     setFocusTrap(container) {
         this.focusTrapContainer = container;
         if (container) {
+            // Force tabindex update for new container elements immediately
+            this.ensureTabindex();
             const first = Array.from(container.querySelectorAll(this.focusableSelector))
                 .find(el => this.isVisible(el));
             if (first) this.setFocus(first);
@@ -86,10 +132,12 @@ export const SpatialNav = {
         }
 
         if (current && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
-            if (!this.isPortrait()) {
-                current.readOnly = true;
-                current.classList.remove('active-typing');
-            }
+            // Always cleanup input state when moving focus, regardless of orientation
+            current.readOnly = true;
+            current.classList.remove('active-typing');
+
+            // CRITICAL: Explicitly blur to prevent browser from keeping focus border/caret
+            current.blur();
         }
 
         // Optimization: Use classList directly on the known current instead of querySelectorAll

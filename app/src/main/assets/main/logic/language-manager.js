@@ -28,17 +28,25 @@ export class LanguageManager {
         const translations = languages[this.currentLang];
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
-            if (translations[key]) {
+            const translation = this.getNestedTranslation(translations, key);
+
+            if (translation) {
                 if (element.tagName === 'INPUT' && element.getAttribute('placeholder')) {
-                    element.placeholder = translations[key];
+                    element.placeholder = translation;
                 } else {
-                    element.textContent = translations[key];
+                    element.textContent = translation;
                 }
             }
         });
     }
 
+    static getNestedTranslation(obj, key) {
+        if (!key) return null;
+        return key.split('.').reduce((o, i) => (o ? o[i] : null), obj);
+    }
+
     static getText(key) {
-        return languages[this.currentLang][key] || key;
+        const translations = languages[this.currentLang];
+        return this.getNestedTranslation(translations, key) || key;
     }
 }

@@ -4,21 +4,31 @@ import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched } f
 const STORAGE_KEY = 'user_playlists';
 const HISTORY_ID = 'history';
 
+// Module-level cache
+let _playlistsCache = null;
+
+function isMusic(item) {
+    const type = item.media_type;
+    return type === 'music' || type === 'music_song' || type === 'music_track';
+}
+
 export const Playlists = {
     getPlaylists() {
         try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            let playlists = stored ? JSON.parse(stored) : [];
+            if (!_playlistsCache) {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                _playlistsCache = stored ? JSON.parse(stored) : [];
 
-            // Get real recently watched data
+                // Content sanitization on initial load
+                _playlistsCache.forEach(p => {
+                    if (p.items) {
+                        p.items = p.items.filter(i => !isMusic(i));
+                    }
+                });
+            }
+
+            // Get real recently watched data (already cached in recentlyWatched.js)
             const historyItems = getRecentlyWatched();
-
-            // Filter out music from all other playlists too
-            playlists.forEach(p => {
-                if (p.items) {
-                    p.items = p.items.filter(i => i.media_type !== 'music' && i.media_type !== 'music_song' && i.media_type !== 'music_track');
-                }
-            });
 
             // Construct history playlist dynamically
             const historyPlaylist = {
@@ -29,16 +39,11 @@ export const Playlists = {
                 isSystem: true
             };
 
-            // Remove any old stored history playlist to avoid stale data
-            playlists = playlists.filter(p => p.id !== HISTORY_ID);
-
-            // Add fresh history playlist to beginning
-            playlists.unshift(historyPlaylist);
-
-            return playlists;
+            // Combine system and user playlists
+            // We return a fresh array to prevent accidental mutations of the cache
+            return [historyPlaylist, ..._playlistsCache];
         } catch (e) {
             console.error('Error loading playlists:', e);
-            // Return at least the history playlist on error
             return [{
                 id: HISTORY_ID,
                 name: 'Recently Watched',
@@ -51,53 +56,52 @@ export const Playlists = {
 
     savePlaylists(playlists) {
         try {
-            // Don't save the history playlist to user_playlists storage
-            // It is managed by recentlyWatched.js
-            const playlistsToSave = playlists.filter(p => p.id !== HISTORY_ID);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(playlistsToSave));
+            // Only save user playlists (filter out system ones like history)
+            _playlistsCache = (playlists || []).filter(p => !p.isSystem && p.id !== HISTORY_ID);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(_playlistsCache));
         } catch (e) {
             console.error('Error saving playlists:', e);
         }
     },
 
     createPlaylist(name) {
-        const playlists = this.getPlaylists();
+        // Ensure cache is loaded
+        this.getPlaylists();
+
         const newPlaylist = {
             id: Date.now().toString(),
             name: name,
             items: [],
             createdAt: Date.now()
         };
-        // Add after history
-        playlists.splice(1, 0, newPlaylist);
-        this.savePlaylists(playlists);
+
+        _playlistsCache.unshift(newPlaylist);
+        this.savePlaylists(_playlistsCache);
         return newPlaylist;
     },
 
     deletePlaylist(id) {
-        if (id === HISTORY_ID) return; // Cannot delete history
-        let playlists = this.getPlaylists();
-        playlists = playlists.filter(p => p.id !== id);
-        this.savePlaylists(playlists);
+        if (id === HISTORY_ID) return;
+        this.getPlaylists();
+        _playlistsCache = _playlistsCache.filter(p => p.id !== id);
+        this.savePlaylists(_playlistsCache);
     },
 
-
-
     addToPlaylist(playlistId, item) {
+        if (!item || isMusic(item)) return false;
+
         if (playlistId === HISTORY_ID) {
             addToRecentlyWatched(item);
             return true;
         }
 
-        const playlists = this.getPlaylists();
-        const playlist = playlists.find(p => p.id === playlistId);
+        this.getPlaylists();
+        const playlist = _playlistsCache.find(p => p.id === playlistId);
+
         if (playlist) {
             // Check for duplicates
-            const existingIndex = playlist.items.findIndex(i => i.id === item.id && i.media_type === item.media_type);
-
-            if (existingIndex !== -1) {
-                return false; // Already exists
-            }
+            const exists = playlist.items.some(i => i.id === item.id && i.media_type === item.media_type);
+            if (exists) return false;
 
             const newItem = {
                 id: item.id,
@@ -111,7 +115,7 @@ export const Playlists = {
             };
 
             playlist.items.push(newItem);
-            this.savePlaylists(playlists);
+            this.savePlaylists(_playlistsCache);
             return true;
         }
         return false;
@@ -123,24 +127,25 @@ export const Playlists = {
             return;
         }
 
-        const playlists = this.getPlaylists();
-        const playlist = playlists.find(p => p.id === playlistId);
+        this.getPlaylists();
+        const playlist = _playlistsCache.find(p => p.id === playlistId);
         if (playlist) {
             playlist.items = playlist.items.filter(i => i.id !== itemId);
-            this.savePlaylists(playlists);
+            this.savePlaylists(_playlistsCache);
         }
     },
 
     getPlaylist(id) {
-        const playlists = this.getPlaylists();
-        return playlists.find(p => p.id === id);
+        if (id === HISTORY_ID) return this.getPlaylists()[0];
+        this.getPlaylists();
+        return _playlistsCache.find(p => p.id === id);
     },
 
     sortPlaylist(id, sortBy) {
-        if (id === HISTORY_ID) return false; // Cannot sort history manually
+        if (id === HISTORY_ID) return false;
 
-        const playlists = this.getPlaylists();
-        const playlist = playlists.find(p => p.id === id);
+        this.getPlaylists();
+        const playlist = _playlistsCache.find(p => p.id === id);
         if (playlist) {
             switch (sortBy) {
                 case 'name_asc':
@@ -156,23 +161,23 @@ export const Playlists = {
                     playlist.items.sort((a, b) => a.addedAt - b.addedAt);
                     break;
             }
-            this.savePlaylists(playlists);
+            this.savePlaylists(_playlistsCache);
             return true;
         }
         return false;
     },
 
     moveItem(playlistId, fromIndex, toIndex) {
-        if (playlistId === HISTORY_ID) return false; // Cannot reorder history manually
+        if (playlistId === HISTORY_ID) return false;
 
-        const playlists = this.getPlaylists();
-        const playlist = playlists.find(p => p.id === playlistId);
+        this.getPlaylists();
+        const playlist = _playlistsCache.find(p => p.id === playlistId);
         if (playlist && fromIndex >= 0 && fromIndex < playlist.items.length && toIndex >= 0 && toIndex < playlist.items.length) {
             const item = playlist.items.splice(fromIndex, 1)[0];
             playlist.items.splice(toIndex, 0, item);
-            this.savePlaylists(playlists);
+            this.savePlaylists(_playlistsCache);
             return true;
         }
         return false;
     }
-};
+}

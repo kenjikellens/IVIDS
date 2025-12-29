@@ -1,8 +1,19 @@
 // Utility for managing recently watched content
 
 const MAX_RECENTLY_WATCHED = 20;
+const STORAGE_KEY = 'recentlyWatched';
+
+// In-memory cache to reduce localStorage access
+let _recentlyWatchedCache = null;
+
+function isMusic(item) {
+    const type = item.media_type;
+    return type === 'music' || type === 'music_song' || type === 'music_track';
+}
 
 export function addToRecentlyWatched(item) {
+    if (!item || isMusic(item)) return;
+
     try {
         // Get existing recently watched
         let recentlyWatched = getRecentlyWatched();
@@ -27,8 +38,9 @@ export function addToRecentlyWatched(item) {
         // Keep only MAX_RECENTLY_WATCHED items
         recentlyWatched = recentlyWatched.slice(0, MAX_RECENTLY_WATCHED);
 
-        // Save to localStorage
-        localStorage.setItem('recentlyWatched', JSON.stringify(recentlyWatched));
+        // Update cache and localStorage
+        _recentlyWatchedCache = recentlyWatched;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
 
         console.log('Added to recently watched:', item.title || item.name);
     } catch (e) {
@@ -37,11 +49,15 @@ export function addToRecentlyWatched(item) {
 }
 
 export function getRecentlyWatched() {
+    if (_recentlyWatchedCache) return [..._recentlyWatchedCache];
+
     try {
-        const stored = localStorage.getItem('recentlyWatched');
+        const stored = localStorage.getItem(STORAGE_KEY);
         let items = stored ? JSON.parse(stored) : [];
-        // Filter out legacy music items
-        return items.filter(i => i.media_type !== 'music' && i.media_type !== 'music_song' && i.media_type !== 'music_track');
+
+        // Sanitize data once on load
+        _recentlyWatchedCache = items.filter(i => !isMusic(i));
+        return [..._recentlyWatchedCache];
     } catch (e) {
         console.error('Error loading recently watched:', e);
         return [];
@@ -55,7 +71,8 @@ export function getWatchedItem(id, type) {
 
 export function clearRecentlyWatched() {
     try {
-        localStorage.removeItem('recentlyWatched');
+        _recentlyWatchedCache = [];
+        localStorage.removeItem(STORAGE_KEY);
         console.log('Recently watched cleared');
     } catch (e) {
         console.error('Error clearing recently watched:', e);
@@ -66,7 +83,9 @@ export function removeFromRecentlyWatched(id) {
     try {
         let recentlyWatched = getRecentlyWatched();
         recentlyWatched = recentlyWatched.filter(i => i.id != id);
-        localStorage.setItem('recentlyWatched', JSON.stringify(recentlyWatched));
+
+        _recentlyWatchedCache = recentlyWatched;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
         console.log('Removed from recently watched:', id);
     } catch (e) {
         console.error('Error removing from recently watched:', e);
