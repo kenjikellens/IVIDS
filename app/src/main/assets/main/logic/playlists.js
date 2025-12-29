@@ -13,6 +13,13 @@ export const Playlists = {
             // Get real recently watched data
             const historyItems = getRecentlyWatched();
 
+            // Filter out music from all other playlists too
+            playlists.forEach(p => {
+                if (p.items) {
+                    p.items = p.items.filter(i => i.media_type !== 'music' && i.media_type !== 'music_song' && i.media_type !== 'music_track');
+                }
+            });
+
             // Construct history playlist dynamically
             const historyPlaylist = {
                 id: HISTORY_ID,
@@ -98,7 +105,7 @@ export const Playlists = {
                 name: item.name || item.title,
                 poster_path: item.poster_path,
                 backdrop_path: item.backdrop_path,
-                media_type: item.media_type || item.type || 'movie',
+                media_type: item.media_type,
                 overview: item.overview,
                 addedAt: Date.now()
             };

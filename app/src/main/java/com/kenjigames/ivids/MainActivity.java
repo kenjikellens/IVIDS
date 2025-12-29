@@ -1,6 +1,7 @@
 package com.kenjigames.ivids;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
@@ -11,6 +12,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
@@ -307,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.M)
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
@@ -381,12 +384,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mWebView.loadUrl("file:///android_asset/main/gui/index.html");
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Prevent the app from closing when back is pressed.
-        // The back navigation is handled by the JS layer (SpatialNav).
-        Log.d(TAG, "onBackPressed: prevented app closure");
     }
 }

@@ -81,6 +81,8 @@
                 <span id="update-status-text" class="update-status-label"></span>
                 <button id="check-updates-btn" class="action-btn focusable" data-i18n="settings.checkButton">Check
                     Now</button>
+                <button id="cancel-update-btn" class="action-btn secondary focusable" data-i18n="common.cancel"
+                    style="display: none;">Cancel</button>
             </div>
         </div>
     </div>
@@ -171,6 +173,11 @@
                 </div>
                 <div class="option-chip focusable" data-value="none"
                     onclick="setPendingSetting('updateMode', 'none', this)" data-i18n="settings.mode.none">Off</div>
+            </div>
+            <div id="advanced-warning" class="warning-container" style="display: none;"
+                data-i18n="settings.advancedWarning">
+                Warning: Advanced / Developer mode allows downloading updates directly from the repository. This is
+                recommended for developers only and may contain unstable builds.
             </div>
         </div>
         <div class="modal-footer">

@@ -348,10 +348,41 @@ export const init = async (params) => {
     };
 
     const saveProfile = () => {
-        const name = document.getElementById('profile-name').value.trim();
-        const pin = document.getElementById('profile-pin').value.trim();
+        const nameInput = document.getElementById('profile-name');
+        const pinInput = document.getElementById('profile-pin');
+        const nameError = document.getElementById('profile-name-error');
+        const pinError = document.getElementById('profile-pin-error');
+        const modalContent = document.querySelector('.profile-modal-content');
 
-        if (!name) return;
+        const name = nameInput.value.trim();
+        const pin = pinInput.value.trim();
+
+        let isValid = true;
+
+        // Reset errors
+        nameError.textContent = '';
+        nameError.classList.remove('visible');
+        pinError.textContent = '';
+        pinError.classList.remove('visible');
+        modalContent.classList.remove('shake');
+
+        if (!name) {
+            nameError.textContent = window.i18n.t('profiles.errorNameEmpty');
+            nameError.classList.add('visible');
+            isValid = false;
+        }
+
+        if (pin && pin.length !== 4) {
+            pinError.textContent = window.i18n.t('profiles.errorPinLength');
+            pinError.classList.add('visible');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            void modalContent.offsetWidth; // Trigger reflow
+            modalContent.classList.add('shake');
+            return;
+        }
 
         if (currentEditingIndex === -1) {
             profiles.push({ name, color: selectedColor, pin: pin || null });

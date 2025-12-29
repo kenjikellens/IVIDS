@@ -17,7 +17,7 @@ export function addToRecentlyWatched(item) {
             name: item.name || item.title,
             poster_path: item.poster_path,
             backdrop_path: item.backdrop_path,
-            media_type: item.media_type || item.type,
+            media_type: item.media_type,
             overview: item.overview,
             season: item.season,
             episode: item.episode,
@@ -39,7 +39,9 @@ export function addToRecentlyWatched(item) {
 export function getRecentlyWatched() {
     try {
         const stored = localStorage.getItem('recentlyWatched');
-        return stored ? JSON.parse(stored) : [];
+        let items = stored ? JSON.parse(stored) : [];
+        // Filter out legacy music items
+        return items.filter(i => i.media_type !== 'music' && i.media_type !== 'music_song' && i.media_type !== 'music_track');
     } catch (e) {
         console.error('Error loading recently watched:', e);
         return [];

@@ -169,7 +169,7 @@
         background: transparent !important;
     }
 
-    /* Correct Order: Home, Movies, Series, Search, Playlists, Settings, Account */
+    /* Correct Order: Home, Movies, Series, Search, Playlists, Account, Settings */
     .nav-item[data-route="home"] {
         order: 1;
     }
@@ -190,11 +190,11 @@
         order: 5;
     }
 
-    .nav-item[data-route="settings"] {
+    .nav-item[data-route="account"] {
         order: 6;
     }
 
-    .nav-item[data-route="account"] {
+    .nav-item[data-route="settings"] {
         order: 7;
     }
 
@@ -268,6 +268,8 @@
     .nav-item span {
         display: none !important;
     }
+
+
 
     /* Override hover width expansion in portrait */
     .navbar:hover,

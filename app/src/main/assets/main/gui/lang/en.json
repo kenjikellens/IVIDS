@@ -54,6 +54,7 @@
             "advanced": "Advanced / Developer",
             "none": "Off"
         },
+        "advancedWarning": "Warning: Advanced / Developer mode allows downloading updates directly from the repository. This is recommended for developers only and may contain unstable builds.",
         "updateStatus": {
             "connecting-api": "Connecting to server...",
             "fetching-releases": "Checking for releases...",
@@ -221,6 +222,8 @@
         "deleteConfirmMessage": "Are you sure you want to delete {name}?",
         "confirmDelete": "Delete",
         "enterPin": "Enter PIN for {name}",
-        "incorrectPin": "Incorrect PIN. Try again."
-    }
+        "incorrectPin": "Incorrect PIN. Try again.",
+        "errorNameEmpty": "Name cannot be empty",
+        "errorPinLength": "PIN must be exactly 4 digits"
+    },
 }

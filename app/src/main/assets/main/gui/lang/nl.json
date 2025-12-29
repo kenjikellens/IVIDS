@@ -54,6 +54,7 @@
             "advanced": "Geavanceerd / Developer",
             "none": "Uit"
         },
+        "advancedWarning": "Waarschuwing: Geavanceerd / Developer-modus maakt het mogelijk om updates rechtstreeks uit de repository te downloaden. Dit wordt alleen aanbevolen voor ontwikkelaars en kan onstabiele builds bevatten.",
         "updateStatus": {
             "connecting-api": "Verbinden met server...",
             "fetching-releases": "Controleren op releases...",
@@ -220,7 +221,9 @@
         "deleteConfirmTitle": "Profiel verwijderen",
         "deleteConfirmMessage": "Weet u zeker dat u {name} wilt verwijderen?",
         "confirmDelete": "Verwijderen",
-        "enterPin": "Voer de PIN in voor {name}",
-        "incorrectPin": "Onjuiste PIN. Probeer het opnieuw."
-    }
+        "enterPin": "Voer PIN in voor {name}",
+        "incorrectPin": "Onjuiste PIN. Probeer het opnieuw.",
+        "errorNameEmpty": "Naam mag niet leeg zijn",
+        "errorPinLength": "PIN moet precies 4 cijfers zijn"
+    },
 }

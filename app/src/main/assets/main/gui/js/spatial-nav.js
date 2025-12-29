@@ -89,7 +89,6 @@ export const SpatialNav = {
             if (!this.isPortrait()) {
                 current.readOnly = true;
                 current.classList.remove('active-typing');
-                if (current.parentElement) current.parentElement.classList.remove('active-typing');
             }
         }
 
@@ -117,7 +116,6 @@ export const SpatialNav = {
             element.readOnly = false;
             element.removeAttribute('inputmode');
             element.classList.add('active-typing');
-            if (element.parentElement) element.parentElement.classList.add('active-typing');
         }
 
         this.centerElement(element);
@@ -212,14 +210,12 @@ export const SpatialNav = {
                     current.readOnly = false;
                     current.removeAttribute('inputmode');
                     current.classList.add('active-typing');
-                    if (current.parentElement) current.parentElement.classList.add('active-typing');
                     // On some TVs, we need to explicitly call focus() again after making it editable
                     current.focus();
                 } else {
                     if (!this.isPortrait()) {
                         current.readOnly = true;
                         current.classList.remove('active-typing');
-                        if (current.parentElement) current.parentElement.classList.remove('active-typing');
                         // Trigger a change event so listeners know editing is done
                         current.dispatchEvent(new Event('change', { bubbles: true }));
                     }

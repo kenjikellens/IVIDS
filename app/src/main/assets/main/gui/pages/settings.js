@@ -29,6 +29,7 @@ class SettingsManager {
         this.settings = this.loadSettings();
         this.pendingSettings = {};
         this.currentModal = null;
+        this.isCheckingUpdates = false;
         this.initializeUI();
         this.applySettings();
     }
@@ -57,14 +58,24 @@ class SettingsManager {
             checkBtn.onclick = () => this.handleMainUpdateAction();
         }
 
+        const cancelBtn = document.getElementById('cancel-update-btn');
+        if (cancelBtn) {
+            cancelBtn.onclick = () => this.handleCancelUpdate();
+        }
+
         this.updateDisplays();
     }
 
     handleMainUpdateAction() {
         if (!window.AndroidUpdate) return;
 
+        this.isCheckingUpdates = true;
+
         const checkBtn = document.getElementById('check-updates-btn');
         if (checkBtn) checkBtn.style.display = 'none';
+
+        const cancelBtn = document.getElementById('cancel-update-btn');
+        if (cancelBtn) cancelBtn.style.display = 'inline-block';
 
         const statusText = document.getElementById('update-status-text');
         if (statusText) {
@@ -88,6 +99,25 @@ class SettingsManager {
         } else {
             window.AndroidUpdate.checkForUpdates();
         }
+    }
+
+    handleCancelUpdate() {
+        console.log('Cancelling update check');
+        this.isCheckingUpdates = false;
+
+        const checkBtn = document.getElementById('check-updates-btn');
+        if (checkBtn) checkBtn.style.display = 'inline-block';
+
+        const cancelBtn = document.getElementById('cancel-update-btn');
+        if (cancelBtn) cancelBtn.style.display = 'none';
+
+        const statusText = document.getElementById('update-status-text');
+        if (statusText) statusText.style.display = 'none';
+
+        const loaderContainer = document.getElementById('update-loader-container');
+        if (loaderContainer) loaderContainer.style.display = 'none';
+
+        SpatialNav.refocus();
     }
 
     updateDisplays() {
@@ -164,6 +194,14 @@ class SettingsManager {
                 chip.classList.remove('active');
             }
         });
+
+        // Show/hide advanced warning
+        if (modalId === 'update-mode-modal') {
+            const warning = document.getElementById('advanced-warning');
+            if (warning) {
+                warning.style.display = value === 'advanced' ? 'block' : 'none';
+            }
+        }
     }
 
     closeModal() {
@@ -184,6 +222,14 @@ class SettingsManager {
         if (el && el.parentElement) {
             el.parentElement.querySelectorAll('.option-chip').forEach(chip => chip.classList.remove('active'));
             el.classList.add('active');
+        }
+
+        // Show/hide advanced warning
+        if (key === 'updateMode') {
+            const warning = document.getElementById('advanced-warning');
+            if (warning) {
+                warning.style.display = value === 'advanced' ? 'block' : 'none';
+            }
         }
     }
 
@@ -219,6 +265,7 @@ class SettingsManager {
     }
 
     handleUpdateStatus(statusKey) {
+        if (!this.isCheckingUpdates) return;
         console.log('Update Status:', statusKey);
         const statusText = document.getElementById('update-status-text');
         if (statusText) {
@@ -227,13 +274,17 @@ class SettingsManager {
     }
 
     handleUpdateFound(version) {
+        if (!this.isCheckingUpdates) return;
+
         console.log('Update Found:', version);
         const statusText = document.getElementById('update-status-text');
         const loaderContainer = document.getElementById('update-loader-container');
         const checkBtn = document.getElementById('check-updates-btn');
+        const cancelBtn = document.getElementById('cancel-update-btn');
 
         if (statusText) statusText.textContent = (window.i18n?.t('settings.updateFound') || 'Update Found') + ': ' + version;
         if (loaderContainer) loaderContainer.style.display = 'none';
+        if (cancelBtn) cancelBtn.style.display = 'inline-block';
 
         if (checkBtn) {
             checkBtn.style.display = 'inline-block';
@@ -247,13 +298,18 @@ class SettingsManager {
     }
 
     handleNoUpdateFound() {
+        if (!this.isCheckingUpdates) return;
+        this.isCheckingUpdates = false;
+
         console.log('No update found');
         const statusText = document.getElementById('update-status-text');
         const loaderContainer = document.getElementById('update-loader-container');
         const checkBtn = document.getElementById('check-updates-btn');
+        const cancelBtn = document.getElementById('cancel-update-btn');
 
         if (statusText) statusText.textContent = window.i18n?.t('settings.noUpdate') || 'Up to date';
         if (loaderContainer) loaderContainer.style.display = 'none';
+        if (cancelBtn) cancelBtn.style.display = 'none';
 
         setTimeout(() => {
             if (checkBtn) {
@@ -266,13 +322,18 @@ class SettingsManager {
     }
 
     handleUpdateError() {
+        if (!this.isCheckingUpdates) return;
+        this.isCheckingUpdates = false;
+
         console.error('Update check error');
         const statusText = document.getElementById('update-status-text');
         const loaderContainer = document.getElementById('update-loader-container');
         const checkBtn = document.getElementById('check-updates-btn');
+        const cancelBtn = document.getElementById('cancel-update-btn');
 
         if (statusText) statusText.textContent = window.i18n?.t('settings.updateError') || 'Error checking';
         if (loaderContainer) loaderContainer.style.display = 'none';
+        if (cancelBtn) cancelBtn.style.display = 'none';
 
         setTimeout(() => {
             if (checkBtn) {

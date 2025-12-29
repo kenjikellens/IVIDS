@@ -177,7 +177,7 @@
 
 .modal-content {
     background: #181818;
-    padding: clamp(1.5rem, 4vw, 3rem);
+    padding: clamp(1rem, 2vh, 2rem);
     border-radius: 0.75rem;
     width: 90%;
     max-width: 80%;
@@ -191,20 +191,20 @@
 }
 
 .modal-title {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
+    font-size: clamp(1.5rem, 4vh, 2rem);
+    margin-bottom: 1.25rem;
     text-align: center;
 }
 
 .input-group {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
 }
 
 .input-group label {
-    margin-bottom: 0.8rem;
-    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+    font-size: 1rem;
     color: #b3b3b3;
 }
 
@@ -271,7 +271,7 @@
     justify-content: center;
     /* Better centering for TV/Remote use */
     gap: 1.5rem;
-    margin-top: 3rem;
+    margin-top: 1.5rem;
     flex-wrap: wrap;
     width: 100%;
     /* Fill container */
@@ -362,6 +362,47 @@
     font-size: 1.5rem;
     margin: 2rem 0;
     color: #e0e0e0;
+}
+
+.error-text {
+    color: #ff453a;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    min-height: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.error-text.visible {
+    opacity: 1;
+}
+
+.shake {
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
 }
 
 /* Animations */

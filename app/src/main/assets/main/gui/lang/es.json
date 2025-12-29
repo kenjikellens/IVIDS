@@ -54,6 +54,7 @@
             "advanced": "Avanzado / Desarrollador",
             "none": "Desactivado"
         },
+        "advancedWarning": "Advertencia: El modo Avanzado / Desarrollador permite descargar actualizaciones directamente del repositorio. Esto se recomienda solo para desarrolladores y puede contener versiones inestables.",
         "updateStatus": {
             "connecting-api": "Conectando al servidor...",
             "fetching-releases": "Buscando versiones...",
@@ -196,14 +197,14 @@
     },
     "profiles": {
         "title": "¿Quién está viendo?",
-        "add": "Añadir perfil",
+        "add": "Agregar perfil",
         "guest": "Invitado",
         "edit": "Editar perfiles",
-        "done": "Listo",
+        "done": "Hecho",
         "createTitle": "Crear perfil",
         "editTitle": "Editar perfil",
         "nameLabel": "Nombre",
-        "colorLabel": "Color del perfil",
+        "colorLabel": "Color de perfil",
         "pinLabel": "PIN (Opcional)",
         "save": "Guardar",
         "delete": "Eliminar",
@@ -211,7 +212,9 @@
         "deleteConfirmTitle": "Eliminar perfil",
         "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar a {name}?",
         "confirmDelete": "Eliminar",
-        "enterPin": "Introduce el PIN para {name}",
-        "incorrectPin": "PIN incorrecto. Inténtalo de nuevo."
+        "enterPin": "Introduce el PIN de {name}",
+        "incorrectPin": "PIN incorrecto. Inténtalo de nuevo.",
+        "errorNameEmpty": "El nombre no puede estar vacío",
+        "errorPinLength": "El PIN debe tener exactamente 4 dígitos"
     }
 }
