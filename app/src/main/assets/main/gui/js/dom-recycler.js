@@ -44,6 +44,8 @@ export class DomRecycler {
 
         // For simplicity and compatibility on TV:
         element.style.visibility = 'hidden';
+        // HTML5 optimization: contain layout/paint/style for hidden elements
+        element.style.contain = 'layout paint style';
         element.dataset.pruned = 'true';
     }
 
@@ -54,6 +56,7 @@ export class DomRecycler {
         if (element.dataset.pruned !== 'true') return;
 
         element.style.visibility = 'visible';
+        element.style.contain = ''; // Reset containment to avoid clipping (e.g. focus scales)
         element.dataset.pruned = 'false';
     }
 }

@@ -206,8 +206,50 @@ public class UpdateManager {
             try {
                 URL url = URI.create(mDownloadUrl).toURL();
                 notifyWebUpdateStatus("downloading");
-                conn = (HttpURLConnection) url.openConnection();
-                conn.connect();
+
+                // Follow redirects manually (GitHub redirects to CDN)
+                String finalUrl = mDownloadUrl;
+                int redirectCount = 0;
+                final int MAX_REDIRECTS = 5;
+
+                while (redirectCount < MAX_REDIRECTS) {
+                    conn = (HttpURLConnection) URI.create(finalUrl).toURL().openConnection();
+                    conn.setRequestProperty("User-Agent", "IVIDS-Android-App");
+                    conn.setInstanceFollowRedirects(false);
+                    conn.setConnectTimeout(15000);
+                    conn.setReadTimeout(30000);
+                    conn.connect();
+
+                    int responseCode = conn.getResponseCode();
+                    Log.d(TAG, "Response code: " + responseCode + " for URL: " + finalUrl);
+
+                    if (responseCode == HttpURLConnection.HTTP_MOVED_PERM ||
+                            responseCode == HttpURLConnection.HTTP_MOVED_TEMP ||
+                            responseCode == 307 || responseCode == 308) {
+                        String location = conn.getHeaderField("Location");
+                        if (location == null) {
+                            Log.e(TAG, "Redirect with no Location header");
+                            notifyWebUpdateError();
+                            return;
+                        }
+                        Log.d(TAG, "Redirecting to: " + location);
+                        finalUrl = location;
+                        conn.disconnect();
+                        redirectCount++;
+                    } else if (responseCode == HttpURLConnection.HTTP_OK) {
+                        break;
+                    } else {
+                        Log.e(TAG, "HTTP error: " + responseCode);
+                        notifyWebUpdateError();
+                        return;
+                    }
+                }
+
+                if (redirectCount >= MAX_REDIRECTS) {
+                    Log.e(TAG, "Too many redirects");
+                    notifyWebUpdateError();
+                    return;
+                }
 
                 File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
                 if (!downloadDir.exists()) {

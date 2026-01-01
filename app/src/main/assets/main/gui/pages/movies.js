@@ -1,6 +1,7 @@
 import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { HeroSlider } from '../js/hero-slider.js';
+import { Splash } from '../js/splash.js';
 import { createLoaderElement } from '../js/loader.js';
 import { renderSkeletonRow } from '../js/skeleton-renderer.js';
 import { lazyLoader } from '../js/lazy-loader.js';
@@ -23,6 +24,8 @@ export async function init() {
                 playBtnId: 'play-btn'
             });
             setupRow('popular-movies-row', movies.slice(5));
+        } else {
+            Splash.signalContentLoaded();
         }
 
         // 2. Define Categories
@@ -127,6 +130,14 @@ function setupRow(elementId, items) {
         img.alt = item.title || item.name;
 
         btn.appendChild(img);
+
+        btn.onclick = () => {
+            try {
+                Router.loadPage('details', { id: item.id, type: 'movie' });
+            } catch (navError) {
+                console.error('Error navigating to details:', navError);
+            }
+        };
 
         // Observe for lazy loading
         lazyLoader.observeItem(btn);

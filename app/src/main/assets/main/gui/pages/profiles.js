@@ -1,5 +1,6 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
+import { Splash } from '../js/splash.js';
 
 export const init = async (params) => {
     console.log('Profiles: Initializing...');
@@ -522,4 +523,7 @@ export const init = async (params) => {
     });
 
     renderProfiles();
+
+    // Signal UI loaded to splash screen
+    Splash.signalContentLoaded();
 };

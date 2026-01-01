@@ -4,6 +4,7 @@ import { Sidebar } from '../components/sidebar/sidebar.js';
 import { Splash } from './splash.js';
 import { ErrorHandler } from './error-handler.js';
 import { Screensaver } from './screensaver.js';
+import { Toast } from './toast.js';
 import './loader.js';
 import './i18n.js';
 
@@ -11,26 +12,30 @@ import './i18n.js';
 window.onerror = function (message, source, lineno, colno, error) {
     console.error('Global error caught:', message, error);
 
-    // Ignore "Script error." which often happens for external resource failures
-    // that don't affect the app's functionality but have no details due to CORS.
-    if (message === 'Script error.') {
-        console.warn('Ignoring generic "Script error." (likely non-critical resource failure)');
+    // Ignore non-critical resource failures
+    if (message === 'Script error.' || (message && message.includes('fetch'))) {
+        console.warn('Ignoring likely non-critical resource/network failure');
         return true;
     }
 
     const errorMsg = error ? `${message}\n${error.stack}` : `${message} (${source}:${lineno}:${colno})`;
+
+    // Dismiss splash if it's blocking the error view
+    if (typeof Splash !== 'undefined' && Splash.signalContentLoaded) {
+        Splash.signalContentLoaded();
+    }
+
     ErrorHandler.show(
-        `An unexpected system error occurred:\n\n${errorMsg}`,
+        `${window.i18n.t('error.systemError')}:\n\n${errorMsg}`,
         () => window.location.reload(),
-        'System Error'
+        window.i18n.t('error.defaultTitle')
     );
-    return true; // Prevent default browser error handling
+    return true;
 };
 
 window.onunhandledrejection = function (event) {
-    console.error('Unhandled promise rejection:', event.reason);
-    // Don't show modal for every background promise failure, but log it
-    // Only show if it seems critical or if we want to be very strict
+    console.warn('Unhandled promise rejection:', event.reason);
+    // Don't show modal for every background promise failure unless it's critical
 };
 
 // Load and apply saved settings
@@ -198,15 +203,23 @@ function initHistoryTrap() {
 
 function initNetworkListeners() {
     window.addEventListener('offline', () => {
-        ErrorHandler.show(
-            'No internet connection. Please check your network settings.',
-            () => window.location.reload(),
-            'Connection Lost'
-        );
+        Toast.show(window.i18n.t('toast.connectionLost'), {
+            title: window.i18n.t('toast.connectionLostTitle'),
+            type: 'error',
+            duration: 0 // Keep visible until online
+        });
     });
 
     window.addEventListener('online', () => {
-        ErrorHandler.hide();
+        // Find existing error toasts and hide them
+        const toasts = document.querySelectorAll('.toast-error');
+        toasts.forEach(t => Toast.hide(t));
+
+        Toast.show(window.i18n.t('toast.connected'), {
+            title: window.i18n.t('toast.connectedTitle'),
+            type: 'success',
+            duration: 3000
+        });
         console.log('Back online');
     });
 
@@ -262,13 +275,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (homeError) {
             console.error('Error in initial routing:', homeError);
-            ErrorHandler.show('Failed to initialize application. Please reload the page.', () => window.location.reload());
+            ErrorHandler.show(window.i18n.t('error.initError'), () => window.location.reload());
         }
     } catch (error) {
         console.error('Critical error in DOMContentLoaded:', error);
         // Try to show error handler if it was initialized, otherwise alert
         try {
-            ErrorHandler.show('A critical error occurred during initialization.', () => window.location.reload());
+            ErrorHandler.show(window.i18n.t('error.criticalInit'), () => window.location.reload());
         } catch (e) {
             alert('A critical error occurred during initialization.');
         }

@@ -32,9 +32,6 @@ export async function init() {
             // Signal splash to dismiss even if we have no hero content, 
             // otherwise the app gets stuck on the splash screen.
             try {
-                // Dynamic import to avoid circular dependency issues if any, 
-                // though direct import is at top. Using the imported class.
-                const { Splash } = await import('../js/splash.js');
                 Splash.signalContentLoaded();
             } catch (splashErr) {
                 console.error('Home: Failed to signal splash dismissal:', splashErr);

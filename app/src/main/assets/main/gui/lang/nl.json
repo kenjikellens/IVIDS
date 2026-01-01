@@ -14,9 +14,6 @@
     },
     "account": {
         "title": "Account",
-        "guestUser": "Gastmodus",
-        "noLoginNotice": "U kunt nog niet inloggen op de applicatie.",
-        "fullAccessNotice": "U kunt echter alle functies van IVIDS gebruiken zonder account.",
         "logout": "Profiel wisselen",
         "editProfile": "Profiel bewerken",
         "currentProfile": "Huidig profiel"
@@ -80,7 +77,21 @@
         "title": "Fout",
         "defaultTitle": "Applicatiefout",
         "message": "Er is een onverwachte fout opgetreden.",
-        "close": "Sluiten"
+        "close": "Sluiten",
+        "systemError": "Er is een onverwachte systeemfout opgetreden",
+        "initError": "Initialiseren van de applicatie mislukt. Herlaad de pagina aub.",
+        "criticalInit": "Er is een kritieke fout opgetreden tijdens de initialisatie."
+    },
+    "splash": {
+        "loadingStatus": "Gebruikerservaring optimaliseren...",
+        "slowConnection": "Het laden duurt langer dan verwacht. Controleer uw internetverbinding."
+    },
+    "toast": {
+        "connectionLost": "Geen internetverbinding. Controleer uw netwerkinstellingen.",
+        "connected": "U bent weer online. UI wordt gesynchroniseerd...",
+        "connectionLostTitle": "Verbinding verbroken",
+        "connectedTitle": "Verbonden",
+        "slowConnectionTitle": "Trage verbinding"
     },
     "search": {
         "title": "Zoeken",
@@ -115,7 +126,8 @@
         "play": "Afspelen",
         "pause": "Pauze",
         "stop": "Stoppen",
-        "moreInfo": "Meer Info"
+        "moreInfo": "Meer Info",
+        "nextEpisode": "Volgende Aflevering"
     },
     "playlists": {
         "title": "Mijn Afspeellijsten",
@@ -225,5 +237,5 @@
         "incorrectPin": "Onjuiste PIN. Probeer het opnieuw.",
         "errorNameEmpty": "Naam mag niet leeg zijn",
         "errorPinLength": "PIN moet precies 4 cijfers zijn"
-    },
+    }
 }

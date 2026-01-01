@@ -14,9 +14,6 @@
     },
     "account": {
         "title": "Account",
-        "guestUser": "Guest Mode",
-        "noLoginNotice": "You cannot login to the application yet.",
-        "fullAccessNotice": "However, you can use all functions of IVIDS without an account.",
         "logout": "Switch Profile",
         "editProfile": "Edit Profile",
         "currentProfile": "Current Profile"
@@ -80,7 +77,21 @@
         "title": "Error",
         "defaultTitle": "Application Error",
         "message": "An unexpected error occurred.",
-        "close": "Close"
+        "close": "Close",
+        "systemError": "An unexpected system error occurred",
+        "initError": "Failed to initialize application. Please reload the page.",
+        "criticalInit": "A critical error occurred during initialization."
+    },
+    "splash": {
+        "loadingStatus": "Optimizing user experience...",
+        "slowConnection": "Loading is taking longer than expected. Please check your internet connection."
+    },
+    "toast": {
+        "connectionLost": "No internet connection. Please check your network settings.",
+        "connected": "You are back online. UI is syncing...",
+        "connectionLostTitle": "Connection Lost",
+        "connectedTitle": "Connected",
+        "slowConnectionTitle": "Slow Connection"
     },
     "search": {
         "title": "Search",
@@ -115,7 +126,8 @@
         "play": "Play",
         "pause": "Pause",
         "stop": "Stop",
-        "moreInfo": "More Info"
+        "moreInfo": "More Info",
+        "nextEpisode": "Next Episode"
     },
     "playlists": {
         "title": "My Playlists",
@@ -225,5 +237,5 @@
         "incorrectPin": "Incorrect PIN. Try again.",
         "errorNameEmpty": "Name cannot be empty",
         "errorPinLength": "PIN must be exactly 4 digits"
-    },
+    }
 }

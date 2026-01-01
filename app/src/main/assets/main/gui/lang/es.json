@@ -14,9 +14,6 @@
     },
     "account": {
         "title": "Cuenta",
-        "guestUser": "Modo Invitado",
-        "noLoginNotice": "Aún no puedes iniciar sesión en la aplicación.",
-        "fullAccessNotice": "Sin embargo, puedes usar todas las funciones de IVIDS sin una cuenta.",
         "logout": "Cambiar perfil",
         "editProfile": "Editar perfil",
         "currentProfile": "Perfil actual"
@@ -76,6 +73,26 @@
         "newReleases": "Nuevos lanzamientos",
         "recentlyWatched": "Visto recientemente"
     },
+    "error": {
+        "title": "Error",
+        "defaultTitle": "Error de aplicación",
+        "message": "Se ha producido un error inesperado.",
+        "close": "Cerrar",
+        "systemError": "Se ha producido un error inesperado del sistema",
+        "initError": "Error al inicializar la aplicación. Por favor, recarga la página.",
+        "criticalInit": "Se ha producido un error crítico durante la inicialización."
+    },
+    "splash": {
+        "loadingStatus": "Optimizando la experiencia del usuario...",
+        "slowConnection": "La carga está tardando más de lo esperado. Por favor, comprueba tu conexión a Internet."
+    },
+    "toast": {
+        "connectionLost": "Sin conexión a Internet. Por favor, comprueba tu configuración de red.",
+        "connected": "Vuelves a estar en línea. La interfaz se está sincronizando...",
+        "connectionLostTitle": "Conexión Perdida",
+        "connectedTitle": "Conectado",
+        "slowConnectionTitle": "Conexión Lenta"
+    },
     "search": {
         "title": "Búsqueda",
         "placeholder": "Buscar películas o series...",
@@ -100,13 +117,17 @@
         "topRated": "Mejor valorados",
         "newest": "Más recientes",
         "mostVoted": "Más votados",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar",
+        "searchCountries": "Buscar países...",
         "na": "N/A"
     },
     "player": {
         "play": "Reproducir",
         "pause": "Pausar",
         "stop": "Detener",
-        "moreInfo": "Más información"
+        "moreInfo": "Más información",
+        "nextEpisode": "Siguiente Episodio"
     },
     "playlists": {
         "title": "Mis listas",

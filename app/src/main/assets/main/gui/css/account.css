@@ -102,27 +102,6 @@
     box-shadow: 0 0 0 0.1875rem #fff;
 }
 
-.info-section {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.user-name {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: #fff;
-}
-
-.notice-main {
-    font-size: 1.2rem;
-    color: #ccc;
-    margin-bottom: 0.5rem;
-}
-
-.notice-sub {
-    font-size: 1rem;
-    color: #888;
-}
-
 @keyframes fadeIn {
     from {
         opacity: 0;

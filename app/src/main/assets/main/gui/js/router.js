@@ -1,5 +1,6 @@
 import { SpatialNav } from './spatial-nav.js';
 import { getLoaderHtml } from './loader.js';
+import { Splash } from './splash.js';
 
 export const Router = {
     currentPage: null,
@@ -96,6 +97,11 @@ export const Router = {
                 // Don't fail completely if JS fails, HTML might be enough
             }
 
+            // Signal Splash that HTML is rendered (with a tiny delay for safety)
+            setTimeout(() => {
+                Splash.signalContentLoaded();
+            }, 500);
+
             // Apply translations
             try {
                 if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
@@ -126,11 +132,13 @@ export const Router = {
 
             // Restore original content or show error
             mainView.innerHTML = `
-                <div style="text-align: center; padding: 50px;">
-                    <h1>Error loading page</h1>
+                <div class="error-page-container" style="text-align: center; padding: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+                    <h1 data-i18n="error.pageTitle">Error loading page</h1>
                     <p>${error.message || 'An unexpected error occurred.'}</p>
-                    <button id="retry-page-btn" class="btn btn-primary focusable">Retry</button>
-                    <button id="home-page-btn" class="btn btn-secondary focusable">Go Home</button>
+                    <div style="margin-top: 20px;">
+                        <button id="retry-page-btn" class="btn btn-primary focusable" data-i18n="error.retry">Retry</button>
+                        <button id="home-page-btn" class="btn btn-secondary focusable" data-i18n="error.goHome" style="margin-left: 10px;">Go Home</button>
+                    </div>
                 </div>
             `;
 
@@ -141,7 +149,7 @@ export const Router = {
 
                 if (retryBtn) {
                     retryBtn.onclick = () => {
-                        this.isLoading = false;
+                        this.isLoading = false; // Reset state before retry
                         this.loadPage(pageName, params);
                     };
                 }
@@ -152,8 +160,12 @@ export const Router = {
                     };
                 }
 
+                if (window.i18n) window.i18n.applyTranslations();
                 if (retryBtn && SpatialNav) SpatialNav.setFocus(retryBtn);
             }, 100);
+
+            // Ensure Splash is dismissed if it encountered an error
+            Splash.signalContentLoaded();
 
         } finally {
             this.isLoading = false;

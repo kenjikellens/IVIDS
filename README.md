@@ -4,8 +4,9 @@ IVIDS is a premium, high-performance media player designed for a cinematic exper
 
 ## 🚀 Core Technologies
 - **Vanilla JS (ES6+)**: Modular architecture using native ES modules.
-- **HTML5 & CSS3**: Modern responsive layouts using CSS Grid and Flexbox.
-- **Spatial Navigation**: A custom-built focus management system optimized for remote controls and keyboards.
+- **HTML5 & CSS3**: Modern responsive layouts with CSS Grid and Flexbox.
+- **Spatial Navigation**: Smart focus management optimized for TV remotes.
+- **Universal Design**: Seamless experience on TV (Landscape) and Mobile (Portrait).
 
 ## 🏗️ Technical Architecture
 
@@ -18,11 +19,14 @@ The application uses a bespoke Single Page Application (SPA) router (`router.js`
 ### Spatial Navigation System
 Ensures a native TV experience:
 - **Focus Management**: Automatically tracks and manages `.focusable` elements.
-- **Page Logic Overrides**: Specific pages can override navigation behavior (e.g., guiding the "Down" press from a header button to a content grid).
+- **Page Logic Overrides**: Specific pages can override navigation behavior.
 - **Responsive Handling**: Adapts focus logic between Landscape (TV) and Portrait (Mobile) orientations.
 
 ### i18n Support
 Global translation system (`lang/*.json`) allows for easy localization across multiple languages, updating the UI dynamically without page reloads.
+
+### UI Feedback
+- **Toast System**: Non-intrusive notification system for user feedback (success/error/info).
 
 ## 📁 Project Structure
 - `app/src/main/assets/main/gui/`:

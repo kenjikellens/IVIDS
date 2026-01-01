@@ -49,7 +49,7 @@
 }
 
 .playlist-sidebar {
-    width: 350px;
+    width: 25%;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -353,7 +353,7 @@
     background-color: #1a1a1a;
     padding: 32px;
     border-radius: 16px;
-    width: 400px;
+    width: 25vw;
     max-width: 90%;
     text-align: center;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);

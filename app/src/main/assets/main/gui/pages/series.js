@@ -121,6 +121,14 @@ function setupRow(elementId, items) {
 
         btn.appendChild(img);
 
+        btn.onclick = () => {
+            try {
+                Router.loadPage('details', { id: item.id, type: 'tv' });
+            } catch (navError) {
+                console.error('Error navigating to details:', navError);
+            }
+        };
+
         // Observe for lazy loading
         lazyLoader.observeItem(btn);
     });

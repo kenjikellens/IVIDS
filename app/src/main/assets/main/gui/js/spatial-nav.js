@@ -213,6 +213,8 @@ export const SpatialNav = {
             ArrowRight: 39, Right: 39,
             ArrowDown: 40, Down: 40,
             Enter: 13,
+            DpadCenter: 23,
+            AndroidEnter: 66,
             Escape: 27,
             Backspace: 8,
             Back: 10009,
@@ -223,7 +225,7 @@ export const SpatialNav = {
 
         // Performance: Don't querySelector if we don't handle the key
         const isNav = (keyCode >= 37 && keyCode <= 40);
-        const isAction = (keyCode === 13);
+        const isAction = (keyCode === 13 || keyCode === 23 || keyCode === 66);
         const isBack = (keyCode === 8 || keyCode === 27 || keyCode === 10009 || keyCode === 4);
         const isNum = ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105));
 
@@ -362,6 +364,9 @@ export const SpatialNav = {
 
             // Fast visibility check first
             if (el.offsetParent === null) continue;
+
+            // Optimization: check inline visibility/display used by recycler
+            if (el.style.visibility === 'hidden' || el.style.display === 'none') continue;
 
             elRect = el.getBoundingClientRect();
 

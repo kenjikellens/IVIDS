@@ -740,6 +740,7 @@ PlaylistService.delete(playlistId);
 | **`error-handler.js`** | Crash recovery UI | `ErrorHandler.show()`, `ErrorHandler.hide()` |
 | **`screensaver.js`** | Inactivity detector | `Screensaver.init()`, `Screensaver.reset()` |
 | **`splash.js`** | Boot animation | `Splash.init()`, `Splash.hide()` |
+| **`toast.js`** | Notification system | `Toast.show()`, `Toast.hide()` |
 | **`loader.js`** | Loading indicators | `getLoaderHtml()` |
 | **`hero-slider.js`** | Hero image carousel | `HeroSlider.init()`, `HeroSlider.next()` |
 | **`lazy-loader.js`** | Image lazy loading | `LazyLoader.observe()` |
@@ -797,6 +798,7 @@ PlaylistService.delete(playlistId);
 |------|-------|
 | **`global.css`** | CSS variables, reset, common buttons, posters, modals |
 | **`splash.css`** | Boot animation styles |
+| **`toast.css`** | Notification toast styles |
 | **`loader.css`** | Loading spinner animation |
 | **`error.css`** | Error modal and recovery UI |
 | **`[page].css`** | Page-specific layouts |
@@ -1037,9 +1039,14 @@ try {
 | **Error Recovery** | Crash-safe with user-friendly recovery UI | ✅ Complete |
 | **Screensaver** | Dim screen after inactivity | ✅ Complete |
 
-### Recent Major Updates (Q4 2024)
+### Recent Major Updates (Q4 2025)
 
-1. **Universal Portrait Support**
+1. **Toast Notification System**
+   - Non-intrusive feedback for user actions.
+   - Success, error, and info states with animations.
+   - Auto-dismissal and stacking logic.
+
+2. **Universal Portrait Support**
    - Sidebar transforms to bottom tab bar
    - Touch-friendly interactions
    - Responsive grids for all pages
@@ -1147,5 +1154,5 @@ Router.goBack();
 
 ---
 
-*Last Updated: December 2024*
-*Document Version: 2.0*
+*Last Updated: December 2025*
+*Document Version: 2.1*
