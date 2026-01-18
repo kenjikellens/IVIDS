@@ -10,7 +10,8 @@
         "search": "Recherche",
         "settings": "Paramètres",
         "playlists": "Listes",
-        "account": "Compte"
+        "account": "Compte",
+        "livetv": "Live TV"
     },
     "account": {
         "title": "Compte",
@@ -216,6 +217,25 @@
         "unnamedPlaylist": "Liste sans nom",
         "untitled": "Sans titre"
     },
+    "livetv": {
+        "title": "Live TV",
+        "channels": "Chaînes",
+        "noChannels": "Aucune chaîne trouvée. Veuillez vérifier votre URL M3U dans les Paramètres.",
+        "loading": "Chargement des chaînes...",
+        "allChannels": "Toutes les chaînes",
+        "categories": "Catégories",
+        "recent": "Chaînes récentes",
+        "searchPlaceholder": "Rechercher des chaînes..."
+    },
+    "settings_livetv": {
+        "title": "Configuration Live TV",
+        "m3uUrl": "URL de la liste M3U",
+        "m3uUrlDesc": "Entrez l'URL de votre liste IPTV (.m3u)",
+        "placeholder": "https://example.com/playlist.m3u",
+        "save": "Enregistrer l'URL",
+        "clear": "Effacer"
+    },
+    ,
     "profiles": {
         "title": "Qui regarde ?",
         "add": "Ajouter un profil",

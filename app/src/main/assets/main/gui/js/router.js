@@ -36,6 +36,9 @@ export const Router = {
         }
 
         // Show Loader
+        const app = document.getElementById('app');
+        if (app) app.classList.remove('fullscreen-layout');
+
         const originalContent = mainView.innerHTML;
         mainView.innerHTML = `<div class="page-loader" style="display: flex; justify-content: center; align-items: center; height: 100vh;">${getLoaderHtml()}</div>`;
 
@@ -228,6 +231,7 @@ export const Router = {
     getFallbackPage(currentPage, params) {
         const fallbacks = {
             'player': 'details',
+            'tv-player': 'livetv',
             'details': 'home',
             'playlist-details': 'playlists',
             'playlists': 'home',
@@ -235,7 +239,8 @@ export const Router = {
             'account': 'home',
             'search': 'home',
             'movies': 'home',
-            'series': 'home'
+            'series': 'home',
+            'livetv': 'home'
         };
 
         return fallbacks[currentPage] || 'home';

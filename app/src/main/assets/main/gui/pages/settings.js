@@ -35,7 +35,7 @@ class SettingsManager {
     }
 
     loadSettings() {
-        const defaultSettings = { language: 'en', accentColor: '#46d369', updateMode: 'manual' };
+        const defaultSettings = { language: 'en', accentColor: '#46d369', updateMode: 'manual', m3uUrl: '' };
         try {
             const saved = localStorage.getItem('ivids-settings');
             return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
@@ -61,6 +61,31 @@ class SettingsManager {
         const cancelBtn = document.getElementById('cancel-update-btn');
         if (cancelBtn) {
             cancelBtn.onclick = () => this.handleCancelUpdate();
+        }
+
+        const m3uInput = document.getElementById('m3u-url-input');
+        if (m3uInput) {
+            m3uInput.value = this.settings.m3uUrl || '';
+            m3uInput.onchange = (e) => this.settings.m3uUrl = e.target.value;
+        }
+
+        const saveM3uBtn = document.getElementById('save-m3u-btn');
+        if (saveM3uBtn) {
+            saveM3uBtn.onclick = () => {
+                const val = document.getElementById('m3u-url-input')?.value;
+                this.settings.m3uUrl = val;
+                this.saveSettings();
+                alert(window.i18n?.t('settings.saved') || 'Settings saved!');
+            };
+        }
+
+        const clearM3uBtn = document.getElementById('clear-m3u-btn');
+        if (clearM3uBtn) {
+            clearM3uBtn.onclick = () => {
+                this.settings.m3uUrl = '';
+                if (m3uInput) m3uInput.value = '';
+                this.saveSettings();
+            };
         }
 
         this.updateDisplays();

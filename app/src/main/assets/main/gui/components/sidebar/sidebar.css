@@ -198,6 +198,10 @@
         order: 7;
     }
 
+    .nav-item[data-route="livetv"] {
+        display: none !important;
+    }
+
     .nav-icon {
         margin-right: 0 !important;
         width: 28px !important;

@@ -112,8 +112,21 @@ export const SpatialNav = {
             }
         }
 
+        // Prioritize #main-view over sidebar/others if no trap is active
+        if (!this.focusTrapContainer) {
+            const mainView = document.getElementById('main-view');
+            if (mainView) {
+                const elements = mainView.querySelectorAll(this.focusableSelector);
+                for (const el of elements) {
+                    if (this.isVisible(el)) {
+                        this.setFocus(el);
+                        return;
+                    }
+                }
+            }
+        }
+
         const elements = Array.from(scope.querySelectorAll(this.focusableSelector));
-        // Find first visible without filtering all (performance optimization)
         for (const el of elements) {
             if (this.isVisible(el)) {
                 this.setFocus(el);
@@ -279,17 +292,18 @@ export const SpatialNav = {
 
         // Back keys
         if (isBack) {
-            if (keyCode === 8 && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
+            // Handle character deletion for remote back buttons (4, 10009) and backspace (8)
+            if ((keyCode === 8 || keyCode === 4 || keyCode === 10009) &&
+                (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
+
                 if (!current.readOnly) {
-                    // Manual backspace handling for some TVs if needed
                     const val = current.value;
                     if (val.length > 0) {
                         current.value = val.slice(0, -1);
                         current.dispatchEvent(new Event('input', { bubbles: true }));
                     }
-                    return;
+                    return; // Prevent global back navigation
                 }
-                return;
             }
             e.preventDefault();
             if (this.onBack) this.onBack();

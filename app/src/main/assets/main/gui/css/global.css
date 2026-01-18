@@ -49,6 +49,17 @@ body {
     }
 }
 
+/* Fullscreen Pages (Players) */
+#app.fullscreen-layout #sidebar-container {
+    display: none !important;
+}
+
+#app.fullscreen-layout #main-view {
+    width: 100vw !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+}
+
 /* Main View (Scrollable Area) */
 #main-view {
     flex: 1;

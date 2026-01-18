@@ -10,7 +10,8 @@
         "search": "Search",
         "settings": "Settings",
         "playlists": "Playlists",
-        "account": "Account"
+        "account": "Account",
+        "livetv": "Live TV"
     },
     "account": {
         "title": "Account",
@@ -216,6 +217,24 @@
         "unnamedPlaylist": "Unnamed Playlist",
         "untitled": "Untitled"
     },
+    "livetv": {
+        "title": "Live TV",
+        "channels": "Channels",
+        "noChannels": "No channels found. Please check your M3U URL in Settings.",
+        "loading": "Loading channels...",
+        "allChannels": "All Channels",
+        "categories": "Categories",
+        "recent": "Recent Channels",
+        "searchPlaceholder": "Search channels..."
+    },
+    "settings_livetv": {
+        "title": "Live TV Configuration",
+        "m3uUrl": "M3U Playlist URL",
+        "m3uUrlDesc": "Enter the URL of your IPTV playlist (.m3u)",
+        "placeholder": "https://example.com/playlist.m3u",
+        "save": "Save URL",
+        "clear": "Clear"
+    },,
     "profiles": {
         "title": "Who's watching?",
         "add": "Add Profile",

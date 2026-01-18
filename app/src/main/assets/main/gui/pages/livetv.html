@@ -1,0 +1,60 @@
+<div class="livetv-page-layout">
+    <!-- Hero Preview Area (Aligned with Home/Details style) -->
+    <div class="livetv-hero" id="livetv-hero">
+        <div id="hero-placeholder" class="hero-placeholder-content">
+            <div class="placeholder-icon-large"></div>
+            <h1 data-i18n="livetv.selectTitle">Live TV Explorer</h1>
+            <p data-i18n="livetv.selectSubtitle">Discover and watch hundreds of live channels</p>
+        </div>
+
+        <div id="hero-active-content" class="hero-active-content" style="display: none;">
+            <div class="hero-logo-container">
+                <img id="hero-logo" src="" alt="" onerror="this.src='images/livetv.svg'">
+            </div>
+            <div class="hero-text-details">
+                <h1 id="hero-name"></h1>
+                <div class="hero-meta">
+                    <span id="hero-group" class="accent-text"></span>
+                    <div id="hero-status" class="status-badge">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Checking...</span>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <button id="hero-play-btn" class="btn btn-primary focusable" data-i18n="livetv.watchNow">WATCH
+                        NOW</button>
+                    <button id="hero-filter-btn" class="btn btn-secondary focusable">
+                        <div class="filter-icon-small"></div>
+                        <span data-i18n="livetv.hideBroken">Hide Broken</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Align with Search top bar -->
+    <div class="search-top-bar">
+        <div class="search-box">
+            <div class="input-wrapper">
+                <img src="images/search.svg" class="search-icon" alt="Search">
+                <input type="text" id="search-input" class="focusable" placeholder="Search for channels..."
+                    data-i18n="livetv.searchPlaceholder" readonly>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Width Grid Container -->
+    <div id="livetv-results-container" class="results-container">
+        <div id="loading-channels" class="loading-center" style="display: none;">
+            <div class="ivids-loader"></div>
+        </div>
+
+        <div id="channels-grid" class="search-results-grid">
+            <!-- Channel posters injected here -->
+        </div>
+
+        <div id="no-channels-message" class="no-results-msg" style="display: none;">
+            <p data-i18n="livetv.noChannels">No channels found</p>
+        </div>
+    </div>
+</div>

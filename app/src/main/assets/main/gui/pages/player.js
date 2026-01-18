@@ -36,15 +36,47 @@ export async function init(params) {
             checkForNextEpisode(params.id, parseInt(params.season), parseInt(params.episode));
         }
 
-        // Hide header if present
+        // Hide header if present (standardize with fullscreen-layout)
         try {
-            const header = document.getElementById('header');
-            if (header) header.style.display = 'none';
+            const app = document.getElementById('app');
+            if (app) app.classList.add('fullscreen-layout');
         } catch (headerError) {
             console.error('Error hiding header:', headerError);
         }
 
-        const container = document.getElementById('video-container');
+        const { id, type } = params;
+
+        // Handle Live TV
+        if (type === 'live') {
+            const videoUrl = params.url;
+            const title = params.title || 'Live TV';
+
+            // Hide standard iframe, show native video
+            const iframe = document.getElementById('video-player');
+            if (iframe) iframe.style.display = 'none';
+
+            const videoEl = document.getElementById('native-video-player');
+            if (videoEl) {
+                videoEl.style.display = 'block';
+                videoEl.src = videoUrl;
+                videoEl.play().catch(e => console.error('Error playing live stream:', e));
+            }
+
+            // Update UI
+            const titleEl = document.getElementById('player-title');
+            if (titleEl) titleEl.textContent = title;
+
+            const metaEl = document.getElementById('player-metadata');
+            if (metaEl) metaEl.textContent = 'Live';
+
+            // Hide header if present
+            try {
+                const header = document.getElementById('header');
+                if (header) header.style.display = 'none';
+            } catch (e) { }
+
+            return;
+        }
         if (!container) {
             console.error('Video container not found');
             ErrorHandler.show('Failed to load player. Video container missing.', () => Router.loadPage('home'));

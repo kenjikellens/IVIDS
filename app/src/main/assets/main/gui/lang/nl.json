@@ -10,7 +10,8 @@
         "search": "Zoeken",
         "settings": "Instellingen",
         "playlists": "Afspeellijsten",
-        "account": "Account"
+        "account": "Account",
+        "livetv": "Live TV"
     },
     "account": {
         "title": "Account",
@@ -216,6 +217,25 @@
         "unnamedPlaylist": "Naamloze Afspeellijst",
         "untitled": "Naamloos"
     },
+    "livetv": {
+        "title": "Live TV",
+        "channels": "Zenders",
+        "noChannels": "Geen zenders gevonden. Controleer je M3U URL in de Instellingen.",
+        "loading": "Zenders laden...",
+        "allChannels": "Alle Zenders",
+        "categories": "Categorieën",
+        "recent": "Recente Zenders",
+        "searchPlaceholder": "Zenders zoeken..."
+    },
+    "settings_livetv": {
+        "title": "Live TV Configuratie",
+        "m3uUrl": "M3U Afspeellijst URL",
+        "m3uUrlDesc": "Voer de URL in van je IPTV afspeellijst (.m3u)",
+        "placeholder": "https://example.com/playlist.m3u",
+        "save": "URL Opslaan",
+        "clear": "Wissen"
+    },
+    ,
     "profiles": {
         "title": "Wie kijkt er?",
         "add": "Profiel toevoegen",
