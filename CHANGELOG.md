@@ -11,3 +11,4 @@
 [16:15 28-02-2026] global.css - Reduced 768px breakpoint scaling and dimensions by 10%.
 [16:15 28-02-2026] settings.css - Adjusted modal button padding in 768px breakpoint.
 [16:15 28-02-2026] error.css - Reduced font sizes and dimensions in 768px breakpoint.
+[16:22 28-02-2026] .agents/rules/changelog.md - Updated changelog protocol for stricter enforcement.
