@@ -27,6 +27,7 @@
         "languageDesc": "Kies uw voorkeurstaal",
         "accentColor": "Accentkleur",
         "accentColorDesc": "Kies uw voorkeur themakleur",
+        "accent": "Accent",
         "saved": "Instellingen opgeslagen!",
         "reset": "Terugzetten naar standaard!",
         "cancel": "Annuleren",
@@ -235,7 +236,6 @@
         "save": "URL Opslaan",
         "clear": "Wissen"
     },
-    ,
     "profiles": {
         "title": "Wie kijkt er?",
         "add": "Profiel toevoegen",

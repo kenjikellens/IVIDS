@@ -27,6 +27,7 @@
         "languageDesc": "Wählen Sie Ihre bevorzugte Sprache",
         "accentColor": "Akzentfarbe",
         "accentColorDesc": "Wählen Sie Ihre bevorzugte Theme-Farbe",
+        "accent": "Akzent",
         "saved": "Einstellungen gespeichert!",
         "reset": "Auf Standard zurücksetzen!",
         "cancel": "Abbrechen",
@@ -235,7 +236,6 @@
         "save": "URL speichern",
         "clear": "Löschen"
     },
-    ,
     "profiles": {
         "title": "Wer schaut gerade?",
         "add": "Profil hinzufügen",

@@ -3,7 +3,7 @@ class I18n {
     constructor() {
         this.currentLanguage = 'en';
         this.translations = {};
-        this.availableLanguages = ['en', 'es', 'fr', 'de', 'nl'];
+        this.availableLanguages = ['en', 'es', 'fr', 'de', 'nl', 'it', 'ru', 'pt', 'zh', 'ja', 'hi', 'ar', 'ko', 'tr', 'vi', 'id', 'ro', 'pl', 'da', 'sv', 'no', 'cs'];
     }
 
     async init() {
@@ -54,10 +54,23 @@ class I18n {
         await this.loadLanguage(lang);
     }
 
-    applyTranslations() {
+    applyTranslations(root = document) {
         try {
-            // Find all elements with data-i18n attribute
-            const elements = document.querySelectorAll('[data-i18n]');
+            // Find all elements with data-i18n attribute within the root
+            const elements = root.querySelectorAll('[data-i18n]');
+
+            // Also check if the root itself has a data-i18n attribute
+            if (root !== document && root.hasAttribute('data-i18n')) {
+                const key = root.getAttribute('data-i18n');
+                const translation = this.getTranslation(key);
+                if (translation) {
+                    if (root.tagName === 'INPUT' && root.hasAttribute('placeholder')) {
+                        root.placeholder = translation;
+                    } else {
+                        root.textContent = translation;
+                    }
+                }
+            }
 
             elements.forEach(element => {
                 const key = element.getAttribute('data-i18n');

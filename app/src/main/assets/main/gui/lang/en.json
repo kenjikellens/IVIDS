@@ -27,6 +27,7 @@
         "languageDesc": "Choose your preferred language",
         "accentColor": "Accent Color",
         "accentColorDesc": "Choose your preferred theme color",
+        "accent": "Accent",
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
@@ -234,7 +235,7 @@
         "placeholder": "https://example.com/playlist.m3u",
         "save": "Save URL",
         "clear": "Clear"
-    },,
+    },
     "profiles": {
         "title": "Who's watching?",
         "add": "Add Profile",

@@ -148,14 +148,20 @@ class SettingsManager {
     updateDisplays() {
         const langDisplay = document.getElementById('current-language-display');
         if (langDisplay) {
-            const names = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch', nl: 'Nederlands' };
+            const names = {
+                en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch', nl: 'Nederlands',
+                it: 'Italiano', ru: 'Русский', pt: 'Português', zh: '中文', ja: '日本語',
+                hi: 'हिन्दी', ar: 'العربية', ko: '한국어', tr: 'Türkçe', vi: 'Tiếng Việt', id: 'Bahasa Indonesia',
+                ro: 'Română', pl: 'Polski', da: 'Dansk', sv: 'Svenska', no: 'Norsk', cs: 'Čeština'
+            };
             langDisplay.textContent = names[this.settings.language] || this.settings.language;
         }
 
         const colorDisplay = document.getElementById('current-color-display');
         if (colorDisplay) {
             colorDisplay.style.borderBottomColor = this.settings.accentColor;
-            colorDisplay.textContent = 'Accent'; // Keep it generic
+            colorDisplay.setAttribute('data-i18n', 'settings.accent');
+            if (window.i18n) window.i18n.applyTranslations(colorDisplay);
         }
 
         const modeDisplay = document.getElementById('current-update-mode-display');

@@ -115,7 +115,7 @@
     height: 3.5vw;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.05);
-    border: 0.125rem solid rgba(255, 255, 255, 0.1);
+    border: 0.25rem solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -254,17 +254,17 @@
 /* Option Grids */
 .option-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15vw, 1fr));
-    gap: 2vw;
+    grid-template-columns: repeat(auto-fit, minmax(13vw, 1fr));
+    gap: 1vw;
     width: 100%;
-    margin-bottom: 4vh;
+    margin-bottom: 3vh;
 }
 
 .option-chip {
     background: rgba(255, 255, 255, 0.05);
-    border: 0.125rem solid rgba(255, 255, 255, 0.1);
-    border-radius: 1vw;
-    padding: 2vh 1.5vw;
+    border: 0.25rem solid transparent;
+    border-radius: 0.8vw;
+    padding: 1.2vh 1vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -341,7 +341,7 @@
 /* Special Button Style for "Check Updates" */
 .action-btn {
     background: rgba(255, 255, 255, 0.05);
-    border: 0.125rem solid rgba(255, 255, 255, 0.1);
+    border: 0.25rem solid transparent;
     color: #fff;
     padding: 1vh 2vw;
     border-radius: 0.8vw;
@@ -533,7 +533,7 @@
     .option-grid {
         grid-template-columns: 1fr;
         /* Stack options on mobile portrait */
-        gap: 3vw;
+        gap: 2vw;
     }
 
     .action-btn {
@@ -561,9 +561,9 @@
     }
 
     .option-chip {
-        font-size: 5vw;
-        padding: 2.5vh 4vw;
-        border-radius: 3vw;
+        font-size: 4.5vw;
+        padding: 1.5vh 3vw;
+        border-radius: 2vw;
     }
 
     .option-chip.color-only {
