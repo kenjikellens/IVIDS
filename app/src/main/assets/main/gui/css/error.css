@@ -156,39 +156,39 @@
 @media screen and (max-width: 768px) {
     .error-content {
         width: 90%;
-        padding: 40px 20px;
-        border-radius: 15px;
+        padding: 36px 18px;
+        border-radius: 13px;
     }
 
     .error-icon-container {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 20px;
+        width: 72px;
+        height: 72px;
+        margin-bottom: 18px;
     }
 
     .error-icon-mask {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
     }
 
     .error-title {
-        font-size: 1.75rem;
-        margin-bottom: 15px;
+        font-size: 1.575rem;
+        margin-bottom: 13px;
     }
 
     .error-message {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .error-actions {
         flex-direction: column;
-        gap: 15px;
+        gap: 13px;
     }
 
     .error-btn {
         width: 100%;
         min-width: unset;
-        padding: 15px;
+        padding: 13.5px;
     }
 }
 

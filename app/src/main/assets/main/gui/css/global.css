@@ -382,30 +382,30 @@ body {
 
 @media (max-width: 768px) {
     :root {
-        --poster-width: 68px;
-        --poster-height: 102px;
-        --row-min-height: 142px;
+        --poster-width: 61px;
+        --poster-height: 92px;
+        --row-min-height: 128px;
     }
 
     .hero {
-        height: 45vh;
-        padding-left: 30px;
-        padding-bottom: 40px;
+        height: 40vh;
+        padding-left: 27px;
+        padding-bottom: 36px;
     }
 
     .hero-title {
-        font-size: 30px;
+        font-size: 27px;
     }
 
     .hero-desc {
-        font-size: 13px;
+        font-size: 11.5px;
         max-width: 100%;
         line-height: 1.3;
     }
 
     .hero-buttons .btn {
-        padding: 0.6rem 1.5rem;
-        font-size: 1rem;
+        padding: 0.55rem 1.35rem;
+        font-size: 0.9rem;
     }
 }
 
