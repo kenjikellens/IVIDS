@@ -1,0 +1,81 @@
+.tv-player-container {
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.tv-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.tv-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 4vh 4vw;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.tv-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tv-info h1 {
+    font-size: 4vh;
+    margin: 0;
+    color: white;
+}
+
+.tv-info p {
+    font-size: 2vh;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0.5vh 0 0 0;
+}
+
+.tv-controls button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 0.3vh solid transparent;
+    border-radius: 50%;
+    width: 6vh;
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+}
+
+.tv-controls button:focus {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.tv-controls svg {
+    width: 3vh;
+    height: 3vh;
+}
+
+.tv-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}

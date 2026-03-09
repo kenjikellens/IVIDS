@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IVIDS</title>
+    <link rel="icon" type="image/ico" href="images/icon.ico">
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/loader.css">
+    <link rel="stylesheet" href="css/splash.css">
+    <link rel="stylesheet" href="css/error.css">
+    <link rel="stylesheet" href="css/toast.css">
+
+    <!-- Page Specific CSS (Dynamic) -->
+    <link rel="stylesheet" id="page-css" href="">
+</head>
+
+<body>
+
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1 class="splash-logo">IVIDS</h1>
+            <div class="splash-loader-container">
+                <div class="ivids-loader"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="app">
+        <!-- Navigation Bar (Loaded Dynamically) -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content Area -->
+        <div id="main-view"></div>
+    </div>
+
+    <!-- Tizen Web Device API -->
+    <script src="$WEBAPIS/webapis/webapis.js"></script>
+
+    <!--
+    - For **Music**, we will use the **Audius API** as the primary provider. We are also implementing a **fallback mechanism to Jamendo API** in case Audius services are unreachable. This multi-provider approach ensures maximum uptime.
+    - **Sidebar**: The sidebar will be expanded to include a "Music" section.
+    - **Mobile Restriction**: The Music icon and access points will be HIDDEN in portrait mode (mobile) to keep the bottom navigation clean. Access will be limited to landscape/TV views.
+    -->
+
+    <!-- Scripts -->
+    <script type="module" src="js/loader.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+<script>
+    // FIX voor Fetch op Android TV / file:// schema
+    const originalFetch = window.fetch;
+    window.fetch = function (url, options) {
+        if (typeof url === 'string' && (url.startsWith('lang/') || url.startsWith('pages/') || url.startsWith('components/') || url.startsWith('file:'))) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        json: () => Promise.resolve(JSON.parse(xhr.responseText)),
+                        text: () => Promise.resolve(xhr.responseText)
+                    });
+                };
+                xhr.onerror = () => reject(new Error('Local fetch failed'));
+                xhr.open('GET', url);
+                xhr.send();
+            });
+        }
+        return originalFetch(url, options);
+    };
+</script>
+
+</html>

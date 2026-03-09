@@ -1,0 +1,116 @@
+/* Movies Page Styles */
+
+
+
+
+
+
+
+/* Rows */
+.row {
+    padding: 10px 15px;
+    position: relative;
+    z-index: 20;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.row-title {
+    font-size: 21.5px;
+    margin-bottom: 7.5px;
+    font-weight: bold;
+    color: #e5e5e5;
+}
+
+.row-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.row-posters {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 15px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    will-change: transform;
+}
+
+.row-posters::-webkit-scrollbar {
+    display: none;
+}
+
+.handle {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 2.7rem;
+    cursor: pointer;
+    padding: 0 10px;
+    z-index: 50;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s, background-color 0.3s, border 0.3s, box-shadow 0.3s;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-sizing: border-box;
+}
+
+.row-container:hover .handle {
+    opacity: 1;
+}
+
+.handle:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-color: #fff;
+    box-shadow: 0 0 0 0.1875rem #fff;
+}
+
+.handle-left {
+    left: -40px;
+}
+
+.handle-right {
+    right: -40px;
+}
+
+/* Animation delays */
+.row:nth-child(1) {
+    animation-delay: 0.5s;
+}
+
+@media (orientation: portrait) {
+    .row {
+        padding: 15px 20px;
+    }
+
+    .row-posters {
+        padding: 15px;
+        gap: 10px;
+    }
+}
+
+
+.row:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.row:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.row:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.row:nth-child(5) {
+    animation-delay: 0.5s;
+}

@@ -1,0 +1,4 @@
+<resources>
+    <style name="Theme.IVIDS" parent="Theme.AppCompat.NoActionBar">
+    </style>
+</resources>

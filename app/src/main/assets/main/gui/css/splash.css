@@ -1,0 +1,60 @@
+/* Splash Screen Styles */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background-color, #141414);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease-in-out, visibility 0.8s;
+    visibility: visible;
+    opacity: 1;
+}
+
+#splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.splash-logo {
+    font-size: 72px;
+    font-weight: bold;
+    color: var(--primary-color, #46d369);
+    letter-spacing: normal;
+    /* Removed excessive 12px spacing */
+    margin: 0;
+    /* Match sidebar shadow: 0 0 10px rgba(var(--primary-rgb), 0.3) */
+    text-shadow: 0 0 20px rgba(var(--primary-rgb, 70, 211, 105), 0.5);
+    animation: splashLogoGlow 2s ease-in-out infinite alternate;
+}
+
+.splash-loader-container {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.splash-loader-container.hidden {
+    opacity: 0;
+}
+
+@keyframes splashLogoGlow {
+    from {
+        text-shadow: 0 0 20px rgba(var(--primary-rgb, 70, 211, 105), 0.3);
+    }
+
+    to {
+        text-shadow: 0 0 40px rgba(var(--primary-rgb, 70, 211, 105), 0.7);
+    }
+}
