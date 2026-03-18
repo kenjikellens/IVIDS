@@ -38,3 +38,20 @@
 [11:03 18-03-2026] tr.json - Added playerProvider translations to Turkish language file.
 [11:03 18-03-2026] vi.json - Added playerProvider translations to Vietnamese language file.
 [11:03 18-03-2026] zh.json - Added playerProvider translations to Chinese language file.
+[16:25 18-03-2026] docs/index.md - Created central documentation hub index.
+[16:25 18-03-2026] docs/architecture/router.md - Created modular documentation for SPA Router.
+[16:25 18-03-2026] docs/architecture/spatial-nav.md - Created modular documentation for Spatial Navigation.
+[16:25 18-03-2026] docs/architecture/i18n.md - Created modular documentation for Internationalization.
+[16:25 18-03-2026] docs/logic/api.md - Created modular documentation for TMDB/VidSrc API.
+[16:25 18-03-2026] docs/logic/data-management.md - Created modular documentation for LocalStorage and Profiles.
+[16:25 18-03-2026] docs/gui/design-system.md - Created modular documentation for Design System and CSS.
+[16:25 18-03-2026] docs/gui/performance.md - Created modular documentation for Performance Optimizations.
+[16:25 18-03-2026] docs/workflow/guides.md - Created modular documentation for Development Workflows.
+[16:25 18-03-2026] docs/workflow/agent_standards.md - Created modular documentation for AI Agent Standards.
+[16:29 18-03-2026] about.md - Deprecated monolithic manual in favor of modular docs/ hub.
+[17:34 18-03-2026] docs/index.md - Finalized modular documentation hub index.
+[17:35 18-03-2026] en.json - Restored original content (removed uiLab).
+[17:35 18-03-2026] nl.json - Restored original content (removed uiLab).
+[17:35 18-03-2026] es.json - Restored original content (removed uiLab).
+[17:35 18-03-2026] ui-lab.html - Deleted (unwanted UI modification).
+[17:35 18-03-2026] ui-lab.js - Deleted (unwanted UI modification).

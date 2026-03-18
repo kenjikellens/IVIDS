@@ -262,6 +262,6 @@
         "enterPin": "Voer PIN in voor {name}",
         "incorrectPin": "Onjuiste PIN. Probeer het opnieuw.",
         "errorNameEmpty": "Naam mag niet leeg zijn",
-        "errorPinLength": "PIN moet precies 4 cijfers zijn"
+        "errorPinLength": "Pincode moet precies 4 cijfers zijn"
     }
 }
