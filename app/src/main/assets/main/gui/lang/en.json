@@ -61,6 +61,12 @@
             "comparing-versions": "Verifying version...",
             "downloading": "Downloading update...",
             "installing": "Preparing installation..."
+        },
+        "playerProvider": "Player Provider",
+        "playerProviderDesc": "Choose your preferred video player",
+        "provider": {
+            "vidsrc": "VidSrc (Default)",
+            "vidking": "VidKing (Backup)"
         }
     },
     "common": {

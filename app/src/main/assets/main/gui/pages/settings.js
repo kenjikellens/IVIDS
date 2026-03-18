@@ -35,7 +35,7 @@ class SettingsManager {
     }
 
     loadSettings() {
-        const defaultSettings = { language: 'en', accentColor: '#46d369', updateMode: 'manual', m3uUrl: '' };
+        const defaultSettings = { language: 'en', accentColor: '#46d369', updateMode: 'manual', m3uUrl: '', playerProvider: 'vidsrc' };
         try {
             const saved = localStorage.getItem('ivids-settings');
             return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
@@ -169,6 +169,11 @@ class SettingsManager {
             modeDisplay.textContent = window.i18n?.t(`settings.mode.${this.settings.updateMode}`) || this.settings.updateMode;
         }
 
+        const providerDisplay = document.getElementById('current-provider-display');
+        if (providerDisplay) {
+            providerDisplay.textContent = window.i18n?.t(`settings.provider.${this.settings.playerProvider}`) || this.settings.playerProvider;
+        }
+
         const manualContainer = document.getElementById('manual-check-container');
         if (manualContainer) {
             const isManualOrAdvanced = this.settings.updateMode === 'manual' || this.settings.updateMode === 'advanced';
@@ -214,7 +219,7 @@ class SettingsManager {
         const modal = document.getElementById(modalId);
         if (!modal) return;
 
-        const key = modalId.replace('-modal', '').replace('accent', 'accentColor').replace('update-mode', 'updateMode');
+        const key = modalId.replace('-modal', '').replace('accent', 'accentColor').replace('update-mode', 'updateMode').replace('provider', 'playerProvider');
         const value = this.settings[key];
 
         modal.querySelectorAll('.option-chip').forEach(chip => {

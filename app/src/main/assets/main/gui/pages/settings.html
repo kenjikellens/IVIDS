@@ -43,6 +43,20 @@
                 </button>
             </div>
         </div>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
+                <div class="setting-description" data-i18n="settings.playerProviderDesc">Choose your preferred video player
+                </div>
+            </div>
+            <div class="setting-control">
+                <div id="current-provider-display" class="current-value-display">VidSrc</div>
+                <button id="edit-provider-btn" class="edit-trigger focusable" onclick="openSettingsModal('provider-modal')">
+                    <div class="edit-icon"></div>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- App Updates Settings -->
@@ -192,6 +206,27 @@
             <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
                 data-i18n="common.cancel">Cancel</button>
             <button class="modal-btn primary focusable" onclick="applyPendingSetting('accentColor')"
+                data-i18n="common.apply">Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- Player Provider Modal -->
+<div id="provider-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="settings.playerProvider">Player Provider</h2>
+        <div class="modal-body">
+            <div id="provider-options" class="option-grid">
+                <div class="option-chip focusable" data-value="vidsrc"
+                    onclick="setPendingSetting('playerProvider', 'vidsrc', this)" data-i18n="settings.provider.vidsrc">VidSrc (Default)</div>
+                <div class="option-chip focusable" data-value="vidking"
+                    onclick="setPendingSetting('playerProvider', 'vidking', this)" data-i18n="settings.provider.vidking">VidKing (Backup)</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
+                data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" onclick="applyPendingSetting('playerProvider')"
                 data-i18n="common.apply">Apply</button>
         </div>
     </div>

@@ -77,6 +77,7 @@ export async function init(params) {
 
             return;
         }
+        const container = document.getElementById('video-container');
         if (!container) {
             console.error('Video container not found');
             ErrorHandler.show('Failed to load player. Video container missing.', () => Router.loadPage('home'));

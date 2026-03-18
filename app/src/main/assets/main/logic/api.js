@@ -4,6 +4,7 @@ const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your T
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
 const VIDSRC_BASE_URL = 'https://vidsrc.net/embed';
+const VIDKING_BASE_URL = 'https://www.vidking.net/embed';
 
 // Image Size Constants
 const POSTER_SIZE = 'w342';       // Standard poster size for grids
@@ -406,14 +407,38 @@ export const Api = {
     },
 
     getVideoUrl(id, type, season = null, episode = null) {
-        // Use path-based structure for vidsrc.net/to mirrors
-        const params = 'autoplay=true&autoPlay=true&ds_lang=en';
-        if (type === 'tv') {
-            const s = season || 1;
-            const e = episode || 1;
-            return `${VIDSRC_BASE_URL}/tv/${id}/${s}/${e}?${params}`;
+        // Fetch preferred provider from settings
+        let provider = 'vidsrc'; // Default
+        try {
+            const savedSettings = localStorage.getItem('ivids-settings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                if (settings.playerProvider) {
+                    provider = settings.playerProvider;
+                }
+            }
+        } catch (e) {
+            console.warn('Could not read playerProvider from settings, using default.');
         }
-        return `${VIDSRC_BASE_URL}/movie/${id}?${params}`;
+
+        const params = 'autoplay=true&autoPlay=true&ds_lang=en';
+        
+        if (provider === 'vidking') {
+            if (type === 'tv') {
+                const s = season || 1;
+                const e = episode || 1;
+                return `${VIDKING_BASE_URL}/tv/${id}/${s}/${e}?${params}`;
+            }
+            return `${VIDKING_BASE_URL}/movie/${id}?${params}`;
+        } else {
+            // Default to vidsrc
+            if (type === 'tv') {
+                const s = season || 1;
+                const e = episode || 1;
+                return `${VIDSRC_BASE_URL}/tv/${id}/${s}/${e}?${params}`;
+            }
+            return `${VIDSRC_BASE_URL}/movie/${id}?${params}`;
+        }
     },
 
     getGenres() {

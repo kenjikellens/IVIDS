@@ -12,3 +12,9 @@
 [16:15 28-02-2026] settings.css - Adjusted modal button padding in 768px breakpoint.
 [16:15 28-02-2026] error.css - Reduced font sizes and dimensions in 768px breakpoint.
 [16:22 28-02-2026] .agents/rules/changelog.md - Updated changelog protocol for stricter enforcement.
+[10:39 18-03-2026] api.js - Added VidKing support to getVideoUrl and check for playerProvider in settings.
+[10:40 18-03-2026] settings.html - Added Player Provider section and modal for selecting VidSrc or VidKing.
+[10:41 18-03-2026] settings.js - Added playerProvider logic to read, display, and update standard settings.
+[10:46 18-03-2026] en.json - Added playerProvider translations to English language file.
+[10:48 18-03-2026] nl.json - Added playerProvider translations to Dutch language file.
+[10:52 18-03-2026] player.js - Fixed pre-existing ReferenceError by defining the container variable.

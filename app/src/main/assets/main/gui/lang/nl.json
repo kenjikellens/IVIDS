@@ -61,6 +61,12 @@
             "comparing-versions": "Versie verifiëren...",
             "downloading": "Update downloaden...",
             "installing": "Installatie voorbereiden..."
+        },
+        "playerProvider": "Player Bron",
+        "playerProviderDesc": "Kies de videospeler van je voorkeur",
+        "provider": {
+            "vidsrc": "VidSrc (Standaard)",
+            "vidking": "VidKing (Alternatief)"
         }
     },
     "common": {
