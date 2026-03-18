@@ -61,6 +61,12 @@
          "comparing-versions": "正在验证版本...",
          "downloading": "正在下载更新...",
          "installing": "正在准备安装..."
+      },
+      "playerProvider": "播放器提供商",
+      "playerProviderDesc": "选择您喜欢的视频播放器",
+      "provider": {
+         "vidsrc": "VidSrc (默认)",
+         "vidking": "VidKing (备用)"
       }
    },
    "common": {

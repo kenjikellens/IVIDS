@@ -61,6 +61,12 @@
          "comparing-versions": "Проверка версии...",
          "downloading": "Загрузка обновления...",
          "installing": "Подготовка к установке..."
+      },
+      "playerProvider": "Провайдер плеера",
+      "playerProviderDesc": "Выберите предпочитаемый видеоплеер",
+      "provider": {
+         "vidsrc": "VidSrc (По умолчанию)",
+         "vidking": "VidKing (Резерв)"
       }
    },
    "common": {

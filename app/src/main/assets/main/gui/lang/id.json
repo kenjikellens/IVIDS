@@ -61,6 +61,12 @@
          "comparing-versions": "Memverifikasi versi...",
          "downloading": "Mengunduh pembaruan...",
          "installing": "Menyiapkan instalasi..."
+      },
+      "playerProvider": "Penyedia Pemutar",
+      "playerProviderDesc": "Pilih pemutar video pilihan Anda",
+      "provider": {
+         "vidsrc": "VidSrc (Default)",
+         "vidking": "VidKing (Cadangan)"
       }
    },
    "common": {

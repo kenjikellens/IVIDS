@@ -18,3 +18,23 @@
 [10:46 18-03-2026] en.json - Added playerProvider translations to English language file.
 [10:48 18-03-2026] nl.json - Added playerProvider translations to Dutch language file.
 [10:52 18-03-2026] player.js - Fixed pre-existing ReferenceError by defining the container variable.
+[10:57 18-03-2026] es.json - Added playerProvider translations to Spanish language file.
+[10:57 18-03-2026] fr.json - Added playerProvider translations to French language file.
+[10:58 18-03-2026] de.json - Added playerProvider translations to German language file.
+[10:58 18-03-2026] it.json - Added playerProvider translations to Italian language file.
+[11:00 18-03-2026] da.json - Added playerProvider translations to Danish language file.
+[11:00 18-03-2026] sv.json - Added playerProvider translations to Swedish language file.
+[11:00 18-03-2026] no.json - Added playerProvider translations to Norwegian language file.
+[11:00 18-03-2026] pl.json - Added playerProvider translations to Polish language file.
+[11:00 18-03-2026] cs.json - Added playerProvider translations to Czech language file.
+[11:00 18-03-2026] ro.json - Added playerProvider translations to Romanian language file.
+[11:00 18-03-2026] pt.json - Added playerProvider translations to Portuguese language file.
+[11:03 18-03-2026] ar.json - Added playerProvider translations to Arabic language file.
+[11:03 18-03-2026] hi.json - Added playerProvider translations to Hindi language file.
+[11:03 18-03-2026] id.json - Added playerProvider translations to Indonesian language file.
+[11:03 18-03-2026] ja.json - Added playerProvider translations to Japanese language file.
+[11:03 18-03-2026] ko.json - Added playerProvider translations to Korean language file.
+[11:03 18-03-2026] ru.json - Added playerProvider translations to Russian language file.
+[11:03 18-03-2026] tr.json - Added playerProvider translations to Turkish language file.
+[11:03 18-03-2026] vi.json - Added playerProvider translations to Vietnamese language file.
+[11:03 18-03-2026] zh.json - Added playerProvider translations to Chinese language file.

@@ -61,6 +61,12 @@
          "comparing-versions": "Sürüm doğrulanıyor...",
          "downloading": "Güncelleme indiriliyor...",
          "installing": "Kuruluma hazırlanılıyor..."
+      },
+      "playerProvider": "Oynatıcı Sağlayıcısı",
+      "playerProviderDesc": "Tercih ettiğiniz video oynatıcıyı seçin",
+      "provider": {
+         "vidsrc": "VidSrc (Varsayılan)",
+         "vidking": "VidKing (Yedek)"
       }
    },
    "common": {

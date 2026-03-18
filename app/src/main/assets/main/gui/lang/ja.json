@@ -61,6 +61,12 @@
          "comparing-versions": "バージョンを確認中...",
          "downloading": "アップデートをダウンロード中...",
          "installing": "インストールを準備中..."
+      },
+      "playerProvider": "プレイヤープロバイダー",
+      "playerProviderDesc": "お好みのビデオプレイヤーを選択してください",
+      "provider": {
+         "vidsrc": "VidSrc (デフォルト)",
+         "vidking": "VidKing (予備)"
       }
    },
    "common": {

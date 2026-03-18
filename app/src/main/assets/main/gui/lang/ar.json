@@ -61,6 +61,12 @@
          "comparing-versions": "جاري التحقق من الإصدار...",
          "downloading": "جاري تحميل التحديث...",
          "installing": "جاري التحضير للتثبيت..."
+      },
+      "playerProvider": "مزود المشغل",
+      "playerProviderDesc": "اختر مشغل الفيديو المفضل لديك",
+      "provider": {
+         "vidsrc": "VidSrc (افتراضي)",
+         "vidking": "VidKing (إحتياطي)"
       }
    },
    "common": {

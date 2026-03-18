@@ -61,6 +61,12 @@
          "comparing-versions": "Ověřování verze...",
          "downloading": "Stahování aktualizace...",
          "installing": "Příprava instalace..."
+      },
+      "playerProvider": "Poskytovatel přehrávače",
+      "playerProviderDesc": "Vyberte si svůj preferovaný videopřehrávač",
+      "provider": {
+         "vidsrc": "VidSrc (Výchozí)",
+         "vidking": "VidKing (Záložní)"
       }
    },
    "common": {

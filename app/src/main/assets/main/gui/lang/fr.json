@@ -61,6 +61,12 @@
             "comparing-versions": "Vérification de la version...",
             "downloading": "Téléchargement de la mise à jour...",
             "installing": "Préparation de l'installation..."
+        },
+        "playerProvider": "Fournisseur du Lecteur",
+        "playerProviderDesc": "Choisissez votre lecteur vidéo préféré",
+        "provider": {
+            "vidsrc": "VidSrc (Par défaut)",
+            "vidking": "VidKing (Réserve)"
         }
     },
     "common": {

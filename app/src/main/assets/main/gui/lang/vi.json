@@ -61,6 +61,12 @@
          "comparing-versions": "Đang xác minh phiên bản...",
          "downloading": "Đang tải bản cập nhật...",
          "installing": "Đang chuẩn bị cài đặt..."
+      },
+      "playerProvider": "Nhà cung cấp trình phát",
+      "playerProviderDesc": "Chọn trình phát video ưa thích của bạn",
+      "provider": {
+         "vidsrc": "VidSrc (Mặc định)",
+         "vidking": "VidKing (Dự phòng)"
       }
    },
    "common": {

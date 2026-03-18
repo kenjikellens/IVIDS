@@ -61,6 +61,12 @@
          "comparing-versions": "Se verifică versiunea...",
          "downloading": "Se descarcă actualizarea...",
          "installing": "Se pregătește instalarea..."
+      },
+      "playerProvider": "Furnizor Player",
+      "playerProviderDesc": "Alege jucătorul tău video preferat",
+      "provider": {
+         "vidsrc": "VidSrc (Implicit)",
+         "vidking": "VidKing (Rezervă)"
       }
    },
    "common": {

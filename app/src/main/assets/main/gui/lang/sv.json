@@ -61,6 +61,12 @@
          "comparing-versions": "Verifierar version...",
          "downloading": "Laddar ner uppdatering...",
          "installing": "Förbereder installation..."
+      },
+      "playerProvider": "Spelarleverantör",
+      "playerProviderDesc": "Välj din favoritvideospelare",
+      "provider": {
+         "vidsrc": "VidSrc (Standard)",
+         "vidking": "VidKing (Reserv)"
       }
    },
    "common": {

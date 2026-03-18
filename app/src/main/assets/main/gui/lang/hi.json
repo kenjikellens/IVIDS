@@ -61,6 +61,12 @@
          "comparing-versions": "वर्ज़न सत्यापित कर रहे हैं...",
          "downloading": "अपडेट डाउनलोड हो रहा है...",
          "installing": "इंस्टॉलेशन की तैयारी हो रही है..."
+      },
+      "playerProvider": "प्लेयर प्रदाता",
+      "playerProviderDesc": "अपना पसंदीदा वीडियो प्लेयर चुनें",
+      "provider": {
+         "vidsrc": "VidSrc (डिफ़ॉल्ट)",
+         "vidking": "VidKing (रिज़र्व)"
       }
    },
    "common": {

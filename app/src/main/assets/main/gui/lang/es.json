@@ -61,6 +61,12 @@
             "comparing-versions": "Verificando versión...",
             "downloading": "Descargando actualización...",
             "installing": "Preparando instalación..."
+        },
+        "playerProvider": "Proveedor de Reproductor",
+        "playerProviderDesc": "Elige tu reproductor de vídeo preferido",
+        "provider": {
+            "vidsrc": "VidSrc (Predeterminado)",
+            "vidking": "VidKing (Reserva)"
         }
     },
     "common": {
