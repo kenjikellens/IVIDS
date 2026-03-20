@@ -9,7 +9,8 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 
 ## Logic & Data
 - [Content API (TMDB)](logic/api.md) — Integration with The Movie Database and VidSrc.
-- [User Data Management](logic/data-management.md) — LocalStorage, Profiles, and Playlists.
+- [Data Management & Caching](logic/data-management.md) — LocalStorage, Profiles, and Hybrid Caching.
+- [Live TV & M3U](logic/livetv.md) — M3U parsing and IPTV stream integration.
 
 ## GUI & Design
 - [Design System](gui/design-system.md) — CSS Variables, Units, and UI tokens.

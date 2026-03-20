@@ -1,35 +1,40 @@
-# User Data Management
+# Data Management & Hybrid Caching
 
-All persistent user data is stored locally on the device using `localStorage`.
+IVIDS manages user data and API responses through a multi-tier storage strategy designed for "Zero-Latency" feel and persistence.
 
-## Storage Keys
-- `ivids-settings`: Hex accent color and language code.
-- `ivids-profiles`: Array of user profiles (Name, Color, PIN).
-- `ivids-playlists`: Custom media lists created by users.
-- `ivids-recently-watched`: History of played content with progress tracking.
-- `ivids-active-profile`: Current logged-in user.
+## 🧠 Hybrid Caching System (`cacheManager`)
 
-## Data Structures
+To avoid redundant TMDB API calls, the app uses a dual-layer caching strategy:
 
-### Profile
-```json
-{
-    "id": "profile_123",
-    "name": "John",
-    "color": "#e50914",
-    "pin": "1234"
-}
-```
+1.  **Memory Layer (L1)**: An in-memory `Map` with **LRU (Least Recently Used) Eviction**. 
+    - Capped at 50 items to prevent memory bloat.
+    - Refreshing the position in the Map occurs on every `get()` to ensure hot data remains active.
+2.  **Session Layer (L2)**: `SessionStorage` is used to persist data across page refreshes (common on TV browsers).
+    - Data is stored as JSON with an `expiry` timestamp.
+    - If the browser quota is hit, the `clearExpiredStorage()` method is triggered.
 
-### Playlist Item
-```json
-{
-    "id": 12345,
-    "type": "movie",
-    "title": "Inception",
-    "posterPath": "/path.jpg"
-}
-```
+### TTL (Time-To-Live) Policies
+- **Trending**: 15 minutes.
+- **Search Results**: 10 minutes.
+- **Top Rated**: 60 minutes (statically updated).
 
-## Security
-Profile PINs are stored as plain text in `localStorage`. This is designed for simple parental control/privacy on shared TVs, not high-security data protection.
+---
+
+## 👤 User Data Persistence
+
+Primary user state is managed in `LocalStorage` with the following keys:
+
+| Key | Format | Description |
+|-----|--------|-------------|
+| `ivids-settings` | JSON Object | Theme colors, language, and player provider. |
+| `ivids-profiles` | JSON Array | Array of user profile objects with encrypted PINs. |
+| `ivids-current-profile` | ID | The active profile for the session. |
+| `ivids-watch-history` | JSON Array | List of recently watched items with progress. |
+| `ivids-playlists` | JSON Object | Map of user-created playlists by profile ID. |
+
+---
+
+## 🔒 Security & Profile Isolation
+
+- **PIN Protection**: Profile PINs are stored locally (not on a server).
+- **Isolation**: When switching profiles, the `playlists` and `recentlyWatched` caches are purged and reloaded to prevent cross-contamination between family members.

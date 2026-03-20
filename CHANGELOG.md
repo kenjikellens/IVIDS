@@ -55,3 +55,5 @@
 [17:35 18-03-2026] es.json - Restored original content (removed uiLab).
 [17:35 18-03-2026] ui-lab.html - Deleted (unwanted UI modification).
 [17:35 18-03-2026] ui-lab.js - Deleted (unwanted UI modification).
+[12:21 20-03-2026] docs/index.md - Updated documentation index with Live TV section.
+[12:21 20-03-2026] docs/architecture/router.md - Refreshed Router documentation with detailed lifecycle and error handling.
