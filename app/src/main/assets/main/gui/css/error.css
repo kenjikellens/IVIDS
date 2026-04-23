@@ -37,7 +37,9 @@
     align-items: center;
 }
 
-.error-modal.visible .error-content {}
+.error-modal.visible .error-content {
+    transform: scale(1.05);
+}
 
 /* Icon Container */
 .error-icon-container {
