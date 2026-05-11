@@ -35,7 +35,7 @@ class SettingsManager {
     }
 
     loadSettings() {
-        const defaultSettings = { language: 'en', accentColor: '#46d369', updateMode: 'manual', m3uUrl: '', playerProvider: 'vidsrc' };
+        const defaultSettings = { language: 'en', accentColor: '#46d369', updateMode: 'manual', m3uUrl: '' };
         try {
             const saved = localStorage.getItem('ivids-settings');
             return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
@@ -148,30 +148,19 @@ class SettingsManager {
     updateDisplays() {
         const langDisplay = document.getElementById('current-language-display');
         if (langDisplay) {
-            const names = {
-                en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch', nl: 'Nederlands',
-                it: 'Italiano', ru: 'Русский', pt: 'Português', zh: '中文', ja: '日本語',
-                hi: 'हिन्दी', ar: 'العربية', ko: '한국어', tr: 'Türkçe', vi: 'Tiếng Việt', id: 'Bahasa Indonesia',
-                ro: 'Română', pl: 'Polski', da: 'Dansk', sv: 'Svenska', no: 'Norsk', cs: 'Čeština'
-            };
+            const names = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch', nl: 'Nederlands' };
             langDisplay.textContent = names[this.settings.language] || this.settings.language;
         }
 
         const colorDisplay = document.getElementById('current-color-display');
         if (colorDisplay) {
             colorDisplay.style.borderBottomColor = this.settings.accentColor;
-            colorDisplay.setAttribute('data-i18n', 'settings.accent');
-            if (window.i18n) window.i18n.applyTranslations(colorDisplay);
+            colorDisplay.textContent = 'Accent'; // Keep it generic
         }
 
         const modeDisplay = document.getElementById('current-update-mode-display');
         if (modeDisplay) {
             modeDisplay.textContent = window.i18n?.t(`settings.mode.${this.settings.updateMode}`) || this.settings.updateMode;
-        }
-
-        const providerDisplay = document.getElementById('current-provider-display');
-        if (providerDisplay) {
-            providerDisplay.textContent = window.i18n?.t(`settings.provider.${this.settings.playerProvider}`) || this.settings.playerProvider;
         }
 
         const manualContainer = document.getElementById('manual-check-container');
@@ -219,7 +208,7 @@ class SettingsManager {
         const modal = document.getElementById(modalId);
         if (!modal) return;
 
-        const key = modalId.replace('-modal', '').replace('accent', 'accentColor').replace('update-mode', 'updateMode').replace('provider', 'playerProvider');
+        const key = modalId.replace('-modal', '').replace('accent', 'accentColor').replace('update-mode', 'updateMode');
         const value = this.settings[key];
 
         modal.querySelectorAll('.option-chip').forEach(chip => {

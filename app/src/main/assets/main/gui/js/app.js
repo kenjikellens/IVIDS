@@ -242,37 +242,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Initial Routing Flow
         try {
-            const currentProfile = localStorage.getItem('ivids-current-profile');
-            const lastRouteData = localStorage.getItem('ivids-last-route');
-            const lastActive = localStorage.getItem('ivids-last-active');
+            // Remove lingering state data so the app always starts fresh
+            localStorage.removeItem('ivids-last-route');
+            localStorage.removeItem('ivids-current-profile');
+            localStorage.removeItem('ivids-last-active');
 
-            // Reset profile if inactive for more than 3 minutes
-            if (lastActive) {
-                const threeMinutes = 3 * 60 * 1000;
-                const inactiveTime = Date.now() - parseInt(lastActive);
-                if (inactiveTime > threeMinutes) {
-                    console.log(`App: Inactive for ${Math.round(inactiveTime / 1000)}s. Resetting to profiles.`);
-                    localStorage.removeItem('ivids-current-profile');
-                }
-            }
-
-            if (!localStorage.getItem('ivids-current-profile')) {
-                // No profile selected, go to profiles screen
-                Router.loadPage('profiles');
-            } else {
-                // Profile exists, try to load last route
-                if (lastRouteData) {
-                    try {
-                        const { page, params } = JSON.parse(lastRouteData);
-                        Router.loadPage(page, params);
-                    } catch (e) {
-                        console.error('Error parsing last route:', e);
-                        Router.loadPage('home');
-                    }
-                } else {
-                    Router.loadPage('home');
-                }
-            }
+            // Always go to profiles screen on startup
+            Router.loadPage('profiles');
         } catch (homeError) {
             console.error('Error in initial routing:', homeError);
             ErrorHandler.show(window.i18n.t('error.initError'), () => window.location.reload());

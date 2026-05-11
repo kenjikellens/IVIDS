@@ -27,7 +27,6 @@
         "languageDesc": "Choose your preferred language",
         "accentColor": "Accent Color",
         "accentColorDesc": "Choose your preferred theme color",
-        "accent": "Accent",
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
@@ -61,12 +60,6 @@
             "comparing-versions": "Verifying version...",
             "downloading": "Downloading update...",
             "installing": "Preparing installation..."
-        },
-        "playerProvider": "Player Provider",
-        "playerProviderDesc": "Choose your preferred video player",
-        "provider": {
-            "vidsrc": "VidSrc (Default)",
-            "vidking": "VidKing (Backup)"
         }
     },
     "common": {

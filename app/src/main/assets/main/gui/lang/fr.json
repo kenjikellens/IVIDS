@@ -25,9 +25,8 @@
         "appearance": "Apparence",
         "language": "Langue",
         "languageDesc": "Choisissez votre langue préférée",
-        "accentColor": "Couleur d'accentuation",
+        "accentColor": "Couleur d'accent",
         "accentColorDesc": "Choisissez votre couleur de thème préférée",
-        "accent": "Accent",
         "saved": "Paramètres enregistrés !",
         "reset": "Réinitialiser par défaut !",
         "cancel": "Annuler",
@@ -61,12 +60,6 @@
             "comparing-versions": "Vérification de la version...",
             "downloading": "Téléchargement de la mise à jour...",
             "installing": "Préparation de l'installation..."
-        },
-        "playerProvider": "Fournisseur du Lecteur",
-        "playerProviderDesc": "Choisissez votre lecteur vidéo préféré",
-        "provider": {
-            "vidsrc": "VidSrc (Par défaut)",
-            "vidking": "VidKing (Réserve)"
         }
     },
     "common": {
@@ -242,6 +235,7 @@
         "save": "Enregistrer l'URL",
         "clear": "Effacer"
     },
+
     "profiles": {
         "title": "Qui regarde ?",
         "add": "Ajouter un profil",

@@ -27,7 +27,6 @@
         "languageDesc": "Kies uw voorkeurstaal",
         "accentColor": "Accentkleur",
         "accentColorDesc": "Kies uw voorkeur themakleur",
-        "accent": "Accent",
         "saved": "Instellingen opgeslagen!",
         "reset": "Terugzetten naar standaard!",
         "cancel": "Annuleren",
@@ -61,12 +60,6 @@
             "comparing-versions": "Versie verifiëren...",
             "downloading": "Update downloaden...",
             "installing": "Installatie voorbereiden..."
-        },
-        "playerProvider": "Player Bron",
-        "playerProviderDesc": "Kies de videospeler van je voorkeur",
-        "provider": {
-            "vidsrc": "VidSrc (Standaard)",
-            "vidking": "VidKing (Alternatief)"
         }
     },
     "common": {
@@ -242,6 +235,7 @@
         "save": "URL Opslaan",
         "clear": "Wissen"
     },
+
     "profiles": {
         "title": "Wie kijkt er?",
         "add": "Profiel toevoegen",
@@ -262,6 +256,6 @@
         "enterPin": "Voer PIN in voor {name}",
         "incorrectPin": "Onjuiste PIN. Probeer het opnieuw.",
         "errorNameEmpty": "Naam mag niet leeg zijn",
-        "errorPinLength": "Pincode moet precies 4 cijfers zijn"
+        "errorPinLength": "PIN moet precies 4 cijfers zijn"
     }
 }

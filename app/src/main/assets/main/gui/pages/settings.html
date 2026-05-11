@@ -43,20 +43,6 @@
                 </button>
             </div>
         </div>
-
-        <div class="setting-item">
-            <div class="setting-info">
-                <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
-                <div class="setting-description" data-i18n="settings.playerProviderDesc">Choose your preferred video player
-                </div>
-            </div>
-            <div class="setting-control">
-                <div id="current-provider-display" class="current-value-display">VidSrc</div>
-                <button id="edit-provider-btn" class="edit-trigger focusable" onclick="openSettingsModal('provider-modal')">
-                    <div class="edit-icon"></div>
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- App Updates Settings -->
@@ -118,56 +104,15 @@
                     Deutsch</div>
                 <div class="option-chip focusable" data-value="nl" onclick="setPendingSetting('language', 'nl', this)">
                     Nederlands</div>
-                <div class="option-chip focusable" data-value="it" onclick="setPendingSetting('language', 'it', this)">
-                    Italiano</div>
-                <div class="option-chip focusable" data-value="ru" onclick="setPendingSetting('language', 'ru', this)">
-                    Русский</div>
-                <div class="option-chip focusable" data-value="pt" onclick="setPendingSetting('language', 'pt', this)">
-                    Português</div>
-                <div class="option-chip focusable" data-value="zh" onclick="setPendingSetting('language', 'zh', this)">
-                    中文</div>
-                <div class="option-chip focusable" data-value="ja" onclick="setPendingSetting('language', 'ja', this)">
-                    日本語</div>
-                <div class="option-chip focusable" data-value="hi" onclick="setPendingSetting('language', 'hi', this)">
-                    हिन्दी</div>
-                <div class="option-chip focusable" data-value="ar" onclick="setPendingSetting('language', 'ar', this)">
-                    العربية</div>
-                <div class="option-chip focusable" data-value="ko" onclick="setPendingSetting('language', 'ko', this)">
-                    한국어</div>
-                <div class="option-chip focusable" data-value="tr" onclick="setPendingSetting('language', 'tr', this)">
-                    Türkçe</div>
-                <div class="option-chip focusable" data-value="vi" onclick="setPendingSetting('language', 'vi', this)">
-                    Tiếng Việt</div>
-                <div class="option-chip focusable" data-value="id" onclick="setPendingSetting('language', 'id', this)">
-                    Bahasa
-                    Indonesia</div>
-                <div class="option-chip focusable" data-value="ro" onclick="setPendingSetting('language', 'ro', this)">
-                Română
-            </div>
-            <div class="option-chip focusable" data-value="pl" onclick="setPendingSetting('language', 'pl', this)">
-                Polski
-            </div>
-            <div class="option-chip focusable" data-value="da" onclick="setPendingSetting('language', 'da', this)">
-                Dansk
-            </div>
-            <div class="option-chip focusable" data-value="sv" onclick="setPendingSetting('language', 'sv', this)">
-                Svenska
-            </div>
-            <div class="option-chip focusable" data-value="no" onclick="setPendingSetting('language', 'no', this)">
-                Norsk
-            </div>
-            <div class="option-chip focusable" data-value="cs" onclick="setPendingSetting('language', 'cs', this)">
-                Čeština
             </div>
         </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
+                data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" onclick="applyPendingSetting('language')"
+                data-i18n="common.apply">Apply</button>
+        </div>
     </div>
-    <div class="modal-footer">
-        <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
-            data-i18n="common.cancel">Cancel</button>
-        <button class="modal-btn primary focusable" onclick="applyPendingSetting('language')"
-            data-i18n="common.apply">Apply</button>
-    </div>
-</div>
 </div>
 
 <!-- Color Modal -->
@@ -206,27 +151,6 @@
             <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
                 data-i18n="common.cancel">Cancel</button>
             <button class="modal-btn primary focusable" onclick="applyPendingSetting('accentColor')"
-                data-i18n="common.apply">Apply</button>
-        </div>
-    </div>
-</div>
-
-<!-- Player Provider Modal -->
-<div id="provider-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="settings.playerProvider">Player Provider</h2>
-        <div class="modal-body">
-            <div id="provider-options" class="option-grid">
-                <div class="option-chip focusable" data-value="vidsrc"
-                    onclick="setPendingSetting('playerProvider', 'vidsrc', this)" data-i18n="settings.provider.vidsrc">VidSrc (Default)</div>
-                <div class="option-chip focusable" data-value="vidking"
-                    onclick="setPendingSetting('playerProvider', 'vidking', this)" data-i18n="settings.provider.vidking">VidKing (Backup)</div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
-                data-i18n="common.cancel">Cancel</button>
-            <button class="modal-btn primary focusable" onclick="applyPendingSetting('playerProvider')"
                 data-i18n="common.apply">Apply</button>
         </div>
     </div>

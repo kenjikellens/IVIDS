@@ -21,9 +21,7 @@ export function createLoaderElement() {
     
     // Optimization: Inject structure immediately to bypass MutationObserver for this element
     div.innerHTML = `
-        <svg class="spinner" viewBox="0 0 50 50">
-            <circle cx="25" cy="25" r="20"></circle>
-        </svg>
+        <div class="spinner"></div>
     `;
     return div;
 }
@@ -35,18 +33,9 @@ export function createLoaderElement() {
 function injectCircle(container) {
     const isLoader = container.classList.contains('ivids-loader') || container.classList.contains('windows-loader');
     if (container && isLoader && container.children.length === 0) {
-        // Create SVG element with NS
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svg.setAttribute("class", "spinner");
-        svg.setAttribute("viewBox", "0 0 50 50");
-
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", "25");
-        circle.setAttribute("cy", "25");
-        circle.setAttribute("r", "20");
-
-        svg.appendChild(circle);
-        container.appendChild(svg);
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner';
+        container.appendChild(spinner);
     }
 }
 

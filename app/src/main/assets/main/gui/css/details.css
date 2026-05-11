@@ -42,20 +42,22 @@
     padding-left: 3vw;
 }
 
+/* Styles the main poster image on the details page */
 .details-hero-poster {
-    width: 19vw;
+    width: 15vw;
     height: auto;
     aspect-ratio: 2/3;
     border-radius: 1.5vh;
     box-shadow: 0 1vh 4vh rgba(0, 0, 0, 0.6);
     border: 0.3vh solid rgba(255, 255, 255, 0.1);
     object-fit: cover;
-    margin-right: 4vw;
+    margin-right: 3vw;
     will-change: transform;
 }
 
+/* Styles the main title text of the details page */
 .details-title {
-    font-size: 4vw;
+    font-size: 3vw;
     line-height: 1.2;
     margin-bottom: 2vh;
     font-weight: 800;
@@ -63,30 +65,33 @@
     color: #fff;
 }
 
+/* Container for the metadata information like date and rating */
 .details-meta {
     display: flex;
     align-items: center;
     gap: 1.5vw;
     margin-bottom: 3vh;
     color: #aaa;
-    font-size: 1.5vw;
+    font-size: 1.2vw;
 }
 
+/* Styles the release date badge */
 .date-box {
     background: var(--primary-color);
     color: #000;
     padding: 0.5vh 1vw;
     border-radius: 0.8vh;
     font-weight: 800;
-    font-size: 1.2vw;
+    font-size: 1vw;
 }
 
+/* Styles the age rating badge */
 .rating-chip {
     background: rgba(255, 255, 255, 0.1);
     padding: 0.5vh 1vw;
     border-radius: 0.8vh;
     font-weight: 700;
-    font-size: 1.2vw;
+    font-size: 1vw;
     color: #fff;
     border: 0.2vh solid rgba(255, 255, 255, 0.2);
 }
@@ -105,17 +110,19 @@
     margin-bottom: 3vh;
 }
 
+/* Styles individual genre tags */
 .genre-chip {
     background: rgba(255, 255, 255, 0.1);
     padding: 0.8vh 1.5vw;
     border-radius: 2vh;
-    font-size: 1.1vw;
+    font-size: 0.9vw;
     border: 0.2vh solid rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.8);
 }
 
+/* Styles the overview/synopsis text block */
 .details-overview {
-    font-size: 1.4vw;
+    font-size: 1.1vw;
     line-height: 1.6;
     color: #ddd;
     margin-bottom: 4vh;
@@ -130,8 +137,8 @@
 /* Page specific buttons */
 .details-actions .btn {
     border-color: transparent;
-    height: 7vh;
-    font-size: 1.3vw;
+    height: 6vh;
+    font-size: 1.1vw;
     padding: 0 2.5vw;
     border-radius: 1.2vh;
     display: flex;
@@ -165,13 +172,14 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    gap: 3vw;
+    gap: 2vw;
     align-items: flex-start;
 }
 
 /* Seasons List Sidebar */
+/* Styles the container for the list of seasons */
 .details-seasons {
-    width: 20vw;
+    width: 16vw;
     flex-shrink: 0;
     background: rgba(0, 0, 0, 0.3);
     padding: 2vh 1.5vw;
@@ -182,8 +190,9 @@
     transform: translate3d(0, 0, 0);
 }
 
+/* Styles the header title for the seasons list */
 .seasons-header {
-    font-size: 1.8vw;
+    font-size: 1.4vw;
     margin-bottom: 2vh;
     border-bottom: 0.2vh solid rgba(255, 255, 255, 0.1);
     padding-bottom: 1vh;
@@ -197,6 +206,7 @@
     gap: 1vh;
 }
 
+/* Styles individual season selection buttons */
 .season-btn {
     background: transparent;
     border: 0.2vh solid rgba(255, 255, 255, 0.15);
@@ -206,7 +216,7 @@
     border-radius: 1vh;
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 1.2vw;
+    font-size: 1vw;
     font-weight: 500;
 }
 
@@ -231,8 +241,9 @@
     padding-left: 2vw;
 }
 
+/* Styles the header title for the episodes list */
 .episodes-title {
-    font-size: 2.2vw;
+    font-size: 1.8vw;
     margin-bottom: 3vh;
     color: #fff;
     border-bottom: 0.2vh solid rgba(255, 255, 255, 0.1);
@@ -258,9 +269,10 @@
     border-color: #fff;
 }
 
+/* Styles the thumbnail image for an episode */
 .episode-image {
-    width: 18vw;
-    height: 10.125vw;
+    width: 14vw;
+    height: 7.875vw;
     /* 16:9 aspect ratio */
     background-size: cover;
     background-position: center;
@@ -284,20 +296,23 @@
     margin-bottom: 1vh;
 }
 
+/* Styles the episode number text */
 .episode-number {
-    font-size: 1.5vw;
+    font-size: 1.2vw;
     font-weight: 800;
     color: var(--primary-color);
 }
 
+/* Styles the episode name text */
 .episode-name {
-    font-size: 1.5vw;
+    font-size: 1.2vw;
     font-weight: 700;
     color: #fff;
 }
 
+/* Styles the overview/synopsis text for an episode */
 .episode-overview {
-    font-size: 1.1vw;
+    font-size: 0.9vw;
     color: #aaa;
     line-height: 1.5;
     display: -webkit-box;
@@ -364,8 +379,9 @@
     outline: none;
 }
 
+/* Styles the header for the recommendations section */
 .recommendations-header {
-    font-size: 2.2vw;
+    font-size: 1.8vw;
     font-weight: 800;
     margin-bottom: 3vh;
     padding-bottom: 1.5vh;
@@ -391,10 +407,11 @@
     -ms-overflow-style: none;
 }
 
+/* Styles individual recommendation posters */
 .row-posters .poster {
-    width: 12vw;
-    min-width: 12vw;
-    height: 18vw;
+    width: 10vw;
+    min-width: 10vw;
+    height: 15vw;
     /* 2:3 ratio */
     flex-shrink: 0;
     scroll-snap-align: start;

@@ -116,13 +116,7 @@ export const Router = {
 
             this.currentPage = pageName;
 
-            // Save last route for persistence (if not profiles page)
-            if (pageName !== 'profiles') {
-                localStorage.setItem('ivids-last-route', JSON.stringify({
-                    page: pageName,
-                    params: params
-                }));
-            }
+
 
             // 4. Update active nav item
             this.updateActiveNavLink(pageName);
