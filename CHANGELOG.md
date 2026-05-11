@@ -81,3 +81,4 @@
 [10:26 11-05-2026] app/src/main/assets/main/gui/pages/settings.html - Overhauled settings UI with new provider options.
 [10:26 11-05-2026] app/src/main/assets/main/gui/pages/settings.js - Refactored settings management for better persistence and UI sync.
 [10:26 11-05-2026] app/src/main/assets/main/logic/api.js - Added dynamic player base URL support and configuration retrieval.
+[11:09 11-05-2026] .agents/rules/changelog.md - Clarified that changelog entries are not for GitHub pushes/pulls.
