@@ -58,3 +58,26 @@
 [12:21 20-03-2026] docs/index.md - Updated documentation index with Live TV section.
 [12:21 20-03-2026] docs/architecture/router.md - Refreshed Router documentation with detailed lifecycle and error handling.
 [09:45 11-05-2026] .agents/rules/changelog.md - Updated changelog protocol to clarify no GitHub Pulls.
+[10:03 11-05-2026] global.css - Updated hero play buttons to translucent white with white text.
+[10:20 11-05-2026] details.css - Replaced with contents of details_fixed.css to apply layout fixes.
+[10:20 11-05-2026] details_fixed.css - Deleted redundant file after merging.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/home.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/livetv.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/movies.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/player.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/playlist-details.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/playlists.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/profiles.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/search.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/series.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/settings.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/splash.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/css/toast.css - UI/UX improvements and legacy style removal.
+[10:26 11-05-2026] app/src/main/assets/main/gui/js/app.js - Integrated dynamic player configuration and improved settings logic.
+[10:26 11-05-2026] app/src/main/assets/main/gui/js/i18n.js - Updated translation engine to support new settings and player providers.
+[10:26 11-05-2026] app/src/main/assets/main/gui/pages/player.html - UI structure updates for enhanced player features.
+[10:26 11-05-2026] app/src/main/assets/main/gui/pages/player.js - Enhanced playback logic and settings integration.
+[10:26 11-05-2026] app/src/main/assets/main/gui/pages/playlist-details.html - UI structure updates for playlist management.
+[10:26 11-05-2026] app/src/main/assets/main/gui/pages/settings.html - Overhauled settings UI with new provider options.
+[10:26 11-05-2026] app/src/main/assets/main/gui/pages/settings.js - Refactored settings management for better persistence and UI sync.
+[10:26 11-05-2026] app/src/main/assets/main/logic/api.js - Added dynamic player base URL support and configuration retrieval.

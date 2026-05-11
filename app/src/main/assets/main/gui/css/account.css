@@ -1,80 +1,76 @@
 .account-container {
-    padding: 3vh 5%;
-    width: 90%;
-    max-width: 1000px;
+    width: min(1040px, 100%);
     margin: 0 auto;
-    animation: fadeIn 0.5s ease;
+    padding: var(--app-content-padding-y) var(--app-content-padding-x);
+    animation: fadeIn 0.35s ease;
 }
 
 .account-header {
-    margin-bottom: 2vh;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 1vh;
+    margin-bottom: 28px;
 }
 
 .account-header h1 {
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    color: var(--primary-color);
+    color: #fff;
+    font-size: 44px;
+    line-height: 1.1;
 }
 
 .account-section {
-    background: #1f1f1f;
-    border-radius: 1rem;
-    padding: 2% 5%;
-    /* Flexible padding */
-    margin-bottom: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-panel);
 }
 
 .section-title {
-    font-size: 1.5rem;
-    color: #888;
-    margin-bottom: 1.5rem;
+    margin-bottom: 24px;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.08em;
 }
 
 .profile-display {
     display: flex;
     align-items: center;
-    gap: 3rem;
+    gap: 34px;
 }
 
 .profile-avatar.large {
-    flex-shrink: 0;
-    /* Prevent avatar from squeezing */
-    width: 150px;
-    height: 150px;
-    border-radius: 12px;
+    flex: 0 0 142px;
+    width: 142px;
+    height: 142px;
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 4rem;
-    font-weight: bold;
     color: #fff;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    border: 0.25rem solid transparent;
-    transition: border-color 0.2s;
+    font-size: 58px;
+    font-weight: 900;
+    border: 3px solid transparent;
+    box-shadow: var(--shadow-card);
 }
 
 .profile-avatar.large.focusable:focus,
 .profile-avatar.large.focused,
 .profile-avatar.large:hover {
     border-color: #fff;
+    box-shadow: var(--focus-ring-strong);
 }
 
 .profile-details {
     flex: 1;
     min-width: 0;
-    /* Critical for container containment */
-    display: flex;
-    flex-direction: column;
 }
 
 .profile-name-text {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    margin-bottom: 0.75rem;
+    max-width: 100%;
+    margin-bottom: 18px;
     color: #fff;
+    font-size: 36px;
+    font-weight: 900;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -82,52 +78,53 @@
 
 .profile-actions {
     display: flex;
-    gap: 1.5rem;
+    gap: 12px;
     flex-wrap: wrap;
-    /* Allow wrapping to prevent overflow */
 }
 
 #account-switch-profile-btn {
-    background-color: transparent;
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
-    border: 1px solid #fff;
+    border-color: rgba(255, 255, 255, 0.14);
 }
 
 #account-switch-profile-btn:hover,
 #account-switch-profile-btn:focus,
 #account-switch-profile-btn.focused {
-    background-color: rgba(255, 255, 255, 0.15) !important;
-    color: #fff !important;
+    background: #fff !important;
+    color: #050505 !important;
     border-color: #fff;
-    box-shadow: 0 0 0 0.1875rem #fff;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+@media (max-width: 767px), (orientation: portrait) {
+    .account-container {
+        padding: 24px 18px 104px;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .account-header h1 {
+        font-size: 32px;
     }
-}
 
-@media (orientation: portrait) {
+    .account-section {
+        padding: 20px;
+    }
+
     .profile-display {
         flex-direction: column;
+        align-items: stretch;
         text-align: center;
-        gap: 2rem;
+        gap: 22px;
+    }
+
+    .profile-avatar.large {
+        margin: 0 auto;
+    }
+
+    .profile-name-text {
+        font-size: 28px;
     }
 
     .profile-actions {
         flex-direction: column;
-        width: 100%;
-    }
-
-    .btn {
-        width: 100%;
-        margin-right: 0;
     }
 }

@@ -3,7 +3,10 @@ class I18n {
     constructor() {
         this.currentLanguage = 'en';
         this.translations = {};
-        this.availableLanguages = ['en', 'es', 'fr', 'de', 'nl'];
+        this.availableLanguages = [
+            'ar', 'cs', 'da', 'de', 'en', 'es', 'fr', 'hi', 'id', 'it', 'ja',
+            'ko', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'vi', 'zh'
+        ];
     }
 
     async init() {

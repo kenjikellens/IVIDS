@@ -3,7 +3,7 @@ import { cacheManager } from './cache-manager.js';
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
-const VIDSRC_BASE_URL = 'https://vidsrc.net/embed';
+const DEFAULT_PLAYER_BASE_URL = 'https://vidsrc.net/embed';
 
 // Image Size Constants
 const POSTER_SIZE = 'w342';       // Standard poster size for grids
@@ -405,15 +405,36 @@ export const Api = {
         }
     },
 
+    getPlayerConfig() {
+        const defaults = {
+            playerProvider: 'custom',
+            playerBaseUrl: DEFAULT_PLAYER_BASE_URL
+        };
+
+        try {
+            const saved = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
+            return {
+                ...defaults,
+                ...saved,
+                playerBaseUrl: (saved.playerBaseUrl || defaults.playerBaseUrl).replace(/\/+$/, '')
+            };
+        } catch (error) {
+            console.error('Error reading player config:', error);
+            return defaults;
+        }
+    },
+
     getVideoUrl(id, type, season = null, episode = null) {
-        // Use path-based structure for vidsrc.net/to mirrors
+        const config = Api.getPlayerConfig();
+        const baseUrl = config.playerBaseUrl || DEFAULT_PLAYER_BASE_URL;
         const params = 'autoplay=true&autoPlay=true&ds_lang=en';
+
         if (type === 'tv') {
             const s = season || 1;
             const e = episode || 1;
-            return `${VIDSRC_BASE_URL}/tv/${id}/${s}/${e}?${params}`;
+            return `${baseUrl}/tv/${id}/${s}/${e}?${params}`;
         }
-        return `${VIDSRC_BASE_URL}/movie/${id}?${params}`;
+        return `${baseUrl}/movie/${id}?${params}`;
     },
 
     getGenres() {

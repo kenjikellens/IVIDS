@@ -150,6 +150,28 @@ export async function init(params) {
             iframe.tabIndex = 0;
             iframe.style.zIndex = "1";
 
+            const statusPanel = document.getElementById('player-status-panel');
+            const statusBack = document.getElementById('player-status-back');
+            const statusSettings = document.getElementById('player-status-settings');
+            let iframeLoaded = false;
+            let providerTimeout = null;
+
+            const showProviderWarning = () => {
+                if (iframeLoaded || !statusPanel) return;
+                statusPanel.style.display = 'block';
+                if (statusBack) statusBack.onclick = () => Router.goBack('details', { id: params.id, type: params.type });
+                if (statusSettings) statusSettings.onclick = () => Router.loadPage('settings', {}, true);
+                if (statusBack) statusBack.focus();
+            };
+
+            iframe.onload = () => {
+                iframeLoaded = true;
+                if (providerTimeout) clearTimeout(providerTimeout);
+                if (statusPanel) statusPanel.style.display = 'none';
+            };
+
+            providerTimeout = setTimeout(showProviderWarning, 12000);
+
             // Remove loader
             if (loader) loader.remove();
 

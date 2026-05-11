@@ -11,3 +11,48 @@ iframe {
     height: 100%;
     border: none;
 }
+
+.player-status-panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 20;
+    width: min(560px, 90vw);
+    transform: translate(-50%, -50%);
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: rgba(18, 18, 18, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: var(--shadow-panel);
+    text-align: center;
+    color: #fff;
+}
+
+.player-status-panel h2 {
+    margin-bottom: 10px;
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.player-status-panel p {
+    margin-bottom: 22px;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.player-status-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+@media (max-width: 767px), (orientation: portrait) {
+    .player-status-panel {
+        padding: 22px;
+    }
+
+    .player-status-actions {
+        flex-direction: column;
+    }
+}

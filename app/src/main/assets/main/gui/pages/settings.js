@@ -3,6 +3,31 @@ import { SpatialNav } from '../js/spatial-nav.js';
 
 let settingsManagerInstance = null;
 
+const LANGUAGE_OPTIONS = [
+    { code: 'ar', name: 'Arabic' },
+    { code: 'cs', name: 'Cestina' },
+    { code: 'da', name: 'Dansk' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Espanol' },
+    { code: 'fr', name: 'Francais' },
+    { code: 'hi', name: 'Hindi' },
+    { code: 'id', name: 'Indonesia' },
+    { code: 'it', name: 'Italiano' },
+    { code: 'ja', name: 'Japanese' },
+    { code: 'ko', name: 'Korean' },
+    { code: 'nl', name: 'Nederlands' },
+    { code: 'no', name: 'Norsk' },
+    { code: 'pl', name: 'Polski' },
+    { code: 'pt', name: 'Portugues' },
+    { code: 'ro', name: 'Romana' },
+    { code: 'ru', name: 'Russian' },
+    { code: 'sv', name: 'Svenska' },
+    { code: 'tr', name: 'Turkce' },
+    { code: 'vi', name: 'Vietnamese' },
+    { code: 'zh', name: 'Chinese' }
+];
+
 // Settings page initialization
 export async function init() {
     console.log('Settings page init() called');
@@ -35,7 +60,14 @@ class SettingsManager {
     }
 
     loadSettings() {
-        const defaultSettings = { language: 'en', accentColor: '#46d369', updateMode: 'manual', m3uUrl: '' };
+        const defaultSettings = {
+            language: 'en',
+            accentColor: '#46d369',
+            updateMode: 'manual',
+            m3uUrl: '',
+            playerProvider: 'custom',
+            playerBaseUrl: 'https://vidsrc.net/embed'
+        };
         try {
             const saved = localStorage.getItem('ivids-settings');
             return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
@@ -48,6 +80,8 @@ class SettingsManager {
     }
 
     initializeUI() {
+        this.renderLanguageOptions();
+
         const updatesSection = document.getElementById('app-updates-section');
         if (updatesSection && !window.AndroidUpdate) {
             updatesSection.style.display = 'none';
@@ -88,7 +122,43 @@ class SettingsManager {
             };
         }
 
+        const playerBaseInput = document.getElementById('player-base-url-input');
+        if (playerBaseInput) {
+            playerBaseInput.value = this.settings.playerBaseUrl || '';
+            playerBaseInput.onchange = (e) => this.settings.playerBaseUrl = e.target.value.trim().replace(/\/+$/, '');
+        }
+
+        const savePlayerBtn = document.getElementById('save-player-btn');
+        if (savePlayerBtn) {
+            savePlayerBtn.onclick = () => {
+                const val = document.getElementById('player-base-url-input')?.value?.trim().replace(/\/+$/, '');
+                this.settings.playerProvider = 'custom';
+                this.settings.playerBaseUrl = val || 'https://vidsrc.net/embed';
+                this.saveSettings();
+                alert(window.i18n?.t('settings.saved') || 'Settings saved!');
+            };
+        }
+
+        const resetPlayerBtn = document.getElementById('reset-player-btn');
+        if (resetPlayerBtn) {
+            resetPlayerBtn.onclick = () => {
+                this.settings.playerProvider = 'custom';
+                this.settings.playerBaseUrl = 'https://vidsrc.net/embed';
+                if (playerBaseInput) playerBaseInput.value = this.settings.playerBaseUrl;
+                this.saveSettings();
+            };
+        }
+
         this.updateDisplays();
+    }
+
+    renderLanguageOptions() {
+        const languageOptions = document.getElementById('language-options');
+        if (!languageOptions) return;
+
+        languageOptions.innerHTML = LANGUAGE_OPTIONS.map(({ code, name }) => (
+            `<div class="option-chip focusable" data-value="${code}" onclick="setPendingSetting('language', '${code}', this)">${name}</div>`
+        )).join('');
     }
 
     handleMainUpdateAction() {
@@ -148,7 +218,7 @@ class SettingsManager {
     updateDisplays() {
         const langDisplay = document.getElementById('current-language-display');
         if (langDisplay) {
-            const names = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch', nl: 'Nederlands' };
+            const names = Object.fromEntries(LANGUAGE_OPTIONS.map(({ code, name }) => [code, name]));
             langDisplay.textContent = names[this.settings.language] || this.settings.language;
         }
 
@@ -208,7 +278,12 @@ class SettingsManager {
         const modal = document.getElementById(modalId);
         if (!modal) return;
 
-        const key = modalId.replace('-modal', '').replace('accent', 'accentColor').replace('update-mode', 'updateMode');
+        const keyMap = {
+            'language-modal': 'language',
+            'color-modal': 'accentColor',
+            'update-mode-modal': 'updateMode'
+        };
+        const key = keyMap[modalId] || modalId.replace('-modal', '');
         const value = this.settings[key];
 
         modal.querySelectorAll('.option-chip').forEach(chip => {

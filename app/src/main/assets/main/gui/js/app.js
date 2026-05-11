@@ -136,7 +136,7 @@ function initNavigation() {
         SpatialNav.init(() => {
             try {
                 // 1. Check for any open modals first (Global Handler)
-                const openModal = document.querySelector('.modal[style*="display: flex"], .modal[style*="display: block"], .modal-overlay.active, .color-modal-overlay.show, .modal.active');
+                const openModal = document.querySelector('.modal[style*="display: flex"], .modal[style*="display: block"], .modal-overlay.active, .modal-overlay.show, .modal.active');
                 if (openModal) {
                     console.log('Global back: Closing open modal');
                     // Try standard hide methods
@@ -150,10 +150,6 @@ function initNavigation() {
                         SpatialNav.focusFirst();
                     }
 
-                    // Specific fix for settings color modal
-                    if (openModal.id === 'color-modal') {
-                        document.getElementById('portrait-color-trigger')?.focus();
-                    }
                     return;
                 }
 

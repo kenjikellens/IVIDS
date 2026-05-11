@@ -45,6 +45,54 @@
         </div>
     </div>
 
+    <!-- Player Settings -->
+    <div id="player-settings-section" class="settings-section">
+        <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 5V19L19 12L8 5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+            </svg>
+            <span data-i18n="settings.playerProvider">Player</span>
+        </h2>
+
+        <div class="setting-item player-setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
+                <div class="setting-description" data-i18n="settings.playerProviderDesc">Configure the embed endpoint used by the movie and series player</div>
+            </div>
+            <div class="setting-control m3u-control">
+                <input id="player-base-url-input" class="settings-input focusable" type="url"
+                    placeholder="https://example.com/embed" readonly>
+                <button id="save-player-btn" class="action-btn focusable" data-i18n="settings_livetv.save">Save URL</button>
+                <button id="reset-player-btn" class="action-btn secondary focusable" data-i18n="settings.reset">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live TV Settings -->
+    <div id="livetv-settings-section" class="settings-section">
+        <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6H20V17H4V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                <path d="M9 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M12 17V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <span data-i18n="settings_livetv.title">Live TV Configuration</span>
+        </h2>
+
+        <div class="setting-item m3u-setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings_livetv.m3uUrl">M3U Playlist URL</div>
+                <div class="setting-description" data-i18n="settings_livetv.m3uUrlDesc">Enter the URL for your IPTV playlist (.m3u)</div>
+            </div>
+            <div class="setting-control m3u-control">
+                <input id="m3u-url-input" class="settings-input focusable" type="url"
+                    placeholder="https://example.com/playlist.m3u" data-i18n="settings_livetv.placeholder" readonly>
+                <button id="save-m3u-btn" class="action-btn focusable" data-i18n="settings_livetv.save">Save URL</button>
+                <button id="clear-m3u-btn" class="action-btn secondary focusable" data-i18n="settings_livetv.clear">Clear</button>
+            </div>
+        </div>
+    </div>
+
     <!-- App Updates Settings -->
     <div id="app-updates-section" class="settings-section">
         <h2 class="section-title">
@@ -93,18 +141,7 @@
     <div class="modal-content">
         <h2 class="modal-title" data-i18n="settings.language">Language</h2>
         <div class="modal-body">
-            <div id="language-options" class="option-grid">
-                <div class="option-chip focusable" data-value="en" onclick="setPendingSetting('language', 'en', this)">
-                    English</div>
-                <div class="option-chip focusable" data-value="es" onclick="setPendingSetting('language', 'es', this)">
-                    Español</div>
-                <div class="option-chip focusable" data-value="fr" onclick="setPendingSetting('language', 'fr', this)">
-                    Français</div>
-                <div class="option-chip focusable" data-value="de" onclick="setPendingSetting('language', 'de', this)">
-                    Deutsch</div>
-                <div class="option-chip focusable" data-value="nl" onclick="setPendingSetting('language', 'nl', this)">
-                    Nederlands</div>
-            </div>
+            <div id="language-options" class="option-grid"></div>
         </div>
         <div class="modal-footer">
             <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
