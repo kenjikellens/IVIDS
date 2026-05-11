@@ -57,3 +57,4 @@
 [17:35 18-03-2026] ui-lab.js - Deleted (unwanted UI modification).
 [12:21 20-03-2026] docs/index.md - Updated documentation index with Live TV section.
 [12:21 20-03-2026] docs/architecture/router.md - Refreshed Router documentation with detailed lifecycle and error handling.
+[09:45 11-05-2026] .agents/rules/changelog.md - Updated changelog protocol to clarify no GitHub Pulls.
