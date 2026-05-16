@@ -6,6 +6,7 @@
     background: black;
 }
 
+/* Iframe container */
 iframe {
     width: 100%;
     height: 100%;
@@ -55,4 +56,91 @@ iframe {
     .player-status-actions {
         flex-direction: column;
     }
+}
+
+iframe {
+    background: #000;
+}
+
+/* Server Selection Overlay at bottom */
+.server-selection-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 40px 40px 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Show selection when mouse moves or when focused (handled in JS) */
+.server-selection-overlay.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Server Selection Title */
+.server-selection-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Horizontal list of servers */
+.server-list {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 5px;
+    scrollbar-width: none;
+}
+
+.server-list::-webkit-scrollbar {
+    display: none;
+}
+
+/* Individual server button */
+.server-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 140px;
+}
+
+/* Active server button */
+.server-btn.active {
+    background: rgba(var(--primary-rgb), 0.2);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Focus/Hover state: White thicker border */
+.server-btn:focus,
+.server-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+    box-shadow: 0 0 0 3px #fff;
+    outline: none;
+}
+
+/* If active and focused */
+.server-btn.active:focus,
+.server-btn.active:hover {
+    background: rgba(var(--primary-rgb), 0.3);
 }

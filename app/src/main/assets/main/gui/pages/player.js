@@ -130,12 +130,6 @@ export async function init(params) {
             iframe.allowFullscreen = true;
 
             // Add sandbox attribute to block ads and popups
-            // We allow:
-            // - scripts: to run the player
-            // - same-origin: to allow the player to access its own resources
-            // - forms: for player controls
-            // - pointer-lock: for video controls
-            // We EXCLUDE 'allow-popups', 'allow-modals', and 'allow-top-navigation' to block ads and redirects.
             iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts');
 
             iframe.style.position = "absolute";
@@ -176,6 +170,10 @@ export async function init(params) {
             if (loader) loader.remove();
 
             container.appendChild(iframe);
+
+            // Render Server Selection
+            renderServerSelection(params, iframe);
+
         } catch (iframeError) {
             console.error('Error creating/appending iframe:', iframeError);
             ErrorHandler.show('Failed to initialize video player.', () => init(params));
@@ -183,6 +181,10 @@ export async function init(params) {
             Router.loadPage('details', { id: params.id, type: params.type });
             return;
         }
+
+        // Handle overlay visibility on activity
+        setupOverlayVisibility();
+
 
         // Handle Back Button
         try {
@@ -275,4 +277,73 @@ function showNextButton(seriesId, nextSeason, nextEpisode) {
             });
         };
     }
+}
+
+/**
+ * Renders the server selection buttons and handles switching logic.
+ * @param {Object} params - The route parameters.
+ * @param {HTMLIFrameElement} iframe - The player iframe element.
+ */
+function renderServerSelection(params, iframe) {
+    const serverList = document.getElementById('player-server-list');
+    if (!serverList) return;
+
+    serverList.innerHTML = '';
+    let currentServerId = 'vidsrc_net';
+
+    Api.SERVERS.forEach(server => {
+        const btn = document.createElement('button');
+        btn.className = 'server-btn focusable';
+        if (server.id === currentServerId) btn.classList.add('active');
+        btn.textContent = server.name;
+        btn.dataset.serverId = server.id;
+
+        btn.onclick = () => {
+            if (currentServerId === server.id) return;
+            
+            // Update active state
+            document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentServerId = server.id;
+
+            // Update iframe source
+            const newUrl = Api.getVideoUrl(params.id, params.type, params.season, params.episode, server.id);
+            iframe.src = newUrl;
+        };
+
+        serverList.appendChild(btn);
+    });
+}
+
+/**
+ * Manages the visibility of the player overlays based on activity.
+ */
+function setupOverlayVisibility() {
+    const overlay = document.getElementById('server-selection-overlay');
+    const controls = document.querySelector('.player-controls');
+    if (!overlay || !controls) return;
+
+    let timeout;
+    const showOverlays = () => {
+        overlay.classList.add('visible');
+        controls.style.opacity = '1';
+        controls.style.pointerEvents = 'auto';
+        
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            const focused = document.activeElement;
+            if (!focused || (!focused.classList.contains('server-btn') && !focused.classList.contains('btn-back'))) {
+                overlay.classList.remove('visible');
+                controls.style.opacity = '0';
+                controls.style.pointerEvents = 'none';
+            } else {
+                showOverlays();
+            }
+        }, 4000);
+    };
+
+    window.addEventListener('mousemove', showOverlays);
+    window.addEventListener('click', showOverlays);
+    window.addEventListener('keydown', showOverlays);
+    showOverlays();
 }

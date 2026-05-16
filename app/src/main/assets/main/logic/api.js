@@ -424,9 +424,23 @@ export const Api = {
         }
     },
 
-    getVideoUrl(id, type, season = null, episode = null) {
+    SERVERS: [
+        { id: 'vidsrc_net', name: 'Server 1', url: 'https://vidsrc.net/embed' },
+        { id: 'vidsrc_me', name: 'Server 2', url: 'https://vidsrc.me/embed' },
+        { id: 'vidsrc_to', name: 'Server 3', url: 'https://vidsrc.to/embed' },
+        { id: 'embed_su', name: 'Server 4', url: 'https://embed.su/embed' }
+    ],
+
+    getVideoUrl(id, type, season = null, episode = null, serverId = null) {
         const config = Api.getPlayerConfig();
-        const baseUrl = config.playerBaseUrl || DEFAULT_PLAYER_BASE_URL;
+        
+        let baseUrl;
+        if (serverId) {
+            const server = Api.SERVERS.find(s => s.id === serverId);
+            baseUrl = server ? server.url : config.playerBaseUrl;
+        } else {
+            baseUrl = config.playerBaseUrl || DEFAULT_PLAYER_BASE_URL;
+        }
         const params = 'autoplay=true&autoPlay=true&ds_lang=en';
 
         if (type === 'tv') {

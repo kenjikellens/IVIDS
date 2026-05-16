@@ -128,7 +128,8 @@
         "pause": "Pauze",
         "stop": "Stoppen",
         "moreInfo": "Meer Info",
-        "nextEpisode": "Volgende Aflevering"
+        "nextEpisode": "Volgende Aflevering",
+        "selectServer": "Selecteer Server"
     },
     "playlists": {
         "title": "Mijn Afspeellijsten",

@@ -128,7 +128,8 @@
         "pause": "Pause",
         "stop": "Stop",
         "moreInfo": "More Info",
-        "nextEpisode": "Next Episode"
+        "nextEpisode": "Next Episode",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "My Playlists",
