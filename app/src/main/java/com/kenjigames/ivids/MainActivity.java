@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if (url != null && (url.contains("vidsrc.net") || url.contains("vidsrc.xyz"))) {
+            if (url != null && (url.contains("vidsrc.net") || url.contains("vidsrc.xyz") || url.contains("vidlink.pro") || url.contains("embed.su"))) {
                 // Auto-click the center after a delay to simulate autoplay
                 view.postDelayed(() -> {
                     if (view.getContext() instanceof MainActivity) {

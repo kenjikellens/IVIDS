@@ -18,7 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:banner="@mipmap/ic_launcher"
-        android:theme="@style/Theme.IVIDS">
+        android:theme="@style/Theme.IVIDS"
+        android:hardwareAccelerated="true"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true">

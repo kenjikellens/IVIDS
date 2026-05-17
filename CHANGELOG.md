@@ -135,3 +135,5 @@
 [23:19 17-05-2026] app/src/main/assets/main/gui/pages/player.js - Updated initial active server selection ID to vidlink to match the new primary video provider.
 [23:20 17-05-2026] app/src/main/assets/main/logic/api.js - Implemented persistent auto-migration inside getPlayerConfig to upgrade saved vidsrc player configurations directly in localStorage on disk.
 [23:21 17-05-2026] app/src/main/assets/main/gui/pages/player.js - Removed restrictive iframe sandbox attribute to allow modern, high-speed player engines to initialize cleanly.
+[23:22 17-05-2026] app/src/main/java/com/kenjigames/ivids/MainActivity.java - Added VidLink and Embed.su support to WebView onPageFinished autoplay click gesture simulator.
+[23:22 17-05-2026] app/src/main/AndroidManifest.xml - Added explicit hardware acceleration and usesCleartextTraffic configurations to guarantee optimal video rendering and IPTV stream support.
