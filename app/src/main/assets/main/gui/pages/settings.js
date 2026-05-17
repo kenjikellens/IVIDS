@@ -169,7 +169,7 @@ class SettingsManager {
             savePlayerBtn.onclick = () => {
                 const val = document.getElementById('player-base-url-input')?.value?.trim().replace(/\/+$/, '');
                 this.settings.playerProvider = 'custom';
-                this.settings.playerBaseUrl = val || 'https://vidsrc.net/embed';
+                this.settings.playerBaseUrl = val || 'https://vidlink.pro';
                 this.saveSettings();
                 alert(window.i18n?.t('settings.saved') || 'Settings saved!');
             };
@@ -179,7 +179,7 @@ class SettingsManager {
         if (resetPlayerBtn) {
             resetPlayerBtn.onclick = () => {
                 this.settings.playerProvider = 'custom';
-                this.settings.playerBaseUrl = 'https://vidsrc.net/embed';
+                this.settings.playerBaseUrl = 'https://vidlink.pro';
                 if (playerBaseInput) playerBaseInput.value = this.settings.playerBaseUrl;
                 this.saveSettings();
             };

@@ -289,7 +289,7 @@ function renderServerSelection(params, iframe) {
     if (!serverList) return;
 
     serverList.innerHTML = '';
-    let currentServerId = 'vidsrc_net';
+    let currentServerId = 'vidlink';
 
     Api.SERVERS.forEach(server => {
         const btn = document.createElement('button');

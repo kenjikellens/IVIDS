@@ -131,3 +131,5 @@
 [23:14 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.html - Appended trailing body tag to protect fragment SVG elements from VS Code Live Server WebSocket hot-reload script injection corruption.
 [23:17 17-05-2026] app/src/main/assets/main/logic/api.js - Migrated blocked VidSrc endpoints to VidLink.pro as primary default provider and updated servers list to use VidLink and Embed.su.
 [23:18 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Updated default player base URL to VidLink and added an auto-migration check in loadSettings to seamlessly upgrade existing user configurations.
+[23:19 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Replaced leftover custom save and reset fallback endpoints from VidSrc to VidLink.pro.
+[23:19 17-05-2026] app/src/main/assets/main/gui/pages/player.js - Updated initial active server selection ID to vidlink to match the new primary video provider.
