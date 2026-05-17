@@ -18,6 +18,11 @@ import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * MainActivity is the primary entry point for the IVIDS Android application.
+ * It initializes a full-screen WebView, configures hardware acceleration, handles permissions,
+ * and sets up a custom WebChromeClient and AdBlockingWebViewClient to run the web application smoothly.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -249,6 +254,13 @@ public class MainActivity extends AppCompatActivity {
     private WebView mWebView;
     private UpdateManager mUpdateManager;
 
+    /**
+     * Simulates a physical touch click on the screen at the specified coordinates.
+     * This is primarily used to bypass browser autoplay restrictions by forcing a simulated user interaction.
+     * 
+     * @param x The X coordinate of the screen to click on.
+     * @param y The Y coordinate of the screen to click on.
+     */
     private void simulateClick(float x, float y) {
         try {
             long duration = android.os.SystemClock.uptimeMillis();
@@ -265,6 +277,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Intercepts hardware remote/keyboard key events before they are processed by the WebView.
+     * If the user presses the 'ENTER' or 'DPAD_CENTER' button while in the player iframe,
+     * it triggers a simulated click to ensure TV remote compatibility.
+     * 
+     * @param event The KeyEvent dispatched to the Activity.
+     * @return true if the event was handled, otherwise returns the superclass implementation.
+     */
     @Override
     public boolean dispatchKeyEvent(android.view.KeyEvent event) {
         int keyCode = event.getKeyCode();
@@ -282,7 +302,20 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchKeyEvent(event);
     }
 
+    /**
+     * A custom WebViewClient that aggressively blocks known advertisement domains and tracking scripts.
+     * It intercepts every network request made by the WebView and compares the host against a predefined blacklist.
+     * It also injects a simulated click when a known video provider page finishes loading to trigger autoplay.
+     */
     private static class AdBlockingWebViewClient extends WebViewClient {
+        /**
+         * Intercepts individual resource requests made by the WebView.
+         * If the requested URL matches a known ad-serving host, it returns an empty response to block the ad.
+         * 
+         * @param view The WebView that is requesting the resource.
+         * @param request The WebResourceRequest containing the URL and headers.
+         * @return A WebResourceResponse containing empty data if blocked, or null to let the WebView load the resource normally.
+         */
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             Uri url = request.getUrl();
@@ -293,6 +326,14 @@ public class MainActivity extends AppCompatActivity {
             return super.shouldInterceptRequest(view, request);
         }
 
+        /**
+         * Triggered when a page finishes loading in the WebView.
+         * Checks if the loaded URL belongs to a known video player provider and schedules an automated click 
+         * in the center of the screen to force the video to autoplay without user interaction.
+         * 
+         * @param view The WebView that finished loading.
+         * @param url The URL of the loaded page.
+         */
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
@@ -309,6 +350,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Triggered when the WebView encounters a generic resource loading error.
+         * Logs the error description for debugging purposes.
+         * 
+         * @param view The WebView that encountered the error.
+         * @param request The WebResourceRequest that failed.
+         * @param error The WebResourceError containing the error code and description.
+         */
         @RequiresApi(Build.VERSION_CODES.M)
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
@@ -320,6 +369,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Triggered when the WebView receives an HTTP error (e.g., 404 Not Found, 500 Internal Server Error) 
+         * while loading a resource. Logs the error status code for debugging.
+         * 
+         * @param view The WebView that encountered the HTTP error.
+         * @param request The WebResourceRequest that failed.
+         * @param errorResponse The WebResourceResponse containing the HTTP status code.
+         */
         @Override
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
@@ -328,6 +385,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Checks if a given URL host is present in the static blacklist of ad domains.
+         * 
+         * @param host The hostname to verify (e.g., "admob.com").
+         * @return true if the host is a known ad provider, false otherwise.
+         */
         private boolean isAd(@Nullable String host) {
             if (host == null)
                 return false;
@@ -339,6 +402,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+         * Called when the Activity is first created.
+         * Instantiates the WebView, configures advanced WebSettings (like DOM Storage, JavaScript, and Mixed Content),
+         * binds the custom WebView clients, connects the JavaScript-to-Java UpdateManager interface, 
+         * and loads the local HTML index file.
+         * 
+         * @param savedInstanceState A Bundle containing the activity's previously frozen state, if there was one.
+         */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

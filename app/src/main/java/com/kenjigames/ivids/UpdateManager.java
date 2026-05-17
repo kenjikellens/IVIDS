@@ -31,6 +31,12 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * UpdateManager handles the automatic OTA (Over-The-Air) update checking and installation process.
+ * It interacts with the GitHub API to find the latest releases, compares version tags,
+ * downloads the new APK securely via HTTP, and initiates the Android package installation intent.
+ * It acts as a bridge between the WebView (JavaScript) and native Android code.
+ */
 public class UpdateManager {
     private static final String TAG = "UpdateManager";
     private static final String GITHUB_API_URL = "https://api.github.com/repos/kenjikellens/IVIDS/releases";
@@ -43,11 +49,22 @@ public class UpdateManager {
     private String mDownloadUrl = null;
     private String mLatestVersion = null;
 
+    /**
+     * Constructs a new UpdateManager instance.
+     * 
+     * @param activity The main activity context used for accessing system services and starting intents.
+     * @param webView The WebView instance used to send JavaScript callbacks regarding the update progress.
+     */
     public UpdateManager(Activity activity, WebView webView) {
         this.mActivity = activity;
         this.mWebView = webView;
     }
 
+    /**
+     * Checks the GitHub repository releases API to see if a newer version of the app is available.
+     * This method is exposed to JavaScript via the @JavascriptInterface annotation.
+     * It runs the network request on a background thread.
+     */
     @JavascriptInterface
     public void checkForUpdates() {
         Log.d(TAG, "Checking for updates...");
@@ -147,6 +164,14 @@ public class UpdateManager {
         });
     }
 
+    /**
+     * Compares the current installed app version against the latest version tag from GitHub.
+     * Handles semantic versioning comparison (e.g., v1.0.1 vs v1.0.2).
+     * 
+     * @param current The current app version name (e.g., "1.0.0").
+     * @param latest The latest release tag from GitHub (e.g., "v1.0.1").
+     * @return true if the latest version is newer than the current version, false otherwise.
+     */
     private boolean isNewerVersion(String current, String latest) {
         // ... (existing implementation is reasonably robust)
         try {
@@ -183,6 +208,10 @@ public class UpdateManager {
         return false;
     }
 
+    /**
+     * Initiates a direct forced download of the APK from the repository's raw URL.
+     * This method is exposed to JavaScript via the @JavascriptInterface annotation.
+     */
     @JavascriptInterface
     public void downloadFromRepo() {
         Log.d(TAG, "Requesting direct download from repository...");
@@ -190,6 +219,12 @@ public class UpdateManager {
         downloadAndInstall();
     }
 
+    /**
+     * Begins the background download of the latest APK file.
+     * Automatically handles HTTP redirects, writes the stream to the device's external cache directory,
+     * and publishes progress updates back to the WebView interface.
+     * This method is exposed to JavaScript via the @JavascriptInterface annotation.
+     */
     @JavascriptInterface
     public void downloadAndInstall() {
         if (mDownloadUrl == null) {
@@ -303,6 +338,12 @@ public class UpdateManager {
         });
     }
 
+    /**
+     * Triggers the Android system package installer to install the downloaded APK.
+     * Uses FileProvider to securely grant the installer read access to the downloaded file.
+     * 
+     * @param apkFile The File object pointing to the downloaded APK in the cache directory.
+     */
     private void installApk(File apkFile) {
         try {
             notifyWebUpdateStatus("installing");
@@ -321,6 +362,11 @@ public class UpdateManager {
         }
     }
 
+    /**
+     * Checks if the device currently has an active network connection (Wi-Fi or Cellular).
+     * 
+     * @return true if a network connection is available, false otherwise.
+     */
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) mActivity
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -331,25 +377,45 @@ public class UpdateManager {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    /**
+     * Shuts down the background executor service.
+     * Should be called when the activity is destroyed to prevent memory leaks.
+     */
     public void shutdown() {
         mExecutor.shutdown();
     }
 
+    /**
+     * Sends a JavaScript callback to the WebView notifying that a new update is available.
+     * 
+     * @param version The version string of the new update.
+     */
     private void notifyWebFoundUpdate(String version) {
         mActivity.runOnUiThread(() -> mWebView
                 .evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound('" + version + "');", null));
     }
 
+    /**
+     * Sends a JavaScript callback to the WebView notifying that no new updates were found.
+     */
     private void notifyWebNoUpdateFound() {
         mActivity.runOnUiThread(() -> mWebView
                 .evaluateJavascript("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();", null));
     }
 
+    /**
+     * Sends a JavaScript callback to the WebView to update the UI on the current stage of the update process.
+     * 
+     * @param statusKey A string representing the current status (e.g., "downloading", "installing").
+     */
     private void notifyWebUpdateStatus(String statusKey) {
         mActivity.runOnUiThread(() -> mWebView.evaluateJavascript(
                 "if(typeof onUpdateStatus === 'function') onUpdateStatus('" + statusKey + "');", null));
     }
 
+    /**
+     * Sends a JavaScript callback to the WebView notifying that an error occurred during the update process.
+     */
     private void notifyWebUpdateError() {
         mActivity.runOnUiThread(() -> mWebView
                 .evaluateJavascript("if(typeof onUpdateCheckError === 'function') onUpdateCheckError();", null));
