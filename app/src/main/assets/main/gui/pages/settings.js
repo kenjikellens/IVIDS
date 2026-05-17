@@ -304,7 +304,11 @@ class SettingsManager {
         if (!modal) return;
 
         this.currentModal = modal;
-        modal.style.display = 'flex';
+        
+        // Force direct inline visibility styles to override any stylesheet conflicts!
+        modal.style.setProperty('display', 'flex', 'important');
+        modal.style.setProperty('visibility', 'visible', 'important');
+        modal.style.setProperty('z-index', '99999', 'important');
 
         this.pendingSettings = { ...this.settings };
 
@@ -350,8 +354,11 @@ class SettingsManager {
 
         this.syncActiveChips(modalId);
 
-        modal.classList.add('active');
-        setTimeout(() => modal.classList.add('show'), 10);
+        // Coordinate smooth opacity fade-in transition
+        setTimeout(() => {
+            modal.style.setProperty('opacity', '1', 'important');
+            modal.classList.add('active', 'show');
+        }, 10);
         SpatialNav.setFocusTrap(modal);
         SpatialNav.focusFirst();
     }
@@ -397,14 +404,17 @@ class SettingsManager {
         if (!this.currentModal) return;
         const modal = this.currentModal;
         modal.classList.remove('show');
+        modal.style.setProperty('opacity', '0', 'important');
         setTimeout(() => {
             modal.classList.remove('active');
-            modal.style.display = 'none';
+            modal.style.setProperty('display', 'none', 'important');
+            modal.style.setProperty('visibility', 'hidden', 'important');
         }, 300);
         SpatialNav.clearFocusTrap();
         SpatialNav.refocus();
         this.currentModal = null;
     }
+
 
 
     /**

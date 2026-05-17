@@ -120,3 +120,4 @@
 [22:45 17-05-2026] app/src/main/assets/main/gui/pages/settings.html - Refactored settings template to remove fragile inline onclick triggers to support programmatic JS bindings.
 [22:46 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Rewrote controller to support robust programmatic bindings and try-catch safety scopes for parent iframe cross-origin styles.
 [22:47 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Patched settings modals to activate both show and active CSS class states to ensure visibility transitions render correctly.
+[22:48 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Forced inline Important overrides for modal overlays to guarantee display rendering regardless of CSS stylesheet/caching conflicts.
