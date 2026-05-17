@@ -28,7 +28,10 @@ const LANGUAGE_OPTIONS = [
     { code: 'zh', name: 'Chinese' }
 ];
 
-// Settings page initialization
+/**
+ * Initializes the settings page.
+ * Applies translations and instantiates the settings manager logic class.
+ */
 export async function init() {
     console.log('Settings page init() called');
     if (window.i18n && window.i18n.translations) {
@@ -37,18 +40,17 @@ export async function init() {
     settingsManagerInstance = new SettingsManager();
 }
 
-// Global functions for HTML onclick attributes
-window.openSettingsModal = (id) => settingsManagerInstance?.openModal(id);
-window.closeSettingsModal = () => settingsManagerInstance?.closeModal();
-window.setPendingSetting = (key, value, el) => settingsManagerInstance?.setPending(key, value, el);
-window.applyPendingSetting = (key) => settingsManagerInstance?.applyPending(key);
-
-// Update Callbacks
+// Global update handlers for Android WebView callbacks
 window.onUpdateStatus = (statusKey) => settingsManagerInstance?.handleUpdateStatus(statusKey);
 window.onUpdateFound = (version) => settingsManagerInstance?.handleUpdateFound(version);
 window.onNoUpdateFound = () => settingsManagerInstance?.handleNoUpdateFound();
 window.onUpdateCheckError = () => settingsManagerInstance?.handleUpdateError();
 
+/**
+ * SettingsManager Class
+ * Handles settings state loading, UI rendering, programmatic button click mapping,
+ * modal triggers, and theme variables injection.
+ */
 class SettingsManager {
     constructor() {
         this.settings = this.loadSettings();
@@ -59,6 +61,10 @@ class SettingsManager {
         this.applySettings();
     }
 
+    /**
+     * Loads settings from localStorage with default fallbacks.
+     * @returns {object} Loaded configuration settings.
+     */
     loadSettings() {
         const defaultSettings = {
             language: 'en',
@@ -74,13 +80,35 @@ class SettingsManager {
         } catch (e) { return defaultSettings; }
     }
 
+    /**
+     * Saves active settings configurations to disk and broadcasts changes.
+     */
     saveSettings() {
         localStorage.setItem('ivids-settings', JSON.stringify(this.settings));
         this.applySettingsGlobally();
     }
 
+    /**
+     * Sets up DOM click handlers programmatically to bypass fragile inline HTML triggers.
+     */
     initializeUI() {
         this.renderLanguageOptions();
+
+        // Appearance Modals Triggers
+        const editLangBtn = document.getElementById('edit-language-btn');
+        if (editLangBtn) {
+            editLangBtn.onclick = () => this.openModal('language-modal');
+        }
+
+        const editColorBtn = document.getElementById('edit-color-btn');
+        if (editColorBtn) {
+            editColorBtn.onclick = () => this.openModal('color-modal');
+        }
+
+        const editUpdateModeBtn = document.getElementById('edit-update-mode-btn');
+        if (editUpdateModeBtn) {
+            editUpdateModeBtn.onclick = () => this.openModal('update-mode-modal');
+        }
 
         const updatesSection = document.getElementById('app-updates-section');
         if (updatesSection && !window.AndroidUpdate) {
@@ -152,15 +180,21 @@ class SettingsManager {
         this.updateDisplays();
     }
 
+    /**
+     * Populates the HTML dynamic grid chips list for Language.
+     */
     renderLanguageOptions() {
         const languageOptions = document.getElementById('language-options');
         if (!languageOptions) return;
 
         languageOptions.innerHTML = LANGUAGE_OPTIONS.map(({ code, name }) => (
-            `<div class="option-chip focusable" data-value="${code}" onclick="setPendingSetting('language', '${code}', this)">${name}</div>`
+            `<div class="option-chip focusable" data-value="${code}">${name}</div>`
         )).join('');
     }
 
+    /**
+     * Executes checking or fetching APK update files.
+     */
     handleMainUpdateAction() {
         if (!window.AndroidUpdate) return;
 
@@ -178,7 +212,6 @@ class SettingsManager {
             statusText.textContent = window.i18n?.t('settings.updateStatus.connecting-api') || 'Connecting...';
         }
 
-        // Inject loader container
         let loaderContainer = document.getElementById('update-loader-container');
         if (loaderContainer) {
             loaderContainer.style.display = 'flex';
@@ -196,6 +229,9 @@ class SettingsManager {
         }
     }
 
+    /**
+     * Cancels active checker connection.
+     */
     handleCancelUpdate() {
         console.log('Cancelling update check');
         this.isCheckingUpdates = false;
@@ -215,6 +251,9 @@ class SettingsManager {
         SpatialNav.refocus();
     }
 
+    /**
+     * Synchronizes display UI elements with cached configuration variables.
+     */
     updateDisplays() {
         const langDisplay = document.getElementById('current-language-display');
         if (langDisplay) {
@@ -225,7 +264,7 @@ class SettingsManager {
         const colorDisplay = document.getElementById('current-color-display');
         if (colorDisplay) {
             colorDisplay.style.borderBottomColor = this.settings.accentColor;
-            colorDisplay.textContent = 'Accent'; // Keep it generic
+            colorDisplay.textContent = 'Accent';
         }
 
         const modeDisplay = document.getElementById('current-update-mode-display');
@@ -238,7 +277,6 @@ class SettingsManager {
             const isManualOrAdvanced = this.settings.updateMode === 'manual' || this.settings.updateMode === 'advanced';
             manualContainer.style.display = isManualOrAdvanced ? 'flex' : 'none';
 
-            // Update button text and description if in advanced mode
             const checkBtn = document.getElementById('check-updates-btn');
             const checkLabel = manualContainer.querySelector('.setting-label');
             const checkDesc = manualContainer.querySelector('.setting-description');
@@ -255,6 +293,11 @@ class SettingsManager {
         }
     }
 
+    /**
+     * Opens a focused dialog modal programmatically and attaches programmatic click routes.
+     * 
+     * @param {string} modalId - The unique DOM selector ID of the target dialog modal.
+     */
     openModal(modalId) {
         console.log('Opening modal:', modalId);
         const modal = document.getElementById(modalId);
@@ -263,10 +306,48 @@ class SettingsManager {
         this.currentModal = modal;
         modal.style.display = 'flex';
 
-        // Reset pending with current values
         this.pendingSettings = { ...this.settings };
 
-        // Highlight current active chip
+        const keyMap = {
+            'language-modal': 'language',
+            'color-modal': 'accentColor',
+            'update-mode-modal': 'updateMode'
+        };
+        const key = keyMap[modalId] || modalId.replace('-modal', '');
+
+        // 1. Programmatic Chip Click Bindings
+        modal.querySelectorAll('.option-chip').forEach(chip => {
+            const val = chip.getAttribute('data-value');
+            chip.onclick = (e) => {
+                e.stopPropagation();
+                this.setPending(key, val, chip);
+            };
+        });
+
+        // 2. Programmatic Overlay Click Binding (Click outside to close)
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                this.closeModal();
+            }
+        };
+
+        // 3. Programmatic Footer Action Bindings
+        const cancelBtn = modal.querySelector('.modal-btn.secondary') || modal.querySelector('.action-btn.secondary');
+        if (cancelBtn) {
+            cancelBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.closeModal();
+            };
+        }
+
+        const applyBtn = modal.querySelector('.modal-btn.primary') || modal.querySelector('.action-btn.primary');
+        if (applyBtn) {
+            applyBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.applyPending(key);
+            };
+        }
+
         this.syncActiveChips(modalId);
 
         setTimeout(() => modal.classList.add('show'), 10);
@@ -274,6 +355,11 @@ class SettingsManager {
         SpatialNav.focusFirst();
     }
 
+    /**
+     * Highlights the chip matches.
+     * 
+     * @param {string} modalId - Selected Modal element.
+     */
     syncActiveChips(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
@@ -284,7 +370,7 @@ class SettingsManager {
             'update-mode-modal': 'updateMode'
         };
         const key = keyMap[modalId] || modalId.replace('-modal', '');
-        const value = this.settings[key];
+        const value = this.pendingSettings[key];
 
         modal.querySelectorAll('.option-chip').forEach(chip => {
             const chipValue = chip.getAttribute('data-value');
@@ -295,7 +381,6 @@ class SettingsManager {
             }
         });
 
-        // Show/hide advanced warning
         if (modalId === 'update-mode-modal') {
             const warning = document.getElementById('advanced-warning');
             if (warning) {
@@ -304,6 +389,9 @@ class SettingsManager {
         }
     }
 
+    /**
+     * Closes the active settings modal and restores spatial outlines.
+     */
     closeModal() {
         if (!this.currentModal) return;
         const modal = this.currentModal;
@@ -314,17 +402,22 @@ class SettingsManager {
         this.currentModal = null;
     }
 
+    /**
+     * Updates modal temporary state options.
+     * 
+     * @param {string} key - Parameter field target.
+     * @param {string} value - Selection option.
+     * @param {HTMLElement} el - Selected HTML Chip element.
+     */
     setPending(key, value, el) {
         console.log(`Setting pending ${key} to ${value}`);
         this.pendingSettings[key] = value;
 
-        // Visual feedback inside the modal
         if (el && el.parentElement) {
             el.parentElement.querySelectorAll('.option-chip').forEach(chip => chip.classList.remove('active'));
             el.classList.add('active');
         }
 
-        // Show/hide advanced warning
         if (key === 'updateMode') {
             const warning = document.getElementById('advanced-warning');
             if (warning) {
@@ -333,6 +426,11 @@ class SettingsManager {
         }
     }
 
+    /**
+     * Saves pending changes to disk, applies translations, and injects styling rules.
+     * 
+     * @param {string} key - Active configuration key.
+     */
     async applyPending(key) {
         console.log(`Applying pending settings for ${key}`);
         const newValue = this.pendingSettings[key];
@@ -350,6 +448,9 @@ class SettingsManager {
         this.closeModal();
     }
 
+    /**
+     * Applies styling rules locally to document viewport variables.
+     */
     applySettings() {
         document.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
         const hex = this.settings.accentColor.replace('#', '');
@@ -358,12 +459,30 @@ class SettingsManager {
         document.documentElement.setAttribute('lang', this.settings.language);
     }
 
+    /**
+     * Secure parent style overrides protected inside try-catch scopes to prevent Live Server crashes.
+     */
     applySettingsGlobally() {
-        const mainDoc = window.parent?.document || document;
-        mainDoc.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
-        mainDoc.documentElement.setAttribute('lang', this.settings.language);
+        try {
+            const mainDoc = window.parent?.document || document;
+            mainDoc.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
+            const hex = this.settings.accentColor.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
+            mainDoc.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+            mainDoc.documentElement.setAttribute('lang', this.settings.language);
+        } catch (e) {
+            console.log('Cross-origin iframe parent access restricted, applying configurations to local document viewport only.');
+            document.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
+            const hex = this.settings.accentColor.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
+            document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+            document.documentElement.setAttribute('lang', this.settings.language);
+        }
     }
 
+    /**
+     * WebView update notifications receiver.
+     */
     handleUpdateStatus(statusKey) {
         if (!this.isCheckingUpdates) return;
         console.log('Update Status:', statusKey);
@@ -373,6 +492,9 @@ class SettingsManager {
         }
     }
 
+    /**
+     * WebView update notifications receiver.
+     */
     handleUpdateFound(version) {
         if (!this.isCheckingUpdates) return;
 
@@ -397,6 +519,9 @@ class SettingsManager {
         }
     }
 
+    /**
+     * WebView update notifications receiver.
+     */
     handleNoUpdateFound() {
         if (!this.isCheckingUpdates) return;
         this.isCheckingUpdates = false;
@@ -415,12 +540,15 @@ class SettingsManager {
             if (checkBtn) {
                 checkBtn.style.display = 'inline-block';
                 checkBtn.textContent = window.i18n?.t('settings.checkButton') || 'Check Now';
-                this.initializeUI(); // Re-bind original click
+                this.initializeUI();
             }
             if (statusText) statusText.style.display = 'none';
         }, 3000);
     }
 
+    /**
+     * WebView update notifications receiver.
+     */
     handleUpdateError() {
         if (!this.isCheckingUpdates) return;
         this.isCheckingUpdates = false;
@@ -438,7 +566,7 @@ class SettingsManager {
         setTimeout(() => {
             if (checkBtn) {
                 checkBtn.style.display = 'inline-block';
-                this.initializeUI(); // Re-bind original click
+                this.initializeUI();
             }
             if (statusText) statusText.style.display = 'none';
         }, 3000);

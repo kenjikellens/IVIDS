@@ -22,8 +22,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-language-display" class="current-value-display">English</div>
-                <button id="edit-language-btn" class="edit-trigger focusable"
-                    onclick="openSettingsModal('language-modal')">
+                <button id="edit-language-btn" class="edit-trigger focusable">
                     <div class="edit-icon"></div>
                 </button>
             </div>
@@ -38,7 +37,7 @@
             <div class="setting-control">
                 <div id="current-color-display" class="current-value-display"
                     style="border-bottom: 3px solid var(--primary-color)">Accent</div>
-                <button id="edit-color-btn" class="edit-trigger focusable" onclick="openSettingsModal('color-modal')">
+                <button id="edit-color-btn" class="edit-trigger focusable">
                     <div class="edit-icon"></div>
                 </button>
             </div>
@@ -112,8 +111,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-update-mode-display" class="current-value-display">Manual</div>
-                <button id="edit-update-mode-btn" class="edit-trigger focusable"
-                    onclick="openSettingsModal('update-mode-modal')">
+                <button id="edit-update-mode-btn" class="edit-trigger focusable">
                     <div class="edit-icon"></div>
                 </button>
             </div>
@@ -137,79 +135,62 @@
 </div>
 
 <!-- Language Modal -->
-<div id="language-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
+<div id="language-modal" class="modal-overlay">
     <div class="modal-content">
         <h2 class="modal-title" data-i18n="settings.language">Language</h2>
         <div class="modal-body">
             <div id="language-options" class="option-grid"></div>
         </div>
         <div class="modal-footer">
-            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
-                data-i18n="common.cancel">Cancel</button>
-            <button class="modal-btn primary focusable" onclick="applyPendingSetting('language')"
-                data-i18n="common.apply">Apply</button>
+            <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
 
 <!-- Color Modal -->
-<div id="color-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
+<div id="color-modal" class="modal-overlay">
     <div class="modal-content">
         <h2 class="modal-title" data-i18n="settings.accentColor">Accent Color</h2>
         <div class="modal-body">
             <div id="color-options" class="option-grid color-option-grid">
-                <div class="option-chip focusable color-only" data-value="#46d369"
-                    onclick="setPendingSetting('accentColor', '#46d369', this)">
+                <div class="option-chip focusable color-only" data-value="#46d369">
                     <div class="color-dot" style="background-color: #46d369"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#e50914"
-                    onclick="setPendingSetting('accentColor', '#e50914', this)">
+                <div class="option-chip focusable color-only" data-value="#e50914">
                     <div class="color-dot" style="background-color: #e50914"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#00d4ff"
-                    onclick="setPendingSetting('accentColor', '#00d4ff', this)">
+                <div class="option-chip focusable color-only" data-value="#00d4ff">
                     <div class="color-dot" style="background-color: #00d4ff"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#9146ff"
-                    onclick="setPendingSetting('accentColor', '#9146ff', this)">
+                <div class="option-chip focusable color-only" data-value="#9146ff">
                     <div class="color-dot" style="background-color: #9146ff"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#ff6b35"
-                    onclick="setPendingSetting('accentColor', '#ff6b35', this)">
+                <div class="option-chip focusable color-only" data-value="#ff6b35">
                     <div class="color-dot" style="background-color: #ff6b35"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#ffd700"
-                    onclick="setPendingSetting('accentColor', '#ffd700', this)">
+                <div class="option-chip focusable color-only" data-value="#ffd700">
                     <div class="color-dot" style="background-color: #ffd700"></div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
-                data-i18n="common.cancel">Cancel</button>
-            <button class="modal-btn primary focusable" onclick="applyPendingSetting('accentColor')"
-                data-i18n="common.apply">Apply</button>
+            <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
 
 <!-- Update Mode Modal -->
-<div id="update-mode-modal" class="modal-overlay" onclick="if(event.target === this) closeSettingsModal()">
+<div id="update-mode-modal" class="modal-overlay">
     <div class="modal-content">
         <h2 class="modal-title" data-i18n="settings.updateMode">Update Mode</h2>
         <div class="modal-body">
             <div id="update-mode-options" class="option-grid">
-                <div class="option-chip focusable" data-value="auto"
-                    onclick="setPendingSetting('updateMode', 'auto', this)" data-i18n="settings.mode.auto">Auto</div>
-                <div class="option-chip focusable" data-value="manual"
-                    onclick="setPendingSetting('updateMode', 'manual', this)" data-i18n="settings.mode.manual">Manual
-                </div>
-                <div class="option-chip focusable" data-value="advanced"
-                    onclick="setPendingSetting('updateMode', 'advanced', this)" data-i18n="settings.mode.advanced">
-                    Advanced
-                </div>
-                <div class="option-chip focusable" data-value="none"
-                    onclick="setPendingSetting('updateMode', 'none', this)" data-i18n="settings.mode.none">Off</div>
+                <div class="option-chip focusable" data-value="auto" data-i18n="settings.mode.auto">Auto</div>
+                <div class="option-chip focusable" data-value="manual" data-i18n="settings.mode.manual">Manual</div>
+                <div class="option-chip focusable" data-value="advanced" data-i18n="settings.mode.advanced">Advanced</div>
+                <div class="option-chip focusable" data-value="none" data-i18n="settings.mode.none">Off</div>
             </div>
             <div id="advanced-warning" class="warning-container" style="display: none;"
                 data-i18n="settings.advancedWarning">
@@ -218,10 +199,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="modal-btn secondary focusable" onclick="closeSettingsModal()"
-                data-i18n="common.cancel">Cancel</button>
-            <button class="modal-btn primary focusable" onclick="applyPendingSetting('updateMode')"
-                data-i18n="common.apply">Apply</button>
+            <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>

@@ -114,3 +114,8 @@
 [22:35 17-05-2026] app/src/main/assets/main/gui/js/hero-slider.js - Modified dynamic background image assignment to target a dedicated backdrop container rather than the parent.
 [22:35 17-05-2026] app/src/main/assets/main/gui/css/global.css - Implemented a transparent linear-gradient mask for the hero poster to let the accent color background glow show through.
 [22:36 17-05-2026] app/src/main/assets/main/gui/css/global.css - Upgraded layout variables to fluid clamp() expressions and standardized grids to auto-fill to prevent layout jumps on resize.
+[22:42 17-05-2026] app/src/main/assets/main/logic/playlists.js - Added renamePlaylist method to allow dynamic renaming of user playlists.
+[22:43 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.html - Refactored template to add Edit Info renaming and TV-first item context drawer modals.
+[22:44 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Rewrote controller to implement TV context reordering, Edit Info naming modals, and programmatic event cleanups.
+[22:45 17-05-2026] app/src/main/assets/main/gui/pages/settings.html - Refactored settings template to remove fragile inline onclick triggers to support programmatic JS bindings.
+[22:46 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Rewrote controller to support robust programmatic bindings and try-catch safety scopes for parent iframe cross-origin styles.

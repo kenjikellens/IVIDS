@@ -5,6 +5,12 @@ import { SpatialNav } from '../js/spatial-nav.js';
 
 let currentPlaylistId = null;
 
+/**
+ * Initializes the Playlist Details page controller.
+ * Establishes params, fetches the appropriate list entry, and paints the initial screen.
+ * 
+ * @param {object} params - Key value pairs matching route parameters.
+ */
 export const init = async (params) => {
     console.log('Initializing Playlist Details', params);
     if (params && params.id) {
@@ -16,6 +22,10 @@ export const init = async (params) => {
     }
 };
 
+/**
+ * Re-fetches the current playlist details state, sets ambient backdrop art,
+ * renders child item cards, and triggers layout translations.
+ */
 function render() {
     const playlist = Playlists.getPlaylist(currentPlaylistId);
     if (!playlist) {
@@ -33,7 +43,7 @@ function render() {
     if (titleEl) titleEl.textContent = playlist.name;
     if (countEl) countEl.textContent = `${playlist.items.length} items`;
 
-    // Cinematic Backdrop
+    // Cinematic Ambient Backdrop
     if (backdropEl) {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
@@ -47,7 +57,7 @@ function render() {
         }
     }
 
-    // Hide delete button for system playlists
+    // Hide delete button for system playlists (like history)
     if (deleteBtn) {
         deleteBtn.style.display = playlist.isSystem ? 'none' : 'flex';
     }
@@ -68,13 +78,13 @@ function render() {
                 </div>
             `;
 
-            // Add listener for the browse button
+            // Programmatically bind empty state action
             setTimeout(() => {
                 const browseBtn = document.getElementById('empty-browse-btn');
                 if (browseBtn) {
-                    browseBtn.addEventListener('click', () => {
+                    browseBtn.onclick = () => {
                         Router.loadPage('home');
-                    });
+                    };
                 }
             }, 0);
         } else {
@@ -90,12 +100,22 @@ function render() {
     // Apply translations
     if (window.i18n) window.i18n.applyTranslations();
 
-    // Re-init spatial nav after a short delay to allow DOM to settle
+    // Re-init spatial nav after DOM settles
     setTimeout(() => {
         SpatialNav.focusFirst();
     }, 50);
 }
 
+/**
+ * Constructs a focusable item poster card.
+ * Nested mini action overlays are completely removed to resolve Spatial D-pad conflict.
+ * Clicking a card triggers the TV context action modal.
+ * 
+ * @param {object} item - Movie or Series object details.
+ * @param {number} index - Current position index.
+ * @param {number} total - Total entries in the list.
+ * @returns {HTMLDivElement} Configured focusable DOM card element.
+ */
 function createItemElement(item, index, total) {
     const el = document.createElement('div');
     el.className = 'playlist-item-card focusable';
@@ -107,11 +127,6 @@ function createItemElement(item, index, total) {
     el.innerHTML = `
         <div class="item-thumbnail">
             <img src="${imageUrl}" loading="lazy">
-            <div class="item-actions-overlay">
-                ${index > 0 ? `<button class="icon-btn-mini move-up-btn focusable" title="Move Up">▲</button>` : ''}
-                ${index < total - 1 ? `<button class="icon-btn-mini move-down-btn focusable" title="Move Down">▼</button>` : ''}
-                <button class="icon-btn-mini remove-btn focusable" title="Remove">✕</button>
-            </div>
         </div>
         <div class="item-info">
             <div class="item-title">${item.title || item.name}</div>
@@ -122,51 +137,161 @@ function createItemElement(item, index, total) {
         </div>
     `;
 
-    // Click to play/details
-    el.addEventListener('click', (e) => {
-        // If clicked on action buttons, don't navigate
-        if (e.target.closest('.icon-btn-mini')) return;
-        Router.loadPage('details', { id: item.id, type: item.media_type });
-    });
-
-    // Action Listeners
-    const moveUpBtn = el.querySelector('.move-up-btn');
-    const moveDownBtn = el.querySelector('.move-down-btn');
-    const removeBtn = el.querySelector('.remove-btn');
-
-    if (moveUpBtn) {
-        moveUpBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            Playlists.moveItem(currentPlaylistId, index, index - 1);
-            render();
-        });
-    }
-
-    if (moveDownBtn) {
-        moveDownBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            Playlists.moveItem(currentPlaylistId, index, index + 1);
-            render();
-        });
-    }
-
-    if (removeBtn) {
-        removeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showConfirmationModal(
-                'Remove Item',
-                'Are you sure you want to remove this item from the playlist?',
-                () => {
-                    Playlists.removeFromPlaylist(currentPlaylistId, item.id);
-                    render();
-                }
-            );
-        });
-    }
+    // Programmatic click opens custom context actions modal
+    el.onclick = (e) => {
+        e.stopPropagation();
+        openItemContextModal(item, index, total);
+    };
 
     return el;
 }
 
+/**
+ * Opens a focused item actions sheet to play, inspect, remove, or shift indices.
+ * Removes previous event bindings using cloneNode to prevent execution leaking.
+ * 
+ * @param {object} item - Target movie or series object.
+ * @param {number} index - Position index.
+ * @param {number} total - List total count.
+ */
+function openItemContextModal(item, index, total) {
+    const modal = document.getElementById('item-context-modal');
+    const titleEl = document.getElementById('context-item-title');
+    const playBtn = document.getElementById('context-play-btn');
+    const detailsBtn = document.getElementById('context-details-btn');
+    const moveUpBtn = document.getElementById('context-move-up-btn');
+    const moveDownBtn = document.getElementById('context-move-down-btn');
+    const removeBtn = document.getElementById('context-remove-btn');
+    const cancelBtn = document.getElementById('context-cancel-btn');
+
+    if (!modal || !titleEl || !playBtn || !detailsBtn || !moveUpBtn || !moveDownBtn || !removeBtn || !cancelBtn) {
+        console.error('Context modal elements not found');
+        return;
+    }
+
+    titleEl.textContent = item.title || item.name;
+
+    // Up/Down button boundary visibility
+    moveUpBtn.style.display = index > 0 ? 'block' : 'none';
+    moveDownBtn.style.display = index < total - 1 ? 'block' : 'none';
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        SpatialNav.clearFocusTrap();
+        SpatialNav.refocus();
+    };
+
+    // Clean listeners by node replacement
+    const playClone = playBtn.cloneNode(true);
+    const detailsClone = detailsBtn.cloneNode(true);
+    const moveUpClone = moveUpBtn.cloneNode(true);
+    const moveDownClone = moveDownBtn.cloneNode(true);
+    const removeClone = removeBtn.cloneNode(true);
+    const cancelClone = cancelBtn.cloneNode(true);
+
+    playBtn.parentNode.replaceChild(playClone, playBtn);
+    detailsBtn.parentNode.replaceChild(detailsClone, detailsBtn);
+    moveUpBtn.parentNode.replaceChild(moveUpClone, moveUpBtn);
+    moveDownBtn.parentNode.replaceChild(moveDownClone, moveDownBtn);
+    removeBtn.parentNode.replaceChild(removeClone, removeBtn);
+    cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
+
+    playClone.onclick = () => {
+        closeModal();
+        Router.loadPage('player', { id: item.id, type: item.media_type });
+    };
+
+    detailsClone.onclick = () => {
+        closeModal();
+        Router.loadPage('details', { id: item.id, type: item.media_type });
+    };
+
+    moveUpClone.onclick = () => {
+        closeModal();
+        Playlists.moveItem(currentPlaylistId, index, index - 1);
+        render();
+    };
+
+    moveDownClone.onclick = () => {
+        closeModal();
+        Playlists.moveItem(currentPlaylistId, index, index + 1);
+        render();
+    };
+
+    removeClone.onclick = () => {
+        closeModal();
+        showConfirmationModal(
+            'Remove Item',
+            'Are you sure you want to remove this item from the playlist?',
+            () => {
+                Playlists.removeFromPlaylist(currentPlaylistId, item.id);
+                render();
+            }
+        );
+    };
+
+    cancelClone.onclick = () => {
+        closeModal();
+    };
+
+    modal.classList.add('active');
+    SpatialNav.setFocusTrap(modal);
+    SpatialNav.focusFirst();
+}
+
+/**
+ * Handles opening the Edit Playlist name/title renaming modal.
+ * 
+ * @param {object} playlist - Target playlist object.
+ */
+function openEditPlaylistModal(playlist) {
+    const modal = document.getElementById('edit-playlist-modal');
+    const inputEl = document.getElementById('edit-playlist-name-input');
+    const confirmBtn = document.getElementById('edit-playlist-confirm-btn');
+    const cancelBtn = document.getElementById('edit-playlist-cancel-btn');
+
+    if (!modal || !inputEl || !confirmBtn || !cancelBtn) {
+        console.error('Edit modal elements not found');
+        return;
+    }
+
+    inputEl.value = playlist.name;
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        SpatialNav.clearFocusTrap();
+        SpatialNav.refocus();
+    };
+
+    const confirmClone = confirmBtn.cloneNode(true);
+    const cancelClone = cancelBtn.cloneNode(true);
+
+    confirmBtn.parentNode.replaceChild(confirmClone, confirmBtn);
+    cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
+
+    confirmClone.onclick = () => {
+        const val = inputEl.value.trim();
+        if (val) {
+            Playlists.renamePlaylist(currentPlaylistId, val);
+            closeModal();
+            render();
+        }
+    };
+
+    cancelClone.onclick = () => {
+        closeModal();
+    };
+
+    modal.classList.add('active');
+    SpatialNav.setFocusTrap(modal);
+    SpatialNav.focusFirst();
+}
+
+/**
+ * Attaches core sidebar handlers and button routing actions.
+ * 
+ * @param {object} playlist - Selected playlist metadata.
+ */
 function attachListeners(playlist) {
     const deleteBtn = document.getElementById('delete-playlist-btn');
     const playAllBtn = document.getElementById('play-all-btn');
@@ -177,7 +302,6 @@ function attachListeners(playlist) {
         if (e.key === 'ArrowLeft' || e.keyCode === 37) {
             e.preventDefault();
             e.stopPropagation();
-            // Find the active sidebar link or the first one
             const sidebarLink = document.querySelector('#sidebar-container .nav-item.active') ||
                 document.querySelector('#sidebar-container .nav-item');
             if (sidebarLink) {
@@ -187,33 +311,31 @@ function attachListeners(playlist) {
     };
 
     if (playAllBtn && playlist.items.length > 0) {
-        playAllBtn.addEventListener('click', () => {
-            // Navigate to details page of first item
+        playAllBtn.onclick = () => {
             const firstItem = playlist.items[0];
             Router.loadPage('details', { id: firstItem.id, type: firstItem.media_type });
-        });
+        };
         playAllBtn.addEventListener('keydown', handleLeftNav);
     }
 
     if (backBtn) {
-        backBtn.addEventListener('click', () => {
+        backBtn.onclick = () => {
             Router.goBack('playlists');
-        });
+        };
         backBtn.addEventListener('keydown', handleLeftNav);
     }
 
     if (editInfoBtn) {
-        editInfoBtn.addEventListener('click', () => {
-            // Placeholder for Edit Info
-            console.log('Edit Info clicked');
-            alert('Edit Info feature coming soon!');
-        });
+        editInfoBtn.style.display = playlist.isSystem ? 'none' : 'flex';
+        editInfoBtn.onclick = () => {
+            openEditPlaylistModal(playlist);
+        };
         editInfoBtn.addEventListener('keydown', handleLeftNav);
     }
 
     if (!playlist.isSystem) {
         if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => {
+            deleteBtn.onclick = () => {
                 showConfirmationModal(
                     'Delete Playlist',
                     'Are you sure you want to delete this playlist? This action cannot be undone.',
@@ -222,13 +344,19 @@ function attachListeners(playlist) {
                         Router.loadPage('playlists');
                     }
                 );
-            });
-            // Also add left nav to delete button for consistency if it's in the same column
+            };
             deleteBtn.addEventListener('keydown', handleLeftNav);
         }
     }
 }
 
+/**
+ * Triggers a full modal overlay to confirm destructive items removal or deletion.
+ * 
+ * @param {string} title - Heading title for the prompt.
+ * @param {string} message - Explanatory prompt string.
+ * @param {function} onConfirm - Success callback to invoke on proceed.
+ */
 function showConfirmationModal(title, message, onConfirm) {
     const modal = document.getElementById('confirmation-modal');
     const titleEl = modal.querySelector('.modal-title');
@@ -246,26 +374,26 @@ function showConfirmationModal(title, message, onConfirm) {
 
     const closeModal = () => {
         modal.classList.remove('active');
-        confirmBtn.removeEventListener('click', handleConfirm);
-        cancelBtn.removeEventListener('click', handleCancel);
-        // Restore focus to main view or previous element if possible
-        // For now, just re-init spatial nav to find something focusable
+        SpatialNav.clearFocusTrap();
+        SpatialNav.refocus();
     };
 
-    const handleConfirm = () => {
+    const confirmClone = confirmBtn.cloneNode(true);
+    const cancelClone = cancelBtn.cloneNode(true);
+
+    confirmBtn.parentNode.replaceChild(confirmClone, confirmBtn);
+    cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
+
+    confirmClone.onclick = () => {
         onConfirm();
         closeModal();
     };
 
-    const handleCancel = () => {
+    cancelClone.onclick = () => {
         closeModal();
     };
 
-    confirmBtn.addEventListener('click', handleConfirm);
-    cancelBtn.addEventListener('click', handleCancel);
-
     modal.classList.add('active');
-
-    // Focus cancel button by default for safety
-    cancelBtn.focus();
+    SpatialNav.setFocusTrap(modal);
+    SpatialNav.focusFirst();
 }

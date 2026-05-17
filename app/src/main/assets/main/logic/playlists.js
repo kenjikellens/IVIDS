@@ -179,5 +179,26 @@ export const Playlists = {
             return true;
         }
         return false;
+    },
+
+    /**
+     * Renames an existing user playlist.
+     * Updates the name string inside the cached list and serializes back to local storage.
+     * 
+     * @param {string} id - The unique ID of the playlist to rename.
+     * @param {string} newName - The new name to assign to the playlist.
+     * @returns {boolean} True if the renaming was successful, false otherwise.
+     */
+    renamePlaylist(id, newName) {
+        if (id === HISTORY_ID) return false;
+        this.getPlaylists();
+        const playlist = _playlistsCache.find(p => p.id === id);
+        if (playlist && newName && newName.trim()) {
+            playlist.name = newName.trim();
+            this.savePlaylists(_playlistsCache);
+            return true;
+        }
+        return false;
     }
 }
+

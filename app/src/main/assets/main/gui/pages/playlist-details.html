@@ -51,4 +51,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Playlist Modal -->
+    <div id="edit-playlist-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title" data-i18n="playlists.editInfo">Edit Info</h2>
+            <div class="modal-body" style="padding: 18px 0; width: 100%;">
+                <input id="edit-playlist-name-input" class="settings-input focusable" type="text" placeholder="Playlist Name" style="width: 100%; padding: 12px; border-radius: var(--radius-md); border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #fff; font-size: 16px; outline: none; margin-bottom: 8px;">
+            </div>
+            <div class="modal-actions">
+                <button id="edit-playlist-cancel-btn" class="action-btn secondary focusable" data-i18n="playlists.cancel">Cancel</button>
+                <button id="edit-playlist-confirm-btn" class="action-btn primary focusable">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Context Drawer Modal -->
+    <div id="item-context-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 460px; padding: 28px;">
+            <h2 id="context-item-title" class="modal-title" style="margin-bottom: 20px; font-size: 24px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Movie Title</h2>
+            <div class="modal-actions" style="flex-direction: column; gap: 10px; width: 100%;">
+                <button id="context-play-btn" class="action-btn primary focusable" style="width: 100%; justify-content: center;" data-i18n="player.play">Play Content</button>
+                <button id="context-details-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;" data-i18n="player.moreInfo">View Info Details</button>
+                <button id="context-move-up-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;">Move Item Up</button>
+                <button id="context-move-down-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;">Move Item Down</button>
+                <button id="context-remove-btn" class="action-btn error-btn focusable" style="width: 100%; justify-content: center; background: #e50914 !important; border-color: transparent !important; color: #fff !important;">Remove from Playlist</button>
+                <button id="context-cancel-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;" data-i18n="playlists.cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
