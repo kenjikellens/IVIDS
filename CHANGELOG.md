@@ -125,3 +125,4 @@
 [22:51 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Portaled playlist item-context-modal to document.body on open to bypass parent layout clipping and local stacking contexts.
 [22:52 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Portaled playlist edit-playlist-modal to document.body on open to ensure viewport dominance.
 [22:53 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Portaled playlist confirmation-modal to document.body on open to ensure seamless front-layer focus.
+[22:55 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Injected highly granular DOM layout and computed styling diagnostics to output detailed debug profiles to Chrome DevTools console.

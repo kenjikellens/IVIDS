@@ -299,15 +299,21 @@ class SettingsManager {
      * @param {string} modalId - The unique DOM selector ID of the target dialog modal.
      */
     openModal(modalId) {
-        console.log('Opening modal:', modalId);
+        console.log('--- OPENING MODAL:', modalId, '---');
         const modal = document.getElementById(modalId);
-        if (!modal) return;
+        console.log('1. Modal Element Resolution:', modal);
+        if (!modal) {
+            console.error('CRITICAL: Element with ID "' + modalId + '" not found in DOM! Checking settings.html injection.');
+            return;
+        }
 
         this.currentModal = modal;
         this.modalOriginalParent = modal.parentElement;
+        console.log('2. Original Parent before Portal:', this.modalOriginalParent ? (this.modalOriginalParent.id || this.modalOriginalParent.className || this.modalOriginalParent.tagName) : 'none');
 
         // Port modal to document.body to escape any parent container stacking context or overflow clipping!
         document.body.appendChild(modal);
+        console.log('3. Portaled to body successfully. Current parent is:', modal.parentElement ? modal.parentElement.tagName : 'none');
 
         // Force direct inline visibility styles to override any stylesheet conflicts!
         modal.style.setProperty('display', 'flex', 'important');
@@ -362,7 +368,31 @@ class SettingsManager {
         setTimeout(() => {
             modal.style.setProperty('opacity', '1', 'important');
             modal.classList.add('active', 'show');
-        }, 10);
+
+            // Collect exact computed dimensions and rendering rules
+            const rect = modal.getBoundingClientRect();
+            const comp = window.getComputedStyle(modal);
+            console.log('--- 📊 MODAL LAYOUT & RENDER DIAGNOSTICS ---');
+            console.log('A. POSITION & COORDINATES:', {
+                width: rect.width + 'px',
+                height: rect.height + 'px',
+                top: rect.top + 'px',
+                left: rect.left + 'px',
+                bottom: rect.bottom + 'px',
+                right: rect.right + 'px'
+            });
+            console.log('B. COMPUTED RENDERING RULES:', {
+                display: comp.display,
+                visibility: comp.visibility,
+                opacity: comp.opacity,
+                zIndex: comp.zIndex,
+                position: comp.position,
+                pointerEvents: comp.pointerEvents,
+                backgroundColor: comp.backgroundColor
+            });
+            console.log('C. PARENT TREE DOM:', modal.parentElement ? modal.parentElement.outerHTML.substring(0, 150) + '...' : 'null');
+            console.log('--------------------------------------------');
+        }, 50);
         SpatialNav.setFocusTrap(modal);
         SpatialNav.focusFirst();
     }
