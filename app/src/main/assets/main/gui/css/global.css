@@ -2128,6 +2128,99 @@ input:focus {
 }
 
 /* ==========================================================================
+   Mobile Responsiveness for Details Page
+   ========================================================================== */
+@media (max-width: 768px) {
+    .details-page {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .details-layout {
+        gap: 1.5rem;
+    }
+
+    .details-top {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .details-info {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .details-hero-poster {
+        width: 50vw;
+        max-width: 220px;
+        min-width: unset;
+    }
+
+    .details-title {
+        font-size: 2rem;
+    }
+
+    .details-genres {
+        justify-content: center;
+    }
+
+    .details-overview {
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .details-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .details-bottom {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+    }
+
+    .details-seasons {
+        width: 100%;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .seasons-list-content {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+    }
+    
+    .seasons-list-content::-webkit-scrollbar {
+        display: none;
+    }
+
+    .season-btn {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .episode-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .episode-image {
+        width: 100%;
+        max-width: 250px;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+}
+
+/* ==========================================================================
    SECTION 10: PAGE SPECIFIC - VIDEO PLAYER (VOD)
    Source File: player.css
    ========================================================================== */

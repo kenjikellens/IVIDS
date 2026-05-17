@@ -139,3 +139,4 @@
 [23:22 17-05-2026] app/src/main/AndroidManifest.xml - Added explicit hardware acceleration and usesCleartextTraffic configurations to guarantee optimal video rendering and IPTV stream support.
 [23:25 17-05-2026] app/src/main/java/com/kenjigames/ivids/MainActivity.java - Added comprehensive JavaDoc explanations to all classes and methods to comply with global documentation rules.
 [23:25 17-05-2026] app/src/main/java/com/kenjigames/ivids/UpdateManager.java - Added comprehensive JavaDoc explanations to all classes and methods to comply with global documentation rules.
+[23:33 17-05-2026] app/src/main/assets/main/gui/css/global.css - Injected a comprehensive mobile media query specifically for the details page to stack the poster layout, optimize typography, and implement horizontal scrolling for seasons and episodes on smartphone devices.
