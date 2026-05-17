@@ -8,6 +8,17 @@ export const Router = {
     history: [],
     isLoading: false,
 
+    /**
+     * loadPage method:
+     * Handles dynamic Single Page Application (SPA) routing in the WebView.
+     * It shows a loader spinner, fetches the target page's HTML file, mounts it
+     * into the main content viewport, imports the page's controller JS module,
+     * configures screen-specific spatial navigation logic, triggers translation strings,
+     * manages browser history stack, highlights the active menu link in the sidebar,
+     * and auto-selects the first focusable item.
+     *
+     * Note: Page-level CSS swapping is disabled as all styles are merged into global.css.
+     */
     async loadPage(pageName, params = {}, addToHistory = true, targetFocus = null) {
         if (this.isLoading) return; // Prevent double loading
 
@@ -45,7 +56,9 @@ export const Router = {
         try {
             console.log(`Loading page: ${pageName}`);
 
-            // Update page-specific CSS
+            // Page-specific CSS loading is disabled in favor of unified global.css.
+            // This eliminates page-transition style flashes and dynamic file fetches.
+            /*
             try {
                 const pageCssLink = document.getElementById('page-css');
                 if (pageCssLink) {
@@ -54,6 +67,7 @@ export const Router = {
             } catch (cssError) {
                 console.error('Error updating page CSS:', cssError);
             }
+            */
 
             // 1. Fetch HTML with Timeout
             const fetchPromise = fetch(`pages/${pageName}.html`);

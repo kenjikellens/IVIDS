@@ -1,6 +1,16 @@
 import { Router } from '../../js/router.js';
 
 export const Sidebar = {
+    /**
+     * init method:
+     * Initializes the Netflix-style global navigation rail.
+     * It mounts the sidebar into the sidebar viewport container, fetches the sidebar HTML structure,
+     * binds clicks and touch-focus listeners to nav links, applies translations,
+     * and highlights the active route button.
+     *
+     * Note: Dynamic creation of a sidebar.css link element is commented out because
+     * all sidebar styles are now merged into global.css to prevent loading delays.
+     */
     init: async () => {
         console.log('Initializing Sidebar...');
         const container = document.getElementById('sidebar-container');
@@ -9,11 +19,14 @@ export const Sidebar = {
             return;
         }
 
+        // Sidebar CSS is loaded via global.css. Dynamic appending is disabled.
+        /*
         // Load CSS
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'components/sidebar/sidebar.css';
         document.head.appendChild(link);
+        */
 
         // Load HTML
         try {

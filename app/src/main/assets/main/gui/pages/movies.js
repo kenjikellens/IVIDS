@@ -100,8 +100,9 @@ function setupRow(elementId, items) {
         let btn;
         if (existingButtons[index]) {
             btn = existingButtons[index];
-            btn.innerHTML = ''; // Clear skeleton loader
-            btn.className = 'poster-wrapper focusable';
+            btn.innerHTML = '';
+            btn.classList.remove('skeleton-poster');
+            btn.classList.add('poster-wrapper');
             btn.removeAttribute('aria-hidden');
         } else {
             btn = document.createElement('button');

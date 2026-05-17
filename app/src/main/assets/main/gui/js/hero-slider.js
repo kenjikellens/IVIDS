@@ -81,7 +81,14 @@ export class HeroSlider {
         // Apply background to container immediately with CSS transition handling the rest
         if (this.container) {
             const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
-            this.container.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url(${imageUrl})`;
+            // Create a dedicated background layer to allow independent masking/opacity fade
+            let bg = this.container.querySelector('.hero-bg');
+            if (!bg) {
+                bg = document.createElement('div');
+                bg.className = 'hero-bg';
+                this.container.insertBefore(bg, this.container.firstChild);
+            }
+            bg.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${imageUrl})`;
 
             // Hide initial loader
             const loader = this.container.querySelector('.loader-center-container');

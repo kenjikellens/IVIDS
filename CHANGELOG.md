@@ -82,3 +82,35 @@
 [10:26 11-05-2026] app/src/main/assets/main/gui/pages/settings.js - Refactored settings management for better persistence and UI sync.
 [10:26 11-05-2026] app/src/main/assets/main/logic/api.js - Added dynamic player base URL support and configuration retrieval.
 [11:09 11-05-2026] .agents/rules/changelog.md - Clarified that changelog entries are not for GitHub pushes/pulls.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/global.css - Consolidated all 17 individual stylesheets and sidebar.css into a single unified stylesheet.
+[22:27 17-05-2026] app/src/main/assets/main/gui/index.html - Removed individual styling link tags and replaced with a single unified stylesheet reference.
+[22:28 17-05-2026] app/src/main/assets/main/gui/js/router.js - Disabled dynamic page-specific stylesheet swapping and added full method documentation.
+[22:29 17-05-2026] app/src/main/assets/main/gui/components/sidebar/sidebar.js - Disabled dynamic stylesheet loading for sidebar component and added full init method documentation.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/account.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/details.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/details_fixed.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/error.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/home.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/livetv.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/loader.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/movies.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/player.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/playlist-details.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/playlists.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/profiles.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/search.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/series.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/settings.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/splash.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/toast.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/css/tv-player.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:26 17-05-2026] app/src/main/assets/main/gui/components/sidebar/sidebar.css - Deleted redundant stylesheet after merging its styles into global.css.
+[22:31 17-05-2026] app/src/main/assets/main/gui/index.html - Fixed broken HTML comment that commented out main-view container in index.html.
+[22:32 17-05-2026] app/src/main/assets/main/gui/css/global.css - Fixed layout and design bugs by restoring sidebar display, scoping category scrollbars, and removing poster double borders.
+[22:33 17-05-2026] app/src/main/assets/main/gui/css/global.css - Fixed TV focus jumping bug by removing translation offsets from loading keyframe animations.
+[22:34 17-05-2026] app/src/main/assets/main/gui/pages/home.js - Patched skeleton-to-poster swapping to use non-destructive class operations and preserve active focus.
+[22:34 17-05-2026] app/src/main/assets/main/gui/pages/movies.js - Patched skeleton-to-poster swapping to use non-destructive class operations and preserve active focus.
+[22:34 17-05-2026] app/src/main/assets/main/gui/pages/series.js - Patched skeleton-to-poster swapping to use non-destructive class operations and preserve active focus.
+[22:35 17-05-2026] app/src/main/assets/main/gui/js/hero-slider.js - Modified dynamic background image assignment to target a dedicated backdrop container rather than the parent.
+[22:35 17-05-2026] app/src/main/assets/main/gui/css/global.css - Implemented a transparent linear-gradient mask for the hero poster to let the accent color background glow show through.
+[22:36 17-05-2026] app/src/main/assets/main/gui/css/global.css - Upgraded layout variables to fluid clamp() expressions and standardized grids to auto-fill to prevent layout jumps on resize.
