@@ -350,6 +350,7 @@ class SettingsManager {
 
         this.syncActiveChips(modalId);
 
+        modal.classList.add('active');
         setTimeout(() => modal.classList.add('show'), 10);
         SpatialNav.setFocusTrap(modal);
         SpatialNav.focusFirst();
@@ -396,11 +397,15 @@ class SettingsManager {
         if (!this.currentModal) return;
         const modal = this.currentModal;
         modal.classList.remove('show');
-        setTimeout(() => { modal.style.display = 'none'; }, 300);
+        setTimeout(() => {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+        }, 300);
         SpatialNav.clearFocusTrap();
         SpatialNav.refocus();
         this.currentModal = null;
     }
+
 
     /**
      * Updates modal temporary state options.
