@@ -72,11 +72,19 @@ class SettingsManager {
             updateMode: 'manual',
             m3uUrl: '',
             playerProvider: 'custom',
-            playerBaseUrl: 'https://vidsrc.net/embed'
+            playerBaseUrl: 'https://vidlink.pro'
         };
         try {
             const saved = localStorage.getItem('ivids-settings');
-            return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                // Auto-migrate from blocked vidsrc domains
+                if (parsed.playerBaseUrl && parsed.playerBaseUrl.includes('vidsrc')) {
+                    parsed.playerBaseUrl = 'https://vidlink.pro';
+                }
+                return { ...defaultSettings, ...parsed };
+            }
+            return defaultSettings;
         } catch (e) { return defaultSettings; }
     }
 

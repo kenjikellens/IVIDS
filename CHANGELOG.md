@@ -129,3 +129,5 @@
 [22:57 17-05-2026] app/src/main/assets/main/gui/css/global.css - Added unified bottom-level CSS overrides for modal-overlay to absolutely guarantee display, visibility, z-index, and pointer-events in browser render.
 [23:14 17-05-2026] app/src/main/assets/main/gui/pages/settings.html - Appended trailing body tag to protect fragment SVG elements from VS Code Live Server WebSocket hot-reload script injection corruption.
 [23:14 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.html - Appended trailing body tag to protect fragment SVG elements from VS Code Live Server WebSocket hot-reload script injection corruption.
+[23:17 17-05-2026] app/src/main/assets/main/logic/api.js - Migrated blocked VidSrc endpoints to VidLink.pro as primary default provider and updated servers list to use VidLink and Embed.su.
+[23:18 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Updated default player base URL to VidLink and added an auto-migration check in loadSettings to seamlessly upgrade existing user configurations.

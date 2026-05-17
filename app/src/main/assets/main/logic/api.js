@@ -3,7 +3,7 @@ import { cacheManager } from './cache-manager.js';
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
-const DEFAULT_PLAYER_BASE_URL = 'https://vidsrc.net/embed';
+const DEFAULT_PLAYER_BASE_URL = 'https://vidlink.pro';
 
 // Image Size Constants
 const POSTER_SIZE = 'w342';       // Standard poster size for grids
@@ -425,11 +425,10 @@ export const Api = {
     },
 
     SERVERS: [
-        { id: 'vidsrc_net', name: 'Server 1', url: 'https://vidsrc.net/embed' },
-        { id: 'vidsrc_me', name: 'Server 2', url: 'https://vidsrc.me/embed' },
-        { id: 'vidsrc_to', name: 'Server 3', url: 'https://vidsrc.to/embed' },
-        { id: 'embed_su', name: 'Server 4', url: 'https://embed.su/embed' }
+        { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro' },
+        { id: 'embed_su', name: 'Embed.su (Server 2)', url: 'https://embed.su/embed' }
     ],
+
 
     getVideoUrl(id, type, season = null, episode = null, serverId = null) {
         const config = Api.getPlayerConfig();
