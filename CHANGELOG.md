@@ -121,3 +121,7 @@
 [22:46 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Rewrote controller to support robust programmatic bindings and try-catch safety scopes for parent iframe cross-origin styles.
 [22:47 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Patched settings modals to activate both show and active CSS class states to ensure visibility transitions render correctly.
 [22:48 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Forced inline Important overrides for modal overlays to guarantee display rendering regardless of CSS stylesheet/caching conflicts.
+[22:50 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Implemented Top-Level Body Portal strategy to escape parent container flex stacking context and overflow boundaries entirely.
+[22:51 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Portaled playlist item-context-modal to document.body on open to bypass parent layout clipping and local stacking contexts.
+[22:52 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Portaled playlist edit-playlist-modal to document.body on open to ensure viewport dominance.
+[22:53 17-05-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Portaled playlist confirmation-modal to document.body on open to ensure seamless front-layer focus.

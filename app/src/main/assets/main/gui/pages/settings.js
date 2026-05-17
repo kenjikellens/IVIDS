@@ -304,7 +304,11 @@ class SettingsManager {
         if (!modal) return;
 
         this.currentModal = modal;
-        
+        this.modalOriginalParent = modal.parentElement;
+
+        // Port modal to document.body to escape any parent container stacking context or overflow clipping!
+        document.body.appendChild(modal);
+
         // Force direct inline visibility styles to override any stylesheet conflicts!
         modal.style.setProperty('display', 'flex', 'important');
         modal.style.setProperty('visibility', 'visible', 'important');
@@ -409,6 +413,11 @@ class SettingsManager {
             modal.classList.remove('active');
             modal.style.setProperty('display', 'none', 'important');
             modal.style.setProperty('visibility', 'hidden', 'important');
+            
+            // Safely move modal back to its original parent so it is cleared during page changes
+            if (this.modalOriginalParent && this.modalOriginalParent.appendChild) {
+                this.modalOriginalParent.appendChild(modal);
+            }
         }, 300);
         SpatialNav.clearFocusTrap();
         SpatialNav.refocus();
