@@ -133,3 +133,4 @@
 [23:18 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Updated default player base URL to VidLink and added an auto-migration check in loadSettings to seamlessly upgrade existing user configurations.
 [23:19 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Replaced leftover custom save and reset fallback endpoints from VidSrc to VidLink.pro.
 [23:19 17-05-2026] app/src/main/assets/main/gui/pages/player.js - Updated initial active server selection ID to vidlink to match the new primary video provider.
+[23:20 17-05-2026] app/src/main/assets/main/logic/api.js - Implemented persistent auto-migration inside getPlayerConfig to upgrade saved vidsrc player configurations directly in localStorage on disk.

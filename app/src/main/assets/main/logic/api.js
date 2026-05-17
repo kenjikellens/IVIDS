@@ -412,12 +412,21 @@ export const Api = {
         };
 
         try {
-            const saved = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
-            return {
-                ...defaults,
-                ...saved,
-                playerBaseUrl: (saved.playerBaseUrl || defaults.playerBaseUrl).replace(/\/+$/, '')
-            };
+            const raw = localStorage.getItem('ivids-settings');
+            if (raw) {
+                const saved = JSON.parse(raw);
+                // Auto-migrate from blocked vidsrc domains persistently
+                if (saved.playerBaseUrl && saved.playerBaseUrl.includes('vidsrc')) {
+                    saved.playerBaseUrl = DEFAULT_PLAYER_BASE_URL;
+                    localStorage.setItem('ivids-settings', JSON.stringify(saved));
+                }
+                return {
+                    ...defaults,
+                    ...saved,
+                    playerBaseUrl: (saved.playerBaseUrl || defaults.playerBaseUrl).replace(/\/+$/, '')
+                };
+            }
+            return defaults;
         } catch (error) {
             console.error('Error reading player config:', error);
             return defaults;
