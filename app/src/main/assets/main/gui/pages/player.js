@@ -129,8 +129,8 @@ export async function init(params) {
             iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
             iframe.allowFullscreen = true;
 
-            // Add sandbox attribute to block ads and popups
-            iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts');
+            // Relax iframe restrictions to allow modern player engines to initialize cleanly without "disable sandbox" errors
+
 
             iframe.style.position = "absolute";
             iframe.style.top = "0";

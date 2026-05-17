@@ -134,3 +134,4 @@
 [23:19 17-05-2026] app/src/main/assets/main/gui/pages/settings.js - Replaced leftover custom save and reset fallback endpoints from VidSrc to VidLink.pro.
 [23:19 17-05-2026] app/src/main/assets/main/gui/pages/player.js - Updated initial active server selection ID to vidlink to match the new primary video provider.
 [23:20 17-05-2026] app/src/main/assets/main/logic/api.js - Implemented persistent auto-migration inside getPlayerConfig to upgrade saved vidsrc player configurations directly in localStorage on disk.
+[23:21 17-05-2026] app/src/main/assets/main/gui/pages/player.js - Removed restrictive iframe sandbox attribute to allow modern, high-speed player engines to initialize cleanly.
