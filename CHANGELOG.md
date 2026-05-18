@@ -162,3 +162,4 @@
 [12:47 18-05-2026] .agents/rules/no-autonomous-github-pushes.md - Added Clause 3 to explicitly separate code pushes from tags/releases.
 [12:48 18-05-2026] app/src/main/assets/main/gui/css/global.css - Bound loading spinners to active design system accent color variables dynamically.
 [12:48 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:49 18-05-2026] .agents/rules/no-autonomous-github-pushes.md - Appended Single-Turn Authorization clause under Clause 1.
