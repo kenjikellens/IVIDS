@@ -60,7 +60,21 @@
             "comparing-versions": "Verifying version...",
             "downloading": "Downloading update...",
             "installing": "Preparing installation..."
-        }
+        },
+        "selectVersion": "Select Version",
+        "branchBuild": "Live Branch Build",
+        "branchBuildDesc": "Direct main branch IVIDS.apk build",
+        "updateNotification": "Update Available",
+        "toast": {
+            "download": "Download",
+            "select": "Select Version",
+            "close": "Close"
+        },
+        "appInfo": "App Info",
+        "appVersion": "App Version",
+        "appVersionDesc": "The currently installed release version of IVIDS",
+        "appDeveloper": "Developer",
+        "appDeveloperDesc": "Created by the IVIDS Development Team"
     },
     "common": {
         "close": "Close",

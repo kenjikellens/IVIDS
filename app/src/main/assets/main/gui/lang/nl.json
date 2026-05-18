@@ -60,7 +60,21 @@
             "comparing-versions": "Versie verifiëren...",
             "downloading": "Update downloaden...",
             "installing": "Installatie voorbereiden..."
-        }
+        },
+        "selectVersion": "Selecteer Versie",
+        "branchBuild": "Live Branch Build",
+        "branchBuildDesc": "Directe main branch IVIDS.apk build",
+        "updateNotification": "Update Beschikbaar",
+        "toast": {
+            "download": "Downloaden",
+            "select": "Selecteer Versie",
+            "close": "Sluiten"
+        },
+        "appInfo": "App-informatie",
+        "appVersion": "App-versie",
+        "appVersionDesc": "De momenteel geïnstalleerde releaseversie van IVIDS",
+        "appDeveloper": "Ontwikkelaar",
+        "appDeveloperDesc": "Gemaakt door het IVIDS-ontwikkelingsteam"
     },
     "common": {
         "close": "Sluiten",
@@ -236,7 +250,6 @@
         "save": "URL Opslaan",
         "clear": "Wissen"
     },
-
     "profiles": {
         "title": "Wie kijkt er?",
         "add": "Profiel toevoegen",

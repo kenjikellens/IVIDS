@@ -67,7 +67,21 @@
         "provider": {
             "vidsrc": "VidSrc (Predefinito)",
             "vidking": "VidKing (Riserva)"
-        }
+        },
+        "selectVersion": "Seleziona versione",
+        "branchBuild": "Build ramo live",
+        "branchBuildDesc": "Build IVIDS.apk diretta dal ramo main",
+        "updateNotification": "Aggiornamento disponibile",
+        "toast": {
+            "download": "Scarica",
+            "select": "Seleziona versione",
+            "close": "Chiudi"
+        },
+        "appInfo": "Informazioni sull'applicazione",
+        "appVersion": "Versione dell'applicazione",
+        "appVersionDesc": "La versione di rilascio attualmente installata di IVIDS",
+        "appDeveloper": "Sviluppatore",
+        "appDeveloperDesc": "Creato dal team di sviluppo IVIDS"
     },
     "common": {
         "close": "Chiudi",

@@ -38,6 +38,7 @@ export async function init() {
         window.i18n.applyTranslations();
     }
     settingsManagerInstance = new SettingsManager();
+    window.settingsInstance = settingsManagerInstance;
 }
 
 // Register specific handlers on global window to be called by app.js when settings page is active.
@@ -236,7 +237,7 @@ class SettingsManager {
         }
 
         if (this.settings.updateMode === 'advanced') {
-            window.AndroidUpdate.downloadFromRepo();
+            this.openVersionSelector();
         } else {
             window.AndroidUpdate.checkForUpdates();
         }
@@ -295,13 +296,129 @@ class SettingsManager {
             const checkDesc = manualContainer.querySelector('.setting-description');
 
             if (this.settings.updateMode === 'advanced') {
-                if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.downloadButton') || 'Download';
-                if (checkLabel) checkLabel.textContent = window.i18n?.t('settings.downloadRepo') || 'Download from Repo';
-                if (checkDesc) checkDesc.textContent = window.i18n?.t('settings.downloadRepoDesc') || 'Download latest APK directly';
+                if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.toast.select') || 'Select Version';
+                if (checkLabel) checkLabel.textContent = 'Developer Console';
+                if (checkDesc) checkDesc.textContent = 'Choose any branch or release build to install';
             } else {
                 if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.checkButton') || 'Check Now';
                 if (checkLabel) checkLabel.textContent = window.i18n?.t('settings.checkNow') || 'Check for Updates';
                 if (checkDesc) checkDesc.textContent = window.i18n?.t('settings.checkNowDesc') || 'Manually search for updates';
+            }
+        }
+
+        const versionDisplay = document.getElementById('app-version-display');
+        if (versionDisplay) {
+            if (window.AndroidUpdate && typeof window.AndroidUpdate.getCurrentVersion === 'function') {
+                versionDisplay.textContent = window.AndroidUpdate.getCurrentVersion();
+            } else {
+                versionDisplay.textContent = 'v0.2.3';
+            }
+        }
+    }
+
+    /**
+     * Opens the version selector modal, fetches all available releases from the GitHub API,
+     * and populates the modal grid with focusable version selection chips.
+     */
+    async openVersionSelector() {
+        console.log('Settings: Opening version selector modal');
+        this.openModal('version-selector-modal');
+
+        const loader = document.getElementById('version-list-loader');
+        const grid = document.getElementById('version-options');
+
+        if (loader) loader.style.display = 'flex';
+        if (grid) {
+            grid.style.display = 'none';
+            grid.innerHTML = '';
+        }
+
+        try {
+            console.log('Settings: Fetching releases list from GitHub');
+            const res = await fetch('https://api.github.com/repos/kenjikellens/IVIDS/releases');
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            
+            const releases = await res.json();
+            console.log(`Settings: Retreived ${releases.length} releases successfully`);
+
+            if (loader) loader.style.display = 'none';
+            if (grid) {
+                grid.style.display = 'grid';
+                
+                // Add the top chip: Active Branch Build
+                const branchCard = document.createElement('div');
+                branchCard.className = 'option-chip focusable';
+                branchCard.setAttribute('data-value', 'branch');
+                branchCard.innerHTML = `
+                    <div class="version-chip-content">
+                        <div class="version-chip-header">
+                            <span class="version-tag-badge" style="background: var(--primary-color)">Branch</span>
+                            <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
+                            <span class="version-date-label">Latest</span>
+                        </div>
+                        <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK)'}</div>
+                    </div>
+                `;
+                
+                branchCard.onclick = () => {
+                    this.closeModal();
+                    if (window.AndroidUpdate) {
+                        window.AndroidUpdate.downloadFromRepo();
+                    }
+                };
+                
+                grid.appendChild(branchCard);
+
+                // Add each release as a focusable option chip
+                releases.forEach(rel => {
+                    // Find the APK asset
+                    const apkAsset = rel.assets.find(asset => asset.name.endsWith('.apk'));
+                    const downloadUrl = apkAsset ? apkAsset.browser_download_url : null;
+                    
+                    if (downloadUrl) {
+                        const date = new Date(rel.published_at).toLocaleDateString();
+                        const relCard = document.createElement('div');
+                        relCard.className = 'option-chip focusable';
+                        relCard.setAttribute('data-value', rel.tag_name);
+                        
+                        relCard.innerHTML = `
+                            <div class="version-chip-content">
+                                <div class="version-chip-header">
+                                    <span class="version-tag-badge">${rel.tag_name}</span>
+                                    <span class="version-chip-title">${rel.name || 'Release Build'}</span>
+                                    <span class="version-date-label">${date}</span>
+                                </div>
+                                <div class="version-chip-desc">${rel.body ? rel.body.replace(/[\r\n]+/g, ' ') : 'No notes available'}</div>
+                            </div>
+                        `;
+
+                        relCard.onclick = () => {
+                            this.closeModal();
+                            console.log(`Settings: Downloading version ${rel.tag_name} via ${downloadUrl}`);
+                            if (window.AndroidUpdate) {
+                                window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
+                            }
+                        };
+
+                        grid.appendChild(relCard);
+                    }
+                });
+
+                // Trapping focus using SpatialNav refocus
+                if (typeof SpatialNav !== 'undefined' && SpatialNav.refocus) {
+                    SpatialNav.refocus();
+                }
+            }
+        } catch (err) {
+            console.error('Settings: Failed to load versions', err);
+            if (loader) loader.style.display = 'none';
+            if (grid) {
+                grid.style.display = 'grid';
+                grid.innerHTML = `
+                    <div style="color: #ff3b30; text-align: center; padding: 20px; font-weight: 700; width: 100%;">
+                        Failed to fetch releases. Please check your internet connection.
+                    </div>
+                `;
             }
         }
     }

@@ -182,3 +182,63 @@
 [13:00 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
 [13:01 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.2.3 and incremented versionCode to 6.
 [13:01 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[13:10 18-05-2026] app/src/main/java/com/kenjigames/ivids/UpdateManager.java - Exposed downloadAndInstallForUrl JS Interface method to support direct custom APK version flashes.
+[13:10 18-05-2026] app/src/main/assets/main/gui/pages/settings.html - Appended version selector modal to choose custom APK versions to download.
+[13:10 18-05-2026] app/src/main/assets/main/gui/css/global.css - Styled clickable toast buttons and scrollable version modal cards.
+[13:11 18-05-2026] app/src/main/assets/main/gui/js/app.js - Rebuilt global update routing to execute idle checks in Auto mode and trigger clickable Toasts in Manual & Developer modes.
+[13:11 18-05-2026] app/src/main/assets/main/gui/pages/settings.js - Integrated dynamic version selector dialog fetching release tag histories via GitHub API.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/ar.json - Localized Arabic update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/cs.json - Localized Czech update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/da.json - Localized Danish update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/de.json - Localized German update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/en.json - Localized English update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/es.json - Localized Spanish update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/fr.json - Localized French update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/hi.json - Localized Hindi update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/id.json - Localized Indonesian update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/it.json - Localized Italian update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/ja.json - Localized Japanese update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/ko.json - Localized Korean update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/nl.json - Localized Dutch update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/no.json - Localized Norwegian update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/pl.json - Localized Polish update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/pt.json - Localized Portuguese update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/ro.json - Localized Romanian update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/ru.json - Localized Russian update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/sv.json - Localized Swedish update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/tr.json - Localized Turkish update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/vi.json - Localized Vietnamese update options and Toast notification keys.
+[13:11 18-05-2026] app/src/main/assets/main/gui/lang/zh.json - Localized Chinese update options and Toast notification keys.
+[13:12 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[13:13 18-05-2026] app/src/main/java/com/kenjigames/ivids/UpdateManager.java - Exposed getCurrentVersion JavascriptInterface method to return installed package version string to web settings page.
+[13:13 18-05-2026] app/src/main/assets/main/gui/pages/settings.html - Appended App Info section at the bottom of settings container with custom i18n placeholders.
+[13:13 18-05-2026] app/src/main/assets/main/gui/pages/settings.js - Mapped app-version-display target inside updateDisplays to load native package version dynamically.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/ar.json - Localized Arabic settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/cs.json - Localized Czech settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/da.json - Localized Danish settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/de.json - Localized German settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/en.json - Localized English settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/es.json - Localized Spanish settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/fr.json - Localized French settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/hi.json - Localized Hindi settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/id.json - Localized Indonesian settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/it.json - Localized Italian settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/ja.json - Localized Japanese settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/ko.json - Localized Korean settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/nl.json - Localized Dutch settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/no.json - Localized Norwegian settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/pl.json - Localized Polish settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/pt.json - Localized Portuguese settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/ro.json - Localized Romanian settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/ru.json - Localized Russian settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/sv.json - Localized Swedish settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/tr.json - Localized Turkish settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/vi.json - Localized Vietnamese settings App Info panel key definitions.
+[13:13 18-05-2026] app/src/main/assets/main/gui/lang/zh.json - Localized Chinese settings App Info panel key definitions.
+[13:14 18-05-2026] IVIDS.apk - Placed compiled release APK featuring the new App Info panel at workspace root.
+[13:15 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.3.0 and incremented versionCode to 7.
+[13:15 18-05-2026] IVIDS.apk - Placed compiled release APK for v0.3.0 at workspace root directory for distribution.
+[13:26 18-05-2026] app/src/main/assets/main/gui/css/global.css - Configured manual-check-container to align vertically on mobile viewports to prevent text overlapping.
+[13:26 18-05-2026] IVIDS.apk - Placed compiled clean uncached release APK for v0.3.0 featuring mobile CSS and App Info fixes.
+[13:27 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.3.1 and incremented versionCode to 8.
+[13:27 18-05-2026] IVIDS.apk - Placed compiled clean uncached release APK for v0.3.1 featuring mobile CSS and App Info fixes.

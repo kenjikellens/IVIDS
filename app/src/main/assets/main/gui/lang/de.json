@@ -60,7 +60,21 @@
             "comparing-versions": "Version wird verifiziert...",
             "downloading": "Update wird heruntergeladen...",
             "installing": "Installation wird vorbereitet..."
-        }
+        },
+        "selectVersion": "Version auswählen",
+        "branchBuild": "Live-Branch-Build",
+        "branchBuildDesc": "Direkter main-Branch IVIDS.apk-Build",
+        "updateNotification": "Update verfügbar",
+        "toast": {
+            "download": "Schließen",
+            "select": "Version auswählen",
+            "close": "Schließen"
+        },
+        "appInfo": "App-Info",
+        "appVersion": "App-Version",
+        "appVersionDesc": "Die aktuell installierte Release-Version von IVIDS",
+        "appDeveloper": "Entwickler",
+        "appDeveloperDesc": "Erstellt vom IVIDS-Entwicklungsteam"
     },
     "common": {
         "close": "Schließen",
@@ -235,7 +249,6 @@
         "save": "URL speichern",
         "clear": "Löschen"
     },
-
     "profiles": {
         "title": "Wer schaut gerade?",
         "add": "Profil hinzufügen",

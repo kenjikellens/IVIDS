@@ -132,6 +132,38 @@
             </div>
         </div>
     </div>
+
+    <!-- App Info Settings -->
+    <div id="app-info-section" class="settings-section">
+        <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="settings.appInfo">App Info</span>
+        </h2>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.appVersion">App Version</div>
+                <div class="setting-description" data-i18n="settings.appVersionDesc">The currently installed release version of IVIDS</div>
+            </div>
+            <div class="setting-control">
+                <div id="app-version-display" class="current-value-display">v0.2.3</div>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <div class="setting-label" data-i18n="settings.appDeveloper">Developer</div>
+                <div class="setting-description" data-i18n="settings.appDeveloperDesc">Created by the IVIDS Development Team</div>
+            </div>
+            <div class="setting-control">
+                <div class="current-value-display">Kenji Games</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Language Modal -->
@@ -201,6 +233,22 @@
         <div class="modal-footer">
             <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
             <button class="modal-btn primary focusable" data-i18n="common.apply">Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- Version Selector Modal -->
+<div id="version-selector-modal" class="modal-overlay">
+    <div class="modal-content version-modal-content">
+        <h2 class="modal-title" data-i18n="settings.selectVersion">Select Version</h2>
+        <div class="modal-body scrollable-modal-body">
+            <div id="version-list-loader" class="loader-inline-container" style="display: none;"></div>
+            <div id="version-options" class="option-grid version-option-grid">
+                <!-- Dynamically populated version chips -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>

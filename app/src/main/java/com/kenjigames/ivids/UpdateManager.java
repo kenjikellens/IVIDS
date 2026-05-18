@@ -209,6 +209,23 @@ public class UpdateManager {
     }
 
     /**
+     * Retrieves the current app version name from the Android package manager.
+     * This method is exposed to JavaScript via the @JavascriptInterface annotation.
+     * 
+     * @return The installed version name string (e.g., "v0.2.3").
+     */
+    @JavascriptInterface
+    public String getCurrentVersion() {
+        try {
+            return mActivity.getPackageManager()
+                    .getPackageInfo(mActivity.getPackageName(), 0).versionName;
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting package version name", e);
+            return "v0.2.3";
+        }
+    }
+
+    /**
      * Initiates a direct forced download of the APK from the repository's raw URL.
      * This method is exposed to JavaScript via the @JavascriptInterface annotation.
      */
@@ -216,6 +233,19 @@ public class UpdateManager {
     public void downloadFromRepo() {
         Log.d(TAG, "Requesting direct download from repository...");
         mDownloadUrl = REPO_APK_URL;
+        downloadAndInstall();
+    }
+
+    /**
+     * Directs the native downloader to download and install a package from a custom URL.
+     * This method is exposed to JavaScript via the @JavascriptInterface annotation.
+     * 
+     * @param url The custom HTTP/HTTPS download link to the APK file.
+     */
+    @JavascriptInterface
+    public void downloadAndInstallForUrl(String url) {
+        Log.d(TAG, "Requesting custom download URL: " + url);
+        mDownloadUrl = url;
         downloadAndInstall();
     }
 

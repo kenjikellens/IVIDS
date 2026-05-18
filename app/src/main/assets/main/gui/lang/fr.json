@@ -60,7 +60,21 @@
             "comparing-versions": "Vérification de la version...",
             "downloading": "Téléchargement de la mise à jour...",
             "installing": "Préparation de l'installation..."
-        }
+        },
+        "selectVersion": "Sélectionner la version",
+        "branchBuild": "Version de branche en direct",
+        "branchBuildDesc": "Version IVIDS.apk directe de la branche main",
+        "updateNotification": "Mise à jour disponible",
+        "toast": {
+            "download": "Télécharger",
+            "select": "Sélectionner la version",
+            "close": "Fermer"
+        },
+        "appInfo": "Infos de l'application",
+        "appVersion": "Version de l'application",
+        "appVersionDesc": "La version de version actuellement installée d'IVIDS",
+        "appDeveloper": "Développeur",
+        "appDeveloperDesc": "Créé par l'équipe de développement IVIDS"
     },
     "common": {
         "close": "Fermer",
@@ -235,7 +249,6 @@
         "save": "Enregistrer l'URL",
         "clear": "Effacer"
     },
-
     "profiles": {
         "title": "Qui regarde ?",
         "add": "Ajouter un profil",

@@ -111,6 +111,162 @@ function initUpdateCheck() {
     window.latestFoundVersion = null;
     window.pendingUpdateVersion = null;
 
+    // Helper to retrieve update mode
+    const getUpdateMode = () => {
+        try {
+            const saved = localStorage.getItem('ivids-settings');
+            if (saved) return JSON.parse(saved).updateMode || 'manual';
+        } catch (e) {
+            console.error('App: Failed to get update mode', e);
+        }
+        return 'manual';
+    };
+
+    // Auto Mode idle update download trigger
+    const triggerAutoIdleDownload = (version) => {
+        console.log('App: Auto Mode - Observing user inactivity for silent download');
+        let downloadStarted = false;
+        let lastActivity = Date.now();
+
+        const onUserActivity = () => {
+            lastActivity = Date.now();
+        };
+
+        const activityEvents = ['keydown', 'mousemove', 'mousedown', 'touchstart', 'click'];
+        activityEvents.forEach(evt => window.addEventListener(evt, onUserActivity, { passive: true }));
+
+        const checkIdle = setInterval(() => {
+            const isScreensaverActive = Screensaver && Screensaver.isActive;
+            const isIdle = Date.now() - lastActivity > 5 * 60 * 1000; // 5 minutes
+
+            if ((isIdle || isScreensaverActive) && !downloadStarted) {
+                downloadStarted = true;
+                clearInterval(checkIdle);
+                activityEvents.forEach(evt => window.removeEventListener(evt, onUserActivity));
+                
+                console.log('App: Auto Mode - User is idle. Commencing silent background update download!');
+                if (window.AndroidUpdate) {
+                    window.AndroidUpdate.downloadAndInstall();
+                }
+            }
+        }, 10000); // Check every 10 seconds
+    };
+
+    // Manual Mode toast trigger with Action Buttons
+    const triggerManualToast = (version) => {
+        console.log('App: Manual Mode - Displaying non-blocking clickable toast');
+        
+        const title = window.i18n?.t('settings.updateNotification') || 'Update Available';
+        const msgHtml = `
+            <span>v${version} is available.</span>
+            <div class="toast-actions">
+                <button class="toast-btn toast-btn-primary focusable" id="toast-download-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                <button class="toast-btn toast-btn-secondary focusable" id="toast-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
+            </div>
+        `;
+
+        const toastEl = Toast.show(msgHtml, {
+            title: title,
+            type: 'info',
+            duration: 15000 // Display for 15 seconds
+        });
+
+        if (toastEl) {
+            setTimeout(() => {
+                const dlBtn = toastEl.querySelector('#toast-download-btn');
+                const closeBtn = toastEl.querySelector('#toast-close-btn');
+
+                if (dlBtn) {
+                    dlBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        Toast.hide(toastEl);
+                        import('./update-prompt.js').then(({ UpdatePrompt }) => {
+                            UpdatePrompt.show(version);
+                        });
+                    };
+                }
+
+                if (closeBtn) {
+                    closeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        Toast.hide(toastEl);
+                    };
+                }
+                
+                // Scan to register new focusable buttons with SpatialNav
+                if (typeof SpatialNav !== 'undefined' && SpatialNav.refocus) {
+                    SpatialNav.refocus();
+                }
+            }, 100);
+        }
+    };
+
+    // Developer Mode toast trigger with actions
+    const triggerDevToast = (version) => {
+        console.log('App: Developer Mode - Displaying dev console update prompt');
+        
+        const title = window.i18n?.t('settings.updateNotification') || 'Update Available';
+        const msgHtml = `
+            <span>Developer version v${version} found.</span>
+            <div class="toast-actions">
+                <button class="toast-btn toast-btn-primary focusable" id="toast-dev-dl-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                <button class="toast-btn toast-btn-secondary focusable" id="toast-dev-select-btn">${window.i18n?.t('settings.toast.select') || 'Select Version'}</button>
+                <button class="toast-btn toast-btn-secondary focusable" id="toast-dev-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
+            </div>
+        `;
+
+        const toastEl = Toast.show(msgHtml, {
+            title: title,
+            type: 'warning',
+            duration: 20000 // 20 seconds for developer choice
+        });
+
+        if (toastEl) {
+            setTimeout(() => {
+                const dlBtn = toastEl.querySelector('#toast-dev-dl-btn');
+                const selectBtn = toastEl.querySelector('#toast-dev-select-btn');
+                const closeBtn = toastEl.querySelector('#toast-dev-close-btn');
+
+                if (dlBtn) {
+                    dlBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        Toast.hide(toastEl);
+                        console.log('App: Quick-downloading latest tag...');
+                        if (window.AndroidUpdate) {
+                            window.AndroidUpdate.downloadAndInstall();
+                        }
+                    };
+                }
+
+                if (selectBtn) {
+                    selectBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        Toast.hide(toastEl);
+                        console.log('App: Directing to settings version selector...');
+                        Router.navigate('settings').then(() => {
+                            setTimeout(() => {
+                                if (window.settingsInstance && typeof window.settingsInstance.openVersionSelector === 'function') {
+                                    window.settingsInstance.openVersionSelector();
+                                }
+                            }, 150);
+                        });
+                    };
+                }
+
+                if (closeBtn) {
+                    closeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        Toast.hide(toastEl);
+                    };
+                }
+                
+                if (typeof SpatialNav !== 'undefined' && SpatialNav.refocus) {
+                    SpatialNav.refocus();
+                }
+            }, 100);
+        }
+    };
+
     // Triggered when native side finds a newer app release
     window.onUpdateFound = (version) => {
         window.latestFoundVersion = version;
@@ -124,10 +280,15 @@ function initUpdateCheck() {
                 console.log('App: Caching pending update check until splash dismissed');
                 window.pendingUpdateVersion = version;
             } else {
-                // Otherwise, display our premium TV-first modal immediately
-                import('./update-prompt.js').then(({ UpdatePrompt }) => {
-                    UpdatePrompt.show(version);
-                }).catch(err => console.error('App: Failed to load update prompt module', err));
+                // Route based on active Update Mode
+                const mode = getUpdateMode();
+                if (mode === 'auto') {
+                    triggerAutoIdleDownload(version);
+                } else if (mode === 'manual') {
+                    triggerManualToast(version);
+                } else if (mode === 'advanced') {
+                    triggerDevToast(version);
+                }
             }
         }
     };
@@ -185,8 +346,8 @@ function initUpdateCheck() {
         const savedSettings = localStorage.getItem('ivids-settings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
-            // Automatic update verification check on startup
-            if (settings.updateMode === 'auto') {
+            // Automatic update verification check on startup for all modes except 'none'
+            if (settings.updateMode && settings.updateMode !== 'none') {
                 if (window.AndroidUpdate) {
                     console.log('App: Triggering startup update check');
                     window.AndroidUpdate.checkForUpdates();
@@ -196,6 +357,7 @@ function initUpdateCheck() {
     } catch (e) {
         console.error('App: Error in initUpdateCheck startup trigger', e);
     }
+
 }
 
 function initUI() {
