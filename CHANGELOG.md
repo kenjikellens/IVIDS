@@ -160,3 +160,5 @@
 [12:46 18-05-2026] .agents/rules/agent-standards.md - Migrated project agent implementation rules from deprecated docs directory.
 [12:46 18-05-2026] .agents/workflows/guides.md - Migrated development guides from deprecated docs directory.
 [12:47 18-05-2026] .agents/rules/no-autonomous-github-pushes.md - Added Clause 3 to explicitly separate code pushes from tags/releases.
+[12:48 18-05-2026] app/src/main/assets/main/gui/css/global.css - Bound loading spinners to active design system accent color variables dynamically.
+[12:48 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.

@@ -574,7 +574,11 @@ input:focus {
    ========================================================================== */
 
 :root {
-    --accent-green: #10b981; /* Default from user snippet */
+    /* 
+       Loader accent color property.
+       Overridden to dynamically bind to the current active primary theme color.
+    */
+    --accent-green: var(--primary-color);
 }
 
 /* The main loader component container */
@@ -613,9 +617,9 @@ input:focus {
     border-top: clamp(4px, 1vw, 8px) solid transparent;
     border-radius: 50%;
 
-    /* Made circular as requested */
+    /* Made circular as requested and styled with dynamic accent glow */
     animation: staggeredSpin 1.5s infinite linear;
-    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
+    filter: drop-shadow(0 0 8px rgba(var(--primary-rgb), 0.3));
 }
 
 @keyframes staggeredSpin {
