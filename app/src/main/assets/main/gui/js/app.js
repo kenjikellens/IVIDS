@@ -95,19 +95,98 @@ function initServices() {
     initUpdateCheck();
 }
 
+/**
+ * initUpdateCheck Function
+ * ------------------------
+ * Explanation:
+ * Sets up global bridging callbacks on the window object to handle communication
+ * from the native AndroidUpdate Java bridge.
+ * It routes update checks dynamically:
+ * - If the settings page is active, the callbacks are routed to the settings page handlers.
+ * - If settings is not active, a premium TV-first update modal is displayed.
+ * - If the splash screen is still visible, the update prompt is cached until the splash screen is dismissed.
+ */
 function initUpdateCheck() {
     // Global state for update findings
     window.latestFoundVersion = null;
+    window.pendingUpdateVersion = null;
+
+    // Triggered when native side finds a newer app release
     window.onUpdateFound = (version) => {
         window.latestFoundVersion = version;
         console.log('App: Update found globally:', version);
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateFoundHandler === 'function') {
+            window.settingsUpdateFoundHandler(version);
+        } else {
+            // If the splash screen is still visible, cache this version check
+            if (typeof Splash !== 'undefined' && !Splash.isDismissed) {
+                console.log('App: Caching pending update check until splash dismissed');
+                window.pendingUpdateVersion = version;
+            } else {
+                // Otherwise, display our premium TV-first modal immediately
+                import('./update-prompt.js').then(({ UpdatePrompt }) => {
+                    UpdatePrompt.show(version);
+                }).catch(err => console.error('App: Failed to load update prompt module', err));
+            }
+        }
     };
 
+    // Triggered when native side updates active download status phases
+    window.onUpdateStatus = (statusKey) => {
+        console.log('App: Native update status changed:', statusKey);
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateStatusHandler === 'function') {
+            window.settingsUpdateStatusHandler(statusKey);
+        } else {
+            import('./update-prompt.js').then(({ UpdatePrompt }) => {
+                UpdatePrompt.handleStatus(statusKey);
+            }).catch(err => console.error('App: Failed to handle update status', err));
+        }
+    };
+
+    // Triggered when native side supplies downloading progress ratios (0-100%)
+    window.onUpdateProgress = (progress) => {
+        console.log('App: Native update progress retrieved:', progress);
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateProgressHandler === 'function') {
+            window.settingsUpdateProgressHandler(progress);
+        } else {
+            import('./update-prompt.js').then(({ UpdatePrompt }) => {
+                UpdatePrompt.handleProgress(progress);
+            }).catch(err => console.error('App: Failed to handle update progress', err));
+        }
+    };
+
+    // Triggered if update operations fail natively
+    window.onUpdateCheckError = () => {
+        console.error('App: Update check or download error caught');
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateErrorHandler === 'function') {
+            window.settingsUpdateErrorHandler();
+        } else {
+            import('./update-prompt.js').then(({ UpdatePrompt }) => {
+                UpdatePrompt.handleError();
+            }).catch(err => console.error('App: Failed to handle update check error', err));
+        }
+    };
+
+    // Triggered when no newer updates are available
+    window.onNoUpdateFound = () => {
+        console.log('App: App is up-to-date');
+
+        if (Router.currentPage === 'settings' && typeof window.settingsNoUpdateHandler === 'function') {
+            window.settingsNoUpdateHandler();
+        }
+    };
+
+    // Trigger the initial bootloader check
     try {
         const savedSettings = localStorage.getItem('ivids-settings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
-            if (settings.updateMode === 'auto' || settings.updateMode === 'manual') {
+            // Automatic update verification check on startup
+            if (settings.updateMode === 'auto') {
                 if (window.AndroidUpdate) {
                     console.log('App: Triggering startup update check');
                     window.AndroidUpdate.checkForUpdates();
@@ -115,7 +194,7 @@ function initUpdateCheck() {
             }
         }
     } catch (e) {
-        console.error('App: Error in initUpdateCheck', e);
+        console.error('App: Error in initUpdateCheck startup trigger', e);
     }
 }
 

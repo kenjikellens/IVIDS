@@ -40,11 +40,16 @@ export async function init() {
     settingsManagerInstance = new SettingsManager();
 }
 
-// Global update handlers for Android WebView callbacks
-window.onUpdateStatus = (statusKey) => settingsManagerInstance?.handleUpdateStatus(statusKey);
-window.onUpdateFound = (version) => settingsManagerInstance?.handleUpdateFound(version);
-window.onNoUpdateFound = () => settingsManagerInstance?.handleNoUpdateFound();
-window.onUpdateCheckError = () => settingsManagerInstance?.handleUpdateError();
+// Register specific handlers on global window to be called by app.js when settings page is active.
+// Explanations:
+// - window.settingsUpdateStatusHandler: Maps status message events from native side into the settings text element.
+// - window.settingsUpdateFoundHandler: Maps found versions to settings buttons, changing "Check Now" to "Install Now".
+// - window.settingsNoUpdateHandler: Maps normal exit/up-to-date events.
+// - window.settingsUpdateErrorHandler: Maps error states and restores check controls.
+window.settingsUpdateStatusHandler = (statusKey) => settingsManagerInstance?.handleUpdateStatus(statusKey);
+window.settingsUpdateFoundHandler = (version) => settingsManagerInstance?.handleUpdateFound(version);
+window.settingsNoUpdateHandler = () => settingsManagerInstance?.handleNoUpdateFound();
+window.settingsUpdateErrorHandler = () => settingsManagerInstance?.handleUpdateError();
 
 /**
  * SettingsManager Class

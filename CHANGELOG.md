@@ -140,3 +140,13 @@
 [23:25 17-05-2026] app/src/main/java/com/kenjigames/ivids/MainActivity.java - Added comprehensive JavaDoc explanations to all classes and methods to comply with global documentation rules.
 [23:25 17-05-2026] app/src/main/java/com/kenjigames/ivids/UpdateManager.java - Added comprehensive JavaDoc explanations to all classes and methods to comply with global documentation rules.
 [23:33 17-05-2026] app/src/main/assets/main/gui/css/global.css - Injected a comprehensive mobile media query specifically for the details page to stack the poster layout, optimize typography, and implement horizontal scrolling for seasons and episodes on smartphone devices.
+[12:15 18-05-2026] app/src/main/assets/main/gui/css/global.css - Appended responsive update modal CSS rules and progress animations.
+[12:15 18-05-2026] app/src/main/assets/main/gui/js/update-prompt.js - Created modular update prompt class with remote focus trapping and dynamic progress tracking.
+[12:15 18-05-2026] app/src/main/assets/main/gui/js/app.js - Centralized all global native update callbacks and mapped active settings page delegation.
+[12:15 18-05-2026] app/src/main/assets/main/gui/js/splash.js - Triggered pending cached update prompt inside splash dismiss cleanup callback.
+[12:15 18-05-2026] app/src/main/assets/main/gui/pages/settings.js - Converted global update handlers to settings page delegates mapped dynamically by app.js.
+[12:32 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.2.1 and incremented versionCode to 4 for prerelease compiler.
+[12:33 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:35 18-05-2026] docs/workflow/version-and-release-update.md - Created standardized release packaging and distribution workflow.
+[12:38 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.2.2 and incremented versionCode to 5 for release compiler.
+[12:38 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.

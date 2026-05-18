@@ -89,6 +89,17 @@ export class Splash {
         const cleanup = () => {
             this.splashElement.style.display = 'none';
             this.splashElement.removeEventListener('transitionend', cleanup);
+
+            // Explanation: If an update was discovered in the background during splash,
+            // render the prompt now that the landing page is fully interactive and visible.
+            if (window.pendingUpdateVersion) {
+                console.log('Splash: Triggering cached update prompt for version:', window.pendingUpdateVersion);
+                const version = window.pendingUpdateVersion;
+                window.pendingUpdateVersion = null;
+                import('./update-prompt.js').then(({ UpdatePrompt }) => {
+                    UpdatePrompt.show(version);
+                }).catch(err => console.error('Splash: Failed to load update prompt module', err));
+            }
         };
 
         this.splashElement.addEventListener('transitionend', cleanup);
