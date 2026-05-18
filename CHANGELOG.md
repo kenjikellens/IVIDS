@@ -167,3 +167,18 @@
 [12:50 18-05-2026] app/src/main/assets/main/gui/css/global.css - Extracted Section 2 loader styles to the dedicated loader.css stylesheet.
 [12:50 18-05-2026] app/src/main/assets/main/gui/index.html - Linked the newly created loader.css stylesheet.
 [12:50 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:52 18-05-2026] .agents/rules/no-autonomous-github-pushes.md - Prohibited autonomous local commits to maintain active file status visibility in the IDE.
+[12:53 18-05-2026] app/src/main/assets/main/gui/css/loader.css - Redesigned the loading animation into a premium dual-orbit nested spinner with a pulsing center core.
+[12:53 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:55 18-05-2026] app/src/main/assets/main/gui/css/loader.css - Redesigned loader with an ultra-clean, elegant conic-gradient sweep ring mask.
+[12:55 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:57 18-05-2026] app/src/main/assets/main/gui/css/global.css - Replaced the buggy WebView radial-gradient with a beautiful blurred ::before background glow element to resolve the box border render issue on splash screen.
+[12:57 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:58 18-05-2026] app/src/main/assets/main/gui/js/splash.js - Reduced the minimum wait timer to 1 second so the splash screen dismisses much quicker.
+[12:58 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:59 18-05-2026] app/src/main/assets/main/gui/css/global.css - Removed animations, text shadows, and keyframes from the splash logo for a minimal aesthetic.
+[12:59 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[13:00 18-05-2026] app/src/main/assets/main/gui/css/global.css - Deleted splash screen ::before ambient glow element entirely to remove WebView GPU shader compilation lag black box.
+[13:00 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[13:01 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.2.3 and incremented versionCode to 6.
+[13:01 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.

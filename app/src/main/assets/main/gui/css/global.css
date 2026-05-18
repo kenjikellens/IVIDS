@@ -589,10 +589,9 @@ input:focus {
     justify-content: center;
     visibility: visible;
     opacity: 1;
-    background:
-        radial-gradient(circle at 50% 36%, rgba(var(--primary-rgb, 70, 211, 105), 0.16), transparent 28%),
-        var(--background-color, #050505);
+    background: var(--background-color, #050505);
     transition: opacity 0.5s ease-in-out, visibility 0.5s;
+    overflow: hidden;
 }
 
 #splash-screen.hidden {
@@ -614,8 +613,6 @@ input:focus {
     font-size: 68px;
     font-weight: 900;
     letter-spacing: 0;
-    text-shadow: 0 0 24px rgba(var(--primary-rgb, 70, 211, 105), 0.42);
-    animation: splashLogoGlow 2s ease-in-out infinite alternate;
 }
 
 .splash-loader-container {
@@ -625,16 +622,6 @@ input:focus {
 
 .splash-loader-container.hidden {
     opacity: 0;
-}
-
-@keyframes splashLogoGlow {
-    from {
-        text-shadow: 0 0 14px rgba(var(--primary-rgb, 70, 211, 105), 0.22);
-    }
-
-    to {
-        text-shadow: 0 0 32px rgba(var(--primary-rgb, 70, 211, 105), 0.58);
-    }
 }
 
 /* ==========================================================================

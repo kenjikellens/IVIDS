@@ -6,10 +6,9 @@ trigger: always_on
 
 Every AI agent working on IVIDS MUST strictly adhere to this constraint:
 
-1. **NO AUTONOMOUS PUSHES OR RELEASES**: You are strictly prohibited from performing any remote Git pushes (`git push`) or creating releases on GitHub autonomously, unless:
-   - The user explicitly and directly requests a push or release action in the current turn.
-   - The user has reviewed and confirmed all staged changes, build files, and version logs.
-   - **SINGLE-TURN AUTHORIZATION**: Authorization to push applies ONLY to the active changes discussed in that specific turn. If you make any subsequent or additional edits in a later turn, you MUST obtain fresh, explicit authorization before performing another push. You can never assume previous push authorization extends to new edits.
+1. **NO AUTONOMOUS COMMITS OR PUSHES**: You are strictly prohibited from performing any Git commits (`git commit`) or remote Git pushes (`git push`) autonomously. All edits must remain in the working tree (as modified or staged files showing the yellow 'M' or green indicators in the IDE) so the user can easily review the changes. You are ONLY authorized to stage (`git add`) files to organize edits, but you MUST wait for the user to explicitly say 'push to main' before running the commit and push commands in a single, combined sequence.
+   - **SINGLE-TURN AUTHORIZATION**: Authorization to commit and push applies ONLY to the active changes discussed in that specific turn. If you make any subsequent or additional edits in a later turn, you MUST obtain fresh, explicit authorization before performing another commit and push. You can never assume previous push authorization extends to new edits.
+
 
 2. **TAG AND PUSH PROTOCOL**: When instructed to tag and push:
    - You MUST ensure the commit message and release details exactly follow the target version's release description.
