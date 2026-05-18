@@ -163,3 +163,7 @@
 [12:48 18-05-2026] app/src/main/assets/main/gui/css/global.css - Bound loading spinners to active design system accent color variables dynamically.
 [12:48 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
 [12:49 18-05-2026] .agents/rules/no-autonomous-github-pushes.md - Appended Single-Turn Authorization clause under Clause 1.
+[12:50 18-05-2026] app/src/main/assets/main/gui/css/loader.css - Created dedicated loader stylesheet containing dynamic accent color spinners, shimmering overlays, and poster loading skeletons.
+[12:50 18-05-2026] app/src/main/assets/main/gui/css/global.css - Extracted Section 2 loader styles to the dedicated loader.css stylesheet.
+[12:50 18-05-2026] app/src/main/assets/main/gui/index.html - Linked the newly created loader.css stylesheet.
+[12:50 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
