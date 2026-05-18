@@ -150,3 +150,13 @@
 [12:35 18-05-2026] docs/workflow/version-and-release-update.md - Created standardized release packaging and distribution workflow.
 [12:38 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.2.2 and incremented versionCode to 5 for release compiler.
 [12:38 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:40 18-05-2026] app/src/main/assets/main/gui/css/global.css - Upgraded settings page mobile layout with inline row controls, side-by-side buttons, and a premium 2x2 update mode grid.
+[12:41 18-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[12:45 18-05-2026] .agents/rules/no-autonomous-github-pushes.md - Created strict rule prohibiting autonomous git pushes and release generation.
+[12:45 18-05-2026] .agents/rules/accent-colors.md - Migrated accent color rule from deprecated .agent directory.
+[12:45 18-05-2026] .agents/rules/animations.md - Migrated animations rule from deprecated .agent directory.
+[12:45 18-05-2026] .agents/rules/code-style.md - Migrated container percentage styling rule from deprecated .agent directory.
+[12:45 18-05-2026] .agents/rules/languages.md - Migrated multi-language localization rules from deprecated .agent directory.
+[12:46 18-05-2026] .agents/rules/agent-standards.md - Migrated project agent implementation rules from deprecated docs directory.
+[12:46 18-05-2026] .agents/workflows/guides.md - Migrated development guides from deprecated docs directory.
+[12:47 18-05-2026] .agents/rules/no-autonomous-github-pushes.md - Added Clause 3 to explicitly separate code pushes from tags/releases.
