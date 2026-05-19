@@ -277,5 +277,8 @@
         "incorrectPin": "PINが正しくありません。もう一度お試しください。",
         "errorNameEmpty": "名前を入力してください",
         "errorPinLength": "PINはちょうど4桁である必要があります"
-    }
+    },
+    "update_status_downloading": "アップデートをダウンロード中...",
+    "update_status_installing": "アップデートをインストール中...",
+    "update_status_connecting": "サーバーに接続中..."
 }

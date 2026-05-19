@@ -277,5 +277,8 @@
         "incorrectPin": "Hatalı PIN. Tekrar deneyin.",
         "errorNameEmpty": "İsim boş bırakılamaz",
         "errorPinLength": "PIN tam olarak 4 haneli olmalıdır"
-    }
+    },
+    "update_status_downloading": "Güncelleme İndiriliyor...",
+    "update_status_installing": "Güncelleme Yükleniyor...",
+    "update_status_connecting": "Sunucuya Bağlanılıyor..."
 }

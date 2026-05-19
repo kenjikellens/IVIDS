@@ -277,5 +277,8 @@
         "incorrectPin": "Forkert PIN. Prøv igen.",
         "errorNameEmpty": "Navn må ikke være tomt",
         "errorPinLength": "PIN skal være præcis 4 cifre"
-    }
+    },
+    "update_status_downloading": "Downloader opdatering...",
+    "update_status_installing": "Installerer opdatering...",
+    "update_status_connecting": "Forbinder til server..."
 }

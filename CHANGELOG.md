@@ -242,3 +242,35 @@
 [13:26 18-05-2026] IVIDS.apk - Placed compiled clean uncached release APK for v0.3.0 featuring mobile CSS and App Info fixes.
 [13:27 18-05-2026] app/build.gradle.kts - Bumped versionName to v0.3.1 and incremented versionCode to 8.
 [13:27 18-05-2026] IVIDS.apk - Placed compiled clean uncached release APK for v0.3.1 featuring mobile CSS and App Info fixes.
+[23:17 19-05-2026] app/src/main/assets/main/gui/js/updater.js - Created unified multi-platform update checker module.
+[23:18 19-05-2026] app/src/main/assets/main/gui/js/app.js - Refactored app bootstrapper to trigger update checks using unified updater module.
+[23:20 19-05-2026] app/src/main/assets/main/gui/pages/settings.js - Refactored settings page updates checking and version selector to use unified updater module and support Web/Electron fallback links.
+[23:22 19-05-2026] app/src/main/assets/main/gui/js/update-prompt.js - Updated update dialog to trigger downloads/installs for Web/Electron and utilize new update_status_* translation keys.
+[23:25 19-05-2026] app/src/main/java/com/kenjigames/ivids/UpdateManager.java - Refactored checkForUpdates to detect TV vs Mobile at runtime and filter GitHub assets to select the matching target APK.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/ar.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/cs.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/da.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/de.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/en.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/es.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/fr.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/hi.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/id.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/it.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/ja.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/ko.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/nl.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/no.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/pl.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/pt.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/ro.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/ru.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/sv.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/tr.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/vi.json - Added root-level update_status_* translation keys.
+[23:30 19-05-2026] app/src/main/assets/main/gui/lang/zh.json - Added root-level update_status_* translation keys.
+[23:35 19-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[23:38 19-05-2026] app/build.gradle.kts - Bumped versionName to v0.3.2 and incremented versionCode to 9.
+[23:39 19-05-2026] IVIDS.apk - Placed compiled clean uncached release APK for v0.3.2 featuring mobile CSS and App Info fixes.
+
+

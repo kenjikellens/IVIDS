@@ -277,5 +277,8 @@
         "incorrectPin": "Nesprávný PIN. Zkuste to znovu.",
         "errorNameEmpty": "Jméno nesmí být prázdné",
         "errorPinLength": "PIN musí mít přesně 4 číslice"
-    }
+    },
+    "update_status_downloading": "Stahování aktualizace...",
+    "update_status_installing": "Instalace aktualizace...",
+    "update_status_connecting": "Připojování k serveru..."
 }

@@ -125,9 +125,7 @@ class SettingsManager {
         }
 
         const updatesSection = document.getElementById('app-updates-section');
-        if (updatesSection && !window.AndroidUpdate) {
-            updatesSection.style.display = 'none';
-        }
+
 
         const checkBtn = document.getElementById('check-updates-btn');
         if (checkBtn) {
@@ -207,10 +205,11 @@ class SettingsManager {
     }
 
     /**
-     * Executes checking or fetching APK update files.
+     * Executes the update check action.
+     * Delegates to the unified JavaScript updater which handles Android, Electron, and Web environments.
      */
     handleMainUpdateAction() {
-        if (!window.AndroidUpdate) return;
+
 
         this.isCheckingUpdates = true;
 
@@ -239,7 +238,12 @@ class SettingsManager {
         if (this.settings.updateMode === 'advanced') {
             this.openVersionSelector();
         } else {
-            window.AndroidUpdate.checkForUpdates();
+            import('../js/updater.js').then(({ Updater }) => {
+                Updater.checkForUpdates(true);
+            }).catch(err => {
+                console.error('Settings: Failed to load updater', err);
+                this.handleUpdateError();
+            });
         }
     }
 
@@ -311,7 +315,7 @@ class SettingsManager {
             if (window.AndroidUpdate && typeof window.AndroidUpdate.getCurrentVersion === 'function') {
                 versionDisplay.textContent = window.AndroidUpdate.getCurrentVersion();
             } else {
-                versionDisplay.textContent = 'v0.2.3';
+                versionDisplay.textContent = 'v0.3.1';
             }
         }
     }
@@ -364,6 +368,8 @@ class SettingsManager {
                     this.closeModal();
                     if (window.AndroidUpdate) {
                         window.AndroidUpdate.downloadFromRepo();
+                    } else {
+                        window.open('https://github.com/kenjikellens/IVIDS/releases', '_blank');
                     }
                 };
                 
@@ -397,6 +403,8 @@ class SettingsManager {
                             console.log(`Settings: Downloading version ${rel.tag_name} via ${downloadUrl}`);
                             if (window.AndroidUpdate) {
                                 window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
+                            } else {
+                                window.open(downloadUrl, '_blank');
                             }
                         };
 
@@ -677,11 +685,12 @@ class SettingsManager {
     }
 
     /**
-     * WebView update notifications receiver.
+     * Handles the event when an update is found.
+     * Updates the UI states and binds the click action to trigger downloading and installing.
+     * @param {string} version - The version string of the found update.
      */
     handleUpdateFound(version) {
         if (!this.isCheckingUpdates) return;
-
         console.log('Update Found:', version);
         const statusText = document.getElementById('update-status-text');
         const loaderContainer = document.getElementById('update-loader-container');
@@ -698,6 +707,8 @@ class SettingsManager {
             checkBtn.onclick = () => {
                 if (window.AndroidUpdate) {
                     window.AndroidUpdate.downloadAndInstall();
+                } else if (window.latestUpdateDownloadUrl) {
+                    window.open(window.latestUpdateDownloadUrl, '_blank');
                 }
             };
         }

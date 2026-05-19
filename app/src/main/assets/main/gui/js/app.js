@@ -340,24 +340,12 @@ function initUpdateCheck() {
             window.settingsNoUpdateHandler();
         }
     };
-
     // Trigger the initial bootloader check
-    try {
-        const savedSettings = localStorage.getItem('ivids-settings');
-        if (savedSettings) {
-            const settings = JSON.parse(savedSettings);
-            // Automatic update verification check on startup for all modes except 'none'
-            if (settings.updateMode && settings.updateMode !== 'none') {
-                if (window.AndroidUpdate) {
-                    console.log('App: Triggering startup update check');
-                    window.AndroidUpdate.checkForUpdates();
-                }
-            }
-        }
-    } catch (e) {
-        console.error('App: Error in initUpdateCheck startup trigger', e);
-    }
-
+    import('./updater.js')
+        .then(({ Updater }) => {
+            Updater.initAutoCheck();
+        })
+        .catch(err => console.error('App: Failed to load updater.js module', err));
 }
 
 function initUI() {

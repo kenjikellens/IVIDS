@@ -61,9 +61,8 @@ public class UpdateManager {
     }
 
     /**
-     * Checks the GitHub repository releases API to see if a newer version of the app is available.
-     * This method is exposed to JavaScript via the @JavascriptInterface annotation.
-     * It runs the network request on a background thread.
+     * Checks the GitHub releases API for newer app versions and downloads the matching TV or Mobile APK.
+     * This method runs in a background thread and updates the WebView status callbacks via javascript.
      */
     @JavascriptInterface
     public void checkForUpdates() {
@@ -113,12 +112,38 @@ public class UpdateManager {
 
                     if (isNewerVersion(currentVersion, mLatestVersion)) {
                         Log.d(TAG, "New update found: " + mLatestVersion);
+                        
+                        boolean isTv = false;
+                        android.app.UiModeManager uiModeManager = (android.app.UiModeManager) mActivity.getSystemService(Context.UI_MODE_SERVICE);
+                        if (uiModeManager != null) {
+                            isTv = uiModeManager.getCurrentModeType() == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION;
+                        }
+                        String targetKeyword = isTv ? "tv" : "mobile";
+                        Log.d(TAG, "Device target UI mode television is: " + isTv + ", seeking keyword: " + targetKeyword);
+
                         JSONArray assets = latestRelease.getJSONArray("assets");
+                        String fallbackApkUrl = null;
+                        
                         for (int i = 0; i < assets.length(); i++) {
                             JSONObject asset = assets.getJSONObject(i);
-                            if (asset.getString("name").toLowerCase().endsWith(".apk")) {
-                                mDownloadUrl = asset.getString("browser_download_url");
-                                break;
+                            String assetName = asset.getString("name").toLowerCase();
+                            if (assetName.endsWith(".apk")) {
+                                String downloadUrl = asset.getString("browser_download_url");
+                                if (assetName.contains(targetKeyword)) {
+                                    mDownloadUrl = downloadUrl;
+                                    Log.d(TAG, "Selected asset matched target keyword '" + targetKeyword + "': " + assetName);
+                                    break;
+                                }
+                                if (fallbackApkUrl == null) {
+                                    fallbackApkUrl = downloadUrl;
+                                }
+                            }
+                        }
+
+                        if (mDownloadUrl == null) {
+                            mDownloadUrl = fallbackApkUrl;
+                            if (mDownloadUrl != null) {
+                                Log.d(TAG, "No asset matched target keyword '" + targetKeyword + "', falling back to: " + mDownloadUrl);
                             }
                         }
 

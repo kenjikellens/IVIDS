@@ -120,19 +120,10 @@ export class UpdatePrompt {
     }
 
     /**
-     * startDownload Method
-     * --------------------
-     * Explanation:
-     * Hides the action buttons, displays the glassmorphic progress bar, triggers the native APK download via the
-     * `AndroidUpdate` bridge, and establishes progress listening callbacks.
+     * Programmatically initiates the update download process.
+     * Delegates download actions to Native Android, Electron, or opens the fallback download URL in Web.
      */
     static startDownload() {
-        if (!window.AndroidUpdate) {
-            console.warn('UpdatePrompt: Native AndroidUpdate bridge not available.');
-            this.handleError();
-            return;
-        }
-
         const actionsContainer = document.getElementById('update-actions');
         const progressContainer = document.getElementById('update-progress-container');
         const progressBar = document.getElementById('update-progress-bar');
@@ -143,25 +134,36 @@ export class UpdatePrompt {
         if (progressBar) progressBar.style.width = '0%';
         
         this.activeStatus = 'downloading';
-        if (progressText) {
-            progressText.textContent = `${window.i18n.t('settings.updateStatus.downloading')} (0%)`;
-        }
-
-        // Trigger native download
-        try {
-            window.AndroidUpdate.downloadAndInstall();
-        } catch (err) {
-            console.error('UpdatePrompt: Failed to trigger native download', err);
+        
+        if (window.AndroidUpdate) {
+            if (progressText) {
+                progressText.textContent = `${window.i18n.t('update_status_downloading')} (0%)`;
+            }
+            try {
+                window.AndroidUpdate.downloadAndInstall();
+            } catch (err) {
+                console.error('UpdatePrompt: Failed to trigger native download', err);
+                this.handleError();
+            }
+        } else if (window.ElectronAPI) {
+            if (progressText) {
+                progressText.textContent = `${window.i18n.t('update_status_downloading')} (0%)`;
+            }
+            // Electron handle download IPC
+        } else if (window.latestUpdateDownloadUrl) {
+            if (progressText) {
+                progressText.textContent = window.i18n.t('update_status_downloading');
+            }
+            window.open(window.latestUpdateDownloadUrl, '_blank');
+            this.dismiss();
+        } else {
+            console.warn('UpdatePrompt: No native bridge or update download link found.');
             this.handleError();
         }
     }
 
     /**
-     * handleStatus Method
-     * -------------------
-     * Explanation:
      * Captures status updates from the native update controller and translates the stage description.
-     *
      * @param {string} statusKey The native key representing the active compilation/download phase.
      */
     static handleStatus(statusKey) {
@@ -170,20 +172,18 @@ export class UpdatePrompt {
         if (!progressText) return;
 
         if (statusKey === 'downloading') {
-            progressText.textContent = window.i18n.t('settings.updateStatus.downloading');
+            progressText.textContent = window.i18n.t('update_status_downloading');
         } else if (statusKey === 'installing') {
-            progressText.textContent = window.i18n.t('settings.updateStatus.installing');
+            progressText.textContent = window.i18n.t('update_status_installing');
+        } else if (statusKey === 'connecting-api') {
+            progressText.textContent = window.i18n.t('update_status_connecting');
         } else {
             progressText.textContent = statusKey;
         }
     }
 
     /**
-     * handleProgress Method
-     * ---------------------
-     * Explanation:
      * Fills the primary progress track bar with glow adjustments based on native percentage events.
-     *
      * @param {number} percent Numerical percentage of completion (0 to 100).
      */
     static handleProgress(percent) {
@@ -195,9 +195,11 @@ export class UpdatePrompt {
         }
 
         if (progressText) {
-            let statusStr = window.i18n.t('settings.updateStatus.downloading');
+            let statusStr = window.i18n.t('update_status_downloading');
             if (this.activeStatus === 'installing') {
-                statusStr = window.i18n.t('settings.updateStatus.installing');
+                statusStr = window.i18n.t('update_status_installing');
+            } else if (this.activeStatus === 'connecting-api') {
+                statusStr = window.i18n.t('update_status_connecting');
             }
             progressText.textContent = `${statusStr} (${percent}%)`;
         }

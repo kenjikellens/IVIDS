@@ -277,5 +277,8 @@
         "incorrectPin": "잘못된 PIN입니다. 다시 시도하세요.",
         "errorNameEmpty": "이름은 비워 둘 수 없습니다",
         "errorPinLength": "PIN은 정확히 4자리 숫자여야 합니다"
-    }
+    },
+    "update_status_downloading": "업데이트 다운로드 중...",
+    "update_status_installing": "업데이트 설치 중...",
+    "update_status_connecting": "서버에 연결 중..."
 }

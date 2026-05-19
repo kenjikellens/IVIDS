@@ -277,5 +277,8 @@
         "incorrectPin": "PIN 错误。请重试。",
         "errorNameEmpty": "姓名不能为空",
         "errorPinLength": "PIN 必须恰好为 4 位数字"
-    }
+    },
+    "update_status_downloading": "正在下载更新...",
+    "update_status_installing": "正在安装更新...",
+    "update_status_connecting": "正在连接服务器..."
 }

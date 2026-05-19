@@ -277,5 +277,8 @@
         "incorrectPin": "PIN incorreto. Tente novamente.",
         "errorNameEmpty": "O nome não pode estar vazio",
         "errorPinLength": "O PIN deve ter exatamente 4 dígitos"
-    }
+    },
+    "update_status_downloading": "Baixando atualização...",
+    "update_status_installing": "Instalando atualização...",
+    "update_status_connecting": "Conectando ao servidor..."
 }

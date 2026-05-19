@@ -271,5 +271,8 @@
         "incorrectPin": "Onjuiste PIN. Probeer het opnieuw.",
         "errorNameEmpty": "Naam mag niet leeg zijn",
         "errorPinLength": "PIN moet precies 4 cijfers zijn"
-    }
+    },
+    "update_status_downloading": "Update downloaden...",
+    "update_status_installing": "Update installeren...",
+    "update_status_connecting": "Verbinden met server..."
 }

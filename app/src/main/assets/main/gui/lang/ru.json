@@ -277,5 +277,8 @@
         "incorrectPin": "Неверный PIN.",
         "errorNameEmpty": "Имя не может быть пустым",
         "errorPinLength": "PIN должен состоять из 4 цифр"
-    }
+    },
+    "update_status_downloading": "Загрузка обновления...",
+    "update_status_installing": "Установка обновления...",
+    "update_status_connecting": "Подключение к серверу..."
 }

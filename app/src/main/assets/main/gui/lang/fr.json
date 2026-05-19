@@ -270,5 +270,8 @@
         "incorrectPin": "Code PIN incorrect. Réessayez.",
         "errorNameEmpty": "Le nom ne peut pas être vide",
         "errorPinLength": "Le code PIN doit comporter exactement 4 chiffres"
-    }
+    },
+    "update_status_downloading": "Téléchargement de la mise à jour...",
+    "update_status_installing": "Installation de la mise à jour...",
+    "update_status_connecting": "Connexion au serveur..."
 }

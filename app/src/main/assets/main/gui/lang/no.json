@@ -277,5 +277,8 @@
         "incorrectPin": "Feil PIN. Prøv igjen.",
         "errorNameEmpty": "Navn kan ikke være tomt",
         "errorPinLength": "PIN må være nøyaktig 4 siffer"
-    }
+    },
+    "update_status_downloading": "Laster ned oppdatering...",
+    "update_status_installing": "Installerer oppdatering...",
+    "update_status_connecting": "Kobler til server..."
 }

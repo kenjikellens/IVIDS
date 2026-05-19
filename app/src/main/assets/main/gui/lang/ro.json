@@ -277,5 +277,8 @@
         "incorrectPin": "PIN incorect. Încearcă din nou.",
         "errorNameEmpty": "Numele nu poate fi gol",
         "errorPinLength": "PIN-ul trebuie să aibă exact 4 cifre"
-    }
+    },
+    "update_status_downloading": "Se descarcă actualizarea...",
+    "update_status_installing": "Se instalează actualizarea...",
+    "update_status_connecting": "Se conectează la server..."
 }

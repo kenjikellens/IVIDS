@@ -277,5 +277,8 @@
         "incorrectPin": "رمز PIN غير صحيح. حاول مرة أخرى.",
         "errorNameEmpty": "الاسم لا يمكن أن يكون فارغاً",
         "errorPinLength": "يجب أن يتكون رمز PIN من 4 أرقام بالضبط"
-    }
+    },
+    "update_status_downloading": "جاري تنزيل التحديث...",
+    "update_status_installing": "جاري تثبيت التحديث...",
+    "update_status_connecting": "الاتصال بالخادم..."
 }
