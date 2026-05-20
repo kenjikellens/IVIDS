@@ -246,7 +246,12 @@
         "allChannels": "Toate canalele",
         "categories": "Categorii",
         "recent": "Canale recente",
-        "searchPlaceholder": "Caută canale..."
+        "searchPlaceholder": "Caută canale...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Configurare TV în direct",

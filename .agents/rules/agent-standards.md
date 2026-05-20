@@ -22,5 +22,6 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **STEP**: Add key to `en.json` first, then update ALL other 25+ language files.
 
 ## 5. Mandatory Changelog
-- **RULE**: Every file edit MUST be logged in `CHANGELOG.md` immediately after the edit.
+- **RULE**: Every file edit MUST be logged in `CHANGELOG.md` after editing all the files, not after each edit.
 - **FORMAT**: `[HH:mm DD-MM-YYYY] filenames.ext - description.`
+- **CLEARING**: Clear the changelog when the user instructs to make a release, not when pushing to main.

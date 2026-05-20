@@ -240,7 +240,12 @@
         "allChannels": "All Channels",
         "categories": "Categories",
         "recent": "Recent Channels",
-        "searchPlaceholder": "Search channels..."
+        "searchPlaceholder": "Search channels...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Live TV Configuration",

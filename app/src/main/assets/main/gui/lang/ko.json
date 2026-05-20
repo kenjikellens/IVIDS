@@ -246,7 +246,12 @@
         "allChannels": "모든 채널",
         "categories": "카테고리",
         "recent": "최근 시청 채널",
-        "searchPlaceholder": "채널 검색..."
+        "searchPlaceholder": "채널 검색...",
+        "allCategories": "모든 카테고리",
+        "zappingTo": "채널 전환 중...",
+        "epgNoInfo": "프로그램 정보 없음",
+        "channelCount": "{count} 채널",
+        "live": "라이브"
     },
     "settings_livetv": {
         "title": "라이브 TV 설정",

@@ -1,5 +1,6 @@
 console.log('Settings.js: Script loaded');
 import { SpatialNav } from '../js/spatial-nav.js';
+import { Toast } from '../js/toast.js';
 
 let settingsManagerInstance = null;
 
@@ -149,7 +150,7 @@ class SettingsManager {
                 const val = document.getElementById('m3u-url-input')?.value;
                 this.settings.m3uUrl = val;
                 this.saveSettings();
-                alert(window.i18n?.t('settings.saved') || 'Settings saved!');
+                Toast.show(window.i18n?.t('settings.saved') || 'Settings saved!', { type: 'success' });
             };
         }
 
@@ -175,7 +176,7 @@ class SettingsManager {
                 this.settings.playerProvider = 'custom';
                 this.settings.playerBaseUrl = val || 'https://vidlink.pro';
                 this.saveSettings();
-                alert(window.i18n?.t('settings.saved') || 'Settings saved!');
+                Toast.show(window.i18n?.t('settings.saved') || 'Settings saved!', { type: 'success' });
             };
         }
 

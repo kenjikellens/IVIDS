@@ -246,7 +246,12 @@
         "allChannels": "Wszystkie kanały",
         "categories": "Kategorie",
         "recent": "Ostatnie kanały",
-        "searchPlaceholder": "Szukaj kanałów..."
+        "searchPlaceholder": "Szukaj kanałów...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Konfiguracja TV na żywo",

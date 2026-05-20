@@ -240,7 +240,12 @@
         "allChannels": "Alle Zenders",
         "categories": "Categorieën",
         "recent": "Recente Zenders",
-        "searchPlaceholder": "Zenders zoeken..."
+        "searchPlaceholder": "Zenders zoeken...",
+        "allCategories": "Alle categorieën",
+        "zappingTo": "Zappen naar...",
+        "epgNoInfo": "Geen programma-info",
+        "channelCount": "{count} Kanalen",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Live TV Configuratie",

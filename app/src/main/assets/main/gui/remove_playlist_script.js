@@ -21,10 +21,10 @@ try {
         if (playlists.length < initialCount) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(playlists));
             console.log('Playlist removed successfully. Please refresh the page.');
-            alert('Playlist removed. Please refresh the page.');
+            console.log('Playlist removed. Please refresh the page.');
         } else {
             console.log('No custom playlist from 2023 found.');
-            alert('No custom playlist from 2023 found.');
+            console.log('No custom playlist from 2023 found.');
         }
     }
 } catch (e) {

@@ -26,6 +26,16 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
+    def end_headers(self):
+        """
+        Injects headers instructing the browser to disable resource caching.
+        This ensures changes to JS/CSS files are immediately visible on refresh.
+        """
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        self.send_header('Pragma', 'no-cache')
+        self.send_header('Expires', '0')
+        super().end_headers()
+
 def start_server():
     """
     Initializes and starts the TCP server, opens the browser to the web interface,

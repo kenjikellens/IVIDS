@@ -246,7 +246,12 @@
         "allChannels": "Alla kanaler",
         "categories": "Kategorier",
         "recent": "Senaste kanalerna",
-        "searchPlaceholder": "Sök efter kanaler..."
+        "searchPlaceholder": "Sök efter kanaler...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Konfiguration av Live TV",

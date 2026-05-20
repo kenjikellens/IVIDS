@@ -246,7 +246,12 @@
         "allChannels": "すべてのチャンネル",
         "categories": "カテゴリー",
         "recent": "最近のチャンネル",
-        "searchPlaceholder": "チャンネルを検索..."
+        "searchPlaceholder": "チャンネルを検索...",
+        "allCategories": "すべてのカテゴリ",
+        "zappingTo": "チャンネル切替中...",
+        "epgNoInfo": "番組情報なし",
+        "channelCount": "{count} チャンネル",
+        "live": "ライブ"
     },
     "settings_livetv": {
         "title": "ライブTV設定",

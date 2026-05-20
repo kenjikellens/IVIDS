@@ -246,7 +246,12 @@
         "allChannels": "所有频道",
         "categories": "分类",
         "recent": "最近频道",
-        "searchPlaceholder": "搜索频道..."
+        "searchPlaceholder": "搜索频道...",
+        "allCategories": "所有分类",
+        "zappingTo": "正在切换至...",
+        "epgNoInfo": "无节目信息",
+        "channelCount": "{count} 频道",
+        "live": "直播"
     },
     "settings_livetv": {
         "title": "电视直播配置",

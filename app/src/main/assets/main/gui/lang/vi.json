@@ -246,7 +246,12 @@
         "allChannels": "Tất cả kênh",
         "categories": "Danh mục",
         "recent": "Kênh đã xem gần đây",
-        "searchPlaceholder": "Tìm kênh..."
+        "searchPlaceholder": "Tìm kênh...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Cấu hình Live TV",

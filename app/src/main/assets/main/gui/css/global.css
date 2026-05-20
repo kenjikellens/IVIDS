@@ -2154,6 +2154,7 @@ iframe {
    ========================================================================== */
 
 .livetv-page-layout {
+    /* Explains: Defines the primary structural container for the Live TV layout, spanning 100% viewport and flexing items vertically. */
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -2162,18 +2163,21 @@ iframe {
 }
 
 .livetv-hero {
-    min-height: 330px;
-    height: 38vh;
+    /* Explains: Stylizes the top-docked hero banner in a compact 24vh aspect ratio with smooth radial accents. */
+    min-height: 200px;
+    height: 24vh;
     display: flex;
     align-items: center;
-    padding: 36px var(--app-content-padding-x);
+    padding: 24px var(--app-content-padding-x);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     background:
-        linear-gradient(90deg, rgba(5, 5, 5, 0.94), rgba(5, 5, 5, 0.56)),
-        radial-gradient(circle at 82% 22%, rgba(var(--primary-rgb), 0.18), transparent 34%);
+        linear-gradient(90deg, rgba(5, 5, 5, 0.96), rgba(5, 5, 5, 0.65)),
+        radial-gradient(circle at 82% 22%, rgba(var(--primary-rgb), 0.22), transparent 40%);
+    transition: height 0.3s ease, min-height 0.3s ease;
 }
 
 .hero-placeholder-content {
+    /* Explains: Handles content alignments for default state prompts when no live stream is actively chosen. */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -2184,6 +2188,7 @@ iframe {
 }
 
 .placeholder-icon-large {
+    /* Explains: Highlights a vector representation mask utilizing primary theme colors as a background. */
     width: 82px;
     height: 82px;
     margin-bottom: 18px;
@@ -2200,6 +2205,7 @@ iframe {
 
 .hero-placeholder-content h1,
 .hero-text-details h1 {
+    /* Explains: Presets bold titles within the TV metadata display area. */
     color: #fff;
     font-size: 48px;
     line-height: 1.08;
@@ -2208,10 +2214,32 @@ iframe {
 }
 
 .hero-placeholder-content p {
+    /* Explains: Sizing for subtitled metadata info bars. */
     font-size: 17px;
 }
 
+.hero-stats-info-bar {
+    /* Explains: Configures styling for the inline stats counts indicating total streams and channels. */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
+}
+
+.stats-separator {
+    /* Explains: Color separator bullet between text metrics items. */
+    color: rgba(255, 255, 255, 0.3);
+}
+
 .hero-active-content {
+    /* Explains: Flex arrangement for displaying active stream info configurations. */
     display: flex;
     align-items: center;
     gap: 32px;
@@ -2219,6 +2247,7 @@ iframe {
 }
 
 .hero-logo-container {
+    /* Explains: Styled container boundary box for rendering channel logos in the hero. */
     width: 170px;
     height: 170px;
     flex: 0 0 170px;
@@ -2233,12 +2262,14 @@ iframe {
 }
 
 #hero-logo {
+    /* Explains: Prevents overflows for active image elements inside bounds. */
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
 }
 
 .hero-meta {
+    /* Explains: Flex alignment for badges showing group names and stream states. */
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -2248,6 +2279,7 @@ iframe {
 
 #hero-group,
 .accent-text {
+    /* Explains: Styles primary group names using uppercase letter-spacing configurations. */
     color: var(--primary-color);
     font-size: 15px;
     font-weight: 900;
@@ -2256,12 +2288,14 @@ iframe {
 }
 
 .hero-actions {
+    /* Explains: Layout wrap for watching action button items. */
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
 }
 
 .status-badge {
+    /* Explains: Defines borders, shapes, and font styling for link health state displays. */
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -2275,6 +2309,7 @@ iframe {
 }
 
 .status-dot {
+    /* Explains: Core dot graphic indicating verification passes. */
     width: 9px;
     height: 9px;
     border-radius: 999px;
@@ -2282,18 +2317,22 @@ iframe {
 }
 
 .status-badge.online .status-dot {
+    /* Explains: Active state indicator color for online channels. */
     background: #46d369;
 }
 
 .status-badge.offline .status-dot {
+    /* Explains: Inactive state indicator color for offline channels. */
     background: #e24a4a;
 }
 
 .status-badge.checking .status-dot {
+    /* Explains: Verification state indicator color for loading channels. */
     background: #f1c84c;
 }
 
 .filter-icon-small {
+    /* Explains: Small filter svg mask for the hide broken links button action. */
     width: 18px;
     height: 18px;
     background-color: currentColor;
@@ -2306,31 +2345,47 @@ iframe {
 }
 
 .search-top-bar {
+    /* Explains: Alignment gutters for the Live TV Search top section. */
     padding: 24px var(--app-content-padding-x) 0;
 }
 
 .search-box {
+    /* Explains: Sizing wrapper bounds for the search box input element. */
     width: min(780px, 100%);
 }
 
 .input-wrapper {
+    /* Explains: Outer styling of the glassmorphic search box containing counters and clear buttons. */
     height: 54px;
     display: flex;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 18px;
     border-radius: var(--radius-md);
     border: 2px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    position: relative;
 }
 
 .input-wrapper:focus-within,
 .input-wrapper.focused,
 .input-wrapper:hover {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
+    /* Explains: Breathing focus ring styling utilizing primary themes. No scale animations used. */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.35);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.input-wrapper:focus-within .search-icon,
+.input-wrapper.focused .search-icon {
+    /* Explains: Dynamic color filter drop shadow indicating keyboard focus states. */
+    filter: drop-shadow(0 0 2px var(--primary-color));
+    opacity: 1;
 }
 
 .search-icon {
+    /* Explains: SVG Search icon vector sizing margins. */
     width: 22px;
     height: 22px;
     margin-right: 12px;
@@ -2338,6 +2393,7 @@ iframe {
 }
 
 #search-input {
+    /* Explains: Inside text fields styling rules resetting native controls attributes. */
     width: 100%;
     height: 100%;
     border: 0;
@@ -2348,7 +2404,114 @@ iframe {
     font-weight: 700;
 }
 
+.search-counter-badge {
+    /* Explains: Matches count badges aligned inside the search bar. */
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-muted);
+    margin-right: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 4px 8px;
+    border-radius: var(--radius-xs);
+    white-space: nowrap;
+}
+
+.search-clear-btn {
+    /* Explains: Styled clear button matching thick focus rings on hover and click actions. */
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    transition: color 0.15s ease;
+}
+
+.search-clear-btn:hover,
+.search-clear-btn:focus,
+.search-clear-btn.focused {
+    /* Explains: Applies thick white border on focus as per user request guidelines. */
+    color: #fff;
+    outline: none;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+.livetv-categories-bar {
+    /* Explains: Container styles for horizontal category scrollbars. Uses pixel-less % layouts. */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px var(--app-content-padding-x) 8px;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.livetv-categories-bar::-webkit-scrollbar {
+    /* Explains: Disables visual scroll elements for category sections. */
+    display: none;
+}
+
+.category-chip {
+    /* Explains: Individual category chip layouts with borders and text settings. */
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.16s, border-color 0.16s, color 0.16s;
+}
+
+.category-chip:hover,
+.category-chip:focus,
+.category-chip.focused {
+    /* Explains: Focus border changes for chip buttons. No movement or scale modifications. */
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #fff;
+    color: #fff;
+    outline: none;
+}
+
+.category-chip.active {
+    /* Explains: Color active state variables mapping to category targets. */
+    background: rgba(var(--primary-rgb), 0.15);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.category-chip.active:hover,
+.category-chip.active:focus,
+.category-chip.active.focused {
+    /* Explains: Active chip focus styling overriding primary color theme with white border. */
+    border-color: #fff;
+    color: #fff;
+}
+
+.chip-count {
+    /* Explains: Numerical count indicators rendering inside chip buttons. */
+    font-size: 12px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: inherit;
+}
+
 .results-container {
+    /* Explains: Grid scroll viewport bounds configuration. */
     flex: 1;
     overflow-y: auto;
     min-height: 0;
@@ -2356,30 +2519,45 @@ iframe {
 }
 
 .search-results-grid {
+    /* Explains: Standard column layouts utilizing repeating fractional grid configurations. */
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 16px;
 }
 
 .channel-card {
-    min-height: 156px;
-    aspect-ratio: 1 / 1;
-    padding: 18px;
+    /* Explains: Wide rectangular TV-guide styled channel card with flex alignment and smooth transitions. No scale or movement transforms. */
+    position: relative;
+    aspect-ratio: 1.6 / 1;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: space-between;
     border-radius: var(--radius-lg);
     border: 3px solid transparent;
-    background: rgba(255, 255, 255, 0.055);
-    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    text-align: left;
     cursor: pointer;
+    overflow: hidden;
     transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+    animation: cardFadeIn 0.35s ease forwards;
+}
+
+@keyframes cardFadeIn {
+    /* Explains: Standard opacity fade-in animation for cards. No motion offsets. */
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .channel-card:hover,
 .channel-card:focus,
 .channel-card.focused {
+    /* Explains: Focused card state showing a thick white border. No scaling or translate transforms. */
     border-color: #fff;
     box-shadow: var(--focus-ring-strong);
     background: rgba(255, 255, 255, 0.09);
@@ -2387,25 +2565,203 @@ iframe {
     z-index: 10;
 }
 
+.card-status-dot {
+    /* Explains: Tiny status dot positioned in the top right to indicate stream availability. */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    z-index: 5;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+
+.card-status-dot.checking {
+    /* Explains: Golden color indicating active validation checks. */
+    background: #f1c84c;
+}
+
+.card-status-dot.online {
+    /* Explains: Green color indicating stream is online and working. */
+    background: #46d369;
+}
+
+.card-status-dot.offline {
+    /* Explains: Red color indicating stream is down or broken. */
+    background: #e24a4a;
+}
+
+.channel-card-logo-container {
+    /* Explains: Dedicated alignment wrapper for the channel logo at the top left of the card. */
+    height: 35%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .channel-card-logo {
-    width: 64%;
-    height: 64%;
+    /* Explains: Logo graphics scaling constraint. Fits logos gracefully into the top left card corner. */
+    width: auto;
+    height: 100%;
+    max-width: 60%;
     object-fit: contain;
-    margin-bottom: 12px;
+}
+
+.channel-card-meta-container {
+    /* Explains: Metadata block containing text titles, tags, and EPG schedules at the bottom of the card. */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    z-index: 2;
 }
 
 .channel-card-name {
+    /* Explains: Sizing and ellipsis constraints for the channel display name. */
     width: 100%;
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 13px;
     font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.channel-card-group-tag {
+    /* Explains: Small category indicator tags aligned to the left. */
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.8;
+    text-align: left;
+}
+
+.channel-card-epg-info {
+    /* Explains: Layout box containing currently playing show title and timeline progress bars. */
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.channel-card-epg-title {
+    /* Explains: Stylizes the focused program show title text with subtle transparency. */
+    font-size: 11px;
+    color: var(--text-muted);
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 400;
+    text-align: left;
+}
+
+.channel-card-epg-progress-container {
+    /* Explains: Horizontal track slot background container for card program timeline indicators. */
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.channel-card-epg-progress-bar {
+    /* Explains: Active progress indicator fill colored with primary accent hue. */
+    height: 100%;
+    background: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.hero-epg-container {
+    /* Explains: Compact glassmorphic EPG container displaying focused channel schedules under the hero details panel. */
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    width: 100%;
+    max-width: 480px;
+}
+
+.hero-epg-now {
+    /* Explains: Layout alignments for the LIVE indicator badge and active show title. */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.live-badge {
+    /* Explains: Premium LIVE indicator badge utilizing translucent accent color styling. */
+    background: rgba(var(--primary-rgb), 0.15);
+    color: var(--primary-color);
+    border: 1px solid rgba(var(--primary-rgb), 0.3);
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    display: inline-block;
+}
+
+.epg-title {
+    /* Explains: Stylizes bold active show titles inside the EPG block. */
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.hero-epg-progress-wrapper {
+    /* Explains: Alignments for the schedule timeline timeline containing timestamps and progress tracks. */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.epg-time {
+    /* Explains: Subdued styling for start and end timestamp labels. */
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.epg-progress-bar-container {
+    /* Explains: Track background slot container for hero active timeline indicator. */
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.epg-progress-bar-fill {
+    /* Explains: Colored progress track fill for hero active timelines. */
+    height: 100%;
+    background: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
 .loading-center,
 .no-results-msg {
+    /* Explains: Formatting placeholders inside bounds containers. */
     min-height: 220px;
     display: flex;
     align-items: center;
@@ -2417,6 +2773,7 @@ iframe {
 }
 
 @media (max-width: 1279px) {
+    /* Explains: Responsive media queries for medium sized screens. */
     .search-results-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
@@ -2434,6 +2791,7 @@ iframe {
 }
 
 @media (max-width: 767px), (orientation: portrait) {
+    /* Explains: Responsive layouts for mobile devices and vertical displays. */
     .livetv-hero {
         min-height: 360px;
         height: auto;
@@ -2476,6 +2834,7 @@ iframe {
    ========================================================================== */
 
 .tv-player-container {
+    /* Explains: Full viewport black layout wrapper details. */
     width: 100vw;
     height: 100vh;
     background: #000;
@@ -2484,67 +2843,248 @@ iframe {
 }
 
 .tv-video {
+    /* Explains: Spans raw video streams to fill viewport widths. */
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
 .tv-overlay {
+    /* Explains: Custom HUD controller panels overlays. Uses smooth fading curves. */
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 4vh 4vw;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%);
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: flex-end;
+    padding: 5vh 5vw;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.5s;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 8;
 }
 
 .tv-overlay.show {
+    /* Explains: State class to show overlays and enable events. */
     opacity: 1;
     pointer-events: auto;
 }
 
-.tv-info h1 {
-    font-size: 4vh;
-    margin: 0;
-    color: white;
+.tv-overlay-top {
+    /* Explains: Layout rules for top elements inside custom overlay. */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-.tv-info p {
-    font-size: 2vh;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0.5vh 0 0 0;
+.tv-overlay-bottom {
+    /* Explains: Bottom flex arrangement layout settings. */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
-.tv-controls button {
-    background: rgba(255, 255, 255, 0.1);
-    border: 0.3vh solid transparent;
+.tv-controls-left {
+    /* Explains: Metadata and play button alignment rules. */
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.tv-control-btn {
+    /* Explains: Styled buttons with thick white border focus indicators. No scale animations. */
+    background: rgba(255, 255, 255, 0.08);
+    border: 3px solid transparent;
     border-radius: 50%;
-    width: 6vh;
-    height: 6vh;
+    width: 60px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     cursor: pointer;
+    transition: border-color 0.16s ease, background 0.16s ease;
+    outline: none;
 }
 
-.tv-controls button:focus {
-    border-color: white;
+.tv-control-btn:hover,
+.tv-control-btn:focus,
+.tv-control-btn.focused {
+    /* Explains: Focus border thickness rules. No scale transform modifications. */
+    border-color: #fff;
     background: rgba(255, 255, 255, 0.2);
 }
 
-.tv-controls svg {
-    width: 3vh;
-    height: 3vh;
+.play-pause-btn {
+    /* Explains: Specialized sizes for primary playback toggle button. */
+    background: var(--primary-color);
+    color: #fff;
+    width: 68px;
+    height: 68px;
+}
+
+.play-pause-btn:hover,
+.play-pause-btn:focus,
+.play-pause-btn.focused {
+    /* Explains: Focus overrides for play pause button items. */
+    border-color: #fff;
+    background: var(--primary-color);
+}
+
+.tv-info {
+    /* Explains: Container bounds formatting for title text items. */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 50vw;
+}
+
+.tv-info h1 {
+    /* Explains: Bold headings detailing active channels names. */
+    font-size: 28px;
+    font-weight: 900;
+    margin: 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tv-meta-row {
+    /* Explains: Alignment metadata rows for tags and EPG logs. */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.tv-group-badge {
+    /* Explains: Styled category labels showing underneath channel titles. */
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.15);
+    border: 1px solid rgba(var(--primary-rgb), 0.3);
+    padding: 4px 10px;
+    border-radius: var(--radius-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tv-epg-info {
+    /* Explains: Subtitled font rules for EPG program logs. */
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+}
+
+.tv-controls-right {
+    /* Explains: Alignment for guide instructions and quality badges. */
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.tv-zap-guide {
+    /* Explains: Vertical alignment structures for keyboard zapping hints. */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.guide-key {
+    /* Explains: Keyboard layouts visual borders representing target arrows. */
+    font-size: 15px;
+    font-weight: 900;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 2px 10px;
+    border-radius: var(--radius-xs);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.guide-label {
+    /* Explains: Captions informing users how to zap streams. */
+    font-size: 11px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tv-status-badge {
+    /* Explains: Status indicators wrapper showing HD resolution stamps. */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tv-quality-badge {
+    /* Explains: Text parameters for LIVE HD badges. */
+    font-size: 12px;
+    font-weight: 900;
+    color: #fff;
+}
+
+.tv-zapping-hud {
+    /* Explains: Temporary HUD banner rendering in the top corner during channels switches. */
+    position: absolute;
+    top: 5vh;
+    right: 5vw;
+    background: rgba(0, 0, 0, 0.85);
+    border-left: 5px solid var(--primary-color);
+    padding: 16px 28px;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 9;
+    min-width: 260px;
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+}
+
+.tv-zapping-hud.fade-in {
+    /* Explains: Animations toggle configurations for zapping HUD elements. */
+    animation: hudFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes hudFadeIn {
+    /* Explains: Fade controls for temporary indicators. */
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.zapping-label {
+    /* Explains: Zapping state badge typography. */
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.zapping-channel-name {
+    /* Explains: Font sizes details for targeted channel names inside HUD indicators. */
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
 }
 
 .tv-loading {
+    /* Explains: Full screen spinner panels active during stream load sequences. */
     position: absolute;
     top: 0;
     left: 0;

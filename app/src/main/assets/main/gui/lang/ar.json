@@ -246,7 +246,12 @@
         "allChannels": "جميع القنوات",
         "categories": "الفئات",
         "recent": "القنوات الأخيرة",
-        "searchPlaceholder": "البحث عن القنوات..."
+        "searchPlaceholder": "البحث عن القنوات...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "تكوين البث المباشر",

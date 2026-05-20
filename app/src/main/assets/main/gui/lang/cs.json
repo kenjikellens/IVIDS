@@ -246,7 +246,12 @@
         "allChannels": "Všechny kanály",
         "categories": "Kategorie",
         "recent": "Nedávné kanály",
-        "searchPlaceholder": "Hledat kanály..."
+        "searchPlaceholder": "Hledat kanály...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Konfigurace Živého TV",

@@ -246,7 +246,12 @@
         "allChannels": "Semua Saluran",
         "categories": "Kategori",
         "recent": "Saluran Baru-baru Ini",
-        "searchPlaceholder": "Cari saluran..."
+        "searchPlaceholder": "Cari saluran...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Konfigurasi TV Langsung",

@@ -246,7 +246,12 @@
         "allChannels": "Все каналы",
         "categories": "Категории",
         "recent": "Недавние каналы",
-        "searchPlaceholder": "Поиск каналов..."
+        "searchPlaceholder": "Поиск каналов...",
+        "allCategories": "Все категории",
+        "zappingTo": "Переключение на...",
+        "epgNoInfo": "Нет информации о программе",
+        "channelCount": "{count} Каналы",
+        "live": "ПРЯМОЙ ЭФИР"
     },
     "settings_livetv": {
         "title": "Настройка Live TV",

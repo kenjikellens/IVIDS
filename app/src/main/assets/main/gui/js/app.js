@@ -484,7 +484,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             ErrorHandler.show(window.i18n.t('error.criticalInit'), () => window.location.reload());
         } catch (e) {
-            alert('A critical error occurred during initialization.');
+            console.error('A critical error occurred during initialization:', e);
+            try {
+                document.body.innerHTML = '<div style="background:#800;color:#fff;padding:30px;font-family:sans-serif;text-align:center;"><h1>Initialization Error</h1><p>A critical error occurred during initialization. Please restart the app.</p></div>';
+            } catch (domErr) {
+                console.error('Failed to inject critical init DOM error:', domErr);
+            }
         }
     }
 });

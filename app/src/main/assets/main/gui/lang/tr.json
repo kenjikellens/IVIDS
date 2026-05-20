@@ -246,7 +246,12 @@
         "allChannels": "Tüm Kanallar",
         "categories": "Kategoriler",
         "recent": "Son İzlenen Kanallar",
-        "searchPlaceholder": "Kanal ara..."
+        "searchPlaceholder": "Kanal ara...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "Canlı TV Yapılandırması",

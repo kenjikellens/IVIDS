@@ -62,8 +62,16 @@ export class ErrorHandler {
             const closeBtn = document.getElementById('error-close-btn');
 
             if (!modal) {
-                console.error('Error modal not initialized');
-                alert(message); // Fallback
+                console.error('Error modal not initialized. Error message:', message);
+                try {
+                    const fallbackDiv = document.createElement('div');
+                    fallbackDiv.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;background:rgba(255,0,0,0.9);color:#fff;padding:15px;z-index:99999;border-radius:5px;font-family:sans-serif;font-size:14px;';
+                    fallbackDiv.innerHTML = `<strong>Error Fallback:</strong> ${message}`;
+                    document.documentElement.appendChild(fallbackDiv);
+                    setTimeout(() => fallbackDiv.remove(), 8000);
+                } catch (domErr) {
+                    console.error('Failed to inject fallback DOM error:', domErr);
+                }
                 return;
             }
 
@@ -130,7 +138,16 @@ export class ErrorHandler {
 
         } catch (e) {
             console.error('Error showing ErrorHandler:', e);
-            alert(message); // Ultimate fallback
+            console.error('Original Error message:', message);
+            try {
+                const fallbackDiv = document.createElement('div');
+                fallbackDiv.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;background:rgba(255,0,0,0.9);color:#fff;padding:15px;z-index:99999;border-radius:5px;font-family:sans-serif;font-size:14px;';
+                fallbackDiv.innerHTML = `<strong>Critical Error:</strong> ${message}`;
+                document.documentElement.appendChild(fallbackDiv);
+                setTimeout(() => fallbackDiv.remove(), 8000);
+            } catch (domErr) {
+                console.error('Failed to inject critical DOM error:', domErr);
+            }
         }
     }
 

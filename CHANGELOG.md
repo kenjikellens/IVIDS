@@ -287,3 +287,65 @@
 [13:02 20-05-2026] .agents/workflows/version-and-release-update.md - Updated release protocol steps to cover Windows executable build and placement.
 [13:05 20-05-2026] IVIDS.exe - Compiled and relocated portable Windows Electron executable to workspace root directory.
 [13:11 20-05-2026] .gitignore - Added node_modules/ and dist/ build folders to ignore list.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/en.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/ar.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/cs.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/da.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/de.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/es.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/fr.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/hi.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/id.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/it.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/ja.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/ko.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/nl.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/no.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/pl.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/pt.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/ro.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/ru.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/sv.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/tr.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/vi.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/lang/zh.json - Added translation keys for Live TV categories, zapping, and EPG metadata.
+[13:19 20-05-2026] app/src/main/assets/main/gui/pages/livetv.html - Added category chips container, search stats counter, search clear button, and hero stats.
+[13:20 20-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Refactored script logic to support category chips bar, active search counts, inline playlist stats, and window zapping state.
+[13:20 20-05-2026] app/src/main/assets/main/gui/pages/tv-player.html - Redesigned to use custom playback overlays, metadata panels, zap helper guides, and a zapping HUD.
+[13:20 20-05-2026] app/src/main/assets/main/gui/pages/tv-player.js - Implemented playback toggles, arrow key zapping logic, zapping HUD displays, auto-hide overlays, and cleanup handlers.
+[13:20 20-05-2026] app/src/main/assets/main/gui/css/global.css - Styled category chip bar, search counters, status dot badges, glassmorphic player overlays, HUDs, and custom buttons with detailed block comments.
+[13:23 20-05-2026] run_pc.py - Modified request handler to inject Cache-Control disable headers to prevent browser asset caching on refresh.
+[13:34 20-05-2026] app/src/main/assets/main/logic/livetv/epg-manager.js - Implemented EpgManager class to generate stable, real-time mock Electronic Program Guide details.
+[13:35 20-05-2026] app/src/main/assets/main/gui/index.html - Included local hls.min.js script tag to support HLS stream playback on PC.
+[13:36 20-05-2026] app/src/main/assets/main/gui/pages/livetv.html - Added hero-epg-container element containing EPG title, times, and progress bar.
+[13:37 20-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Imported EpgManager, refactored card templates to embed EPG titles and progress tracks, updated the hero panel on focus, and reset search states on initialization.
+[13:39 20-05-2026] app/src/main/assets/main/gui/pages/tv-player.js - Integrated EpgManager to update the zapping overlay, implemented HLS.js streaming support for PC browsers, and replaced stream-error alert with Toast.
+[13:40 20-05-2026] app/src/main/assets/main/gui/pages/settings.js - Replaced settings-saved alerts with Toast notifications.
+[13:41 20-05-2026] app/src/main/assets/main/gui/js/error-handler.js - Removed fallback alert() popups and replaced them with non-blocking temporary DOM banners.
+[13:42 20-05-2026] app/src/main/assets/main/gui/js/app.js - Replaced initialization-failure alert() with console logging and full-screen error DOM element fallback.
+[13:43 20-05-2026] app/src/main/assets/main/gui/remove_playlist_script.js - Replaced console utility script alerts with console logging statements.
+[13:45 20-05-2026] app/src/main/assets/main/gui/css/global.css - Styled rectangular guide cards, logo containers, timeline EPG bars, and hero timeline grids.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/ar.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/cs.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/da.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/de.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/en.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/es.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/fr.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/hi.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/id.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/it.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/ja.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/ko.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/nl.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/no.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/pl.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/pt.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/ro.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/ru.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/sv.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/tr.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/vi.json - Added live badge translation.
+[13:46 20-05-2026] app/src/main/assets/main/gui/lang/zh.json - Added live badge translation.
+[13:39 20-05-2026] .agents/rules/changelog.md - Relaxed changelog trigger to post-task phase and restricted clearing to release commands.
+[13:39 20-05-2026] .agents/rules/agent-standards.md - Updated changelog mandate section to reflect post-task update trigger and conditional release clearing rules.

@@ -1,20 +1,62 @@
 <div class="tv-player-container">
-    <video id="tv-video" class="tv-video" autoplay controls></video>
+    <!-- Clean video stream without native browser controls -->
+    <video id="tv-video" class="tv-video" autoplay></video>
 
+    <!-- Zapping HUD Overlay (Top Right, temporary indicator) -->
+    <div id="tv-zapping-hud" class="tv-zapping-hud" style="display: none;">
+        <span class="zapping-label" data-i18n="livetv.zappingTo">Zapping to...</span>
+        <span id="zapping-channel-name" class="zapping-channel-name">Channel Name</span>
+    </div>
+
+    <!-- Custom Player Overlay (Auto Hides) -->
     <div class="tv-overlay" id="tv-overlay">
-        <div class="tv-info">
-            <h1 id="tv-title">Channel Name</h1>
-            <p id="tv-group">Group Name</p>
-        </div>
-        <div class="tv-controls">
-            <button class="focusable" id="tv-back">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="tv-overlay-top">
+            <button class="tv-control-btn focusable" id="tv-back" title="Back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
                     <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
             </button>
         </div>
+
+        <div class="tv-overlay-bottom">
+            <div class="tv-controls-left">
+                <!-- Play/Pause Toggle -->
+                <button class="tv-control-btn play-pause-btn focusable" id="tv-play-pause" title="Play/Pause">
+                    <!-- Pause Icon (default since it autoplays) -->
+                    <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                    <!-- Play Icon -->
+                    <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style="display: none;">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </button>
+
+                <!-- Channel Metadata -->
+                <div class="tv-info">
+                    <h1 id="tv-title">Channel Name</h1>
+                    <div class="tv-meta-row">
+                        <span id="tv-group" class="tv-group-badge">Group Name</span>
+                        <span class="tv-epg-info" id="tv-epg" data-i18n="livetv.epgNoInfo">No Program Info</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tv-controls-right">
+                <!-- Channel Zap Guide Indicators -->
+                <div class="tv-zap-guide">
+                    <span class="guide-key">▲/▼</span>
+                    <span class="guide-label">Zap Channel</span>
+                </div>
+                <div class="tv-status-badge">
+                    <span class="status-dot online"></span>
+                    <span class="tv-quality-badge">LIVE HD</span>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Buffering/Loading Indicator -->
     <div id="tv-loading" class="tv-loading">
         <div class="ivids-loader"></div>
     </div>

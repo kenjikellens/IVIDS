@@ -246,7 +246,12 @@
         "allChannels": "सभी चैनल",
         "categories": "श्रेणियां",
         "recent": "हालिया चैनल",
-        "searchPlaceholder": "चैनल खोजें..."
+        "searchPlaceholder": "चैनल खोजें...",
+        "allCategories": "All Categories",
+        "zappingTo": "Zapping to...",
+        "epgNoInfo": "No Program Info",
+        "channelCount": "{count} Channels",
+        "live": "LIVE"
     },
     "settings_livetv": {
         "title": "लाइव टीवी कॉन्फ़िगरेशन",
