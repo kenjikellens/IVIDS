@@ -6,9 +6,10 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 - [SPA Router & Lifecycle](architecture/router.md) — How page transitions and history work.
 - [Spatial Navigation](architecture/spatial-nav.md) — Geometric focus engine for TV remotes.
 - [Internationalization (i18n)](architecture/i18n.md) — Multi-language support and translation application.
+- [Update Checker](architecture/updater.md) — Cross-platform native/web automatic update service.
 
 ## Logic & Data
-- [Content API (TMDB)](logic/api.md) — Integration with The Movie Database and VidSrc.
+- [Content API (TMDB)](logic/api.md) — Integration with The Movie Database and VidLink.
 - [Data Management & Caching](logic/data-management.md) — LocalStorage, Profiles, and Hybrid Caching.
 - [Live TV & M3U](logic/livetv.md) — M3U parsing and IPTV stream integration.
 
@@ -17,8 +18,8 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 - [Performance & Optimization](gui/performance.md) — DOM Recycling, Hybrid Caching, and GPU acceleration.
 
 ## Workflow & Standards
-- [Development Guides](workflow/guides.md) — How to add pages, translations, and components.
-- [AI Agent Standards](workflow/agent_standards.md) — Mandatory protocols for coding agents.
+- [Development Guides](../.agents/workflows/guides.md) — How to add pages, translations, and components.
+- [AI Agent Standards](../.agents/rules/agent-standards.md) — Mandatory protocols for coding agents.
 
 ---
-*Single Source of Truth v2.1*
+*Single Source of Truth v3.2*

@@ -9,8 +9,7 @@ When `Router.loadPage(pageName, params)` is called, the following sequence occur
 1.  **Duplicate Guard**: Prevents redundant loads if requested page and parameters are identical to the current one.
 2.  **History Push**: If `addToHistory` is true, the current state is added to the internal memory stack for `goBack()` support.
 3.  **Loading Visuals**: 
-    - Swaps the `#page-css` link immediately to the new page's stylesheet.
-    - Clears the `#main-view` and renders a high-performance CSS loader.
+    - Clears the `#main-view` and renders a high-performance conic-gradient orbit spinner loader (styles defined in `loader.css`). Page-specific stylesheet swapping is disabled; all component and page styles are consolidated into the unified `global.css`.
     - Removes `fullscreen-layout` class from the main container (usually added for player views).
 4.  **Asynchronous Load (Parallelized)**:
     - **HTML**: Fetches `pages/${pageName}.html`. Includes a **10-second timeout** safety mechanism.

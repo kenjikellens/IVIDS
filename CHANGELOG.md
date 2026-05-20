@@ -272,5 +272,9 @@
 [23:35 19-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
 [23:38 19-05-2026] app/build.gradle.kts - Bumped versionName to v0.3.2 and incremented versionCode to 9.
 [23:39 19-05-2026] IVIDS.apk - Placed compiled clean uncached release APK for v0.3.2 featuring mobile CSS and App Info fixes.
-
-
+[12:17 20-05-2026] docs/index.md - Updated documentation index links and added references to VidLink and the Update Checker.
+[12:18 20-05-2026] docs/architecture/router.md - Updated lifecycle to reflect stylesheet consolidation and removal of page-specific CSS loading.
+[12:18 20-05-2026] docs/architecture/i18n.md - Updated supported languages list with all 22 localized languages.
+[12:19 20-05-2026] docs/logic/api.md - Updated provider routing documentation to cover VidLink, multi-server support, and auto-migration details.
+[12:19 20-05-2026] docs/gui/design-system.md - Documented stylesheet consolidation to global.css and inclusion of loader.css.
+[12:19 20-05-2026] docs/architecture/updater.md - Created documentation for the unified Update Checker module and native integration.

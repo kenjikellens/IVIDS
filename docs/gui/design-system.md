@@ -26,3 +26,8 @@ Variables are defined in `:root` and user-selectable values (like accent color) 
 
 ## SVG Masking
 Icons use CSS `mask-image` instead of inline SVGs. This allows changing icon colors globally via the `--primary-color` variable.
+
+## Stylesheet Structure & Consolidation
+To prevent page-transition styling flashes and eliminate unnecessary network requests, the stylesheet structure is optimized as follows:
+- **`global.css`**: The core, unified stylesheet. All 17 page-specific CSS files (such as `home.css`, `player.css`, `settings.css`, and `sidebar.css`) are consolidated here. Component and layout rules are bundled into a single file loaded during app startup.
+- **`loader.css`**: A dedicated stylesheet containing styles for high-performance loading animations, dual-orbit nested spinners, shimmer overlays, and layout skeletons. This ensures that visual loading indicators are available immediately while the main interface loads.
