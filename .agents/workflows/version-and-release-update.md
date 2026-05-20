@@ -21,23 +21,36 @@ This document defines the strict, standardized protocol for launching new releas
 - **CHANGELOG HOOK**: Immediately document this gradle modification in [CHANGELOG.md](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/CHANGELOG.md) in the exact format:
   `[HH:mm DD-MM-YYYY] app/build.gradle.kts - Bumped versionName to vX.Y.Z and incremented versionCode to N.`
 
-### 3. Compile the Application Package (APK)
-- **ACTION**: Execute the Gradle wrapper command in PowerShell to compile the application and produce the APK:
+### 3. Compile the Application Packages (APK and EXE)
+- **Android APK Compilation**: Execute the Gradle wrapper command in PowerShell to compile the application and produce the APK:
   ```powershell
   .\gradlew assembleDebug
   ```
   *(Or execute `.\gradlew assembleRelease` if building a signed production-ready package).*
+- **Windows PC EXE Compilation**: Install dependencies and package the Electron app:
+  ```powershell
+  npm install
+  npm run dist
+  ```
 
-### 4. Relocate and Rename the Package to the Workspace Root
-- **ACTION**: Copy the compiled APK to the root workspace directory and rename it to `IVIDS.apk`.
+### 4. Relocate and Rename the Packages to the Workspace Root
+- **Android Package (APK)**: Copy the compiled APK to the root workspace directory and rename it to `IVIDS.apk`.
   - **Source Path**: `app/build/outputs/apk/debug/app-debug.apk` (or matching release path).
   - **Destination Path**: [IVIDS.apk](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/IVIDS.apk) (root).
   - **PowerShell Copy Command**:
     ```powershell
     Copy-Item -Path "app/build/outputs/apk/debug/app-debug.apk" -Destination "IVIDS.apk" -Force
     ```
-- **CHANGELOG HOOK**: Immediately document the copying and creation of the root APK in [CHANGELOG.md](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/CHANGELOG.md) in the exact format:
+- **Windows Package (EXE)**: Copy the compiled portable executable to the root workspace directory and rename it to `IVIDS.exe`.
+  - **Source Path**: `dist/ivids*.exe` (or matching portable exe path).
+  - **Destination Path**: [IVIDS.exe](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/IVIDS.exe) (root).
+  - **PowerShell Copy Command**:
+    ```powershell
+    Copy-Item -Path "dist/*.exe" -Destination "IVIDS.exe" -Force
+    ```
+- **CHANGELOG HOOK**: Immediately document the copying and creation of both binaries in [CHANGELOG.md](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/CHANGELOG.md) in the exact format:
   `[HH:mm DD-MM-YYYY] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.`
+  `[HH:mm DD-MM-YYYY] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.`
 
 ### 5. Tag and Push the Release
 - **ACTION**: Tag the release commit and push it to the remote GitHub repository:

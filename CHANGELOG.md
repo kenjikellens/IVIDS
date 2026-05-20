@@ -278,3 +278,12 @@
 [12:19 20-05-2026] docs/logic/api.md - Updated provider routing documentation to cover VidLink, multi-server support, and auto-migration details.
 [12:19 20-05-2026] docs/gui/design-system.md - Documented stylesheet consolidation to global.css and inclusion of loader.css.
 [12:19 20-05-2026] docs/architecture/updater.md - Created documentation for the unified Update Checker module and native integration.
+[12:45 20-05-2026] run_pc.py - Created Python helper script in workspace root to host local HTTP server for PC UI testing.
+[13:02 20-05-2026] package.json - Created package.json to configure Electron and electron-builder packaging targets.
+[13:02 20-05-2026] main.js - Created Electron main process script with window configuration and update IPC handlers.
+[13:02 20-05-2026] preload.js - Created preload script to bridge main process IPC update methods safely to contextBridge.
+[13:02 20-05-2026] app/src/main/assets/main/gui/js/updater.js - Refactored checkForUpdates to support Electron checkPcUpdate Promise and version comparison.
+[13:02 20-05-2026] app/src/main/assets/main/gui/js/update-prompt.js - Implemented Electron update downloading and installation loop with progress listener.
+[13:02 20-05-2026] .agents/workflows/version-and-release-update.md - Updated release protocol steps to cover Windows executable build and placement.
+[13:05 20-05-2026] IVIDS.exe - Compiled and relocated portable Windows Electron executable to workspace root directory.
+[13:11 20-05-2026] .gitignore - Added node_modules/ and dist/ build folders to ignore list.

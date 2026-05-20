@@ -149,7 +149,41 @@ export class UpdatePrompt {
             if (progressText) {
                 progressText.textContent = `${window.i18n.t('update_status_downloading')} (0%)`;
             }
-            // Electron handle download IPC
+            try {
+                // Register progress listener from preload bridge
+                const unsubscribe = window.ElectronAPI.onUpdateProgress((percent) => {
+                    this.handleProgress(percent);
+                });
+
+                const downloadUrl = window.latestUpdateDownloadUrl;
+                const version = window.latestUpdateVersion;
+
+                window.ElectronAPI.downloadPcUpdate(downloadUrl, version)
+                    .then((result) => {
+                        unsubscribe();
+                        if (result && result.status === 'downloaded') {
+                            this.handleStatus('installing');
+                            if (progressText) {
+                                progressText.textContent = window.i18n.t('update_status_installing');
+                            }
+                            // Trigger installer execution on main process
+                            window.ElectronAPI.installPcUpdate(result.filePath).catch(err => {
+                                console.error('UpdatePrompt: Failed to install PC update', err);
+                                this.handleError();
+                            });
+                        } else {
+                            throw new Error(result ? result.message : 'Download failed');
+                        }
+                    })
+                    .catch((err) => {
+                        unsubscribe();
+                        console.error('UpdatePrompt: Failed to download PC update', err);
+                        this.handleError();
+                    });
+            } catch (err) {
+                console.error('UpdatePrompt: Failed to initialize Electron download', err);
+                this.handleError();
+            }
         } else if (window.latestUpdateDownloadUrl) {
             if (progressText) {
                 progressText.textContent = window.i18n.t('update_status_downloading');

@@ -75,7 +75,49 @@ export async function checkForUpdates(force = false) {
         if (typeof window.onUpdateStatus === 'function') {
             window.onUpdateStatus('connecting-api');
         }
-        window.ElectronAPI.checkPcUpdate();
+        try {
+            if (typeof window.onUpdateStatus === 'function') {
+                window.onUpdateStatus('fetching-releases');
+            }
+            const result = await window.ElectronAPI.checkPcUpdate();
+            if (result && result.status === 'ok' && result.release) {
+                if (typeof window.onUpdateStatus === 'function') {
+                    window.onUpdateStatus('comparing-versions');
+                }
+                const release = result.release;
+                const remoteVersion = release.tag_name;
+                const localVersion = getLocalVersion();
+                console.log(`Updater (Electron): Local: ${localVersion}, Remote: ${remoteVersion}`);
+                if (isNewer(localVersion, remoteVersion)) {
+                    console.log(`Updater (Electron): Newer version found: ${remoteVersion}`);
+                    const exeAsset = release.assets && release.assets.find(asset => asset.name.toLowerCase().endsWith('.exe'));
+                    if (exeAsset) {
+                        window.latestUpdateDownloadUrl = exeAsset.browser_download_url;
+                        window.latestUpdateVersion = remoteVersion;
+                        if (typeof window.onUpdateFound === 'function') {
+                            window.onUpdateFound(remoteVersion);
+                        }
+                    } else {
+                        console.warn('Updater (Electron): No EXE asset found in latest release');
+                        if (typeof window.onNoUpdateFound === 'function') {
+                            window.onNoUpdateFound();
+                        }
+                    }
+                } else {
+                    console.log('Updater (Electron): App is up to date.');
+                    if (typeof window.onNoUpdateFound === 'function') {
+                        window.onNoUpdateFound();
+                    }
+                }
+            } else {
+                throw new Error(result ? result.message : 'Invalid response');
+            }
+        } catch (err) {
+            console.error('Updater (Electron): Failed to check updates', err);
+            if (typeof window.onUpdateCheckError === 'function') {
+                window.onUpdateCheckError();
+            }
+        }
     } else {
         console.log('Updater: Direct update check via Static Web API');
         if (typeof window.onUpdateStatus === 'function') {
