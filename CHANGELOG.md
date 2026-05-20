@@ -349,3 +349,61 @@
 [13:46 20-05-2026] app/src/main/assets/main/gui/lang/zh.json - Added live badge translation.
 [13:39 20-05-2026] .agents/rules/changelog.md - Relaxed changelog trigger to post-task phase and restricted clearing to release commands.
 [13:39 20-05-2026] .agents/rules/agent-standards.md - Updated changelog mandate section to reflect post-task update trigger and conditional release clearing rules.
+[13:44 20-05-2026] epg-manager.js - Implemented getUpcomingPrograms method to calculate deterministic upcoming shows.
+[13:44 20-05-2026] livetv.html - Redesigned template into a premium two-column layout with vertical guide lists, previews, and schedules.
+[13:44 20-05-2026] livetv.js - Refactored controller to bind vertical channel guides, active preview details, and upcoming schedules.
+[13:44 20-05-2026] global.css - Added CSS styles for two-column split panels, rectangular rows, timeline fills, and upcoming slots with detailed explanations.
+[13:44 20-05-2026] en.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] ar.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] cs.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] da.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] de.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] es.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] fr.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] hi.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] id.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] it.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] ja.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] ko.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] nl.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] no.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] pl.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] pt.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] ro.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] ru.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] sv.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] tr.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] vi.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:44 20-05-2026] zh.json - Localized Playing Now and Upcoming Programs translation tags.
+[13:47 20-05-2026] router.js - Added dynamic timestamp query parameters to HTML fetches and dynamic JS imports for cache-busting.
+[13:47 20-05-2026] sidebar.js - Added query parameter cache-busting to sidebar HTML template fetch.
+[13:47 20-05-2026] index.html - Appended version query parameters to unified CSS links to force styling refresh.
+[13:50 20-05-2026] global.css - Reduced vertical list padding and gaps, increased font size of channel name titles, and resized logos.
+[13:50 20-05-2026] livetv.js - Removed current program EPG elements and progress bars from list row item templates.
+[13:55 20-05-2026] livetv.html - Integrated select dropdown elements for Genre and Country filters and removed categories bar.
+[13:55 20-05-2026] global.css - Configured glassmorphism selectors for dropdown filters and adjusted search layouts.
+[13:55 20-05-2026] livetv.js - Implemented group split logic to support separate dynamic genre and country select filters.
+[13:55 20-05-2026] spatial-nav.js - Bypassed SELECT tag key preventDefault to support standard select overlays.
+[13:55 20-05-2026] ar.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] cs.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] da.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] de.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] en.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] es.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] fr.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] hi.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] id.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] it.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] ja.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] ko.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] nl.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] no.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] pl.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] pt.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] ro.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] ru.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] sv.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] tr.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] vi.json - Added allGenres and allCountries translation keys.
+[13:55 20-05-2026] zh.json - Added allGenres and allCountries translation keys.
+[14:06 20-05-2026] global.css - Tuned Live TV split column layout to 40% and 58% widths and stacked preview and EPG cards vertically.

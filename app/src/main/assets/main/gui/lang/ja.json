@@ -251,7 +251,11 @@
         "zappingTo": "チャンネル切替中...",
         "epgNoInfo": "番組情報なし",
         "channelCount": "{count} チャンネル",
-        "live": "ライブ"
+        "live": "ライブ",
+        "playingNow": "放送中",
+        "upcoming": "今後の番組",
+        "allGenres": "すべてのジャンル",
+        "allCountries": "すべての国"
     },
     "settings_livetv": {
         "title": "ライブTV設定",

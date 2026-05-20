@@ -283,6 +283,8 @@ export const SpatialNav = {
                         current.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                 }
+            } else if (current.tagName === 'SELECT') {
+                // Let browser handle select natively
             } else {
                 e.preventDefault();
                 current.click();

@@ -251,7 +251,11 @@
         "zappingTo": "채널 전환 중...",
         "epgNoInfo": "프로그램 정보 없음",
         "channelCount": "{count} 채널",
-        "live": "라이브"
+        "live": "라이브",
+        "playingNow": "현재 방송 중",
+        "upcoming": "다음 방송 프로그램",
+        "allGenres": "모든 장르",
+        "allCountries": "모든 국가"
     },
     "settings_livetv": {
         "title": "라이브 TV 설정",

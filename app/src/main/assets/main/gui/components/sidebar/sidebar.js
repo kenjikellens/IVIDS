@@ -30,7 +30,7 @@ export const Sidebar = {
 
         // Load HTML
         try {
-            const response = await fetch('components/sidebar/sidebar.html');
+            const response = await fetch(`components/sidebar/sidebar.html?_=${Date.now()}`);
             if (!response.ok) throw new Error('Failed to load sidebar HTML');
             const html = await response.text();
             container.innerHTML = `<nav class="navbar" id="header">${html}</nav>`;

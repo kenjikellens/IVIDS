@@ -244,7 +244,11 @@
         "zappingTo": "Cambiando a...",
         "epgNoInfo": "Sin información",
         "channelCount": "{count} Canales",
-        "live": "EN VIVO"
+        "live": "EN VIVO",
+        "playingNow": "En vivo ahora",
+        "upcoming": "Próximos programas",
+        "allGenres": "Todos los géneros",
+        "allCountries": "Todos los países"
     },
     "settings_livetv": {
         "title": "Configuración de Live TV",

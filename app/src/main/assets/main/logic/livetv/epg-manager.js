@@ -162,4 +162,72 @@ export class EpgManager {
             timeLeft: timeLeftMin
         };
     }
+
+    /**
+     * getUpcomingPrograms Function
+     * ============================
+     * Computes the next N program blocks following the current one.
+     * Guaranteed to match the slot duration and hash indexing of the current program.
+     * 
+     * @param {string} channelName - The name of the channel.
+     * @param {string} channelGroup - The category or group of the channel.
+     * @param {number} limit - Number of upcoming shows to fetch (default: 3).
+     * @returns {Array} List of program objects containing title, start, and end.
+     */
+    static getUpcomingPrograms(channelName, channelGroup = '', limit = 3) {
+        const name = channelName || 'Channel';
+        const group = (channelGroup || '').toLowerCase();
+
+        let category = 'general';
+        let slotDurationHours = 1;
+
+        if (group.includes('sport')) {
+            category = 'sports';
+            slotDurationHours = 2;
+        } else if (group.includes('movie') || group.includes('cinema')) {
+            category = 'movies';
+            slotDurationHours = 2;
+        } else if (group.includes('news') || group.includes('aktu') || group.includes('info')) {
+            category = 'news';
+            slotDurationHours = 1;
+        } else if (group.includes('music') || group.includes('radio') || group.includes('hit')) {
+            category = 'music';
+            slotDurationHours = 1;
+        }
+
+        const programList = this.PROGRAM_DATABASE[category] || this.PROGRAM_DATABASE.general;
+        const channelSeed = this.getStringHash(name);
+
+        const now = new Date();
+        const currentHour = now.getHours();
+        const startHour = Math.floor(currentHour / slotDurationHours) * slotDurationHours;
+
+        const upcoming = [];
+        const formatTime = (date) => {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        };
+
+        for (let i = 1; i <= limit; i++) {
+            const nextStartHour = startHour + (i * slotDurationHours);
+            const nextEndHour = nextStartHour + slotDurationHours;
+
+            const nextStartDate = new Date(now);
+            nextStartDate.setHours(nextStartHour, 0, 0, 0);
+
+            const nextEndDate = new Date(now);
+            nextEndDate.setHours(nextEndHour, 0, 0, 0);
+
+            const nextSlotIndex = Math.floor((currentHour + (i * slotDurationHours)) / slotDurationHours);
+            const programIndex = (channelSeed + nextSlotIndex) % programList.length;
+            const title = programList[programIndex];
+
+            upcoming.push({
+                title: title,
+                start: formatTime(nextStartDate),
+                end: formatTime(nextEndDate)
+            });
+        }
+
+        return upcoming;
+    }
 }

@@ -251,7 +251,11 @@
         "zappingTo": "Zapping su...",
         "epgNoInfo": "Nessuna info programma",
         "channelCount": "{count} Canali",
-        "live": "DIRETTA"
+        "live": "DIRETTA",
+        "playingNow": "In onda ora",
+        "upcoming": "Prossimi programmi",
+        "allGenres": "Tutti i generi",
+        "allCountries": "Tutti i paesi"
     },
     "settings_livetv": {
         "title": "Configurazione Live TV",

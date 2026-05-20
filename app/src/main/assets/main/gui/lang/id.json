@@ -251,7 +251,11 @@
         "zappingTo": "Zapping to...",
         "epgNoInfo": "No Program Info",
         "channelCount": "{count} Channels",
-        "live": "LIVE"
+        "live": "LIVE",
+        "playingNow": "Playing Now",
+        "upcoming": "Upcoming Programs",
+        "allGenres": "All Genres",
+        "allCountries": "All Countries"
     },
     "settings_livetv": {
         "title": "Konfigurasi TV Langsung",

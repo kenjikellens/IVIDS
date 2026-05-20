@@ -9,9 +9,27 @@ let filteredChannels = [];
 let searchQuery = '';
 let selectedChannel = null;
 let hideBroken = false;
-let activeCategory = 'all';
-let categories = [];
+let activeGenre = '';
+let activeCountry = '';
+let genres = [];
+let countries = [];
 const statusCache = new Map(); // Store channel status results: url -> {status, timestamp}
+
+// Explains: Curated set of lowercase country tags commonly found in international IPTV lists.
+const countriesList = new Set([
+    'albania', 'andorra', 'slovakia', 'slovak', 'czech', 'czechia', 'poland', 'polish', 
+    'hungary', 'hungarian', 'romania', 'romanian', 'bulgaria', 'bulgarian', 'greece', 'greek', 
+    'turkey', 'turkish', 'russia', 'russian', 'ukraine', 'ukr', 'ukrainian', 'germany', 'german', 
+    'austria', 'austrian', 'switzerland', 'swiss', 'france', 'french', 'belgium', 'belgian', 
+    'netherlands', 'dutch', 'united kingdom', 'uk', 'england', 'ireland', 'irish', 'spain', 
+    'spanish', 'portugal', 'portuguese', 'italy', 'italian', 'sweden', 'swedish', 'norway', 
+    'norwegian', 'denmark', 'danish', 'finland', 'finnish', 'iceland', 'estonia', 'latvia', 
+    'lithuania', 'united states', 'usa', 'us', 'canada', 'canadian', 'australia', 'new zealand', 
+    'japan', 'japanese', 'china', 'chinese', 'korea', 'korean', 'india', 'indian', 'brazil', 
+    'brazilian', 'argentina', 'mexico', 'chile', 'colombia', 'peru', 'venezuela', 'arab', 
+    'arabic', 'egypt', 'saudi', 'uae', 'israel', 'hebrew', 'iran', 'persian', 'pakistan', 
+    'vietnam', 'thailand', 'indonesia', 'philippines', 'africa', 'south africa'
+]);
 
 /**
  * init function
@@ -26,9 +44,19 @@ export async function init(params) {
 
     // Reset state variables to prevent carry-over from cached ES modules when returning from player
     searchQuery = '';
-    activeCategory = 'all';
+    activeGenre = '';
+    activeCountry = '';
     selectedChannel = null;
     hideBroken = false;
+
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    const clearBtn = document.getElementById('search-clear');
+    if (clearBtn) {
+        clearBtn.style.display = 'none';
+    }
 
     if (window.i18n) window.i18n.applyTranslations();
 
@@ -46,13 +74,13 @@ export async function init(params) {
 async function loadAllSources() {
     const loading = document.getElementById('loading-channels');
     const empty = document.getElementById('no-channels-message');
-    const grid = document.getElementById('channels-grid');
+    const list = document.getElementById('channels-list');
     const countEl = document.getElementById('hero-total-channels');
 
     try {
         if (loading) loading.style.display = 'flex';
         if (empty) empty.style.display = 'none';
-        if (grid) grid.innerHTML = '';
+        if (list) list.innerHTML = '';
 
         const sourceEntries = Object.entries(PRESET_SOURCES);
         const settings = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
@@ -92,15 +120,26 @@ async function loadAllSources() {
 
         if (loading) loading.style.display = 'none';
 
-        // Extract unique categories
-        const groupSet = new Set();
+        // Extract unique genres and countries
+        const genresSet = new Set();
+        const countriesSet = new Set();
         allChannels.forEach(c => {
-            if (c.group) groupSet.add(c.group);
+            if (c.group) {
+                const tags = c.group.split(';').map(t => t.trim()).filter(Boolean);
+                tags.forEach(tag => {
+                    if (countriesList.has(tag.toLowerCase())) {
+                        countriesSet.add(tag);
+                    } else {
+                        genresSet.add(tag);
+                    }
+                });
+            }
         });
-        categories = Array.from(groupSet).sort();
+        genres = Array.from(genresSet).sort();
+        countries = Array.from(countriesSet).sort();
 
-        // Render dynamic category filter chips
-        renderCategoriesBar();
+        // Populate select filters in UI
+        populateFilters();
 
         // Show stats banner
         const statsInfo = document.getElementById('hero-stats-info');
@@ -125,62 +164,37 @@ async function loadAllSources() {
 }
 
 /**
- * renderCategoriesBar function
- * ============================
- * Explains: Dynamically constructs horizontal category chips with channel counts
- * and binds focus and click event handlers for filtering.
+ * populateFilters function
+ * ========================
+ * Explains: Fills the dropdown selectors for Genre and Country with unique options 
+ * parsed from IPTV channels, preserving previous selection states.
  */
-function renderCategoriesBar() {
-    const bar = document.getElementById('livetv-categories-bar');
-    if (!bar) return;
+function populateFilters() {
+    const genreSelect = document.getElementById('filter-genre');
+    const countrySelect = document.getElementById('filter-country');
+    if (!genreSelect || !countrySelect) return;
 
-    bar.innerHTML = '';
+    const prevGenre = genreSelect.value;
+    const prevCountry = countrySelect.value;
 
-    // Create 'All' category chip
-    const allChip = document.createElement('button');
-    allChip.className = `category-chip focusable ${activeCategory === 'all' ? 'active' : ''}`;
-    allChip.tabIndex = 0;
-    allChip.innerHTML = `
-        <span class="chip-name">${window.i18n?.t('livetv.allCategories') || 'All Categories'}</span>
-        <span class="chip-count">${allChannels.length}</span>
-    `;
-    allChip.onclick = () => selectCategory('all', allChip);
-    bar.appendChild(allChip);
+    genreSelect.innerHTML = `<option value="">${window.i18n?.t('livetv.allGenres') || 'All Genres'}</option>`;
+    countrySelect.innerHTML = `<option value="">${window.i18n?.t('livetv.allCountries') || 'All Countries'}</option>`;
 
-    // Create a chip for each unique category group
-    categories.forEach(cat => {
-        const count = allChannels.filter(c => c.group === cat).length;
-        if (count === 0) return;
-
-        const chip = document.createElement('button');
-        chip.className = `category-chip focusable ${activeCategory === cat ? 'active' : ''}`;
-        chip.tabIndex = 0;
-        chip.innerHTML = `
-            <span class="chip-name">${cat}</span>
-            <span class="chip-count">${count}</span>
-        `;
-        chip.onclick = () => selectCategory(cat, chip);
-        bar.appendChild(chip);
+    genres.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = g;
+        if (g === prevGenre) opt.selected = true;
+        genreSelect.appendChild(opt);
     });
-}
 
-/**
- * selectCategory function
- * =======================
- * Explains: Updates the currently active category filter selection state and triggers grid updates.
- * 
- * @param {string} cat - The selected category value.
- * @param {HTMLElement} chipEl - The selected chip element.
- */
-function selectCategory(cat, chipEl) {
-    activeCategory = cat;
-    
-    // Toggle active state styling across chips
-    const chips = document.querySelectorAll('.category-chip');
-    chips.forEach(c => c.classList.remove('active'));
-    if (chipEl) chipEl.classList.add('active');
-
-    filterAndRenderChannels(true);
+    countries.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        if (c === prevCountry) opt.selected = true;
+        countrySelect.appendChild(opt);
+    });
 }
 
 /**
@@ -192,7 +206,7 @@ function selectCategory(cat, chipEl) {
  * @param {boolean} resetFocus - Resets navigation focus to the first card if true.
  */
 function filterAndRenderChannels(resetFocus = false) {
-    const container = document.getElementById('channels-grid');
+    const container = document.getElementById('channels-list');
     if (!container) return;
 
     const currentFocused = document.querySelector('.focused');
@@ -202,9 +216,13 @@ function filterAndRenderChannels(resetFocus = false) {
 
     filteredChannels = allChannels.filter(c => {
         const matchesSearch = !searchQuery || (c.name || "").toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = activeCategory === 'all' || c.group === activeCategory;
+        
+        const tags = c.group ? c.group.split(';').map(t => t.trim().toLowerCase()) : [];
+        const matchesGenre = !activeGenre || tags.includes(activeGenre.toLowerCase());
+        const matchesCountry = !activeCountry || tags.includes(activeCountry.toLowerCase());
+        
         const isNotBroken = !hideBroken || (statusCache.get(c.url)?.status !== 'offline');
-        return matchesSearch && matchesCategory && isNotBroken;
+        return matchesSearch && matchesGenre && matchesCountry && isNotBroken;
     });
 
     // Update shared window state for Zapping features in tv-player page
@@ -227,28 +245,22 @@ function filterAndRenderChannels(resetFocus = false) {
 
     filteredChannels.forEach((channel) => {
         const item = document.createElement('div');
-        item.className = 'channel-card focusable';
+        item.className = 'channel-list-item focusable';
         item.tabIndex = 0;
         item.dataset.url = channel.url;
 
         const iconUrl = channel.logo || 'images/livetv.svg';
         const cachedStatus = statusCache.get(channel.url)?.status || 'checking';
-        const epg = EpgManager.getCurrentProgram(channel.name, channel.group);
 
         item.innerHTML = `
-            <div class="card-status-dot ${cachedStatus}"></div>
-            <div class="channel-card-logo-container">
-                <img src="${iconUrl}" class="channel-card-logo" onerror="this.src='images/livetv.svg'">
+            <div class="list-status-dot ${cachedStatus}"></div>
+            <div class="channel-list-logo-container">
+                <img src="${iconUrl}" class="channel-list-logo" onerror="this.src='images/livetv.svg'">
             </div>
-            <div class="channel-card-meta-container">
-                <span class="channel-card-name">${channel.name}</span>
-                <span class="channel-card-group-tag">${channel.group || ''}</span>
-                <!-- EPG Info Block -->
-                <div class="channel-card-epg-info">
-                    <span class="channel-card-epg-title">${epg.title}</span>
-                    <div class="channel-card-epg-progress-container">
-                        <div class="channel-card-epg-progress-bar" style="width: ${epg.progress}%"></div>
-                    </div>
+            <div class="channel-list-meta-container">
+                <div class="channel-list-name-row">
+                    <span class="channel-list-name">${channel.name}</span>
+                    <span class="channel-list-group-tag">${channel.group || ''}</span>
                 </div>
             </div>
         `;
@@ -314,6 +326,22 @@ async function showChannelDetail(channel) {
         if (epgProgressEl) epgProgressEl.style.width = `${epg.progress}%`;
     }
 
+    // Populate Upcoming Programs list
+    const upcomingListEl = document.getElementById('upcoming-programs-list');
+    if (upcomingListEl) {
+        upcomingListEl.innerHTML = '';
+        const upcomingShows = EpgManager.getUpcomingPrograms(channel.name, channel.group, 3);
+        upcomingShows.forEach(show => {
+            const row = document.createElement('div');
+            row.className = 'upcoming-program-row';
+            row.innerHTML = `
+                <span class="upcoming-program-time">${show.start} - ${show.end}</span>
+                <span class="upcoming-program-title">${show.title}</span>
+            `;
+            upcomingListEl.appendChild(row);
+        });
+    }
+
     const playBtn = document.getElementById('hero-play-btn');
     if (playBtn) playBtn.onclick = () => playChannel(channel);
 
@@ -326,12 +354,12 @@ async function showChannelDetail(channel) {
         statusCache.set(channel.url, { status, timestamp: Date.now() });
         
         // Update status dot on the card immediately if card exists
-        const cards = document.querySelectorAll('.channel-card');
+        const cards = document.querySelectorAll('.channel-list-item');
         cards.forEach(card => {
             if (card.dataset.url === channel.url) {
-                const dot = card.querySelector('.card-status-dot');
+                const dot = card.querySelector('.list-status-dot');
                 if (dot) {
-                    dot.className = `card-status-dot ${status}`;
+                    dot.className = `list-status-dot ${status}`;
                 }
             }
         });
@@ -423,9 +451,9 @@ function setupEventListeners() {
     const originalBack = SpatialNav.onBack;
     SpatialNav.onBack = () => {
         const current = document.querySelector('.focused');
-        const grid = document.getElementById('channels-grid');
+        const list = document.getElementById('channels-list');
 
-        if (current && grid && grid.contains(current) && searchInput) {
+        if (current && list && list.contains(current) && searchInput) {
             SpatialNav.setFocus(searchInput);
         } else if (originalBack) {
             originalBack();
@@ -473,6 +501,23 @@ function setupEventListeners() {
                 filterBtn.style.color = 'white';
             }
             filterAndRenderChannels();
+        };
+    }
+
+    const genreSelect = document.getElementById('filter-genre');
+    const countrySelect = document.getElementById('filter-country');
+
+    if (genreSelect) {
+        genreSelect.onchange = (e) => {
+            activeGenre = e.target.value;
+            filterAndRenderChannels(true);
+        };
+    }
+
+    if (countrySelect) {
+        countrySelect.onchange = (e) => {
+            activeCountry = e.target.value;
+            filterAndRenderChannels(true);
         };
     }
 }

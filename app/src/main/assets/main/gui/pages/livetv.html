@@ -1,59 +1,6 @@
 <div class="livetv-page-layout">
-    <!-- Hero Preview Area (Aligned with Home/Details style) -->
-    <div class="livetv-hero" id="livetv-hero">
-        <div id="hero-placeholder" class="hero-placeholder-content">
-            <div class="placeholder-icon-large"></div>
-            <h1 data-i18n="livetv.selectTitle">Live TV Explorer</h1>
-            <p data-i18n="livetv.selectSubtitle">Discover and watch hundreds of live channels</p>
-            <div id="hero-stats-info" class="hero-stats-info-bar" style="display: none;">
-                <span id="hero-total-channels">0 channels</span>
-                <span class="stats-separator">•</span>
-                <span id="hero-total-sources">0 sources</span>
-            </div>
-        </div>
-
-        <div id="hero-active-content" class="hero-active-content" style="display: none;">
-            <div class="hero-logo-container">
-                <img id="hero-logo" src="" alt="" onerror="this.src='images/livetv.svg'">
-            </div>
-            <div class="hero-text-details">
-                <h1 id="hero-name"></h1>
-                <div class="hero-meta">
-                    <span id="hero-group" class="accent-text"></span>
-                    <div id="hero-status" class="status-badge">
-                        <span class="status-dot"></span>
-                        <span class="status-text">Checking...</span>
-                    </div>
-                </div>
-                <!-- EPG Metadata Row -->
-                <!-- Explains: Contains currently playing show details, elapsed time range, and progress track -->
-                <div id="hero-epg-container" class="hero-epg-container" style="display: none;">
-                    <div class="hero-epg-now">
-                        <span class="live-badge" data-i18n="livetv.live">LIVE</span>
-                        <span id="hero-epg-title" class="epg-title"></span>
-                    </div>
-                    <div class="hero-epg-progress-wrapper">
-                        <span id="hero-epg-start" class="epg-time"></span>
-                        <div class="epg-progress-bar-container">
-                            <div id="hero-epg-progress" class="epg-progress-bar-fill"></div>
-                        </div>
-                        <span id="hero-epg-end" class="epg-time"></span>
-                    </div>
-                </div>
-                <div class="hero-actions">
-                    <button id="hero-play-btn" class="btn btn-primary focusable" data-i18n="livetv.watchNow">WATCH
-                        NOW</button>
-                    <button id="hero-filter-btn" class="btn btn-secondary focusable">
-                        <div class="filter-icon-small"></div>
-                        <span data-i18n="livetv.hideBroken">Hide Broken</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Align with Search top bar -->
-    <div class="search-top-bar">
+    <!-- Top Area: Search and Compact Actions -->
+    <div class="livetv-top-bar">
         <div class="search-box">
             <div class="input-wrapper">
                 <img src="images/search.svg" class="search-icon" alt="Search">
@@ -63,25 +10,103 @@
                 <button id="search-clear" class="search-clear-btn focusable" style="display: none;">&times;</button>
             </div>
         </div>
+
+        <div class="livetv-top-actions">
+            <!-- Genre Select -->
+            <div class="filter-select-wrapper">
+                <select id="filter-genre" class="filter-select focusable">
+                    <option value="" data-i18n="livetv.allGenres">All Genres</option>
+                </select>
+            </div>
+            <!-- Country Select -->
+            <div class="filter-select-wrapper">
+                <select id="filter-country" class="filter-select focusable">
+                    <option value="" data-i18n="livetv.allCountries">All Countries</option>
+                </select>
+            </div>
+            <!-- Filter button to toggle broken links -->
+            <button id="hero-filter-btn" class="btn btn-secondary filter-btn-compact focusable">
+                <div class="filter-icon-small"></div>
+                <span data-i18n="livetv.hideBroken">Hide Broken</span>
+            </button>
+        </div>
     </div>
 
-    <!-- Dynamic Category Filter Chips -->
-    <div class="livetv-categories-bar" id="livetv-categories-bar">
-        <!-- Dynamically injected chips -->
-    </div>
+    <!-- Two-Column Layout Body -->
+    <div class="livetv-two-column-layout">
+        <!-- Left Column: Scrollable list of channels -->
+        <div class="livetv-list-column">
+            <div id="loading-channels" class="loading-center" style="display: none;">
+                <div class="ivids-loader"></div>
+            </div>
 
-    <!-- Full Width Grid Container -->
-    <div id="livetv-results-container" class="results-container">
-        <div id="loading-channels" class="loading-center" style="display: none;">
-            <div class="ivids-loader"></div>
+            <div class="channels-list" id="channels-list">
+                <!-- Dynamically injected wide rectangular rows -->
+            </div>
+
+            <div id="no-channels-message" class="no-results-msg" style="display: none;">
+                <p data-i18n="livetv.noChannels">No channels found</p>
+            </div>
         </div>
 
-        <div id="channels-grid" class="search-results-grid">
-            <!-- Channel posters injected here -->
-        </div>
+        <!-- Right Column: Channel Preview & EPG details -->
+        <div class="livetv-preview-column">
+            <!-- Default Placeholder when no channel is focused -->
+            <div id="hero-placeholder" class="hero-placeholder-content">
+                <div class="placeholder-icon-large"></div>
+                <h1 data-i18n="livetv.title">Live TV</h1>
+                <p data-i18n="livetv.selectSubtitle">Discover and watch hundreds of live channels</p>
+            </div>
 
-        <div id="no-channels-message" class="no-results-msg" style="display: none;">
-            <p data-i18n="livetv.noChannels">No channels found</p>
+            <!-- Active Channel Details -->
+            <div id="hero-active-content" class="hero-active-content" style="display: none;">
+                <!-- Top Card: Video Preview / Channel info & Watch button -->
+                <div class="preview-card">
+                    <div class="preview-logo-wrapper">
+                        <img id="hero-logo" src="" alt="" onerror="this.src='images/livetv.svg'">
+                    </div>
+                    <div class="preview-meta">
+                        <h1 id="hero-name"></h1>
+                        <div class="preview-meta-row">
+                            <span id="hero-group" class="accent-text"></span>
+                            <div id="hero-status" class="status-badge">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Checking...</span>
+                            </div>
+                        </div>
+                        <button id="hero-play-btn" class="btn btn-primary watch-btn-large focusable" data-i18n="livetv.watchNow">WATCH NOW</button>
+                    </div>
+                </div>
+
+                <!-- Bottom Card: Current & Upcoming Program EPG Schedules -->
+                <div class="epg-card">
+                    <!-- Current Program Schedule -->
+                    <div id="hero-epg-container" class="details-epg-section" style="display: none;">
+                        <h3 class="section-title">
+                            <span class="live-badge" data-i18n="livetv.live">LIVE</span>
+                            <span data-i18n="livetv.playingNow">Playing Now</span>
+                        </h3>
+                        <div class="epg-active-show">
+                            <span id="hero-epg-title" class="epg-show-title"></span>
+                            <div class="hero-epg-progress-wrapper">
+                                <span id="hero-epg-start" class="epg-time"></span>
+                                <div class="epg-progress-bar-container">
+                                    <div id="hero-epg-progress" class="epg-progress-bar-fill"></div>
+                                </div>
+                                <span id="hero-epg-end" class="epg-time"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Programs list -->
+                    <div class="details-upcoming-section">
+                        <h3 class="section-title" data-i18n="livetv.upcoming">Upcoming Programs</h3>
+                        <div class="upcoming-programs-list" id="upcoming-programs-list">
+                            <!-- Injected upcoming show rows -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
