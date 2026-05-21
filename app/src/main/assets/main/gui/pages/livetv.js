@@ -14,6 +14,8 @@ let activeCountry = '';
 let genres = [];
 let countries = [];
 const statusCache = new Map(); // Store channel status results: url -> {status, timestamp}
+let previewHls = null;
+let previewTimeout = null;
 
 // Explains: Curated set of lowercase country tags commonly found in international IPTV lists.
 const countriesList = new Set([
@@ -49,6 +51,42 @@ export async function init(params) {
     selectedChannel = null;
     hideBroken = false;
 
+    // Reset any active preview player resource from a previous page session
+    cleanupPreview();
+
+    // Wrap Router.loadPage and Router.goBack to cleanup before navigation
+    const originalLoadPage = Router.loadPage;
+    const originalGoBack = Router.goBack;
+
+    /**
+     * Restores the original Router methods in place of the page-specific wrappers.
+     * Prevents navigation memory leaks and cleans up the modified global Router state.
+     */
+    const restoreRouter = () => {
+        Router.loadPage = originalLoadPage;
+        Router.goBack = originalGoBack;
+    };
+
+    /**
+     * Wraps Router.loadPage to cleanup the preview player before navigating.
+     * Ensures all HLS streams are terminated before loading the new page.
+     */
+    Router.loadPage = async function(pageName, params, addToHistory, targetFocus) {
+        cleanupPreview();
+        restoreRouter();
+        return originalLoadPage.call(Router, pageName, params, addToHistory, targetFocus);
+    };
+
+    /**
+     * Wraps Router.goBack to cleanup the preview player before navigating back.
+     * Ensures all HLS streams are terminated before returning to the previous page.
+     */
+    Router.goBack = function(fallbackPage, fallbackParams) {
+        cleanupPreview();
+        restoreRouter();
+        return originalGoBack.call(Router, fallbackPage, fallbackParams);
+    };
+
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.value = '';
@@ -66,21 +104,32 @@ export async function init(params) {
 }
 
 /**
- * loadAllSources function
- * =======================
- * Explains: Iterates over the preset and custom M3U playlist URLs, fetches their
- * contents, merges duplicates, and triggers rendering of category chips and cards.
+ * Asynchronously loads M3U channel lists from preset and custom playlist URLs, rendering a skeleton UI during load.
+ * Affects the global channel state and initializes search category parameters.
  */
 async function loadAllSources() {
-    const loading = document.getElementById('loading-channels');
     const empty = document.getElementById('no-channels-message');
     const list = document.getElementById('channels-list');
     const countEl = document.getElementById('hero-total-channels');
 
     try {
-        if (loading) loading.style.display = 'flex';
         if (empty) empty.style.display = 'none';
-        if (list) list.innerHTML = '';
+        if (list) {
+            list.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'channel-list-item skeleton-item';
+                skeleton.innerHTML = `
+                    <div class="channel-list-logo-container skeleton-logo-placeholder">
+                        <div class="skeleton-mini-spinner"></div>
+                    </div>
+                    <div class="channel-list-meta-container">
+                        <div class="skeleton-text skeleton-name"></div>
+                    </div>
+                `;
+                list.appendChild(skeleton);
+            }
+        }
 
         const sourceEntries = Object.entries(PRESET_SOURCES);
         const settings = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
@@ -117,8 +166,6 @@ async function loadAllSources() {
         }
 
         allChannels.sort((a, b) => (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: 'base' }));
-
-        if (loading) loading.style.display = 'none';
 
         // Extract unique genres and countries
         const genresSet = new Set();
@@ -158,7 +205,6 @@ async function loadAllSources() {
         }
     } catch (error) {
         console.error('Error loading sources:', error);
-        if (loading) loading.style.display = 'none';
         if (empty) empty.style.display = 'flex';
     }
 }
@@ -198,10 +244,9 @@ function populateFilters() {
 }
 
 /**
- * filterAndRenderChannels function
- * ================================
- * Explains: Filters channels list based on search term, category chips,
- * and broken links hide filter, then constructs grid cards.
+ * Filters the list of channels based on active filters and queries, then renders them.
+ * Dynamically inserts channel items containing only the logo and name into the channel list container.
+ * Updates the shared window state and toggles clear button visibility accordingly.
  * 
  * @param {boolean} resetFocus - Resets navigation focus to the first card if true.
  */
@@ -231,12 +276,6 @@ function filterAndRenderChannels(resetFocus = false) {
         currentIndex: 0
     };
 
-    // Update search badge counters
-    const counter = document.getElementById('search-counter');
-    if (counter) {
-        counter.textContent = `${filteredChannels.length} / ${allChannels.length}`;
-    }
-
     // Toggle search clear button visibility
     const clearBtn = document.getElementById('search-clear');
     if (clearBtn) {
@@ -250,18 +289,13 @@ function filterAndRenderChannels(resetFocus = false) {
         item.dataset.url = channel.url;
 
         const iconUrl = channel.logo || 'images/livetv.svg';
-        const cachedStatus = statusCache.get(channel.url)?.status || 'checking';
 
         item.innerHTML = `
-            <div class="list-status-dot ${cachedStatus}"></div>
             <div class="channel-list-logo-container">
                 <img src="${iconUrl}" class="channel-list-logo" onerror="this.src='images/livetv.svg'">
             </div>
             <div class="channel-list-meta-container">
-                <div class="channel-list-name-row">
-                    <span class="channel-list-name">${channel.name}</span>
-                    <span class="channel-list-group-tag">${channel.group || ''}</span>
-                </div>
+                <span class="channel-list-name">${channel.name}</span>
             </div>
         `;
 
@@ -288,11 +322,10 @@ function filterAndRenderChannels(resetFocus = false) {
 }
 
 /**
- * showChannelDetail function
- * ==========================
- * Explains: Updates the compact hero dashboard structure to reflect currently focused channel metadata.
+ * Updates the preview column layout with the selected channel's EPG details and triggers debounced livestream playback.
+ * Affects the EPG and upcoming show list elements, as well as the active video preview player.
  * 
- * @param {object} channel - The selected channel item.
+ * @param {object} channel - The selected channel object to view.
  */
 async function showChannelDetail(channel) {
     selectedChannel = channel;
@@ -301,14 +334,6 @@ async function showChannelDetail(channel) {
 
     if (placeholder) placeholder.style.display = 'none';
     if (content) content.style.display = 'flex';
-
-    const logoEl = document.getElementById('hero-logo');
-    const nameEl = document.getElementById('hero-name');
-    const groupEl = document.getElementById('hero-group');
-
-    if (logoEl) logoEl.src = channel.logo || 'images/livetv.svg';
-    if (nameEl) nameEl.textContent = channel.name;
-    if (groupEl) groupEl.textContent = channel.group ? channel.group.replace(/:/g, ' ') : '';
 
     // Update EPG Dashboard Section
     const epg = EpgManager.getCurrentProgram(channel.name, channel.group);
@@ -342,77 +367,108 @@ async function showChannelDetail(channel) {
         });
     }
 
-    const playBtn = document.getElementById('hero-play-btn');
-    if (playBtn) playBtn.onclick = () => playChannel(channel);
+    // Debounce stream playback to prevent network overload when zapping/scrolling quickly
+    if (previewTimeout) {
+        clearTimeout(previewTimeout);
+    }
+    const video = document.getElementById('livetv-preview-video');
+    if (video) {
+        video.pause();
+        video.src = '';
+    }
+    previewTimeout = setTimeout(() => {
+        if (selectedChannel && selectedChannel.url === channel.url) {
+            loadPreviewStream(channel.url);
+        }
+    }, 450);
+}
 
-    updateStatusBadge('checking');
-    const cached = statusCache.get(channel.url);
-    if (cached && (Date.now() - cached.timestamp < 300000)) { // 5 min cache
-        updateStatusBadge(cached.status);
-    } else {
-        const status = await checkChannelStatus(channel.url);
-        statusCache.set(channel.url, { status, timestamp: Date.now() });
-        
-        // Update status dot on the card immediately if card exists
-        const cards = document.querySelectorAll('.channel-list-item');
-        cards.forEach(card => {
-            if (card.dataset.url === channel.url) {
-                const dot = card.querySelector('.list-status-dot');
-                if (dot) {
-                    dot.className = `list-status-dot ${status}`;
+/**
+ * Asynchronously loads the selected IPTV channel stream into the 16:9 preview video element.
+ * Utilizes HLS.js for HLS (.m3u8) playback support, falling back to native HTML5 playback.
+ * 
+ * @param {string} url - The live stream URL of the selected channel.
+ */
+function loadPreviewStream(url) {
+    const video = document.getElementById('livetv-preview-video');
+    const loader = document.getElementById('preview-video-loading');
+    if (!video) return;
+
+    if (previewHls) {
+        previewHls.destroy();
+        previewHls = null;
+    }
+
+    if (loader) loader.style.display = 'flex';
+
+    video.onloadstart = () => {
+        if (loader) loader.style.display = 'flex';
+    };
+    video.onplaying = () => {
+        if (loader) loader.style.display = 'none';
+        statusCache.set(url, { status: 'online', timestamp: Date.now() });
+    };
+    video.onerror = () => {
+        if (loader) loader.style.display = 'none';
+        console.warn('Preview video playback failed for URL:', url);
+        statusCache.set(url, { status: 'offline', timestamp: Date.now() });
+    };
+
+    if (window.Hls && window.Hls.isSupported()) {
+        previewHls = new window.Hls({
+            maxMaxBufferLength: 5,
+            liveSyncDuration: 2
+        });
+        previewHls.loadSource(url);
+        previewHls.attachMedia(video);
+        previewHls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+            video.play().catch(e => console.warn('Error starting HLS preview video:', e));
+        });
+        previewHls.on(window.Hls.Events.ERROR, (event, data) => {
+            if (data.fatal) {
+                if (loader) loader.style.display = 'none';
+                statusCache.set(url, { status: 'offline', timestamp: Date.now() });
+                if (previewHls) {
+                    previewHls.destroy();
+                    previewHls = null;
                 }
             }
         });
-
-        if (selectedChannel && selectedChannel.url === channel.url) {
-            updateStatusBadge(status);
-        }
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.play().catch(e => console.warn('Error starting native preview video:', e));
+    } else {
+        if (loader) loader.style.display = 'none';
+        console.error('HLS playback is not supported in this browser environment.');
     }
 }
 
 /**
- * updateStatusBadge function
- * ==========================
- * Explains: Formats the status checking badges and dot colors inside the active hero area.
- * 
- * @param {string} status - Current online, offline, or checking state.
+ * Releases playback resources, destroys the preview HLS instance, and clears the video element's source.
+ * Affects the global HLS and timeout state variables, and terminates active background video streaming.
  */
-function updateStatusBadge(status) {
-    const badge = document.getElementById('hero-status');
-    if (!badge) return;
-
-    badge.className = `status-badge ${status}`;
-    const text = badge.querySelector('.status-text');
-
-    if (status === 'checking') text.textContent = window.i18n?.t('livetv.checking') || 'Checking...';
-    else if (status === 'online') text.textContent = window.i18n?.t('livetv.online') || 'Online';
-    else if (status === 'offline') text.textContent = window.i18n?.t('livetv.unavailable') || 'Unavailable';
-}
-
-/**
- * checkChannelStatus function
- * ===========================
- * Explains: Performs a lightweight HEAD/GET request with ranges to quickly test link availability.
- * 
- * @param {string} url - Target stream source URL.
- * @returns {string} Status string ('online' or 'offline').
- */
-async function checkChannelStatus(url) {
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-        const response = await fetch(url, {
-            method: 'GET',
-            signal: controller.signal,
-            headers: { 'Range': 'bytes=0-0' }
-        });
-
-        clearTimeout(timeoutId);
-        return response.ok ? 'online' : 'offline';
-    } catch (e) {
-        if (e.name === 'AbortError') return 'offline';
-        return 'online';
+function cleanupPreview() {
+    if (previewTimeout) {
+        clearTimeout(previewTimeout);
+        previewTimeout = null;
+    }
+    if (previewHls) {
+        previewHls.destroy();
+        previewHls = null;
+    }
+    const video = document.getElementById('livetv-preview-video');
+    if (video) {
+        video.pause();
+        video.src = '';
+        try {
+            video.load();
+        } catch (e) {
+            console.error('Error clearing preview video:', e);
+        }
+    }
+    const loader = document.getElementById('preview-video-loading');
+    if (loader) {
+        loader.style.display = 'none';
     }
 }
 

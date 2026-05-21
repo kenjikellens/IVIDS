@@ -108,10 +108,10 @@ iframe {
     display: none;
 }
 
-/* Individual server button */
+/* Styles individual server buttons in the playback settings panel. */
 .server-btn {
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     color: white;
     padding: 12px 24px;
     border-radius: 8px;
@@ -130,12 +130,12 @@ iframe {
     font-weight: bold;
 }
 
-/* Focus/Hover state: White thicker border */
+/* Styles the server buttons on focus and hover. */
 .server-btn:focus,
 .server-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: #fff;
-    box-shadow: 0 0 0 3px #fff;
+    box-shadow: none;
     outline: none;
 }
 

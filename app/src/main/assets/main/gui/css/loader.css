@@ -165,3 +165,54 @@
     z-index: 5;
     transform-origin: center;
 }
+
+/* Explains: Disabled container item representing a channel list row skeleton. */
+.skeleton-item {
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-color: transparent !important;
+}
+
+/* Explains: Mini circular sweep spinner nested inside the skeleton logo placeholder. */
+.skeleton-mini-spinner {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    background: conic-gradient(
+        from 0deg, 
+        transparent 10%, 
+        rgba(var(--primary-rgb), 0.15) 50%, 
+        var(--accent-green) 100%
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), black calc(100% - 2px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), black calc(100% - 2px));
+    animation: cleanSpin 0.9s infinite linear;
+    filter: drop-shadow(0 0 3px rgba(var(--primary-rgb), 0.25));
+}
+
+/* Explains: Logo thumbnail placeholder within the channel skeleton item. */
+.skeleton-logo-placeholder {
+    width: 3rem;
+    height: 2rem;
+    background: #2f2f2f linear-gradient(to right, #2f2f2f 8%, #3d3d3d 18%, #2f2f2f 33%);
+    background-size: 800px 104px;
+    animation: shimmer 2s infinite linear;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+/* Explains: General shimmer text line wrapper for channel skeletons. */
+.skeleton-text {
+    height: 1rem;
+    border-radius: var(--radius-xs);
+    background: #2f2f2f linear-gradient(to right, #2f2f2f 8%, #3d3d3d 18%, #2f2f2f 33%);
+    background-size: 800px 104px;
+    animation: shimmer 2s infinite linear;
+}
+
+/* Explains: Channel name text row placeholder inside the skeleton. */
+.skeleton-name {
+    width: 60%;
+}

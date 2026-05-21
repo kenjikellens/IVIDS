@@ -33,8 +33,8 @@
     --poster-width: clamp(120px, 11vw, 156px);
     --poster-height: calc(var(--poster-width) * 1.5);
     --row-min-height: calc(var(--poster-height) + 40px);
-    --focus-ring: 0 0 0 3px var(--focus-border-color);
-    --focus-ring-strong: 0 0 0 4px var(--focus-border-color), 0 0 0 7px rgba(var(--primary-rgb), 0.42);
+    --focus-ring: none;
+    --focus-ring-strong: none;
     --shadow-panel: 0 18px 48px rgba(0, 0, 0, 0.48);
     --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.36);
 }
@@ -131,16 +131,85 @@ button {
     background: rgba(var(--primary-rgb), 0.12) !important;
 }
 
+/* Prevents default outline borders for custom keyboard-focusable elements. */
 .focusable {
     outline: none;
 }
 
-.focusable:focus,
-.focusable.focused,
-button:focus,
-input:focus {
-    outline: none;
+/* Styles all clickable and interactive elements on hover/focus to display a unified 2px white outline. */
+.btn:hover, .btn:focus, .btn.focused,
+.modal-btn:hover, .modal-btn:focus, .modal-btn.focused,
+.action-btn:hover, .action-btn:focus, .action-btn.focused,
+.primary-btn:hover, .primary-btn:focus, .primary-btn.focused,
+.small-btn:hover, .small-btn:focus, .small-btn.focused,
+.ghost-btn:hover, .ghost-btn:focus, .ghost-btn.focused,
+.error-btn:hover, .error-btn:focus, .error-btn.focused,
+.nav-item:hover, .nav-item:focus, .nav-item.focused,
+.poster-wrapper:hover, .poster-wrapper:focus, .poster-wrapper.focused,
+.skeleton-poster:hover, .skeleton-poster:focus, .skeleton-poster.focused,
+.profile-card:hover, .profile-card:focus, .profile-card.focused,
+.profile-avatar.large:hover, .profile-avatar.large:focus, .profile-avatar.large.focused,
+.color-option:hover, .color-option:focus, .color-option.focused,
+.season-btn:hover, .season-btn:focus, .season-btn.focused,
+.episode-item:hover, .episode-item:focus, .episode-item.focused,
+.channel-list-item:hover, .channel-list-item:focus, .channel-list-item.focused,
+.tv-control-btn:hover, .tv-control-btn:focus, .tv-control-btn.focused,
+.playlist-card:hover, .playlist-card:focus, .playlist-card.focused,
+.playlist-item-card:hover, .playlist-item-card:focus, .playlist-item-card.focused,
+.icon-btn-mini:hover, .icon-btn-mini:focus, .icon-btn-mini.focused,
+.recent-chip:hover, .recent-chip:focus, .recent-chip.focused,
+.recent-search-item:hover, .recent-search-item:focus, .recent-search-item.focused,
+.filter-chip:hover, .filter-chip:focus, .filter-chip.focused,
+.select-item:hover, .select-item:focus, .select-item.focused,
+.filter-input:hover, .filter-input:focus, .filter-input.focused,
+.filter-select-btn:hover, .filter-select-btn:focus, .filter-select-btn.focused,
+.filter-select-wrapper:hover, .filter-select-wrapper:focus-within, .filter-select-wrapper.focused,
+.input-wrapper:hover, .input-wrapper:focus-within, .input-wrapper.focused,
+.modal-search-input:hover, .modal-search-input:focus, .modal-search-input.focused,
+.edit-trigger:hover, .edit-trigger:focus, .edit-trigger.focused,
+.settings-input:hover, .settings-input:focus, .settings-input.focused,
+.input-group input:hover, .input-group input:focus, .input-group input.focused,
+.pin-digit:hover, .pin-digit:focus, .pin-digit.focused,
+.option-chip:hover, .option-chip:focus, .option-chip.focused,
+.update-btn:hover, .update-btn:focus, .update-btn.focused,
+.toast-btn:hover, .toast-btn:focus, .toast-btn.focused,
+.server-btn:hover, .server-btn:focus, .server-btn.focused,
+.btn-back:hover, .btn-back:focus, .btn-back.focused,
+.btn-next:hover, .btn-next:focus, .btn-next.focused,
+.search-clear-btn:hover, .search-clear-btn:focus, .search-clear-btn.focused,
+.focusable:hover, .focusable:focus, .focusable.focused {
+    border-color: #ffffff !important;
+    box-shadow: 0 0 0 2px #ffffff !important;
+    outline: none !important;
 }
+
+/* Suppresses inner borders and shadows for child elements inside input and filter select wrappers on all states. */
+.input-wrapper input,
+.input-wrapper input:hover,
+.input-wrapper input:focus,
+.input-wrapper input.focused,
+.input-wrapper button,
+.input-wrapper button:hover,
+.input-wrapper button:focus,
+.input-wrapper button.focused,
+.input-wrapper .focusable,
+.input-wrapper .focusable:hover,
+.input-wrapper .focusable:focus,
+.input-wrapper .focusable.focused,
+.filter-select-wrapper select,
+.filter-select-wrapper select:hover,
+.filter-select-wrapper select:focus,
+.filter-select-wrapper select.focused,
+.filter-select-wrapper .focusable,
+.filter-select-wrapper .focusable:hover,
+.filter-select-wrapper .focusable:focus,
+.filter-select-wrapper .focusable.focused {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+
 
 .btn,
 .modal-btn,
@@ -178,29 +247,6 @@ input:focus {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
     border-color: rgba(255, 255, 255, 0.14);
-}
-
-.btn:hover,
-.btn:focus,
-.btn.focused,
-.modal-btn:hover,
-.modal-btn:focus,
-.modal-btn.focused,
-.action-btn:hover,
-.action-btn:focus,
-.action-btn.focused,
-.primary-btn:hover,
-.primary-btn:focus,
-.primary-btn.focused,
-.small-btn:hover,
-.small-btn:focus,
-.small-btn.focused,
-.ghost-btn:hover,
-.ghost-btn:focus,
-.ghost-btn.focused {
-    border-color: var(--focus-border-color) !important;
-    box-shadow: var(--focus-ring);
-    outline: none;
 }
 
 .btn-primary:hover,
@@ -349,7 +395,7 @@ input:focus {
     height: var(--poster-height);
     border-radius: var(--radius-sm);
     overflow: hidden;
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     background: var(--surface-soft);
     cursor: pointer;
     padding: 0;
@@ -367,15 +413,13 @@ input:focus {
     transition: opacity 0.25s ease;
 }
 
+/* Sets higher stacking index for movie posters when hovered or focused. */
 .poster-wrapper:hover,
 .poster-wrapper:focus,
 .poster-wrapper.focused,
 .skeleton-poster:hover,
 .skeleton-poster:focus,
 .skeleton-poster.focused {
-    border-color: var(--focus-border-color);
-    box-shadow: var(--focus-ring-strong);
-    outline: none;
     z-index: 100;
 }
 
@@ -423,15 +467,6 @@ input:focus {
     color: white;
     font-size: 16px;
     cursor: pointer;
-}
-
-.btn-back:hover,
-.btn-back:focus,
-.btn-next:hover,
-.btn-next:focus {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
-    outline: none;
 }
 
 .btn-next {
@@ -971,14 +1006,12 @@ input:focus {
     transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
+/* Styles the active hover state background and text color of sidebar items. */
 .nav-item:hover,
 .nav-item:focus,
 .nav-item.focused {
     color: #fff;
-    border-color: #fff;
     background: rgba(255, 255, 255, 0.1);
-    box-shadow: none;
-    outline: none;
 }
 
 .nav-item.active {
@@ -1159,6 +1192,7 @@ input:focus {
     width: min(960px, 100%);
 }
 
+/* Styles the profile card element, outlining user avatar and profile details. */
 .profile-card {
     width: 160px;
     display: flex;
@@ -1167,16 +1201,8 @@ input:focus {
     gap: 14px;
     padding: 8px;
     border-radius: var(--radius-lg);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     cursor: pointer;
-}
-
-.profile-card:focus,
-.profile-card.focused,
-.profile-card:hover {
-    border-color: #fff;
-    box-shadow: var(--focus-ring-strong);
-    outline: none;
 }
 
 .profile-avatar-container {
@@ -1318,12 +1344,6 @@ input:focus {
     outline: none;
 }
 
-.input-group input:focus,
-.input-group input.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
-}
-
 .error-text {
     min-height: 18px;
     color: #ff7770;
@@ -1337,21 +1357,18 @@ input:focus {
     gap: 12px;
 }
 
+/* Styles the selectable color options inside the settings panel. */
 .color-option {
     width: 52px;
     height: 52px;
     border-radius: var(--radius-md);
-    border: 3px solid rgba(255, 255, 255, 0.16);
+    border: 2px solid rgba(255, 255, 255, 0.16);
     cursor: pointer;
 }
 
-.color-option:focus,
-.color-option.focused,
-.color-option:hover,
+/* Styles selected color options to show a white border indicator. */
 .color-option.selected {
     border-color: #fff;
-    box-shadow: var(--focus-ring);
-    outline: none;
 }
 
 .modal-footer {
@@ -1392,12 +1409,6 @@ input:focus {
     font-weight: 900;
     text-align: center;
     outline: none;
-}
-
-.pin-digit:focus,
-.pin-digit.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
 }
 
 @media (max-width: 767px), (orientation: portrait) {
@@ -1681,10 +1692,9 @@ input:focus {
     color: #fff !important;
 }
 
+/* Styles the detail view action buttons on hover and focus. */
 .details-actions .btn:hover,
 .details-actions .btn.focused {
-    border-color: #fff;
-    box-shadow: 0 0 0 0.1875rem #fff;
     background-color: #fff !important;
     color: #000 !important;
 }
@@ -1726,9 +1736,10 @@ input:focus {
     gap: 10px;
 }
 
+/* Styles the season select button in the series detail view. */
 .season-btn {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     color: #ccc;
     padding: 12px 15px;
     text-align: left;
@@ -1770,6 +1781,7 @@ input:focus {
     padding-bottom: 10px;
 }
 
+/* Styles the episode item card row in the series detail view. */
 .episode-item {
     display: flex;
     gap: 20px;
@@ -1779,7 +1791,7 @@ input:focus {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 0.1875rem solid transparent;
+    border: 2px solid transparent;
 }
 
 .episode-item:hover,
@@ -2173,26 +2185,26 @@ iframe {
     box-sizing: border-box;
 }
 
+/* Styles the search box container on the Live TV page, matching the left column width. */
 .livetv-top-bar .search-box {
-    /* Explains: Sizing bound representing 42% of parent width. */
-    width: 42%;
+    width: 30%;
 }
 
+/* Styles the top-bar actions container on the Live TV page, matching the right column width. */
 .livetv-top-actions {
-    /* Explains: Alignment layer representing 58% of parent width for filters and buttons. */
-    width: 58%;
+    width: 68%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 8px;
 }
 
+/* Styles the select dropdown wrapper, providing a unified height and small border radius. */
 .filter-select-wrapper {
-    /* Explains: Glassmorphic container wrapper enclosing the dropdown element. */
-    height: 42px;
+    height: 54px;
     display: flex;
     align-items: center;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xs);
     border: 2px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
@@ -2201,24 +2213,25 @@ iframe {
     box-sizing: border-box;
 }
 
+/* Styles the select dropdown wrapper on focus-within, focus, or hover to show the white outline. */
 .filter-select-wrapper:focus-within,
-.filter-select-wrapper.focused {
-    /* Explains: High-contrast white border highlight for focus states. No scaling or movement transitions. */
+.filter-select-wrapper.focused,
+.filter-select-wrapper:hover {
     border-color: #fff;
     background: rgba(255, 255, 255, 0.08);
     box-shadow: var(--focus-ring-strong);
 }
 
+/* Styles the dropdown selector element inside the wrapper to match the unified search input typography. */
 .filter-select {
-    /* Explains: Custom styled select dropdown. Customizes background and caret for dark mode. */
     height: 100%;
     width: 100%;
     border: none;
     background: transparent;
     color: #fff;
-    font-size: 14px;
-    font-weight: 800;
-    padding: 0 32px 0 16px;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 0 36px 0 18px;
     outline: none;
     cursor: pointer;
     appearance: none;
@@ -2227,18 +2240,19 @@ iframe {
     box-sizing: border-box;
 }
 
+/* Styles the dropdown options to match the dark theme and adds padding. */
 .filter-select option {
-    /* Explains: Styling dropdown option rows to match app theme colors. */
     background: #111;
     color: #fff;
     padding: 10px;
 }
 
+/* Styles the dropdown arrow chevron for the filter wrappers and centers it vertically. */
 .filter-select-wrapper::after {
-    /* Explains: Pure-CSS downward facing chevron vector inside the dropdown box. */
     content: '';
     position: absolute;
-    right: 14px;
+    right: 18px;
+    top: calc(50% - 4px);
     width: 6px;
     height: 6px;
     border-right: 2px solid rgba(255, 255, 255, 0.6);
@@ -2247,12 +2261,14 @@ iframe {
     pointer-events: none;
 }
 
+/* Styles the compact filter button, setting its height and border radius to match search inputs. */
 .filter-btn-compact {
-    /* Explains: Styled icon filter toggle with custom spacing rules. */
-    min-height: 42px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 800;
+    height: 54px;
+    min-height: 54px;
+    padding: 0 18px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: var(--radius-xs) !important;
 }
 
 .filter-icon-small {
@@ -2274,13 +2290,13 @@ iframe {
     width: 100%;
 }
 
+/* Styles the input text box wrapper, setting height and a small border radius. */
 .input-wrapper {
-    /* Explains: Glassmorphic background boundaries enclosing the search input element. */
     height: 54px;
     display: flex;
     align-items: center;
     padding: 0 18px;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xs);
     border: 2px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
@@ -2288,12 +2304,12 @@ iframe {
     position: relative;
 }
 
+/* Styles the input text box wrapper on focus-within, focus, or hover to show the white outline. */
 .input-wrapper:focus-within,
 .input-wrapper.focused,
 .input-wrapper:hover {
-    /* Explains: Focus glow using primary theme colors. No scale transforms. */
-    border-color: var(--primary-color);
-    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.35);
+    border-color: #fff;
+    box-shadow: var(--focus-ring-strong);
     background: rgba(255, 255, 255, 0.08);
 }
 
@@ -2317,17 +2333,7 @@ iframe {
     font-weight: 700;
 }
 
-.search-counter-badge {
-    /* Explains: Match count ratio indicator labels. */
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--text-muted);
-    margin-right: 12px;
-    background: rgba(255, 255, 255, 0.06);
-    padding: 4px 8px;
-    border-radius: var(--radius-xs);
-    white-space: nowrap;
-}
+
 
 .search-clear-btn {
     /* Explains: Clear button overlay configurations. */
@@ -2423,20 +2429,19 @@ iframe {
     color: inherit;
 }
 
+/* Styles the two-column grid container on the Live TV page, stretching it using flexbox. */
 .livetv-two-column-layout {
-    /* Explains: Core split layout mapping channel list to the left and preview panel to the right. */
     flex: 1;
     display: flex;
     gap: 2%;
-    padding: 0 var(--app-content-padding-x) var(--app-content-padding-x);
-    height: calc(100% - 150px);
+    padding: 1.5rem var(--app-content-padding-x) var(--app-content-padding-x);
     min-height: 0;
     box-sizing: border-box;
 }
 
+/* Styles the left column for channel list representation, set to 30% width. */
 .livetv-list-column {
-    /* Explains: Left column scroll boundary representing 40% of workspace width. */
-    width: 40%;
+    width: 30%;
     height: 100%;
     overflow-y: auto;
     min-height: 0;
@@ -2465,6 +2470,7 @@ iframe {
     width: 100%;
 }
 
+/* Styles the channel list item container row with a transparent default border. */
 .channel-list-item {
     /* Explains: Wide rectangular TV list row containing logo, name, categories. Features compact padding. */
     position: relative;
@@ -2472,7 +2478,7 @@ iframe {
     align-items: center;
     padding: 6px 12px;
     border-radius: var(--radius-md);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     background: rgba(255, 255, 255, 0.04);
     cursor: pointer;
     box-sizing: border-box;
@@ -2604,134 +2610,96 @@ iframe {
     transition: width 0.3s ease;
 }
 
+/* Styles the right column for channel preview representation, set to 68% width. */
 .livetv-preview-column {
-    /* Explains: Right column panel representing 58% of workspace width. */
-    width: 58%;
+    width: 68%;
     height: 100%;
-    overflow-y: auto;
+    overflow: hidden;
     min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
 }
 
+/* Styles the flexbox layout container that stacks the active channel logo preview card above the EPG schedule vertically. */
 .hero-active-content {
-    /* Explains: Flexbox layout container that stacks the active channel logo preview card above the EPG schedule vertically. */
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 100%;
+    height: 100%;
+    min-height: 0;
 }
 
-.preview-card,
-.epg-card {
-    /* Explains: Glassmorphic panel cards housing preview details and upcoming schedules. */
-    padding: 24px;
-    border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(12px);
-    box-sizing: border-box;
+/* Styles the video preview card wrapper in the Live TV page, set to 60% vertical height. */
+.preview-card-video {
+    position: relative;
     width: 100%;
+    height: 60%;
+    min-height: 0;
+    border-radius: var(--radius-lg);
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-sizing: border-box;
 }
 
-.preview-card {
-    /* Explains: Details row positioning logo container next to titles. */
-    display: flex;
-    gap: 20px;
-    align-items: center;
+/* Styles the actual video player element inside the preview card to fill the container. */
+.preview-card-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.preview-logo-wrapper {
-    /* Explains: Alignment box for the active channel logo. */
-    width: 100px;
-    height: 100px;
+/* Styles the loader centering element for the video stream loading state. */
+.preview-video-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 2;
+}
+
+/* Styles the upcoming EPG program schedule block, occupying the remaining 40% height. */
+.epg-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Styles the currently playing active program EPG layout block. */
+.details-epg-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
     flex-shrink: 0;
 }
 
-.preview-logo-wrapper img {
-    /* Explains: Images scaling inside bounds. */
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.preview-meta {
-    /* Explains: Meta items stack alongside watch now controls. */
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 0;
-}
-
-.preview-meta h1 {
-    /* Explains: Bold channel title header. */
-    font-size: 24px;
-    font-weight: 900;
-    color: #fff;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: left;
-}
-
-.preview-meta-row {
-    /* Explains: Badges alignment block below title. */
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.watch-btn-large {
-    /* Explains: Clickable WATCH NOW action button styling. */
-    margin-top: 8px;
-    min-height: 44px;
-    font-weight: 900;
-    text-transform: uppercase;
-    width: 100%;
-    border: 2px solid transparent;
-}
-
-.watch-btn-large:hover,
-.watch-btn-large:focus,
-.watch-btn-large.focused {
-    /* Explains: Outlined focus borders without motion. */
-    border-color: #fff;
-    outline: none;
-}
-
-.epg-card {
-    /* Explains: Stack layout inside bottom EPG card. */
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.details-epg-section,
+/* Styles the upcoming programs EPG section container. */
 .details-upcoming-section {
-    /* Explains: Layout stack for schedule categories. */
     display: flex;
     flex-direction: column;
     gap: 12px;
     width: 100%;
+    flex: 1;
+    min-height: 0;
 }
 
+/* Styles EPG category headers for Playing Now and Upcoming sections. */
 .section-title {
-    /* Explains: Header text stylings for Playing Now and Upcoming segments. */
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -2742,83 +2710,96 @@ iframe {
     text-align: left;
 }
 
+/* Styles the currently playing active show information alignment. */
 .epg-active-show {
-    /* Explains: Currently playing EPG info styling. */
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
+/* Styles the currently playing active program title for TV readability. */
 .epg-show-title {
-    /* Explains: Bold active show title styling. */
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 800;
     color: #fff;
     text-align: left;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+/* Styles the timeline progress wrapper for the active show. */
 .hero-epg-progress-wrapper {
-    /* Explains: Timeline alignment layout linking labels and sliders. */
     display: flex;
     align-items: center;
     gap: 10px;
     width: 100%;
 }
 
+/* Styles start and end time text indicators for active and upcoming shows. */
 .epg-time {
-    /* Explains: Muted typography for show times. */
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text-muted);
 }
 
+/* Styles the active program progress timeline background container. */
 .epg-progress-bar-container {
-    /* Explains: Horizontal track slider slot. */
     flex: 1;
-    height: 4px;
+    height: 8px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
+    border-radius: 4px;
     overflow: hidden;
 }
 
+/* Styles the active timeline progress bar filled status. */
 .epg-progress-bar-fill {
-    /* Explains: Timeline slider fill colored with primary accent. */
     height: 100%;
     background: var(--primary-color);
     width: 0%;
     transition: width 0.3s ease;
 }
 
+/* Styles the scrollable list container for upcoming programs. */
 .upcoming-programs-list {
-    /* Explains: Vertical stack for future show slots. */
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 
+/* Styles the individual upcoming program row card. */
 .upcoming-program-row {
-    /* Explains: Row box housing future program details. */
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 12px 16px;
+    padding: 14px 20px;
     border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.04);
+    border-left: 4px solid var(--primary-color);
+    transition: background 0.2s ease, border-color 0.2s ease;
 }
 
+/* Styles the hover state of the upcoming program row. */
+.upcoming-program-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Styles the time text display for future programs. */
 .upcoming-program-time {
-    /* Explains: Program time badge colored with primary accent. */
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 800;
     color: var(--primary-color);
     flex-shrink: 0;
+    letter-spacing: 0.05em;
 }
 
+/* Styles the title text display for future programs. */
 .upcoming-program-title {
-    /* Explains: Future program name typography. */
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     color: #fff;
     white-space: nowrap;
@@ -2855,6 +2836,64 @@ iframe {
         height: auto;
         overflow: visible;
     }
+}
+
+/* Explains: Centered glassmorphic box for the initial Live TV state. */
+.hero-placeholder-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Explains: Large gradient-filled TV icon using livetv.svg as a mask. */
+.placeholder-icon-large {
+    width: 6rem;
+    height: 6rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgba(255, 255, 255, 0.6) 100%);
+    -webkit-mask-image: url('../images/livetv.svg');
+    mask-image: url('../images/livetv.svg');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    opacity: 0.85;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+/* Explains: Glow animation on hover of the placeholder content. */
+.hero-placeholder-content:hover .placeholder-icon-large {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(var(--primary-rgb), 0.5));
+}
+
+/* Explains: Title header text styled with a subtle vertical color gradient. */
+.hero-placeholder-content h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin: 0 0 0.8rem 0;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Explains: Muted subtitle text limited in width to keep it readable. */
+.hero-placeholder-content p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 80%;
+    margin: 0;
+    line-height: 1.5;
 }
 
 /* ==========================================================================
@@ -2921,10 +2960,11 @@ iframe {
     gap: 24px;
 }
 
+/* Styles TV player control buttons with a transparent default border. */
 .tv-control-btn {
     /* Explains: Styled buttons with thick white border focus indicators. No scale animations. */
     background: rgba(255, 255, 255, 0.08);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     border-radius: 50%;
     width: 60px;
     height: 60px;
@@ -3187,13 +3227,14 @@ iframe {
     text-align: center;
 }
 
+/* Styles the individual playlist card container. */
 .playlist-card {
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     border-radius: var(--radius-md);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     background: var(--surface-color);
     cursor: pointer;
     box-shadow: var(--shadow-card);
@@ -3527,13 +3568,14 @@ iframe {
     padding-bottom: 64px;
 }
 
+/* Styles the individual item card within a playlist. */
 .playlist-item-card {
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     border-radius: var(--radius-md);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     background: var(--surface-color);
     cursor: pointer;
     box-shadow: var(--shadow-card);
@@ -3596,11 +3638,12 @@ iframe {
     opacity: 1;
 }
 
+/* Styles the mini icon buttons used in playlist actions. */
 .icon-btn-mini {
     width: 34px;
     height: 34px;
     border-radius: var(--radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.18);
     background: rgba(0, 0, 0, 0.72);
     color: #fff;
     cursor: pointer;
@@ -3894,12 +3937,13 @@ iframe {
     flex-wrap: wrap;
 }
 
+/* Styles the recent search chips and search items. */
 .recent-chip,
 .recent-search-item {
     min-height: 34px;
     padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
     font-size: 14px;
@@ -4889,6 +4933,7 @@ iframe {
     gap: 34px;
 }
 
+/* Styles the large profile avatar displaying on screens like profile editing. */
 .profile-avatar.large {
     flex: 0 0 142px;
     width: 142px;
@@ -4900,7 +4945,7 @@ iframe {
     color: #fff;
     font-size: 58px;
     font-weight: 900;
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     box-shadow: var(--shadow-card);
 }
 
