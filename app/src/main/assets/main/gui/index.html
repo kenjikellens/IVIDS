@@ -52,21 +52,57 @@
 <script>
     // FIX voor Fetch op Android TV / file:// schema
     const originalFetch = window.fetch;
+    /**
+     * Polyfills the global fetch API for local resource loading and cross-origin bypass.
+     * Intercepts file:// and local paths to route them through XMLHttpRequest to bypass protocol restrictions.
+     * 
+     * @param {string|Request} url - The URL or request object to fetch.
+     * @param {object} [options] - Optional configurations including method, headers, and signal.
+     * @returns {Promise<Response>} A promise resolving to a fetch-compatible response object.
+     */
     window.fetch = function (url, options) {
-        if (typeof url === 'string' && (url.startsWith('lang/') || url.startsWith('pages/') || url.startsWith('components/') || url.startsWith('file:'))) {
+        const urlString = typeof url === 'string' ? url : (url && url.url ? url.url : String(url));
+        const isLocal = urlString.startsWith('lang/') || urlString.startsWith('pages/') || urlString.startsWith('components/') || urlString.startsWith('file:');
+        const isFileProtocol = window.location.protocol === 'file:';
+        
+        if (isLocal || isFileProtocol) {
             return new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
+                const method = (options && options.method) || (url && url.method) || 'GET';
+                xhr.open(method, urlString);
+                
+                if (options && options.headers) {
+                    if (typeof Headers !== 'undefined' && options.headers instanceof Headers) {
+                        options.headers.forEach((val, key) => {
+                            xhr.setRequestHeader(key, val);
+                        });
+                    } else {
+                        Object.entries(options.headers).forEach(([key, val]) => {
+                            xhr.setRequestHeader(key, val);
+                        });
+                    }
+                }
+                
                 xhr.onload = () => {
                     resolve({
-                        ok: true,
-                        status: 200,
+                        ok: (xhr.status >= 200 && xhr.status < 300) || xhr.status === 0,
+                        status: xhr.status === 0 ? 200 : xhr.status,
+                        statusText: xhr.statusText,
                         json: () => Promise.resolve(JSON.parse(xhr.responseText)),
                         text: () => Promise.resolve(xhr.responseText)
                     });
                 };
-                xhr.onerror = () => reject(new Error('Local fetch failed'));
-                xhr.open('GET', url);
-                xhr.send();
+                
+                xhr.onerror = () => reject(new Error('Fetch failed via XHR'));
+                if (options && options.signal) {
+                    options.signal.addEventListener('abort', () => {
+                        xhr.abort();
+                        reject(new DOMException('Aborted', 'AbortError'));
+                    });
+                }
+                
+                const body = (options && options.body) || (url && url.body) || null;
+                xhr.send(body);
             });
         }
         return originalFetch(url, options);

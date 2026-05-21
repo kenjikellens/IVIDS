@@ -141,6 +141,11 @@ function createWindow() {
     const indexPath = path.join(__dirname, 'app/src/main/assets/main/gui/index.html');
     mainWindow.loadFile(indexPath);
 
+    // Injects a console event listener to print renderer process logs directly to the terminal for debugging.
+    mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+        console.log(`[RENDERER CONSOLE] [Level ${level}] ${message} (${path.basename(sourceId)}:${line})`);
+    });
+
     mainWindow.on('closed', () => {
         mainWindow = null;
     });

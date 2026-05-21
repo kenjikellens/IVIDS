@@ -2285,6 +2285,106 @@ iframe {
     margin-right: 8px;
 }
 
+.settings-icon-small {
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    -webkit-mask-image: url('../images/settings.svg');
+    mask-image: url('../images/settings.svg');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    margin-right: 8px;
+}
+
+.livetv-settings-content {
+    max-width: 560px;
+}
+
+.livetv-settings-subtitle {
+    margin: -8px 0 24px;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 16px;
+    line-height: 1.45;
+}
+
+.livetv-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    outline: none;
+}
+
+.livetv-setting-row:hover,
+.livetv-setting-row:focus,
+.livetv-setting-row.focused {
+    border-color: #fff;
+    box-shadow: var(--focus-ring-strong);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.livetv-setting-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.livetv-setting-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.livetv-setting-desc {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#hide-broken-toggle {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.livetv-switch {
+    position: relative;
+    width: 58px;
+    height: 32px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    flex-shrink: 0;
+    transition: background 0.18s ease;
+}
+
+.livetv-switch::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    transition: transform 0.18s ease;
+}
+
+#hide-broken-toggle:checked + .livetv-switch {
+    background: var(--primary-color);
+}
+
+#hide-broken-toggle:checked + .livetv-switch::after {
+    transform: translateX(26px);
+}
+
 .search-box {
     /* Explains: Container for search bar sizing. */
     width: 100%;
@@ -2917,6 +3017,7 @@ iframe {
     object-fit: contain;
 }
 
+/* Styles the custom player overlay containing navigation controls and channel metadata. */
 .tv-overlay {
     /* Explains: Custom HUD controller panels overlays. Uses smooth fading curves. */
     position: absolute;
@@ -2929,7 +3030,7 @@ iframe {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 8;
+    z-index: 12;
 }
 
 .tv-overlay.show {
@@ -3152,8 +3253,9 @@ iframe {
     color: #fff;
 }
 
+/* Styles the buffering indicator overlay to show streaming load state without swallowing pointer events. */
 .tv-loading {
-    /* Explains: Full screen spinner panels active during stream load sequences. */
+    /* Explains: Full screen spinner panels active during stream load sequences. Disable pointer interactions. */
     position: absolute;
     top: 0;
     left: 0;
@@ -3164,6 +3266,7 @@ iframe {
     justify-content: center;
     background: rgba(0, 0, 0, 0.5);
     z-index: 10;
+    pointer-events: none;
 }
 
 /* ==========================================================================

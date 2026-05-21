@@ -255,7 +255,11 @@
         "playingNow": "Сейчас в эфире",
         "upcoming": "Предстоящие программы",
         "allGenres": "Все жанры",
-        "allCountries": "Все страны"
+        "allCountries": "Все страны",
+        "noEpgInfo": "?????????? ? ????????? ??????????",
+        "settings": "Settings",
+        "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
+        "hideBrokenDesc": "Automatically hide channels after playback fails."
     },
     "settings_livetv": {
         "title": "Настройка Live TV",

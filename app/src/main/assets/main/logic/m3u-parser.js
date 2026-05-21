@@ -4,6 +4,21 @@
 
 export const M3UParser = {
     /**
+     * Creates a stable ASCII-safe identifier for any URL, including Unicode URLs.
+     * @param {string} value
+     * @returns {string}
+     */
+    createChannelId(value) {
+        let hash = 0;
+        const input = value || '';
+        for (let i = 0; i < input.length; i++) {
+            hash = ((hash << 5) - hash) + input.charCodeAt(i);
+            hash |= 0;
+        }
+        return `live_${Math.abs(hash).toString(36)}`;
+    },
+
+    /**
      * Parse an M3U string into an array of channel objects
      * @param {string} m3uString 
      * @returns {Array} channels
@@ -32,6 +47,10 @@ export const M3UParser = {
                 const groupMatch = line.match(/group-title="([^"]*)"/);
                 if (groupMatch) currentChannel.group = groupMatch[1];
 
+                // Extract tvg-id (XMLTV identifier used for EPG guide matching)
+                const tvgIdMatch = line.match(/tvg-id="([^"]*)"/);
+                if (tvgIdMatch) currentChannel.tvgId = tvgIdMatch[1];
+
                 // Extract tvg-logo
                 const logoMatch = line.match(/tvg-logo="([^"]*)"/);
                 if (logoMatch) currentChannel.logo = logoMatch[1];
@@ -47,7 +66,7 @@ export const M3UParser = {
                 // This is the URL
                 if (currentChannel) {
                     currentChannel.url = line;
-                    currentChannel.id = 'live_' + btoa(line).substring(0, 16);
+                    currentChannel.id = this.createChannelId(line);
                     currentChannel.media_type = 'live';
                     channels.push(currentChannel);
                     currentChannel = null;

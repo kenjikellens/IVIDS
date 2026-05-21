@@ -248,7 +248,11 @@
         "playingNow": "Aktuelle Sendung",
         "upcoming": "Nächste Sendungen",
         "allGenres": "Alle Genres",
-        "allCountries": "Alle Länder"
+        "allCountries": "Alle Länder",
+        "noEpgInfo": "Keine Programminformationen verf?gbar",
+        "settings": "Einstellungen",
+        "settingsSubtitle": "Live-TV-Verhalten f?r Wiedergabe und Kan?le anpassen.",
+        "hideBrokenDesc": "Kan?le nach fehlgeschlagener Wiedergabe automatisch ausblenden."
     },
     "settings_livetv": {
         "title": "Live TV Konfiguration",

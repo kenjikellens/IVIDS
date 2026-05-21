@@ -249,7 +249,11 @@
         "playingNow": "Nu op TV",
         "upcoming": "Volgende programma's",
         "allGenres": "Alle genres",
-        "allCountries": "Alle landen"
+        "allCountries": "Alle landen",
+        "noEpgInfo": "Geen programma-informatie beschikbaar",
+        "settings": "Instellingen",
+        "settingsSubtitle": "Pas Live TV-gedrag aan voor afspelen en kanaalfilters.",
+        "hideBrokenDesc": "Verberg kanalen automatisch nadat afspelen mislukt."
     },
     "settings_livetv": {
         "title": "Live TV Configuratie",

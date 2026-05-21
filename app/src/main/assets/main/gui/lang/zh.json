@@ -255,7 +255,11 @@
         "playingNow": "正在播放",
         "upcoming": "即将播出",
         "allGenres": "所有类型",
-        "allCountries": "所有国家"
+        "allCountries": "所有国家",
+        "noEpgInfo": "??????",
+        "settings": "??",
+        "settingsSubtitle": "?????????????????",
+        "hideBrokenDesc": "????????????"
     },
     "settings_livetv": {
         "title": "电视直播配置",

@@ -249,7 +249,11 @@
         "playingNow": "Playing Now",
         "upcoming": "Upcoming Programs",
         "allGenres": "All Genres",
-        "allCountries": "All Countries"
+        "allCountries": "All Countries",
+        "noEpgInfo": "No program info available",
+        "settings": "Settings",
+        "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
+        "hideBrokenDesc": "Automatically hide channels after playback fails."
     },
     "settings_livetv": {
         "title": "Live TV Configuration",

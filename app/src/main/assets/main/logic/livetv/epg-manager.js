@@ -1,233 +1,358 @@
 /**
- * EpgManager Class
- * ================
- * Generates stable, realistic, and real-time mock Electronic Program Guide (EPG) data 
- * for Live TV channels based on their category/group and the current system time.
- * This guarantees consistent show metadata across different UI views.
+ * Real XMLTV-backed Electronic Program Guide manager for Live TV channels.
+ * Uses iptv-org guide metadata to lazily fetch only the guide files needed by
+ * the channel currently being viewed.
  */
 export class EpgManager {
-    // Database of mock program titles grouped by genre/category
-    static PROGRAM_DATABASE = {
-        sports: [
-            "Live: Premier League Match",
-            "Live: UEFA Champions League Football",
-            "Formula 1 Grand Prix Special",
-            "Live: NBA Regular Season Basketball",
-            "ATP Tour Tennis Finals Live",
-            "Ligue 1 Football Highlights",
-            "Extreme Sports Showcase",
-            "World Sports Center Daily",
-            "PGA Tour Golf Highlights",
-            "Live: Cricket Test Match"
-        ],
-        movies: [
-            "The Dark Knight",
-            "Interstellar",
-            "Inception",
-            "The Matrix Resurrections",
-            "Gladiator (Extended Cut)",
-            "Pulp Fiction",
-            "Spider-Man: No Way Home",
-            "Avatar: The Way of Water",
-            "Dune: Part Two",
-            "Blade Runner 2049"
-        ],
-        news: [
-            "Global News Hour",
-            "World Business Report",
-            "Morning Edition Live",
-            "Tech & Innovation Today",
-            "Documentary Special Report",
-            "Evening News Brief",
-            "Politics Weekly",
-            "Weather & Climate Update",
-            "Global Investigation",
-            "Headline News Today"
-        ],
-        music: [
-            "Hits Today: Top 40 Charts",
-            "Retro Mix Hour",
-            "Live Concert Special",
-            "Late Night Jazz Sessions",
-            "Electronic Beats Live",
-            "Acoustic Live Sessions",
-            "Indie Spotlight",
-            "Pop Anthem Countdown"
-        ],
-        general: [
-            "Daily Talk Show with Host",
-            "Comedy Club Standup Special",
-            "Cooking Masterclass Live",
-            "Travel & Culture Explorer",
-            "Science & Discovery Special",
-            "Drama Series Marathon",
-            "Reality Show Showdown",
-            "Game Show Championship",
-            "Wild Nature Documentary",
-            "Home & Living Makeover"
-        ]
-    };
+    static GUIDES_URL = 'https://iptv-org.github.io/api/guides.json';
+    static CACHE_TTL_MS = 2 * 60 * 60 * 1000;
+    static guideLookup = new Map();
+    static guideCache = new Map();
+    static guideFetchPromises = new Map();
+    static initPromise = null;
+    static initialized = false;
+    static FETCH_TIMEOUT_MS = 12000;
+    static EPG_BASE_URL = 'https://iptv-org.github.io/epg/guides';
 
     /**
-     * getStringHash Function
-     * ======================
-     * Computes a simple, stable hash value for a given string.
-     * Used to seed the deterministic random selection of program titles.
-     * 
-     * @param {string} str - The input string to hash.
-     * @returns {number} A positive hash integer.
+     * Loads iptv-org guide metadata and builds channel-id to XMLTV source mappings.
+     *
+     * @returns {Promise<void>}
      */
-    static getStringHash(str) {
-        let hash = 0;
-        if (!str) return hash;
-        for (let i = 0; i < str.length; i++) {
-            hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        return Math.abs(hash);
+    static async init() {
+        if (this.initialized) return;
+        if (this.initPromise) return this.initPromise;
+
+        this.initPromise = this.fetchWithTimeout(this.GUIDES_URL)
+            .then(response => {
+                if (!response.ok) throw new Error(`Failed to load guides: ${response.status}`);
+                return response.json();
+            })
+            .then(guides => {
+                this.guideLookup.clear();
+                if (Array.isArray(guides)) {
+                    guides.forEach(guide => this.registerGuide(guide));
+                }
+                this.initialized = true;
+            })
+            .catch(error => {
+                console.warn('EPG guide metadata unavailable:', error);
+                this.initialized = true;
+            });
+
+        return this.initPromise;
     }
 
     /**
-     * getCurrentProgram Function
-     * ==========================
-     * Computes the current active program block, elapsed timeline progress,
-     * and duration details for a channel name and group category.
-     * 
-     * @param {string} channelName - The name of the channel.
-     * @param {string} channelGroup - The category or group of the channel (e.g. Sports, Movies).
-     * @returns {Object} An object containing title, start, end, progress, and timeLeft.
+     * Stores the first usable XML source for each channel/feed identifier.
+     *
+     * @param {object} guide - Guide descriptor from iptv-org API.
      */
-    static getCurrentProgram(channelName, channelGroup = '') {
-        const name = channelName || 'Channel';
-        const group = (channelGroup || '').toLowerCase();
+    static registerGuide(guide) {
+        if (!guide.channel) return;
 
-        // Determine program category list
-        let category = 'general';
-        let slotDurationHours = 1; // Default 1-hour shows for news, general, music
+        const sourceUrls = (guide.sources || [])
+            .filter(item => item && item.url && (!item.format || String(item.format).toUpperCase() === 'XML'))
+            .map(item => item.url);
+        const derivedUrl = guide.site && guide.lang ? `${this.EPG_BASE_URL}/${guide.lang}/${guide.site}.xml` : '';
+        const urls = [...sourceUrls, derivedUrl].filter(Boolean);
+        if (urls.length === 0) return;
 
-        if (group.includes('sport')) {
-            category = 'sports';
-            slotDurationHours = 2; // Sports are typically 2 hours
-        } else if (group.includes('movie') || group.includes('cinema')) {
-            category = 'movies';
-            slotDurationHours = 2; // Movies are typically 2 hours
-        } else if (group.includes('news') || group.includes('aktu') || group.includes('info')) {
-            category = 'news';
-            slotDurationHours = 1;
-        } else if (group.includes('music') || group.includes('radio') || group.includes('hit')) {
-            category = 'music';
-            slotDurationHours = 1;
-        }
-
-        const programList = this.PROGRAM_DATABASE[category] || this.PROGRAM_DATABASE.general;
-        const channelSeed = this.getStringHash(name);
-
-        // Fetch current clock details
-        const now = new Date();
-        const currentHour = now.getHours();
-
-        // Compute slot bounds
-        const startHour = Math.floor(currentHour / slotDurationHours) * slotDurationHours;
-        const endHour = startHour + slotDurationHours;
-
-        // Create date milestones
-        const startDate = new Date(now);
-        startDate.setHours(startHour, 0, 0, 0);
-
-        const endDate = new Date(now);
-        endDate.setHours(endHour, 0, 0, 0);
-
-        // Compute deterministic show selection index for the active slot
-        const slotIndex = Math.floor(currentHour / slotDurationHours);
-        const programIndex = (channelSeed + slotIndex) % programList.length;
-        const title = programList[programIndex];
-
-        // Format visual output timestamps (e.g. "14:00")
-        const formatTime = (date) => {
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        const entry = {
+            channelId: guide.channel,
+            feed: guide.feed || '',
+            urls
         };
 
-        // Calculate progress percentage
-        const elapsedMs = now.getTime() - startDate.getTime();
-        const totalMs = endDate.getTime() - startDate.getTime();
-        const progress = Math.min(100, Math.max(0, Math.floor((elapsedMs / totalMs) * 100)));
+        this.addGuideKey(guide.channel, entry);
+        if (guide.feed) {
+            this.addGuideKey(`${guide.channel}@${guide.feed}`, entry);
+        }
+    }
 
-        // Calculate minutes remaining
-        const timeLeftMin = Math.max(0, Math.floor((endDate.getTime() - now.getTime()) / (60 * 1000)));
+    /**
+     * Adds a normalized lookup key without replacing an already registered source.
+     *
+     * @param {string} key - Channel or channel@feed identifier.
+     * @param {object} entry - Guide entry.
+     */
+    static addGuideKey(key, entry) {
+        const normalized = this.normalizeTvgId(key);
+        if (normalized && !this.guideLookup.has(normalized)) {
+            this.guideLookup.set(normalized, entry);
+        }
+    }
+
+    /**
+     * Returns current programme data for a channel, or a clean fallback object.
+     *
+     * @param {string} channelName - Display name used only for diagnostics/fallback context.
+     * @param {string} channelGroup - Group/category, retained for API compatibility.
+     * @param {string} tvgId - XMLTV/iptv-org channel identifier.
+     * @returns {Promise<object>}
+     */
+    static async getCurrentProgram(channelName, channelGroup = '', tvgId = '') {
+        const programs = await this.getProgramsForChannel(tvgId);
+        const now = new Date();
+        const current = programs.find(program => program.startDate <= now && program.endDate > now);
+
+        if (!current) {
+            return this.createFallbackProgram();
+        }
+
+        const totalMs = current.endDate.getTime() - current.startDate.getTime();
+        const elapsedMs = now.getTime() - current.startDate.getTime();
+        const progress = totalMs > 0 ? Math.floor((elapsedMs / totalMs) * 100) : 0;
 
         return {
-            title: title,
-            start: formatTime(startDate),
-            end: formatTime(endDate),
-            progress: progress,
-            timeLeft: timeLeftMin
+            title: current.title,
+            start: this.formatTime(current.startDate),
+            end: this.formatTime(current.endDate),
+            progress: Math.min(100, Math.max(0, progress)),
+            timeLeft: Math.max(0, Math.floor((current.endDate.getTime() - now.getTime()) / 60000)),
+            hasData: true
         };
     }
 
     /**
-     * getUpcomingPrograms Function
-     * ============================
-     * Computes the next N program blocks following the current one.
-     * Guaranteed to match the slot duration and hash indexing of the current program.
-     * 
-     * @param {string} channelName - The name of the channel.
-     * @param {string} channelGroup - The category or group of the channel.
-     * @param {number} limit - Number of upcoming shows to fetch (default: 3).
-     * @returns {Array} List of program objects containing title, start, and end.
+     * Returns upcoming programme rows after the current time.
+     *
+     * @param {string} channelName - Display name, retained for API compatibility.
+     * @param {string} channelGroup - Group/category, retained for API compatibility.
+     * @param {number} limit - Maximum number of upcoming programmes.
+     * @param {string} tvgId - XMLTV/iptv-org channel identifier.
+     * @returns {Promise<Array>}
      */
-    static getUpcomingPrograms(channelName, channelGroup = '', limit = 3) {
-        const name = channelName || 'Channel';
-        const group = (channelGroup || '').toLowerCase();
+    static async getUpcomingPrograms(channelName, channelGroup = '', limit = 3, tvgId = '') {
+        const programs = await this.getProgramsForChannel(tvgId);
+        const now = new Date();
 
-        let category = 'general';
-        let slotDurationHours = 1;
+        return programs
+            .filter(program => program.startDate > now)
+            .slice(0, limit)
+            .map(program => ({
+                title: program.title,
+                start: this.formatTime(program.startDate),
+                end: this.formatTime(program.endDate),
+                hasData: true
+            }));
+    }
 
-        if (group.includes('sport')) {
-            category = 'sports';
-            slotDurationHours = 2;
-        } else if (group.includes('movie') || group.includes('cinema')) {
-            category = 'movies';
-            slotDurationHours = 2;
-        } else if (group.includes('news') || group.includes('aktu') || group.includes('info')) {
-            category = 'news';
-            slotDurationHours = 1;
-        } else if (group.includes('music') || group.includes('radio') || group.includes('hit')) {
-            category = 'music';
-            slotDurationHours = 1;
+    /**
+     * Resolves guide metadata, fetches XMLTV when needed, and extracts programmes for a tvg-id.
+     *
+     * @param {string} tvgId - XMLTV/iptv-org channel identifier.
+     * @returns {Promise<Array>}
+     */
+    static async getProgramsForChannel(tvgId) {
+        await this.init();
+
+        const normalizedTvgId = this.normalizeTvgId(tvgId);
+        if (!normalizedTvgId) return [];
+
+        const guide = this.resolveGuide(normalizedTvgId);
+        if (!guide) return [];
+
+        const xml = await this.fetchGuideXml(guide.urls);
+        if (!xml) return [];
+
+        const candidateIds = this.getCandidateChannelIds(normalizedTvgId, guide);
+        const programs = this.parsePrograms(xml, candidateIds);
+        programs.sort((a, b) => a.startDate - b.startDate);
+        return programs;
+    }
+
+    /**
+     * Finds guide metadata using exact id, decoded id, or channel-only id.
+     *
+     * @param {string} tvgId - Normalized channel identifier.
+     * @returns {object|null}
+     */
+    static resolveGuide(tvgId) {
+        if (this.guideLookup.has(tvgId)) return this.guideLookup.get(tvgId);
+
+        const channelOnly = tvgId.split('@')[0];
+        if (this.guideLookup.has(channelOnly)) return this.guideLookup.get(channelOnly);
+
+        return null;
+    }
+
+    /**
+     * Fetches and caches an XMLTV document.
+     *
+     * @param {string|Array<string>} urlOrUrls - XMLTV guide URL or fallback URL list.
+     * @returns {Promise<string>}
+     */
+    static async fetchGuideXml(urlOrUrls) {
+        const urls = Array.isArray(urlOrUrls) ? urlOrUrls : [urlOrUrls];
+        for (const url of urls.filter(Boolean)) {
+            const xml = await this.fetchSingleGuideXml(url);
+            if (xml) return xml;
+        }
+        return '';
+    }
+
+    /**
+     * Fetches and caches one XMLTV document URL.
+     *
+     * @param {string} url - XMLTV guide URL.
+     * @returns {Promise<string>}
+     */
+    static async fetchSingleGuideXml(url) {
+        const cached = this.guideCache.get(url);
+        if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
+            return cached.xml;
+        }
+        if (this.guideFetchPromises.has(url)) {
+            return this.guideFetchPromises.get(url);
         }
 
-        const programList = this.PROGRAM_DATABASE[category] || this.PROGRAM_DATABASE.general;
-        const channelSeed = this.getStringHash(name);
+        const request = this.fetchWithTimeout(url)
+            .then(response => {
+                if (!response.ok) throw new Error(`Guide fetch failed: ${response.status}`);
+                return response.text();
+            })
+            .then(xml => {
+                this.guideCache.set(url, { xml, timestamp: Date.now() });
+                return xml;
+            })
+            .catch(error => {
+                console.warn('EPG XML unavailable:', url, error);
+                return '';
+            })
+            .finally(() => {
+                this.guideFetchPromises.delete(url);
+            });
 
-        const now = new Date();
-        const currentHour = now.getHours();
-        const startHour = Math.floor(currentHour / slotDurationHours) * slotDurationHours;
+        this.guideFetchPromises.set(url, request);
+        return request;
+    }
 
-        const upcoming = [];
-        const formatTime = (date) => {
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    /**
+     * Parses XMLTV programmes for matching channel IDs.
+     *
+     * @param {string} xml - XMLTV document.
+     * @param {Set<string>} candidateIds - Acceptable channel IDs.
+     * @returns {Array}
+     */
+    static parsePrograms(xml, candidateIds) {
+        const doc = new DOMParser().parseFromString(xml, 'application/xml');
+        const parseError = doc.querySelector('parsererror');
+        if (parseError) return [];
+
+        return Array.from(doc.querySelectorAll('programme'))
+            .filter(node => candidateIds.has(this.normalizeTvgId(node.getAttribute('channel') || '')))
+            .map(node => {
+                const titleNode = node.querySelector('title');
+                const startDate = this.parseXmltvDate(node.getAttribute('start') || '');
+                const endDate = this.parseXmltvDate(node.getAttribute('stop') || '');
+
+                if (!titleNode || !startDate || !endDate) return null;
+
+                return {
+                    title: titleNode.textContent.trim() || this.getNoEpgText(),
+                    startDate,
+                    endDate
+                };
+            })
+            .filter(Boolean);
+    }
+
+    /**
+     * Fetches a URL with a bounded timeout so Live TV never hangs on EPG network calls.
+     *
+     * @param {string} url - URL to fetch.
+     * @returns {Promise<Response>}
+     */
+    static fetchWithTimeout(url) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), this.FETCH_TIMEOUT_MS);
+
+        return fetch(url, { signal: controller.signal })
+            .finally(() => clearTimeout(timeout));
+    }
+
+    /**
+     * Builds matching IDs because iptv-org guides may reference channel or channel@feed ids.
+     *
+     * @param {string} tvgId - Normalized requested tvg-id.
+     * @param {object} guide - Resolved guide metadata.
+     * @returns {Set<string>}
+     */
+    static getCandidateChannelIds(tvgId, guide) {
+        const ids = new Set();
+        const add = value => {
+            const normalized = this.normalizeTvgId(value);
+            if (normalized) ids.add(normalized);
         };
 
-        for (let i = 1; i <= limit; i++) {
-            const nextStartHour = startHour + (i * slotDurationHours);
-            const nextEndHour = nextStartHour + slotDurationHours;
+        add(tvgId);
+        add(tvgId.split('@')[0]);
+        add(guide.channelId);
+        if (guide.feed) add(`${guide.channelId}@${guide.feed}`);
 
-            const nextStartDate = new Date(now);
-            nextStartDate.setHours(nextStartHour, 0, 0, 0);
+        return ids;
+    }
 
-            const nextEndDate = new Date(now);
-            nextEndDate.setHours(nextEndHour, 0, 0, 0);
+    /**
+     * Parses XMLTV timestamps like "20260521193000 +0200".
+     *
+     * @param {string} value - XMLTV timestamp.
+     * @returns {Date|null}
+     */
+    static parseXmltvDate(value) {
+        const match = value.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?\s*([+-]\d{4}|Z)?/);
+        if (!match) return null;
 
-            const nextSlotIndex = Math.floor((currentHour + (i * slotDurationHours)) / slotDurationHours);
-            const programIndex = (channelSeed + nextSlotIndex) % programList.length;
-            const title = programList[programIndex];
+        const [, year, month, day, hour, minute, second = '00', zone = 'Z'] = match;
+        const isoZone = zone === 'Z' ? 'Z' : `${zone.slice(0, 3)}:${zone.slice(3)}`;
+        const date = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}${isoZone}`);
 
-            upcoming.push({
-                title: title,
-                start: formatTime(nextStartDate),
-                end: formatTime(nextEndDate)
-            });
-        }
+        return Number.isNaN(date.getTime()) ? null : date;
+    }
 
-        return upcoming;
+    /**
+     * Normalizes XMLTV IDs for case-insensitive map/set matching.
+     *
+     * @param {string} tvgId - Raw tvg-id.
+     * @returns {string}
+     */
+    static normalizeTvgId(tvgId) {
+        return (tvgId || '').trim().toLowerCase();
+    }
+
+    /**
+     * Formats a Date as local HH:mm.
+     *
+     * @param {Date} date - Date to format.
+     * @returns {string}
+     */
+    static formatTime(date) {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+
+    /**
+     * Returns localized fallback text.
+     *
+     * @returns {string}
+     */
+    static getNoEpgText() {
+        return window.i18n?.t('livetv.noEpgInfo') || window.i18n?.t('livetv.epgNoInfo') || 'No program info available';
+    }
+
+    /**
+     * Creates the display-safe fallback object used when no guide exists.
+     *
+     * @returns {object}
+     */
+    static createFallbackProgram() {
+        return {
+            title: this.getNoEpgText(),
+            start: '--:--',
+            end: '--:--',
+            progress: 0,
+            timeLeft: 0,
+            hasData: false
+        };
     }
 }

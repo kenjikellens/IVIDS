@@ -255,7 +255,11 @@
         "playingNow": "Playing Now",
         "upcoming": "Upcoming Programs",
         "allGenres": "All Genres",
-        "allCountries": "All Countries"
+        "allCountries": "All Countries",
+        "noEpgInfo": "Program bilgisi mevcut de?il",
+        "settings": "Settings",
+        "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
+        "hideBrokenDesc": "Automatically hide channels after playback fails."
     },
     "settings_livetv": {
         "title": "Canlı TV Yapılandırması",

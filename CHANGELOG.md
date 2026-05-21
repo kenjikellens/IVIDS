@@ -20,3 +20,5 @@
 [22:59 21-05-2026] app/src/main/assets/main/gui/css/player.css - Updated server buttons focus/hover states to eliminate layout shifts.
 [22:59 21-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Refactored router loadPage/goBack wrappers to restore both hooks simultaneously during transition.
 [23:02 21-05-2026] app/src/main/assets/main/gui/css/global.css - Replaced preview layout with 60% player and 40% clean, scrollable TV-friendly program timeline list.
+[23:10 21-05-2026] app/src/main/assets/main/gui/css/global.css - Modified tv-overlay and tv-loading classes to resolve z-index and click blocking issues in the player page.
+[23:10 21-05-2026] app/src/main/assets/main/gui/index.html - Updated fetch polyfill to route all requests via XHR on file:// protocol, including required JSDoc documentation.

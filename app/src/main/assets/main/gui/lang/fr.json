@@ -248,7 +248,11 @@
         "playingNow": "En cours",
         "upcoming": "Programmes à venir",
         "allGenres": "Tous les genres",
-        "allCountries": "Tous les pays"
+        "allCountries": "Tous les pays",
+        "noEpgInfo": "Aucune information de programme disponible",
+        "settings": "Param?tres",
+        "settingsSubtitle": "R?glez le comportement de Live TV pour la lecture et le filtrage.",
+        "hideBrokenDesc": "Masquer automatiquement les cha?nes apr?s un ?chec de lecture."
     },
     "settings_livetv": {
         "title": "Configuration Live TV",

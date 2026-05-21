@@ -3,12 +3,13 @@ import { PRESET_SOURCES } from '../../logic/livetv/sources.js';
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
+import { proxyUrl } from '../js/utils/proxy.js';
 
 let allChannels = [];
 let filteredChannels = [];
 let searchQuery = '';
 let selectedChannel = null;
-let hideBroken = false;
+let hideBroken = true;
 let activeGenre = '';
 let activeCountry = '';
 let genres = [];
@@ -16,6 +17,9 @@ let countries = [];
 const statusCache = new Map(); // Store channel status results: url -> {status, timestamp}
 let previewHls = null;
 let previewTimeout = null;
+const LIVE_TV_SETTINGS_KEY = 'ivids-live-tv-settings';
+const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
+const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
 
 // Explains: Curated set of lowercase country tags commonly found in international IPTV lists.
 const countriesList = new Set([
@@ -49,7 +53,8 @@ export async function init(params) {
     activeGenre = '';
     activeCountry = '';
     selectedChannel = null;
-    hideBroken = false;
+    hideBroken = loadLiveTvSettings().hideBroken;
+    loadStatusCache();
 
     // Reset any active preview player resource from a previous page session
     cleanupPreview();
@@ -98,6 +103,7 @@ export async function init(params) {
 
     if (window.i18n) window.i18n.applyTranslations();
 
+    EpgManager.init();
     await loadAllSources();
     setupEventListeners();
     SpatialNav.focusFirst();
@@ -148,6 +154,8 @@ async function loadAllSources() {
                 if (playlistChannels && playlistChannels.length > 0) {
                     playlistChannels.forEach(c => {
                         if (!c.group) c.group = source.name;
+                        c.sourceName = source.name;
+                        c.sourcePriority = source.priority || 50;
 
                         if (!seenUrls.has(c.url)) {
                             seenUrls.add(c.url);
@@ -165,7 +173,13 @@ async function loadAllSources() {
             }
         }
 
-        allChannels.sort((a, b) => (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: 'base' }));
+        allChannels.sort((a, b) => {
+            const streamScoreDiff = getStreamScore(b.url) - getStreamScore(a.url);
+            if (streamScoreDiff !== 0) return streamScoreDiff;
+            const priorityDiff = (a.sourcePriority || 50) - (b.sourcePriority || 50);
+            if (priorityDiff !== 0) return priorityDiff;
+            return (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: 'base' });
+        });
 
         // Extract unique genres and countries
         const genresSet = new Set();
@@ -289,8 +303,11 @@ function filterAndRenderChannels(resetFocus = false) {
         item.dataset.url = channel.url;
 
         const iconUrl = channel.logo || 'images/livetv.svg';
+        const status = statusCache.get(channel.url)?.status || 'unknown';
+        const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
 
         item.innerHTML = `
+            <span class="list-status-dot ${statusClass}"></span>
             <div class="channel-list-logo-container">
                 <img src="${iconUrl}" class="channel-list-logo" onerror="this.src='images/livetv.svg'">
             </div>
@@ -335,39 +352,28 @@ async function showChannelDetail(channel) {
     if (placeholder) placeholder.style.display = 'none';
     if (content) content.style.display = 'flex';
 
-    // Update EPG Dashboard Section
-    const epg = EpgManager.getCurrentProgram(channel.name, channel.group);
     const epgContainer = document.getElementById('hero-epg-container');
     const epgTitleEl = document.getElementById('hero-epg-title');
     const epgStartEl = document.getElementById('hero-epg-start');
     const epgEndEl = document.getElementById('hero-epg-end');
     const epgProgressEl = document.getElementById('hero-epg-progress');
+    const noEpgText = window.i18n?.t('livetv.noEpgInfo') || 'No program info available';
 
     if (epgContainer) {
         epgContainer.style.display = 'block';
-        if (epgTitleEl) epgTitleEl.textContent = epg.title;
-        if (epgStartEl) epgStartEl.textContent = epg.start;
-        if (epgEndEl) epgEndEl.textContent = epg.end;
-        if (epgProgressEl) epgProgressEl.style.width = `${epg.progress}%`;
+        if (epgTitleEl) epgTitleEl.textContent = window.i18n?.t('livetv.loading') || 'Loading channels...';
+        if (epgStartEl) epgStartEl.textContent = '--:--';
+        if (epgEndEl) epgEndEl.textContent = '--:--';
+        if (epgProgressEl) epgProgressEl.style.width = '0%';
     }
 
     // Populate Upcoming Programs list
     const upcomingListEl = document.getElementById('upcoming-programs-list');
     if (upcomingListEl) {
-        upcomingListEl.innerHTML = '';
-        const upcomingShows = EpgManager.getUpcomingPrograms(channel.name, channel.group, 3);
-        upcomingShows.forEach(show => {
-            const row = document.createElement('div');
-            row.className = 'upcoming-program-row';
-            row.innerHTML = `
-                <span class="upcoming-program-time">${show.start} - ${show.end}</span>
-                <span class="upcoming-program-title">${show.title}</span>
-            `;
-            upcomingListEl.appendChild(row);
-        });
+        upcomingListEl.innerHTML = `<div class="upcoming-program-row"><span class="upcoming-program-title">${noEpgText}</span></div>`;
     }
 
-    // Debounce stream playback to prevent network overload when zapping/scrolling quickly
+    // Debounce stream playback to prevent network overload when zapping/scrolling quickly.
     if (previewTimeout) {
         clearTimeout(previewTimeout);
     }
@@ -381,6 +387,40 @@ async function showChannelDetail(channel) {
             loadPreviewStream(channel.url);
         }
     }, 450);
+
+    const [epg, upcomingShows] = await Promise.all([
+        EpgManager.getCurrentProgram(channel.name, channel.group, channel.tvgId),
+        EpgManager.getUpcomingPrograms(channel.name, channel.group, 3, channel.tvgId)
+    ]);
+
+    if (!selectedChannel || selectedChannel.url !== channel.url) return;
+
+    if (epgContainer) {
+        if (epgTitleEl) epgTitleEl.textContent = epg.title;
+        if (epgStartEl) epgStartEl.textContent = epg.start;
+        if (epgEndEl) epgEndEl.textContent = epg.end;
+        if (epgProgressEl) epgProgressEl.style.width = `${epg.progress}%`;
+    }
+
+    if (upcomingListEl) {
+        upcomingListEl.innerHTML = '';
+        if (upcomingShows.length === 0) {
+            const row = document.createElement('div');
+            row.className = 'upcoming-program-row';
+            row.innerHTML = `<span class="upcoming-program-title">${noEpgText}</span>`;
+            upcomingListEl.appendChild(row);
+        } else {
+            upcomingShows.forEach(show => {
+                const row = document.createElement('div');
+                row.className = 'upcoming-program-row';
+                row.innerHTML = `
+                    <span class="upcoming-program-time">${show.start} - ${show.end}</span>
+                    <span class="upcoming-program-title">${show.title}</span>
+                `;
+                upcomingListEl.appendChild(row);
+            });
+        }
+    }
 }
 
 /**
@@ -406,20 +446,22 @@ function loadPreviewStream(url) {
     };
     video.onplaying = () => {
         if (loader) loader.style.display = 'none';
-        statusCache.set(url, { status: 'online', timestamp: Date.now() });
+        updateChannelStatus(url, 'online');
     };
     video.onerror = () => {
         if (loader) loader.style.display = 'none';
         console.warn('Preview video playback failed for URL:', url);
-        statusCache.set(url, { status: 'offline', timestamp: Date.now() });
+        updateChannelStatus(url, 'offline');
     };
+
+    const streamUrl = proxyUrl(url);
 
     if (window.Hls && window.Hls.isSupported()) {
         previewHls = new window.Hls({
             maxMaxBufferLength: 5,
             liveSyncDuration: 2
         });
-        previewHls.loadSource(url);
+        previewHls.loadSource(streamUrl);
         previewHls.attachMedia(video);
         previewHls.on(window.Hls.Events.MANIFEST_PARSED, () => {
             video.play().catch(e => console.warn('Error starting HLS preview video:', e));
@@ -427,7 +469,7 @@ function loadPreviewStream(url) {
         previewHls.on(window.Hls.Events.ERROR, (event, data) => {
             if (data.fatal) {
                 if (loader) loader.style.display = 'none';
-                statusCache.set(url, { status: 'offline', timestamp: Date.now() });
+                updateChannelStatus(url, 'offline');
                 if (previewHls) {
                     previewHls.destroy();
                     previewHls = null;
@@ -435,7 +477,7 @@ function loadPreviewStream(url) {
             }
         });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = url;
+        video.src = streamUrl;
         video.play().catch(e => console.warn('Error starting native preview video:', e));
     } else {
         if (loader) loader.style.display = 'none';
@@ -489,7 +531,8 @@ function playChannel(channel) {
     Router.loadPage('tv-player', {
         url: channel.url,
         title: channel.name,
-        group: channel.group
+        group: channel.group,
+        tvgId: channel.tvgId
     });
 }
 
@@ -501,7 +544,10 @@ function playChannel(channel) {
  */
 function setupEventListeners() {
     const searchInput = document.getElementById('search-input');
-    const filterBtn = document.getElementById('hero-filter-btn');
+    const settingsBtn = document.getElementById('hero-settings-btn');
+    const settingsModal = document.getElementById('livetv-settings-modal');
+    const settingsClose = document.getElementById('livetv-settings-close');
+    const hideBrokenToggle = document.getElementById('hide-broken-toggle');
     const clearBtn = document.getElementById('search-clear');
 
     const originalBack = SpatialNav.onBack;
@@ -509,7 +555,11 @@ function setupEventListeners() {
         const current = document.querySelector('.focused');
         const list = document.getElementById('channels-list');
 
-        if (current && list && list.contains(current) && searchInput) {
+        if (settingsModal && settingsModal.classList.contains('active')) {
+            settingsModal.classList.remove('active');
+            SpatialNav.clearFocusTrap();
+            if (settingsBtn) SpatialNav.setFocus(settingsBtn);
+        } else if (current && list && list.contains(current) && searchInput) {
             SpatialNav.setFocus(searchInput);
         } else if (originalBack) {
             originalBack();
@@ -545,18 +595,40 @@ function setupEventListeners() {
         };
     }
 
-    if (filterBtn) {
-        filterBtn.onclick = () => {
-            hideBroken = !hideBroken;
-            filterBtn.classList.toggle('active', hideBroken);
-            if (hideBroken) {
-                filterBtn.style.borderColor = 'var(--primary-color)';
-                filterBtn.style.color = 'var(--primary-color)';
-            } else {
-                filterBtn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                filterBtn.style.color = 'white';
-            }
-            filterAndRenderChannels();
+    if (hideBrokenToggle) {
+        hideBrokenToggle.checked = hideBroken;
+        hideBrokenToggle.onchange = () => {
+            hideBroken = hideBrokenToggle.checked;
+            saveLiveTvSettings();
+            filterAndRenderChannels(true);
+        };
+    }
+
+    const openSettings = () => {
+        if (!settingsModal) return;
+        if (hideBrokenToggle) hideBrokenToggle.checked = hideBroken;
+        settingsModal.classList.add('active');
+        SpatialNav.setFocusTrap(settingsModal);
+    };
+
+    const closeSettings = () => {
+        if (!settingsModal) return;
+        settingsModal.classList.remove('active');
+        SpatialNav.clearFocusTrap();
+        if (settingsBtn) SpatialNav.setFocus(settingsBtn);
+    };
+
+    if (settingsBtn) {
+        settingsBtn.onclick = openSettings;
+    }
+
+    if (settingsClose) {
+        settingsClose.onclick = closeSettings;
+    }
+
+    if (settingsModal) {
+        settingsModal.onclick = (event) => {
+            if (event.target === settingsModal) closeSettings();
         };
     }
 
@@ -576,4 +648,88 @@ function setupEventListeners() {
             filterAndRenderChannels(true);
         };
     }
+}
+
+/**
+ * Loads Live TV page settings, defaulting broken-channel hiding to enabled.
+ *
+ * @returns {object}
+ */
+function loadLiveTvSettings() {
+    try {
+        const settings = JSON.parse(localStorage.getItem(LIVE_TV_SETTINGS_KEY) || '{}');
+        return {
+            hideBroken: settings.hideBroken !== false
+        };
+    } catch (error) {
+        console.warn('Failed to load Live TV settings:', error);
+        return { hideBroken: true };
+    }
+}
+
+/**
+ * Persists Live TV page settings.
+ */
+function saveLiveTvSettings() {
+    localStorage.setItem(LIVE_TV_SETTINGS_KEY, JSON.stringify({ hideBroken }));
+}
+
+/**
+ * Loads cached channel health, dropping stale entries.
+ */
+function loadStatusCache() {
+    statusCache.clear();
+    try {
+        const entries = JSON.parse(localStorage.getItem(LIVE_TV_STATUS_KEY) || '[]');
+        entries.forEach(([url, value]) => {
+            if (value && Date.now() - value.timestamp < STATUS_TTL_MS) {
+                statusCache.set(url, value);
+            }
+        });
+    } catch (error) {
+        console.warn('Failed to load Live TV status cache:', error);
+    }
+}
+
+/**
+ * Stores a channel playback health result and refreshes the visible list.
+ *
+ * @param {string} url - Channel stream URL.
+ * @param {string} status - online/offline.
+ */
+function updateChannelStatus(url, status) {
+    if (!url) return;
+    statusCache.set(url, { status, timestamp: Date.now() });
+    try {
+        localStorage.setItem(LIVE_TV_STATUS_KEY, JSON.stringify(Array.from(statusCache.entries())));
+    } catch (error) {
+        console.warn('Failed to save Live TV status cache:', error);
+    }
+
+    const row = Array.from(document.querySelectorAll('.channel-list-item'))
+        .find(item => item.dataset.url === url);
+    const dot = row?.querySelector('.list-status-dot');
+    if (dot) {
+        dot.classList.remove('checking', 'online', 'offline');
+        dot.classList.add(status);
+    }
+
+    if (hideBroken && status === 'offline') {
+        filterAndRenderChannels(false);
+    }
+}
+
+/**
+ * Scores streams so HLS/HTTPS candidates appear before weaker UDP or opaque URLs.
+ *
+ * @param {string} url - Stream URL.
+ * @returns {number}
+ */
+function getStreamScore(url) {
+    const value = (url || '').toLowerCase();
+    let score = 0;
+    if (value.startsWith('https://')) score += 2;
+    if (value.includes('.m3u8')) score += 4;
+    if (value.includes('/udp/') || value.startsWith('rtmp://')) score -= 6;
+    return score;
 }
