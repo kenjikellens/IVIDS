@@ -16,13 +16,13 @@ let countries = [];
 const statusCache = new Map(); // Store channel status results: url -> {status, timestamp}
 let previewHls = null;
 let previewTimeout = null;
+let searchDebounceTimer = null;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
 const BROKEN_CHANNELS_API_URL = '/api/broken-channels';
 const brokenChannelsSet = new Set(); // Persistent broken channel URLs loaded from project file
 
 let renderedCount = 0;
-let channelsObserver = null;
 const CHUNK_SIZE = 30;
 
 // Explains: Curated set of lowercase country tags commonly found in international IPTV lists.
@@ -106,6 +106,26 @@ export async function init(params) {
 
     EpgManager.init();
     await loadBrokenChannelsDb();
+
+    if (allChannels.length > 0) {
+        const statsInfo = document.getElementById('hero-stats-info');
+        const countEl = document.getElementById('hero-total-channels');
+        const totalSrcEl = document.getElementById('hero-total-sources');
+        if (statsInfo && countEl && totalSrcEl) {
+            countEl.textContent = `${allChannels.length} channels`;
+            const sourceEntries = Object.entries(PRESET_SOURCES);
+            const settings = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
+            const totalSources = sourceEntries.length + (settings.m3uUrl ? 1 : 0);
+            totalSrcEl.textContent = `${totalSources} sources`;
+            statsInfo.style.display = 'flex';
+        }
+        populateFilters();
+        filterAndRenderChannels(true);
+        setupEventListeners();
+        SpatialNav.focusFirst();
+        return;
+    }
+
     await loadAllSources();
     setupEventListeners();
     SpatialNav.focusFirst();
@@ -148,34 +168,39 @@ async function loadAllSources() {
 
         allChannels = [];
         const seenUrls = new Set();
-        let loadedCount = 0;
 
-        for (const [id, source] of sourceEntries) {
+        // Fetch all playlist sources in parallel to prevent sequential network blocking
+        const fetchPromises = sourceEntries.map(async ([id, source]) => {
             try {
                 const playlistChannels = await M3UParser.fetchPlaylist(proxyUrl(source.url));
-
-                if (playlistChannels && playlistChannels.length > 0) {
-                    playlistChannels.forEach(c => {
-                        if (!c.group) c.group = source.name;
-                        c.sourceName = source.name;
-                        c.sourcePriority = source.priority || 50;
-
-                        const normalized = normalizeUrl(c.url);
-                        if (!seenUrls.has(normalized) && !brokenChannelsSet.has(normalized)) {
-                            seenUrls.add(normalized);
-                            allChannels.push(c);
-                            loadedCount++;
-                        }
-                    });
-
-                    if (allChannels.length > 0 && (loadedCount % 50 === 0 || id === sourceEntries[sourceEntries.length - 1][0])) {
-                        filterAndRenderChannels(false);
-                    }
-                }
+                return { source, playlistChannels };
             } catch (err) {
                 console.warn(`Failed to load source ${source.name}:`, err);
+                return { source, playlistChannels: [] };
             }
-        }
+        });
+
+        const results = await Promise.all(fetchPromises);
+
+        // Process and merge all parsed channels
+        results.forEach(({ source, playlistChannels }) => {
+            if (playlistChannels && playlistChannels.length > 0) {
+                playlistChannels.forEach(c => {
+                    if (!c.group) c.group = source.name;
+                    c.sourceName = source.name;
+                    c.sourcePriority = source.priority || 50;
+
+                    const normalized = normalizeUrl(c.url);
+                    if (!seenUrls.has(normalized) && !brokenChannelsSet.has(normalized)) {
+                        seenUrls.add(normalized);
+                        c.normalizedUrl = normalized;
+                        c.searchNameLower = (c.name || '').toLowerCase();
+                        c.groupTags = c.group ? c.group.split(';').map(t => t.trim().toLowerCase()).filter(Boolean) : [];
+                        allChannels.push(c);
+                    }
+                });
+            }
+        });
 
         allChannels.sort((a, b) => {
             const streamScoreDiff = getStreamScore(b.url) - getStreamScore(a.url);
@@ -271,15 +296,17 @@ function filterAndRenderChannels(resetFocus = false) {
     const container = document.getElementById('channels-list');
     if (!container) return;
 
+    const searchLower = searchQuery.toLowerCase();
+    const activeGenreLower = activeGenre.toLowerCase();
+    const activeCountryLower = activeCountry.toLowerCase();
+
     filteredChannels = allChannels.filter(c => {
         // Channels in the persistent broken DB are always excluded
-        if (brokenChannelsSet.has(normalizeUrl(c.url))) return false;
+        if (brokenChannelsSet.has(c.normalizedUrl)) return false;
 
-        const matchesSearch = !searchQuery || (c.name || "").toLowerCase().includes(searchQuery.toLowerCase());
-        
-        const tags = c.group ? c.group.split(';').map(t => t.trim().toLowerCase()) : [];
-        const matchesGenre = !activeGenre || tags.includes(activeGenre.toLowerCase());
-        const matchesCountry = !activeCountry || tags.includes(activeCountry.toLowerCase());
+        const matchesSearch = !searchQuery || c.searchNameLower.includes(searchLower);
+        const matchesGenre = !activeGenre || c.groupTags.includes(activeGenreLower);
+        const matchesCountry = !activeCountry || c.groupTags.includes(activeCountryLower);
         
         return matchesSearch && matchesGenre && matchesCountry;
     });
@@ -294,11 +321,6 @@ function filterAndRenderChannels(resetFocus = false) {
     const clearBtn = document.getElementById('search-clear');
     if (clearBtn) {
         clearBtn.style.display = searchQuery ? 'block' : 'none';
-    }
-
-    if (channelsObserver) {
-        channelsObserver.disconnect();
-        channelsObserver = null;
     }
 
     container.innerHTML = '';
@@ -537,9 +559,16 @@ function setupEventListeners() {
     };
 
     if (searchInput) {
+        /**
+         * Debounces search input to avoid re-filtering and re-rendering the channel list on every keystroke.
+         * Waits 300ms after the user stops typing before triggering the filter.
+         */
         searchInput.oninput = (e) => {
             searchQuery = e.target.value;
-            filterAndRenderChannels(false);
+            if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                filterAndRenderChannels(false);
+            }, 300);
         };
 
         searchInput.onclick = () => {
@@ -579,6 +608,19 @@ function setupEventListeners() {
         countrySelect.onchange = (e) => {
             activeCountry = e.target.value;
             filterAndRenderChannels(true);
+        };
+    }
+
+    const scrollContainer = document.querySelector('.livetv-list-column');
+    if (scrollContainer) {
+        /**
+         * Detects when the user scrolls near the bottom of the list.
+         * Triggers rendering of the next pagination chunk of channels.
+         */
+        scrollContainer.onscroll = () => {
+            if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 150) {
+                renderNextChunk();
+            }
         };
     }
 }
@@ -644,10 +686,12 @@ function getStreamScore(url) {
 }
 
 /**
- * Renders the next batch of channels and updates the intersection observer.
+ * Renders the next batch of channels and updates the list pagination state.
  * Affects the channels list container DOM and spatial navigation.
  */
 function renderNextChunk() {
+    if (renderedCount >= filteredChannels.length) return;
+
     const container = document.getElementById('channels-list');
     if (!container) return;
 
@@ -661,6 +705,10 @@ function renderNextChunk() {
 
     const start = renderedCount;
     const end = Math.min(start + CHUNK_SIZE, filteredChannels.length);
+
+    /** @type {DocumentFragment} Batch fragment to avoid per-item reflows when appending to live DOM. */
+    const fragment = document.createDocumentFragment();
+    let refocusTarget = null;
 
     for (let i = start; i < end; i++) {
         const channel = filteredChannels[i];
@@ -676,60 +724,39 @@ function renderNextChunk() {
         item.innerHTML = `
             <span class="list-status-dot ${statusClass}"></span>
             <div class="channel-list-logo-container">
-                <img src="${iconUrl}" class="channel-list-logo" onerror="this.src='images/livetv.svg'">
+                <img src="${iconUrl}" class="channel-list-logo" loading="lazy" onerror="this.src='images/livetv.svg'">
             </div>
             <div class="channel-list-meta-container">
                 <span class="channel-list-name">${channel.name}</span>
             </div>
         `;
 
-        item.onfocus = () => showChannelDetail(channel);
+        /**
+         * Triggers loading channel EPG details on focus.
+         * Renders the next pagination chunk early when D-pad focus gets close to the end of the current chunk.
+         */
+        item.onfocus = () => {
+            showChannelDetail(channel);
+            if (i >= renderedCount - 5) {
+                renderNextChunk();
+            }
+        };
         item.onclick = () => playChannel(channel);
 
-        container.appendChild(item);
+        fragment.appendChild(item);
 
         if (focusedUrl === channel.url) {
-            SpatialNav.setFocus(item);
+            refocusTarget = item;
         }
     }
 
+    container.appendChild(fragment);
+
+    if (refocusTarget) {
+        SpatialNav.setFocus(refocusTarget);
+    }
+
     renderedCount = end;
-
-    if (renderedCount < filteredChannels.length) {
-        const sentinel = document.createElement('div');
-        sentinel.id = 'channels-sentinel';
-        sentinel.style.height = '1px';
-        sentinel.style.width = '100%';
-        container.appendChild(sentinel);
-
-        setupSentinelObserver(sentinel);
-    }
-}
-
-/**
- * Sets up the IntersectionObserver for the sentinel element to trigger infinite scrolling.
- * Affects the channels list container and dynamically appends more channel items.
- * 
- * @param {HTMLElement} sentinel - The sentinel DOM element to observe.
- */
-function setupSentinelObserver(sentinel) {
-    if (channelsObserver) {
-        channelsObserver.disconnect();
-    }
-
-    const scrollContainer = document.querySelector('.livetv-list-column');
-    channelsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                renderNextChunk();
-            }
-        });
-    }, {
-        root: scrollContainer,
-        rootMargin: '100px'
-    });
-
-    channelsObserver.observe(sentinel);
 }
 
 

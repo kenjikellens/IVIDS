@@ -149,7 +149,10 @@
         "pause": "Tạm dừng",
         "stop": "Dừng",
         "moreInfo": "Thêm thông tin",
-        "nextEpisode": "Tập tiếp theo"
+        "nextEpisode": "Tập tiếp theo",
+        "loading": "Đang tải...",
+        "statusTitle": "Trình phát mất quá nhiều thời gian",
+        "statusMessage": "Nhà cung cấp trình phát được cấu hình vẫn chưa phản hồi. Bạn có thể quay lại hoặc thay đổi điểm cuối của trình phát trong Cài đặt."
     },
     "playlists": {
         "title": "Danh sách phát của tôi",

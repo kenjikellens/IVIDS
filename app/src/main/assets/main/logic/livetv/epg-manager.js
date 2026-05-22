@@ -252,6 +252,7 @@ export class EpgManager {
 
     /**
      * Fetches and caches one XMLTV document URL.
+     * Detects .gz URLs and decompresses them via DecompressionStream before reading as text.
      * Integrates CORS proxy wrapper when running on localhost.
      *
      * @param {string} url - XMLTV guide URL.
@@ -269,7 +270,7 @@ export class EpgManager {
         const request = this.fetchWithTimeout(proxyUrl(url))
             .then(response => {
                 if (!response.ok) throw new Error(`Guide fetch failed: ${response.status}`);
-                return response.text();
+                return this.readResponseBody(response, url);
             })
             .then(xml => {
                 this.guideCache.set(url, { xml, timestamp: Date.now() });
@@ -285,6 +286,32 @@ export class EpgManager {
 
         this.guideFetchPromises.set(url, request);
         return request;
+    }
+
+    /**
+     * Reads the response body as text, decompressing gzip content when the URL ends with .gz.
+     * Uses the browser-native DecompressionStream API for transparent decompression.
+     *
+     * @param {Response} response - The fetch Response object.
+     * @param {string} url - The original URL, used to detect .gz extension.
+     * @returns {Promise<string>}
+     */
+    static async readResponseBody(response, url) {
+        const isGzip = url.toLowerCase().endsWith('.gz');
+        if (isGzip && typeof DecompressionStream !== 'undefined' && response.body) {
+            const decompressedStream = response.body.pipeThrough(new DecompressionStream('gzip'));
+            const reader = decompressedStream.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                result += decoder.decode(value, { stream: true });
+            }
+            result += decoder.decode();
+            return result;
+        }
+        return response.text();
     }
 
     /**

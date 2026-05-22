@@ -142,7 +142,10 @@
         "pause": "Pausar",
         "stop": "Detener",
         "moreInfo": "Más información",
-        "nextEpisode": "Siguiente Episodio"
+        "nextEpisode": "Siguiente Episodio",
+        "loading": "Cargando...",
+        "statusTitle": "El reproductor está tardando demasiado",
+        "statusMessage": "El proveedor de reproducción configurado aún no ha respondido. Puede volver atrás o cambiar el enlace del reproductor en Ajustes."
     },
     "playlists": {
         "title": "Mis listas",

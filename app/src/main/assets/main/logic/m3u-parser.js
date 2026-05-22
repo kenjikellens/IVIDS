@@ -19,9 +19,11 @@ export const M3UParser = {
     },
 
     /**
-     * Parse an M3U string into an array of channel objects
-     * @param {string} m3uString 
-     * @returns {Array} channels
+     * Parses the raw contents of an M3U playlist file into a structured array of channel objects.
+     * Does not modify any external state, returning a new array of parsed channel items.
+     * 
+     * @param {string} m3uString - Raw M3U playlist string content.
+     * @returns {Array} List of parsed channel objects.
      */
     parse(m3uString) {
         if (!m3uString) return [];
@@ -30,8 +32,8 @@ export const M3UParser = {
         const channels = [];
         let currentChannel = null;
 
-        for (let line of lines) {
-            line = line.trim();
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
             if (!line) continue;
 
             if (line.startsWith('#EXTM3U')) {
@@ -39,31 +41,36 @@ export const M3UParser = {
             }
 
             if (line.startsWith('#EXTINF:')) {
-                // Parse EXTINF line
-                // Format: #EXTINF:-1 tvg-id="" tvg-name="" tvg-logo="" group-title="",Channel Name
                 currentChannel = {};
 
-                // Extract group-title
-                const groupMatch = line.match(/group-title="([^"]*)"/);
-                if (groupMatch) currentChannel.group = groupMatch[1];
+                // High-performance string index scanner for M3U tags
+                const groupIdx = line.indexOf('group-title="');
+                if (groupIdx !== -1) {
+                    const start = groupIdx + 13;
+                    const end = line.indexOf('"', start);
+                    if (end !== -1) currentChannel.group = line.substring(start, end);
+                }
 
-                // Extract tvg-id (XMLTV identifier used for EPG guide matching)
-                const tvgIdMatch = line.match(/tvg-id="([^"]*)"/);
-                if (tvgIdMatch) currentChannel.tvgId = tvgIdMatch[1];
+                const tvgIdIdx = line.indexOf('tvg-id="');
+                if (tvgIdIdx !== -1) {
+                    const start = tvgIdIdx + 8;
+                    const end = line.indexOf('"', start);
+                    if (end !== -1) currentChannel.tvgId = line.substring(start, end);
+                }
 
-                // Extract tvg-logo
-                const logoMatch = line.match(/tvg-logo="([^"]*)"/);
-                if (logoMatch) currentChannel.logo = logoMatch[1];
+                const logoIdx = line.indexOf('tvg-logo="');
+                if (logoIdx !== -1) {
+                    const start = logoIdx + 10;
+                    const end = line.indexOf('"', start);
+                    if (end !== -1) currentChannel.logo = line.substring(start, end);
+                }
 
-                // Extract name (after the last comma)
                 const commaIndex = line.lastIndexOf(',');
                 const namePart = commaIndex !== -1 ? line.substring(commaIndex + 1).trim() : line.split(':').pop().trim();
                 currentChannel.name = namePart || "Unknown Channel";
             } else if (line.startsWith('#')) {
-                // Other tags we might ignore for now
                 continue;
             } else {
-                // This is the URL
                 if (currentChannel) {
                     currentChannel.url = line;
                     currentChannel.id = this.createChannelId(line);
@@ -78,18 +85,25 @@ export const M3UParser = {
     },
 
     /**
-     * Fetch and parse an M3U file from a URL
-     * @param {string} url 
-     * @returns {Promise<Array>}
+     * Fetches an M3U playlist from a remote URL with an abort timeout, then parses its content.
+     * Returns an empty array if the request times out or encounters network/HTTP errors.
+     * 
+     * @param {string} url - Target playlist URL.
+     * @returns {Promise<Array>} Parsed list of channels.
      */
     async fetchPlaylist(url) {
         try {
-            const response = await fetch(url);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
             if (!response.ok) throw new Error('Failed to fetch playlist');
             const content = await response.text();
             return this.parse(content);
         } catch (error) {
-            console.error('Error fetching M3U playlist:', error);
+            console.error('Error fetching M3U playlist:', error, url);
             return [];
         }
     }

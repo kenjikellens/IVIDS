@@ -149,7 +149,10 @@
         "pause": "Pauză",
         "stop": "Oprește",
         "moreInfo": "Mai multe informații",
-        "nextEpisode": "Episodul următor"
+        "nextEpisode": "Episodul următor",
+        "loading": "Se încarcă...",
+        "statusTitle": "Redarea durează prea mult",
+        "statusMessage": "Furnizorul de redare configurat nu a răspuns încă. Puteți reveni sau modifica adresa de redare în Setări."
     },
     "playlists": {
         "title": "Listele mele",

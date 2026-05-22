@@ -142,7 +142,10 @@
         "pause": "Pause",
         "stop": "Arrêter",
         "moreInfo": "Plus d'infos",
-        "nextEpisode": "Épisode Suivant"
+        "nextEpisode": "Épisode Suivant",
+        "loading": "Chargement...",
+        "statusTitle": "Le lecteur met trop de temps",
+        "statusMessage": "Le fournisseur de lecture configuré n'a pas encore répondu. Vous pouvez revenir en arrière ou modifier le point de terminaison du lecteur dans les Paramètres."
     },
     "playlists": {
         "title": "Mes Listes",

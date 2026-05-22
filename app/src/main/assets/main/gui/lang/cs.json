@@ -149,7 +149,10 @@
         "pause": "Pauza",
         "stop": "Zastavit",
         "moreInfo": "Více informací",
-        "nextEpisode": "Další epizoda"
+        "nextEpisode": "Další epizoda",
+        "loading": "Načítání...",
+        "statusTitle": "Přehrávač trvá příliš dlouho",
+        "statusMessage": "Nakonfigurovaný poskytovatel přehrávače dosud neodpověděl. Můžete se vrátit zpět nebo změnit koncový bod přehrávače v Nastavení."
     },
     "playlists": {
         "title": "Moje playlisty",

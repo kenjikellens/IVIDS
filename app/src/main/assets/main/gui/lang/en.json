@@ -143,7 +143,10 @@
         "stop": "Stop",
         "moreInfo": "More Info",
         "nextEpisode": "Next Episode",
-        "selectServer": "Select Server"
+        "selectServer": "Select Server",
+        "loading": "Loading...",
+        "statusTitle": "Player is taking too long",
+        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings."
     },
     "playlists": {
         "title": "My Playlists",

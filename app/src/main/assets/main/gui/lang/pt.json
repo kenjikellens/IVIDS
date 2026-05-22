@@ -149,7 +149,10 @@
         "pause": "Pausa",
         "stop": "Parar",
         "moreInfo": "Mais Info",
-        "nextEpisode": "Próximo Episódio"
+        "nextEpisode": "Próximo Episódio",
+        "loading": "Carregando...",
+        "statusTitle": "O reprodutor está demorando muito",
+        "statusMessage": "O provedor do reprodutor configurado ainda não respondeu. Você pode voltar ou alterar o endpoint do reprodutor nas Configurações."
     },
     "playlists": {
         "title": "Minhas Playlists",

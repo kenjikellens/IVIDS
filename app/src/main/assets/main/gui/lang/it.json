@@ -149,7 +149,10 @@
         "pause": "Pausa",
         "stop": "Ferma",
         "moreInfo": "Più Info",
-        "nextEpisode": "Prossimo Episodio"
+        "nextEpisode": "Prossimo Episodio",
+        "loading": "Caricamento...",
+        "statusTitle": "Il lettore impiega troppo tempo",
+        "statusMessage": "Il provider del lettore configurato non ha ancora risposto. Puoi tornare indietro o modificare l'endpoint del lettore nelle Impostazioni."
     },
     "playlists": {
         "title": "Le Mie Playlist",

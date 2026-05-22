@@ -44,3 +44,41 @@
 [20:10 22-05-2026] app/src/main/assets/main/logic/spatial-nav/spatial-nav-livetv.js - Created spatial navigation stub for the Live TV page.
 [20:10 22-05-2026] app/src/main/assets/main/logic/spatial-nav/spatial-nav-tv-player.js - Created spatial navigation stub for the TV player page.
 [20:18 22-05-2026] docs/problems.md - Created and updated document to track known UI/player problems, naming discrepancies, remote playlist 404s, proxy gateway errors, and codec/browser play interrupts.
+[21:24 22-05-2026] app/src/main/assets/main/logic/livetv/epg-manager.js - Added gzip decompression via DecompressionStream for .gz XMLTV guide URLs so EPG data parses correctly.
+[21:40 22-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Implemented search input debouncing, DocumentFragment batch insertion, and logo lazy-loading to optimize channel list performance.
+[21:45 22-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Refactored playlist loading to fetch in parallel, pre-computed search/filter keys, and replaced sentinel IntersectionObserver with container scroll and focus pagination triggers.
+[23:05 22-05-2026] run_pc.py - Added 2-hour Cache-Control header for M3U playlist proxy requests and prevented end_headers from overriding it.
+[23:05 22-05-2026] app/src/main/assets/main/logic/m3u-parser.js - Optimized attribute parsing using indexOf/substring index lookups and added a 4-second fetch timeout using AbortController.
+[23:05 22-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Implemented in-memory channel caching to bypass redundant fetching on subsequent page visits.
+[23:05 22-05-2026] app/src/main/assets/main/logic/livetv/sources.js - Removed redundant duplicate global_by_category and global_by_country preset M3U sources.
+[23:53 22-05-2026] app/src/main/assets/main/logic/api.js - Updated streaming servers list to active providers and adjusted auto-migration rules.
+[23:53 22-05-2026] app/src/main/assets/main/gui/pages/settings.js - Adjusted settings load and migration logic to skip blocking active VidSrc.to domains.
+[23:53 22-05-2026] app/src/main/assets/main/gui/pages/player.html - Restructured the media player page with a structured TV-friendly HUD overlay and a spinner loading screen.
+[23:53 22-05-2026] app/src/main/assets/main/gui/css/player.css - Styled the cinematic player HUD, spinner loader, and thick white button highlights using percentage layouts.
+[23:53 22-05-2026] app/src/main/assets/main/gui/pages/player.js - Programmed dynamic TMDB metadata rendering, episode lookup, HUD activity fade, and focus trap mitigation.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/ar.json - Localized Arabic player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/cs.json - Localized Czech player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/da.json - Localized Danish player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/de.json - Localized German player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/en.json - Localized English player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/es.json - Localized Spanish player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/fr.json - Localized French player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/hi.json - Localized Hindi player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/id.json - Localized Indonesian player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/it.json - Localized Italian player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/ja.json - Localized Japanese player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/ko.json - Localized Korean player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/nl.json - Localized Dutch player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/no.json - Localized Norwegian player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/pl.json - Localized Polish player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/pt.json - Localized Portuguese player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/ro.json - Localized Romanian player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/ru.json - Localized Russian player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/sv.json - Localized Swedish player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/tr.json - Localized Turkish player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/vi.json - Localized Vietnamese player status title, status message, and loading text key strings.
+[23:53 22-05-2026] app/src/main/assets/main/gui/lang/zh.json - Localized Chinese player status title, status message, and loading text key strings.
+[23:54 22-05-2026] app/src/main/assets/main/gui/css/global.css - Hid sidebar/bottom navigation bar in fullscreen layout, and appended player page layout and HUD styling rules.
+[00:10 23-05-2026] app/src/main/assets/main/gui/css/global.css - Fixed corrupt focus styles and synchronized layout rules for bottom panel grid slots.
+[00:10 23-05-2026] app/src/main/assets/main/gui/pages/player.js - Programmed player cleanups, keydown back interception, click exit redirection, and active server focus targeting.
+[00:26 23-05-2026] app/src/main/assets/main/gui/css/global.css - Added standard property 'background-clip' for CSS gradient compatibility and resolved trailing properties.

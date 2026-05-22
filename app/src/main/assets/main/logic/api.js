@@ -405,6 +405,11 @@ export const Api = {
         }
     },
 
+    /**
+     * Retrieves the player provider configuration from localStorage.
+     * This affects player routing and default server settings.
+     * @returns {Object} Config object containing provider settings.
+     */
     getPlayerConfig() {
         const defaults = {
             playerProvider: 'custom',
@@ -415,8 +420,8 @@ export const Api = {
             const raw = localStorage.getItem('ivids-settings');
             if (raw) {
                 const saved = JSON.parse(raw);
-                // Auto-migrate from blocked vidsrc domains persistently
-                if (saved.playerBaseUrl && saved.playerBaseUrl.includes('vidsrc')) {
+                // Auto-migrate from blocked legacy vidsrc domains persistently
+                if (saved.playerBaseUrl && (saved.playerBaseUrl.includes('vidsrc.xyz') || saved.playerBaseUrl.includes('vidsrc.me') || saved.playerBaseUrl.includes('vidsrc.net'))) {
                     saved.playerBaseUrl = DEFAULT_PLAYER_BASE_URL;
                     localStorage.setItem('ivids-settings', JSON.stringify(saved));
                 }
@@ -435,10 +440,22 @@ export const Api = {
 
     SERVERS: [
         { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro' },
-        { id: 'embed_su', name: 'Embed.su (Server 2)', url: 'https://embed.su/embed' }
+        { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed' },
+        { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net' },
+        { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 4)', url: 'https://vidsrc.cc/v2/embed' }
     ],
 
 
+    /**
+     * Generates the streaming embed URL for the player iframe.
+     * This affects the video source URL loaded inside the player page.
+     * @param {string} id - TMDB content ID.
+     * @param {string} type - 'movie' or 'tv'.
+     * @param {number} [season] - TV show season number.
+     * @param {number} [episode] - TV show episode number.
+     * @param {string} [serverId] - Explicit server provider ID.
+     * @returns {string} Fully formed embed URL.
+     */
     getVideoUrl(id, type, season = null, episode = null, serverId = null) {
         const config = Api.getPlayerConfig();
         

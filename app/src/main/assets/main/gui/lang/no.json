@@ -149,7 +149,10 @@
         "pause": "Pause",
         "stop": "Stopp",
         "moreInfo": "Mer info",
-        "nextEpisode": "Neste episode"
+        "nextEpisode": "Neste episode",
+        "loading": "Laster...",
+        "statusTitle": "Spilleren tar for lang tid",
+        "statusMessage": "Den konfigurerde spillerleverandøren har ikke svart ennå. Du kan gå tilbake eller endre spillerens endepunkt i Innstillinger."
     },
     "playlists": {
         "title": "Mine spillelister",

@@ -142,7 +142,10 @@
         "pause": "Pause",
         "stop": "Stopp",
         "moreInfo": "Mehr Infos",
-        "nextEpisode": "Nächste Folge"
+        "nextEpisode": "Nächste Folge",
+        "loading": "Laden...",
+        "statusTitle": "Der Player braucht zu lange",
+        "statusMessage": "Der konfigurierte Player-Anbieter hat noch nicht geantwortet. Sie können zurückgehen oder den Player-Endpunkt in den Einstellungen ändern."
     },
     "playlists": {
         "title": "Meine Wiedergabelisten",

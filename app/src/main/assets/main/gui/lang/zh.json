@@ -149,7 +149,10 @@
         "pause": "暂停",
         "stop": "停止",
         "moreInfo": "更多信息",
-        "nextEpisode": "下一集"
+        "nextEpisode": "下一集",
+        "loading": "加载中...",
+        "statusTitle": "播放器响应时间过长",
+        "statusMessage": "配置的播放器提供商尚未响应。您可以返回或在设置中更改播放器接口。"
     },
     "playlists": {
         "title": "我的播放列表",

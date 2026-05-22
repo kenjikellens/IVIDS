@@ -149,7 +149,10 @@
         "pause": "Jeda",
         "stop": "Berhenti",
         "moreInfo": "Info Lebih Lanjut",
-        "nextEpisode": "Episode Selanjutnya"
+        "nextEpisode": "Episode Selanjutnya",
+        "loading": "Memuat...",
+        "statusTitle": "Pemutar memakan waktu terlalu lama",
+        "statusMessage": "Penyedia pemutar yang dikonfigurasi belum merespons. Anda dapat kembali atau mengubah endpoint pemutar di Pengaturan."
     },
     "playlists": {
         "title": "Daftar Putar Saya",

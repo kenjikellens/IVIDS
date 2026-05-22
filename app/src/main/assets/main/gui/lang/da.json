@@ -149,7 +149,10 @@
         "pause": "Pause",
         "stop": "Stop",
         "moreInfo": "Mere info",
-        "nextEpisode": "Næste afsnit"
+        "nextEpisode": "Næste afsnit",
+        "loading": "Indlæser...",
+        "statusTitle": "Afspilleren tager for lang tid",
+        "statusMessage": "Den konfigurerede afspillerudbyder har ikke svaret endnu. Du kan gå tilbage eller ændre afspillerens slutpunkt i Indstillinger."
     },
     "playlists": {
         "title": "Mine playlister",

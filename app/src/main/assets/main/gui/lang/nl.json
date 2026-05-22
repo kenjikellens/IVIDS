@@ -143,7 +143,10 @@
         "stop": "Stoppen",
         "moreInfo": "Meer Info",
         "nextEpisode": "Volgende Aflevering",
-        "selectServer": "Selecteer Server"
+        "selectServer": "Selecteer Server",
+        "loading": "Laden...",
+        "statusTitle": "Speler duurt te lang",
+        "statusMessage": "De geconfigureerde spelerprovider heeft nog niet gereageerd. U kunt teruggaan of het speler-eindpunt wijzigen in Instellingen."
     },
     "playlists": {
         "title": "Mijn Afspeellijsten",

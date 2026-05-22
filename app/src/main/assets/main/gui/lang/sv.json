@@ -149,7 +149,10 @@
         "pause": "Pausa",
         "stop": "Stopp",
         "moreInfo": "Mer info",
-        "nextEpisode": "Nästa avsnitt"
+        "nextEpisode": "Nästa avsnitt",
+        "loading": "Laddar...",
+        "statusTitle": "Spelaren tar för lång tid",
+        "statusMessage": "Den konfigurerade spelarleverantören svarade inte än. Du kan gå tillbaka eller ändra spelarens slutpunkt i Inställningar."
     },
     "playlists": {
         "title": "Mina spellistor",

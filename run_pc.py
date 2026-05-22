@@ -225,7 +225,10 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_header('Access-Control-Allow-Origin', '*')
                 self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
                 self.send_header('Access-Control-Allow-Headers', '*')
-                self.send_header('Cache-Control', 'no-store')
+                if '.m3u' in target_url.lower():
+                    self.send_header('Cache-Control', 'public, max-age=7200')
+                else:
+                    self.send_header('Cache-Control', 'no-store')
                 self.end_headers()
                 self.wfile.write(body)
 
@@ -241,9 +244,16 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         Injects headers instructing the browser to disable resource caching.
         This ensures changes to JS/CSS files are immediately visible on refresh.
         """
-        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-        self.send_header('Pragma', 'no-cache')
-        self.send_header('Expires', '0')
+        has_cache_control = False
+        if hasattr(self, '_headers'):
+            for keyword, _ in self._headers:
+                if keyword.lower() == 'cache-control':
+                    has_cache_control = True
+                    break
+        if not has_cache_control:
+            self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
         super().end_headers()
 
     def log_message(self, format, *args):

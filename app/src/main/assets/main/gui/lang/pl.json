@@ -149,7 +149,10 @@
         "pause": "Pauza",
         "stop": "Zatrzymaj",
         "moreInfo": "Więcej informacji",
-        "nextEpisode": "Następny odcinek"
+        "nextEpisode": "Następny odcinek",
+        "loading": "Ładowanie...",
+        "statusTitle": "Odtwarzacz zbyt długo nie odpowiada",
+        "statusMessage": "Skonfigurowany dostawca odtwarzacza jeszcze nie odpowiedział. Możesz wrócić lub zmienić punkt końcowy odtwarzacza w Ustawieniach."
     },
     "playlists": {
         "title": "Moje playlisty",

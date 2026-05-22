@@ -14,18 +14,6 @@ export const PRESET_SOURCES = {
         category: "Global",
         priority: 2
     },
-    "global_by_category": {
-        name: "IPTV-org by Category",
-        url: "https://iptv-org.github.io/iptv/index.category.m3u",
-        category: "Global",
-        priority: 3
-    },
-    "global_by_country": {
-        name: "IPTV-org by Country",
-        url: "https://iptv-org.github.io/iptv/index.country.m3u",
-        category: "Global",
-        priority: 3
-    },
     "sports_global": {
         name: "IPTV-org Sports (Global)",
         url: "https://iptv-org.github.io/iptv/categories/sports.m3u",

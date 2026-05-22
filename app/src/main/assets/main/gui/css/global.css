@@ -118,7 +118,9 @@ button {
     display: none;
 }
 
-#app.fullscreen-layout /* Sidebar container is hidden programmatically via profiles.js javascript */
+#app.fullscreen-layout #sidebar-container {
+    display: none !important;
+}
 
 #app.fullscreen-layout #main-view {
     width: 100vw !important;
@@ -2984,6 +2986,7 @@ iframe {
     letter-spacing: -0.02em;
     background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -5500,5 +5503,457 @@ iframe {
     width: 100%;
 }
 
+/* ==========================================================================
+   SECTION 5: PLAYER PAGE SPECIFIC STYLES
+   Source File: player.css
+   ========================================================================== */
 
+/* Outer wrapper container that spans the full viewport to house the player page. */
+.video-container {
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
 
+/* Style for the iframe embedded video player player container. */
+.player-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Base style for the player iframe to fill the container. */
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #000;
+}
+
+/* Overlay panel displayed when the player loading takes too long or fails. */
+.player-status-panel {
+    position: absolute;
+    left: 10%;
+    top: 30%;
+    width: 80%;
+    height: auto;
+    z-index: 200;
+    padding: 3%;
+    border-radius: var(--radius-lg);
+    background: rgba(18, 18, 18, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: var(--shadow-panel);
+    text-align: center;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+/* Action buttons container within the status panel. */
+.player-status-actions {
+    display: flex;
+    justify-content: center;
+    gap: 2%;
+    margin-top: 3%;
+}
+
+/* Button style for the back navigation action. */
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Button style for the next episode action. */
+.btn-next {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.toast-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.toast-btn-primary {
+    background: var(--primary-color, #46d369);
+    color: #050505;
+}
+
+.toast-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Strict compliant focus highlights - no scale, just thick white border */
+.toast-btn:hover,
+.toast-btn:focus,
+.toast-btn.focused {
+    border-color: #ffffff !important;
+    outline: none !important;
+}
+
+/* Version Selector Scrollable Modal Layouts */
+.version-modal-content {
+    max-height: 80vh !important;
+    width: clamp(320px, 60vw, 640px) !important;
+}
+
+.scrollable-modal-body {
+    overflow-y: auto !important;
+    max-height: 50vh !important;
+    padding-right: 8px;
+}
+
+/* Custom premium scrollbar matching standard tokens */
+.scrollable-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-modal-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+}
+
+.scrollable-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+}
+
+.scrollable-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.version-option-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+}
+
+/* Custom badges and info rows inside version list chips */
+.version-chip-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 4px;
+}
+
+.version-chip-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.version-tag-badge {
+    background: var(--primary-color, #46d369);
+    color: #050505;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.version-date-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: auto;
+}
+
+.version-chip-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.version-chip-desc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* ==========================================================================
+   SECTION 5: PLAYER PAGE SPECIFIC STYLES
+   Source File: player.css
+   ========================================================================== */
+
+/* Outer wrapper container that spans the full viewport to house the player page. */
+.video-container {
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+/* Style for the iframe embedded video player player container. */
+.player-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Base style for the player iframe to fill the container. */
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #000;
+}
+
+/* Overlay panel displayed when the player loading takes too long or fails. */
+.player-status-panel {
+    position: absolute;
+    left: 10%;
+    top: 30%;
+    width: 80%;
+    height: auto;
+    z-index: 200;
+    padding: 3%;
+    border-radius: var(--radius-lg);
+    background: rgba(18, 18, 18, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: var(--shadow-panel);
+    text-align: center;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+/* Action buttons container within the status panel. */
+.player-status-actions {
+    display: flex;
+    justify-content: center;
+    gap: 2%;
+    margin-top: 3%;
+}
+
+/* Button style for the back navigation action. */
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Button style for the next episode action. */
+.btn-next {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Highlighted button borders for back buttons on focus/hover. */
+.btn-back:focus, .btn-back:hover {
+    outline: none !important;
+    background: rgba(255, 255, 255, 0.18);
+    border: 3px solid #fff !important;
+}
+
+/* Highlighted button borders for next buttons on focus/hover. */
+.btn-next:focus, .btn-next:hover {
+    outline: none !important;
+    background: var(--primary-color);
+    border: 3px solid #fff !important;
+}
+
+/* The head-up display container containing all controls and metadata. */
+.player-hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+/* State applied when the HUD is visible to handle fades. */
+.player-hud.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Bottom HUD overlay container configured as a three-column grid. */
+.hud-bottom-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    padding: 3% 4%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 60%, transparent 100%);
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    align-items: center;
+    box-sizing: border-box;
+    pointer-events: auto;
+}
+
+/* Container slot layout to align focusable buttons in the bottom bar grid. */
+.hud-control-slot {
+    display: flex;
+    align-items: center;
+}
+
+/* Left-aligned slot container dedicated to the player back button. */
+.hud-slot-left {
+    justify-content: flex-start;
+}
+
+/* Centered slot container dedicated to the server selection overlay. */
+.hud-slot-middle {
+    justify-content: center;
+    width: 100%;
+}
+
+/* Right-aligned slot container dedicated to the next episode button. */
+.hud-slot-right {
+    justify-content: flex-end;
+}
+
+/* Center-focused container wrapper for streaming server selection options. */
+.server-selection-overlay {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Horizontally centered flex container showing the list of server buttons. */
+.server-list {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 4px 0;
+    scrollbar-width: none;
+    width: 100%;
+}
+
+/* Hide scrollbars inside server selector. */
+.server-list::-webkit-scrollbar {
+    display: none;
+}
+
+/* Style for individual stream server source buttons. */
+.server-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Active style state indicating currently chosen server selection. */
+.server-btn.active {
+    background: rgba(var(--primary-rgb), 0.15);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Focus and hover borders for server selectors. */
+.server-btn:focus, .server-btn:hover {
+    outline: none !important;
+    background: rgba(255, 255, 255, 0.18);
+    border: 3px solid #fff !important;
+}
+
+/* Active server button with hover outline enhancement. */
+.server-btn.active:focus, .server-btn.active:hover {
+    background: rgba(var(--primary-rgb), 0.25);
+    border-color: #fff !important;
+}
+
+/* Absolute overlay displayed during initial content loading state. */
+.player-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Circular loading indicator spinner using theme accent colors. */
+.player-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: player-spin 1s linear infinite;
+}
+
+/* Text status indicator below the loading spinner. */
+.player-loading-text {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+/* Core keyframe definition for circular spin loaders. */
+@keyframes player-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

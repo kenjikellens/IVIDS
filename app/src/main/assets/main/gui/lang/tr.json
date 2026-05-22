@@ -149,7 +149,10 @@
         "pause": "Duraklat",
         "stop": "Durdur",
         "moreInfo": "Daha Fazla Bilgi",
-        "nextEpisode": "Sonraki Bölüm"
+        "nextEpisode": "Sonraki Bölüm",
+        "loading": "Yükleniyor...",
+        "statusTitle": "Oynatıcı çok uzun sürüyor",
+        "statusMessage": "Yapılandırılmış oynatıcı sağlayıcısı henüz yanıt vermedi. Geri dönebilir veya Ayarlar'da oynatıcı uç noktasını değiştirebilirsiniz."
     },
     "playlists": {
         "title": "Oynatma Listelerim",

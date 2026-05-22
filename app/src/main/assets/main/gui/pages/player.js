@@ -1,14 +1,181 @@
 import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { addToRecentlyWatched } from '../../logic/recentlyWatched.js';
-import { createLoaderElement } from '../js/loader.js';
 import { ErrorHandler } from '../js/error-handler.js';
 
+let hudTimeout = null;
+let providerTimeout = null;
+let mouseMoveHandler = null;
+let clickHandler = null;
+let keydownHandler = null;
+let globalKeydownHandler = null;
+let popstateHandler = null;
+
+/**
+ * Cleans up player resources, restores global UI layout elements, and returns to the details view.
+ * This removes the iframe, restores the header/sidebar layout, and navigates using the router.
+ * @param {Object} params - The current player route parameters.
+ */
+function exitPlayer(params) {
+    try {
+        window.playerCleanups();
+    } catch (e) {
+        console.error('Error during player cleanups:', e);
+    }
+    try {
+        const oldIframe = document.getElementById('player-iframe');
+        if (oldIframe) oldIframe.remove();
+    } catch (e) {
+        console.error('Error removing player iframe:', e);
+    }
+    try {
+        const app = document.getElementById('app');
+        if (app) app.classList.remove('fullscreen-layout');
+        const header = document.getElementById('header');
+        if (header) header.style.display = '';
+    } catch (e) {
+        console.error('Error restoring header layout:', e);
+    }
+    if (params && params.type === 'live') {
+        Router.goBack('home');
+    } else if (params) {
+        Router.goBack('details', { id: params.id, type: params.type });
+    } else {
+        Router.loadPage('home');
+    }
+}
+
+/**
+ * Removes all global event listeners and clears active timeouts registered by the player page.
+ * This prevents memory leaks and unintended behavior after navigating away from the player.
+ */
+window.playerCleanups = function() {
+    if (hudTimeout) {
+        clearTimeout(hudTimeout);
+        hudTimeout = null;
+    }
+    if (providerTimeout) {
+        clearTimeout(providerTimeout);
+        providerTimeout = null;
+    }
+    if (mouseMoveHandler) {
+        window.removeEventListener('mousemove', mouseMoveHandler);
+        mouseMoveHandler = null;
+    }
+    if (clickHandler) {
+        window.removeEventListener('click', clickHandler);
+        clickHandler = null;
+    }
+    if (keydownHandler) {
+        window.removeEventListener('keydown', keydownHandler);
+        keydownHandler = null;
+    }
+    if (globalKeydownHandler) {
+        window.removeEventListener('keydown', globalKeydownHandler);
+        globalKeydownHandler = null;
+    }
+    if (popstateHandler) {
+        window.removeEventListener('popstate', popstateHandler);
+        popstateHandler = null;
+    }
+    
+    // Stop native video player if active
+    try {
+        const videoEl = document.getElementById('native-video-player');
+        if (videoEl) {
+            videoEl.pause();
+            videoEl.src = '';
+            videoEl.load();
+        }
+    } catch (e) {
+        console.error('Error cleaning up native video:', e);
+    }
+};
+
+/**
+ * Initializes the video player page by loading content metadata, configuring the iframe source,
+ * handling server selection, and setting up the premium HUD controls.
+ * This affects the global page router, active video container state, and player settings.
+ * @param {Object} params - Route parameters containing id, type, season, and episode.
+ */
 export async function init(params) {
     try {
-        if (!params || !params.id) {
+        if (!params || (!params.id && params.type !== 'live')) {
             console.error('No parameters provided for player');
             Router.loadPage('home');
+            return;
+        }
+
+        // Run any previous cleanups just in case
+        try {
+            window.playerCleanups();
+        } catch (e) {
+            console.error('Error in initial cleanup:', e);
+        }
+
+        // Hide header and apply fullscreen layout
+        try {
+            const app = document.getElementById('app');
+            if (app) app.classList.add('fullscreen-layout');
+            const header = document.getElementById('header');
+            if (header) header.style.display = 'none';
+        } catch (headerError) {
+            console.error('Error hiding header:', headerError);
+        }
+
+        // Set up global exit handlers
+        globalKeydownHandler = (event) => {
+            const key = event.key || '';
+            const code = event.keyCode || event.which;
+            if (key === 'Escape' || key === 'Backspace' || code === 27 || code === 8 || code === 4 || code === 10009 || code === 461 || key === 'GoBack' || key === 'Back') {
+                event.preventDefault();
+                exitPlayer(params);
+            }
+        };
+        window.addEventListener('keydown', globalKeydownHandler);
+
+        popstateHandler = () => {
+            try {
+                window.playerCleanups();
+                const app = document.getElementById('app');
+                if (app) app.classList.remove('fullscreen-layout');
+                const header = document.getElementById('header');
+                if (header) header.style.display = '';
+            } catch (e) {
+                console.error('Error on popstate cleanup:', e);
+            }
+        };
+        window.addEventListener('popstate', popstateHandler);
+
+        const backBtn = document.getElementById('player-back');
+        if (backBtn) {
+            backBtn.onclick = () => {
+                exitPlayer(params);
+            };
+        }
+
+        // Handle Live TV
+        if (params.type === 'live') {
+            const videoUrl = params.url;
+            const title = params.title || 'Live TV';
+
+            // Hide standard iframe, show native video
+            const iframe = document.getElementById('video-player');
+            if (iframe) iframe.style.display = 'none';
+
+            const videoEl = document.getElementById('native-video-player');
+            if (videoEl) {
+                videoEl.style.display = 'block';
+                videoEl.src = videoUrl;
+                videoEl.play().catch(e => console.error('Error playing live stream:', e));
+            }
+
+            // Hide loading overlay once live TV loads/plays
+            const loadingOverlay = document.getElementById('player-loading-overlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+
+            // Setup overlay visibility for back button / HUD
+            setupOverlayVisibility(params);
             return;
         }
 
@@ -36,50 +203,7 @@ export async function init(params) {
             checkForNextEpisode(params.id, parseInt(params.season), parseInt(params.episode));
         }
 
-        // Hide header if present (standardize with fullscreen-layout)
-        try {
-            const app = document.getElementById('app');
-            if (app) app.classList.add('fullscreen-layout');
-        } catch (headerError) {
-            console.error('Error hiding header:', headerError);
-        }
-
-        const { id, type } = params;
-
-        // Handle Live TV
-        if (type === 'live') {
-            const videoUrl = params.url;
-            const title = params.title || 'Live TV';
-
-            // Hide standard iframe, show native video
-            const iframe = document.getElementById('video-player');
-            if (iframe) iframe.style.display = 'none';
-
-            const videoEl = document.getElementById('native-video-player');
-            if (videoEl) {
-                videoEl.style.display = 'block';
-                videoEl.src = videoUrl;
-                videoEl.play().catch(e => console.error('Error playing live stream:', e));
-            }
-
-            // Update UI
-            const titleEl = document.getElementById('player-title');
-            if (titleEl) titleEl.textContent = title;
-
-            const metaEl = document.getElementById('player-metadata');
-            if (metaEl) metaEl.textContent = 'Live';
-
-            // Hide header if present
-            try {
-                const header = document.getElementById('header');
-                if (header) header.style.display = 'none';
-            } catch (e) { }
-
-            return;
-        }
-
         const container = document.getElementById('video-container');
-
         if (!container) {
             console.error('Video container not found');
             ErrorHandler.show('Failed to load player. Video container missing.', () => Router.loadPage('home'));
@@ -101,8 +225,8 @@ export async function init(params) {
         }
 
         // Show loader
-        const loader = createLoaderElement();
-        container.appendChild(loader);
+        const loadingOverlay = document.getElementById('player-loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
         let url = '';
         try {
@@ -110,7 +234,7 @@ export async function init(params) {
         } catch (urlError) {
             console.error('Error generating video URL:', urlError);
             ErrorHandler.show('Failed to generate video URL.', () => init(params));
-            if (loader) loader.remove();
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
             Router.loadPage('details', { id: params.id, type: params.type });
             return;
         }
@@ -129,9 +253,6 @@ export async function init(params) {
             iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
             iframe.allowFullscreen = true;
 
-            // Relax iframe restrictions to allow modern player engines to initialize cleanly without "disable sandbox" errors
-
-
             iframe.style.position = "absolute";
             iframe.style.top = "0";
             iframe.style.left = "0";
@@ -148,12 +269,11 @@ export async function init(params) {
             const statusBack = document.getElementById('player-status-back');
             const statusSettings = document.getElementById('player-status-settings');
             let iframeLoaded = false;
-            let providerTimeout = null;
 
             const showProviderWarning = () => {
                 if (iframeLoaded || !statusPanel) return;
                 statusPanel.style.display = 'block';
-                if (statusBack) statusBack.onclick = () => Router.goBack('details', { id: params.id, type: params.type });
+                if (statusBack) statusBack.onclick = () => exitPlayer(params);
                 if (statusSettings) statusSettings.onclick = () => Router.loadPage('settings', {}, true);
                 if (statusBack) statusBack.focus();
             };
@@ -162,12 +282,10 @@ export async function init(params) {
                 iframeLoaded = true;
                 if (providerTimeout) clearTimeout(providerTimeout);
                 if (statusPanel) statusPanel.style.display = 'none';
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
             };
 
             providerTimeout = setTimeout(showProviderWarning, 12000);
-
-            // Remove loader
-            if (loader) loader.remove();
 
             container.appendChild(iframe);
 
@@ -177,53 +295,27 @@ export async function init(params) {
         } catch (iframeError) {
             console.error('Error creating/appending iframe:', iframeError);
             ErrorHandler.show('Failed to initialize video player.', () => init(params));
-            if (loader) loader.remove();
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
             Router.loadPage('details', { id: params.id, type: params.type });
             return;
         }
 
         // Handle overlay visibility on activity
-        setupOverlayVisibility();
+        setupOverlayVisibility(params);
 
-
-        // Handle Back Button
-        try {
-            const backBtn = document.getElementById('player-back');
-            if (backBtn) {
-                backBtn.onclick = () => {
-                    try {
-                        // Restore header when leaving player
-                        const header = document.getElementById('header');
-                        if (header) header.style.display = '';
-                        Router.goBack('details', { id: params.id, type: params.type });
-                    } catch (backError) {
-                        console.error('Error handling back button:', backError);
-                    }
-                };
-            }
-        } catch (btnError) {
-            console.error('Error setting up back button:', btnError);
-        }
     } catch (error) {
         console.error('Critical error in player.init:', error);
         ErrorHandler.show('An error occurred while loading the player.');
     }
 }
 
-// Optionally, restore header if user navigates away from player by other means
-try {
-    window.addEventListener('popstate', () => {
-        try {
-            const header = document.getElementById('header');
-            if (header) header.style.display = '';
-        } catch (headerError) {
-            console.error('Error restoring header on popstate:', headerError);
-        }
-    });
-} catch (eventError) {
-    console.error('Error setting up popstate listener:', eventError);
-}
-
+/**
+ * Checks the TMDB API to determine if a subsequent episode or season exists for the active TV series.
+ * This determines the visibility of the "Next Episode" button on the player HUD.
+ * @param {string} seriesId - The TMDB ID of the TV show.
+ * @param {number} currentSeason - The current season number.
+ * @param {number} currentEpisode - The current episode number.
+ */
 async function checkForNextEpisode(seriesId, currentSeason, currentEpisode) {
     try {
         const nextBtnContainer = document.getElementById('next-episode-container');
@@ -232,26 +324,22 @@ async function checkForNextEpisode(seriesId, currentSeason, currentEpisode) {
         if (!nextBtnContainer || !nextBtn) return;
 
         // 1. Try to find next episode in current season
-        // We need season details to know how many episodes are in the season
         const seasonDetails = await Api.getSeasonDetails(seriesId, currentSeason);
 
         if (seasonDetails && seasonDetails.episodes) {
             const nextEpisode = seasonDetails.episodes.find(e => e.episode_number === currentEpisode + 1);
 
             if (nextEpisode) {
-                // Next episode exists in this season
                 showNextButton(seriesId, currentSeason, currentEpisode + 1);
                 return;
             }
         }
 
         // 2. If not in current season, check if there is a next season
-        // We need series details to know about seasons
         const seriesDetails = await Api.getDetails(seriesId, 'tv');
         if (seriesDetails && seriesDetails.seasons) {
             const nextSeason = seriesDetails.seasons.find(s => s.season_number === currentSeason + 1);
             if (nextSeason) {
-                // Next season exists, assume episode 1 exists
                 showNextButton(seriesId, currentSeason + 1, 1);
             }
         }
@@ -261,6 +349,13 @@ async function checkForNextEpisode(seriesId, currentSeason, currentEpisode) {
     }
 }
 
+/**
+ * Configures and shows the "Next Episode" button on the player HUD bottom controls panel.
+ * This sets the click handler to reload the player page with the next episode details.
+ * @param {string} seriesId - The TMDB ID of the TV show.
+ * @param {number} nextSeason - The season number of the next episode.
+ * @param {number} nextEpisode - The episode number of the next episode.
+ */
 function showNextButton(seriesId, nextSeason, nextEpisode) {
     const container = document.getElementById('next-episode-container');
     const btn = document.getElementById('player-next');
@@ -268,7 +363,6 @@ function showNextButton(seriesId, nextSeason, nextEpisode) {
     if (container && btn) {
         container.style.display = 'block';
         btn.onclick = () => {
-            // Reload player with new episode
             Router.loadPage('player', {
                 id: seriesId,
                 type: 'tv',
@@ -280,8 +374,9 @@ function showNextButton(seriesId, nextSeason, nextEpisode) {
 }
 
 /**
- * Renders the server selection buttons and handles switching logic.
- * @param {Object} params - The route parameters.
+ * Renders the available streaming server source buttons and configures their click behavior.
+ * This modifies the player server list container and updates the player iframe source URL upon selection.
+ * @param {Object} params - Route parameters containing content ID and type details.
  * @param {HTMLIFrameElement} iframe - The player iframe element.
  */
 function renderServerSelection(params, iframe) {
@@ -289,7 +384,14 @@ function renderServerSelection(params, iframe) {
     if (!serverList) return;
 
     serverList.innerHTML = '';
+    
+    const config = Api.getPlayerConfig();
     let currentServerId = 'vidlink';
+    
+    const matchingServer = Api.SERVERS.find(s => s.url === config.playerBaseUrl);
+    if (matchingServer) {
+        currentServerId = matchingServer.id;
+    }
 
     Api.SERVERS.forEach(server => {
         const btn = document.createElement('button');
@@ -301,12 +403,10 @@ function renderServerSelection(params, iframe) {
         btn.onclick = () => {
             if (currentServerId === server.id) return;
             
-            // Update active state
             document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentServerId = server.id;
 
-            // Update iframe source
             const newUrl = Api.getVideoUrl(params.id, params.type, params.season, params.episode, server.id);
             iframe.src = newUrl;
         };
@@ -316,34 +416,77 @@ function renderServerSelection(params, iframe) {
 }
 
 /**
- * Manages the visibility of the player overlays based on activity.
+ * Configures the activity event listeners to toggle visibility of the player HUD overlay.
+ * Toggles visibility on mouse move, clicks, or key presses, auto-hiding after 4 seconds of inactivity.
+ * @param {Object} params - Route parameters of the player.
  */
-function setupOverlayVisibility() {
-    const overlay = document.getElementById('server-selection-overlay');
-    const controls = document.querySelector('.player-controls');
-    if (!overlay || !controls) return;
+function setupOverlayVisibility(params) {
+    const playerHud = document.getElementById('player-hud');
+    if (!playerHud) return;
 
-    let timeout;
-    const showOverlays = () => {
-        overlay.classList.add('visible');
-        controls.style.opacity = '1';
-        controls.style.pointerEvents = 'auto';
+    const showHUD = () => {
+        if (hudTimeout) {
+            clearTimeout(hudTimeout);
+        }
         
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
+        const wasHidden = !playerHud.classList.contains('visible');
+        playerHud.style.display = 'flex';
+        
+        requestAnimationFrame(() => {
+            playerHud.classList.add('visible');
+            if (wasHidden) {
+                const activeServer = playerHud.querySelector('.server-btn.active');
+                if (activeServer) {
+                    activeServer.focus();
+                } else {
+                    const backBtn = document.getElementById('player-back');
+                    if (backBtn) backBtn.focus();
+                }
+            }
+        });
+
+        hudTimeout = setTimeout(() => {
             const focused = document.activeElement;
-            if (!focused || (!focused.classList.contains('server-btn') && !focused.classList.contains('btn-back'))) {
-                overlay.classList.remove('visible');
-                controls.style.opacity = '0';
-                controls.style.pointerEvents = 'none';
+            const hasFocusInside = focused && playerHud.contains(focused);
+
+            if (hasFocusInside) {
+                showHUD();
             } else {
-                showOverlays();
+                hideHUD();
             }
         }, 4000);
     };
 
-    window.addEventListener('mousemove', showOverlays);
-    window.addEventListener('click', showOverlays);
-    window.addEventListener('keydown', showOverlays);
-    showOverlays();
+    const hideHUD = () => {
+        playerHud.classList.remove('visible');
+        
+        setTimeout(() => {
+            if (!playerHud.classList.contains('visible')) {
+                playerHud.style.display = 'none';
+                
+                if (document.activeElement && playerHud.contains(document.activeElement)) {
+                    document.activeElement.blur();
+                    const iframe = document.getElementById('player-iframe');
+                    if (iframe) iframe.focus();
+                }
+            }
+        }, 400);
+    };
+
+    mouseMoveHandler = showHUD;
+    clickHandler = showHUD;
+    keydownHandler = (e) => {
+        const key = e.key || '';
+        const code = e.keyCode || e.which;
+        if (key === 'Escape' || key === 'Backspace' || code === 27 || code === 8 || code === 4 || code === 10009 || code === 461 || key === 'GoBack' || key === 'Back') {
+            return;
+        }
+        showHUD();
+    };
+
+    window.addEventListener('mousemove', mouseMoveHandler);
+    window.addEventListener('click', clickHandler);
+    window.addEventListener('keydown', keydownHandler);
+    
+    showHUD();
 }

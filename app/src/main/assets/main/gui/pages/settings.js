@@ -69,8 +69,9 @@ class SettingsManager {
     }
 
     /**
-     * Loads settings from localStorage with default fallbacks.
-     * @returns {object} Loaded configuration settings.
+     * Loads the saved application settings from local storage, applying defaults and migration rules.
+     * This affects the global application state including theme, language, and player URL.
+     * @returns {Object} Application settings object.
      */
     loadSettings() {
         const defaultSettings = {
@@ -85,8 +86,8 @@ class SettingsManager {
             const saved = localStorage.getItem('ivids-settings');
             if (saved) {
                 const parsed = JSON.parse(saved);
-                // Auto-migrate from blocked vidsrc domains
-                if (parsed.playerBaseUrl && parsed.playerBaseUrl.includes('vidsrc')) {
+                // Auto-migrate from blocked legacy vidsrc domains
+                if (parsed.playerBaseUrl && (parsed.playerBaseUrl.includes('vidsrc.xyz') || parsed.playerBaseUrl.includes('vidsrc.me') || parsed.playerBaseUrl.includes('vidsrc.net'))) {
                     parsed.playerBaseUrl = 'https://vidlink.pro';
                 }
                 return { ...defaultSettings, ...parsed };
