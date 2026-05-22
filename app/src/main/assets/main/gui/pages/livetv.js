@@ -152,7 +152,7 @@ async function loadAllSources() {
 
         for (const [id, source] of sourceEntries) {
             try {
-                const playlistChannels = await M3UParser.fetchPlaylist(source.url);
+                const playlistChannels = await M3UParser.fetchPlaylist(proxyUrl(source.url));
 
                 if (playlistChannels && playlistChannels.length > 0) {
                     playlistChannels.forEach(c => {
@@ -160,8 +160,9 @@ async function loadAllSources() {
                         c.sourceName = source.name;
                         c.sourcePriority = source.priority || 50;
 
-                        if (!seenUrls.has(c.url) && !brokenChannelsSet.has(c.url)) {
-                            seenUrls.add(c.url);
+                        const normalized = normalizeUrl(c.url);
+                        if (!seenUrls.has(normalized) && !brokenChannelsSet.has(normalized)) {
+                            seenUrls.add(normalized);
                             allChannels.push(c);
                             loadedCount++;
                         }
@@ -272,7 +273,7 @@ function filterAndRenderChannels(resetFocus = false) {
 
     filteredChannels = allChannels.filter(c => {
         // Channels in the persistent broken DB are always excluded
-        if (brokenChannelsSet.has(c.url)) return false;
+        if (brokenChannelsSet.has(normalizeUrl(c.url))) return false;
 
         const matchesSearch = !searchQuery || (c.name || "").toLowerCase().includes(searchQuery.toLowerCase());
         
@@ -734,23 +735,38 @@ function setupSentinelObserver(sentinel) {
 
 
 /**
+ * Normalizes a URL by stripping its scheme (http/https), trailing slashes, and leading/trailing whitespace.
+ * This ensures uniform channel matching regardless of minor URL formatting differences.
+ * 
+ * @param {string} url - The URL to normalize.
+ * @returns {string} The normalized URL.
+ */
+function normalizeUrl(url) {
+    if (!url) return '';
+    return url.trim()
+        .toLowerCase()
+        .replace(/^https?:\/\//, '')
+        .replace(/\/+$/, '');
+}
+
+/**
  * Fetches the persistent broken channels database from the project file.
  * Populates brokenChannelsSet so known-broken URLs are instantly filtered out.
  */
 async function loadBrokenChannelsDb() {
     try {
-        const response = await fetch(BROKEN_CHANNELS_API_URL);
+        const response = await fetch(`${BROKEN_CHANNELS_API_URL}?_=${Date.now()}`);
         if (!response.ok) {
             // Fallback: try loading the static JSON file directly (for Android / non-PC builds)
-            const fallback = await fetch('../../logic/livetv/broken-channels.json');
+            const fallback = await fetch(`../../logic/livetv/broken-channels.json?_=${Date.now()}`);
             if (fallback.ok) {
                 const urls = await fallback.json();
-                urls.forEach(url => brokenChannelsSet.add(url));
+                urls.forEach(url => brokenChannelsSet.add(normalizeUrl(url)));
             }
             return;
         }
         const urls = await response.json();
-        urls.forEach(url => brokenChannelsSet.add(url));
+        urls.forEach(url => brokenChannelsSet.add(normalizeUrl(url)));
         console.log(`[LiveTV] Loaded ${brokenChannelsSet.size} known broken channels from database.`);
     } catch (error) {
         console.warn('Failed to load broken channels database:', error);

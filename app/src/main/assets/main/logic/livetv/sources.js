@@ -28,7 +28,7 @@ export const PRESET_SOURCES = {
     },
     "sports_global": {
         name: "IPTV-org Sports (Global)",
-        url: "https://iptv-org.github.io/iptv/categories/sport.m3u",
+        url: "https://iptv-org.github.io/iptv/categories/sports.m3u",
         category: "Sports",
         priority: 3
     },
@@ -225,7 +225,7 @@ export const PRESET_SOURCES = {
     // Junguler - De grootste geautomatiseerde open-source playlist voor internetradio en muziekzenders
     "global_radio": {
         name: "Junguler Global Radio",
-        url: "https://raw.githubusercontent.com/junguler/m3u-radio-music-playlists/main/allradio.net/all.m3u",
+        url: "https://raw.githubusercontent.com/junguler/m3u-radio-music-playlists/main/---everything-lite.m3u",
         category: "Music",
         priority: 5
     },

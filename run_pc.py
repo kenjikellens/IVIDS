@@ -75,13 +75,16 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         Handles HTTP GET requests. Routes /proxy requests to the reverse proxy handler,
         redirects root path (/) to /gui/index.html, and serves static files otherwise.
         """
-        if self.path == '/' or self.path == '':
+        parsed_path = urllib.parse.urlparse(self.path).path
+        if parsed_path == '/' or parsed_path == '':
             self.send_response(301)
             self.send_header('Location', '/gui/index.html')
             self.end_headers()
-        elif self.path == '/api/broken-channels':
+        elif parsed_path == '/api/broken-channels':
             self._handle_get_broken_channels()
-        elif self.path.startswith('/proxy'):
+        elif '$WEBAPIS/webapis/webapis.js' in parsed_path:
+            self._handle_webapis_stub()
+        elif parsed_path.startswith('/proxy'):
             self._handle_proxy()
         else:
             super().do_GET()
@@ -90,7 +93,8 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         """
         Handles HTTP POST requests. Routes /api/broken-channels to the broken channel persistence handler.
         """
-        if self.path == '/api/broken-channels':
+        parsed_path = urllib.parse.urlparse(self.path).path
+        if parsed_path == '/api/broken-channels':
             self._handle_post_broken_channels()
         else:
             self.send_error(404, 'Not Found')
@@ -162,6 +166,19 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_error(500, f'Failed to update broken channels: {str(e)}')
 
+    def _handle_webapis_stub(self):
+        """
+        Serves an empty JavaScript file stub for Tizen's $WEBAPIS to prevent 404 console errors on PC.
+        Affects no state; returns static stub content.
+        """
+        body = b"// Tizen webapis stub for PC"
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/javascript')
+        self.send_header('Content-Length', str(len(body)))
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(body)
+
     def _handle_proxy(self):
         """
         Reverse proxy handler that fetches remote URLs, decompresses gzip EPG data, and rewrites M3U8 playlists.
@@ -179,7 +196,6 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             req = urllib.request.Request(target_url)
             req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
             req.add_header('Accept', '*/*')
-            req.add_header('Referer', target_url)
 
             with urllib.request.urlopen(req, timeout=15) as response:
                 content_type = response.headers.get('Content-Type', 'application/octet-stream')

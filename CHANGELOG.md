@@ -35,4 +35,12 @@
 [19:03 22-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Removed persistBrokenChannel call from updateChannelStatus and deleted persistBrokenChannel helper function to prevent auto-blacklisting channels.
 [19:03 22-05-2026] app/src/main/assets/main/logic/livetv/broken-channels.json - Reset polluted database to empty array to allow valid channels to display.
 [19:12 22-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Removed background verification scanner logic and stopped dynamic removal of offline channel cards from the DOM.
-
+[20:10 22-05-2026] run_pc.py - Added $WEBAPIS stub route, served static JS webapis file, removed Referer header from proxy requests to fix 403 hotlink blocks, and implemented clean path extraction to support cache-busting query strings.
+[20:10 22-05-2026] app/src/main/assets/main/gui/pages/livetv.js - Implemented normalizeUrl URL helper, normalized channel URL checks when loading and filtering channels, added cache-busting parameter to broken-channel DB fetches, and proxied all remote playlist URL requests.
+[20:10 22-05-2026] app/src/main/assets/main/logic/livetv/sources.js - Corrected Sports category playlist filename and updated Junguler radio playlist source URL.
+[20:10 22-05-2026] app/src/main/assets/main/logic/livetv/broken-channels.json - Updated database of broken channel URLs.
+[20:10 22-05-2026] app/src/main/assets/main/logic/livetv/working-channels.json - Updated database of working channel URLs.
+[20:10 22-05-2026] app/src/main/assets/main/logic/spatial-nav/spatial-nav-profiles.js - Created spatial navigation stub for the profiles page.
+[20:10 22-05-2026] app/src/main/assets/main/logic/spatial-nav/spatial-nav-livetv.js - Created spatial navigation stub for the Live TV page.
+[20:10 22-05-2026] app/src/main/assets/main/logic/spatial-nav/spatial-nav-tv-player.js - Created spatial navigation stub for the TV player page.
+[20:18 22-05-2026] docs/problems.md - Created and updated document to track known UI/player problems, naming discrepancies, remote playlist 404s, proxy gateway errors, and codec/browser play interrupts.
