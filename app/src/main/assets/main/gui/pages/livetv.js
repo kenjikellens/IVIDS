@@ -9,7 +9,6 @@ let allChannels = [];
 let filteredChannels = [];
 let searchQuery = '';
 let selectedChannel = null;
-let hideBroken = true;
 let activeGenre = '';
 let activeCountry = '';
 let genres = [];
@@ -17,9 +16,14 @@ let countries = [];
 const statusCache = new Map(); // Store channel status results: url -> {status, timestamp}
 let previewHls = null;
 let previewTimeout = null;
-const LIVE_TV_SETTINGS_KEY = 'ivids-live-tv-settings';
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
+const BROKEN_CHANNELS_API_URL = '/api/broken-channels';
+const brokenChannelsSet = new Set(); // Persistent broken channel URLs loaded from project file
+
+let renderedCount = 0;
+let channelsObserver = null;
+const CHUNK_SIZE = 30;
 
 // Explains: Curated set of lowercase country tags commonly found in international IPTV lists.
 const countriesList = new Set([
@@ -38,10 +42,8 @@ const countriesList = new Set([
 ]);
 
 /**
- * init function
- * =============
- * Explains: Initializes the Live TV grid page, loads translation mappings,
- * loads M3U playlists, sets up action listeners, and initiates focus.
+ * Initializes the Live TV grid page, resetting state variables, clearing active preview, loading broken channels, and setting up event listeners.
+ * Affects the global page states, SpatialNav focus, EpgManager, and starts loading all playlist sources.
  * 
  * @param {object} params - Routing parameters.
  */
@@ -53,7 +55,6 @@ export async function init(params) {
     activeGenre = '';
     activeCountry = '';
     selectedChannel = null;
-    hideBroken = loadLiveTvSettings().hideBroken;
     loadStatusCache();
 
     // Reset any active preview player resource from a previous page session
@@ -73,8 +74,8 @@ export async function init(params) {
     };
 
     /**
-     * Wraps Router.loadPage to cleanup the preview player before navigating.
-     * Ensures all HLS streams are terminated before loading the new page.
+     * Wraps Router.loadPage to cleanup the preview player and verifier before navigating.
+     * Ensures all HLS streams and background fetches are terminated before loading the new page.
      */
     Router.loadPage = async function(pageName, params, addToHistory, targetFocus) {
         cleanupPreview();
@@ -84,7 +85,7 @@ export async function init(params) {
 
     /**
      * Wraps Router.goBack to cleanup the preview player before navigating back.
-     * Ensures all HLS streams are terminated before returning to the previous page.
+     * Ensures all HLS streams are terminated before returning.
      */
     Router.goBack = function(fallbackPage, fallbackParams) {
         cleanupPreview();
@@ -104,14 +105,15 @@ export async function init(params) {
     if (window.i18n) window.i18n.applyTranslations();
 
     EpgManager.init();
+    await loadBrokenChannelsDb();
     await loadAllSources();
     setupEventListeners();
     SpatialNav.focusFirst();
 }
 
 /**
- * Asynchronously loads M3U channel lists from preset and custom playlist URLs, rendering a skeleton UI during load.
- * Affects the global channel state and initializes search category parameters.
+ * Asynchronously loads M3U channel lists from preset and custom playlist URLs, skipping known broken channels.
+ * Affects the global allChannels array, seenUrls set, and triggers filtered channel rendering.
  */
 async function loadAllSources() {
     const empty = document.getElementById('no-channels-message');
@@ -126,6 +128,7 @@ async function loadAllSources() {
                 const skeleton = document.createElement('div');
                 skeleton.className = 'channel-list-item skeleton-item';
                 skeleton.innerHTML = `
+                    <span class="list-status-dot checking"></span>
                     <div class="channel-list-logo-container skeleton-logo-placeholder">
                         <div class="skeleton-mini-spinner"></div>
                     </div>
@@ -157,7 +160,7 @@ async function loadAllSources() {
                         c.sourceName = source.name;
                         c.sourcePriority = source.priority || 50;
 
-                        if (!seenUrls.has(c.url)) {
+                        if (!seenUrls.has(c.url) && !brokenChannelsSet.has(c.url)) {
                             seenUrls.add(c.url);
                             allChannels.push(c);
                             loadedCount++;
@@ -258,9 +261,8 @@ function populateFilters() {
 }
 
 /**
- * Filters the list of channels based on active filters and queries, then renders them.
- * Dynamically inserts channel items containing only the logo and name into the channel list container.
- * Updates the shared window state and toggles clear button visibility accordingly.
+ * Filters the list of channels based on search query and category/country tags, then starts rendering.
+ * Affects the global filteredChannels array and the active channels list DOM container.
  * 
  * @param {boolean} resetFocus - Resets navigation focus to the first card if true.
  */
@@ -268,20 +270,17 @@ function filterAndRenderChannels(resetFocus = false) {
     const container = document.getElementById('channels-list');
     if (!container) return;
 
-    const currentFocused = document.querySelector('.focused');
-    const focusedUrl = currentFocused && currentFocused.dataset.url;
-
-    container.innerHTML = '';
-
     filteredChannels = allChannels.filter(c => {
+        // Channels in the persistent broken DB are always excluded
+        if (brokenChannelsSet.has(c.url)) return false;
+
         const matchesSearch = !searchQuery || (c.name || "").toLowerCase().includes(searchQuery.toLowerCase());
         
         const tags = c.group ? c.group.split(';').map(t => t.trim().toLowerCase()) : [];
         const matchesGenre = !activeGenre || tags.includes(activeGenre.toLowerCase());
         const matchesCountry = !activeCountry || tags.includes(activeCountry.toLowerCase());
         
-        const isNotBroken = !hideBroken || (statusCache.get(c.url)?.status !== 'offline');
-        return matchesSearch && matchesGenre && matchesCountry && isNotBroken;
+        return matchesSearch && matchesGenre && matchesCountry;
     });
 
     // Update shared window state for Zapping features in tv-player page
@@ -296,41 +295,21 @@ function filterAndRenderChannels(resetFocus = false) {
         clearBtn.style.display = searchQuery ? 'block' : 'none';
     }
 
-    filteredChannels.forEach((channel) => {
-        const item = document.createElement('div');
-        item.className = 'channel-list-item focusable';
-        item.tabIndex = 0;
-        item.dataset.url = channel.url;
+    if (channelsObserver) {
+        channelsObserver.disconnect();
+        channelsObserver = null;
+    }
 
-        const iconUrl = channel.logo || 'images/livetv.svg';
-        const status = statusCache.get(channel.url)?.status || 'unknown';
-        const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
-
-        item.innerHTML = `
-            <span class="list-status-dot ${statusClass}"></span>
-            <div class="channel-list-logo-container">
-                <img src="${iconUrl}" class="channel-list-logo" onerror="this.src='images/livetv.svg'">
-            </div>
-            <div class="channel-list-meta-container">
-                <span class="channel-list-name">${channel.name}</span>
-            </div>
-        `;
-
-        item.onfocus = () => showChannelDetail(channel);
-        item.onclick = () => playChannel(channel);
-
-        container.appendChild(item);
-
-        if (focusedUrl === channel.url) {
-            SpatialNav.setFocus(item);
-        }
-    });
+    container.innerHTML = '';
+    renderedCount = 0;
 
     const empty = document.getElementById('no-channels-message');
     if (filteredChannels.length === 0) {
         if (empty) empty.style.display = 'flex';
     } else {
         if (empty) empty.style.display = 'none';
+
+        renderNextChunk();
 
         if (resetFocus && !document.querySelector('.focused')) {
             SpatialNav.focusFirst();
@@ -537,17 +516,11 @@ function playChannel(channel) {
 }
 
 /**
- * setupEventListeners function
- * ============================
- * Explains: Hooks UI element events including search box typing, clearing input,
- * category selection, and custom back handling.
+ * Hooks up event listeners for search input, clear button, genre/country selectors, and handles SpatialNav back actions.
+ * Affects search queries, category filters, and active keyboard navigation states.
  */
 function setupEventListeners() {
     const searchInput = document.getElementById('search-input');
-    const settingsBtn = document.getElementById('hero-settings-btn');
-    const settingsModal = document.getElementById('livetv-settings-modal');
-    const settingsClose = document.getElementById('livetv-settings-close');
-    const hideBrokenToggle = document.getElementById('hide-broken-toggle');
     const clearBtn = document.getElementById('search-clear');
 
     const originalBack = SpatialNav.onBack;
@@ -555,11 +528,7 @@ function setupEventListeners() {
         const current = document.querySelector('.focused');
         const list = document.getElementById('channels-list');
 
-        if (settingsModal && settingsModal.classList.contains('active')) {
-            settingsModal.classList.remove('active');
-            SpatialNav.clearFocusTrap();
-            if (settingsBtn) SpatialNav.setFocus(settingsBtn);
-        } else if (current && list && list.contains(current) && searchInput) {
+        if (current && list && list.contains(current) && searchInput) {
             SpatialNav.setFocus(searchInput);
         } else if (originalBack) {
             originalBack();
@@ -595,43 +564,6 @@ function setupEventListeners() {
         };
     }
 
-    if (hideBrokenToggle) {
-        hideBrokenToggle.checked = hideBroken;
-        hideBrokenToggle.onchange = () => {
-            hideBroken = hideBrokenToggle.checked;
-            saveLiveTvSettings();
-            filterAndRenderChannels(true);
-        };
-    }
-
-    const openSettings = () => {
-        if (!settingsModal) return;
-        if (hideBrokenToggle) hideBrokenToggle.checked = hideBroken;
-        settingsModal.classList.add('active');
-        SpatialNav.setFocusTrap(settingsModal);
-    };
-
-    const closeSettings = () => {
-        if (!settingsModal) return;
-        settingsModal.classList.remove('active');
-        SpatialNav.clearFocusTrap();
-        if (settingsBtn) SpatialNav.setFocus(settingsBtn);
-    };
-
-    if (settingsBtn) {
-        settingsBtn.onclick = openSettings;
-    }
-
-    if (settingsClose) {
-        settingsClose.onclick = closeSettings;
-    }
-
-    if (settingsModal) {
-        settingsModal.onclick = (event) => {
-            if (event.target === settingsModal) closeSettings();
-        };
-    }
-
     const genreSelect = document.getElementById('filter-genre');
     const countrySelect = document.getElementById('filter-country');
 
@@ -648,30 +580,6 @@ function setupEventListeners() {
             filterAndRenderChannels(true);
         };
     }
-}
-
-/**
- * Loads Live TV page settings, defaulting broken-channel hiding to enabled.
- *
- * @returns {object}
- */
-function loadLiveTvSettings() {
-    try {
-        const settings = JSON.parse(localStorage.getItem(LIVE_TV_SETTINGS_KEY) || '{}');
-        return {
-            hideBroken: settings.hideBroken !== false
-        };
-    } catch (error) {
-        console.warn('Failed to load Live TV settings:', error);
-        return { hideBroken: true };
-    }
-}
-
-/**
- * Persists Live TV page settings.
- */
-function saveLiveTvSettings() {
-    localStorage.setItem(LIVE_TV_SETTINGS_KEY, JSON.stringify({ hideBroken }));
 }
 
 /**
@@ -692,10 +600,11 @@ function loadStatusCache() {
 }
 
 /**
- * Stores a channel playback health result and refreshes the visible list.
- *
+ * Stores a channel playback health result and updates the status dot for that channel in the DOM.
+ * Affects the statusCache map, localStorage, and active DOM list elements.
+ * 
  * @param {string} url - Channel stream URL.
- * @param {string} status - online/offline.
+ * @param {string} status - The current playback status (online/offline).
  */
 function updateChannelStatus(url, status) {
     if (!url) return;
@@ -708,14 +617,13 @@ function updateChannelStatus(url, status) {
 
     const row = Array.from(document.querySelectorAll('.channel-list-item'))
         .find(item => item.dataset.url === url);
-    const dot = row?.querySelector('.list-status-dot');
-    if (dot) {
-        dot.classList.remove('checking', 'online', 'offline');
-        dot.classList.add(status);
-    }
-
-    if (hideBroken && status === 'offline') {
-        filterAndRenderChannels(false);
+    
+    if (row) {
+        const dot = row.querySelector('.list-status-dot');
+        if (dot) {
+            dot.classList.remove('checking', 'online', 'offline');
+            dot.classList.add(status);
+        }
     }
 }
 
@@ -732,4 +640,119 @@ function getStreamScore(url) {
     if (value.includes('.m3u8')) score += 4;
     if (value.includes('/udp/') || value.startsWith('rtmp://')) score -= 6;
     return score;
+}
+
+/**
+ * Renders the next batch of channels and updates the intersection observer.
+ * Affects the channels list container DOM and spatial navigation.
+ */
+function renderNextChunk() {
+    const container = document.getElementById('channels-list');
+    if (!container) return;
+
+    const existingSentinel = document.getElementById('channels-sentinel');
+    if (existingSentinel) {
+        existingSentinel.remove();
+    }
+
+    const currentFocused = document.querySelector('.focused');
+    const focusedUrl = currentFocused && currentFocused.dataset.url;
+
+    const start = renderedCount;
+    const end = Math.min(start + CHUNK_SIZE, filteredChannels.length);
+
+    for (let i = start; i < end; i++) {
+        const channel = filteredChannels[i];
+        const item = document.createElement('div');
+        item.className = 'channel-list-item focusable';
+        item.tabIndex = 0;
+        item.dataset.url = channel.url;
+
+        const iconUrl = channel.logo || 'images/livetv.svg';
+        const status = statusCache.get(channel.url)?.status || 'unknown';
+        const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
+
+        item.innerHTML = `
+            <span class="list-status-dot ${statusClass}"></span>
+            <div class="channel-list-logo-container">
+                <img src="${iconUrl}" class="channel-list-logo" onerror="this.src='images/livetv.svg'">
+            </div>
+            <div class="channel-list-meta-container">
+                <span class="channel-list-name">${channel.name}</span>
+            </div>
+        `;
+
+        item.onfocus = () => showChannelDetail(channel);
+        item.onclick = () => playChannel(channel);
+
+        container.appendChild(item);
+
+        if (focusedUrl === channel.url) {
+            SpatialNav.setFocus(item);
+        }
+    }
+
+    renderedCount = end;
+
+    if (renderedCount < filteredChannels.length) {
+        const sentinel = document.createElement('div');
+        sentinel.id = 'channels-sentinel';
+        sentinel.style.height = '1px';
+        sentinel.style.width = '100%';
+        container.appendChild(sentinel);
+
+        setupSentinelObserver(sentinel);
+    }
+}
+
+/**
+ * Sets up the IntersectionObserver for the sentinel element to trigger infinite scrolling.
+ * Affects the channels list container and dynamically appends more channel items.
+ * 
+ * @param {HTMLElement} sentinel - The sentinel DOM element to observe.
+ */
+function setupSentinelObserver(sentinel) {
+    if (channelsObserver) {
+        channelsObserver.disconnect();
+    }
+
+    const scrollContainer = document.querySelector('.livetv-list-column');
+    channelsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                renderNextChunk();
+            }
+        });
+    }, {
+        root: scrollContainer,
+        rootMargin: '100px'
+    });
+
+    channelsObserver.observe(sentinel);
+}
+
+
+
+/**
+ * Fetches the persistent broken channels database from the project file.
+ * Populates brokenChannelsSet so known-broken URLs are instantly filtered out.
+ */
+async function loadBrokenChannelsDb() {
+    try {
+        const response = await fetch(BROKEN_CHANNELS_API_URL);
+        if (!response.ok) {
+            // Fallback: try loading the static JSON file directly (for Android / non-PC builds)
+            const fallback = await fetch('../../logic/livetv/broken-channels.json');
+            if (fallback.ok) {
+                const urls = await fallback.json();
+                urls.forEach(url => brokenChannelsSet.add(url));
+            }
+            return;
+        }
+        const urls = await response.json();
+        urls.forEach(url => brokenChannelsSet.add(url));
+        console.log(`[LiveTV] Loaded ${brokenChannelsSet.size} known broken channels from database.`);
+    } catch (error) {
+        console.warn('Failed to load broken channels database:', error);
+    }
 }

@@ -6,11 +6,15 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import re
+import gzip
+import json
 from http.server import ThreadingHTTPServer
+
 
 # Define port and target assets directory
 PORT = 8000
 ASSETS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app', 'src', 'main', 'assets', 'main'))
+BROKEN_CHANNELS_PATH = os.path.join(ASSETS_DIR, 'logic', 'livetv', 'broken-channels.json')
 
 
 def resolve_url(base_url, relative_url):
@@ -75,16 +79,93 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(301)
             self.send_header('Location', '/gui/index.html')
             self.end_headers()
+        elif self.path == '/api/broken-channels':
+            self._handle_get_broken_channels()
         elif self.path.startswith('/proxy'):
             self._handle_proxy()
         else:
             super().do_GET()
 
+    def do_POST(self):
+        """
+        Handles HTTP POST requests. Routes /api/broken-channels to the broken channel persistence handler.
+        """
+        if self.path == '/api/broken-channels':
+            self._handle_post_broken_channels()
+        else:
+            self.send_error(404, 'Not Found')
+
+    def _handle_get_broken_channels(self):
+        """
+        Returns the current broken-channels.json file contents as a JSON array.
+        Affects no state; serves the file from disk.
+        """
+        try:
+            with open(BROKEN_CHANNELS_PATH, 'r', encoding='utf-8') as f:
+                data = f.read()
+            body = data.encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(body)
+        except FileNotFoundError:
+            body = b'[]'
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(body)
+        except Exception as e:
+            self.send_error(500, f'Failed to read broken channels: {str(e)}')
+
+    def _handle_post_broken_channels(self):
+        """
+        Accepts a JSON body with a 'url' field, appends it to the broken-channels.json file.
+        Prevents duplicate entries. Affects the broken-channels.json project file on disk.
+        """
+        try:
+            content_length = int(self.headers.get('Content-Length', 0))
+            raw_body = self.rfile.read(content_length)
+            payload = json.loads(raw_body.decode('utf-8'))
+            url = payload.get('url')
+
+            if not url:
+                self.send_error(400, 'Missing url field')
+                return
+
+            # Read current list
+            try:
+                with open(BROKEN_CHANNELS_PATH, 'r', encoding='utf-8') as f:
+                    broken_list = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                broken_list = []
+
+            # Only append if not already present
+            if url not in broken_list:
+                broken_list.append(url)
+                with open(BROKEN_CHANNELS_PATH, 'w', encoding='utf-8') as f:
+                    json.dump(broken_list, f, indent=2)
+                sys.stderr.write(f"[IVIDS] Added broken channel: {url[:80]}...\n")
+
+            body = json.dumps({'ok': True, 'count': len(broken_list)}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.end_headers()
+            self.wfile.write(body)
+
+        except Exception as e:
+            self.send_error(500, f'Failed to update broken channels: {str(e)}')
+
     def _handle_proxy(self):
         """
-        Reverse proxy handler that fetches a remote URL server-side and returns it
-        with CORS headers injected. Rewrites .m3u8 manifests so nested resources
-        also route through the proxy.
+        Reverse proxy handler that fetches remote URLs, decompresses gzip EPG data, and rewrites M3U8 playlists.
+        This modifies response headers, response bodies, and affects local stream/EPG fetch operations.
         """
         parsed = urllib.parse.urlparse(self.path)
         query = urllib.parse.parse_qs(parsed.query)
@@ -103,6 +184,15 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             with urllib.request.urlopen(req, timeout=15) as response:
                 content_type = response.headers.get('Content-Type', 'application/octet-stream')
                 body = response.read()
+
+                # Decompress gzip files if the target URL has .gz or response is gzip-encoded
+                is_gzip = '.gz' in target_url.lower() or response.headers.get('Content-Encoding') == 'gzip'
+                if is_gzip:
+                    try:
+                        body = gzip.decompress(body)
+                        content_type = 'application/xml'
+                    except Exception as e:
+                        sys.stderr.write(f"[IVIDS] Failed to decompress gzip: {str(e)}\n")
 
                 # Rewrite .m3u8 manifests so sub-resources also proxy
                 is_m3u8 = target_url.endswith('.m3u8') or 'mpegurl' in content_type.lower()

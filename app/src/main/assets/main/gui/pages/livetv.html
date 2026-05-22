@@ -23,37 +23,11 @@
                     <option value="" data-i18n="livetv.allCountries">All Countries</option>
                 </select>
             </div>
-            <!-- Settings button opens Live TV playback/filter options -->
-            <button id="hero-settings-btn" class="btn btn-secondary filter-btn-compact focusable" aria-label="Live TV Settings">
-                <div class="settings-icon-small"></div>
-                <span data-i18n="livetv.settings">Settings</span>
-            </button>
+
         </div>
     </div>
 
-    <div id="livetv-settings-modal" class="modal-overlay livetv-settings-modal">
-        <div class="modal-content livetv-settings-content">
-            <h2 class="modal-title" data-i18n="livetv.settings">Settings</h2>
-            <p class="livetv-settings-subtitle" data-i18n="livetv.settingsSubtitle">
-                Tune Live TV behavior for playback and channel filtering.
-            </p>
 
-            <label class="livetv-setting-row focusable" for="hide-broken-toggle">
-                <div class="livetv-setting-copy">
-                    <span class="livetv-setting-title" data-i18n="livetv.hideBroken">Hide Broken</span>
-                    <span class="livetv-setting-desc" data-i18n="livetv.hideBrokenDesc">
-                        Automatically hide channels after playback fails.
-                    </span>
-                </div>
-                <input id="hide-broken-toggle" type="checkbox" checked>
-                <span class="livetv-switch" aria-hidden="true"></span>
-            </label>
-
-            <div class="modal-actions">
-                <button id="livetv-settings-close" class="btn btn-primary focusable" data-i18n="common.close">Close</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Two-Column Layout Body -->
     <div class="livetv-two-column-layout">

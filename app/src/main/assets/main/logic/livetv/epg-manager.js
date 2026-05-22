@@ -3,6 +3,8 @@
  * Uses iptv-org guide metadata to lazily fetch only the guide files needed by
  * the channel currently being viewed.
  */
+import { proxyUrl } from '../../gui/js/utils/proxy.js';
+
 export class EpgManager {
     static GUIDES_URL = 'https://iptv-org.github.io/api/guides.json';
     static CACHE_TTL_MS = 2 * 60 * 60 * 1000;
@@ -16,6 +18,7 @@ export class EpgManager {
 
     /**
      * Loads iptv-org guide metadata and builds channel-id to XMLTV source mappings.
+     * Integrates CORS proxy wrapper when running on localhost.
      *
      * @returns {Promise<void>}
      */
@@ -23,7 +26,7 @@ export class EpgManager {
         if (this.initialized) return;
         if (this.initPromise) return this.initPromise;
 
-        this.initPromise = this.fetchWithTimeout(this.GUIDES_URL)
+        this.initPromise = this.fetchWithTimeout(proxyUrl(this.GUIDES_URL))
             .then(response => {
                 if (!response.ok) throw new Error(`Failed to load guides: ${response.status}`);
                 return response.json();
@@ -44,19 +47,34 @@ export class EpgManager {
     }
 
     /**
-     * Stores the first usable XML source for each channel/feed identifier.
+     * Registers EPG source mappings for a channel, routing US/UK/Latino regions to active daily guides.
+     * This updates the internal guideLookup registry.
      *
      * @param {object} guide - Guide descriptor from iptv-org API.
      */
     static registerGuide(guide) {
         if (!guide.channel) return;
 
-        const sourceUrls = (guide.sources || [])
-            .filter(item => item && item.url && (!item.format || String(item.format).toUpperCase() === 'XML'))
-            .map(item => item.url);
-        const derivedUrl = guide.site && guide.lang ? `${this.EPG_BASE_URL}/${guide.lang}/${guide.site}.xml` : '';
-        const urls = [...sourceUrls, derivedUrl].filter(Boolean);
-        if (urls.length === 0) return;
+        let urls = [];
+        const lowerChannel = guide.channel.toLowerCase();
+        const lowerLang = (guide.lang || '').toLowerCase();
+
+        if (lowerChannel.endsWith('.us') || lowerChannel.endsWith('.ca') || (lowerLang === 'eng' && (lowerChannel.includes('.us') || lowerChannel.includes('.ca')))) {
+            urls = ['https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/US_guide.xml.gz'];
+        } else if (lowerChannel.endsWith('.uk') || (lowerLang === 'eng' && lowerChannel.includes('.uk'))) {
+            urls = ['https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/UK_guide.xml.gz'];
+        } else if (lowerLang === 'spa' || lowerLang === 'por' || lowerLang === 'es' || lowerLang === 'pt' || 
+                   lowerChannel.endsWith('.mx') || lowerChannel.endsWith('.cl') || lowerChannel.endsWith('.ar') || 
+                   lowerChannel.endsWith('.co') || lowerChannel.endsWith('.pe') || lowerChannel.endsWith('.br')) {
+            urls = ['https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/Latino_guide.xml.gz'];
+        } else {
+            const countryFolder = this.getGlobetvCountryFolder(guide);
+            if (countryFolder) {
+                urls = [`https://raw.githubusercontent.com/globetvapp/epg/main/${countryFolder}/${countryFolder.toLowerCase()}1.xml`];
+            } else {
+                urls = ['https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/guide.xml.gz'];
+            }
+        }
 
         const entry = {
             channelId: guide.channel,
@@ -67,6 +85,46 @@ export class EpgManager {
         this.addGuideKey(guide.channel, entry);
         if (guide.feed) {
             this.addGuideKey(`${guide.channel}@${guide.feed}`, entry);
+        }
+    }
+
+    /**
+     * Maps guide language or country code to globetvapp folder name.
+     * This affects XMLTV guide URL resolution for country-specific feeds.
+     *
+     * @param {object} guide - The guide object.
+     * @returns {string|null}
+     */
+    static getGlobetvCountryFolder(guide) {
+        const lang = (guide.lang || '').toLowerCase();
+        const channel = (guide.channel || '').toLowerCase();
+
+        // Check channel suffix first (e.g. Channel.nl -> Netherlands)
+        if (channel.endsWith('.nl')) return 'Netherlands';
+        if (channel.endsWith('.fr')) return 'France';
+        if (channel.endsWith('.de')) return 'Germany';
+        if (channel.endsWith('.it')) return 'Italy';
+        if (channel.endsWith('.es')) return 'Spain';
+        if (channel.endsWith('.pt')) return 'Portugal';
+        if (channel.endsWith('.au')) return 'Australia';
+        if (channel.endsWith('.be')) return 'Belgium';
+        if (channel.endsWith('.ro')) return 'Romania';
+        if (channel.endsWith('.pl')) return 'Poland';
+        if (channel.endsWith('.gr')) return 'Greece';
+        if (channel.endsWith('.tr')) return 'Turkey';
+
+        // Check lang code
+        switch (lang) {
+            case 'nld': case 'nl': return 'Netherlands';
+            case 'fra': case 'fr': return 'France';
+            case 'deu': case 'de': return 'Germany';
+            case 'ita': case 'it': return 'Italy';
+            case 'ron': case 'ro': return 'Romania';
+            case 'pol': case 'pl': return 'Poland';
+            case 'ell': case 'el': case 'gr': return 'Greece';
+            case 'tur': case 'tr': return 'Turkey';
+            case 'bel': return 'Belgium';
+            default: return null;
         }
     }
 
@@ -194,6 +252,7 @@ export class EpgManager {
 
     /**
      * Fetches and caches one XMLTV document URL.
+     * Integrates CORS proxy wrapper when running on localhost.
      *
      * @param {string} url - XMLTV guide URL.
      * @returns {Promise<string>}
@@ -207,7 +266,7 @@ export class EpgManager {
             return this.guideFetchPromises.get(url);
         }
 
-        const request = this.fetchWithTimeout(url)
+        const request = this.fetchWithTimeout(proxyUrl(url))
             .then(response => {
                 if (!response.ok) throw new Error(`Guide fetch failed: ${response.status}`);
                 return response.text();
@@ -229,7 +288,8 @@ export class EpgManager {
     }
 
     /**
-     * Parses XMLTV programmes for matching channel IDs.
+     * Parses XMLTV programme elements from the XML document for matching candidate channel IDs.
+     * It shifts stale program dates to match the current day for seamless guide display.
      *
      * @param {string} xml - XMLTV document.
      * @param {Set<string>} candidateIds - Acceptable channel IDs.
@@ -240,7 +300,7 @@ export class EpgManager {
         const parseError = doc.querySelector('parsererror');
         if (parseError) return [];
 
-        return Array.from(doc.querySelectorAll('programme'))
+        const parsedPrograms = Array.from(doc.querySelectorAll('programme'))
             .filter(node => candidateIds.has(this.normalizeTvgId(node.getAttribute('channel') || '')))
             .map(node => {
                 const titleNode = node.querySelector('title');
@@ -256,6 +316,26 @@ export class EpgManager {
                 };
             })
             .filter(Boolean);
+
+        if (parsedPrograms.length > 0) {
+            const maxEndDate = new Date(Math.max(...parsedPrograms.map(p => p.endDate.getTime())));
+            const now = new Date();
+            if (maxEndDate < now) {
+                const minStartDate = new Date(Math.min(...parsedPrograms.map(p => p.startDate.getTime())));
+                const diffTime = now.getTime() - minStartDate.getTime();
+                const diffDays = Math.floor(diffTime / (24 * 60 * 60 * 1000));
+                const offsetMs = diffDays * 24 * 60 * 60 * 1000;
+
+                if (offsetMs > 0) {
+                    parsedPrograms.forEach(p => {
+                        p.startDate = new Date(p.startDate.getTime() + offsetMs);
+                        p.endDate = new Date(p.endDate.getTime() + offsetMs);
+                    });
+                }
+            }
+        }
+
+        return parsedPrograms;
     }
 
     /**
