@@ -82,3 +82,9 @@
 [00:10 23-05-2026] app/src/main/assets/main/gui/css/global.css - Fixed corrupt focus styles and synchronized layout rules for bottom panel grid slots.
 [00:10 23-05-2026] app/src/main/assets/main/gui/pages/player.js - Programmed player cleanups, keydown back interception, click exit redirection, and active server focus targeting.
 [00:26 23-05-2026] app/src/main/assets/main/gui/css/global.css - Added standard property 'background-clip' for CSS gradient compatibility and resolved trailing properties.
+[14:02 23-05-2026] app/build.gradle.kts - Bumped versionName to v0.4.0 and incremented versionCode to 10.
+[14:02 23-05-2026] gradle.properties - Updated org.gradle.java.home to JDK 21 to resolve Android Studio JBR compilation errors.
+[14:02 23-05-2026] package.json - Bumped version to 0.4.0 to match target release.
+[14:02 23-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
+[14:02 23-05-2026] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.
+
