@@ -17,9 +17,6 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 ## 3. Pixel-Less Layout
 - **RULE**: Avoid `px` for containers. Use `%` of the screen.
 
-## 4. Forced i18n
-- **RULE**: Never hardcode text in HTML or JS.
-- **STEP**: Add key to `en.json` first, then update ALL other 25+ language files.
 
 ## 5. Mandatory Changelog
 - **RULE**: Every file edit MUST be logged in `CHANGELOG.md` after editing all the files, not after each edit.

@@ -53,9 +53,11 @@ This document defines the strict, standardized protocol for launching new releas
   `[HH:mm DD-MM-YYYY] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.`
 
 ### 5. Tag and Push the Release
-- **ACTION**: Tag the release commit and push it to the remote GitHub repository:
+- **ACTION**: You MUST autonomously commit the release changes, tag the release commit, and push both the commit and tag to the remote GitHub repository. As per the rule exception, do NOT wait for explicit "push to main" authorization when executing this release workflow.
   ```powershell
+  git commit -m "Release vX.Y.Z"
+  git push origin main
   git tag -a vX.Y.Z -m "Release vX.Y.Z"
   git push origin vX.Y.Z
   ```
-- **GitHub Release Entry**: Draft a new release on GitHub using the pushed tag, applying the high-quality title and description formulated in Step 1.
+- **GitHub Release Entry**: Draft a new release on GitHub autonomously using the pushed tag, applying the high-quality title and description formulated in Step 1. Ensure you attach the compiled `IVIDS.apk` and `IVIDS.exe` as assets.

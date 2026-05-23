@@ -1,10 +1,5 @@
-[23:45 23-05-2026] app/build.gradle.kts - Bumped versionName to v0.4.1 and incremented versionCode to 11.
-[23:45 23-05-2026] package.json - Bumped version to 0.4.1 to match target release.
-[23:45 23-05-2026] app/src/main/assets/main/gui/pages/settings.html - Bumped hardcoded default fallback version string to v0.4.1.
-[23:45 23-05-2026] run_pc.py - Bumped version fallback to 0.4.1 in _handle_get_version.
-[23:45 23-05-2026] app/src/main/assets/main/gui/js/updater.js - Bumped local version fallback and documentation references to v0.4.1.
-[23:45 23-05-2026] app/src/main/java/com/kenjigames/ivids/UpdateManager.java - Bumped Android package version fallback and documentation to v0.4.1.
-[23:45 23-05-2026] app/src/main/assets/main/gui/pages/settings.js - Bumped version display fallback string to v0.4.1.
-[23:45 23-05-2026] gradle.properties - Updated org.gradle.java.home to point to Android Studio bundled JDK.
-[23:45 23-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
-[23:45 23-05-2026] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.
+[01:23 24-05-2026] .agents/rules/no-autonomous-github-pushes.md - Added explicit exception to autonomously execute release pushes.
+[01:23 24-05-2026] .agents/workflows/version-and-release-update.md - Updated release workflow step 5 to mandate autonomous pushing and tagging.
+[01:23 24-05-2026] .agents/rules/agent-standards.md - Removed redundant i18n instructions to consolidate in languages.md.
+[01:23 24-05-2026] .agents/rules/languages.md - Consolidated translation rules to mandate using a script for updating language files.
+[01:23 24-05-2026] sync_langs.py - Created python script to automatically synchronize missing translation keys across all language files.

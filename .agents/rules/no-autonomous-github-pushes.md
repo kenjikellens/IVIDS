@@ -2,16 +2,13 @@
 trigger: always_on
 ---
 
-# NO AUTONOMOUS GITHUB RELEASES OR PUSHES
+# GITHUB PUSH & RELEASE RULES
 
-Every AI agent working on IVIDS MUST strictly adhere to this constraint:
+Every AI agent working on IVIDS MUST strictly adhere to these constraints:
 
-1. **NO AUTONOMOUS COMMITS OR PUSHES**: You are strictly prohibited from performing any Git commits (`git commit`) or remote Git pushes (`git push`) autonomously. All edits must remain in the working tree (as modified or staged files showing the yellow 'M' or green indicators in the IDE) so the user can easily review the changes. You are ONLY authorized to stage (`git add`) files to organize edits, but you MUST wait for the user to explicitly say 'push to main' before running the commit and push commands in a single, combined sequence.
-   - **SINGLE-TURN AUTHORIZATION**: Authorization to commit and push applies ONLY to the active changes discussed in that specific turn. If you make any subsequent or additional edits in a later turn, you MUST obtain fresh, explicit authorization before performing another commit and push. You can never assume previous push authorization extends to new edits.
+1. **NO AUTONOMOUS PUSHES TO MAIN**: You are strictly prohibited from performing Git commits (`git commit`) or remote Git pushes (`git push`) for standard code or document edits autonomously. All standard edits must remain in the working tree so the user can review them. You MUST wait for the user to say 'push to main' or something alike before running the commit and push commands for standard branch updates.
+   - **SINGLE-TURN AUTHORIZATION**: Authorization to commit and push applies ONLY to the active changes discussed in that specific turn.
 
+2. **AUTONOMOUS RELEASE EXECUTION (THE EXCEPTION)**: If the user explicitly asks for a **release** (e.g., via the `/version-and-release-update` workflow, or saying "make a release v0.4.1"), you **MUST autonomously perform the entire release process**, including pushing the release commits, pushing the tags to GitHub, and drafting the GitHub release. You do NOT need to wait for a separate "push to main" authorization when executing a requested release workflow.
 
-2. **TAG AND PUSH PROTOCOL**: When instructed to tag and push:
-   - You MUST ensure the commit message and release details exactly follow the target version's release description.
-   - You must never perform Git push actions automatically as part of a background execution loop without explicit developer oversight.
-3. **CODE PUSH VS. RELEASE SEPARATION**: If the user instructs you to 'push to main', this authorizes ONLY pushing the active commit history of the branch (`git push origin main`). It does NOT authorize creating a Git tag, drafting a GitHub release, or triggering release packaging/distribution pipelines unless the user explicitly and separately specifies 'create a release' or 'tag and push release' in the request.
-
+3. **CODE PUSH VS. RELEASE SEPARATION**: If the user only instructs you to 'push to main', this authorizes ONLY pushing the active commit history of the branch. It does NOT authorize creating a Git tag or drafting a GitHub release.
