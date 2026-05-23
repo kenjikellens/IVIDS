@@ -22,3 +22,7 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **RULE**: Every file edit MUST be logged in `CHANGELOG.md` after editing all the files, not after each edit.
 - **FORMAT**: `[HH:mm DD-MM-YYYY] filenames.ext - description.`
 - **CLEARING**: Clear the changelog when the user instructs to make a release, not when pushing to main.
+
+## 6. Temporary Files
+- **RULE**: Any temporary file or script (like translation scripts, test files, or data dumps) MUST be created in the agent's `scratch` folder (e.g., `C:\Users\kenji\.gemini\antigravity-ide\scratch\`).
+- **CLEANUP**: You must delete any temporary files you created after use (when they are no longer needed).
