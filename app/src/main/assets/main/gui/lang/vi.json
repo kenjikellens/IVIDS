@@ -81,7 +81,14 @@
         "appVersion": "Phiên bản ứng dụng",
         "appVersionDesc": "Phiên bản phát hành hiện đang được cài đặt của IVIDS",
         "appDeveloper": "Nhà phát triển",
-        "appDeveloperDesc": "Được tạo bởi Nhóm phát triển IVIDS"
+        "appDeveloperDesc": "Được tạo bởi Nhóm phát triển IVIDS",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Máy chủ"
     },
     "common": {
         "close": "Đóng",

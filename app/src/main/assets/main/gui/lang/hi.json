@@ -81,7 +81,14 @@
         "appVersion": "ऐप का संस्करण",
         "appVersionDesc": "IVIDS का वर्तमान में स्थापित रिलीज़ संस्करण",
         "appDeveloper": "डेवलपर",
-        "appDeveloperDesc": "IVIDS विकास टीम द्वारा निर्मित"
+        "appDeveloperDesc": "IVIDS विकास टीम द्वारा निर्मित",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} सर्वर"
     },
     "common": {
         "close": "बंद करें",

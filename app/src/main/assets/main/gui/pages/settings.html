@@ -23,7 +23,10 @@
             <div class="setting-control">
                 <div id="current-language-display" class="current-value-display">English</div>
                 <button id="edit-language-btn" class="edit-trigger focusable">
-                    <div class="edit-icon"></div>
+                    <svg class="edit-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -38,7 +41,10 @@
                 <div id="current-color-display" class="current-value-display"
                     style="border-bottom: 3px solid var(--primary-color)">Accent</div>
                 <button id="edit-color-btn" class="edit-trigger focusable">
-                    <div class="edit-icon"></div>
+                    <svg class="edit-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -53,16 +59,19 @@
             <span data-i18n="settings.playerProvider">Player</span>
         </h2>
 
-        <div class="setting-item player-setting-item">
+        <div class="setting-item">
             <div class="setting-info">
                 <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
                 <div class="setting-description" data-i18n="settings.playerProviderDesc">Configure the embed endpoint used by the movie and series player</div>
             </div>
-            <div class="setting-control m3u-control">
-                <input id="player-base-url-input" class="settings-input focusable" type="url"
-                    placeholder="https://example.com/embed" readonly>
-                <button id="save-player-btn" class="action-btn focusable" data-i18n="settings_livetv.save">Save URL</button>
-                <button id="reset-player-btn" class="action-btn secondary focusable" data-i18n="settings.reset">Reset</button>
+            <div class="setting-control">
+                <div id="current-player-display" class="current-value-display">—</div>
+                <button id="edit-player-btn" class="edit-trigger focusable">
+                    <svg class="edit-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -78,16 +87,19 @@
             <span data-i18n="settings_livetv.title">Live TV Configuration</span>
         </h2>
 
-        <div class="setting-item m3u-setting-item">
+        <div class="setting-item">
             <div class="setting-info">
                 <div class="setting-label" data-i18n="settings_livetv.m3uUrl">M3U Playlist URL</div>
                 <div class="setting-description" data-i18n="settings_livetv.m3uUrlDesc">Enter the URL for your IPTV playlist (.m3u)</div>
             </div>
-            <div class="setting-control m3u-control">
-                <input id="m3u-url-input" class="settings-input focusable" type="url"
-                    placeholder="https://example.com/playlist.m3u" data-i18n="settings_livetv.placeholder" readonly>
-                <button id="save-m3u-btn" class="action-btn focusable" data-i18n="settings_livetv.save">Save URL</button>
-                <button id="clear-m3u-btn" class="action-btn secondary focusable" data-i18n="settings_livetv.clear">Clear</button>
+            <div class="setting-control">
+                <div id="current-m3u-display" class="current-value-display">0 Playlists</div>
+                <button id="edit-m3u-btn" class="edit-trigger focusable">
+                    <svg class="edit-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -112,7 +124,10 @@
             <div class="setting-control">
                 <div id="current-update-mode-display" class="current-value-display">Manual</div>
                 <button id="edit-update-mode-btn" class="edit-trigger focusable">
-                    <div class="edit-icon"></div>
+                    <svg class="edit-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -150,7 +165,7 @@
                 <div class="setting-description" data-i18n="settings.appVersionDesc">The currently installed release version of IVIDS</div>
             </div>
             <div class="setting-control">
-                <div id="app-version-display" class="current-value-display">v0.2.3</div>
+                <div id="app-version-display" class="current-value-display">v0.4.1</div>
             </div>
         </div>
 
@@ -171,7 +186,30 @@
     <div class="modal-content">
         <h2 class="modal-title" data-i18n="settings.language">Language</h2>
         <div class="modal-body">
-            <div id="language-options" class="option-grid"></div>
+            <div id="language-options" class="option-grid">
+                <div class="option-chip focusable" data-value="ar">Arabic</div>
+                <div class="option-chip focusable" data-value="cs">Cestina</div>
+                <div class="option-chip focusable" data-value="da">Dansk</div>
+                <div class="option-chip focusable" data-value="de">Deutsch</div>
+                <div class="option-chip focusable" data-value="en">English</div>
+                <div class="option-chip focusable" data-value="es">Espanol</div>
+                <div class="option-chip focusable" data-value="fr">Francais</div>
+                <div class="option-chip focusable" data-value="hi">Hindi</div>
+                <div class="option-chip focusable" data-value="id">Indonesia</div>
+                <div class="option-chip focusable" data-value="it">Italiano</div>
+                <div class="option-chip focusable" data-value="ja">Japanese</div>
+                <div class="option-chip focusable" data-value="ko">Korean</div>
+                <div class="option-chip focusable" data-value="nl">Nederlands</div>
+                <div class="option-chip focusable" data-value="no">Norsk</div>
+                <div class="option-chip focusable" data-value="pl">Polski</div>
+                <div class="option-chip focusable" data-value="pt">Portugues</div>
+                <div class="option-chip focusable" data-value="ro">Romana</div>
+                <div class="option-chip focusable" data-value="ru">Russian</div>
+                <div class="option-chip focusable" data-value="sv">Svenska</div>
+                <div class="option-chip focusable" data-value="tr">Turkce</div>
+                <div class="option-chip focusable" data-value="vi">Vietnamese</div>
+                <div class="option-chip focusable" data-value="zh">Chinese</div>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
@@ -249,6 +287,40 @@
         </div>
         <div class="modal-footer">
             <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Player Providers Modal -->
+<div id="player-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="settings.playerProviders">Player Providers</h2>
+        <div class="modal-body scrollable-modal-body">
+            <div id="player-providers-list" class="providers-list">
+                <!-- Dynamically populated provider items -->
+            </div>
+            <button id="add-provider-btn" class="action-btn focusable add-provider-btn" data-i18n="settings.addProvider">Add Provider</button>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" data-i18n="common.apply">Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- M3U Playlists Modal -->
+<div id="m3u-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
+        <div class="modal-body scrollable-modal-body">
+            <div id="m3u-playlists-list" class="providers-list">
+                <!-- Dynamically populated playlist items -->
+            </div>
+            <button id="add-m3u-btn" class="action-btn focusable add-provider-btn" data-i18n="settings.addM3uPlaylist">Add Playlist</button>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn secondary focusable" data-i18n="common.cancel">Cancel</button>
+            <button class="modal-btn primary focusable" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>

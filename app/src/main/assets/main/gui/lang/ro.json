@@ -81,7 +81,14 @@
         "appVersion": "Versiunea aplicației",
         "appVersionDesc": "Versiunea de lansare IVIDS instalată în prezent",
         "appDeveloper": "Dezvoltator",
-        "appDeveloperDesc": "Creat de echipa de dezvoltare IVIDS"
+        "appDeveloperDesc": "Creat de echipa de dezvoltare IVIDS",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Servere"
     },
     "common": {
         "close": "Închide",

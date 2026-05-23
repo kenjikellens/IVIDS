@@ -162,7 +162,19 @@ async function loadAllSources() {
 
         const sourceEntries = Object.entries(PRESET_SOURCES);
         const settings = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
-        if (settings.m3uUrl) {
+        const customPlaylists = settings.m3uPlaylists || [];
+        if (customPlaylists.length > 0) {
+            customPlaylists.forEach((playlist, idx) => {
+                let name = 'Custom Playlist';
+                try {
+                    const host = new URL(playlist.url).hostname;
+                    name = host ? `${host} (M3U)` : `Custom Playlist ${idx + 1}`;
+                } catch (e) {
+                    name = `Custom Playlist ${idx + 1}`;
+                }
+                sourceEntries.push([`custom_${playlist.id || idx}`, { name: name, url: playlist.url }]);
+            });
+        } else if (settings.m3uUrl) {
             sourceEntries.push(['custom', { name: 'Custom Playlist', url: settings.m3uUrl }]);
         }
 

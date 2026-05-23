@@ -8,7 +8,11 @@ import urllib.error
 import re
 import gzip
 import json
+import mimetypes
 from http.server import ThreadingHTTPServer
+
+# Register the SVG MIME type to ensure Windows systems serve vector graphics correctly
+mimetypes.add_type('image/svg+xml', '.svg')
 
 
 # Define port and target assets directory
@@ -82,6 +86,8 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
         elif parsed_path == '/api/broken-channels':
             self._handle_get_broken_channels()
+        elif parsed_path == '/api/version':
+            self._handle_get_version()
         elif '$WEBAPIS/webapis/webapis.js' in parsed_path:
             self._handle_webapis_stub()
         elif parsed_path.startswith('/proxy'):
@@ -124,6 +130,27 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
         except Exception as e:
             self.send_error(500, f'Failed to read broken channels: {str(e)}')
+
+    def _handle_get_version(self):
+        """
+        Reads the application version from package.json and returns it as a JSON payload.
+        This allows the static web client to dynamically determine the local version during development.
+        """
+        try:
+            root_dir = os.path.dirname(ASSETS_DIR)
+            package_json_path = os.path.join(root_dir, 'package.json')
+            with open(package_json_path, 'r', encoding='utf-8') as f:
+                pkg = json.load(f)
+            version = pkg.get('version', '0.4.1')
+            body = json.dumps({'version': version}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(body)
+        except Exception as e:
+            self.send_error(500, f'Failed to read version: {str(e)}')
 
     def _handle_post_broken_channels(self):
         """

@@ -81,7 +81,14 @@
         "appVersion": "App-versjon",
         "appVersionDesc": "Den installerte versjonen av IVIDS",
         "appDeveloper": "Utvikler",
-        "appDeveloperDesc": "Utviklet av IVIDS-utviklingsteamet"
+        "appDeveloperDesc": "Utviklet av IVIDS-utviklingsteamet",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Servere"
     },
     "common": {
         "close": "Lukk",

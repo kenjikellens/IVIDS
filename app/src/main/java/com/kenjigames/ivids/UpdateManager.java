@@ -234,10 +234,10 @@ public class UpdateManager {
     }
 
     /**
-     * Retrieves the current app version name from the Android package manager.
-     * This method is exposed to JavaScript via the @JavascriptInterface annotation.
+     * Retrieves the current app version name from the Android package manager or returns the default version.
+     * This method is exposed to JavaScript to allow version checks and updates.
      * 
-     * @return The installed version name string (e.g., "v0.2.3").
+     * @return The installed version name string (e.g., "v0.4.1").
      */
     @JavascriptInterface
     public String getCurrentVersion() {
@@ -246,7 +246,7 @@ public class UpdateManager {
                     .getPackageInfo(mActivity.getPackageName(), 0).versionName;
         } catch (Exception e) {
             Log.e(TAG, "Error getting package version name", e);
-            return "v0.2.3";
+            return "v0.4.1";
         }
     }
 

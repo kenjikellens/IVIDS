@@ -360,6 +360,10 @@ function initUI() {
     }
 }
 
+/**
+ * Initializes spatial navigation listeners and configures global click and focus synchronization.
+ * This sets up remote key bindings, popstate history tracking, and mouse/touch sync.
+ */
 function initNavigation() {
     try {
         SpatialNav.init(() => {
@@ -402,7 +406,11 @@ function initNavigation() {
     document.addEventListener('click', (e) => {
         const focusable = e.target.closest('.focusable');
         if (focusable && !focusable.classList.contains('focused')) {
-            SpatialNav.setFocus(focusable);
+            // Only set focus if the clicked element is still the active focused element in the document.
+            // This prevents stealing focus if the click event handler shifted focus elsewhere (e.g. opening a modal).
+            if (document.activeElement === focusable) {
+                SpatialNav.setFocus(focusable);
+            }
         }
     });
 }

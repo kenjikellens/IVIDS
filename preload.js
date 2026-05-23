@@ -16,6 +16,14 @@ contextBridge.exposeInMainWorld('ElectronAPI', {
     checkPcUpdate: () => ipcRenderer.invoke('check-pc-update'),
 
     /**
+     * getAppVersion function
+     * ----------------------
+     * Explains: Invokes the 'get-app-version' IPC channel to retrieve the application version.
+     * @returns {Promise<string>} The version name string from package.json.
+     */
+    getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+
+    /**
      * downloadPcUpdate function
      * -------------------------
      * Explains: Initiates downloading the update package from a remote repository URL.

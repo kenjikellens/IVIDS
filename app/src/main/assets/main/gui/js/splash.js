@@ -14,12 +14,12 @@ export class Splash {
             return;
         }
 
-        // 1. Min wait timer (1 second)
+        // 1. Min wait timer (0.5 seconds)
         setTimeout(() => {
-            console.log('Splash: 1s min duration reached.');
+            console.log('Splash: 0.5s min duration reached.');
             this.minTimeElapsed = true;
             this.checkReady();
-        }, 1000);
+        }, 700);
 
         // 2. Slow load feedback (10 seconds)
         setTimeout(() => {

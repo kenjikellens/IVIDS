@@ -81,7 +81,14 @@
         "appVersion": "Verze aplikace",
         "appVersionDesc": "Aktualně nainstalovaná verze IVIDS",
         "appDeveloper": "Vývojář",
-        "appDeveloperDesc": "Vytvořeno vývojovým týmem IVIDS"
+        "appDeveloperDesc": "Vytvořeno vývojovým týmem IVIDS",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Servery"
     },
     "common": {
         "close": "Zavřít",

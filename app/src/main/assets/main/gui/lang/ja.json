@@ -81,7 +81,14 @@
         "appVersion": "アプリのバージョン",
         "appVersionDesc": "現在インストールされているIVIDSのリリースバージョン",
         "appDeveloper": "開発者",
-        "appDeveloperDesc": "IVIDS開発チームによって作成されました"
+        "appDeveloperDesc": "IVIDS開発チームによって作成されました",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} サーバー"
     },
     "common": {
         "close": "閉じる",

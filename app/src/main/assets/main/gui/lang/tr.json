@@ -81,7 +81,14 @@
         "appVersion": "Uygulama Sürümü",
         "appVersionDesc": "Şu anda yüklü olan IVIDS sürümü",
         "appDeveloper": "Geliştirici",
-        "appDeveloperDesc": "IVIDS Geliştirme Ekibi tarafından oluşturuldu"
+        "appDeveloperDesc": "IVIDS Geliştirme Ekibi tarafından oluşturuldu",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Sunucu"
     },
     "common": {
         "close": "Kapat",

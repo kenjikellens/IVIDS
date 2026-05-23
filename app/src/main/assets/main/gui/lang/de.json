@@ -74,7 +74,14 @@
         "appVersion": "App-Version",
         "appVersionDesc": "Die aktuell installierte Release-Version von IVIDS",
         "appDeveloper": "Entwickler",
-        "appDeveloperDesc": "Erstellt vom IVIDS-Entwicklungsteam"
+        "appDeveloperDesc": "Erstellt vom IVIDS-Entwicklungsteam",
+        "playerProviders": "Player-Anbieter",
+        "addProvider": "Anbieter hinzufügen",
+        "deleteProvider": "Löschen",
+        "moveProvider": "Verschieben",
+        "addM3uPlaylist": "Wiedergabeliste hinzufügen",
+        "playlistsCount": "{count} Wiedergabelisten",
+        "serversCount": "{count} Server"
     },
     "common": {
         "close": "Schließen",

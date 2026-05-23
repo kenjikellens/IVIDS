@@ -81,7 +81,14 @@
         "appVersion": "Versi Aplikasi",
         "appVersionDesc": "Versi rilis IVIDS yang terinstal saat ini",
         "appDeveloper": "Pengembang",
-        "appDeveloperDesc": "Dibuat oleh Tim Pengembangan IVIDS"
+        "appDeveloperDesc": "Dibuat oleh Tim Pengembangan IVIDS",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Server"
     },
     "common": {
         "close": "Tutup",

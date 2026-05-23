@@ -74,7 +74,14 @@
         "appVersion": "App Version",
         "appVersionDesc": "The currently installed release version of IVIDS",
         "appDeveloper": "Developer",
-        "appDeveloperDesc": "Created by the IVIDS Development Team"
+        "appDeveloperDesc": "Created by the IVIDS Development Team",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Servers"
     },
     "common": {
         "close": "Close",

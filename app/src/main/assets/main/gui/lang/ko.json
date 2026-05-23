@@ -81,7 +81,14 @@
         "appVersion": "앱 버전",
         "appVersionDesc": "현재 설치된 IVIDS 릴리스 버전",
         "appDeveloper": "개발자",
-        "appDeveloperDesc": "IVIDS 개발 팀에서 제작"
+        "appDeveloperDesc": "IVIDS 개발 팀에서 제작",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} 서버"
     },
     "common": {
         "close": "닫기",

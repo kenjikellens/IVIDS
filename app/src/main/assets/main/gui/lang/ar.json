@@ -81,7 +81,14 @@
         "appVersion": "إصدار التطبيق",
         "appVersionDesc": "نسخة الإصدار المثبتة حاليًا من IVIDS",
         "appDeveloper": "المطور",
-        "appDeveloperDesc": "تم إنشاؤه بواسطة فريق تطوير IVIDS"
+        "appDeveloperDesc": "تم إنشاؤه بواسطة فريق تطوير IVIDS",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} خوادم"
     },
     "common": {
         "close": "إغلاق",

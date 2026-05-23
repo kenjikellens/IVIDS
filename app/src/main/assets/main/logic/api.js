@@ -4,6 +4,12 @@ const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your T
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
 const DEFAULT_PLAYER_BASE_URL = 'https://vidlink.pro';
+const DEFAULT_PLAYER_PROVIDERS = [
+    { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro', isCustom: false },
+    { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed', isCustom: false },
+    { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net', isCustom: false },
+    { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 4)', url: 'https://vidsrc.cc/v2/embed', isCustom: false }
+];
 
 // Image Size Constants
 const POSTER_SIZE = 'w342';       // Standard poster size for grids
@@ -406,14 +412,16 @@ export const Api = {
     },
 
     /**
-     * Retrieves the player provider configuration from localStorage.
-     * This affects player routing and default server settings.
-     * @returns {Object} Config object containing provider settings.
+     * Retrieves the player provider configuration from localStorage and performs migrations.
+     * This affects player routing, custom servers list, and default server settings.
+     * @returns {Object} Config object containing provider settings and the custom list of providers.
      */
     getPlayerConfig() {
         const defaults = {
             playerProvider: 'custom',
-            playerBaseUrl: DEFAULT_PLAYER_BASE_URL
+            playerBaseUrl: DEFAULT_PLAYER_BASE_URL,
+            playerProviders: DEFAULT_PLAYER_PROVIDERS,
+            m3uPlaylists: []
         };
 
         try {
@@ -423,8 +431,43 @@ export const Api = {
                 // Auto-migrate from blocked legacy vidsrc domains persistently
                 if (saved.playerBaseUrl && (saved.playerBaseUrl.includes('vidsrc.xyz') || saved.playerBaseUrl.includes('vidsrc.me') || saved.playerBaseUrl.includes('vidsrc.net'))) {
                     saved.playerBaseUrl = DEFAULT_PLAYER_BASE_URL;
-                    localStorage.setItem('ivids-settings', JSON.stringify(saved));
                 }
+
+                // If saved has no playerProviders, migrate playerBaseUrl to playerProviders
+                if (!saved.playerProviders) {
+                    const defaultProviders = JSON.parse(JSON.stringify(DEFAULT_PLAYER_PROVIDERS));
+                    if (saved.playerBaseUrl) {
+                        const matched = defaultProviders.find(p => p.url === saved.playerBaseUrl);
+                        if (!matched) {
+                            defaultProviders.unshift({
+                                id: 'custom_migrated',
+                                name: 'Custom Server',
+                                url: saved.playerBaseUrl,
+                                isCustom: true
+                            });
+                        } else {
+                            const idx = defaultProviders.indexOf(matched);
+                            if (idx > -1) {
+                                defaultProviders.splice(idx, 1);
+                                defaultProviders.unshift(matched);
+                            }
+                        }
+                    }
+                    saved.playerProviders = defaultProviders;
+                }
+
+                // If saved has legacy single m3uUrl and no m3uPlaylists, migrate it
+                if (saved.m3uUrl && (!saved.m3uPlaylists || saved.m3uPlaylists.length === 0)) {
+                    saved.m3uPlaylists = [{
+                        id: 'custom_m3u',
+                        name: 'Custom Playlist',
+                        url: saved.m3uUrl,
+                        isCustom: true
+                    }];
+                }
+
+                localStorage.setItem('ivids-settings', JSON.stringify(saved));
+
                 return {
                     ...defaults,
                     ...saved,
@@ -438,13 +481,32 @@ export const Api = {
         }
     },
 
-    SERVERS: [
-        { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro' },
-        { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed' },
-        { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net' },
-        { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 4)', url: 'https://vidsrc.cc/v2/embed' }
-    ],
-
+    /**
+     * Dynamic getter that retrieves the active priority-ordered list of player provider servers.
+     * This formats names for custom servers dynamically using their hostnames and returns the list.
+     * @returns {Array<Object>} List of active server provider objects.
+     */
+    get SERVERS() {
+        const config = Api.getPlayerConfig();
+        const providers = config.playerProviders || DEFAULT_PLAYER_PROVIDERS;
+        return providers.map(p => {
+            let displayName = p.name;
+            if (p.isCustom || !displayName) {
+                try {
+                    const host = new URL(p.url).hostname;
+                    displayName = host ? `${host} (Custom)` : 'Custom Server';
+                } catch (e) {
+                    displayName = 'Custom Server';
+                }
+            }
+            return {
+                id: p.id,
+                name: displayName,
+                url: p.url,
+                isCustom: !!p.isCustom
+            };
+        });
+    },
 
     /**
      * Generates the streaming embed URL for the player iframe.
@@ -464,7 +526,8 @@ export const Api = {
             const server = Api.SERVERS.find(s => s.id === serverId);
             baseUrl = server ? server.url : config.playerBaseUrl;
         } else {
-            baseUrl = config.playerBaseUrl || DEFAULT_PLAYER_BASE_URL;
+            const servers = Api.SERVERS;
+            baseUrl = (servers && servers.length > 0) ? servers[0].url : config.playerBaseUrl;
         }
         const params = 'autoplay=true&autoPlay=true&ds_lang=en';
 

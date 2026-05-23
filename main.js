@@ -181,6 +181,17 @@ ipcMain.handle('check-pc-update', async () => {
 });
 
 /**
+ * get-app-version IPC Handler
+ * ===========================
+ * Retrieves the current Electron application version name from package.json.
+ * This is used by the renderer process to display and compare version numbers.
+ */
+ipcMain.handle('get-app-version', () => {
+    return app.getVersion();
+});
+
+
+/**
  * download-pc-update IPC Handler
  * =============================
  * Handles request to download the update executable and sends progress events to the renderer.

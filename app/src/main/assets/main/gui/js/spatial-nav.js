@@ -5,11 +5,16 @@ export const SpatialNav = {
     currentPageLogic: null,
     lastFocusedElement: null,
     _initialized: false,
+    isMouseInteraction: false,
 
     isPortrait() {
         return window.matchMedia('(orientation: portrait)').matches;
     },
 
+    /**
+     * Initializes the spatial navigation system, binds D-pad keyboard handlers, and registers mouse/touch listeners.
+     * This coordinates focus management and sets up mutation observers to dynamically track focusable elements.
+     */
     init(onBack) {
         if (onBack) this.onBack = onBack;
         if (this._initialized) {
@@ -18,10 +23,14 @@ export const SpatialNav = {
         }
         this._initialized = true;
 
-        window.addEventListener('keydown', (e) => this.handleKey(e));
+        window.addEventListener('keydown', (e) => {
+            this.isMouseInteraction = false;
+            this.handleKey(e);
+        });
 
         // Add mouse support for focus and input activation
         window.addEventListener('mousedown', (e) => {
+            this.isMouseInteraction = true;
             const target = e.target.closest(this.focusableSelector);
             if (target) {
                 this.setFocus(target);
@@ -47,6 +56,11 @@ export const SpatialNav = {
                 }
             }
         });
+
+        // Track touch interactions to avoid centering layout scroll shift jumps
+        window.addEventListener('touchstart', (e) => {
+            this.isMouseInteraction = true;
+        }, { passive: true });
 
         // Ensure all currently focusable elements have a tabindex
         this.ensureTabindex();
@@ -191,8 +205,23 @@ export const SpatialNav = {
         }
     },
 
+    /**
+     * Centers the focused element in the scroll viewport, bypassing modal overlays to prevent layout shifts.
+     * This affects scrolling position inside the main page view container.
+     * @param {HTMLElement} el - The DOM node to center in the viewport.
+     */
     centerElement(el) {
         if (!el) return;
+
+        // Skip centering for elements inside modal overlays to prevent parent page from scrolling/shifting
+        if (el.closest('.modal-overlay, .modal-content, .modal')) {
+            return;
+        }
+
+        // Skip centering for mouse/touch interactions to prevent page scroll shifts on clicks
+        if (this.isMouseInteraction) {
+            return;
+        }
 
         // 1. Vertical centering in #main-view
         const mainView = document.getElementById('main-view');

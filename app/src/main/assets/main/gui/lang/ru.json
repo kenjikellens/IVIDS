@@ -81,7 +81,14 @@
         "appVersion": "Версия приложения",
         "appVersionDesc": "В настоящее время установленная версия выпуска IVIDS",
         "appDeveloper": "Разработчик",
-        "appDeveloperDesc": "Создано командой разработчиков IVIDS"
+        "appDeveloperDesc": "Создано командой разработчиков IVIDS",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} Серверов"
     },
     "common": {
         "close": "Закрыть",

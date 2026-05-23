@@ -313,8 +313,11 @@ button {
     opacity: 0;
 }
 
+/* Styles the high-impact title text inside the main page billboard/hero component. */
 .hero-title {
+    font-family: 'Outfit', sans-serif;
     font-size: 56px;
+    font-weight: 700;
     line-height: 1.04;
     margin-bottom: 18px;
     max-width: 12ch;
@@ -525,6 +528,7 @@ button {
         padding-bottom: 56px;
     }
 
+    /* Adapts the hero title size for tablet/medium displays. */
     .hero-title {
         font-size: 42px;
     }
@@ -576,6 +580,7 @@ button {
         text-align: center;
     }
 
+    /* Centers and rescales the hero title for mobile layouts. */
     .hero-title {
         max-width: none;
         font-size: 38px;
@@ -644,12 +649,33 @@ button {
     gap: 34px;
 }
 
-.splash-logo {
+/* Styles the vertical alignment container for the logo image and text on the splash screen. */
+.splash-logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 0;
+}
+
+/* Styles the splash screen logo image loaded from icon.ico. */
+.splash-logo-img {
+    width: 90px;
+    height: 90px;
+    flex: 0 0 90px;
+    display: block;
+    object-fit: contain;
+}
+
+/* Styles the large branded logo text below the logo image on the splash screen. */
+.splash-logo-text {
     margin: 0;
     color: #fff;
-    font-size: 68px;
-    font-weight: 900;
-    letter-spacing: 0;
+    font-size: 56px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.03em;
 }
 
 .splash-loader-container {
@@ -968,16 +994,37 @@ button {
     width: var(--app-sidebar-expanded-width);
 }
 
-.logo {
+/* Styles the brand logo image and text container in the sidebar. */
+.logo-container {
     min-height: 44px;
     display: flex;
     align-items: center;
     padding: 0 12px;
-    color: #fff;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 0;
+    margin-bottom: 12px;
     white-space: nowrap;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Styles the actual brand logo icon image from icon.ico in the sidebar. */
+.logo-img {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    display: block;
+    object-fit: contain;
+}
+
+/* Styles the brand text next to the logo icon inside the sidebar container. */
+.logo-text {
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    opacity: 0;
+    transition: opacity 0.14s ease;
 }
 
 .nav-links,
@@ -1039,16 +1086,17 @@ button {
     background-color: var(--primary-color);
 }
 
-.nav-item span,
-.logo {
+/* Styles the default hidden transition state for navigation text labels. */
+.nav-item span {
     opacity: 0;
     transition: opacity 0.14s ease;
 }
 
+/* Fades in the sidebar text labels and logo text when hovered or focused-within. */
 .navbar:hover .nav-item span,
 .navbar:focus-within .nav-item span,
-.navbar:hover .logo,
-.navbar:focus-within .logo {
+.navbar:hover .logo-text,
+.navbar:focus-within .logo-text {
     opacity: 1;
 }
 
@@ -1072,7 +1120,8 @@ button {
         background: rgba(0, 0, 0, 0.98) !important;
     }
 
-    .logo {
+    /* Hides the logo branding rail container on mobile screens. */
+    .logo-container {
         display: none !important;
     }
 
@@ -1177,12 +1226,14 @@ button {
     color: #fff;
 }
 
+/* Styles the page header text on the profile selection screen. */
 .profiles-title {
     margin-bottom: 42px;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
     font-size: 48px;
     line-height: 1.1;
-    font-weight: 900;
+    font-weight: 600;
     text-align: center;
 }
 
@@ -1306,11 +1357,13 @@ button {
     box-shadow: var(--shadow-panel);
 }
 
+/* Styles the title text displayed at the top of modal overlays. */
 .modal-title {
     margin-bottom: 22px;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
     font-size: 26px;
-    font-weight: 900;
+    font-weight: 600;
     text-align: center;
 }
 
@@ -1418,6 +1471,7 @@ button {
         padding: 28px 18px;
     }
 
+    /* Adapts the profiles selection screen title size for smaller mobile viewports. */
     .profiles-title {
         font-size: 34px;
         margin-bottom: 30px;
@@ -1469,13 +1523,15 @@ button {
     animation: fadeIn 0.35s ease-out forwards;
 }
 
+/* Styles the horizontal content rail/row title header. */
 .row-title {
     padding: 0 var(--app-content-padding-x);
     margin: 0 0 6px;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
     font-size: 23px;
-    font-weight: 900;
-    letter-spacing: 0;
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 .row-container {
@@ -1541,6 +1597,7 @@ button {
 }
 
 @media (max-width: 767px), (orientation: portrait) {
+    /* Scales down the content rail titles on mobile screens. */
     .row-title {
         font-size: 20px;
     }
@@ -1874,6 +1931,7 @@ button {
     border: 1px solid #444;
 }
 
+/* Resets top margins and handles spacing for the playlist selection modal title. */
 .modal-title {
     margin-top: 0;
     margin-bottom: 20px;
@@ -3292,12 +3350,15 @@ iframe {
     animation: fadeInDown 0.28s ease-out;
 }
 
+/* Styles the primary page title header for standard content views. */
 .page-title {
     margin: 0;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
     font-size: 42px;
     line-height: 1.1;
-    font-weight: 900;
+    font-weight: 600;
+    letter-spacing: -0.02em;
 }
 
 #create-playlist-btn {
@@ -3498,6 +3559,7 @@ iframe {
         flex-direction: column;
     }
 
+    /* Adapts the main page title header size for portrait and mobile viewports. */
     .page-title {
         font-size: 32px;
     }
@@ -3831,11 +3893,13 @@ iframe {
     text-align: center;
 }
 
+/* Styles the title text for confirmation and dynamic overlay dialogs. */
 .modal-title {
     margin-bottom: 14px;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .modal-message {
@@ -4131,11 +4195,13 @@ iframe {
     width: min(520px, 92vw);
 }
 
+/* Styles the primary title display within multi-step utility modals. */
 .modal-title {
     padding: 24px 28px 16px;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
     font-size: 26px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .modal-scroll-area {
@@ -4330,6 +4396,7 @@ iframe {
         max-height: 84vh;
     }
 
+    /* Adapts the modal title size and padding for smaller screen sizes. */
     .modal-title {
         padding: 20px 20px 14px;
         font-size: 22px;
@@ -4409,23 +4476,27 @@ iframe {
     color: var(--primary-color);
 }
 
+/* Styling for a single settings item row layout */
 .setting-item {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 24px;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 24px;
     padding: 18px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
+/* Remove top border from the first settings item row */
 .setting-item:first-of-type {
     border-top: 0;
 }
 
+/* Left-hand container for settings text titles and descriptions */
 .setting-info {
     min-width: 0;
 }
 
+/* Text title styling for a setting option */
 .setting-label {
     color: #fff;
     font-size: 18px;
@@ -4433,11 +4504,13 @@ iframe {
     margin-bottom: 5px;
 }
 
+/* Text description layout styling for a setting option */
 .setting-description {
     color: var(--text-muted);
     font-size: 14px;
 }
 
+/* Right-hand flexbox container aligning settings controls horizontally */
 .setting-control {
     display: flex;
     align-items: center;
@@ -4445,6 +4518,7 @@ iframe {
     gap: 12px;
 }
 
+/* Centered border display container for currently selected settings values */
 .current-value-display {
     min-width: 128px;
     padding: 10px 14px;
@@ -4457,6 +4531,7 @@ iframe {
     text-align: center;
 }
 
+/* Interactive focusable pencil edit trigger button with transition */
 .edit-trigger {
     width: 48px;
     height: 48px;
@@ -4468,8 +4543,16 @@ iframe {
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
 }
 
+/* Active click state tactile shrink for the edit trigger button */
+.edit-trigger:active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(0.95);
+}
+
+/* Interactive hover focus state for the edit trigger button */
 .edit-trigger:hover,
 .edit-trigger:focus,
 .edit-trigger.focused {
@@ -4478,38 +4561,15 @@ iframe {
     background: rgba(255, 255, 255, 0.14);
 }
 
+/* Graphic SVG icon inside edit trigger button */
 .edit-icon {
-    width: 22px;
-    height: 22px;
-    background-color: #fff;
-    -webkit-mask: url('../images/edit.svg') no-repeat center;
-    mask: url('../images/edit.svg') no-repeat center;
-    -webkit-mask-size: contain;
-    mask-size: contain;
+    width: 20px;
+    height: 20px;
+    display: block;
+    pointer-events: none;
 }
 
-.settings-input {
-    width: min(520px, 42vw);
-    height: 48px;
-    padding: 0 14px;
-    border-radius: var(--radius-md);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.36);
-    color: #fff;
-    outline: none;
-}
-
-.settings-input:focus,
-.settings-input.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
-}
-
-.m3u-control {
-    flex-wrap: wrap;
-    max-width: 720px;
-}
-
+/* Standard focusable button styles for modal action clicks */
 .action-btn {
     min-width: 118px;
     padding: 0 18px;
@@ -4521,10 +4581,12 @@ iframe {
     font-weight: 800;
 }
 
+/* Secondary outline button styles for modal action clicks */
 .action-btn.secondary {
     background: transparent;
 }
 
+/* Focus and hover hover animations for the standard buttons */
 .action-btn:hover,
 .action-btn:focus,
 .action-btn.focused {
@@ -4532,22 +4594,129 @@ iframe {
     color: #050505;
 }
 
-.update-control {
-    min-width: 330px;
-}
-
+/* Text label display for update progress status logs */
 .update-status-label {
     color: var(--text-muted);
     font-size: 14px;
     font-weight: 700;
 }
 
+/* Inline flex alignment frame for update checkers loaders */
 .loader-inline-container {
     width: 34px;
     height: 34px;
     display: none;
     align-items: center;
     justify-content: center;
+}
+
+/* Circular keyframe border pulsing animation used during reordering */
+@keyframes pulse-border {
+    0% {
+        box-shadow: 0 0 2px rgba(var(--primary-rgb), 0.2);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.6);
+    }
+}
+
+/* Active click state opacity flash and tactile shrink for option chip buttons */
+.option-chip:active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(0.95);
+}
+
+/* Container for the list of player or playlist providers in settings modal */
+.providers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5%;
+    margin-bottom: 2%;
+    width: 100%;
+}
+
+/* Individual list item row for a player or playlist provider entry */
+.provider-item {
+    display: flex;
+    align-items: center;
+    gap: 2%;
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Visual highlight style for a provider item when actively in moving mode */
+.provider-item.moving {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.3) !important;
+    background: rgba(var(--primary-rgb), 0.08) !important;
+}
+
+/* Input text box inside a provider item for editing the URL */
+.provider-url-input {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: var(--radius-md);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.36);
+    color: #fff;
+    outline: none;
+}
+
+/* Focused style for provider URL input field */
+.provider-url-input:focus,
+.provider-url-input.focused {
+    border-color: #fff !important;
+    box-shadow: 0 0 0 2px #fff !important;
+}
+
+/* Flexbox container holding the action buttons for a provider item */
+.provider-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Button to toggle moving mode on a provider item */
+.provider-move-btn {
+    min-width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+/* Active style for move button when moving mode is currently active */
+.provider-move-btn.active-moving {
+    background: var(--primary-color) !important;
+    color: #050505 !important;
+    border-color: var(--primary-color) !important;
+    animation: pulse-border 1.5s infinite alternate;
+}
+
+/* Button to delete a custom provider item */
+.provider-delete-btn {
+    min-width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 59, 48, 0.1);
+    border: 2px solid rgba(255, 59, 48, 0.2);
+    color: #ff3b30;
+    border-radius: var(--radius-md);
+    cursor: pointer;
 }
 
 .loader-inline-container .ivids-loader {
@@ -4585,11 +4754,13 @@ iframe {
     box-shadow: var(--shadow-panel);
 }
 
+/* Styles the title text inside structured responsive popup dialogs. */
 .modal-title {
     padding: 24px 28px 18px;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
     font-size: 26px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .modal-body {
@@ -4632,6 +4803,7 @@ iframe {
     padding: 4px 0 16px;
 }
 
+/* Interactive focusable modal option chip card button with transition */
 .option-chip {
     position: relative;
     min-height: 58px;
@@ -4647,6 +4819,7 @@ iframe {
     font-weight: 800;
     text-align: center;
     cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
 }
 
 .option-chip.active {
@@ -4700,20 +4873,9 @@ iframe {
 }
 
 @media (max-width: 1279px) {
+    /* Styles the settings header h1 text size on medium tablet devices */
     .settings-header h1 {
         font-size: 38px;
-    }
-
-    .setting-item {
-        grid-template-columns: 1fr;
-    }
-
-    .setting-control {
-        justify-content: flex-start;
-    }
-
-    .settings-input {
-        width: min(100%, 520px);
     }
 }
 
@@ -4920,6 +5082,7 @@ iframe {
         box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
     }
 
+    /* Adjusts modal title font size and border style for mobile portrait views. */
     .modal-title {
         font-size: 20px;
         padding: 22px 20px 12px;

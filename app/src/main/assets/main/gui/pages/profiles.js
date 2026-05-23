@@ -1,6 +1,7 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Splash } from '../js/splash.js';
+import { Api } from '../../logic/api.js';
 
 export const init = async (params) => {
     console.log('Profiles: Initializing...');
@@ -17,6 +18,28 @@ export const init = async (params) => {
     let currentEditingIndex = -1;
     const DEFAULT_COLOR = '#E50914';
     let selectedColor = DEFAULT_COLOR;
+
+    // Preload home screen data in the background to speed up transition
+    setTimeout(async () => {
+        try {
+            console.log('Profiles: Preloading home screen data and images...');
+            const trending = await Api.fetchTrending();
+            
+            // Aggressively prefetch the first few hero/poster images
+            if (trending && trending.length > 0) {
+                trending.slice(0, 10).forEach(item => {
+                    if (item.backdrop_path) Api.prefetchImage(item.backdrop_path, Api.getRecommendedBackdropSize());
+                    if (item.poster_path) Api.prefetchImage(item.poster_path);
+                });
+            }
+
+            Api.fetchHighlyRated();
+            Api.fetchNewThisYear();
+            Api.fetchPopularTV();
+        } catch (e) {
+            console.error('Profiles: Background preload failed', e);
+        }
+    }, 1000);
 
     const renderProfiles = () => {
         const profilesGrid = document.getElementById('profiles-grid');

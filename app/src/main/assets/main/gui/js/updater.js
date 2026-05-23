@@ -10,21 +10,40 @@ const Config = {
 };
 
 /**
- * Retrieves the current installed version of the application.
- * Checks the native Android bridge if available, otherwise returns the default static web version.
- * @returns {string} The version string (e.g., 'v0.2.3').
+ * Retrieves the current installed version of the application asynchronously.
+ * Checks the native Android interface, then the Electron bridge, attempts local server API, and falls back to v0.4.1.
+ * @returns {Promise<string>} A promise resolving to the version string (e.g., 'v0.4.1').
  */
-function getLocalVersion() {
+async function getLocalVersion() {
     if (window.AndroidUpdate && typeof window.AndroidUpdate.getCurrentVersion === 'function') {
         return window.AndroidUpdate.getCurrentVersion();
     }
-    return 'v0.2.3';
+    if (window.ElectronAPI && typeof window.ElectronAPI.getAppVersion === 'function') {
+        try {
+            const version = await window.ElectronAPI.getAppVersion();
+            return version ? `v${version}` : 'v0.4.1';
+        } catch (err) {
+            console.error('Updater: Failed to fetch Electron app version', err);
+        }
+    }
+    try {
+        const response = await fetch('/api/version');
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.version) {
+                return `v${data.version}`;
+            }
+        }
+    } catch (err) {
+        // Silent fallback for production web hosting environments
+    }
+    return 'v0.4.1';
 }
 
 /**
  * Compares the local version string against the remote version string.
  * Splits version strings by period and compares each segment numerically.
- * @param {string} local - The local version string (e.g., 'v0.2.3').
+ * @param {string} local - The local version string (e.g., 'v0.4.1').
  * @param {string} remote - The remote version string (e.g., 'v0.2.4').
  * @returns {boolean} True if the remote version is newer, false otherwise.
  */
@@ -86,7 +105,7 @@ export async function checkForUpdates(force = false) {
                 }
                 const release = result.release;
                 const remoteVersion = release.tag_name;
-                const localVersion = getLocalVersion();
+                const localVersion = await getLocalVersion();
                 console.log(`Updater (Electron): Local: ${localVersion}, Remote: ${remoteVersion}`);
                 if (isNewer(localVersion, remoteVersion)) {
                     console.log(`Updater (Electron): Newer version found: ${remoteVersion}`);
@@ -139,7 +158,7 @@ export async function checkForUpdates(force = false) {
             }
 
             const remoteVersion = release.tag_name;
-            const localVersion = getLocalVersion();
+            const localVersion = await getLocalVersion();
 
             console.log(`Updater: Local: ${localVersion}, Remote: ${remoteVersion}`);
 

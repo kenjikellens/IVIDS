@@ -81,7 +81,14 @@
         "appVersion": "应用版本",
         "appVersionDesc": "当前安装的 IVIDS 版本",
         "appDeveloper": "开发者",
-        "appDeveloperDesc": "由 IVIDS 开发团队创建"
+        "appDeveloperDesc": "由 IVIDS 开发团队创建",
+        "playerProviders": "Player Providers",
+        "addProvider": "Add Provider",
+        "deleteProvider": "Delete",
+        "moveProvider": "Move",
+        "addM3uPlaylist": "Add Playlist",
+        "playlistsCount": "{count} Playlists",
+        "serversCount": "{count} 服务器"
     },
     "common": {
         "close": "关闭",
