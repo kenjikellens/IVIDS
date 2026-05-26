@@ -113,6 +113,7 @@ export async function checkForUpdates(force = false) {
                     if (exeAsset) {
                         window.latestUpdateDownloadUrl = exeAsset.browser_download_url;
                         window.latestUpdateVersion = remoteVersion;
+                        window.latestRelease = release;
                         if (typeof window.onUpdateFound === 'function') {
                             window.onUpdateFound(remoteVersion);
                         }
@@ -189,6 +190,7 @@ export async function checkForUpdates(force = false) {
 
                 if (downloadUrl) {
                     window.latestUpdateDownloadUrl = downloadUrl;
+                    window.latestRelease = release;
                     if (typeof window.onUpdateFound === 'function') {
                         window.onUpdateFound(remoteVersion);
                     }

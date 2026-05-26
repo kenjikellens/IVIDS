@@ -1071,7 +1071,17 @@ class SettingsManager {
                 if (window.AndroidUpdate) {
                     window.AndroidUpdate.downloadAndInstall();
                 } else if (window.latestUpdateDownloadUrl) {
-                    window.open(window.latestUpdateDownloadUrl, '_blank');
+                    if (window.ElectronAPI) {
+                        import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                            this.handleCancelUpdate();
+                            UpdatePrompt.show(version);
+                        }).catch(err => {
+                            console.error('Settings: Failed to load update-prompt.js', err);
+                            window.open(window.latestUpdateDownloadUrl, '_blank');
+                        });
+                    } else {
+                        window.open(window.latestUpdateDownloadUrl, '_blank');
+                    }
                 }
             };
         }

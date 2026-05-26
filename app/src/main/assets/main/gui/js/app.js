@@ -122,7 +122,12 @@ function initUpdateCheck() {
         return 'manual';
     };
 
-    // Auto Mode idle update download trigger
+    /**
+     * Periodically monitors user activity to silently download and install updates when idle.
+     * Affects application lifecycles on Android (via Native bridge) and PC (via Electron IPC).
+     * 
+     * @param {string} version - The version tag name of the remote release.
+     */
     const triggerAutoIdleDownload = (version) => {
         console.log('App: Auto Mode - Observing user inactivity for silent download');
         let downloadStarted = false;
@@ -147,6 +152,24 @@ function initUpdateCheck() {
                 console.log('App: Auto Mode - User is idle. Commencing silent background update download!');
                 if (window.AndroidUpdate) {
                     window.AndroidUpdate.downloadAndInstall();
+                } else if (window.ElectronAPI) {
+                    console.log('App: Auto Mode - Silent background download starting for Electron PC...');
+                    const downloadUrl = window.latestUpdateDownloadUrl;
+                    const ver = window.latestUpdateVersion;
+                    if (downloadUrl && ver) {
+                        window.ElectronAPI.downloadPcUpdate(downloadUrl, ver)
+                            .then((result) => {
+                                if (result && result.status === 'downloaded') {
+                                    console.log('App: Auto Mode - PC update downloaded, executing installation...');
+                                    window.ElectronAPI.installPcUpdate(result.filePath).catch(err => {
+                                        console.error('App: Auto Mode - Failed to install Electron update on idle', err);
+                                    });
+                                }
+                            })
+                            .catch(err => {
+                                console.error('App: Auto Mode - Failed to download Electron update on idle', err);
+                            });
+                    }
                 }
             }
         }, 10000); // Check every 10 seconds
