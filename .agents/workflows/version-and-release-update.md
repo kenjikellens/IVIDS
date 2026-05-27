@@ -54,10 +54,9 @@ This document defines the strict, standardized protocol for launching new releas
   `[HH:mm DD-MM-YYYY] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.`
 
 ### 5. Tag and Push the Release
-- **ACTION**: You MUST autonomously commit the release changes, tag the release commit, and push both the commit and tag to the remote GitHub repository. As per the rule exception, do NOT wait for explicit "push to main" authorization when executing this release workflow.
+- **ACTION**: You MUST autonomously commit the release changes locally and tag the release commit, but you must push ONLY the tag to the remote GitHub repository. You are strictly FORBIDDEN from pushing the release commit directly to the `main` branch autonomously; the `main` branch push must be explicitly authorized by the developer later.
   ```powershell
   git commit -m "Release vX.Y.Z"
-  git push origin main
   git tag -a vX.Y.Z -m "Release vX.Y.Z"
   git push origin vX.Y.Z
   ```

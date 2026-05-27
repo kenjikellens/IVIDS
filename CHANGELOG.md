@@ -3,3 +3,5 @@
 [22:20 27-05-2026] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.
 [22:21 27-05-2026] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.
 [22:22 27-05-2026] .agents/workflows/version-and-release-update.md - Updated first step of release update workflow to mandate checking version via GitHub releases and tags.
+[22:25 27-05-2026] .agents/workflows/version-and-release-update.md - Updated release step 5 to prohibit autonomous push of release commit to main.
+[22:25 27-05-2026] .agents/rules/no-autonomous-github-pushes.md - Updated release exception to prohibit autonomous push of release commit to main.
