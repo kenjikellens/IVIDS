@@ -10,9 +10,10 @@ This document defines the strict, standardized protocol for launching new releas
 
 ## 🛠️ Step-by-Step Release Protocol
 
-### 1. Inquire the Target Version (Mandatory Step)
-- **ACTION**: The AI Agent MUST ask the developer/user explicitly what version name the new release should be (e.g., `v0.2.1`). Do NOT assume, auto-select, or hardcode the version bump without developer confirmation.
-- **Title and Description Generation**: Upon receiving the version name, the Agent must formulate a high-quality, professional release title (e.g., `Release v0.2.1 (Prerelease)`) and a detailed, feature-rich release description highlighting all visual, spatial-nav, and core logic improvements.
+### 1. Determine the Target Version via GitHub Releases / Tags (Mandatory Step)
+- **ACTION**: The AI Agent MUST check the **GitHub releases/tags** (e.g., using `git tag`) to identify the latest released version, rather than relying on local configuration files in the workspace (which may be out of date or unbumped).
+- **Version Bump**: Increment the patch digit of the latest tag by 1 (e.g., if the latest tag is `v0.4.1`, the target is `v0.4.2`). Ask the user to confirm this calculated version before modifying any files.
+- **Title and Description Generation**: Once confirmed, formulate a high-quality, professional release title (e.g., `Release v0.4.2 (Prerelease)`) and a detailed, feature-rich release description highlighting all visual, spatial-nav, and core logic improvements.
 
 ### 2. Update Android Version Config
 - **ACTION**: Modify the Android build configuration in [build.gradle.kts](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/build.gradle.kts):

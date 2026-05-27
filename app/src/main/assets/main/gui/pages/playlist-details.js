@@ -126,7 +126,7 @@ function createItemElement(item, index, total) {
 
     el.innerHTML = `
         <div class="item-thumbnail">
-            <img src="${imageUrl}" loading="lazy">
+            <img src="${imageUrl}" loading="lazy" decoding="async">
         </div>
         <div class="item-info">
             <div class="item-title">${item.title || item.name}</div>

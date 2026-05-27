@@ -1,16 +1,40 @@
 /**
  * CacheManager - Simple TTL-based cache for API responses.
  * Uses a hybrid approach: In-memory (fast) and SessionStorage (survives page refreshes but not app restart).
+ * Runs a periodic cleanup sweep every 5 minutes to prevent storage quota pressure.
  */
 class CacheManager {
     constructor() {
         this.memoryCache = new Map();
         this.PREFIX = 'ivids_api_cache_';
         this.MAX_MEMORY_ITEMS = 50; // Prevent unbounded memory growth
+        this._startPeriodicCleanup();
     }
 
     /**
-     * Get item from cache if not expired.
+     * Checks if a key exists in cache and is not expired, without deserializing the value.
+     * Useful for quick existence checks before committing to a full get().
+     */
+    has(key) {
+        if (this.memoryCache.has(key)) {
+            const memItem = this.memoryCache.get(key);
+            if (Date.now() < memItem.expiry) return true;
+            this.memoryCache.delete(key);
+        }
+        try {
+            const stored = sessionStorage.getItem(this.PREFIX + key);
+            if (stored) {
+                const { expiry } = JSON.parse(stored);
+                if (Date.now() < expiry) return true;
+                sessionStorage.removeItem(this.PREFIX + key);
+            }
+        } catch (e) { /* ignore */ }
+        return false;
+    }
+
+    /**
+     * Gets a cached item by key if it exists and has not expired.
+     * Checks in-memory first, then falls back to SessionStorage with memory backfill.
      */
     get(key) {
         // 1. Check Memory
@@ -29,11 +53,11 @@ class CacheManager {
         try {
             const stored = sessionStorage.getItem(this.PREFIX + key);
             if (stored) {
-                const { value, expiry } = JSON.parse(stored);
-                if (Date.now() < expiry) {
-                    // Backfill memory with LRU check
-                    this.setMemoryCache(key, { value, expiry });
-                    return value;
+                const parsed = JSON.parse(stored);
+                if (Date.now() < parsed.expiry) {
+                    // Backfill memory directly with the parsed object (avoids extra allocation)
+                    this.setMemoryCache(key, parsed);
+                    return parsed.value;
                 }
                 sessionStorage.removeItem(this.PREFIX + key);
             }
@@ -95,21 +119,35 @@ class CacheManager {
     }
 
     /**
-     * Periodically clear expired items from storage if quota is tight.
+     * Sweeps expired items from sessionStorage to reclaim quota.
+     * Called reactively on QuotaExceededError and periodically via background timer.
      */
     clearExpiredStorage() {
         try {
+            const now = Date.now();
+            const keysToRemove = [];
             for (let i = 0; i < sessionStorage.length; i++) {
                 const key = sessionStorage.key(i);
                 if (key && key.startsWith(this.PREFIX)) {
-                    const stored = sessionStorage.getItem(key);
-                    if (stored) {
-                        const { expiry } = JSON.parse(stored);
-                        if (Date.now() >= expiry) sessionStorage.removeItem(key);
-                    }
+                    try {
+                        const stored = sessionStorage.getItem(key);
+                        if (stored) {
+                            const { expiry } = JSON.parse(stored);
+                            if (now >= expiry) keysToRemove.push(key);
+                        }
+                    } catch (e) { /* skip malformed entries */ }
                 }
             }
+            keysToRemove.forEach(k => sessionStorage.removeItem(k));
         } catch (e) { }
+    }
+
+    /**
+     * Starts a background interval that sweeps expired cache entries every 5 minutes.
+     * Prevents gradual sessionStorage quota pressure during long sessions.
+     */
+    _startPeriodicCleanup() {
+        setInterval(() => this.clearExpiredStorage(), 5 * 60 * 1000);
     }
 }
 

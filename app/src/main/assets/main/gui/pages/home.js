@@ -10,12 +10,14 @@ import { domRecycler } from '../js/dom-recycler.js';
 
 export async function init() {
     try {
-        // 1. Load Hero and Recently Watched immediately
-        let recentlyWatched = [];
-        try { recentlyWatched = getRecentlyWatched(); } catch (e) { console.error(e); }
+        // 1. Load Hero and Recently Watched concurrently for faster initial render
+        const [trendingResult, recentResult] = await Promise.allSettled([
+            Api.fetchTrending(),
+            Promise.resolve().then(() => { try { return getRecentlyWatched(); } catch (e) { return []; } })
+        ]);
 
-        let trending = [];
-        try { trending = await Api.fetchTrending(); } catch (e) { console.error('Error fetching trending:', e); }
+        const trending = trendingResult.status === 'fulfilled' ? trendingResult.value : [];
+        const recentlyWatched = recentResult.status === 'fulfilled' ? recentResult.value : [];
 
         // Setup Hero
         if (trending && trending.length > 0) {
@@ -104,6 +106,11 @@ export async function init() {
 
 // Removed setupHero as it is replaced by HeroSlider
 
+/**
+ * Populates a content row with poster buttons, sets up image load states, and observes them for lazy loading and recycling.
+ * @param {string} elementId - The ID of the target row element.
+ * @param {Array<Object>} items - List of movie/TV show objects.
+ */
 function setupRow(elementId, items) {
     try {
         const rowPosters = document.getElementById(elementId);
@@ -163,6 +170,7 @@ function setupRow(elementId, items) {
 
                 const img = document.createElement('img');
                 img.className = 'poster';
+                img.decoding = 'async';
                 img.style.opacity = '0'; // Hide initially
                 img.onload = () => {
                     img.style.opacity = '1';

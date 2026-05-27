@@ -450,6 +450,11 @@ async function fetchResults(reset) {
     }
 }
 
+/**
+ * Renders the fetched search results as focusable buttons, configuring image load bindings and watched indicator tags.
+ * @param {Array<Object>} items - The list of movie/TV show objects.
+ * @param {HTMLElement} container - The DOM grid container element.
+ */
 function renderResultItems(items, container) {
     items.forEach(item => {
         if (!item.poster_path) return;
@@ -460,6 +465,7 @@ function renderResultItems(items, container) {
         btn.className = 'poster-wrapper focusable';
         const img = document.createElement('img');
         img.className = 'poster-img';
+        img.decoding = 'async';
         img.dataset.src = Api.getImageUrl(item.poster_path);
         img.alt = item.name || item.title;
         img.style.opacity = '0';

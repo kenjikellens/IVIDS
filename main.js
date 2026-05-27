@@ -5,6 +5,9 @@ const http = require('http');
 const https = require('https');
 const { spawn } = require('child_process');
 
+// Enable GPU rasterization for smoother CSS animations and scrolling
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+
 const GITHUB_RELEASE_API_URL = 'https://api.github.com/repos/kenjikellens/IVIDS/releases/latest';
 
 // Determine local directories for cached/downloaded files inside User Data

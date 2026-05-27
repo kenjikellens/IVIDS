@@ -9,6 +9,11 @@ import { ErrorHandler } from '../js/error-handler.js';
 
 let currentSeriesId = null;
 
+/**
+ * Initializes the details page by fetching content metadata and recommendations concurrently,
+ * rendering the UI, loading TV show seasons if applicable, and setting remote control focus.
+ * @param {Object} params - The route parameters containing content ID and type.
+ */
 export async function init(params) {
     try {
         if (!params || !params.id) {
@@ -19,12 +24,28 @@ export async function init(params) {
 
         currentSeriesId = params.id;
 
-        // If we have full details from API, fetch them.
+        // Fetch details and recommendations concurrently to avoid sequential network roundtrips.
         let details = null;
+        let recommendations = [];
         try {
-            details = await Api.getDetails(params.id, params.type);
-        } catch (apiError) {
-            console.error('Error fetching details from API:', apiError);
+            const [detailsResult, recsResult] = await Promise.allSettled([
+                Api.getDetails(params.id, params.type),
+                Api.fetchRecommendations(params.id, params.type)
+            ]);
+
+            if (detailsResult.status === 'fulfilled') {
+                details = detailsResult.value;
+            } else {
+                console.error('Error fetching details from API:', detailsResult.reason);
+            }
+
+            if (recsResult.status === 'fulfilled') {
+                recommendations = recsResult.value;
+            } else {
+                console.error('Error fetching recommendations from API:', recsResult.reason);
+            }
+        } catch (parallelError) {
+            console.error('Error in parallel details init:', parallelError);
         }
 
         // Fallback for mock data if API key is missing and getDetails returns null/mock
@@ -69,12 +90,11 @@ export async function init(params) {
                 console.error('Error setting focus:', focusError);
             }
 
-            // Fetch and render recommendations
+            // Render recommendations since they were already fetched concurrently
             try {
-                const recommendations = await Api.fetchRecommendations(params.id, params.type);
                 renderRecommendations(recommendations);
             } catch (recError) {
-                console.error('Error fetching recommendations:', recError);
+                console.error('Error rendering recommendations:', recError);
             }
 
         } else {

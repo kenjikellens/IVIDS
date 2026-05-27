@@ -179,23 +179,24 @@ export async function init(params) {
             return;
         }
 
-        // Fetch details to add to recently watched
-        try {
-            const details = await Api.getDetails(params.id, params.type);
-            if (details) {
-                try {
-                    addToRecentlyWatched({
-                        ...details,
-                        media_type: params.type,
-                        season: params.season,
-                        episode: params.episode
-                    });
-                } catch (watchedError) {
-                    console.error('Error adding to recently watched:', watchedError);
+        // Fetch details to add to recently watched in the background (non-blocking)
+        if (params.type !== 'live') {
+            Api.getDetails(params.id, params.type).then(details => {
+                if (details) {
+                    try {
+                        addToRecentlyWatched({
+                            ...details,
+                            media_type: params.type,
+                            season: params.season,
+                            episode: params.episode
+                        });
+                    } catch (watchedError) {
+                        console.error('Error adding to recently watched:', watchedError);
+                    }
                 }
-            }
-        } catch (detailsError) {
-            console.error('Error fetching details:', detailsError);
+            }).catch(detailsError => {
+                console.error('Error fetching details in player background:', detailsError);
+            });
         }
 
         // Check for next episode if it's a TV show

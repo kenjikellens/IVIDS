@@ -64,6 +64,11 @@ export async function init() {
 
 // Removed setupHero
 
+/**
+ * Populates a content row with TV show poster buttons, attaches lazy loading, and runs DOM recycling.
+ * @param {string} elementId - The ID of the target row element.
+ * @param {Array<Object>} items - List of series objects to render.
+ */
 function setupRow(elementId, items) {
     const rowPosters = document.getElementById(elementId);
     if (!rowPosters) return;
@@ -108,6 +113,7 @@ function setupRow(elementId, items) {
 
         const img = document.createElement('img');
         img.className = 'poster';
+        img.decoding = 'async';
         img.style.opacity = '0'; // Hide initially
         img.onload = () => {
             img.style.opacity = '1';

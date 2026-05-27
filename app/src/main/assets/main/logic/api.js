@@ -4,6 +4,15 @@ const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your T
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
 const DEFAULT_PLAYER_BASE_URL = 'https://vidlink.pro';
+
+/** Map of in-flight fetch promises keyed by URL, used to deduplicate concurrent identical requests. */
+const _inflightRequests = new Map();
+
+/** Cached today's date string (YYYY-MM-DD) to avoid re-creating Date objects in every fetch call. */
+let _cachedTodayDate = null;
+
+/** Cached player config object, invalidated when settings change. */
+let _cachedPlayerConfig = null;
 const DEFAULT_PLAYER_PROVIDERS = [
     { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro', isCustom: false },
     { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed', isCustom: false },
@@ -17,7 +26,10 @@ const BACKDROP_SIZE = 'w1280';    // High res for backgrounds
 const STILL_SIZE = 'w300';        // Small stills for episode lists
 const DETAIL_POSTER_SIZE = 'w500'; // Medium size for details page
 
-// Helper for network timeouts and retries
+/**
+ * Performs a fetch with timeout and exponential backoff retries.
+ * Handles network failures gracefully for unreliable Smart TV connections.
+ */
 async function fetchWithRetry(resource, options = {}) {
     const { timeout = 8000, retries = 2 } = options;
     let lastError;
@@ -49,13 +61,35 @@ async function fetchWithRetry(resource, options = {}) {
     throw lastError;
 }
 
-// Helper function to get today's date in YYYY-MM-DD format
-function getTodayDate() {
-    return new Date().toISOString().split('T')[0];
+/**
+ * Wraps fetchWithRetry with in-flight deduplication.
+ * If an identical URL is already being fetched, returns the existing promise instead of firing a new request.
+ */
+async function deduplicatedFetch(url, options = {}) {
+    if (_inflightRequests.has(url)) {
+        return _inflightRequests.get(url);
+    }
+    const promise = fetchWithRetry(url, options).finally(() => _inflightRequests.delete(url));
+    _inflightRequests.set(url, promise);
+    return promise;
 }
 
+/**
+ * Returns today's date in YYYY-MM-DD format, cached for the session lifetime.
+ * Avoids creating new Date objects on every API call.
+ */
+function getTodayDate() {
+    if (!_cachedTodayDate) {
+        _cachedTodayDate = new Date().toISOString().split('T')[0];
+    }
+    return _cachedTodayDate;
+}
+
+/**
+ * Shuffles an array in-place using the Fisher-Yates algorithm.
+ * Used to randomize content row order for a fresh discovery experience on each visit.
+ */
 function shuffleArray(array) {
-    // Fisher-Yates shuffle
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -168,7 +202,7 @@ export const Api = {
         if (cached) return shuffleArray([...cached]);
 
         try {
-            const response = await fetchWithRetry(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false`);
+            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -198,7 +232,7 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await fetchWithRetry(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -225,7 +259,7 @@ export const Api = {
                 : `first_air_date.lte=${today}`;
 
             // Always exclude adult content from browse/discovery pages
-            const response = await fetchWithRetry(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -307,7 +341,7 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await fetchWithRetry(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -328,7 +362,7 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await fetchWithRetry(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -347,7 +381,7 @@ export const Api = {
         try {
             // Note: include_adult is NOT set to false here intentionally
             // Adult content can be found via explicit search only
-            const response = await fetchWithRetry(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -369,7 +403,7 @@ export const Api = {
     async fetchRecommendations(id, type) {
         if (API_KEY.includes('TODO')) return [];
         try {
-            const response = await fetchWithRetry(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=false`);
+            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=false`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -392,7 +426,7 @@ export const Api = {
         if (API_KEY.includes('TODO')) return null;
         try {
             const append = type === 'movie' ? 'release_dates' : 'content_ratings';
-            const response = await fetchWithRetry(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching details:', error);
@@ -403,7 +437,7 @@ export const Api = {
     async getSeasonDetails(seriesId, seasonNumber) {
         if (API_KEY.includes('TODO')) return null;
         try {
-            const response = await fetchWithRetry(`${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?api_key=${API_KEY}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?api_key=${API_KEY}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching season details:', error);
@@ -413,10 +447,13 @@ export const Api = {
 
     /**
      * Retrieves the player provider configuration from localStorage and performs migrations.
-     * This affects player routing, custom servers list, and default server settings.
+     * Uses an in-memory cache to avoid repeated localStorage parsing and migration logic.
+     * Call `invalidatePlayerConfig()` after settings changes to refresh the cache.
      * @returns {Object} Config object containing provider settings and the custom list of providers.
      */
     getPlayerConfig() {
+        if (_cachedPlayerConfig) return _cachedPlayerConfig;
+
         const defaults = {
             playerProvider: 'custom',
             playerBaseUrl: DEFAULT_PLAYER_BASE_URL,
@@ -468,17 +505,28 @@ export const Api = {
 
                 localStorage.setItem('ivids-settings', JSON.stringify(saved));
 
-                return {
+                _cachedPlayerConfig = {
                     ...defaults,
                     ...saved,
                     playerBaseUrl: (saved.playerBaseUrl || defaults.playerBaseUrl).replace(/\/+$/, '')
                 };
+                return _cachedPlayerConfig;
             }
+            _cachedPlayerConfig = defaults;
             return defaults;
         } catch (error) {
             console.error('Error reading player config:', error);
+            _cachedPlayerConfig = defaults;
             return defaults;
         }
+    },
+
+    /**
+     * Clears the cached player config so the next getPlayerConfig() call re-reads from localStorage.
+     * Must be called after any settings change that affects player providers.
+     */
+    invalidatePlayerConfig() {
+        _cachedPlayerConfig = null;
     },
 
     /**
@@ -577,7 +625,7 @@ export const Api = {
 
     async fetchCountries() {
         try {
-            const response = await fetchWithRetry(`${BASE_URL}/configuration/countries?api_key=${API_KEY}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/configuration/countries?api_key=${API_KEY}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching countries:', error);
@@ -587,7 +635,7 @@ export const Api = {
 
     async fetchWatchProviders(type = 'movie', region = 'US') {
         try {
-            const response = await fetchWithRetry(`${BASE_URL}/watch/providers/${type}?api_key=${API_KEY}&watch_region=${region}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/watch/providers/${type}?api_key=${API_KEY}&watch_region=${region}`);
             const data = await response.json();
             return data.results || [];
         } catch (error) {
@@ -636,7 +684,7 @@ export const Api = {
 
             const type = filters.type || 'movie';
 
-            const response = await fetchWithRetry(`${BASE_URL}/discover/${type}?${params.toString()}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/discover/${type}?${params.toString()}`);
             const data = await response.json();
             if (!data || !data.results) return [];
             return data.results.map(item => ({ ...item, media_type: type }));

@@ -2,6 +2,12 @@ import { SpatialNav } from './spatial-nav.js';
 import { getLoaderHtml } from './loader.js';
 import { Splash } from './splash.js';
 
+/** In-memory cache of fetched page HTML templates, keyed by page name. Eliminates re-fetching on back-nav. */
+const _htmlCache = new Map();
+
+/** Flag to track whether the initial boot page has loaded. Used to skip splash signals on subsequent loads. */
+let _initialLoadComplete = false;
+
 export const Router = {
     currentPage: null,
     params: {},
@@ -69,18 +75,24 @@ export const Router = {
             }
             */
 
-            // 1. Fetch HTML with Timeout
-            const fetchPromise = fetch(`pages/${pageName}.html`);
-            const timeoutPromise = new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Request timed out')), 10000)
-            );
+            // 1. Fetch HTML (use cache if available, otherwise fetch with timeout)
+            let html;
+            if (_htmlCache.has(pageName)) {
+                html = _htmlCache.get(pageName);
+            } else {
+                const fetchPromise = fetch(`pages/${pageName}.html`);
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timed out')), 10000)
+                );
 
-            const response = await Promise.race([fetchPromise, timeoutPromise]);
+                const response = await Promise.race([fetchPromise, timeoutPromise]);
 
-            if (!response.ok) {
-                throw new Error(`Failed to fetch page HTML: ${response.status} ${response.statusText}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch page HTML: ${response.status} ${response.statusText}`);
+                }
+                html = await response.text();
+                _htmlCache.set(pageName, html);
             }
-            const html = await response.text();
 
             // Clear loader and set content
             mainView.innerHTML = html;
@@ -114,10 +126,21 @@ export const Router = {
                 // Don't fail completely if JS fails, HTML might be enough
             }
 
-            // Signal Splash that HTML is rendered (with a tiny delay for safety)
-            setTimeout(() => {
+            // Signal Splash that HTML is rendered (only on first boot, skip on subsequent navigations)
+            if (!_initialLoadComplete) {
+                _initialLoadComplete = true;
                 Splash.signalContentLoaded();
-            }, 500);
+
+                // Pre-import critical page modules after initial load for faster subsequent navigation
+                setTimeout(() => {
+                    const criticalPages = ['home', 'details', 'search', 'movies', 'series'];
+                    criticalPages.forEach(p => {
+                        if (p !== pageName) {
+                            import(`../pages/${p}.js`).catch(() => { /* silent preload failure is OK */ });
+                        }
+                    });
+                }, 2000);
+            }
 
             // Apply translations
             try {

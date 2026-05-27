@@ -6,6 +6,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import re
+import io
 import gzip
 import json
 import mimetypes
@@ -13,6 +14,16 @@ from http.server import ThreadingHTTPServer
 
 # Register the SVG MIME type to ensure Windows systems serve vector graphics correctly
 mimetypes.add_type('image/svg+xml', '.svg')
+
+# MIME types eligible for gzip compression to reduce transfer sizes
+COMPRESSIBLE_TYPES = {
+    'text/html', 'text/css', 'text/javascript', 'application/javascript',
+    'application/json', 'application/xml', 'text/xml', 'image/svg+xml',
+    'application/vnd.apple.mpegurl', 'text/plain'
+}
+
+# Files that rarely change and can be cached longer during development
+VENDOR_PATTERNS = {'hls.min.js', 'hls.js'}
 
 
 # Define port and target assets directory
@@ -61,7 +72,10 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     """
     Custom request handler that serves static files from the assets directory,
     redirects root to the GUI, and provides a /proxy endpoint for CORS bypass.
+    Adds gzip compression and intelligent caching.
     """
+    # Instance flag to track whether Cache-Control was explicitly set by a handler
+    _cache_control_set = False
 
     def do_OPTIONS(self):
         """
@@ -93,7 +107,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         elif parsed_path.startswith('/proxy'):
             self._handle_proxy()
         else:
-            super().do_GET()
+            self._serve_static_with_compression()
 
     def do_POST(self):
         """
@@ -206,6 +220,61 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _serve_static_with_compression(self):
+        """
+        Serves static files with gzip compression for text-based content types.
+        Falls back to standard serving for binary files or if the client doesn't accept gzip.
+        """
+        # Check if client accepts gzip
+        accept_encoding = self.headers.get('Accept-Encoding', '')
+        supports_gzip = 'gzip' in accept_encoding
+
+        if not supports_gzip:
+            super().do_GET()
+            return
+
+        # Translate the URL path to a local file path
+        path = self.translate_path(self.path)
+        if os.path.isdir(path):
+            super().do_GET()
+            return
+
+        # Determine content type
+        content_type, _ = mimetypes.guess_type(path)
+        if not content_type or content_type not in COMPRESSIBLE_TYPES:
+            super().do_GET()
+            return
+
+        # Read, compress, and serve the file
+        try:
+            with open(path, 'rb') as f:
+                raw_body = f.read()
+
+            buf = io.BytesIO()
+            with gzip.GzipFile(fileobj=buf, mode='wb', compresslevel=6) as gz:
+                gz.write(raw_body)
+            compressed = buf.getvalue()
+
+            # Set vendor caching for known stable files (e.g. hls.min.js)
+            basename = os.path.basename(path)
+            if basename in VENDOR_PATTERNS:
+                self._cache_control_set = True
+                self.send_response(200)
+                self.send_header('Cache-Control', 'public, max-age=86400')
+            else:
+                self.send_response(200)
+
+            self.send_header('Content-Type', content_type)
+            self.send_header('Content-Encoding', 'gzip')
+            self.send_header('Content-Length', str(len(compressed)))
+            self.send_header('Vary', 'Accept-Encoding')
+            self.end_headers()
+            self.wfile.write(compressed)
+        except FileNotFoundError:
+            self.send_error(404, 'File not found')
+        except Exception as e:
+            self.send_error(500, f'Compression error: {str(e)}')
+
     def _handle_proxy(self):
         """
         Reverse proxy handler that fetches remote URLs, decompresses gzip EPG data, and rewrites M3U8 playlists.
@@ -268,19 +337,15 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def end_headers(self):
         """
-        Injects headers instructing the browser to disable resource caching.
-        This ensures changes to JS/CSS files are immediately visible on refresh.
+        Injects no-cache headers for development unless a handler explicitly set Cache-Control.
+        Uses an instance flag instead of the broken _headers attribute check.
         """
-        has_cache_control = False
-        if hasattr(self, '_headers'):
-            for keyword, _ in self._headers:
-                if keyword.lower() == 'cache-control':
-                    has_cache_control = True
-                    break
-        if not has_cache_control:
+        if not self._cache_control_set:
             self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             self.send_header('Pragma', 'no-cache')
             self.send_header('Expires', '0')
+        # Reset flag for next request
+        self._cache_control_set = False
         super().end_headers()
 
     def log_message(self, format, *args):

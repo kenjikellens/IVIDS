@@ -1,4 +1,19 @@
 
+/** Key code mapping for D-pad, Enter, Back, and numeric keys. Hoisted to module scope to avoid re-creation on every keypress. */
+const KEY_MAP = {
+    ArrowLeft: 37, Left: 37,
+    ArrowUp: 38, Up: 38,
+    ArrowRight: 39, Right: 39,
+    ArrowDown: 40, Down: 40,
+    Enter: 13,
+    DpadCenter: 23,
+    AndroidEnter: 66,
+    Escape: 27,
+    Backspace: 8,
+    Back: 10009,
+    AndroidBack: 4
+};
+
 export const SpatialNav = {
     focusableSelector: '.focusable',
     focusTrapContainer: null,
@@ -66,7 +81,15 @@ export const SpatialNav = {
         this.ensureTabindex();
 
         // Monitor DOM changes to apply tabindex to new elements (like those in modals)
-        const observer = new MutationObserver(() => this.ensureTabindex());
+        // Throttled to prevent excessive scans during bulk DOM updates (e.g. rendering 200+ posters)
+        let _tabindexTimer = null;
+        const observer = new MutationObserver(() => {
+            if (_tabindexTimer) return;
+            _tabindexTimer = setTimeout(() => {
+                this.ensureTabindex();
+                _tabindexTimer = null;
+            }, 100);
+        });
         observer.observe(document.body, { childList: true, subtree: true });
 
         this.focusFirst();
@@ -170,8 +193,7 @@ export const SpatialNav = {
         // Optimization: Use classList directly on the known current instead of querySelectorAll
         if (current) current.classList.remove('focused');
 
-        // Fail-safe cleanup
-        document.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+        // Clean up focused-within classes from any previous parent chain
         document.querySelectorAll('.focused-within').forEach(el => el.classList.remove('focused-within'));
 
         element.classList.add('focused');
@@ -249,20 +271,6 @@ export const SpatialNav = {
     },
 
     handleKey(e) {
-        const KEY_MAP = {
-            ArrowLeft: 37, Left: 37,
-            ArrowUp: 38, Up: 38,
-            ArrowRight: 39, Right: 39,
-            ArrowDown: 40, Down: 40,
-            Enter: 13,
-            DpadCenter: 23,
-            AndroidEnter: 66,
-            Escape: 27,
-            Backspace: 8,
-            Back: 10009,
-            AndroidBack: 4
-        };
-
         const keyCode = e.keyCode || KEY_MAP[e.key];
 
         // Performance: Don't querySelector if we don't handle the key

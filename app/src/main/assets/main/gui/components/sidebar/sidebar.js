@@ -1,5 +1,7 @@
 import { Router } from '../../js/router.js';
 
+let _cachedHtml = null;
+
 export const Sidebar = {
     /**
      * init method:
@@ -30,9 +32,15 @@ export const Sidebar = {
 
         // Load HTML
         try {
-            const response = await fetch(`components/sidebar/sidebar.html?_=${Date.now()}`);
-            if (!response.ok) throw new Error('Failed to load sidebar HTML');
-            const html = await response.text();
+            let html;
+            if (_cachedHtml) {
+                html = _cachedHtml;
+            } else {
+                const response = await fetch('components/sidebar/sidebar.html');
+                if (!response.ok) throw new Error('Failed to load sidebar HTML');
+                html = await response.text();
+                _cachedHtml = html;
+            }
             container.innerHTML = `<nav class="navbar" id="header">${html}</nav>`;
 
             // Initialize event listeners

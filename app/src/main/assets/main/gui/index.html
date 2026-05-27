@@ -12,6 +12,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <!-- Critical inline CSS for instant splash screen render before external stylesheets load -->
+    <style>
+        /* Inline critical splash styles to eliminate FOUC during stylesheet download. */
+        body { margin: 0; background: #050505; overflow: hidden; }
+        #splash-screen {
+            position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            background: #050505; transition: opacity 0.5s ease-in-out, visibility 0.5s;
+        }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .splash-content { display: flex; flex-direction: column; align-items: center; gap: 34px; }
+        .splash-logo-container { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .splash-logo-img { width: 90px; height: 90px; object-fit: contain; }
+        .splash-logo-text { margin: 0; color: #fff; font-size: 56px; font-family: 'Outfit', sans-serif; font-weight: 600; }
+    </style>
+
     <!-- Unified Stylesheet -->
     <link rel="stylesheet" href="css/global.css?v=20260520T1345">
     <link rel="stylesheet" href="css/loader.css?v=20260520T1345">
@@ -51,70 +67,72 @@
     - **Mobile Restriction**: The Music icon and access points will be HIDDEN in portrait mode (mobile) to keep the bottom navigation clean. Access will be limited to landscape/TV views.
     -->
 
+    <!-- Fetch polyfill for Android TV / file:// protocol - placed BEFORE module scripts to guarantee availability -->
+    <script>
+        // FIX voor Fetch op Android TV / file:// schema
+        const originalFetch = window.fetch;
+        /**
+         * Polyfills the global fetch API for local resource loading and cross-origin bypass.
+         * Intercepts file:// and local paths to route them through XMLHttpRequest to bypass protocol restrictions.
+         * 
+         * @param {string|Request} url - The URL or request object to fetch.
+         * @param {object} [options] - Optional configurations including method, headers, and signal.
+         * @returns {Promise<Response>} A promise resolving to a fetch-compatible response object.
+         */
+        window.fetch = function (url, options) {
+            const urlString = typeof url === 'string' ? url : (url && url.url ? url.url : String(url));
+            const isLocal = urlString.startsWith('lang/') || urlString.startsWith('pages/') || urlString.startsWith('components/') || urlString.startsWith('file:');
+            const isFileProtocol = window.location.protocol === 'file:';
+            
+            if (isLocal || isFileProtocol) {
+                return new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    const method = (options && options.method) || (url && url.method) || 'GET';
+                    xhr.open(method, urlString);
+                    
+                    if (options && options.headers) {
+                        if (typeof Headers !== 'undefined' && options.headers instanceof Headers) {
+                            options.headers.forEach((val, key) => {
+                                xhr.setRequestHeader(key, val);
+                            });
+                        } else {
+                            Object.entries(options.headers).forEach(([key, val]) => {
+                                xhr.setRequestHeader(key, val);
+                            });
+                        }
+                    }
+                    
+                    xhr.onload = () => {
+                        resolve({
+                            ok: (xhr.status >= 200 && xhr.status < 300) || xhr.status === 0,
+                            status: xhr.status === 0 ? 200 : xhr.status,
+                            statusText: xhr.statusText,
+                            json: () => Promise.resolve(JSON.parse(xhr.responseText)),
+                            text: () => Promise.resolve(xhr.responseText)
+                        });
+                    };
+                    
+                    xhr.onerror = () => reject(new Error('Fetch failed via XHR'));
+                    if (options && options.signal) {
+                        options.signal.addEventListener('abort', () => {
+                            xhr.abort();
+                            reject(new DOMException('Aborted', 'AbortError'));
+                        });
+                    }
+                    
+                    const body = (options && options.body) || (url && url.body) || null;
+                    xhr.send(body);
+                });
+            }
+            return originalFetch(url, options);
+        };
+    </script>
+
     <!-- Scripts -->
-    <!-- Explains: Loads hls.js decoder locally for HLS playback support in PC browsers/Electron -->
-    <script src="js/hls.min.js"></script>
+    <!-- Explains: Loads hls.js decoder with defer to avoid blocking HTML parsing (412KB) -->
+    <script defer src="js/hls.min.js"></script>
     <script type="module" src="js/loader.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>
-<script>
-    // FIX voor Fetch op Android TV / file:// schema
-    const originalFetch = window.fetch;
-    /**
-     * Polyfills the global fetch API for local resource loading and cross-origin bypass.
-     * Intercepts file:// and local paths to route them through XMLHttpRequest to bypass protocol restrictions.
-     * 
-     * @param {string|Request} url - The URL or request object to fetch.
-     * @param {object} [options] - Optional configurations including method, headers, and signal.
-     * @returns {Promise<Response>} A promise resolving to a fetch-compatible response object.
-     */
-    window.fetch = function (url, options) {
-        const urlString = typeof url === 'string' ? url : (url && url.url ? url.url : String(url));
-        const isLocal = urlString.startsWith('lang/') || urlString.startsWith('pages/') || urlString.startsWith('components/') || urlString.startsWith('file:');
-        const isFileProtocol = window.location.protocol === 'file:';
-        
-        if (isLocal || isFileProtocol) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                const method = (options && options.method) || (url && url.method) || 'GET';
-                xhr.open(method, urlString);
-                
-                if (options && options.headers) {
-                    if (typeof Headers !== 'undefined' && options.headers instanceof Headers) {
-                        options.headers.forEach((val, key) => {
-                            xhr.setRequestHeader(key, val);
-                        });
-                    } else {
-                        Object.entries(options.headers).forEach(([key, val]) => {
-                            xhr.setRequestHeader(key, val);
-                        });
-                    }
-                }
-                
-                xhr.onload = () => {
-                    resolve({
-                        ok: (xhr.status >= 200 && xhr.status < 300) || xhr.status === 0,
-                        status: xhr.status === 0 ? 200 : xhr.status,
-                        statusText: xhr.statusText,
-                        json: () => Promise.resolve(JSON.parse(xhr.responseText)),
-                        text: () => Promise.resolve(xhr.responseText)
-                    });
-                };
-                
-                xhr.onerror = () => reject(new Error('Fetch failed via XHR'));
-                if (options && options.signal) {
-                    options.signal.addEventListener('abort', () => {
-                        xhr.abort();
-                        reject(new DOMException('Aborted', 'AbortError'));
-                    });
-                }
-                
-                const body = (options && options.body) || (url && url.body) || null;
-                xhr.send(body);
-            });
-        }
-        return originalFetch(url, options);
-    };
-</script>
 
 </html>
