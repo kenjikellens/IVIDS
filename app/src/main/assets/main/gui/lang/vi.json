@@ -149,7 +149,8 @@
         "confirm": "Xác nhận",
         "cancel": "Hủy",
         "searchCountries": "Tìm quốc gia...",
-        "na": "N/A"
+        "na": "N/A",
+        "clearRecents": "Xóa"
     },
     "player": {
         "play": "Phát",

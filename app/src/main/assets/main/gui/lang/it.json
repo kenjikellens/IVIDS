@@ -149,7 +149,8 @@
         "confirm": "Conferma",
         "cancel": "Annulla",
         "searchCountries": "Cerca paesi...",
-        "na": "N/D"
+        "na": "N/D",
+        "clearRecents": "Cancella"
     },
     "player": {
         "play": "Riproduci",

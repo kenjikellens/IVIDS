@@ -149,7 +149,8 @@
         "confirm": "Bekræft",
         "cancel": "Annuller",
         "searchCountries": "Søg efter lande...",
-        "na": "N/A"
+        "na": "N/A",
+        "clearRecents": "Ryd"
     },
     "player": {
         "play": "Afspil",

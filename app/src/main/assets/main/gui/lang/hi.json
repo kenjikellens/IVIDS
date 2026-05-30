@@ -149,7 +149,8 @@
         "confirm": "पुष्टि करें",
         "cancel": "रद्द करें",
         "searchCountries": "देश खोजें...",
-        "na": "लागू नहीं"
+        "na": "लागू नहीं",
+        "clearRecents": "साफ़ करें"
     },
     "player": {
         "play": "चलाएं",

@@ -142,7 +142,8 @@
         "confirm": "Bevestigen",
         "cancel": "Annuleren",
         "searchCountries": "Landen zoeken...",
-        "na": "N.v.t."
+        "na": "N.v.t.",
+        "clearRecents": "Wissen"
     },
     "player": {
         "play": "Afspelen",

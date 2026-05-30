@@ -149,7 +149,8 @@
         "confirm": "確定",
         "cancel": "キャンセル",
         "searchCountries": "国を検索...",
-        "na": "該当なし"
+        "na": "該当なし",
+        "clearRecents": "クリア"
     },
     "player": {
         "play": "再生",

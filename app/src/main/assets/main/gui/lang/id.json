@@ -149,7 +149,8 @@
         "confirm": "Konfirmasi",
         "cancel": "Batal",
         "searchCountries": "Cari negara...",
-        "na": "N/A"
+        "na": "N/A",
+        "clearRecents": "Bersihkan"
     },
     "player": {
         "play": "Putar",

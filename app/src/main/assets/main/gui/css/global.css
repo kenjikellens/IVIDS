@@ -128,9 +128,19 @@ button {
     padding: 0 !important;
 }
 
-.active-typing {
+/* Styles the active typing container parent or standalone input/textarea when actively being edited. */
+.input-wrapper:has(> .active-typing),
+input.active-typing:not(.input-wrapper *),
+textarea.active-typing:not(.input-wrapper *) {
     border-color: var(--primary-color) !important;
     background: rgba(var(--primary-rgb), 0.12) !important;
+}
+
+/* Ensures the inner input/textarea within a styled wrapper is transparent. */
+.input-wrapper > input.active-typing,
+.input-wrapper > textarea.active-typing {
+    border-color: transparent !important;
+    background: transparent !important;
 }
 
 /* Prevents default outline borders for custom keyboard-focusable elements. */
@@ -4116,27 +4126,92 @@ iframe {
     flex-wrap: wrap;
 }
 
-/* Styles the recent search chips and search items. */
+/* Styles the recent search chips, recent items, and search items with a flex layout for nested text and icons. */
 .recent-chip,
-.recent-search-item {
+.recent-search-item,
+.recent-item {
     min-height: 34px;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 999px;
     border: 2px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
     font-size: 14px;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
+/* Handles hover, focus, and focused class state styling for recent search chips. */
 .recent-chip:hover,
 .recent-chip:focus,
 .recent-chip.focused,
 .recent-search-item:hover,
 .recent-search-item:focus,
-.recent-search-item.focused {
+.recent-search-item.focused,
+.recent-item:hover,
+.recent-item:focus,
+.recent-item.focused {
     border-color: #fff;
     outline: none;
+}
+
+/* Styles the clear recent searches button with flex layout to align visually with search chips. */
+.clear-recents-btn {
+    min-height: 34px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+/* Handles hover and focus states for the clear recent searches button with a thicker white border. */
+.clear-recents-btn:hover,
+.clear-recents-btn:focus,
+.clear-recents-btn.focused {
+    border: 2px solid #fff;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+/* Styles the trash icon inside the clear recents button. */
+.trash-icon {
+    width: 14px;
+    height: 14px;
+    color: currentColor;
+}
+
+/* Styles the delete cross icon/button inside a recent search chip. */
+.recent-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    transition: background-color 0.16s ease, color 0.16s ease;
+    line-height: 1;
+}
+
+/* Handles hover and active states for the delete cross icon inside a recent chip. */
+.recent-delete-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
 }
 
 .results-container {

@@ -270,6 +270,11 @@ export const SpatialNav = {
         }
     },
 
+    /**
+     * Handles keydown events to coordinate spatial navigation, input field edits, and back button behaviors.
+     * It manages keyboard/remote control state and dispatches simulated navigation or text edits.
+     * @param {KeyboardEvent} e - The keydown event to handle.
+     */
     handleKey(e) {
         const keyCode = e.keyCode || KEY_MAP[e.key];
 
@@ -332,16 +337,21 @@ export const SpatialNav = {
         // Back keys
         if (isBack) {
             // Handle character deletion for remote back buttons (4, 10009) and backspace (8)
-            if ((keyCode === 8 || keyCode === 4 || keyCode === 10009) &&
-                (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
-
+            if (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA') {
                 if (!current.readOnly) {
-                    const val = current.value;
-                    if (val.length > 0) {
-                        current.value = val.slice(0, -1);
-                        current.dispatchEvent(new Event('input', { bubbles: true }));
+                    if (keyCode === 8) {
+                        // Let browser handle native backspace deletion and input dispatching
+                        return; // Prevent global back navigation, let default browser backspace action occur
                     }
-                    return; // Prevent global back navigation
+                    if (keyCode === 4 || keyCode === 10009) {
+                        const val = current.value;
+                        if (val.length > 0) {
+                            current.value = val.slice(0, -1);
+                            current.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                        e.preventDefault();
+                        return; // Prevent global back navigation
+                    }
                 }
             }
             e.preventDefault();

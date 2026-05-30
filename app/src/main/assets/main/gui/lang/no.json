@@ -149,7 +149,8 @@
         "confirm": "Bekreft",
         "cancel": "Avbryt",
         "searchCountries": "Søk etter land...",
-        "na": "N/A"
+        "na": "N/A",
+        "clearRecents": "Tøm"
     },
     "player": {
         "play": "Spill av",

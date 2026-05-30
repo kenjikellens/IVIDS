@@ -149,7 +149,8 @@
         "confirm": "Potvrdit",
         "cancel": "Zrušit",
         "searchCountries": "Hledat země...",
-        "na": "N/A"
+        "na": "N/A",
+        "clearRecents": "Vymazat"
     },
     "player": {
         "play": "Přehrát",

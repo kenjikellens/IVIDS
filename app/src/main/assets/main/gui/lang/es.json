@@ -142,7 +142,8 @@
         "confirm": "Confirmar",
         "cancel": "Cancelar",
         "searchCountries": "Buscar países...",
-        "na": "N/A"
+        "na": "N/A",
+        "clearRecents": "Borrar"
     },
     "player": {
         "play": "Reproducir",

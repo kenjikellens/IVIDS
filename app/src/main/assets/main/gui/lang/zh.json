@@ -149,7 +149,8 @@
         "confirm": "确认",
         "cancel": "取消",
         "searchCountries": "搜索国家...",
-        "na": "暂无"
+        "na": "暂无",
+        "clearRecents": "清除"
     },
     "player": {
         "play": "播放",

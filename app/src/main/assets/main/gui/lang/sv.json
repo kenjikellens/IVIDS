@@ -149,7 +149,8 @@
         "confirm": "Bekräfta",
         "cancel": "Avbryt",
         "searchCountries": "Sök länder...",
-        "na": "N/A"
+        "na": "N/A",
+        "clearRecents": "Rensa"
     },
     "player": {
         "play": "Spela",

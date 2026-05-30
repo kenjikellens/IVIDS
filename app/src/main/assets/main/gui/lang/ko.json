@@ -149,7 +149,8 @@
         "confirm": "확인",
         "cancel": "취소",
         "searchCountries": "국가 검색...",
-        "na": "해당 없음"
+        "na": "해당 없음",
+        "clearRecents": "지우기"
     },
     "player": {
         "play": "재생",

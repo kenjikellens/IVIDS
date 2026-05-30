@@ -142,7 +142,8 @@
         "confirm": "Bestätigen",
         "cancel": "Abbrechen",
         "searchCountries": "Länder suchen...",
-        "na": "N.V."
+        "na": "N.V.",
+        "clearRecents": "Löschen"
     },
     "player": {
         "play": "Abspielen",

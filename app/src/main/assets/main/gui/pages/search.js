@@ -24,6 +24,11 @@ let hasMoreResults = true;
 let currentQuery = '';
 let isSearchMode = false;
 
+/**
+ * Initializes the search page inputs, buttons, filter modal handlers, infinite scrolling,
+ * and renders the initial list of items.
+ * @returns {Promise<void>}
+ */
 export async function init() {
     try {
         const input = document.getElementById('search-input');
@@ -50,17 +55,31 @@ export async function init() {
         // Initialize UI with current filters
         await renderAllFilters(currentFilters);
 
-        // Debounce search input to avoid API spamming
+        // Debounce search input to avoid API spamming, waiting 3000ms after typing finishes
         const debouncedSearch = debounce((val) => {
             performSearch(val, true);
-        }, 500);
+        }, 3000);
 
         input.oninput = (e) => debouncedSearch(e.target.value);
 
         // Instant search for onchange (Enter key)
         input.onchange = () => {
+            debouncedSearch.cancel();
             performSearch(input.value, true);
         };
+
+        // Clear recents handler
+        const clearRecentsBtn = document.getElementById('clear-recents-btn');
+        if (clearRecentsBtn) {
+            clearRecentsBtn.onclick = () => {
+                localStorage.removeItem('ivids_recent_searches');
+                renderRecentSearches();
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) {
+                    SpatialNav.setFocus(searchInput);
+                }
+            };
+        }
 
         yearInput.onchange = () => {
             pendingFilters.year = yearInput.value ? parseInt(yearInput.value) : null;
@@ -240,7 +259,10 @@ export async function init() {
         };
 
         if (searchBtn) {
-            searchBtn.onclick = () => performSearch(input ? input.value : '', true);
+            searchBtn.onclick = () => {
+                debouncedSearch.cancel();
+                performSearch(input ? input.value : '', true);
+            };
         }
 
         initInfiniteScroll();
@@ -501,12 +523,20 @@ function initInfiniteScroll() {
     };
 }
 
+/**
+ * Retrieves the array of saved search queries from local storage.
+ * @returns {Array<string>} The list of recent search queries.
+ */
 function getRecentSearches() {
     try {
         return JSON.parse(localStorage.getItem('ivids_recent_searches') || '[]');
     } catch { return []; }
 }
 
+/**
+ * Saves a new query to the list of recent searches in local storage, maintaining a maximum of 5 unique entries.
+ * @param {string} q - The search query to save.
+ */
 function saveRecentSearch(q) {
     if (!q || q.trim().length < 2) return;
     let recent = getRecentSearches();
@@ -515,6 +545,9 @@ function saveRecentSearch(q) {
     localStorage.setItem('ivids_recent_searches', JSON.stringify(recent.slice(0, 5)));
 }
 
+/**
+ * Renders the saved recent searches as focusable item chips and controls the visibility of the recents container.
+ */
 function renderRecentSearches() {
     const row = document.getElementById('recent-searches-row');
     const list = document.getElementById('recent-list');
@@ -525,16 +558,56 @@ function renderRecentSearches() {
         return;
     }
     row.classList.remove('hidden');
-    list.innerHTML = recent.map(q => `<div class="recent-item focusable" tabindex="0">${q}</div>`).join('');
+    list.innerHTML = recent.map(q => `
+        <div class="recent-item focusable" tabindex="0" data-query="${q}">
+            <span class="recent-item-text">${q}</span>
+            <span class="recent-delete-btn" title="Delete search">&times;</span>
+        </div>
+    `).join('');
+
     list.querySelectorAll('.recent-item').forEach(item => {
-        item.onclick = () => {
-            const input = document.getElementById('search-input');
-            if (input) {
-                input.value = item.textContent;
-                performSearch(item.textContent, true);
+        item.onclick = (e) => {
+            const query = item.dataset.query;
+            const isDelete = e.target.closest('.recent-delete-btn') !== null;
+            if (isDelete) {
+                e.stopPropagation();
+                removeRecentSearch(query);
+            } else {
+                const input = document.getElementById('search-input');
+                if (input) {
+                    input.value = query;
+                    performSearch(query, true);
+                }
             }
         };
     });
+}
+
+/**
+ * Removes a specific query from the list of recent searches in local storage and manages focus.
+ * @param {string} q - The search query to remove from history.
+ */
+function removeRecentSearch(q) {
+    let recent = getRecentSearches();
+    recent = recent.filter(item => item.toLowerCase() !== q.toLowerCase());
+    localStorage.setItem('ivids_recent_searches', JSON.stringify(recent));
+    renderRecentSearches();
+
+    const remaining = getRecentSearches();
+    if (remaining.length === 0) {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            SpatialNav.setFocus(searchInput);
+        }
+    } else {
+        const firstRecent = document.querySelector('.recent-item');
+        if (firstRecent) {
+            SpatialNav.setFocus(firstRecent);
+        } else {
+            const clearBtn = document.getElementById('clear-recents-btn');
+            if (clearBtn) SpatialNav.setFocus(clearBtn);
+        }
+    }
 }
 
 function filterCountries(query) {

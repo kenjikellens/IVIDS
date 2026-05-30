@@ -149,7 +149,8 @@
         "confirm": "تأكيد",
         "cancel": "إلغاء",
         "searchCountries": "بحث عن دول...",
-        "na": "غير متاح"
+        "na": "غير متاح",
+        "clearRecents": "مسح"
     },
     "player": {
         "play": "تشغيل",
