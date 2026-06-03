@@ -17,13 +17,12 @@ export async function init() {
         const movies = popular.filter(m => m.media_type === 'movie' || !m.media_type);
 
         if (movies && movies.length > 0) {
-            new HeroSlider(movies.slice(0, 5), {
+            new HeroSlider(movies, {
                 containerId: 'hero',
                 titleId: 'hero-title',
                 descId: 'hero-desc',
                 playBtnId: 'play-btn'
             });
-            setupRow('popular-movies-row', movies.slice(5));
         } else {
             Splash.signalContentLoaded();
         }

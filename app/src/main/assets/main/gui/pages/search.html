@@ -1,22 +1,6 @@
 <div class="search-page-layout">
     <div class="search-main">
-        <div class="search-top-bar">
-            <div class="search-box">
-                <div class="input-wrapper">
-                    <img src="images/search.svg" class="search-icon" alt="Search">
-                    <input type="text" id="search-input" class="focusable" placeholder="Search for movies or series..."
-                        data-i18n="search.placeholder" readonly>
-                </div>
-                <div class="search-actions">
-                    <button id="search-btn" class="primary-btn focusable" title="Search">
-                        <img src="images/search.svg" class="filter-icon" alt="Search">
-                    </button>
-                    <button id="filter-btn" class="icon-btn focusable" title="Filters">
-                        <img src="images/filter.svg" class="filter-icon" alt="Filters">
-                    </button>
-                </div>
-            </div>
-
+        <div class="search-container-wrapper">
             <div id="recent-searches-row" class="recent-searches-row hidden">
                 <span class="recent-label" data-i18n="search.recent">Recent:</span>
                 <button id="clear-recents-btn" class="focusable clear-recents-btn" title="Clear Recents">
@@ -26,6 +10,25 @@
                 <div id="recent-list" class="recent-list">
                     <!-- Recent items -->
                 </div>
+            </div>
+
+            <div class="search-box">
+                <div class="input-wrapper">
+                    <img src="images/search.svg" class="search-icon" alt="Search">
+                    <input type="text" id="search-input" class="focusable" placeholder="Search for movies or series..."
+                        data-i18n="search.placeholder" readonly>
+                </div>
+            </div>
+
+            <div class="search-actions">
+                <button id="search-btn" class="primary-btn search-action-btn focusable" title="Search">
+                    <img src="images/search.svg" class="filter-icon" alt="Search">
+                    <span data-i18n="search.button">Search</span>
+                </button>
+                <button id="filter-btn" class="icon-btn search-action-btn focusable" title="Filters">
+                    <img src="images/filter.svg" class="filter-icon" alt="Filters">
+                    <span data-i18n="search.filters">Filters</span>
+                </button>
             </div>
         </div>
 

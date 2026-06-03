@@ -13,13 +13,12 @@ export async function init() {
         try { popular = await Api.fetchPopularTV(); } catch (e) { console.error(e); }
 
         if (popular && popular.length > 0) {
-            new HeroSlider(popular.slice(0, 5), {
+            new HeroSlider(popular, {
                 containerId: 'hero',
                 titleId: 'hero-title',
                 descId: 'hero-desc',
                 playBtnId: 'play-btn'
             });
-            setupRow('popular-series-row', popular.slice(5));
         }
 
         // 2. Define Categories

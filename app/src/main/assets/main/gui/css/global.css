@@ -4006,16 +4006,22 @@ iframe {
     padding: var(--app-content-padding-y) var(--app-content-padding-x);
 }
 
-.search-top-bar {
-    margin-bottom: 26px;
+/* Styles the centered layout wrapper containing recents, search input, and actions. */
+.search-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    max-width: min(720px, 90%);
+    margin: 4% auto 2%;
+    text-align: center;
 }
 
+/* Styles the search input box container to stretch across its wrapper. */
 .search-box {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 12px;
-    align-items: center;
-    width: min(980px, 100%);
+    width: 100%;
+    margin-bottom: 15px;
 }
 
 .input-wrapper {
@@ -4066,9 +4072,21 @@ iframe {
     color: rgba(255, 255, 255, 0.38);
 }
 
+/* Styles the action button container below the search input field. */
 .search-actions {
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+/* Styles the search and filter buttons specifically, reducing their size to match the new text layout. */
+.search-action-btn {
+    height: 48px;
+    font-size: 15px;
+    gap: 8px;
+    padding: 0 24px;
 }
 
 .primary-btn,
@@ -4102,11 +4120,14 @@ iframe {
     background: transparent;
 }
 
+/* Styles the recent searches row positioned above the search input bar. */
 .recent-searches-row {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 12px;
-    margin-top: 18px;
+    margin-bottom: 20px;
+    width: 100%;
 }
 
 .recent-searches-row.hidden {
@@ -4214,11 +4235,14 @@ iframe {
     color: #fff;
 }
 
+/* Styles the search results container with open space/gutters on both sides. */
 .results-container {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
-    padding-bottom: 44px;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-bottom: 5%;
 }
 
 .search-results-grid {
@@ -4447,8 +4471,11 @@ iframe {
         padding: 24px 18px 104px;
     }
 
-    .search-box {
-        grid-template-columns: 1fr;
+    /* Adjustments for search layout on smaller screens */
+    .search-container-wrapper {
+        width: 100%;
+        max-width: 100%;
+        margin: 2% auto;
     }
 
     .search-actions {

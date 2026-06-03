@@ -430,29 +430,43 @@ async function fetchResults(reset) {
         const grid = document.getElementById('search-results');
         let results = [];
 
-        if (isSearchMode) {
-            const allResults = await Api.searchContent(currentQuery, currentPage);
-            results = allResults.filter(item => {
-                if (currentFilters.type && item.media_type && item.media_type !== currentFilters.type) return false;
-                if (currentFilters.genres.length > 0) {
-                    if (!item.genre_ids) return false;
-                    const hasGenre = currentFilters.genres.every(id => item.genre_ids.includes(id));
-                    if (!hasGenre) return false;
-                }
-                if (currentFilters.year) {
-                    const date = item.release_date || item.first_air_date;
-                    if (!date || !date.startsWith(currentFilters.year.toString())) return false;
-                }
-                if (currentFilters.originCountry) {
-                    if (!item.origin_country || !item.origin_country.includes(currentFilters.originCountry)) return false;
-                }
-                return true;
-            });
+        const fetchPage = async (pageToFetch) => {
+            if (isSearchMode) {
+                const allResults = await Api.searchContent(currentQuery, pageToFetch);
+                return allResults.filter(item => {
+                    if (currentFilters.type && item.media_type && item.media_type !== currentFilters.type) return false;
+                    if (currentFilters.genres.length > 0) {
+                        if (!item.genre_ids) return false;
+                        const hasGenre = currentFilters.genres.every(id => item.genre_ids.includes(id));
+                        if (!hasGenre) return false;
+                    }
+                    if (currentFilters.year) {
+                        const date = item.release_date || item.first_air_date;
+                        if (!date || !date.startsWith(currentFilters.year.toString())) return false;
+                    }
+                    if (currentFilters.originCountry) {
+                        if (!item.origin_country || !item.origin_country.includes(currentFilters.originCountry)) return false;
+                    }
+                    return true;
+                });
+            } else {
+                return await Api.discoverContent({
+                    ...currentFilters,
+                    page: pageToFetch
+                });
+            }
+        };
+
+        if (reset) {
+            // Load 2 pages (40 items) initially to ensure the screen is filled
+            const [page1Res, page2Res] = await Promise.all([
+                fetchPage(1),
+                fetchPage(2)
+            ]);
+            results = page1Res.concat(page2Res);
+            currentPage = 2; // Next infinite scroll fetch will be page 3
         } else {
-            results = await Api.discoverContent({
-                ...currentFilters,
-                page: currentPage
-            });
+            results = await fetchPage(currentPage);
         }
 
         if (reset) grid.innerHTML = '';

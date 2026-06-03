@@ -378,6 +378,14 @@ export const SpatialNav = {
     },
 
     findNext(current, direction) {
+        // 0. Check for page-specific spatial logic override
+        if (this.currentPageLogic && typeof this.currentPageLogic.findNext === 'function') {
+            const overrideNode = this.currentPageLogic.findNext(current, direction);
+            if (overrideNode && this.isVisible(overrideNode)) {
+                return overrideNode;
+            }
+        }
+
         let scope = this.focusTrapContainer || document;
 
         // 1. Check for manual override (data-nav-up, data-nav-down, etc.)

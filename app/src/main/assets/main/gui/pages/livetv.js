@@ -17,6 +17,7 @@ const statusCache = new Map(); // Store channel status results: url -> {status, 
 let previewHls = null;
 let previewTimeout = null;
 let searchDebounceTimer = null;
+let loadSourcesPromise = null;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
 const BROKEN_CHANNELS_API_URL = '/api/broken-channels';
@@ -42,7 +43,8 @@ const countriesList = new Set([
 ]);
 
 /**
- * Initializes the Live TV grid page, resetting state variables, clearing active preview, loading broken channels, and setting up event listeners.
+ * Initializes the Live TV grid page, resetting state variables, clearing active preview,
+ * setting up event listeners, and starting IPTV playlist loading in the background.
  * Affects the global page states, SpatialNav focus, EpgManager, and starts loading all playlist sources.
  * 
  * @param {object} params - Routing parameters.
@@ -105,7 +107,6 @@ export async function init(params) {
     if (window.i18n) window.i18n.applyTranslations();
 
     EpgManager.init();
-    await loadBrokenChannelsDb();
 
     if (allChannels.length > 0) {
         const statsInfo = document.getElementById('hero-stats-info');
@@ -126,9 +127,49 @@ export async function init(params) {
         return;
     }
 
-    await loadAllSources();
+    // Set up interactive elements and render skeleton loader immediately
+    renderLoadingSkeletons();
     setupEventListeners();
+
+    // Start background source loading without blocking the router transition
+    if (!loadSourcesPromise) {
+        loadSourcesPromise = loadAllSources().then(() => {
+            loadSourcesPromise = null;
+            if (Router.currentPage === 'livetv') {
+                SpatialNav.focusFirst();
+            }
+        }).catch(err => {
+            loadSourcesPromise = null;
+            console.error('Error in background source loading:', err);
+        });
+    }
+
     SpatialNav.focusFirst();
+}
+
+/**
+ * Renders channel skeleton placeholders in the UI to indicate loading progress.
+ * Affects the `#channels-list` DOM element.
+ */
+function renderLoadingSkeletons() {
+    const list = document.getElementById('channels-list');
+    if (list) {
+        list.innerHTML = '';
+        for (let i = 0; i < 6; i++) {
+            const skeleton = document.createElement('div');
+            skeleton.className = 'channel-list-item skeleton-item';
+            skeleton.innerHTML = `
+                <span class="list-status-dot checking"></span>
+                <div class="channel-list-logo-container skeleton-logo-placeholder">
+                    <div class="skeleton-mini-spinner"></div>
+                </div>
+                <div class="channel-list-meta-container">
+                    <div class="skeleton-text skeleton-name"></div>
+                </div>
+            `;
+            list.appendChild(skeleton);
+        }
+    }
 }
 
 /**
@@ -142,23 +183,9 @@ async function loadAllSources() {
 
     try {
         if (empty) empty.style.display = 'none';
-        if (list) {
-            list.innerHTML = '';
-            for (let i = 0; i < 6; i++) {
-                const skeleton = document.createElement('div');
-                skeleton.className = 'channel-list-item skeleton-item';
-                skeleton.innerHTML = `
-                    <span class="list-status-dot checking"></span>
-                    <div class="channel-list-logo-container skeleton-logo-placeholder">
-                        <div class="skeleton-mini-spinner"></div>
-                    </div>
-                    <div class="channel-list-meta-container">
-                        <div class="skeleton-text skeleton-name"></div>
-                    </div>
-                `;
-                list.appendChild(skeleton);
-            }
-        }
+
+        // Load the broken channels database first
+        await loadBrokenChannelsDb();
 
         const sourceEntries = Object.entries(PRESET_SOURCES);
         const settings = JSON.parse(localStorage.getItem('ivids-settings') || '{}');

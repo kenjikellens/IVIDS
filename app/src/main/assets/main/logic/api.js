@@ -301,7 +301,34 @@ export const Api = {
     // Special Studios & Production Companies
     fetchPixarMovies() { return this._fetchDiscover('movie', 'with_companies=3'); },
     fetchStudioGhibli() { return this._fetchDiscover('movie', 'with_companies=10342'); },
-    fetchNetflixOriginals() { return this._fetchDiscover('movie', 'with_companies=213'); },
+    /**
+     * Fetches a combined list of popular Netflix original movies and TV series.
+     * Caches the results to prevent repeated network requests.
+     */
+    async fetchNetflixOriginals() {
+        const cacheKey = 'netflix_originals_combined';
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return shuffleArray([...cached]);
+
+        try {
+            const [movies, tv] = await Promise.all([
+                this._fetchDiscover('movie', 'with_companies=213|178464|171251'),
+                this._fetchDiscover('tv', 'with_networks=213')
+            ]);
+            
+            const movieItems = (movies || []).map(item => ({ ...item, media_type: 'movie' }));
+            const tvItems = (tv || []).map(item => ({ ...item, media_type: 'tv' }));
+            
+            const combined = [...movieItems, ...tvItems];
+            if (combined.length > 0) {
+                cacheManager.set(cacheKey, combined, 15);
+            }
+            return shuffleArray(combined);
+        } catch (error) {
+            console.error('Error fetching netflix originals:', error);
+            return [];
+        }
+    },
 
     // Quality & Time-based
     fetchHighlyRated() { return this._fetchDiscover('movie', 'vote_average.gte=8&vote_count.gte=1000&sort_by=vote_average.desc'); },

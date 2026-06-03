@@ -36,7 +36,17 @@
 [00:28 31-05-2026] app/src/main/assets/main/gui/css/global.css - Added styling for the trash-icon, recent-delete-btn, and adjusted chip layout padding.
 [00:28 31-05-2026] app/src/main/assets/main/gui/pages/search.js - Updated recent list items to support cross-icon deletion and implemented removeRecentSearch function.
 [00:29 31-05-2026] app/src/main/assets/main/gui/css/global.css - Modified active-typing styling to target the parent input-wrapper instead of inner input element when wrapped.
-
-
-
-
+[20:12 03-06-2026] app/src/main/assets/main/gui/pages/search.html - Reordered DOM elements to wrap search controls in .search-container-wrapper and place recents above search bar.
+[20:12 03-06-2026] app/src/main/assets/main/gui/css/global.css - Styled .search-container-wrapper to center search bar, moved actions below input, and added side gutters to results.
+[20:12 03-06-2026] app/src/main/assets/main/logic/spatial-nav/spatial-nav-search.js - Updated focus routing to accommodate new vertical layout of search controls.
+[20:23 03-06-2026] app/src/main/assets/main/gui/pages/search.html - Added text spans inside search and filter action buttons and applied search-action-btn class.
+[20:23 03-06-2026] app/src/main/assets/main/gui/css/global.css - Added .search-action-btn class to slightly reduce the size and adjust spacing of search action buttons.
+[20:44 03-06-2026] app/src/main/assets/main/gui/js/spatial-nav.js - Fixed critical bug where spatial navigation ignored page-specific overrides by properly invoking currentPageLogic.findNext.
+[20:44 03-06-2026] app/src/main/assets/main/logic/spatial-nav/spatial-nav-search.js - Added visibility check for recents row to prevent spatial nav from getting stuck by returning hidden elements.
+[21:50 03-06-2026] app/src/main/assets/main/gui/pages/search.js - Modified fetchResults to fetch and concatenate 2 pages (40 items) on initial load to better fill the screen.
+[21:58 03-06-2026] app/src/main/assets/main/gui/pages/movies.js - Modified hero slider to consume the entire popular movies list instead of slicing, and removed the popular movies row population.
+[21:58 03-06-2026] app/src/main/assets/main/gui/pages/movies.html - Removed the popular movies row container.
+[21:58 03-06-2026] app/src/main/assets/main/gui/pages/series.js - Modified hero slider to consume the entire popular series list instead of slicing, and removed the popular series row population.
+[21:58 03-06-2026] app/src/main/assets/main/gui/pages/series.html - Removed the popular series row container.
+[23:00 03-06-2026] app/src/main/assets/main/logic/api.js - Modified fetchNetflixOriginals to fetch and combine Netflix original movies and TV series with caching.
+[23:00 03-06-2026] app/src/main/assets/main/gui/pages/livetv.js - Modified Live TV source loading to be asynchronous and non-blocking, rendering skeletons immediately so page navigation is not locked.
