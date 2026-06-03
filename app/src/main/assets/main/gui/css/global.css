@@ -6320,3 +6320,57 @@ iframe {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Sliding track container aligning all slide background panels horizontally */
+.hero-slides-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    display: flex;
+    transition: left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1;
+}
+
+/* Individual backdrop panel with smooth vertical transparency masking */
+.hero-slide {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center top;
+    box-sizing: border-box;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* absolute layout centering slider indicator dots horizontally near the top */
+.hero-indicators {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+}
+
+/* Individual circular navigation indicator dot inside the hero slider (slightly larger) */
+.hero-indicator-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: background-color 0.4s ease, width 0.4s ease, height 0.4s ease;
+    cursor: pointer;
+}
+
+/* Highlighted active indicator dot styled even larger in IVIDS accent color */
+.hero-indicator-dot.active {
+    background-color: var(--primary-color);
+    width: 18px;
+    height: 18px;
+}

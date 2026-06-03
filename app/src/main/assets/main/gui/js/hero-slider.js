@@ -2,11 +2,20 @@ import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { Splash } from './splash.js';
 
+/**
+ * Helper class that sets up and manages the home/movies/series hero slider.
+ * Handles background sliding transition tracks, indicator dots, auto-play, and content fades.
+ */
 export class HeroSlider {
+    /**
+     * Constructs a HeroSlider instance.
+     * @param {Array<Object>} items - Array of movie/series items to populate.
+     * @param {Object} config - Configuration mapping container, title, description, and button IDs.
+     */
     constructor(items, config) {
+        // Filter out items without backdrop_path
         this.items = items.filter(item => item.backdrop_path);
         this.config = config;
-        // config = { containerId, titleId, descId, playBtnId, detailsBtnId }
 
         this.container = document.getElementById(config.containerId);
         this.titleEl = document.getElementById(config.titleId);
@@ -16,7 +25,7 @@ export class HeroSlider {
 
         this.currentIndex = 0;
         this.interval = null;
-        this.duration = 8000; // 8 seconds
+        this.duration = 12000; // 12 seconds
         this.isDestroyed = false;
 
         if (!this.container || this.items.length === 0) {
@@ -27,96 +36,134 @@ export class HeroSlider {
         this.init();
     }
 
+    /**
+     * Initializes the slider layout, constructs the background track/slide elements,
+     * builds indicator dots, sets up event listeners, and starts auto-play.
+     */
     init() {
-        // Initial render
-        this.render(this.currentIndex);
+        // 1. Create slides track
+        this.track = document.createElement('div');
+        this.track.className = 'hero-slides-track';
+        this.track.style.width = `${this.items.length * 100}%`;
 
-        // Start auto-play
+        // 2. Add slide backdrop images
+        this.items.forEach(item => {
+            const slide = document.createElement('div');
+            slide.className = 'hero-slide';
+            slide.style.width = `${100 / this.items.length}%`;
+            const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
+            slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${imageUrl})`;
+            this.track.appendChild(slide);
+        });
+
+        // Prepend track behind overlay and content
+        this.container.insertBefore(this.track, this.container.firstChild);
+
+        // Hide initial loader if present
+        const loader = this.container.querySelector('.loader-center-container');
+        if (loader) loader.style.display = 'none';
+
+        // 3. Create indicators container and circular dots
+        this.indicatorsContainer = document.createElement('div');
+        this.indicatorsContainer.className = 'hero-indicators';
+
+        this.items.forEach((_, idx) => {
+            const dot = document.createElement('div');
+            dot.className = 'hero-indicator-dot';
+            if (idx === this.currentIndex) dot.classList.add('active');
+            
+            // Allow manual dot clicks to change slide
+            dot.onclick = () => {
+                this.goTo(idx);
+                this.startAutoPlay(); // Restart timer on manual interaction
+            };
+            this.indicatorsContainer.appendChild(dot);
+        });
+
+        this.container.appendChild(this.indicatorsContainer);
+
+        // 4. Initial render to set text content
+        this.render(this.currentIndex, true);
+
+        // 5. Start auto-play
         this.startAutoPlay();
 
-        // Pause on hover
-        if (this.container) {
-            this.container.addEventListener('mouseenter', () => this.stopAutoPlay());
-            this.container.addEventListener('mouseleave', () => this.startAutoPlay());
-        }
+        // 6. Pause auto-play on hover
+        this.container.addEventListener('mouseenter', () => this.stopAutoPlay());
+        this.container.addEventListener('mouseleave', () => this.startAutoPlay());
     }
 
-    render(index) {
+    /**
+     * Transitions the slider to show the slide at the specified index.
+     * Optionally skips the text fading transition on initial load.
+     * @param {number} index - Index of slide to render.
+     * @param {boolean} [isInitial=false] - True if this is the first render, skipping animation.
+     */
+    render(index, isInitial = false) {
         if (this.isDestroyed) return;
 
         const item = this.items[index];
         if (!item) return;
 
-        // Preload image
-        const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
-        const img = new Image();
-        img.src = imageUrl;
-
-        img.onload = () => {
-            if (this.isDestroyed) return;
-
-            // Signal Splash that first hero is loaded
-            Splash.signalContentLoaded();
-
-            // Update Content
-            this.updateContent(item);
-        };
-
-        img.onerror = () => {
-            console.warn(`HeroSlider: Failed to load image for ${item.title || item.name}`);
-
-            // Still signal splash so it's not stuck forever
-            Splash.signalContentLoaded();
-
-            // Try next item immediately
-            if (!this.isDestroyed) {
-                this.next();
-            }
-        };
-    }
-
-    updateContent(item) {
-        if (this.isDestroyed) return;
-
-        // Apply background to container immediately with CSS transition handling the rest
-        if (this.container) {
-            const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
-            // Create a dedicated background layer to allow independent masking/opacity fade
-            let bg = this.container.querySelector('.hero-bg');
-            if (!bg) {
-                bg = document.createElement('div');
-                bg.className = 'hero-bg';
-                this.container.insertBefore(bg, this.container.firstChild);
-            }
-            bg.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${imageUrl})`;
-
-            // Hide initial loader
-            const loader = this.container.querySelector('.loader-center-container');
-            if (loader) loader.style.display = 'none';
+        // Shift background track horizontally
+        if (this.track) {
+            this.track.style.left = `-${index * 100}%`;
         }
 
+        // Highlight matching circular dot indicator
+        if (this.indicatorsContainer) {
+            const dots = this.indicatorsContainer.querySelectorAll('.hero-indicator-dot');
+            dots.forEach((dot, idx) => {
+                if (idx === index) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // Get content box text parent
         const content = this.container ? this.container.querySelector('.hero-content') : null;
-        if (content) content.classList.add('transitioning');
 
-        setTimeout(() => {
-            if (this.isDestroyed) return;
-
-            // Update text
+        if (isInitial) {
+            // Initial render - set text content instantly without fade out
             if (this.titleEl) this.titleEl.textContent = item.title || item.name;
             if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 150);
+            this.updateButtonHandlers(item);
+            Splash.signalContentLoaded();
+        } else {
+            // Subsequent transitions - fade out content, change text, fade in
+            if (content) content.classList.add('transitioning');
 
-            // Update buttons
-            if (this.playBtn) {
-                this.playBtn.onclick = () => Router.loadPage('details', { id: item.id, type: item.media_type || (item.name ? 'tv' : 'movie') });
-            }
-            if (this.detailsBtn) {
-                this.detailsBtn.onclick = () => Router.loadPage('details', { id: item.id, type: item.media_type || (item.name ? 'tv' : 'movie') });
-            }
+            setTimeout(() => {
+                if (this.isDestroyed) return;
 
-            if (content) content.classList.remove('transitioning');
-        }, 500);
+                if (this.titleEl) this.titleEl.textContent = item.title || item.name;
+                if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 150);
+                this.updateButtonHandlers(item);
+
+                if (content) content.classList.remove('transitioning');
+            }, 300);
+        }
     }
 
+    /**
+     * Updates click event handlers for play and details buttons for the current item.
+     * @param {Object} item - Current slide movie or series details object.
+     */
+    updateButtonHandlers(item) {
+        const type = item.media_type || (item.name ? 'tv' : 'movie');
+        if (this.playBtn) {
+            this.playBtn.onclick = () => Router.loadPage('details', { id: item.id, type });
+        }
+        if (this.detailsBtn) {
+            this.detailsBtn.onclick = () => Router.loadPage('details', { id: item.id, type });
+        }
+    }
+
+    /**
+     * Triggers auto-play interval to cycle through slides automatically.
+     */
     startAutoPlay() {
         this.stopAutoPlay();
         if (this.isDestroyed) return;
@@ -126,6 +173,9 @@ export class HeroSlider {
         }, this.duration);
     }
 
+    /**
+     * Stops the auto-play timer.
+     */
     stopAutoPlay() {
         if (this.interval) {
             clearInterval(this.interval);
@@ -133,19 +183,39 @@ export class HeroSlider {
         }
     }
 
+    /**
+     * Cycles to the next slide in sequence.
+     */
     next() {
         if (this.isDestroyed) return;
         this.currentIndex = (this.currentIndex + 1) % this.items.length;
         this.render(this.currentIndex);
     }
 
+    /**
+     * Manually navigates to a specific slide index.
+     * @param {number} index - Target slide index.
+     */
+    goTo(index) {
+        if (this.isDestroyed) return;
+        this.currentIndex = index;
+        this.render(this.currentIndex);
+    }
+
+    /**
+     * Truncates long overview descriptions with trailing ellipsis.
+     * @param {string} str - Target string to truncate.
+     * @param {number} n - Character limit.
+     */
     truncate(str, n) {
         return (str && str.length > n) ? str.substr(0, n - 1) + '...' : str;
     }
 
+    /**
+     * Releases timers, cleans up event listeners, and marks slider as destroyed.
+     */
     destroy() {
         this.isDestroyed = true;
         this.stopAutoPlay();
-        // Remove event listeners if needed (though they are on container which might be removed anyway)
     }
 }

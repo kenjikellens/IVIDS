@@ -8,6 +8,10 @@ import { renderSkeletonRow } from '../js/skeleton-renderer.js';
 import { lazyLoader } from '../js/lazy-loader.js';
 import { domRecycler } from '../js/dom-recycler.js';
 
+/**
+ * Initializes the Home page by loading trending items and recently watched history,
+ * setting up the Hero Slider with all trending items, and lazy loading other movie/TV rows.
+ */
 export async function init() {
     try {
         // 1. Load Hero and Recently Watched concurrently for faster initial render
@@ -21,14 +25,12 @@ export async function init() {
 
         // Setup Hero
         if (trending && trending.length > 0) {
-            new HeroSlider(trending.slice(0, 5), {
+            new HeroSlider(trending, {
                 containerId: 'hero',
                 titleId: 'hero-title',
                 descId: 'hero-desc',
                 playBtnId: 'play-btn'
             });
-            // Setup first row immediately without lazy load if we have data
-            setupRow('trending-row', trending.slice(5));
         } else {
             console.warn('Home: No trending data available for Hero.');
             // Signal splash to dismiss even if we have no hero content, 

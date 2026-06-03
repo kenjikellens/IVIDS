@@ -50,3 +50,9 @@
 [21:58 03-06-2026] app/src/main/assets/main/gui/pages/series.html - Removed the popular series row container.
 [23:00 03-06-2026] app/src/main/assets/main/logic/api.js - Modified fetchNetflixOriginals to fetch and combine Netflix original movies and TV series with caching.
 [23:00 03-06-2026] app/src/main/assets/main/gui/pages/livetv.js - Modified Live TV source loading to be asynchronous and non-blocking, rendering skeletons immediately so page navigation is not locked.
+[23:42 03-06-2026] .agents/rules/mockups.md - Created mockup creation rule file to standardize mockup creation locations and naming.
+[23:44 03-06-2026] mockup/mockup_hero_indicators.html - Updated hero mockup to slide backdrops horizontally while fading content text overlay.
+[23:50 03-06-2026] app/src/main/assets/main/gui/css/global.css - Added sliding track, backdrop panels, and top circular indicators CSS rules, sizing up the dots with a prominent active state.
+[23:50 03-06-2026] app/src/main/assets/main/gui/js/hero-slider.js - Modified HeroSlider to build track, set slide widths dynamically, render circular dots, animate with horizontal sliding, and set autoplay duration to 12s.
+[23:54 03-06-2026] app/src/main/assets/main/gui/pages/home.html - Removed the trending now row.
+[23:54 03-06-2026] app/src/main/assets/main/gui/pages/home.js - Modified hero slider initialization to display all trending items (no slicing) and documented init with JSDoc.
