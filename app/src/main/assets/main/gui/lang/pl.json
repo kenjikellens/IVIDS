@@ -120,7 +120,9 @@
         "connected": "Jesteś znowu online. Synchronizacja interfejsu...",
         "connectionLostTitle": "Połączenie utracone",
         "connectedTitle": "Połączono",
-        "slowConnectionTitle": "Wolne połączenie"
+        "slowConnectionTitle": "Wolne połączenie",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Szukaj",
@@ -160,7 +162,8 @@
         "nextEpisode": "Następny odcinek",
         "loading": "Ładowanie...",
         "statusTitle": "Odtwarzacz zbyt długo nie odpowiada",
-        "statusMessage": "Skonfigurowany dostawca odtwarzacza jeszcze nie odpowiedział. Możesz wrócić lub zmienić punkt końcowy odtwarzacza w Ustawieniach."
+        "statusMessage": "Skonfigurowany dostawca odtwarzacza jeszcze nie odpowiedział. Możesz wrócić lub zmienić punkt końcowy odtwarzacza w Ustawieniach.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Moje playlisty",

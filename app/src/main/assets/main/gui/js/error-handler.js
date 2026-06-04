@@ -2,19 +2,12 @@ import { SpatialNav } from './spatial-nav.js';
 import I18n from './i18n.js';
 
 export class ErrorHandler {
+    /**
+     * Initializes the ErrorHandler modal DOM element and sets up click handlers.
+     * Creates and appends the error modal wrapper inside the document body.
+     */
     static init() {
         try {
-            // Global error handlers
-            window.onerror = (message, source, lineno, colno, error) => {
-                console.error('Global Error caught:', message, error);
-                ErrorHandler.show(message || 'Uncaught Error');
-            };
-
-            window.onunhandledrejection = (event) => {
-                console.error('Unhandled Promise Rejection:', event.reason);
-                ErrorHandler.show(event.reason?.message || event.reason || 'Async Error');
-            };
-
             // Create the modal container if it doesn't exist
             if (!document.getElementById('error-modal')) {
                 const modal = document.createElement('div');

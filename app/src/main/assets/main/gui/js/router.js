@@ -8,6 +8,12 @@ const _htmlCache = new Map();
 /** Flag to track whether the initial boot page has loaded. Used to skip splash signals on subsequent loads. */
 let _initialLoadComplete = false;
 
+/** Tracks the current loading generation to prevent race conditions during rapid navigation. */
+let _loadGeneration = 0;
+
+/** Active AbortController for aborting in-flight HTML template fetches on page change or timeout. */
+let _activeAbortController = null;
+
 export const Router = {
     currentPage: null,
     params: {},
@@ -15,15 +21,8 @@ export const Router = {
     isLoading: false,
 
     /**
-     * loadPage method:
-     * Handles dynamic Single Page Application (SPA) routing in the WebView.
-     * It shows a loader spinner, fetches the target page's HTML file, mounts it
-     * into the main content viewport, imports the page's controller JS module,
-     * configures screen-specific spatial navigation logic, triggers translation strings,
-     * manages browser history stack, highlights the active menu link in the sidebar,
-     * and auto-selects the first focusable item.
-     *
-     * Note: Page-level CSS swapping is disabled as all styles are merged into global.css.
+     * Loads a page's HTML, JS controller, and spatial navigation logic asynchronously.
+     * Updates the main content viewport, highlights the sidebar route, and resets focus.
      */
     async loadPage(pageName, params = {}, addToHistory = true, targetFocus = null) {
         if (this.isLoading) return; // Prevent double loading
@@ -42,13 +41,23 @@ export const Router = {
             });
         }
 
+        _loadGeneration++;
+        const currentGen = _loadGeneration;
+
+        if (_activeAbortController) {
+            _activeAbortController.abort();
+            _activeAbortController = null;
+        }
+
         this.isLoading = true;
         this.params = params;
 
         const mainView = document.getElementById('main-view');
         if (!mainView) {
             console.error('Main view container not found');
-            this.isLoading = false;
+            if (currentGen === _loadGeneration) {
+                this.isLoading = false;
+            }
             return;
         }
 
@@ -62,37 +71,39 @@ export const Router = {
         try {
             console.log(`Loading page: ${pageName}`);
 
-            // Page-specific CSS loading is disabled in favor of unified global.css.
-            // This eliminates page-transition style flashes and dynamic file fetches.
-            /*
-            try {
-                const pageCssLink = document.getElementById('page-css');
-                if (pageCssLink) {
-                    pageCssLink.href = `css/${pageName}.css`;
-                }
-            } catch (cssError) {
-                console.error('Error updating page CSS:', cssError);
-            }
-            */
-
-            // 1. Fetch HTML (use cache if available, otherwise fetch with timeout)
+            // 1. Fetch HTML (use cache if available, otherwise fetch with timeout and abort signal)
             let html;
             if (_htmlCache.has(pageName)) {
                 html = _htmlCache.get(pageName);
             } else {
-                const fetchPromise = fetch(`pages/${pageName}.html`);
-                const timeoutPromise = new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Request timed out')), 10000)
-                );
+                const controller = new AbortController();
+                _activeAbortController = controller;
+                const fetchPromise = fetch(`pages/${pageName}.html`, { signal: controller.signal });
+                
+                let timeoutId;
+                const timeoutPromise = new Promise((_, reject) => {
+                    timeoutId = setTimeout(() => {
+                        controller.abort();
+                        reject(new Error('Request timed out'));
+                    }, 10000);
+                });
 
-                const response = await Promise.race([fetchPromise, timeoutPromise]);
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch page HTML: ${response.status} ${response.statusText}`);
+                try {
+                    const response = await Promise.race([fetchPromise, timeoutPromise]);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch page HTML: ${response.status} ${response.statusText}`);
+                    }
+                    html = await response.text();
+                    _htmlCache.set(pageName, html);
+                } finally {
+                    clearTimeout(timeoutId);
+                    if (_activeAbortController === controller) {
+                        _activeAbortController = null;
+                    }
                 }
-                html = await response.text();
-                _htmlCache.set(pageName, html);
             }
+
+            if (currentGen !== _loadGeneration) return;
 
             // Clear loader and set content
             mainView.innerHTML = html;
@@ -100,6 +111,7 @@ export const Router = {
             // 2. Load JS Module
             try {
                 const module = await import(`../pages/${pageName}.js`);
+                if (currentGen !== _loadGeneration) return;
 
                 // 3. Initialize Page
                 if (module && module.init) {
@@ -107,10 +119,12 @@ export const Router = {
                 } else {
                     console.warn(`No init function found for ${pageName}`);
                 }
+                if (currentGen !== _loadGeneration) return;
 
                 // 4. Load Spatial Navigation Logic
                 try {
                     const navModule = await import(`../../logic/spatial-nav/spatial-nav-${pageName}.js`);
+                    if (currentGen !== _loadGeneration) return;
                     const logicKey = `spatialNav${pageName.charAt(0).toUpperCase()}${pageName.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase())}`;
                     if (navModule && navModule[logicKey]) {
                         SpatialNav.setPageLogic(navModule[logicKey]);
@@ -119,11 +133,12 @@ export const Router = {
                     }
                 } catch (navError) {
                     console.log(`No spatial nav logic for ${pageName}`);
+                    if (currentGen !== _loadGeneration) return;
                     SpatialNav.setPageLogic(null);
                 }
             } catch (moduleError) {
                 console.error(`Error loading module for ${pageName}:`, moduleError);
-                // Don't fail completely if JS fails, HTML might be enough
+                if (currentGen !== _loadGeneration) return;
             }
 
             // Signal Splash that HTML is rendered (only on first boot, skip on subsequent navigations)
@@ -150,10 +165,9 @@ export const Router = {
             } catch (i18nError) {
                 console.error('Error applying translations:', i18nError);
             }
+            if (currentGen !== _loadGeneration) return;
 
             this.currentPage = pageName;
-
-
 
             // 4. Update active nav item
             this.updateActiveNavLink(pageName);
@@ -162,6 +176,7 @@ export const Router = {
             this.resetFocus(targetFocus);
 
         } catch (error) {
+            if (currentGen !== _loadGeneration) return;
             console.error(`Critical error loading page ${pageName}:`, error);
 
             // Restore original content or show error
@@ -202,7 +217,9 @@ export const Router = {
             Splash.signalContentLoaded();
 
         } finally {
-            this.isLoading = false;
+            if (currentGen === _loadGeneration) {
+                this.isLoading = false;
+            }
         }
     },
 

@@ -120,7 +120,9 @@
         "connected": "Sei di nuovo online. Sincronizzazione UI...",
         "connectionLostTitle": "Connessione Persa",
         "connectedTitle": "Connesso",
-        "slowConnectionTitle": "Connessione Lenta"
+        "slowConnectionTitle": "Connessione Lenta",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Cerca",
@@ -160,7 +162,8 @@
         "nextEpisode": "Prossimo Episodio",
         "loading": "Caricamento...",
         "statusTitle": "Il lettore impiega troppo tempo",
-        "statusMessage": "Il provider del lettore configurato non ha ancora risposto. Puoi tornare indietro o modificare l'endpoint del lettore nelle Impostazioni."
+        "statusMessage": "Il provider del lettore configurato non ha ancora risposto. Puoi tornare indietro o modificare l'endpoint del lettore nelle Impostazioni.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Le Mie Playlist",

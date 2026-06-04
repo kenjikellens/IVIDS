@@ -113,7 +113,9 @@
         "connected": "Vuelves a estar en línea. La interfaz se está sincronizando...",
         "connectionLostTitle": "Conexión Perdida",
         "connectedTitle": "Conectado",
-        "slowConnectionTitle": "Conexión Lenta"
+        "slowConnectionTitle": "Conexión Lenta",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Búsqueda",
@@ -153,7 +155,8 @@
         "nextEpisode": "Siguiente Episodio",
         "loading": "Cargando...",
         "statusTitle": "El reproductor está tardando demasiado",
-        "statusMessage": "El proveedor de reproducción configurado aún no ha respondido. Puede volver atrás o cambiar el enlace del reproductor en Ajustes."
+        "statusMessage": "El proveedor de reproducción configurado aún no ha respondido. Puede volver atrás o cambiar el enlace del reproductor en Ajustes.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Mis listas",

@@ -56,3 +56,42 @@
 [23:50 03-06-2026] app/src/main/assets/main/gui/js/hero-slider.js - Modified HeroSlider to build track, set slide widths dynamically, render circular dots, animate with horizontal sliding, and set autoplay duration to 12s.
 [23:54 03-06-2026] app/src/main/assets/main/gui/pages/home.html - Removed the trending now row.
 [23:54 03-06-2026] app/src/main/assets/main/gui/pages/home.js - Modified hero slider initialization to display all trending items (no slicing) and documented init with JSDoc.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/en.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/ar.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/cs.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/da.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/de.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/es.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/fr.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/hi.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/id.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/it.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/ja.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/ko.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/nl.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/no.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/pl.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/pt.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/ro.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/ru.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/sv.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/tr.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/vi.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/lang/zh.json - Added toast.storageFull and toast.storageFullTitle translation keys.
+[14:47 04-06-2026] app/src/main/assets/main/gui/js/router.js - Added loading generation and AbortController to loadPage to prevent navigation race conditions.
+[14:47 04-06-2026] app/src/main/assets/main/gui/js/error-handler.js - Removed window.onerror overwrite from init method.
+[14:47 04-06-2026] app/src/main/assets/main/gui/js/hero-slider.js - Cleaned up track, dot indicators, and event listeners on destroy to prevent memory leaks.
+[14:47 04-06-2026] app/src/main/assets/main/gui/js/screensaver.js - Guarded event listener registration to prevent duplicate active listeners.
+[14:47 04-06-2026] app/src/main/assets/main/logic/cache-manager.js - Stored background interval reference and added destroy method.
+[14:47 04-06-2026] app/src/main/assets/main/logic/playlists.js - Enforced caps of 50 playlists and 200 items, and caught QuotaExceededError to show full storage toast.
+[14:47 04-06-2026] app/src/main/assets/main/logic/recentlyWatched.js - Added QuotaExceededError retry/trim mechanism and normalized ID type comparisons.
+[14:47 04-06-2026] run_pc.py - Added SSRF protection checks, request body limits, and common path validation.
+[14:47 04-06-2026] main.js - Added webSecurity security comment for BrowserWindow.
+[14:47 04-06-2026] app/src/main/assets/main/gui/js/i18n.js - Implemented hardcoded emergency translations fallback.
+[14:47 04-06-2026] app/src/main/assets/main/gui/js/splash.js - Added cleanedUp flag in dismiss() to avoid double cleanup execution.
+[14:47 04-06-2026] app/src/main/assets/main/gui/js/toast.js - Sanitized toast title and message inputs via textContent to prevent HTML injection.
+[14:50 04-06-2026] app/src/main/assets/main/gui/js/hero-slider.js - Increased hero slider description truncation limit to 300 characters.
+[14:50 04-06-2026] app/src/main/assets/main/gui/css/global.css - Expanded hero heights to accommodate up to 4 lines of description, styled Webkit line clamp, and added mandatory class annotations.
+[14:51 04-06-2026] app/src/main/assets/main/gui/css/global.css - Expanded hero-content and hero-desc max-widths to allow wider layout text.
+[14:53 04-06-2026] app/src/main/assets/main/gui/css/global.css - Increased hero-content width limit to min(1100px, 90%) and hero-desc max-width to 1000px (desktop) / 850px (tablet).
+[14:53 04-06-2026] app/src/main/assets/main/gui/js/hero-slider.js - Increased text truncation length limit to 450 characters to fill expanded width and updated JSDoc.

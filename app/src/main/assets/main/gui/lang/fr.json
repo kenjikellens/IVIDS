@@ -113,7 +113,9 @@
         "connected": "Vous êtes de nouveau en ligne. L'interface se synchronise...",
         "connectionLostTitle": "Connexion Perdue",
         "connectedTitle": "Connecté",
-        "slowConnectionTitle": "Connexion Lente"
+        "slowConnectionTitle": "Connexion Lente",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Recherche",
@@ -153,7 +155,8 @@
         "nextEpisode": "Épisode Suivant",
         "loading": "Chargement...",
         "statusTitle": "Le lecteur met trop de temps",
-        "statusMessage": "Le fournisseur de lecture configuré n'a pas encore répondu. Vous pouvez revenir en arrière ou modifier le point de terminaison du lecteur dans les Paramètres."
+        "statusMessage": "Le fournisseur de lecture configuré n'a pas encore répondu. Vous pouvez revenir en arrière ou modifier le point de terminaison du lecteur dans les Paramètres.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Mes Listes",

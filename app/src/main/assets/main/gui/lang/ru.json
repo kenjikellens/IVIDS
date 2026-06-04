@@ -120,7 +120,9 @@
         "connected": "Подключение восстановлено. Синхронизация...",
         "connectionLostTitle": "Соединение потеряно",
         "connectedTitle": "Подключено",
-        "slowConnectionTitle": "Медленное соединение"
+        "slowConnectionTitle": "Медленное соединение",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Поиск",
@@ -160,7 +162,8 @@
         "nextEpisode": "Следующая серия",
         "loading": "Загрузка...",
         "statusTitle": "Плеер загружается слишком долго",
-        "statusMessage": "Настроенный провайдер плеера еще не ответил. Вы можете вернуться назад или изменить конечную точку плеера в Настройках."
+        "statusMessage": "Настроенный провайдер плеера еще не ответил. Вы можете вернуться назад или изменить конечную точку плеера в Настройках.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Мои плейлисты",

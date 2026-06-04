@@ -120,7 +120,9 @@
         "connected": "온라인 상태로 돌아왔습니다. UI 동기화 중...",
         "connectionLostTitle": "연결 유실",
         "connectedTitle": "연결됨",
-        "slowConnectionTitle": "연결이 느림"
+        "slowConnectionTitle": "연결이 느림",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "검색",
@@ -160,7 +162,8 @@
         "nextEpisode": "다음 에피소드",
         "loading": "로딩 중...",
         "statusTitle": "플레이어가 응답하는 데 시간이 너무 오래 걸립니다",
-        "statusMessage": "설정된 플레이어 제공업체가 아직 응답하지 않았습니다. 돌아가거나 설정에서 플레이어 엔드포인트를 변경할 수 있습니다."
+        "statusMessage": "설정된 플레이어 제공업체가 아직 응답하지 않았습니다. 돌아가거나 설정에서 플레이어 엔드포인트를 변경할 수 있습니다.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "내 플레이리스트",

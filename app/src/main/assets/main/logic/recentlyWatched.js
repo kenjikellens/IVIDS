@@ -1,4 +1,5 @@
 // Utility for managing recently watched content
+import { Toast } from '../gui/js/toast.js';
 
 const MAX_RECENTLY_WATCHED = 20;
 const STORAGE_KEY = 'recentlyWatched';
@@ -11,6 +12,11 @@ function isMusic(item) {
     return type === 'music' || type === 'music_song' || type === 'music_track';
 }
 
+/**
+ * Adds an item to the recently watched list, capping it at 20 items.
+ * Attempts to trim the list further and retry on QuotaExceededError, displaying a toast on final failure.
+ * @param {Object} item - The media item details to add.
+ */
 export function addToRecentlyWatched(item) {
     if (!item || isMusic(item)) return;
 
@@ -19,7 +25,7 @@ export function addToRecentlyWatched(item) {
         let recentlyWatched = getRecentlyWatched();
 
         // Remove if already exists (to avoid duplicates)
-        recentlyWatched = recentlyWatched.filter(i => !(i.id === item.id && i.media_type === item.media_type));
+        recentlyWatched = recentlyWatched.filter(i => !(String(i.id) === String(item.id) && i.media_type === item.media_type));
 
         // Add to beginning
         recentlyWatched.unshift({
@@ -40,7 +46,33 @@ export function addToRecentlyWatched(item) {
 
         // Update cache and localStorage
         _recentlyWatchedCache = recentlyWatched;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+        } catch (setItemError) {
+            console.error('Error saving recently watched:', setItemError);
+            if (setItemError.name === 'QuotaExceededError' || (setItemError.message && setItemError.message.includes('quota'))) {
+                // Attempt to trim further to 10 items and retry once
+                if (recentlyWatched.length > 10) {
+                    recentlyWatched = recentlyWatched.slice(0, 10);
+                    _recentlyWatchedCache = recentlyWatched;
+                    try {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+                    } catch (retryError) {
+                        const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
+                        const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
+                        if (typeof Toast !== 'undefined') {
+                            Toast.show(msg, { title, duration: 5000 });
+                        }
+                    }
+                } else {
+                    const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
+                    const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
+                    if (typeof Toast !== 'undefined') {
+                        Toast.show(msg, { title, duration: 5000 });
+                    }
+                }
+            }
+        }
 
         console.log('Added to recently watched:', item.title || item.name);
     } catch (e) {
@@ -64,9 +96,16 @@ export function getRecentlyWatched() {
     }
 }
 
+/**
+ * Retrieves a watched item matching the specific ID and media type.
+ * Normalizes parameters to perform a strict type comparison.
+ * @param {string|number} id - The ID of the media item.
+ * @param {string} type - The media type (movie or tv).
+ * @returns {Object|undefined} The matching media item, or undefined.
+ */
 export function getWatchedItem(id, type) {
     const recentlyWatched = getRecentlyWatched();
-    return recentlyWatched.find(i => i.id == id && i.media_type == type);
+    return recentlyWatched.find(i => String(i.id) === String(id) && i.media_type === type);
 }
 
 export function clearRecentlyWatched() {
@@ -79,13 +118,29 @@ export function clearRecentlyWatched() {
     }
 }
 
+/**
+ * Removes an item from the recently watched list by its ID.
+ * Normalizes the item ID before comparison to ensure reliable matching.
+ * @param {string|number} id - The ID of the item to remove.
+ */
 export function removeFromRecentlyWatched(id) {
     try {
         let recentlyWatched = getRecentlyWatched();
-        recentlyWatched = recentlyWatched.filter(i => i.id != id);
+        recentlyWatched = recentlyWatched.filter(i => String(i.id) !== String(id));
 
         _recentlyWatchedCache = recentlyWatched;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+        } catch (setItemError) {
+            console.error('Error removing from recently watched:', setItemError);
+            if (setItemError.name === 'QuotaExceededError' || (setItemError.message && setItemError.message.includes('quota'))) {
+                const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
+                const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
+                if (typeof Toast !== 'undefined') {
+                    Toast.show(msg, { title, duration: 5000 });
+                }
+            }
+        }
         console.log('Removed from recently watched:', id);
     } catch (e) {
         console.error('Error removing from recently watched:', e);

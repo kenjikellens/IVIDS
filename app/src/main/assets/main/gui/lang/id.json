@@ -120,7 +120,9 @@
         "connected": "Anda kembali online. Sinkronisasi UI...",
         "connectionLostTitle": "Koneksi Terputus",
         "connectedTitle": "Terhubung",
-        "slowConnectionTitle": "Koneksi Lambat"
+        "slowConnectionTitle": "Koneksi Lambat",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Cari",
@@ -160,7 +162,8 @@
         "nextEpisode": "Episode Selanjutnya",
         "loading": "Memuat...",
         "statusTitle": "Pemutar memakan waktu terlalu lama",
-        "statusMessage": "Penyedia pemutar yang dikonfigurasi belum merespons. Anda dapat kembali atau mengubah endpoint pemutar di Pengaturan."
+        "statusMessage": "Penyedia pemutar yang dikonfigurasi belum merespons. Anda dapat kembali atau mengubah endpoint pemutar di Pengaturan.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Daftar Putar Saya",

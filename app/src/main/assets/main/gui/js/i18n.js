@@ -25,6 +25,10 @@ class I18n {
         await this.loadLanguage(this.currentLanguage);
     }
 
+    /**
+     * Loads translation strings for a language code, falling back to English or an emergency hardcoded set on error.
+     * Updates the active translation cache and applies it to elements in the DOM.
+     */
     async loadLanguage(lang) {
         if (!this.availableLanguages.includes(lang)) {
             console.warn(`Language ${lang} not available, falling back to English`);
@@ -49,6 +53,26 @@ class I18n {
             if (lang !== 'en') {
                 console.log('Falling back to English...');
                 await this.loadLanguage('en');
+            } else {
+                // If English itself fails to load, use a minimal hardcoded fallback
+                console.warn('English language file failed to load, applying emergency fallback translations');
+                this.translations = {
+                    error: {
+                        defaultTitle: "Application Error",
+                        defaultMessage: "An unexpected error occurred.",
+                        systemError: "An unexpected system error occurred"
+                    },
+                    toast: {
+                        connectionLost: "No internet connection. Please check your network settings.",
+                        connected: "You are back online. UI is syncing...",
+                        connectionLostTitle: "Connection Lost",
+                        connectedTitle: "Connected",
+                        slowConnectionTitle: "Slow Connection",
+                        storageFull: "Storage limit reached. Changes cannot be saved permanently.",
+                        storageFullTitle: "Storage Full"
+                    }
+                };
+                this.applyTranslations();
             }
         }
     }

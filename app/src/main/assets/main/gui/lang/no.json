@@ -120,7 +120,9 @@
         "connected": "Du er online igjen. Grensesnittet synkroniseres...",
         "connectionLostTitle": "Tilkobling mistet",
         "connectedTitle": "Tilkoblet",
-        "slowConnectionTitle": "Treg tilkobling"
+        "slowConnectionTitle": "Treg tilkobling",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Søk",
@@ -160,7 +162,8 @@
         "nextEpisode": "Neste episode",
         "loading": "Laster...",
         "statusTitle": "Spilleren tar for lang tid",
-        "statusMessage": "Den konfigurerde spillerleverandøren har ikke svart ennå. Du kan gå tilbake eller endre spillerens endepunkt i Innstillinger."
+        "statusMessage": "Den konfigurerde spillerleverandøren har ikke svart ennå. Du kan gå tilbake eller endre spillerens endepunkt i Innstillinger.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Mine spillelister",

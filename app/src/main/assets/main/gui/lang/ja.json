@@ -120,7 +120,9 @@
         "connected": "オンラインに戻りました。UIを同期中...",
         "connectionLostTitle": "接続が切れました",
         "connectedTitle": "接続完了",
-        "slowConnectionTitle": "接続が遅いです"
+        "slowConnectionTitle": "接続が遅いです",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "検索",
@@ -160,7 +162,8 @@
         "nextEpisode": "次のエピソード",
         "loading": "読み込み中...",
         "statusTitle": "再生プレイヤーの応答に時間がかかっています",
-        "statusMessage": "設定された再生プロバイダーがまだ応答していません。戻るか、設定でプレイヤーのエンドポイントを変更できます。"
+        "statusMessage": "設定された再生プロバイダーがまだ応答していません。戻るか、設定でプレイヤーのエンドポイントを変更できます。",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "マイプレイリスト",

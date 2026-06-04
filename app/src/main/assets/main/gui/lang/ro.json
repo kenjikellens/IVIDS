@@ -120,7 +120,9 @@
         "connected": "Ești din nou online. Interfața se sincronizează...",
         "connectionLostTitle": "Conexiune pierdută",
         "connectedTitle": "Conectat",
-        "slowConnectionTitle": "Conexiune lentă"
+        "slowConnectionTitle": "Conexiune lentă",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Căutare",
@@ -160,7 +162,8 @@
         "nextEpisode": "Episodul următor",
         "loading": "Se încarcă...",
         "statusTitle": "Redarea durează prea mult",
-        "statusMessage": "Furnizorul de redare configurat nu a răspuns încă. Puteți reveni sau modifica adresa de redare în Setări."
+        "statusMessage": "Furnizorul de redare configurat nu a răspuns încă. Puteți reveni sau modifica adresa de redare în Setări.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Listele mele",

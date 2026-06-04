@@ -120,7 +120,9 @@
         "connected": "Ligação restabelecida. A sincronizar...",
         "connectionLostTitle": "Ligação Perdida",
         "connectedTitle": "Ligado",
-        "slowConnectionTitle": "Ligação Lenta"
+        "slowConnectionTitle": "Ligação Lenta",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Pesquisar",
@@ -160,7 +162,8 @@
         "nextEpisode": "Próximo Episódio",
         "loading": "Carregando...",
         "statusTitle": "O reprodutor está demorando muito",
-        "statusMessage": "O provedor do reprodutor configurado ainda não respondeu. Você pode voltar ou alterar o endpoint do reprodutor nas Configurações."
+        "statusMessage": "O provedor do reprodutor configurado ainda não respondeu. Você pode voltar ou alterar o endpoint do reprodutor nas Configurações.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Minhas Playlists",

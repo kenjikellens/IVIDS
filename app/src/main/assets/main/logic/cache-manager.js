@@ -147,7 +147,19 @@ class CacheManager {
      * Prevents gradual sessionStorage quota pressure during long sessions.
      */
     _startPeriodicCleanup() {
-        setInterval(() => this.clearExpiredStorage(), 5 * 60 * 1000);
+        this._cleanupInterval = setInterval(() => this.clearExpiredStorage(), 5 * 60 * 1000);
+    }
+
+    /**
+     * Clears the periodic cleanup interval and purges all active memory cache entries.
+     * This is used during application teardown or testing.
+     */
+    destroy() {
+        if (this._cleanupInterval) {
+            clearInterval(this._cleanupInterval);
+            this._cleanupInterval = null;
+        }
+        this.clear();
     }
 }
 

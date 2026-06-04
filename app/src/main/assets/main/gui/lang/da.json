@@ -120,7 +120,9 @@
         "connected": "Du er online igen. UI synkroniseres...",
         "connectionLostTitle": "Forbindelse afbrudt",
         "connectedTitle": "Forbundet",
-        "slowConnectionTitle": "Langsom forbindelse"
+        "slowConnectionTitle": "Langsom forbindelse",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Søg",
@@ -160,7 +162,8 @@
         "nextEpisode": "Næste afsnit",
         "loading": "Indlæser...",
         "statusTitle": "Afspilleren tager for lang tid",
-        "statusMessage": "Den konfigurerede afspillerudbyder har ikke svaret endnu. Du kan gå tilbage eller ændre afspillerens slutpunkt i Indstillinger."
+        "statusMessage": "Den konfigurerede afspillerudbyder har ikke svaret endnu. Du kan gå tilbage eller ændre afspillerens slutpunkt i Indstillinger.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Mine playlister",

@@ -113,7 +113,9 @@
         "connected": "You are back online. UI is syncing...",
         "connectionLostTitle": "Connection Lost",
         "connectedTitle": "Connected",
-        "slowConnectionTitle": "Slow Connection"
+        "slowConnectionTitle": "Slow Connection",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Search",

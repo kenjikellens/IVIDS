@@ -120,7 +120,9 @@
         "connected": "आप वापस ऑनलाइन हैं। UI सिंक हो रहा है...",
         "connectionLostTitle": "कनेक्शन टूट गया",
         "connectedTitle": "कनेक्टेड",
-        "slowConnectionTitle": "धीमा कनेक्शन"
+        "slowConnectionTitle": "धीमा कनेक्शन",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "खोजें",
@@ -160,7 +162,8 @@
         "nextEpisode": "अगला एपिसोड",
         "loading": "लोड हो रहा है...",
         "statusTitle": "प्लेयर बहुत अधिक समय ले रहा है",
-        "statusMessage": "कॉन्फ़िगर किया गया प्लेयर प्रदाता अभी तक प्रतिक्रिया नहीं दे रहा है। आप वापस जा सकते हैं या सेटिंग्स में प्लेयर एंडपॉइंट बदल सकते हैं।"
+        "statusMessage": "कॉन्फ़िगर किया गया प्लेयर प्रदाता अभी तक प्रतिक्रिया नहीं दे रहा है। आप वापस जा सकते हैं या सेटिंग्स में प्लेयर एंडपॉइंट बदल सकते हैं।",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "मेरी प्लेलिस्ट",

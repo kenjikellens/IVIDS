@@ -10,6 +10,8 @@ import io
 import gzip
 import json
 import mimetypes
+import socket
+import ipaddress
 from http.server import ThreadingHTTPServer
 
 # Register the SVG MIME type to ensure Windows systems serve vector graphics correctly
@@ -66,6 +68,35 @@ def rewrite_m3u8(content, base_url, proxy_prefix):
             absolute = resolve_url(base_url, stripped)
             rewritten.append(f'{proxy_prefix}{urllib.parse.quote(absolute, safe="")}')
     return '\n'.join(rewritten)
+
+
+def is_safe_url(url):
+    """
+    Validates if the target URL has a safe http/https scheme and resolves to a public, non-loopback IP address.
+    Returns True if the URL is safe and resolves to a public IP, False otherwise.
+    """
+    try:
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme not in ('http', 'https'):
+            return False
+        
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+        
+        hostname_lower = hostname.lower()
+        if hostname_lower in ('localhost', '0.0.0.0', '127.0.0.1', '::1'):
+            return False
+        
+        ip = socket.gethostbyname(hostname)
+        ip_obj = ipaddress.ip_address(ip)
+        
+        if ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_unspecified:
+            return False
+            
+        return True
+    except Exception:
+        return False
 
 
 class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -147,12 +178,18 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def _handle_get_version(self):
         """
-        Reads the application version from package.json and returns it as a JSON payload.
-        This allows the static web client to dynamically determine the local version during development.
+        Retrieves the version string from the workspace package.json file securely.
+        Ensures the file is within the project root and returns the version as a JSON payload.
         """
         try:
-            root_dir = os.path.dirname(ASSETS_DIR)
-            package_json_path = os.path.join(root_dir, 'package.json')
+            project_root = os.path.abspath(os.path.dirname(__file__))
+            package_json_path = os.path.abspath(os.path.join(project_root, 'package.json'))
+            
+            # Prevent path traversal outside the project directory
+            if os.path.commonpath([project_root, package_json_path]) != project_root:
+                self.send_error(403, 'Forbidden path')
+                return
+
             with open(package_json_path, 'r', encoding='utf-8') as f:
                 pkg = json.load(f)
             version = pkg.get('version', '0.4.1')
@@ -277,8 +314,8 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def _handle_proxy(self):
         """
-        Reverse proxy handler that fetches remote URLs, decompresses gzip EPG data, and rewrites M3U8 playlists.
-        This modifies response headers, response bodies, and affects local stream/EPG fetch operations.
+        Reverse proxy handler that validates target URLs against SSRF and fetches content.
+        Enforces a maximum body size, decompresses gzip EPG data, and rewrites M3U8 links.
         """
         parsed = urllib.parse.urlparse(self.path)
         query = urllib.parse.parse_qs(parsed.query)
@@ -288,6 +325,10 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(400, 'Missing url parameter')
             return
 
+        if not is_safe_url(target_url):
+            self.send_error(403, 'Forbidden target URL')
+            return
+
         try:
             req = urllib.request.Request(target_url)
             req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
@@ -295,7 +336,21 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
             with urllib.request.urlopen(req, timeout=15) as response:
                 content_type = response.headers.get('Content-Type', 'application/octet-stream')
-                body = response.read()
+                
+                # Limit size and read in chunks (MAX_PROXY_RESPONSE_SIZE = 50 MB)
+                MAX_PROXY_RESPONSE_SIZE = 50 * 1024 * 1024
+                body_parts = []
+                total_read = 0
+                while True:
+                    chunk = response.read(65536)
+                    if not chunk:
+                        break
+                    total_read += len(chunk)
+                    if total_read > MAX_PROXY_RESPONSE_SIZE:
+                        self.send_error(413, 'Payload Too Large')
+                        return
+                    body_parts.append(chunk)
+                body = b''.join(body_parts)
 
                 # Decompress gzip files if the target URL has .gz or response is gzip-encoded
                 is_gzip = '.gz' in target_url.lower() or response.headers.get('Content-Encoding') == 'gzip'

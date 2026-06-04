@@ -120,7 +120,9 @@
         "connected": "Tekrar çevrimiçisiniz. UI senkronize ediliyor...",
         "connectionLostTitle": "Bağlantı Kesildi",
         "connectedTitle": "Bağlandı",
-        "slowConnectionTitle": "Yavaş Bağlantı"
+        "slowConnectionTitle": "Yavaş Bağlantı",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Ara",
@@ -160,7 +162,8 @@
         "nextEpisode": "Sonraki Bölüm",
         "loading": "Yükleniyor...",
         "statusTitle": "Oynatıcı çok uzun sürüyor",
-        "statusMessage": "Yapılandırılmış oynatıcı sağlayıcısı henüz yanıt vermedi. Geri dönebilir veya Ayarlar'da oynatıcı uç noktasını değiştirebilirsiniz."
+        "statusMessage": "Yapılandırılmış oynatıcı sağlayıcısı henüz yanıt vermedi. Geri dönebilir veya Ayarlar'da oynatıcı uç noktasını değiştirebilirsiniz.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Oynatma Listelerim",

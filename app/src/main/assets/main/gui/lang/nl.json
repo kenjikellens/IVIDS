@@ -113,7 +113,9 @@
         "connected": "U bent weer online. UI wordt gesynchroniseerd...",
         "connectionLostTitle": "Verbinding verbroken",
         "connectedTitle": "Verbonden",
-        "slowConnectionTitle": "Trage verbinding"
+        "slowConnectionTitle": "Trage verbinding",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Zoeken",

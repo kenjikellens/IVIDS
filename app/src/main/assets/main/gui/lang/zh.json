@@ -120,7 +120,9 @@
         "connected": "您已回到在线状态。UI 正在同步...",
         "connectionLostTitle": "连接丢失",
         "connectedTitle": "已连接",
-        "slowConnectionTitle": "连接缓慢"
+        "slowConnectionTitle": "连接缓慢",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "搜索",
@@ -160,7 +162,8 @@
         "nextEpisode": "下一集",
         "loading": "加载中...",
         "statusTitle": "播放器响应时间过长",
-        "statusMessage": "配置的播放器提供商尚未响应。您可以返回或在设置中更改播放器接口。"
+        "statusMessage": "配置的播放器提供商尚未响应。您可以返回或在设置中更改播放器接口。",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "我的播放列表",

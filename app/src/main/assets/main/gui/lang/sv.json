@@ -120,7 +120,9 @@
         "connected": "Du är online igen. Gränssnittet synkroniseras...",
         "connectionLostTitle": "Anslutningen bruten",
         "connectedTitle": "Ansluten",
-        "slowConnectionTitle": "Långsam anslutning"
+        "slowConnectionTitle": "Långsam anslutning",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Sök",
@@ -160,7 +162,8 @@
         "nextEpisode": "Nästa avsnitt",
         "loading": "Laddar...",
         "statusTitle": "Spelaren tar för lång tid",
-        "statusMessage": "Den konfigurerade spelarleverantören svarade inte än. Du kan gå tillbaka eller ändra spelarens slutpunkt i Inställningar."
+        "statusMessage": "Den konfigurerade spelarleverantören svarade inte än. Du kan gå tillbaka eller ändra spelarens slutpunkt i Inställningar.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Mina spellistor",

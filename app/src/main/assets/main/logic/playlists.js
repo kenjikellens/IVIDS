@@ -1,5 +1,6 @@
 // logic/playlists.js
 import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched } from './recentlyWatched.js';
+import { Toast } from '../gui/js/toast.js';
 
 const STORAGE_KEY = 'user_playlists';
 const HISTORY_ID = 'history';
@@ -54,6 +55,10 @@ export const Playlists = {
         }
     },
 
+    /**
+     * Serializes user playlists into localStorage, filtering out system playlists.
+     * Shows a toast notification if the browser's localStorage quota is exceeded.
+     */
     savePlaylists(playlists) {
         try {
             // Only save user playlists (filter out system ones like history)
@@ -61,12 +66,33 @@ export const Playlists = {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(_playlistsCache));
         } catch (e) {
             console.error('Error saving playlists:', e);
+            if (e.name === 'QuotaExceededError' || (e.message && e.message.includes('quota'))) {
+                const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
+                const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
+                if (typeof Toast !== 'undefined') {
+                    Toast.show(msg, { title, duration: 5000 });
+                }
+            }
         }
     },
 
+    /**
+     * Creates a new user playlist with the given name, subject to a limit of 50.
+     * Displays a toast notification and returns null if the limit is reached.
+     */
     createPlaylist(name) {
         // Ensure cache is loaded
         this.getPlaylists();
+
+        // Enforce max 50 user playlists limit
+        if (_playlistsCache.length >= 50) {
+            const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
+            const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
+            if (typeof Toast !== 'undefined') {
+                Toast.show(msg, { title, duration: 5000 });
+            }
+            return null;
+        }
 
         const newPlaylist = {
             id: Date.now().toString(),
@@ -87,6 +113,10 @@ export const Playlists = {
         this.savePlaylists(_playlistsCache);
     },
 
+    /**
+     * Adds an item to a playlist, enforcing duplicate prevention and a 200-item cap.
+     * Displays a toast notification and returns false if the item limit is exceeded.
+     */
     addToPlaylist(playlistId, item) {
         if (!item || isMusic(item)) return false;
 
@@ -102,6 +132,16 @@ export const Playlists = {
             // Check for duplicates
             const exists = playlist.items.some(i => i.id === item.id && i.media_type === item.media_type);
             if (exists) return false;
+
+            // Enforce max 200 items per playlist limit
+            if (playlist.items.length >= 200) {
+                const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
+                const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
+                if (typeof Toast !== 'undefined') {
+                    Toast.show(msg, { title, duration: 5000 });
+                }
+                return false;
+            }
 
             const newItem = {
                 id: item.id,

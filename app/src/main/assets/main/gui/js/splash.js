@@ -76,6 +76,10 @@ export class Splash {
         feedbackEl.textContent = message;
     }
 
+    /**
+     * Dismisses the splash screen overlay using a CSS transition with a fallback timeout.
+     * Triggers any pending background update check prompts once the splash is hidden.
+     */
     static dismiss() {
         if (this.isDismissed || !this.splashElement) return;
         this.isDismissed = true;
@@ -86,7 +90,11 @@ export class Splash {
         this.splashElement.classList.add('hidden');
 
         // Robust cleanup: use transitionend with a fallback timeout
+        let cleanedUp = false;
         const cleanup = () => {
+            if (cleanedUp) return;
+            cleanedUp = true;
+
             this.splashElement.style.display = 'none';
             this.splashElement.removeEventListener('transitionend', cleanup);
 

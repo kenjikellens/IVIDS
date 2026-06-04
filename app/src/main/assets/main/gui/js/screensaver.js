@@ -2,8 +2,11 @@ export const Screensaver = {
     timeout: 10 * 60 * 1000, // 10 minutes
     timer: null,
     overlay: null,
-    isActive: false,
+    _listenersAttached: false,
 
+    /**
+     * Initializes the screensaver overlay, starts the inactivity timer, and sets up event listeners.
+     */
     init() {
         try {
             this.createOverlay();
@@ -61,7 +64,12 @@ export const Screensaver = {
         }
     },
 
+    /**
+     * Registers global input event listeners to reset the screensaver timer, ensuring they are only added once.
+     */
     addEventListeners() {
+        if (this._listenersAttached) return;
+
         const events = ['keydown', 'mousemove', 'mousedown', 'touchstart', 'click', 'wheel'];
 
         // Throttled reset to avoid performance hit on mousemove
@@ -79,5 +87,7 @@ export const Screensaver = {
         events.forEach(event => {
             window.addEventListener(event, handleActivity, { passive: true });
         });
+
+        this._listenersAttached = true;
     }
 };

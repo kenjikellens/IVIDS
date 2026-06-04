@@ -120,7 +120,9 @@
         "connected": "أنت متصل بالإنترنت الآن. جاري مزامنة واجهة المستخدم...",
         "connectionLostTitle": "فقد الاتصال",
         "connectedTitle": "متصل",
-        "slowConnectionTitle": "اتصال بطيء"
+        "slowConnectionTitle": "اتصال بطيء",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "بحث",
@@ -160,7 +162,8 @@
         "nextEpisode": "الحلقة التالية",
         "loading": "جاري التحميل...",
         "statusTitle": "المشغل يستغرق وقتاً طويلاً",
-        "statusMessage": "مزود المشغل الذي تم تكوينه لم يستجب بعد. يمكنك العودة أو تغيير رابط المشغل في الإعدادات."
+        "statusMessage": "مزود المشغل الذي تم تكوينه لم يستجب بعد. يمكنك العودة أو تغيير رابط المشغل في الإعدادات.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "قوائم التشغيل الخاصة بي",

@@ -15,9 +15,8 @@ export class Toast {
     }
 
     /**
-     * Show a toast message
-     * @param {string} message - Message to display
-     * @param {Object} options - title, type (info, error, warning, success), duration, position
+     * Displays a toast notification in the designated screen position with custom duration.
+     * Programmatically populates details to protect against XSS vectors.
      */
     static show(message, options = {}) {
         const {
@@ -46,10 +45,17 @@ export class Toast {
         toast.innerHTML = `
             <div class="toast-icon">${iconHtml}</div>
             <div class="toast-content">
-                ${title ? `<h4 class="toast-title">${title}</h4>` : ''}
-                <p class="toast-message">${message}</p>
+                ${title ? `<h4 class="toast-title"></h4>` : ''}
+                <p class="toast-message"></p>
             </div>
         `;
+
+        if (title) {
+            const titleEl = toast.querySelector('.toast-title');
+            if (titleEl) titleEl.textContent = title;
+        }
+        const messageEl = toast.querySelector('.toast-message');
+        if (messageEl) messageEl.textContent = message;
 
         container.appendChild(toast);
 

@@ -120,7 +120,9 @@
         "connected": "Jste opět online. Rozhraní se synchronizuje...",
         "connectionLostTitle": "Připojení ztraceno",
         "connectedTitle": "Připojeno",
-        "slowConnectionTitle": "Pomalé připojení"
+        "slowConnectionTitle": "Pomalé připojení",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Hledat",
@@ -160,7 +162,8 @@
         "nextEpisode": "Další epizoda",
         "loading": "Načítání...",
         "statusTitle": "Přehrávač trvá příliš dlouho",
-        "statusMessage": "Nakonfigurovaný poskytovatel přehrávače dosud neodpověděl. Můžete se vrátit zpět nebo změnit koncový bod přehrávače v Nastavení."
+        "statusMessage": "Nakonfigurovaný poskytovatel přehrávače dosud neodpověděl. Můžete se vrátit zpět nebo změnit koncový bod přehrávače v Nastavení.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Moje playlisty",

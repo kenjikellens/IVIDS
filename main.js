@@ -132,6 +132,8 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             nodeIntegration: false,
+            // TODO: Investigate migrating to webSecurity: true by routing TMDB/VidSrc requests
+            // through Electron's session.webRequest API or local HTTP server proxy to mitigate XSS risks.
             webSecurity: false
         },
         icon: path.join(__dirname, 'app/src/main/ic_launcher-playstore.png')

@@ -89,13 +89,15 @@ export class HeroSlider {
         this.startAutoPlay();
 
         // 6. Pause auto-play on hover
-        this.container.addEventListener('mouseenter', () => this.stopAutoPlay());
-        this.container.addEventListener('mouseleave', () => this.startAutoPlay());
+        this.onMouseEnter = () => this.stopAutoPlay();
+        this.onMouseLeave = () => this.startAutoPlay();
+        this.container.addEventListener('mouseenter', this.onMouseEnter);
+        this.container.addEventListener('mouseleave', this.onMouseLeave);
     }
 
     /**
-     * Transitions the slider to show the slide at the specified index.
-     * Optionally skips the text fading transition on initial load.
+     * Renders the hero slide at the specified index, shifting the background and updating title/description elements.
+     * This method directly modifies the DOM content of the hero section and manages the fade transition state.
      * @param {number} index - Index of slide to render.
      * @param {boolean} [isInitial=false] - True if this is the first render, skipping animation.
      */
@@ -128,7 +130,7 @@ export class HeroSlider {
         if (isInitial) {
             // Initial render - set text content instantly without fade out
             if (this.titleEl) this.titleEl.textContent = item.title || item.name;
-            if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 150);
+            if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 450);
             this.updateButtonHandlers(item);
             Splash.signalContentLoaded();
         } else {
@@ -139,7 +141,7 @@ export class HeroSlider {
                 if (this.isDestroyed) return;
 
                 if (this.titleEl) this.titleEl.textContent = item.title || item.name;
-                if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 150);
+                if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 450);
                 this.updateButtonHandlers(item);
 
                 if (content) content.classList.remove('transitioning');
@@ -217,5 +219,16 @@ export class HeroSlider {
     destroy() {
         this.isDestroyed = true;
         this.stopAutoPlay();
+        
+        if (this.container && this.onMouseEnter && this.onMouseLeave) {
+            this.container.removeEventListener('mouseenter', this.onMouseEnter);
+            this.container.removeEventListener('mouseleave', this.onMouseLeave);
+        }
+        if (this.track && this.track.parentNode) {
+            this.track.parentNode.removeChild(this.track);
+        }
+        if (this.indicatorsContainer && this.indicatorsContainer.parentNode) {
+            this.indicatorsContainer.parentNode.removeChild(this.indicatorsContainer);
+        }
     }
 }

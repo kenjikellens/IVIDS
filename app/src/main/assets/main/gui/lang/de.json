@@ -113,7 +113,9 @@
         "connected": "Sie sind wieder online. UI wird synchronisiert...",
         "connectionLostTitle": "Verbindung verloren",
         "connectedTitle": "Verbunden",
-        "slowConnectionTitle": "Langsame Verbindung"
+        "slowConnectionTitle": "Langsame Verbindung",
+        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
+        "storageFullTitle": "Storage Full"
     },
     "search": {
         "title": "Suche",
@@ -153,7 +155,8 @@
         "nextEpisode": "Nächste Folge",
         "loading": "Laden...",
         "statusTitle": "Der Player braucht zu lange",
-        "statusMessage": "Der konfigurierte Player-Anbieter hat noch nicht geantwortet. Sie können zurückgehen oder den Player-Endpunkt in den Einstellungen ändern."
+        "statusMessage": "Der konfigurierte Player-Anbieter hat noch nicht geantwortet. Sie können zurückgehen oder den Player-Endpunkt in den Einstellungen ändern.",
+        "selectServer": "Select Server"
     },
     "playlists": {
         "title": "Meine Wiedergabelisten",
