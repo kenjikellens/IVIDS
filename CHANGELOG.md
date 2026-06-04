@@ -100,3 +100,4 @@
 [15:40 04-06-2026] app/src/main/assets/main/gui/pages/settings.html - Replaced inline edit SVGs with clean Feather edit icons to resolve parsing/rendering issues.
 [15:43 04-06-2026] app/src/main/assets/main/gui/pages/settings.html - Renamed edit-icon class to setting-edit-icon to avoid stylesheet clashes.
 [15:43 04-06-2026] app/src/main/assets/main/gui/css/global.css - Renamed .edit-icon styles to .setting-edit-icon for settings page elements and added mandatory class comments.
+[18:24 04-06-2026] .agents/rules/mockups.md - Updated mockup rule to require deleting mockup files after implementation.

@@ -10,3 +10,4 @@ If the user asks for a mockup: you have to make a mockup, you should make it in 
 - The name of the mockup file must follow the pattern `mockup_[filename/description of the mockup].html`.
 - If css/js is needed in a standalone file, apply same rules for the naming: `mockup_[filename/description of the mockup].css` or `js`!
 - This rule applies only when you are explicitly asked to create a mockup.
+- Once the mockup has been successfully implemented in the main application codebase, you must delete the mockup files (including any `.html`, `.css`, or `.js` mockup files) from the `/mockup/` folder to keep the workspace clean.
