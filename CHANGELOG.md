@@ -95,3 +95,8 @@
 [14:51 04-06-2026] app/src/main/assets/main/gui/css/global.css - Expanded hero-content and hero-desc max-widths to allow wider layout text.
 [14:53 04-06-2026] app/src/main/assets/main/gui/css/global.css - Increased hero-content width limit to min(1100px, 90%) and hero-desc max-width to 1000px (desktop) / 850px (tablet).
 [14:53 04-06-2026] app/src/main/assets/main/gui/js/hero-slider.js - Increased text truncation length limit to 450 characters to fill expanded width and updated JSDoc.
+[15:23 04-06-2026] app/src/main/assets/main/gui/pages/settings.html - Removed category SVG icons from settings section headers.
+[15:25 04-06-2026] app/src/main/assets/main/gui/css/global.css - Changed settings-section background to a solid elevated design-system surface color.
+[15:40 04-06-2026] app/src/main/assets/main/gui/pages/settings.html - Replaced inline edit SVGs with clean Feather edit icons to resolve parsing/rendering issues.
+[15:43 04-06-2026] app/src/main/assets/main/gui/pages/settings.html - Renamed edit-icon class to setting-edit-icon to avoid stylesheet clashes.
+[15:43 04-06-2026] app/src/main/assets/main/gui/css/global.css - Renamed .edit-icon styles to .setting-edit-icon for settings page elements and added mandatory class comments.

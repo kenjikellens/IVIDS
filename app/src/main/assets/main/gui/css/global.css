@@ -4574,12 +4574,13 @@ iframe {
     font-size: 16px;
 }
 
+/* Styles the container panel for each settings group with an elevated background and shadow. */
 .settings-section {
     margin-bottom: 18px;
     padding: 24px;
     border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.045);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--surface-color);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: var(--shadow-panel);
 }
 
@@ -4685,7 +4686,7 @@ iframe {
 }
 
 /* Graphic SVG icon inside edit trigger button */
-.edit-icon {
+.setting-edit-icon {
     width: 20px;
     height: 20px;
     display: block;
@@ -5116,7 +5117,8 @@ iframe {
         background: rgba(255, 255, 255, 0.06);
     }
 
-    .edit-icon {
+    /* Adapts the setting edit icon size for mobile displays. */
+    .setting-edit-icon {
         width: 18px;
         height: 18px;
     }
