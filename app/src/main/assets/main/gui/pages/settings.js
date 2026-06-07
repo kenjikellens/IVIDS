@@ -1,6 +1,8 @@
 console.log('Settings.js: Script loaded');
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Toast } from '../js/toast.js';
+import { manageModal } from '../js/utils/ui-helper.js';
+
 
 let settingsManagerInstance = null;
 
@@ -534,27 +536,10 @@ class SettingsManager {
     openModal(modalId) {
         console.log('--- OPENING MODAL:', modalId, '---');
         const modal = document.getElementById(modalId);
-        console.log('1. Modal Element Resolution:', modal);
-        if (!modal) {
-            console.error('CRITICAL: Element with ID "' + modalId + '" not found in DOM! Checking settings.html injection.');
-            return;
-        }
+        if (!modal) return;
 
         this.currentModal = modal;
-        this.modalOriginalParent = modal.parentElement;
-        console.log('2. Original Parent before Portal:', this.modalOriginalParent ? (this.modalOriginalParent.id || this.modalOriginalParent.className || this.modalOriginalParent.tagName) : 'none');
-
-        // Port modal to document.body to escape any parent container stacking context or overflow clipping!
-        document.body.appendChild(modal);
-        console.log('3. Portaled to body successfully. Current parent is:', modal.parentElement ? modal.parentElement.tagName : 'none');
-
-        // Force direct inline visibility styles to override any stylesheet conflicts!
-        modal.style.setProperty('display', 'flex', 'important');
-        modal.style.setProperty('visibility', 'visible', 'important');
-        modal.style.setProperty('z-index', '99999', 'important');
-
         this.pendingSettings = { ...this.settings };
-        // Deep copy arrays to avoid reference mutations before click confirm/apply
         if (this.settings.playerProviders) {
             this.pendingSettings.playerProviders = this.settings.playerProviders.map(p => ({ ...p }));
         }
@@ -606,7 +591,6 @@ class SettingsManager {
                 };
             }
         } else {
-            // 1. Programmatic Chip Click Bindings
             modal.querySelectorAll('.option-chip').forEach(chip => {
                 const val = chip.getAttribute('data-value');
                 chip.onclick = (e) => {
@@ -616,14 +600,32 @@ class SettingsManager {
             });
         }
 
-        // 2. Programmatic Overlay Click Binding (Click outside to close)
+        const innerClose = manageModal(modal);
+
+        this.closeModalFn = (revert = true) => {
+            if (revert) {
+                if (this.pendingSettings.language !== this.settings.language) {
+                    if (window.i18n) window.i18n.setLanguage(this.settings.language);
+                }
+                if (this.pendingSettings.accentColor !== this.settings.accentColor) {
+                    this.applySettings();
+                    this.applySettingsGlobally();
+                }
+            }
+            this.movingProviderId = null;
+            this.movingM3uId = null;
+            this.movingOriginalList = null;
+            innerClose();
+            this.currentModal = null;
+            this.closeModalFn = null;
+        };
+
         modal.onclick = (e) => {
             if (e.target === modal) {
                 this.closeModal();
             }
         };
 
-        // 3. Programmatic Footer Action Bindings
         const cancelBtn = modal.querySelector('.modal-btn.secondary') || modal.querySelector('.action-btn.secondary');
         if (cancelBtn) {
             cancelBtn.onclick = (e) => {
@@ -641,14 +643,6 @@ class SettingsManager {
         }
 
         this.syncActiveChips(modalId);
-
-        // Coordinate smooth opacity fade-in transition
-        setTimeout(() => {
-            modal.style.setProperty('opacity', '1', 'important');
-            modal.classList.add('active', 'show');
-        }, 50);
-        SpatialNav.setFocusTrap(modal);
-        SpatialNav.focusFirst();
     }
 
     /**
@@ -691,39 +685,11 @@ class SettingsManager {
      * @param {boolean} [revert=true] - Reverts pending settings if true.
      */
     closeModal(revert = true) {
-        if (!this.currentModal) return;
-        const modal = this.currentModal;
-
-        if (revert) {
-            if (this.pendingSettings.language !== this.settings.language) {
-                if (window.i18n) window.i18n.setLanguage(this.settings.language);
-            }
-            if (this.pendingSettings.accentColor !== this.settings.accentColor) {
-                this.applySettings();
-                this.applySettingsGlobally();
-            }
+        if (this.closeModalFn) {
+            this.closeModalFn(revert);
         }
-
-        this.movingProviderId = null;
-        this.movingM3uId = null;
-        this.movingOriginalList = null;
-
-        modal.classList.remove('show');
-        modal.style.setProperty('opacity', '0', 'important');
-        setTimeout(() => {
-            modal.classList.remove('active');
-            modal.style.setProperty('display', 'none', 'important');
-            modal.style.setProperty('visibility', 'hidden', 'important');
-            
-            // Safely move modal back to its original parent so it is cleared during page changes
-            if (this.modalOriginalParent && this.modalOriginalParent.appendChild) {
-                this.modalOriginalParent.appendChild(modal);
-            }
-        }, 300);
-        SpatialNav.clearFocusTrap();
-        SpatialNav.refocus();
-        this.currentModal = null;
     }
+
 
     /**
      * Updates modal temporary state options.

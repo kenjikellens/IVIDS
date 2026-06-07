@@ -105,3 +105,18 @@
 [15:44 07-06-2026] app/src/main/assets/main/gui/pages/home.js - Refactored to import setupRow from ui-helper.js and removed local setupRow and truncate functions.
 [15:44 07-06-2026] app/src/main/assets/main/gui/pages/movies.js - Refactored to import setupRow from ui-helper.js, passed movie default type, and removed local setupRow and truncate functions.
 [15:44 07-06-2026] app/src/main/assets/main/gui/pages/series.js - Refactored to import setupRow from ui-helper.js, passed tv default type, and removed local setupRow and truncate functions.
+[18:40 07-06-2026] app/src/main/assets/main/gui/js/utils/ui-helper.js - Added setupLazyLoadedRows helper function to consolidate redundant page category initialization logic.
+[18:40 07-06-2026] app/src/main/assets/main/gui/pages/home.js - Refactored to import setupLazyLoadedRows from ui-helper.js and removed renderSkeletonRow and lazyLoader imports.
+[18:40 07-06-2026] app/src/main/assets/main/gui/pages/movies.js - Refactored to import setupLazyLoadedRows from ui-helper.js, removed redundant category setups, and added JSDoc method documentation.
+[18:40 07-06-2026] app/src/main/assets/main/gui/pages/series.js - Refactored to import setupLazyLoadedRows from ui-helper.js, removed redundant category setups, and added JSDoc method documentation.
+[18:40 07-06-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Introduced manageModal helper function and refactored openItemContextModal, openEditPlaylistModal, and showConfirmationModal to use it.
+[19:00 07-06-2026] app/src/main/assets/main/gui/css/global.css - Added .sidebar-always-expanded rules to keep sidebar always extended on specific routes.
+[19:00 07-06-2026] app/src/main/assets/main/gui/js/router.js - Updated loadPage to toggle .sidebar-always-expanded class on #app based on current route.
+[19:40 07-06-2026] app/src/main/assets/main/gui/css/global.css - Consolidated duplicate rules and merged identical property declarations to reduce size, and ensured compliant class documentation.
+[19:40 07-06-2026] app/src/main/assets/main/gui/css/player.css - Consolidated redundant hover and focus selectors and declarations to optimize file size.
+[21:10 07-06-2026] app/src/main/assets/main/gui/js/utils/ui-helper.js - Added and exported centralized manageModal lifecycle helper function.
+[21:10 07-06-2026] app/src/main/assets/main/gui/pages/playlist-details.js - Refactored to import and use centralized manageModal helper, removing local definition.
+[21:10 07-06-2026] app/src/main/assets/main/gui/pages/settings.js - Refactored openModal and closeModal methods to use the centralized manageModal helper.
+[21:10 07-06-2026] app/src/main/assets/main/gui/pages/search.js - Refactored search filters, genres, sort, and country modals to use the centralized manageModal helper.
+[21:10 07-06-2026] app/src/main/assets/main/gui/pages/profiles.js - Refactored edit profile, delete confirmation, and PIN entry modals to use the centralized manageModal helper.
+[21:15 07-06-2026] app/src/main/assets/main/gui/css/global.css - Styled the search button to use the theme accent color as its background for better theme integration.

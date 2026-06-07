@@ -3,6 +3,9 @@ import { Router } from '../router.js';
 import { createLoaderElement } from '../loader.js';
 import { lazyLoader } from '../lazy-loader.js';
 import { domRecycler } from '../dom-recycler.js';
+import { renderSkeletonRow } from '../skeleton-renderer.js';
+import { SpatialNav } from '../spatial-nav.js';
+
 
 /**
  * Populates a content row with poster buttons, configures lazy loading, and runs DOM recycling.
@@ -121,4 +124,77 @@ export function setupRow(elementId, items, defaultType = null) {
     } catch (error) {
         console.error(`Error in setupRow for ${elementId}:`, error);
     }
+}
+
+/**
+ * Sets up skeleton rows immediately and registers lazy loaders to populate content.
+ * It manages the lifecycle of rendering skeletons, fetching actual content, and updating rows.
+ * @param {Array<Object>} categories - List of category objects containing element id and fetcher function.
+ * @param {string} [defaultType] - Default media type ('movie' or 'tv') passed down to setupRow.
+ */
+export function setupLazyLoadedRows(categories, defaultType = null) {
+    categories.forEach(cat => renderSkeletonRow(cat.id));
+
+    categories.forEach(cat => {
+        lazyLoader.register(cat.id, async () => {
+            return await cat.fetcher();
+        }, (id, data) => {
+            if (data) {
+                setupRow(id, data, defaultType);
+            } else {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '';
+            }
+        });
+    });
+}
+
+/**
+ * Manages modal container lifecycle, portaling it to document.body, updating inline style attributes, 
+ * applying activation transitions, and configuring spatial navigation focus traps.
+ * @param {HTMLElement} modal - The modal container element to manage.
+ * @param {HTMLElement} [focusTarget] - The element to focus initially when opening the modal.
+ * @returns {Function} A cleanup function to safely close the modal, fade it out, and return it to its original DOM parent.
+ */
+export function manageModal(modal, focusTarget = null) {
+    const originalParent = modal.parentElement;
+
+    // Move to body to escape parent stacking context or overflow bounds
+    document.body.appendChild(modal);
+
+    // Force inline display settings to override any stylesheet conflicts
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.setProperty('visibility', 'visible', 'important');
+    modal.style.setProperty('z-index', '99999', 'important');
+
+    const closeModal = () => {
+        modal.classList.remove('show');
+        modal.style.setProperty('opacity', '0', 'important');
+        setTimeout(() => {
+            modal.classList.remove('active');
+            modal.style.setProperty('display', 'none', 'important');
+            modal.style.setProperty('visibility', 'hidden', 'important');
+            if (originalParent && originalParent.appendChild) {
+                originalParent.appendChild(modal);
+            }
+        }, 300);
+        SpatialNav.clearFocusTrap();
+        SpatialNav.refocus();
+    };
+
+    setTimeout(() => {
+        modal.style.setProperty('opacity', '1', 'important');
+        modal.classList.add('active', 'show');
+    }, 10);
+    SpatialNav.setFocusTrap(modal);
+    if (focusTarget) {
+        SpatialNav.setFocus(focusTarget);
+        if (typeof focusTarget.focus === 'function') {
+            focusTarget.focus();
+        }
+    } else {
+        SpatialNav.focusFirst();
+    }
+
+    return closeModal;
 }

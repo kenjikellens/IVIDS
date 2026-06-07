@@ -22,7 +22,7 @@ export const Router = {
 
     /**
      * Loads a page's HTML, JS controller, and spatial navigation logic asynchronously.
-     * Updates the main content viewport, highlights the sidebar route, and resets focus.
+     * Updates the main content viewport, toggles the sidebar expansion state class, highlights the route, and resets focus.
      */
     async loadPage(pageName, params = {}, addToHistory = true, targetFocus = null) {
         if (this.isLoading) return; // Prevent double loading
@@ -63,7 +63,16 @@ export const Router = {
 
         // Show Loader
         const app = document.getElementById('app');
-        if (app) app.classList.remove('fullscreen-layout');
+        if (app) {
+            app.classList.remove('fullscreen-layout');
+            // Toggle always-expanded sidebar class based on page
+            const alwaysExpandedPages = ['search', 'playlists', 'settings', 'account'];
+            if (alwaysExpandedPages.includes(pageName)) {
+                app.classList.add('sidebar-always-expanded');
+            } else {
+                app.classList.remove('sidebar-always-expanded');
+            }
+        }
 
         const originalContent = mainView.innerHTML;
         mainView.innerHTML = `<div class="page-loader" style="display: flex; justify-content: center; align-items: center; height: 100vh;">${getLoaderHtml()}</div>`;

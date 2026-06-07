@@ -1,10 +1,12 @@
 import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { HeroSlider } from '../js/hero-slider.js';
-import { renderSkeletonRow } from '../js/skeleton-renderer.js';
-import { lazyLoader } from '../js/lazy-loader.js';
-import { setupRow } from '../js/utils/ui-helper.js';
+import { setupLazyLoadedRows } from '../js/utils/ui-helper.js';
 
+/**
+ * Initializes the Series page by loading popular series for the Hero Slider
+ * and setting up lazy loaded TV show rows for each category.
+ */
 export async function init() {
     try {
         // 1. Fetch Popular Series for Hero
@@ -39,21 +41,8 @@ export async function init() {
             { id: 'anime-series-row', fetcher: () => Api.fetchAnimeSeries() },
         ];
 
-        // 3. Render all skeletons immediately
-        categories.forEach(cat => renderSkeletonRow(cat.id));
-
-        // 4. Register Lazy Loaders
-        categories.forEach(cat => {
-            lazyLoader.register(cat.id, async () => {
-                return await cat.fetcher();
-            }, (id, data) => {
-                if (data) setupRow(id, data, 'tv');
-                else {
-                    const el = document.getElementById(id);
-                    if (el) el.innerHTML = '';
-                }
-            });
-        });
+        // 3. Render all skeletons immediately and register lazy loaders
+        setupLazyLoadedRows(categories, 'tv');
 
     } catch (e) {
         console.error('Error initializing series page:', e);

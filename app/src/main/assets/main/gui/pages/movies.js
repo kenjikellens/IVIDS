@@ -2,10 +2,12 @@ import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { HeroSlider } from '../js/hero-slider.js';
 import { Splash } from '../js/splash.js';
-import { renderSkeletonRow } from '../js/skeleton-renderer.js';
-import { lazyLoader } from '../js/lazy-loader.js';
-import { setupRow } from '../js/utils/ui-helper.js';
+import { setupLazyLoadedRows } from '../js/utils/ui-helper.js';
 
+/**
+ * Initializes the Movies page by loading trending movies for the Hero Slider
+ * and setting up lazy loaded movie rows for each category.
+ */
 export async function init() {
     try {
         // 1. Fetch Popular (Trending) Movies for Hero
@@ -50,21 +52,8 @@ export async function init() {
             { id: 'anime-movies-row', fetcher: () => Api.fetchAnimeMovies() },
         ];
 
-        // 3. Render all skeletons immediately
-        categories.forEach(cat => renderSkeletonRow(cat.id));
-
-        // 4. Register Lazy Loaders
-        categories.forEach(cat => {
-            lazyLoader.register(cat.id, async () => {
-                return await cat.fetcher();
-            }, (id, data) => {
-                if (data) setupRow(id, data, 'movie');
-                else {
-                    const el = document.getElementById(id);
-                    if (el) el.innerHTML = '';
-                }
-            });
-        });
+        // 3. Render all skeletons immediately and register lazy loaders
+        setupLazyLoadedRows(categories, 'movie');
 
     } catch (e) {
         console.error('Error initializing movies page:', e);

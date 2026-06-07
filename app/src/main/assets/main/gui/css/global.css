@@ -2,12 +2,10 @@
    IVIDS STANDARD UNIFIED DESIGN SYSTEM STYLESHEET
    Consolidated into a single file to eliminate redundancy and enhance load times.
    ========================================================================== */
-
 /* ==========================================================================
    SECTION 1: DESIGN TOKENS, CORE UTILITIES & BASE RESET
    Source File: global.css
    ========================================================================== */
-
 /* IVIDS TV-first design system */
 :root {
     --background-color: #050505;
@@ -39,8 +37,6 @@
     --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.36);
 }
 
-
-
 @media (max-width: 767px), (orientation: portrait) {
     :root {
         --app-sidebar-width: 76px;
@@ -50,6 +46,7 @@
         --poster-height: 168px;
         --row-min-height: 206px;
     }
+
 }
 
 * {
@@ -113,11 +110,6 @@ button {
     scrollbar-width: none;
 }
 
-#main-view::-webkit-scrollbar,
-*::-webkit-scrollbar {
-    display: none;
-}
-
 #app.fullscreen-layout #sidebar-container {
     display: none !important;
 }
@@ -126,6 +118,12 @@ button {
     width: 100vw !important;
     margin-left: 0 !important;
     padding: 0 !important;
+}
+
+/* Sets expanded width for the sidebar container when on search, playlists, settings, or account page. */
+#app.sidebar-always-expanded #sidebar-container {
+    width: var(--app-sidebar-expanded-width);
+    flex: 0 0 var(--app-sidebar-expanded-width);
 }
 
 /* Styles the active typing container parent or standalone input/textarea when actively being edited. */
@@ -221,55 +219,74 @@ textarea.active-typing:not(.input-wrapper *) {
     outline: none !important;
 }
 
-
-
-.btn,
-.modal-btn,
-.action-btn,
-.primary-btn,
-.small-btn,
-.ghost-btn,
-.error-btn {
-    min-height: 44px;
+/* Styles the unified base button element and manages its visual layout. */
+.btn {
+    min-height: 48px;
     border-radius: var(--radius-md);
     border: 2px solid transparent;
     cursor: pointer;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
-}
-
-.btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 12px 26px;
-    margin-right: 12px;
-    font-size: 17px;
+    padding: 10px 24px;
+    font-size: 15px;
     font-weight: 800;
-    letter-spacing: 0;
     white-space: nowrap;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
 }
 
+/* Styles the primary action button using the green theme accent color. */
 .btn-primary {
-    background: #ffffff;
+    background: var(--primary-color);
     color: #050505;
+    border-color: var(--primary-color);
 }
 
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.14);
-}
-
+/* Styles the primary button hover/focus with the standard thick white border. */
 .btn-primary:hover,
 .btn-primary:focus,
-.btn-primary.focused,
-.primary-btn:hover,
-.primary-btn:focus,
-.primary-btn.focused {
+.btn-primary.focused {
     background: var(--primary-color) !important;
     color: #050505 !important;
+    border: 3px solid #fff !important;
+    outline: none !important;
 }
+
+/* Styles the secondary button with a transparent neutral grey background. */
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Styles the secondary button hover/focus with the standard thick white border. */
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary.focused {
+    background: rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+    border: 3px solid #fff !important;
+    outline: none !important;
+}
+
+/* Styles the danger button for destructive actions. */
+.btn-danger {
+    background: #b92b23;
+    color: #ffffff;
+    border: 2px solid #b92b23;
+}
+
+/* Styles the danger button hover/focus with the standard thick white border. */
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger.focused {
+    background: #b92b23 !important;
+    color: #ffffff !important;
+    border: 3px solid #fff !important;
+    outline: none !important;
+}
+
 
 /* Styles the billboard/hero container area at the top of pages. */
 .hero {
@@ -283,33 +300,29 @@ textarea.active-typing:not(.input-wrapper *) {
     overflow: hidden;
 }
 
+/* Styles the .hero-bg UI element and manages its visual layout. */
 .hero-bg {
     position: absolute;
     inset: 0;
     background-size: cover;
     background-position: center top;
     transition: background-image 0.6s ease-in-out;
-    /* Clean transparent fade-out towards the bottom */
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
     z-index: 1;
     pointer-events: none;
 }
 
+/* Styles the .hero::before UI element and manages its visual layout. */
 .hero::before {
     content: "";
     position: absolute;
     inset: 0;
-    /* Soft side overlay for text readability, fading out completely at the bottom */
     background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%);
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
     z-index: 2;
     pointer-events: none;
-}
-
-.hero::after {
-    display: none;
 }
 
 /* Styles the content wrapper enclosing title, description, and buttons in the hero area. */
@@ -319,10 +332,6 @@ textarea.active-typing:not(.input-wrapper *) {
     width: min(1100px, 90%);
     padding-top: 24px;
     transition: opacity 0.35s ease;
-}
-
-.hero-content.transitioning {
-    opacity: 0;
 }
 
 /* Styles the high-impact title text inside the main page billboard/hero component. */
@@ -351,12 +360,6 @@ textarea.active-typing:not(.input-wrapper *) {
     overflow: hidden;
 }
 
-.hero-buttons {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
 #play-btn,
 #details-play {
     background: rgba(255, 255, 255, 0.2) !important;
@@ -376,6 +379,7 @@ textarea.active-typing:not(.input-wrapper *) {
     border-color: #ffffff !important;
 }
 
+/* Styles the .loader-center-container UI element and manages its visual layout. */
 .loader-center-container {
     position: absolute;
     inset: 0;
@@ -389,17 +393,7 @@ textarea.active-typing:not(.input-wrapper *) {
     background: rgba(0, 0, 0, 0.22);
 }
 
-/* Wrapper for content rows. Uses content-visibility for browser-level off-screen rendering skip. */
-.row-container {
-    width: 100%;
-    min-height: var(--row-min-height);
-    margin-bottom: 22px;
-    position: relative;
-    contain: layout;
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--row-min-height);
-}
-
+/* Styles the .row-posters UI element and manages its visual layout. */
 .row-posters {
     display: flex;
     min-height: var(--row-min-height);
@@ -413,6 +407,8 @@ textarea.active-typing:not(.input-wrapper *) {
     contain: layout;
 }
 
+/* Styles the .poster-wrapper,
+.skeleton-poster UI element and manages its visual layout. */
 .poster-wrapper,
 .skeleton-poster {
     flex: 0 0 var(--poster-width);
@@ -429,6 +425,8 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
 }
 
+/* Styles the .poster,
+.poster-img UI element and manages its visual layout. */
 .poster,
 .poster-img {
     width: 100%;
@@ -448,6 +446,7 @@ textarea.active-typing:not(.input-wrapper *) {
     z-index: 100;
 }
 
+/* Styles the .poster-overlay UI element and manages its visual layout. */
 .poster-overlay {
     position: absolute;
     right: 8px;
@@ -462,14 +461,12 @@ textarea.active-typing:not(.input-wrapper *) {
     pointer-events: none;
 }
 
+/* Styles the .episode-item.watched UI element and manages its visual layout. */
 .episode-item.watched {
     border-bottom: 3px solid var(--primary-color);
 }
 
-.episode-item.watched .episode-number {
-    color: var(--primary-color);
-}
-
+/* Styles the .player-controls UI element and manages its visual layout. */
 .player-controls {
     position: absolute;
     top: 20px;
@@ -479,6 +476,8 @@ textarea.active-typing:not(.input-wrapper *) {
     gap: 12px;
 }
 
+/* Styles the .btn-back,
+.btn-next UI element and manages its visual layout. */
 .btn-back,
 .btn-next {
     display: flex;
@@ -492,11 +491,6 @@ textarea.active-typing:not(.input-wrapper *) {
     color: white;
     font-size: 16px;
     cursor: pointer;
-}
-
-.btn-next {
-    background: rgba(var(--primary-rgb), 0.18);
-    border-color: rgba(var(--primary-rgb), 0.52);
 }
 
 #screensaver-overlay {
@@ -516,34 +510,34 @@ textarea.active-typing:not(.input-wrapper *) {
 
 @keyframes fadeIn {
     from {
-        opacity: 0;
+    opacity: 0;
     }
     to {
-        opacity: 1;
+    opacity: 1;
     }
 }
 
 /* Fade-in from slightly above with downward motion. */
 @keyframes fadeInDown {
     from {
-        opacity: 0;
-        margin-top: -8px;
+    opacity: 0;
+    margin-top: -8px;
     }
     to {
-        opacity: 1;
-        margin-top: 0;
+    opacity: 1;
+    margin-top: 0;
     }
 }
 
 /* Fade-in from slightly below with upward motion. */
 @keyframes fadeInUp {
     from {
-        opacity: 0;
-        margin-top: 8px;
+    opacity: 0;
+    margin-top: 8px;
     }
     to {
-        opacity: 1;
-        margin-top: 0;
+    opacity: 1;
+    margin-top: 0;
     }
 }
 
@@ -565,6 +559,7 @@ textarea.active-typing:not(.input-wrapper *) {
         font-size: 15px;
         max-width: 850px;
     }
+
 }
 
 @media (max-width: 767px), (orientation: portrait) {
@@ -588,6 +583,7 @@ textarea.active-typing:not(.input-wrapper *) {
         padding-bottom: var(--app-sidebar-width);
     }
 
+    /* Styles the .hero UI element and manages its visual layout. */
     .hero {
         min-height: 560px;
         height: 64vh;
@@ -597,12 +593,14 @@ textarea.active-typing:not(.input-wrapper *) {
         background-position: center top;
     }
 
+    /* Styles the .hero::before UI element and manages its visual layout. */
     .hero::before {
         background:
             linear-gradient(0deg, var(--background-color) 0%, rgba(5, 5, 5, 0.78) 26%, rgba(5, 5, 5, 0.2) 70%),
             linear-gradient(180deg, rgba(5, 5, 5, 0.38), rgba(5, 5, 5, 0));
     }
 
+    /* Styles the .hero-content UI element and manages its visual layout. */
     .hero-content {
         width: 100%;
         text-align: center;
@@ -616,15 +614,19 @@ textarea.active-typing:not(.input-wrapper *) {
         margin-right: auto;
     }
 
+    /* Styles the .hero-desc UI element and manages its visual layout. */
     .hero-desc {
         display: none !important;
     }
 
+    /* Styles the .hero-buttons UI element and manages its visual layout. */
     .hero-buttons {
         flex-direction: column;
         width: 100%;
     }
 
+    /* Styles the .hero-buttons .btn,
+    .btn UI element and manages its visual layout. */
     .hero-buttons .btn,
     .btn {
         width: 100%;
@@ -632,22 +634,22 @@ textarea.active-typing:not(.input-wrapper *) {
         padding: 13px 18px;
     }
 
+    /* Styles the .row-posters UI element and manages its visual layout. */
     .row-posters {
         gap: 10px;
         padding: 8px var(--app-content-padding-x) 24px;
     }
+
 }
 
 /* ==========================================================================
    SECTION 2: GLOBAL UI COMPONENTS - LOADER & SHIMMER EFFECT
    Source File: loader.css (RELOCATED to app/src/main/assets/main/gui/css/loader.css)
    ========================================================================== */
-
 /* ==========================================================================
    SECTION 3: GLOBAL UI COMPONENTS - SPLASH SCREEN INITIAL GLOW
    Source File: splash.css
    ========================================================================== */
-
 #splash-screen {
     position: fixed;
     inset: 0;
@@ -670,6 +672,7 @@ textarea.active-typing:not(.input-wrapper *) {
     pointer-events: none;
 }
 
+/* Styles the .splash-content UI element and manages its visual layout. */
 .splash-content {
     display: flex;
     flex-direction: column;
@@ -706,12 +709,14 @@ textarea.active-typing:not(.input-wrapper *) {
     letter-spacing: -0.03em;
 }
 
+/* Styles the .splash-loader-container UI element and manages its visual layout. */
 .splash-loader-container {
     opacity: 1;
     transition: opacity 0.25s ease;
 }
 
-.splash-loader-container.hidden {
+/* Combined styles for .hero-content.transitioning, .splash-loader-container.hidden */
+.hero-content.transitioning, .splash-loader-container.hidden {
     opacity: 0;
 }
 
@@ -719,7 +724,6 @@ textarea.active-typing:not(.input-wrapper *) {
    SECTION 4: GLOBAL UI COMPONENTS - SYSTEM ERROR MODAL OVERLAY
    Source File: error.css
    ========================================================================== */
-
 .error-modal {
     position: fixed;
     inset: 0;
@@ -734,11 +738,7 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: opacity 0.18s ease;
 }
 
-.error-modal.visible {
-    opacity: 1;
-    pointer-events: auto;
-}
-
+/* Styles the .error-content UI element and manages its visual layout. */
 .error-content {
     width: min(680px, 94vw);
     padding: 36px;
@@ -752,6 +752,7 @@ textarea.active-typing:not(.input-wrapper *) {
     text-align: center;
 }
 
+/* Styles the .error-icon-container UI element and manages its visual layout. */
 .error-icon-container {
     width: 76px;
     height: 76px;
@@ -763,6 +764,7 @@ textarea.active-typing:not(.input-wrapper *) {
     background: rgba(var(--primary-rgb), 0.14);
 }
 
+/* Styles the .error-icon-mask UI element and manages its visual layout. */
 .error-icon-mask {
     width: 38px;
     height: 38px;
@@ -777,6 +779,7 @@ textarea.active-typing:not(.input-wrapper *) {
     mask-position: center;
 }
 
+/* Styles the .error-title UI element and manages its visual layout. */
 .error-title {
     margin-bottom: 14px;
     color: #fff;
@@ -784,6 +787,7 @@ textarea.active-typing:not(.input-wrapper *) {
     font-weight: 900;
 }
 
+/* Styles the .error-message-container UI element and manages its visual layout. */
 .error-message-container {
     width: 100%;
     max-height: 260px;
@@ -795,6 +799,7 @@ textarea.active-typing:not(.input-wrapper *) {
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Styles the .error-message UI element and manages its visual layout. */
 .error-message {
     margin: 0;
     color: rgba(255, 255, 255, 0.78);
@@ -805,6 +810,7 @@ textarea.active-typing:not(.input-wrapper *) {
     word-break: break-word;
 }
 
+/* Styles the .error-actions UI element and manages its visual layout. */
 .error-actions {
     width: 100%;
     display: flex;
@@ -812,6 +818,7 @@ textarea.active-typing:not(.input-wrapper *) {
     gap: 12px;
 }
 
+/* Styles the .error-btn UI element and manages its visual layout. */
 .error-btn {
     min-width: 150px;
     min-height: 48px;
@@ -822,52 +829,45 @@ textarea.active-typing:not(.input-wrapper *) {
     letter-spacing: 0;
 }
 
-.error-btn-primary {
-    background: #fff;
-    color: #050505;
-}
-
+/* Styles the .error-btn-secondary UI element and manages its visual layout. */
 .error-btn-secondary {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.14);
 }
 
-.error-btn:hover,
-.error-btn:focus,
-.error-btn.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
-    outline: none;
-}
-
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .error-modal UI element and manages its visual layout. */
     .error-modal {
         padding: 16px;
     }
 
+    /* Styles the .error-content UI element and manages its visual layout. */
     .error-content {
         padding: 24px;
     }
 
+    /* Styles the .error-title UI element and manages its visual layout. */
     .error-title {
         font-size: 24px;
     }
 
+    /* Styles the .error-actions UI element and manages its visual layout. */
     .error-actions {
         flex-direction: column;
     }
 
+    /* Styles the .error-btn UI element and manages its visual layout. */
     .error-btn {
         width: 100%;
     }
+
 }
 
 /* ==========================================================================
    SECTION 5: GLOBAL UI COMPONENTS - TOAST NOTIFICATION ALERTS
    Source File: toast.css
    ========================================================================== */
-
 .toast-container {
     position: fixed;
     z-index: 10000;
@@ -877,16 +877,19 @@ textarea.active-typing:not(.input-wrapper *) {
     pointer-events: none;
 }
 
+/* Styles the .toast-container.bottom-right UI element and manages its visual layout. */
 .toast-container.bottom-right {
     right: 28px;
     bottom: 28px;
 }
 
+/* Styles the .toast-container.top-right UI element and manages its visual layout. */
 .toast-container.top-right {
     top: 28px;
     right: 28px;
 }
 
+/* Styles the .toast UI element and manages its visual layout. */
 .toast {
     min-width: 300px;
     max-width: 440px;
@@ -905,11 +908,13 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: transform 0.28s ease, opacity 0.2s ease;
 }
 
+/* Styles the .toast.visible UI element and manages its visual layout. */
 .toast.visible {
     transform: translateX(0);
     opacity: 1;
 }
 
+/* Styles the .toast-icon UI element and manages its visual layout. */
 .toast-icon {
     width: 24px;
     height: 24px;
@@ -920,13 +925,7 @@ textarea.active-typing:not(.input-wrapper *) {
     color: var(--primary-color);
 }
 
-.toast-icon img,
-.toast-icon svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
+/* Styles the .toast-icon-mask UI element and manages its visual layout. */
 .toast-icon-mask {
     width: 24px;
     height: 24px;
@@ -939,11 +938,7 @@ textarea.active-typing:not(.input-wrapper *) {
     mask-repeat: no-repeat;
 }
 
-.toast-content {
-    flex: 1;
-    min-width: 0;
-}
-
+/* Styles the .toast-title UI element and manages its visual layout. */
 .toast-title {
     margin: 0 0 2px;
     color: #fff;
@@ -951,6 +946,7 @@ textarea.active-typing:not(.input-wrapper *) {
     font-weight: 900;
 }
 
+/* Styles the .toast-message UI element and manages its visual layout. */
 .toast-message {
     margin: 0;
     color: rgba(255, 255, 255, 0.74);
@@ -958,29 +954,37 @@ textarea.active-typing:not(.input-wrapper *) {
     line-height: 1.35;
 }
 
+/* Styles the .toast-error UI element and manages its visual layout. */
 .toast-error {
     border-left-color: #e24a4a;
 }
 
+/* Styles the .toast-error .toast-icon,
+.toast-error .toast-title UI element and manages its visual layout. */
 .toast-error .toast-icon,
 .toast-error .toast-title {
     color: #ff7770;
 }
 
+/* Styles the .toast-warning UI element and manages its visual layout. */
 .toast-warning {
     border-left-color: #f1c84c;
 }
 
+/* Styles the .toast-warning .toast-icon,
+.toast-warning .toast-title UI element and manages its visual layout. */
 .toast-warning .toast-icon,
 .toast-warning .toast-title {
     color: #f1c84c;
 }
 
+/* Styles the .toast-info .toast-icon UI element and manages its visual layout. */
 .toast-info .toast-icon {
     color: #63b3ff;
 }
 
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .toast-container UI element and manages its visual layout. */
     .toast-container {
         top: 18px;
         right: 18px;
@@ -988,18 +992,19 @@ textarea.active-typing:not(.input-wrapper *) {
         bottom: auto;
     }
 
+    /* Styles the .toast UI element and manages its visual layout. */
     .toast {
         width: 100%;
         min-width: 0;
         max-width: none;
     }
+
 }
 
 /* ==========================================================================
    SECTION 6: GLOBAL UI COMPONENTS - SIDEBAR NAVIGATION RAIL
    Source File: sidebar.css
    ========================================================================== */
-
 /* Netflix-style IVIDS navigation rail */
 .navbar {
     position: relative;
@@ -1017,8 +1022,8 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: width 0.18s ease;
 }
 
-.navbar:hover,
-.navbar:focus-within {
+/* Sets expanded width for the navbar when the sidebar is always expanded. */
+#app.sidebar-always-expanded .navbar, .navbar:hover, .navbar:focus-within {
     width: var(--app-sidebar-expanded-width);
 }
 
@@ -1055,6 +1060,8 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: opacity 0.14s ease;
 }
 
+/* Styles the .nav-links,
+.nav-utilities UI element and manages its visual layout. */
 .nav-links,
 .nav-utilities {
     display: flex;
@@ -1063,10 +1070,12 @@ textarea.active-typing:not(.input-wrapper *) {
     width: 100%;
 }
 
+/* Styles the .nav-utilities UI element and manages its visual layout. */
 .nav-utilities {
     margin-top: auto;
 }
 
+/* Styles the .nav-item UI element and manages its visual layout. */
 .nav-item {
     position: relative;
     min-height: 48px;
@@ -1091,11 +1100,13 @@ textarea.active-typing:not(.input-wrapper *) {
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* Styles the .nav-item.active UI element and manages its visual layout. */
 .nav-item.active {
     color: #fff;
     background: rgba(var(--primary-rgb), 0.16);
 }
 
+/* Styles the .nav-icon UI element and manages its visual layout. */
 .nav-icon {
     width: 24px;
     height: 24px;
@@ -1110,6 +1121,7 @@ textarea.active-typing:not(.input-wrapper *) {
     mask-position: center;
 }
 
+/* Styles the .nav-item.active .nav-icon UI element and manages its visual layout. */
 .nav-item.active .nav-icon {
     background-color: var(--primary-color);
 }
@@ -1120,15 +1132,8 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: opacity 0.14s ease;
 }
 
-/* Fades in the sidebar text labels and logo text when hovered or focused-within. */
-.navbar:hover .nav-item span,
-.navbar:focus-within .nav-item span,
-.navbar:hover .logo-text,
-.navbar:focus-within .logo-text {
-    opacity: 1;
-}
-
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .navbar UI element and manages its visual layout. */
     .navbar {
         position: fixed !important;
         left: 0 !important;
@@ -1148,16 +1153,14 @@ textarea.active-typing:not(.input-wrapper *) {
         background: rgba(0, 0, 0, 0.98) !important;
     }
 
-    /* Hides the logo branding rail container on mobile screens. */
-    .logo-container {
-        display: none !important;
-    }
-
+    /* Styles the .nav-links,
+    .nav-utilities UI element and manages its visual layout. */
     .nav-links,
     .nav-utilities {
         display: contents !important;
     }
 
+    /* Styles the .nav-item UI element and manages its visual layout. */
     .nav-item {
         flex: 1 1 0 !important;
         min-width: 0 !important;
@@ -1171,11 +1174,7 @@ textarea.active-typing:not(.input-wrapper *) {
         background: transparent !important;
     }
 
-    .nav-item::before,
-    .nav-item span {
-        display: none !important;
-    }
-
+    /* Styles the .nav-icon UI element and manages its visual layout. */
     .nav-icon {
         width: 25px !important;
         height: 25px !important;
@@ -1183,42 +1182,55 @@ textarea.active-typing:not(.input-wrapper *) {
         flex-basis: 25px !important;
     }
 
+    /* Styles the .nav-item[data-route="home"] UI element and manages its visual layout. */
     .nav-item[data-route="home"] {
         order: 1;
     }
 
+    /* Styles the .nav-item[data-route="movies"] UI element and manages its visual layout. */
     .nav-item[data-route="movies"] {
         order: 2;
     }
 
+    /* Styles the .nav-item[data-route="series"] UI element and manages its visual layout. */
     .nav-item[data-route="series"] {
         order: 3;
     }
 
+    /* Styles the .nav-item[data-route="search"] UI element and manages its visual layout. */
     .nav-item[data-route="search"] {
         order: 4;
     }
 
+    /* Styles the .nav-item[data-route="playlists"] UI element and manages its visual layout. */
     .nav-item[data-route="playlists"] {
         order: 5;
     }
 
+    /* Styles the .nav-item[data-route="account"] UI element and manages its visual layout. */
     .nav-item[data-route="account"] {
         order: 6;
     }
 
+    /* Styles the .nav-item[data-route="settings"] UI element and manages its visual layout. */
     .nav-item[data-route="settings"] {
         order: 7;
     }
 
-    .nav-item[data-route="livetv"] {
+    /* Hides the logo branding rail container on mobile screens. */
+    .logo-container, .nav-item::before, .nav-item span, .nav-item[data-route="livetv"] {
         display: none !important;
     }
 
+    /* Styles the .nav-item.active UI element and manages its visual layout. */
     .nav-item.active {
         background: rgba(var(--primary-rgb), 0.18) !important;
     }
 
+    /* Styles the .nav-item.active .nav-icon,
+    .nav-item:hover .nav-icon,
+    .nav-item:focus .nav-icon,
+    .nav-item.focused .nav-icon UI element and manages its visual layout. */
     .nav-item.active .nav-icon,
     .nav-item:hover .nav-icon,
     .nav-item:focus .nav-icon,
@@ -1226,19 +1238,20 @@ textarea.active-typing:not(.input-wrapper *) {
         background-color: var(--primary-color) !important;
     }
 
+    /* Styles the .navbar:hover,
+    .navbar:focus-within UI element and manages its visual layout. */
     .navbar:hover,
     .navbar:focus-within {
         width: 100% !important;
     }
+
 }
 
 /* ==========================================================================
    SECTION 7: PAGE SPECIFIC - USER PROFILES OVERVIEW
    Source File: profiles.css
    ========================================================================== */
-
 /* Sidebar container is hidden programmatically via profiles.js javascript */
-
 .profiles-container {
     position: fixed;
     inset: 0;
@@ -1265,6 +1278,7 @@ textarea.active-typing:not(.input-wrapper *) {
     text-align: center;
 }
 
+/* Styles the .profiles-grid UI element and manages its visual layout. */
 .profiles-grid {
     display: flex;
     flex-wrap: wrap;
@@ -1286,6 +1300,7 @@ textarea.active-typing:not(.input-wrapper *) {
     cursor: pointer;
 }
 
+/* Styles the .profile-avatar-container UI element and manages its visual layout. */
 .profile-avatar-container {
     position: relative;
     width: 136px;
@@ -1296,6 +1311,7 @@ textarea.active-typing:not(.input-wrapper *) {
     box-shadow: var(--shadow-card);
 }
 
+/* Styles the .profile-avatar UI element and manages its visual layout. */
 .profile-avatar {
     width: 100%;
     height: 100%;
@@ -1307,6 +1323,7 @@ textarea.active-typing:not(.input-wrapper *) {
     font-weight: 900;
 }
 
+/* Styles the .profile-name UI element and manages its visual layout. */
 .profile-name {
     width: 100%;
     color: var(--text-muted);
@@ -1318,12 +1335,16 @@ textarea.active-typing:not(.input-wrapper *) {
     white-space: nowrap;
 }
 
+/* Styles the .profile-card:focus .profile-name,
+.profile-card.focused .profile-name,
+.profile-card:hover .profile-name UI element and manages its visual layout. */
 .profile-card:focus .profile-name,
 .profile-card.focused .profile-name,
 .profile-card:hover .profile-name {
     color: #fff;
 }
 
+/* Styles the .profile-edit-overlay UI element and manages its visual layout. */
 .profile-edit-overlay {
     position: absolute;
     inset: 0;
@@ -1335,10 +1356,7 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: opacity 0.16s ease;
 }
 
-.edit-mode .profile-edit-overlay {
-    opacity: 1;
-}
-
+/* Styles the .edit-icon UI element and manages its visual layout. */
 .edit-icon {
     width: 46px;
     height: 46px;
@@ -1351,62 +1369,12 @@ textarea.active-typing:not(.input-wrapper *) {
     font-size: 28px;
 }
 
+/* Styles the .profile-card.dragging UI element and manages its visual layout. */
 .profile-card.dragging {
     opacity: 0.5;
 }
 
-.profile-card.drag-over {
-    border-color: var(--primary-color);
-}
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 5000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    background: rgba(0, 0, 0, 0.84);
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.modal-content {
-    width: min(560px, 94vw);
-    max-height: 86vh;
-    overflow-y: auto;
-    padding: 28px;
-    border-radius: var(--radius-lg);
-    background: #161616;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: var(--shadow-panel);
-}
-
-/* Styles the title text displayed at the top of modal overlays. */
-.modal-title {
-    margin-bottom: 22px;
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 26px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+/* Styles the .input-group label UI element and manages its visual layout. */
 .input-group label {
     color: var(--text-muted);
     font-size: 14px;
@@ -1415,29 +1383,12 @@ textarea.active-typing:not(.input-wrapper *) {
     letter-spacing: 0.06em;
 }
 
-.input-group input {
-    width: 100%;
-    height: 50px;
-    padding: 0 14px;
-    border-radius: var(--radius-md);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.36);
-    color: #fff;
-    font-size: 17px;
-    outline: none;
-}
-
+/* Styles the .error-text UI element and manages its visual layout. */
 .error-text {
     min-height: 18px;
     color: #ff7770;
     font-size: 13px;
     font-weight: 700;
-}
-
-.color-picker {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
 }
 
 /* Styles the selectable color options inside the settings panel. */
@@ -1454,18 +1405,9 @@ textarea.active-typing:not(.input-wrapper *) {
     border-color: #fff;
 }
 
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
-}
 
-.btn-danger {
-    background: #b92b23 !important;
-    color: #fff !important;
-}
-
+/* Styles the .delete-confirm-message,
+.pin-message UI element and manages its visual layout. */
 .delete-confirm-message,
 .pin-message {
     color: var(--text-muted);
@@ -1474,6 +1416,7 @@ textarea.active-typing:not(.input-wrapper *) {
     text-align: center;
 }
 
+/* Styles the .pin-digits UI element and manages its visual layout. */
 .pin-digits {
     display: flex;
     justify-content: center;
@@ -1481,6 +1424,7 @@ textarea.active-typing:not(.input-wrapper *) {
     margin: 24px 0 8px;
 }
 
+/* Styles the .pin-digit UI element and manages its visual layout. */
 .pin-digit {
     width: 58px;
     height: 64px;
@@ -1495,6 +1439,7 @@ textarea.active-typing:not(.input-wrapper *) {
 }
 
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .profiles-container UI element and manages its visual layout. */
     .profiles-container {
         padding: 28px 18px;
     }
@@ -1505,43 +1450,50 @@ textarea.active-typing:not(.input-wrapper *) {
         margin-bottom: 30px;
     }
 
+    /* Styles the .profiles-grid UI element and manages its visual layout. */
     .profiles-grid {
         gap: 18px;
     }
 
+    /* Styles the .profile-card UI element and manages its visual layout. */
     .profile-card {
         width: 128px;
     }
 
+    /* Styles the .profile-avatar-container UI element and manages its visual layout. */
     .profile-avatar-container {
         width: 108px;
         height: 108px;
     }
 
+    /* Styles the .profile-avatar UI element and manages its visual layout. */
     .profile-avatar {
         font-size: 44px;
     }
 
+    /* Styles the .modal-overlay UI element and manages its visual layout. */
     .modal-overlay {
         align-items: flex-end;
         padding: 16px;
     }
 
+    /* Styles the .modal-content UI element and manages its visual layout. */
     .modal-content {
         width: 100%;
         padding: 22px;
     }
 
+    /* Styles the .modal-footer UI element and manages its visual layout. */
     .modal-footer {
         flex-direction: column;
     }
+
 }
 
 /* ==========================================================================
    SECTION 8: PAGE SPECIFIC - SHARED MEDIA RAIL ROWS (HOME, MOVIES, SERIES)
    Source File: home.css
    ========================================================================== */
-
 /* Shared media rail page */
 .row {
     position: relative;
@@ -1562,11 +1514,20 @@ textarea.active-typing:not(.input-wrapper *) {
     letter-spacing: -0.01em;
 }
 
+/* Wrapper for content rows. Uses content-visibility for browser-level off-screen rendering skip. */
 .row-container {
-    display: flex;
     align-items: center;
+    contain: layout;
+    contain-intrinsic-size: auto var(--row-min-height);
+    content-visibility: auto;
+    display: flex;
+    margin-bottom: 22px;
+    min-height: var(--row-min-height);
+    position: relative;
+    width: 100%;
 }
 
+/* Styles the .handle UI element and manages its visual layout. */
 .handle {
     position: absolute;
     top: 10px;
@@ -1586,12 +1547,9 @@ textarea.active-typing:not(.input-wrapper *) {
     transition: opacity 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
 }
 
-.row-container:hover .handle,
+/* Styles the .handle:hover,
 .handle:focus,
-.handle.focused {
-    opacity: 1;
-}
-
+.handle.focused UI element and manages its visual layout. */
 .handle:hover,
 .handle:focus,
 .handle.focused {
@@ -1600,26 +1558,27 @@ textarea.active-typing:not(.input-wrapper *) {
     outline: none;
 }
 
+/* Styles the .handle-left UI element and manages its visual layout. */
 .handle-left {
     left: 2px;
 }
 
+/* Styles the .handle-right UI element and manages its visual layout. */
 .handle-right {
     right: 2px;
 }
 
+/* Styles the .row:nth-child(2) UI element and manages its visual layout. */
 .row:nth-child(2) {
     animation-delay: 0.08s;
 }
 
+/* Styles the .row:nth-child(3) UI element and manages its visual layout. */
 .row:nth-child(3) {
     animation-delay: 0.14s;
 }
 
-.row:nth-child(4) {
-    animation-delay: 0.2s;
-}
-
+/* Styles the .row:nth-child(5) UI element and manages its visual layout. */
 .row:nth-child(5) {
     animation-delay: 0.26s;
 }
@@ -1630,18 +1589,18 @@ textarea.active-typing:not(.input-wrapper *) {
         font-size: 20px;
     }
 
+    /* Styles the .handle UI element and manages its visual layout. */
     .handle {
         display: none;
     }
+
 }
 
 /* ==========================================================================
    SECTION 9: PAGE SPECIFIC - MEDIA DETAILS PAGE
    Source File: details.css
    ========================================================================== */
-
 /* Details Page Styles */
-
 .details-page {
     min-height: 100vh;
     height: auto;
@@ -1651,12 +1610,7 @@ textarea.active-typing:not(.input-wrapper *) {
     padding-bottom: 3rem;
 }
 
-/* Remove Background Overlay and Fade */
-.details-page::after,
-.details-page::before {
-    display: none;
-}
-
+/* Styles the .details-layout UI element and manages its visual layout. */
 .details-layout {
     position: relative;
     z-index: 10;
@@ -1668,6 +1622,7 @@ textarea.active-typing:not(.input-wrapper *) {
     gap: 2.5rem;
 }
 
+/* Styles the .details-top UI element and manages its visual layout. */
 .details-top {
     display: flex;
     gap: 5vw;
@@ -1676,11 +1631,13 @@ textarea.active-typing:not(.input-wrapper *) {
     margin-bottom: 2.5rem;
 }
 
+/* Styles the .details-info UI element and manages its visual layout. */
 .details-info {
     flex: 1;
     max-width: 50%;
 }
 
+/* Styles the .details-hero-poster UI element and manages its visual layout. */
 .details-hero-poster {
     width: 25vw;
     min-width: 20rem;
@@ -1690,6 +1647,7 @@ textarea.active-typing:not(.input-wrapper *) {
     border: 0.1875rem solid rgba(255, 255, 255, 0.1);
 }
 
+/* Styles the .details-title UI element and manages its visual layout. */
 .details-title {
     font-size: 3.125rem;
     margin-bottom: 1.25rem;
@@ -1697,6 +1655,7 @@ textarea.active-typing:not(.input-wrapper *) {
     text-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5);
 }
 
+/* Styles the .details-meta UI element and manages its visual layout. */
 .details-meta {
     display: flex;
     align-items: center;
@@ -1706,6 +1665,7 @@ textarea.active-typing:not(.input-wrapper *) {
     font-size: 18px;
 }
 
+/* Styles the .date-box UI element and manages its visual layout. */
 .date-box {
     background: var(--primary-color);
     color: #000;
@@ -1715,6 +1675,7 @@ textarea.active-typing:not(.input-wrapper *) {
     font-size: 16px;
 }
 
+/* Styles the .rating-chip UI element and manages its visual layout. */
 .rating-chip {
     background: rgba(255, 255, 255, 0.1);
     padding: 4px 10px;
@@ -1725,14 +1686,16 @@ textarea.active-typing:not(.input-wrapper *) {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* Styles the .rating-chip.rating-R,
+.rating-chip.rating-TV-MA UI element and manages its visual layout. */
 .rating-chip.rating-R,
 .rating-chip.rating-TV-MA {
     background-color: #ff4500;
-    /* Orange-Red */
     border-color: #ff4500;
     color: #fff;
 }
 
+/* Styles the .details-genres UI element and manages its visual layout. */
 .details-genres {
     display: flex;
     flex-wrap: wrap;
@@ -1740,6 +1703,7 @@ textarea.active-typing:not(.input-wrapper *) {
     margin-bottom: 20px;
 }
 
+/* Styles the .genre-chip UI element and manages its visual layout. */
 .genre-chip {
     background: rgba(255, 255, 255, 0.1);
     padding: 6px 14px;
@@ -1749,6 +1713,7 @@ textarea.active-typing:not(.input-wrapper *) {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Styles the .details-overview UI element and manages its visual layout. */
 .details-overview {
     font-size: 18px;
     line-height: 1.6;
@@ -1756,6 +1721,7 @@ textarea.active-typing:not(.input-wrapper *) {
     margin-bottom: 30px;
 }
 
+/* Styles the .details-actions UI element and manages its visual layout. */
 .details-actions {
     display: flex;
     gap: 20px;
@@ -1810,17 +1776,12 @@ textarea.active-typing:not(.input-wrapper *) {
     overflow-y: auto;
 }
 
+/* Styles the .seasons-header UI element and manages its visual layout. */
 .seasons-header {
     font-size: 24px;
     margin-bottom: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 10px;
-}
-
-.seasons-list-content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 
 /* Styles the season select button in the series detail view. */
@@ -1836,6 +1797,8 @@ textarea.active-typing:not(.input-wrapper *) {
     font-size: 16px;
 }
 
+/* Styles the .season-btn:hover,
+.season-btn.focused UI element and manages its visual layout. */
 .season-btn:hover,
 .season-btn.focused {
     background: rgba(255, 255, 255, 0.1);
@@ -1843,6 +1806,7 @@ textarea.active-typing:not(.input-wrapper *) {
     color: #fff;
 }
 
+/* Styles the .season-btn.active UI element and manages its visual layout. */
 .season-btn.active {
     background: var(--primary-color);
     color: #000;
@@ -1850,16 +1814,7 @@ textarea.active-typing:not(.input-wrapper *) {
     font-weight: bold;
 }
 
-/* Episodes List */
-.episodes-list {
-    flex: 1;
-    min-width: 0;
-}
-
-.episodes-list:empty {
-    display: none;
-}
-
+/* Styles the .episodes-title UI element and manages its visual layout. */
 .episodes-title {
     font-size: 28px;
     margin-bottom: 20px;
@@ -1881,12 +1836,15 @@ textarea.active-typing:not(.input-wrapper *) {
     border: 2px solid transparent;
 }
 
+/* Styles the .episode-item:hover,
+.episode-item.focused UI element and manages its visual layout. */
 .episode-item:hover,
 .episode-item.focused {
     background: rgba(255, 255, 255, 0.1);
     border-color: #fff;
 }
 
+/* Styles the .episode-image UI element and manages its visual layout. */
 .episode-image {
     width: 200px;
     height: 112px;
@@ -1897,6 +1855,7 @@ textarea.active-typing:not(.input-wrapper *) {
     background-color: #000;
 }
 
+/* Styles the .episode-info UI element and manages its visual layout. */
 .episode-info {
     flex: 1;
     display: flex;
@@ -1904,6 +1863,7 @@ textarea.active-typing:not(.input-wrapper *) {
     justify-content: center;
 }
 
+/* Styles the .episode-header UI element and manages its visual layout. */
 .episode-header {
     display: flex;
     align-items: baseline;
@@ -1911,18 +1871,21 @@ textarea.active-typing:not(.input-wrapper *) {
     margin-bottom: 8px;
 }
 
+/* Styles the .episode-number UI element and manages its visual layout. */
 .episode-number {
     font-size: 20px;
     font-weight: bold;
     color: var(--primary-color);
 }
 
+/* Styles the .episode-name UI element and manages its visual layout. */
 .episode-name {
     font-size: 20px;
     font-weight: bold;
     color: #fff;
 }
 
+/* Styles the .episode-overview UI element and manages its visual layout. */
 .episode-overview {
     font-size: 14px;
     color: #aaa;
@@ -1939,7 +1902,6 @@ textarea.active-typing:not(.input-wrapper *) {
     display: none;
     position: fixed;
     z-index: 2000;
-    /* Higher than navbar */
     left: 0;
     top: 0;
     width: 100%;
@@ -1949,23 +1911,7 @@ textarea.active-typing:not(.input-wrapper *) {
     justify-content: center;
 }
 
-.modal-content {
-    background-color: #222;
-    padding: 30px;
-    border-radius: 10px;
-    width: 400px;
-    max-width: 90%;
-    text-align: center;
-    border: 1px solid #444;
-}
-
-/* Resets top margins and handles spacing for the playlist selection modal title. */
-.modal-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: white;
-}
-
+/* Styles the .playlist-selection-list UI element and manages its visual layout. */
 .playlist-selection-list {
     max-height: 300px;
     overflow-y: auto;
@@ -1973,6 +1919,7 @@ textarea.active-typing:not(.input-wrapper *) {
     text-align: left;
 }
 
+/* Styles the .playlist-option UI element and manages its visual layout. */
 .playlist-option {
     padding: 10px;
     border-bottom: 1px solid #333;
@@ -1980,6 +1927,7 @@ textarea.active-typing:not(.input-wrapper *) {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+/* Styles the .details-page .row-posters UI element and manages its visual layout. */
 .details-page .row-posters {
     display: flex;
     overflow-y: hidden;
@@ -1987,48 +1935,34 @@ textarea.active-typing:not(.input-wrapper *) {
     padding: 20px 0;
     gap: 20px;
     scroll-behavior: smooth;
-    /* Modern scrollbar styles */
     scrollbar-width: thin;
     scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
 }
 
+/* Styles the .details-page .row-posters::-webkit-scrollbar UI element and manages its visual layout. */
 .details-page .row-posters::-webkit-scrollbar {
     height: 8px;
 }
 
+/* Styles the .details-page .row-posters::-webkit-scrollbar-track UI element and manages its visual layout. */
 .details-page .row-posters::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
 }
 
+/* Styles the .details-page .row-posters::-webkit-scrollbar-thumb UI element and manages its visual layout. */
 .details-page .row-posters::-webkit-scrollbar-thumb {
     background: var(--primary-color);
     border-radius: 10px;
 }
 
+/* Styles the .details-page .row-posters::-webkit-scrollbar-thumb:hover UI element and manages its visual layout. */
 .details-page .row-posters::-webkit-scrollbar-thumb:hover {
     background: var(--primary-hover-color);
 }
 
-.details-page .row-posters .poster {
-    /* CRITICAL FIX: Fixed width instead of 100% */
-    width: 150px;
-    min-width: 150px;
-    height: 225px;
-    /* 2:3 aspect ratio */
-    flex-shrink: 0;
-    /* Prevent shrinking */
-
-    object-fit: cover;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Visual enhancements */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    border: 2px solid transparent;
-}
-
+/* Styles the .details-page .row-posters .poster:hover,
+.details-page .row-posters .poster:focus UI element and manages its visual layout. */
 .details-page .row-posters .poster:hover,
 .details-page .row-posters .poster:focus {
     border-color: #fff;
@@ -2039,54 +1973,74 @@ textarea.active-typing:not(.input-wrapper *) {
 /* Add a subtle animation on load */
 @keyframes fadeInSlide {
     from {
-        opacity: 0;
+    opacity: 0;
     }
-
     to {
-        opacity: 1;
+    opacity: 1;
     }
 }
 
+/* Styles the .details-page .row-posters .poster UI element and manages its visual layout. */
 .details-page .row-posters .poster {
     animation: fadeInSlide 0.4s ease-out backwards;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    flex-shrink: 0;
+    height: 225px;
+    min-width: 150px;
+    object-fit: cover;
+    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 150px;
 }
 
+/* Styles the .row-posters .poster:nth-child(1) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(1) {
     animation-delay: 0.05s;
 }
 
+/* Styles the .row-posters .poster:nth-child(2) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(2) {
     animation-delay: 0.1s;
 }
 
+/* Styles the .row-posters .poster:nth-child(3) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(3) {
     animation-delay: 0.15s;
 }
 
-.row-posters .poster:nth-child(4) {
+/* Combined styles for .row:nth-child(4), .row-posters .poster:nth-child(4) */
+.row:nth-child(4), .row-posters .poster:nth-child(4) {
     animation-delay: 0.2s;
 }
 
+/* Styles the .row-posters .poster:nth-child(5) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(5) {
     animation-delay: 0.25s;
 }
 
+/* Styles the .row-posters .poster:nth-child(6) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(6) {
     animation-delay: 0.3s;
 }
 
+/* Styles the .row-posters .poster:nth-child(7) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(7) {
     animation-delay: 0.35s;
 }
 
+/* Styles the .row-posters .poster:nth-child(8) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(8) {
     animation-delay: 0.4s;
 }
 
+/* Styles the .row-posters .poster:nth-child(9) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(9) {
     animation-delay: 0.45s;
 }
 
+/* Styles the .row-posters .poster:nth-child(10) UI element and manages its visual layout. */
 .row-posters .poster:nth-child(10) {
     animation-delay: 0.5s;
 }
@@ -2095,21 +2049,25 @@ textarea.active-typing:not(.input-wrapper *) {
    Mobile Responsiveness for Details Page
    ========================================================================== */
 @media (max-width: 768px) {
+    /* Styles the .details-page UI element and manages its visual layout. */
     .details-page {
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
 
+    /* Styles the .details-layout UI element and manages its visual layout. */
     .details-layout {
         gap: 1.5rem;
     }
 
+    /* Styles the .details-top UI element and manages its visual layout. */
     .details-top {
         flex-direction: column-reverse;
         text-align: center;
         gap: 1.5rem;
     }
 
+    /* Styles the .details-info UI element and manages its visual layout. */
     .details-info {
         max-width: 100%;
         display: flex;
@@ -2117,42 +2075,50 @@ textarea.active-typing:not(.input-wrapper *) {
         align-items: center;
     }
 
+    /* Styles the .details-hero-poster UI element and manages its visual layout. */
     .details-hero-poster {
         width: 50vw;
         max-width: 220px;
         min-width: unset;
     }
 
+    /* Styles the .details-title UI element and manages its visual layout. */
     .details-title {
         font-size: 2rem;
     }
 
+    /* Styles the .details-genres UI element and manages its visual layout. */
     .details-genres {
         justify-content: center;
     }
 
+    /* Styles the .details-overview UI element and manages its visual layout. */
     .details-overview {
         text-align: center;
         font-size: 16px;
     }
 
+    /* Styles the .details-actions UI element and manages its visual layout. */
     .details-actions {
         justify-content: center;
         flex-wrap: wrap;
     }
 
+    /* Styles the .details-bottom UI element and manages its visual layout. */
     .details-bottom {
         flex-direction: column;
         align-items: stretch;
         gap: 20px;
     }
 
+    /* Styles the .details-seasons UI element and manages its visual layout. */
     .details-seasons {
         width: 100%;
         max-height: none;
         overflow-y: visible;
     }
 
+    /* Styles the .seasons-list-content UI element and manages its visual layout. */
     .seasons-list-content {
         flex-direction: row;
         overflow-x: auto;
@@ -2160,71 +2126,47 @@ textarea.active-typing:not(.input-wrapper *) {
         scroll-behavior: smooth;
         scrollbar-width: none;
     }
-    
+
+    /* Styles the .seasons-list-content::-webkit-scrollbar UI element and manages its visual layout. */
     .seasons-list-content::-webkit-scrollbar {
         display: none;
     }
 
+    /* Styles the .season-btn UI element and manages its visual layout. */
     .season-btn {
         white-space: nowrap;
         flex-shrink: 0;
     }
 
+    /* Styles the .episode-item UI element and manages its visual layout. */
     .episode-item {
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
 
+    /* Styles the .episode-image UI element and manages its visual layout. */
     .episode-image {
         width: 100%;
         max-width: 250px;
         height: auto;
         aspect-ratio: 16 / 9;
     }
+
 }
 
 /* ==========================================================================
    SECTION 10: PAGE SPECIFIC - VIDEO PLAYER (VOD)
    Source File: player.css
    ========================================================================== */
-
-/* Player Page Styles */
-
-.video-container {
-    width: 100%;
-    height: 100%;
-    background: black;
-}
-
-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-.player-status-panel {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 20;
-    width: min(560px, 90vw);
-    transform: translate(-50%, -50%);
-    padding: 28px;
-    border-radius: var(--radius-lg);
-    background: rgba(18, 18, 18, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: var(--shadow-panel);
-    text-align: center;
-    color: #fff;
-}
-
+/* Styles the .player-status-panel h2 UI element and manages its visual layout. */
 .player-status-panel h2 {
     margin-bottom: 10px;
     font-size: 26px;
     font-weight: 900;
 }
 
+/* Styles the .player-status-panel p UI element and manages its visual layout. */
 .player-status-panel p {
     margin-bottom: 22px;
     color: var(--text-muted);
@@ -2232,29 +2174,24 @@ iframe {
     line-height: 1.5;
 }
 
-.player-status-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
-
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .player-status-panel UI element and manages its visual layout. */
     .player-status-panel {
         padding: 22px;
     }
 
+    /* Styles the .player-status-actions UI element and manages its visual layout. */
     .player-status-actions {
         flex-direction: column;
     }
+
 }
 
 /* ==========================================================================
    SECTION 11: PAGE SPECIFIC - LIVE TV GUIDE LAYOUT
    Source File: livetv.css
    ========================================================================== */
-
 .livetv-page-layout {
-    /* Explains: Primary structural viewport box for the Live TV module. Spans full heights and prevents parent overflow. */
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -2263,8 +2200,8 @@ iframe {
     box-sizing: border-box;
 }
 
+/* Styles the .livetv-top-bar UI element and manages its visual layout. */
 .livetv-top-bar {
-    /* Explains: Upper header row separating search input panel on the left and actions on the right. */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2359,8 +2296,8 @@ iframe {
     border-radius: var(--radius-xs) !important;
 }
 
+/* Styles the .filter-icon-small UI element and manages its visual layout. */
 .filter-icon-small {
-    /* Explains: Vector mask background indicating playlist filter properties. */
     width: 16px;
     height: 16px;
     background-color: currentColor;
@@ -2373,6 +2310,7 @@ iframe {
     margin-right: 8px;
 }
 
+/* Styles the .settings-icon-small UI element and manages its visual layout. */
 .settings-icon-small {
     width: 18px;
     height: 18px;
@@ -2386,10 +2324,12 @@ iframe {
     margin-right: 8px;
 }
 
+/* Styles the .livetv-settings-content UI element and manages its visual layout. */
 .livetv-settings-content {
     max-width: 560px;
 }
 
+/* Styles the .livetv-settings-subtitle UI element and manages its visual layout. */
 .livetv-settings-subtitle {
     margin: -8px 0 24px;
     color: rgba(255, 255, 255, 0.68);
@@ -2397,6 +2337,7 @@ iframe {
     line-height: 1.45;
 }
 
+/* Styles the .livetv-setting-row UI element and manages its visual layout. */
 .livetv-setting-row {
     display: flex;
     align-items: center;
@@ -2410,6 +2351,9 @@ iframe {
     outline: none;
 }
 
+/* Styles the .livetv-setting-row:hover,
+.livetv-setting-row:focus,
+.livetv-setting-row.focused UI element and manages its visual layout. */
 .livetv-setting-row:hover,
 .livetv-setting-row:focus,
 .livetv-setting-row.focused {
@@ -2418,18 +2362,21 @@ iframe {
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* Styles the .livetv-setting-copy UI element and manages its visual layout. */
 .livetv-setting-copy {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
+/* Styles the .livetv-setting-title UI element and manages its visual layout. */
 .livetv-setting-title {
     color: #fff;
     font-size: 18px;
     font-weight: 800;
 }
 
+/* Styles the .livetv-setting-desc UI element and manages its visual layout. */
 .livetv-setting-desc {
     color: rgba(255, 255, 255, 0.62);
     font-size: 14px;
@@ -2442,6 +2389,7 @@ iframe {
     pointer-events: none;
 }
 
+/* Styles the .livetv-switch UI element and manages its visual layout. */
 .livetv-switch {
     position: relative;
     width: 58px;
@@ -2452,6 +2400,7 @@ iframe {
     transition: background 0.18s ease;
 }
 
+/* Styles the .livetv-switch::after UI element and manages its visual layout. */
 .livetv-switch::after {
     content: '';
     position: absolute;
@@ -2473,58 +2422,8 @@ iframe {
     transform: translateX(26px);
 }
 
-.search-box {
-    /* Explains: Container for search bar sizing. */
-    width: 100%;
-}
-
-/* Styles the input text box wrapper, setting height and a small border radius. */
-.input-wrapper {
-    height: 54px;
-    display: flex;
-    align-items: center;
-    padding: 0 18px;
-    border-radius: var(--radius-xs);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
-}
-
-/* Styles the input text box wrapper on focus-within, focus, or hover to show the white outline. */
-.input-wrapper:focus-within,
-.input-wrapper.focused,
-.input-wrapper:hover {
-    border-color: #fff;
-    box-shadow: var(--focus-ring-strong);
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.search-icon {
-    /* Explains: Search vector icon dimension details. */
-    width: 22px;
-    height: 22px;
-    margin-right: 12px;
-    opacity: 0.62;
-}
-
-#search-input {
-    /* Explains: Text input overrides removing default borders and styles. */
-    width: 100%;
-    height: 100%;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-
-
+/* Styles the .search-clear-btn UI element and manages its visual layout. */
 .search-clear-btn {
-    /* Explains: Clear button overlay configurations. */
     background: transparent;
     border: none;
     color: var(--text-muted);
@@ -2537,18 +2436,20 @@ iframe {
     height: 100%;
 }
 
+/* Styles the .search-clear-btn:hover,
+.search-clear-btn:focus,
+.search-clear-btn.focused UI element and manages its visual layout. */
 .search-clear-btn:hover,
 .search-clear-btn:focus,
 .search-clear-btn.focused {
-    /* Explains: Focused close button showing white boundary ring. No scale animations. */
     color: #fff;
     outline: none;
     border: 2px solid #fff;
     border-radius: 50%;
 }
 
+/* Styles the .livetv-categories-bar UI element and manages its visual layout. */
 .livetv-categories-bar {
-    /* Explains: Scrollable horizontal block container for category selection chips. */
     display: flex;
     align-items: center;
     gap: 12px;
@@ -2560,13 +2461,8 @@ iframe {
     box-sizing: border-box;
 }
 
-.livetv-categories-bar::-webkit-scrollbar {
-    /* Explains: Hides webkit scroll handles in scrollbar track. */
-    display: none;
-}
-
+/* Styles the .category-chip UI element and manages its visual layout. */
 .category-chip {
-    /* Explains: Category selector button with custom borders and transparent transitions. */
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
@@ -2582,33 +2478,37 @@ iframe {
     transition: background 0.16s, border-color 0.16s, color 0.16s;
 }
 
+/* Styles the .category-chip:hover,
+.category-chip:focus,
+.category-chip.focused UI element and manages its visual layout. */
 .category-chip:hover,
 .category-chip:focus,
 .category-chip.focused {
-    /* Explains: Outlined focus border with zero translation motion. */
     background: rgba(255, 255, 255, 0.12);
     border-color: #fff;
     color: #fff;
     outline: none;
 }
 
+/* Styles the .category-chip.active UI element and manages its visual layout. */
 .category-chip.active {
-    /* Explains: Styling applied for active selection states. */
     background: rgba(var(--primary-rgb), 0.15);
     border-color: var(--primary-color);
     color: var(--primary-color);
 }
 
+/* Styles the .category-chip.active:hover,
+.category-chip.active:focus,
+.category-chip.active.focused UI element and manages its visual layout. */
 .category-chip.active:hover,
 .category-chip.active:focus,
 .category-chip.active.focused {
-    /* Explains: Active chip focus styling overriding theme color with white border. */
     border-color: #fff;
     color: #fff;
 }
 
+/* Styles the .chip-count UI element and manages its visual layout. */
 .chip-count {
-    /* Explains: Channel counts inside category selector chips. */
     font-size: 12px;
     font-weight: 900;
     padding: 2px 6px;
@@ -2637,30 +2537,16 @@ iframe {
     flex-direction: column;
 }
 
-.livetv-list-column::-webkit-scrollbar,
-.livetv-preview-column::-webkit-scrollbar {
-    /* Explains: Styled thin scrolling indicator tracks. */
-    width: 6px;
-}
-
+/* Styles the .livetv-list-column::-webkit-scrollbar-thumb,
+.livetv-preview-column::-webkit-scrollbar-thumb UI element and manages its visual layout. */
 .livetv-list-column::-webkit-scrollbar-thumb,
 .livetv-preview-column::-webkit-scrollbar-thumb {
-    /* Explains: Semi-transparent scrolling thumb anchors. */
     background: rgba(255, 255, 255, 0.12);
     border-radius: 3px;
 }
 
-.channels-list {
-    /* Explains: Vertical list stack holding wide channel rows. Uses small gaps for high data density. */
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-}
-
 /* Styles the channel list item container row with a transparent default border. */
 .channel-list-item {
-    /* Explains: Wide rectangular TV list row containing logo, name, categories. Features compact padding. */
     position: relative;
     display: flex;
     align-items: center;
@@ -2674,18 +2560,20 @@ iframe {
     width: 100%;
 }
 
+/* Styles the .channel-list-item:hover,
+.channel-list-item:focus,
+.channel-list-item.focused UI element and manages its visual layout. */
 .channel-list-item:hover,
 .channel-list-item:focus,
 .channel-list-item.focused {
-    /* Explains: Thick white focus ring. No scaling or translations. */
     border-color: #fff;
     box-shadow: var(--focus-ring-strong);
     background: rgba(255, 255, 255, 0.08);
     outline: none;
 }
 
+/* Styles the .list-status-dot UI element and manages its visual layout. */
 .list-status-dot {
-    /* Explains: Indicator status dot showing online health. */
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -2693,20 +2581,23 @@ iframe {
     margin-right: 12px;
 }
 
+/* Styles the .list-status-dot.checking UI element and manages its visual layout. */
 .list-status-dot.checking {
     background: #f1c84c;
 }
 
+/* Styles the .list-status-dot.online UI element and manages its visual layout. */
 .list-status-dot.online {
     background: #46d369;
 }
 
+/* Styles the .list-status-dot.offline UI element and manages its visual layout. */
 .list-status-dot.offline {
     background: #e24a4a;
 }
 
+/* Styles the .channel-list-logo-container UI element and manages its visual layout. */
 .channel-list-logo-container {
-    /* Explains: Constrained logo boundary box inside rows, sized to match compact lists. */
     width: 48px;
     height: 32px;
     display: flex;
@@ -2718,15 +2609,15 @@ iframe {
     overflow: hidden;
 }
 
+/* Styles the .channel-list-logo UI element and manages its visual layout. */
 .channel-list-logo {
-    /* Explains: Images scaling inside logo box. */
     max-width: 90%;
     max-height: 90%;
     object-fit: contain;
 }
 
+/* Styles the .channel-list-meta-container UI element and manages its visual layout. */
 .channel-list-meta-container {
-    /* Explains: Stack layout containing details on the right side of the logo. Features zero gaps for compact look. */
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -2735,16 +2626,8 @@ iframe {
     min-width: 0;
 }
 
-.channel-list-name-row {
-    /* Explains: Top row spacing aligning name title on the left and group label on the right. */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
+/* Styles the .channel-list-name UI element and manages its visual layout. */
 .channel-list-name {
-    /* Explains: High-contrast large channel title text with overflow limits. */
     font-size: 19px;
     font-weight: 800;
     color: #fff;
@@ -2753,8 +2636,8 @@ iframe {
     text-overflow: ellipsis;
 }
 
+/* Styles the .channel-list-group-tag UI element and manages its visual layout. */
 .channel-list-group-tag {
-    /* Explains: Accent tag displaying playlist category names. */
     font-size: 11px;
     font-weight: 900;
     color: var(--primary-color);
@@ -2763,16 +2646,16 @@ iframe {
     flex-shrink: 0;
 }
 
-.channel-list-epg-info {
-    /* Explains: Alignment box for show titles and timeline progress sliders. */
+/* Combined styles for .channels-list, .channel-list-epg-info */
+.channels-list, .channel-list-epg-info {
     display: flex;
     flex-direction: column;
     gap: 4px;
     width: 100%;
 }
 
+/* Styles the .channel-list-epg-title UI element and manages its visual layout. */
 .channel-list-epg-title {
-    /* Explains: Muted subtext for show name. */
     font-size: 12px;
     color: var(--text-muted);
     white-space: nowrap;
@@ -2781,21 +2664,13 @@ iframe {
     text-align: left;
 }
 
+/* Styles the .channel-list-epg-progress-container UI element and manages its visual layout. */
 .channel-list-epg-progress-container {
-    /* Explains: Horizontal track slider slot behind timeline fill. */
     width: 100%;
     height: 3px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 2px;
     overflow: hidden;
-}
-
-.channel-list-epg-progress-bar {
-    /* Explains: Dynamic timeline slider progress bar colored with main accent. */
-    height: 100%;
-    background: var(--primary-color);
-    width: 0%;
-    transition: width 0.3s ease;
 }
 
 /* Styles the right column for channel preview representation, set to 68% width. */
@@ -2830,13 +2705,6 @@ iframe {
     overflow: hidden;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     box-sizing: border-box;
-}
-
-/* Styles the actual video player element inside the preview card to fill the container. */
-.preview-card-video video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 /* Styles the loader centering element for the video stream loading state. */
@@ -2882,22 +2750,6 @@ iframe {
     min-height: 0;
 }
 
-/* Styles EPG category headers for Playing Now and Upcoming sections. */
-.section-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-bottom: 8px;
-    text-align: left;
-}
-
 /* Styles the currently playing active show information alignment. */
 .epg-active-show {
     display: flex;
@@ -2914,21 +2766,6 @@ iframe {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Styles the timeline progress wrapper for the active show. */
-.hero-epg-progress-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-}
-
-/* Styles start and end time text indicators for active and upcoming shows. */
-.epg-time {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-muted);
-}
-
 /* Styles the active program progress timeline background container. */
 .epg-progress-bar-container {
     flex: 1;
@@ -2939,7 +2776,7 @@ iframe {
 }
 
 /* Styles the active timeline progress bar filled status. */
-.epg-progress-bar-fill {
+.channel-list-epg-progress-bar, .epg-progress-bar-fill {
     height: 100%;
     background: var(--primary-color);
     width: 0%;
@@ -2996,9 +2833,10 @@ iframe {
     text-align: left;
 }
 
+/* Styles the .loading-center,
+.no-results-msg UI element and manages its visual layout. */
 .loading-center,
 .no-results-msg {
-    /* Explains: Display layers for fallback and spinner modes. */
     min-height: 200px;
     display: flex;
     align-items: center;
@@ -3018,12 +2856,15 @@ iframe {
         overflow: visible;
     }
 
+    /* Styles the .livetv-list-column,
+    .livetv-preview-column UI element and manages its visual layout. */
     .livetv-list-column,
     .livetv-preview-column {
         width: 100%;
         height: auto;
         overflow: visible;
     }
+
 }
 
 /* Explains: Centered glassmorphic box for the initial Live TV state. */
@@ -3089,9 +2930,7 @@ iframe {
    SECTION 12: PAGE SPECIFIC - LIVE TV VIDEO PLAYER
    Source File: tv-player.css
    ========================================================================== */
-
 .tv-player-container {
-    /* Explains: Full viewport black layout wrapper details. */
     width: 100vw;
     height: 100vh;
     background: #000;
@@ -3099,16 +2938,8 @@ iframe {
     overflow: hidden;
 }
 
-.tv-video {
-    /* Explains: Spans raw video streams to fill viewport widths. */
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
 /* Styles the custom player overlay containing navigation controls and channel metadata. */
 .tv-overlay {
-    /* Explains: Custom HUD controller panels overlays. Uses smooth fading curves. */
     position: absolute;
     inset: 0;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%);
@@ -3122,29 +2953,23 @@ iframe {
     z-index: 12;
 }
 
-.tv-overlay.show {
-    /* Explains: State class to show overlays and enable events. */
-    opacity: 1;
-    pointer-events: auto;
-}
-
+/* Styles the .tv-overlay-top UI element and manages its visual layout. */
 .tv-overlay-top {
-    /* Explains: Layout rules for top elements inside custom overlay. */
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
+/* Styles the .tv-overlay-bottom UI element and manages its visual layout. */
 .tv-overlay-bottom {
-    /* Explains: Bottom flex arrangement layout settings. */
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
 
+/* Styles the .tv-controls-left UI element and manages its visual layout. */
 .tv-controls-left {
-    /* Explains: Metadata and play button alignment rules. */
     display: flex;
     align-items: center;
     gap: 24px;
@@ -3152,7 +2977,6 @@ iframe {
 
 /* Styles TV player control buttons with a transparent default border. */
 .tv-control-btn {
-    /* Explains: Styled buttons with thick white border focus indicators. No scale animations. */
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid transparent;
     border-radius: 50%;
@@ -3167,40 +2991,44 @@ iframe {
     outline: none;
 }
 
+/* Styles the .tv-control-btn:hover,
+.tv-control-btn:focus,
+.tv-control-btn.focused UI element and manages its visual layout. */
 .tv-control-btn:hover,
 .tv-control-btn:focus,
 .tv-control-btn.focused {
-    /* Explains: Focus border thickness rules. No scale transform modifications. */
     border-color: #fff;
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* Styles the .play-pause-btn UI element and manages its visual layout. */
 .play-pause-btn {
-    /* Explains: Specialized sizes for primary playback toggle button. */
     background: var(--primary-color);
     color: #fff;
     width: 68px;
     height: 68px;
 }
 
+/* Styles the .play-pause-btn:hover,
+.play-pause-btn:focus,
+.play-pause-btn.focused UI element and manages its visual layout. */
 .play-pause-btn:hover,
 .play-pause-btn:focus,
 .play-pause-btn.focused {
-    /* Explains: Focus overrides for play pause button items. */
     border-color: #fff;
     background: var(--primary-color);
 }
 
+/* Styles the .tv-info UI element and manages its visual layout. */
 .tv-info {
-    /* Explains: Container bounds formatting for title text items. */
     display: flex;
     flex-direction: column;
     justify-content: center;
     max-width: 50vw;
 }
 
+/* Styles the .tv-info h1 UI element and manages its visual layout. */
 .tv-info h1 {
-    /* Explains: Bold headings detailing active channels names. */
     font-size: 28px;
     font-weight: 900;
     margin: 0;
@@ -3211,16 +3039,16 @@ iframe {
     text-overflow: ellipsis;
 }
 
+/* Styles the .tv-meta-row UI element and manages its visual layout. */
 .tv-meta-row {
-    /* Explains: Alignment metadata rows for tags and EPG logs. */
     display: flex;
     align-items: center;
     gap: 12px;
     margin-top: 8px;
 }
 
+/* Styles the .tv-group-badge UI element and manages its visual layout. */
 .tv-group-badge {
-    /* Explains: Styled category labels showing underneath channel titles. */
     font-size: 12px;
     font-weight: 900;
     color: var(--primary-color);
@@ -3232,29 +3060,29 @@ iframe {
     letter-spacing: 0.05em;
 }
 
+/* Styles the .tv-epg-info UI element and manages its visual layout. */
 .tv-epg-info {
-    /* Explains: Subtitled font rules for EPG program logs. */
     font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 700;
 }
 
+/* Styles the .tv-controls-right UI element and manages its visual layout. */
 .tv-controls-right {
-    /* Explains: Alignment for guide instructions and quality badges. */
     display: flex;
     align-items: center;
     gap: 28px;
 }
 
+/* Styles the .tv-zap-guide UI element and manages its visual layout. */
 .tv-zap-guide {
-    /* Explains: Vertical alignment structures for keyboard zapping hints. */
     display: flex;
     flex-direction: column;
     align-items: flex-end;
 }
 
+/* Styles the .guide-key UI element and manages its visual layout. */
 .guide-key {
-    /* Explains: Keyboard layouts visual borders representing target arrows. */
     font-size: 15px;
     font-weight: 900;
     color: #fff;
@@ -3264,8 +3092,8 @@ iframe {
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+/* Styles the .guide-label UI element and manages its visual layout. */
 .guide-label {
-    /* Explains: Captions informing users how to zap streams. */
     font-size: 11px;
     font-weight: 800;
     color: rgba(255, 255, 255, 0.55);
@@ -3274,8 +3102,8 @@ iframe {
     letter-spacing: 0.05em;
 }
 
+/* Styles the .tv-status-badge UI element and manages its visual layout. */
 .tv-status-badge {
-    /* Explains: Status indicators wrapper showing HD resolution stamps. */
     display: flex;
     align-items: center;
     gap: 8px;
@@ -3285,15 +3113,15 @@ iframe {
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Styles the .tv-quality-badge UI element and manages its visual layout. */
 .tv-quality-badge {
-    /* Explains: Text parameters for LIVE HD badges. */
     font-size: 12px;
     font-weight: 900;
     color: #fff;
 }
 
+/* Styles the .tv-zapping-hud UI element and manages its visual layout. */
 .tv-zapping-hud {
-    /* Explains: Temporary HUD banner rendering in the top corner during channels switches. */
     position: absolute;
     top: 5vh;
     right: 5vw;
@@ -3310,23 +3138,23 @@ iframe {
     pointer-events: none;
 }
 
+/* Styles the .tv-zapping-hud.fade-in UI element and manages its visual layout. */
 .tv-zapping-hud.fade-in {
-    /* Explains: Animations toggle configurations for zapping HUD elements. */
     animation: hudFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes hudFadeIn {
     /* Explains: Fade controls for temporary indicators. */
     from {
-        opacity: 0;
+    opacity: 0;
     }
     to {
-        opacity: 1;
+    opacity: 1;
     }
 }
 
+/* Styles the .zapping-label UI element and manages its visual layout. */
 .zapping-label {
-    /* Explains: Zapping state badge typography. */
     font-size: 12px;
     font-weight: 800;
     color: var(--primary-color);
@@ -3335,8 +3163,8 @@ iframe {
     margin-bottom: 4px;
 }
 
+/* Styles the .zapping-channel-name UI element and manages its visual layout. */
 .zapping-channel-name {
-    /* Explains: Font sizes details for targeted channel names inside HUD indicators. */
     font-size: 18px;
     font-weight: 900;
     color: #fff;
@@ -3344,7 +3172,6 @@ iframe {
 
 /* Styles the buffering indicator overlay to show streaming load state without swallowing pointer events. */
 .tv-loading {
-    /* Explains: Full screen spinner panels active during stream load sequences. Disable pointer interactions. */
     position: absolute;
     top: 0;
     left: 0;
@@ -3362,13 +3189,13 @@ iframe {
    SECTION 13: PAGE SPECIFIC - PLAYLIST OVERVIEW
    Source File: playlists.css
    ========================================================================== */
-
 .playlists-container {
     height: 100%;
     overflow-y: auto;
     padding: var(--app-content-padding-y) var(--app-content-padding-x) 72px;
 }
 
+/* Styles the .page-header UI element and manages its visual layout. */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -3396,14 +3223,7 @@ iframe {
     box-shadow: none !important;
 }
 
-#create-playlist-btn:hover,
-#create-playlist-btn:focus,
-#create-playlist-btn.focused {
-    background: #fff !important;
-    color: #050505 !important;
-    border-color: #fff !important;
-}
-
+/* Styles the .playlists-grid UI element and manages its visual layout. */
 .playlists-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 20vw, 280px), 1fr));
@@ -3411,6 +3231,7 @@ iframe {
     animation: fadeInUp 0.32s ease-out;
 }
 
+/* Styles the .empty-state UI element and manages its visual layout. */
 .empty-state {
     grid-column: 1 / -1;
     padding: 54px;
@@ -3436,15 +3257,7 @@ iframe {
     transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
-.playlist-card:hover,
-.playlist-card:focus,
-.playlist-card.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring-strong);
-    outline: none;
-    z-index: 10;
-}
-
+/* Styles the .playlist-cover UI element and manages its visual layout. */
 .playlist-cover {
     position: relative;
     aspect-ratio: 16 / 9;
@@ -3452,12 +3265,7 @@ iframe {
     background: #101010;
 }
 
-.playlist-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
+/* Styles the .playlist-overlay UI element and manages its visual layout. */
 .playlist-overlay {
     position: absolute;
     inset: 0;
@@ -3469,22 +3277,20 @@ iframe {
     transition: opacity 0.16s ease;
 }
 
-.playlist-card:hover .playlist-overlay,
-.playlist-card.focused .playlist-overlay {
-    opacity: 1;
-}
-
+/* Styles the .playlist-play-icon UI element and manages its visual layout. */
 .playlist-play-icon {
     color: #fff;
     font-size: 42px;
     font-weight: 900;
 }
 
+/* Styles the .playlist-info UI element and manages its visual layout. */
 .playlist-info {
     padding: 14px;
     background: var(--surface-color);
 }
 
+/* Styles the .playlist-name UI element and manages its visual layout. */
 .playlist-name {
     margin-bottom: 4px;
     color: #fff;
@@ -3495,93 +3301,55 @@ iframe {
     text-overflow: ellipsis;
 }
 
-.playlist-meta {
-    color: var(--text-muted);
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 4000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    background: rgba(0, 0, 0, 0.82);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.18s ease, visibility 0.18s ease;
-}
-
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
-
-.modal-content {
-    width: min(480px, 92vw);
-    padding: 28px;
-    border-radius: var(--radius-lg);
-    background: #161616;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: var(--shadow-panel);
-    text-align: center;
-}
-
+/* Styles the .modal-content h2 UI element and manages its visual layout. */
 .modal-content h2 {
     margin-bottom: 22px;
     color: #fff;
     font-size: 24px;
 }
 
+/* Styles the .input-group UI element and manages its visual layout. */
 .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     margin-bottom: 22px;
 }
 
+/* Styles the .input-group input UI element and manages its visual layout. */
 .input-group input {
-    width: 100%;
-    height: 50px;
-    padding: 0 14px;
-    border-radius: var(--radius-md);
-    border: 2px solid rgba(255, 255, 255, 0.12);
     background: rgba(0, 0, 0, 0.36);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
     color: #fff;
     font-size: 16px;
+    height: 50px;
     outline: none;
+    padding: 0 14px;
+    width: 100%;
 }
 
-.input-group input:focus,
-.input-group input.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
-
+/* Styles the .modal-actions .btn UI element and manages its visual layout. */
 .modal-actions .btn {
     flex: 1;
     margin: 0;
 }
 
 @media (max-width: 1279px) {
+    /* Styles the .playlists-grid UI element and manages its visual layout. */
     .playlists-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
 }
 
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .playlists-container UI element and manages its visual layout. */
     .playlists-container {
         padding: 24px 18px 104px;
     }
 
+    /* Styles the .page-header UI element and manages its visual layout. */
     .page-header {
         align-items: stretch;
         flex-direction: column;
@@ -3592,31 +3360,35 @@ iframe {
         font-size: 32px;
     }
 
+    /* Styles the .playlists-grid UI element and manages its visual layout. */
     .playlists-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
     }
 
+    /* Styles the .modal-overlay UI element and manages its visual layout. */
     .modal-overlay {
         align-items: flex-end;
         padding: 16px;
     }
 
+    /* Styles the .modal-content UI element and manages its visual layout. */
     .modal-content {
         width: 100%;
         padding: 22px;
     }
+
 }
 
 /* ==========================================================================
    SECTION 14: PAGE SPECIFIC - PLAYLIST GRID DETAILS
    Source File: playlist-details.css
    ========================================================================== */
-
 .page-container {
     height: 100%;
 }
 
+/* Styles the .playlist-details-container UI element and manages its visual layout. */
 .playlist-details-container {
     position: relative;
     width: 100%;
@@ -3625,12 +3397,14 @@ iframe {
     background: var(--background-color);
 }
 
+/* Styles the .playlist-backdrop UI element and manages its visual layout. */
 .playlist-backdrop {
     position: absolute;
     inset: 0;
     z-index: 0;
 }
 
+/* Styles the .playlist-backdrop img UI element and manages its visual layout. */
 .playlist-backdrop img {
     width: 100%;
     height: 100%;
@@ -3638,6 +3412,7 @@ iframe {
     opacity: 0.22;
 }
 
+/* Styles the .backdrop-overlay UI element and manages its visual layout. */
 .backdrop-overlay {
     position: absolute;
     inset: 0;
@@ -3646,6 +3421,7 @@ iframe {
         linear-gradient(0deg, var(--background-color), transparent 54%);
 }
 
+/* Styles the .playlist-content-wrapper UI element and manages its visual layout. */
 .playlist-content-wrapper {
     position: relative;
     z-index: 1;
@@ -3656,11 +3432,13 @@ iframe {
     padding: var(--app-content-padding-y) var(--app-content-padding-x);
 }
 
+/* Styles the .playlist-sidebar UI element and manages its visual layout. */
 .playlist-sidebar {
     min-width: 0;
     padding-top: 18px;
 }
 
+/* Styles the .playlist-title UI element and manages its visual layout. */
 .playlist-title {
     margin-bottom: 12px;
     color: #fff;
@@ -3669,12 +3447,14 @@ iframe {
     font-weight: 900;
 }
 
+/* Styles the .playlist-meta-row UI element and manages its visual layout. */
 .playlist-meta-row {
     margin-bottom: 28px;
     display: flex;
     gap: 10px;
 }
 
+/* Styles the .meta-item UI element and manages its visual layout. */
 .meta-item {
     min-height: 30px;
     padding: 5px 10px;
@@ -3685,28 +3465,8 @@ iframe {
     font-weight: 900;
 }
 
-.playlist-actions-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.action-btn {
-    min-height: 48px;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    border-radius: var(--radius-md);
-    border: 2px solid rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 900;
-    cursor: pointer;
-}
-
+/* Styles the .action-btn.primary,
+#play-all-btn UI element and manages its visual layout. */
 .action-btn.primary,
 #play-all-btn {
     background: rgba(255, 255, 255, 0.2) !important;
@@ -3715,17 +3475,14 @@ iframe {
     backdrop-filter: blur(8px);
 }
 
-.action-btn.primary:hover,
-.action-btn.primary:focus,
-.action-btn.primary.focused,
-#play-all-btn:hover,
-#play-all-btn:focus,
-#play-all-btn.focused {
+/* Combined styles for #create-playlist-btn:hover, #create-playlist-btn:focus, #create-playlist-btn.focused, .action-btn.primary:hover, .action-btn.primary:focus, .action-btn.primary.focused, #play-all-btn:hover, #play-all-btn:focus, #play-all-btn.focused */
+#create-playlist-btn:hover, #create-playlist-btn:focus, #create-playlist-btn.focused, .action-btn.primary:hover, .action-btn.primary:focus, .action-btn.primary.focused, #play-all-btn:hover, #play-all-btn:focus, #play-all-btn.focused {
     background: #fff !important;
     color: #050505 !important;
     border-color: #fff !important;
 }
 
+/* Styles the .action-btn .icon UI element and manages its visual layout. */
 .action-btn .icon {
     width: 22px;
     height: 22px;
@@ -3737,26 +3494,21 @@ iframe {
     font-weight: 900;
 }
 
-.action-btn .icon img {
+/* Combined styles for .toast-icon img, .toast-icon svg, .tv-video */
+.toast-icon img, .toast-icon svg, .tv-video, .action-btn .icon img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-.action-btn:hover,
-.action-btn:focus,
-.action-btn.focused {
-    border-color: #fff !important;
-    box-shadow: var(--focus-ring);
-    outline: none;
-}
-
+/* Styles the .playlist-items-section UI element and manages its visual layout. */
 .playlist-items-section {
     min-width: 0;
     overflow-y: auto;
     padding-top: 18px;
 }
 
+/* Styles the .playlist-items-grid UI element and manages its visual layout. */
 .playlist-items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
@@ -3777,15 +3529,15 @@ iframe {
     box-shadow: var(--shadow-card);
 }
 
-.playlist-item-card:hover,
-.playlist-item-card:focus,
-.playlist-item-card.focused {
+/* Combined styles for .playlist-card:hover, .playlist-card:focus, .playlist-card.focused, .playlist-item-card:hover, .playlist-item-card:focus, .playlist-item-card.focused */
+.playlist-card:hover, .playlist-card:focus, .playlist-card.focused, .playlist-item-card:hover, .playlist-item-card:focus, .playlist-item-card.focused {
     border-color: #fff;
     box-shadow: var(--focus-ring-strong);
     outline: none;
     z-index: 10;
 }
 
+/* Styles the .item-thumbnail UI element and manages its visual layout. */
 .item-thumbnail {
     position: relative;
     width: 100%;
@@ -3793,16 +3545,19 @@ iframe {
     background: #111;
 }
 
-.item-thumbnail img {
+/* Styles the actual video player element inside the preview card to fill the container. */
+.preview-card-video video, .playlist-cover img, .item-thumbnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+/* Styles the .item-info UI element and manages its visual layout. */
 .item-info {
     padding: 14px;
 }
 
+/* Styles the .item-title UI element and manages its visual layout. */
 .item-title {
     margin-bottom: 5px;
     color: #fff;
@@ -3813,12 +3568,14 @@ iframe {
     text-overflow: ellipsis;
 }
 
-.item-meta {
+/* Styles start and end time text indicators for active and upcoming shows. */
+.epg-time, .playlist-meta, .item-meta {
     color: var(--text-muted);
     font-size: 13px;
     font-weight: 700;
 }
 
+/* Styles the .item-actions-overlay UI element and manages its visual layout. */
 .item-actions-overlay {
     position: absolute;
     top: 8px;
@@ -3829,8 +3586,8 @@ iframe {
     transition: opacity 0.16s ease;
 }
 
-.playlist-item-card:hover .item-actions-overlay,
-.playlist-item-card.focused .item-actions-overlay {
+/* Shows text labels and logo text when the sidebar is always expanded. */
+#app.sidebar-always-expanded .nav-item span, #app.sidebar-always-expanded .logo-text, .navbar:hover .nav-item span, .navbar:focus-within .nav-item span, .navbar:hover .logo-text, .navbar:focus-within .logo-text, .edit-mode .profile-edit-overlay, .row-container:hover .handle, .handle:focus, .handle.focused, .playlist-card:hover .playlist-overlay, .playlist-card.focused .playlist-overlay, .playlist-item-card:hover .item-actions-overlay, .playlist-item-card.focused .item-actions-overlay {
     opacity: 1;
 }
 
@@ -3845,6 +3602,9 @@ iframe {
     cursor: pointer;
 }
 
+/* Styles the .icon-btn-mini:hover,
+.icon-btn-mini:focus,
+.icon-btn-mini.focused UI element and manages its visual layout. */
 .icon-btn-mini:hover,
 .icon-btn-mini:focus,
 .icon-btn-mini.focused {
@@ -3853,6 +3613,7 @@ iframe {
     color: #050505;
 }
 
+/* Styles the .playlist-empty-state UI element and manages its visual layout. */
 .playlist-empty-state {
     grid-column: 1 / -1;
     min-height: 260px;
@@ -3866,11 +3627,13 @@ iframe {
     text-align: center;
 }
 
+/* Styles the .empty-icon UI element and manages its visual layout. */
 .empty-icon {
     font-size: 48px;
     margin-bottom: 18px;
 }
 
+/* Styles the .empty-action-btn UI element and manages its visual layout. */
 .empty-action-btn {
     min-height: 46px;
     margin-top: 20px;
@@ -3883,53 +3646,7 @@ iframe {
     cursor: pointer;
 }
 
-.empty-action-btn:hover,
-.empty-action-btn:focus,
-.empty-action-btn.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring);
-}
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 5000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    background: rgba(0, 0, 0, 0.84);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.18s ease, visibility 0.18s ease;
-}
-
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
-
-.modal-content {
-    width: min(480px, 92vw);
-    padding: 28px;
-    border-radius: var(--radius-lg);
-    background: #161616;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: var(--shadow-panel);
-    text-align: center;
-}
-
-/* Styles the title text for confirmation and dynamic overlay dialogs. */
-.modal-title {
-    margin-bottom: 14px;
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
-    font-weight: 600;
-}
-
+/* Styles the .modal-message UI element and manages its visual layout. */
 .modal-message {
     margin-bottom: 24px;
     color: var(--text-muted);
@@ -3937,70 +3654,76 @@ iframe {
     line-height: 1.5;
 }
 
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
-
+/* Styles the .modal-actions .action-btn UI element and manages its visual layout. */
 .modal-actions .action-btn {
     justify-content: center;
 }
 
 @media (max-width: 1279px) {
+    /* Styles the .playlist-content-wrapper UI element and manages its visual layout. */
     .playlist-content-wrapper {
         grid-template-columns: 260px minmax(0, 1fr);
     }
 
+    /* Styles the .playlist-items-grid UI element and manages its visual layout. */
     .playlist-items-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
 }
 
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .playlist-details-container UI element and manages its visual layout. */
     .playlist-details-container {
         overflow-y: auto;
     }
 
+    /* Styles the .playlist-content-wrapper UI element and manages its visual layout. */
     .playlist-content-wrapper {
         height: auto;
         grid-template-columns: 1fr;
         padding: 24px 18px 104px;
     }
 
+    /* Styles the .playlist-title UI element and manages its visual layout. */
     .playlist-title {
         font-size: 32px;
     }
 
+    /* Styles the .playlist-actions-sidebar UI element and manages its visual layout. */
     .playlist-actions-sidebar {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    /* Styles the .playlist-items-section UI element and manages its visual layout. */
     .playlist-items-section {
         overflow: visible;
     }
 
+    /* Styles the .playlist-items-grid UI element and manages its visual layout. */
     .playlist-items-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
     }
 
+    /* Styles the .modal-overlay UI element and manages its visual layout. */
     .modal-overlay {
         align-items: flex-end;
         padding: 16px;
     }
 
+    /* Styles the .modal-content UI element and manages its visual layout. */
     .modal-content {
         width: 100%;
     }
+
 }
 
 /* ==========================================================================
    SECTION 15: PAGE SPECIFIC - SEARCH SYSTEM & FILTERS
    Source File: search.css
    ========================================================================== */
-
 .search-page-layout {
     width: 100%;
     height: 100%;
@@ -4008,6 +3731,7 @@ iframe {
     color: #fff;
 }
 
+/* Styles the .search-main UI element and manages its visual layout. */
 .search-main {
     height: 100%;
     display: flex;
@@ -4029,31 +3753,40 @@ iframe {
 
 /* Styles the search input box container to stretch across its wrapper. */
 .search-box {
-    width: 100%;
     margin-bottom: 15px;
+    width: 100%;
 }
 
+/* Styles the input text box wrapper, setting height and a small border radius. */
 .input-wrapper {
-    height: 58px;
-    display: flex;
     align-items: center;
-    padding: 0 16px;
-    border-radius: var(--radius-md);
-    border: 2px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.07);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    display: flex;
+    height: 58px;
+    padding: 0 16px;
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Styles the input text box wrapper on focus-within, focus, or hover to show the white outline. */
 .input-wrapper:focus-within,
 .input-wrapper.focused,
 .input-wrapper:hover {
+    background: rgba(255, 255, 255, 0.08);
     border-color: #fff;
     box-shadow: var(--focus-ring);
 }
 
-.input-wrapper.active-typing {
+/* Combined styles for .profile-card.drag-over, .input-wrapper.active-typing */
+.profile-card.drag-over, .input-wrapper.active-typing {
     border-color: var(--primary-color);
 }
 
+/* Styles the .search-icon,
+.filter-icon UI element and manages its visual layout. */
 .search-icon,
 .filter-icon {
     width: 24px;
@@ -4061,20 +3794,23 @@ iframe {
     object-fit: contain;
 }
 
+/* Styles the .search-icon UI element and manages its visual layout. */
 .search-icon {
+    height: 22px;
     margin-right: 12px;
     opacity: 0.62;
+    width: 22px;
 }
 
 #search-input {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    outline: 0;
     background: transparent;
+    border: 0;
     color: #fff;
     font-size: 20px;
     font-weight: 700;
+    height: 100%;
+    outline: 0;
+    width: 100%;
 }
 
 #search-input::placeholder {
@@ -4098,6 +3834,26 @@ iframe {
     padding: 0 24px;
 }
 
+/* Styles the search button to use the theme accent color as its background for better visual hierarchy. */
+#search-btn {
+    background: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    color: #050505;
+}
+
+/* Styles the search button hover and focus states with the standard theme white border outline. */
+#search-btn:hover,
+#search-btn:focus {
+    background: var(--primary-color) !important;
+    border: 3px solid #fff !important;
+    color: #050505 !important;
+}
+
+
+/* Styles the .primary-btn,
+.icon-btn,
+.small-btn,
+.ghost-btn UI element and manages its visual layout. */
 .primary-btn,
 .icon-btn,
 .small-btn,
@@ -4112,21 +3868,15 @@ iframe {
     font-weight: 900;
 }
 
-.primary-btn {
-    background: #fff;
-    color: #050505;
-}
-
+/* Styles the .icon-btn,
+.small-btn,
+.ghost-btn UI element and manages its visual layout. */
 .icon-btn,
 .small-btn,
 .ghost-btn {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
     border: 2px solid rgba(255, 255, 255, 0.12);
-}
-
-.ghost-btn {
-    background: transparent;
 }
 
 /* Styles the recent searches row positioned above the search input bar. */
@@ -4139,10 +3889,7 @@ iframe {
     width: 100%;
 }
 
-.recent-searches-row.hidden {
-    display: none;
-}
-
+/* Styles the .recent-label UI element and manages its visual layout. */
 .recent-label {
     color: var(--text-muted);
     font-size: 14px;
@@ -4150,6 +3897,7 @@ iframe {
     text-transform: uppercase;
 }
 
+/* Styles the .recent-list UI element and manages its visual layout. */
 .recent-list {
     display: flex;
     gap: 8px;
@@ -4254,6 +4002,7 @@ iframe {
     padding-bottom: 5%;
 }
 
+/* Styles the .search-results-grid UI element and manages its visual layout. */
 .search-results-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
@@ -4270,6 +4019,7 @@ iframe {
     contain-intrinsic-size: auto var(--poster-height);
 }
 
+/* Styles the .no-results-msg UI element and manages its visual layout. */
 .no-results-msg {
     grid-column: 1 / -1;
     padding: 42px;
@@ -4280,65 +4030,44 @@ iframe {
     font-size: 18px;
 }
 
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 5000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    background: rgba(0, 0, 0, 0.84);
-}
-
+/* Styles the .modal-overlay.active UI element and manages its visual layout. */
 .modal-overlay.active {
     display: flex;
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
 }
 
-.modal-content {
-    width: min(680px, 94vw);
-    max-height: 86vh;
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--radius-lg);
-    background: #161616;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: var(--shadow-panel);
-    overflow: hidden;
-}
-
+/* Styles the .large-modal UI element and manages its visual layout. */
 .large-modal {
     width: min(980px, 94vw);
 }
 
+/* Styles the .small-modal UI element and manages its visual layout. */
 .small-modal {
     width: min(520px, 92vw);
 }
 
-/* Styles the primary title display within multi-step utility modals. */
-.modal-title {
-    padding: 24px 28px 16px;
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 26px;
-    font-weight: 600;
-}
-
+/* Styles the .modal-scroll-area UI element and manages its visual layout. */
 .modal-scroll-area {
     overflow-y: auto;
     padding: 0 28px 12px;
 }
 
+/* Styles the .filter-main-grid UI element and manages its visual layout. */
 .filter-main-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
 }
 
+/* Styles the .filter-group UI element and manages its visual layout. */
 .filter-group {
     margin-bottom: 20px;
 }
 
+/* Styles the .filter-group h3,
+.group-header h3 UI element and manages its visual layout. */
 .filter-group h3,
 .group-header h3 {
     margin-bottom: 10px;
@@ -4349,19 +4078,25 @@ iframe {
     letter-spacing: 0.06em;
 }
 
-.group-header {
+/* Combined styles for .channel-list-name-row, .group-header */
+.channel-list-name-row, .group-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
 
+/* Styles the .badge UI element and manages its visual layout. */
 .badge {
     color: var(--primary-color);
     font-size: 13px;
     font-weight: 900;
 }
 
+/* Styles the .filter-options.horizontal,
+.filter-chips-grid,
+.genre-grid,
+.select-options-grid UI element and manages its visual layout. */
 .filter-options.horizontal,
 .filter-chips-grid,
 .genre-grid,
@@ -4371,10 +4106,13 @@ iframe {
     gap: 10px;
 }
 
+/* Styles the .filter-options.horizontal UI element and manages its visual layout. */
 .filter-options.horizontal {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* Styles the .filter-chip,
+.select-item UI element and manages its visual layout. */
 .filter-chip,
 .select-item {
     min-height: 48px;
@@ -4390,10 +4128,9 @@ iframe {
     cursor: pointer;
 }
 
-.filter-chip input {
-    display: none;
-}
-
+/* Styles the .filter-chip.active,
+.select-item.selected,
+.select-item.active UI element and manages its visual layout. */
 .filter-chip.active,
 .select-item.selected,
 .select-item.active {
@@ -4401,21 +4138,21 @@ iframe {
     border-color: var(--primary-color);
 }
 
-.filter-chip input:checked + span {
+/* Combined styles for .episode-item.watched .episode-number, .filter-chip input:checked + span */
+.episode-item.watched .episode-number, .filter-chip input:checked + span {
     color: var(--primary-color);
 }
 
-.filter-chip:hover,
-.filter-chip:focus,
-.filter-chip.focused,
-.select-item:hover,
-.select-item:focus,
-.select-item.focused {
+/* Combined styles for .error-btn:hover, .error-btn:focus, .error-btn.focused, .filter-chip:hover, .filter-chip:focus, .filter-chip.focused, .select-item:hover, .select-item:focus, .select-item.focused */
+.error-btn:hover, .error-btn:focus, .error-btn.focused, .filter-chip:hover, .filter-chip:focus, .filter-chip.focused, .select-item:hover, .select-item:focus, .select-item.focused {
     border-color: #fff;
     box-shadow: var(--focus-ring);
     outline: none;
 }
 
+/* Styles the .filter-input,
+.filter-select-btn,
+.modal-search-input UI element and manages its visual layout. */
 .filter-input,
 .filter-select-btn,
 .modal-search-input {
@@ -4434,48 +4171,48 @@ iframe {
     outline: none;
 }
 
-.filter-input:focus,
-.filter-input.focused,
-.filter-select-btn:focus,
-.filter-select-btn.focused,
-.filter-select-btn:hover,
-.modal-search-input:focus,
-.modal-search-input.focused {
+/* Combined styles for .input-group input:focus, .input-group input.focused, .empty-action-btn:hover, .empty-action-btn:focus, .empty-action-btn.focused */
+.input-group input:focus, .input-group input.focused, .empty-action-btn:hover, .empty-action-btn:focus, .empty-action-btn.focused, .filter-input:focus, .filter-input.focused, .filter-select-btn:focus, .filter-select-btn.focused, .filter-select-btn:hover, .modal-search-input:focus, .modal-search-input.focused {
     border-color: #fff;
     box-shadow: var(--focus-ring);
 }
 
+/* Styles the .modal-actions UI element and manages its visual layout. */
 .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 18px 28px 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 18px 28px 24px;
 }
 
+/* Styles the .modal-search-wrapper UI element and manages its visual layout. */
 .modal-search-wrapper {
     padding: 0 28px 16px;
 }
 
+/* Styles the .select-options-list,
+.select-options-grid UI element and manages its visual layout. */
 .select-options-list,
 .select-options-grid {
     overflow-y: auto;
     padding: 0 28px 16px;
 }
 
-.select-options-list {
+/* Combined styles for .seasons-list-content, .playlist-actions-sidebar */
+.seasons-list-content, .playlist-actions-sidebar, .select-options-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
+/* Styles the .scrollable UI element and manages its visual layout. */
 .scrollable {
     max-height: 54vh;
 }
 
-
-
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .search-main UI element and manages its visual layout. */
     .search-main {
         padding: 24px 18px 104px;
     }
@@ -4487,31 +4224,40 @@ iframe {
         margin: 2% auto;
     }
 
+    /* Styles the .search-actions UI element and manages its visual layout. */
     .search-actions {
         width: 100%;
     }
 
+    /* Styles the .primary-btn,
+    .icon-btn UI element and manages its visual layout. */
     .primary-btn,
     .icon-btn {
         flex: 1;
     }
 
+    /* Styles the .search-results-grid UI element and manages its visual layout. */
     .search-results-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 12px 10px;
     }
 
+    /* Styles the .search-results-grid .poster-wrapper UI element and manages its visual layout. */
     .search-results-grid .poster-wrapper {
         width: 100%;
         height: auto;
         aspect-ratio: 2 / 3;
     }
 
+    /* Styles the .modal-overlay UI element and manages its visual layout. */
     .modal-overlay {
         align-items: flex-end;
         padding: 16px;
     }
 
+    /* Styles the .modal-content,
+    .large-modal,
+    .small-modal UI element and manages its visual layout. */
     .modal-content,
     .large-modal,
     .small-modal {
@@ -4525,6 +4271,10 @@ iframe {
         font-size: 22px;
     }
 
+    /* Styles the .modal-scroll-area,
+    .select-options-list,
+    .select-options-grid,
+    .modal-search-wrapper UI element and manages its visual layout. */
     .modal-scroll-area,
     .select-options-list,
     .select-options-grid,
@@ -4533,6 +4283,10 @@ iframe {
         padding-right: 20px;
     }
 
+    /* Styles the .filter-main-grid,
+    .filter-chips-grid,
+    .genre-grid,
+    .select-options-grid UI element and manages its visual layout. */
     .filter-main-grid,
     .filter-chips-grid,
     .genre-grid,
@@ -4540,17 +4294,18 @@ iframe {
         grid-template-columns: 1fr;
     }
 
+    /* Styles the .modal-actions UI element and manages its visual layout. */
     .modal-actions {
         padding: 16px 20px 20px;
         flex-direction: column;
     }
+
 }
 
 /* ==========================================================================
    SECTION 16: PAGE SPECIFIC - SYSTEM SETTINGS PANEL
    Source File: settings.css
    ========================================================================== */
-
 .settings-container {
     width: min(1180px, 100%);
     margin: 0 auto;
@@ -4558,10 +4313,7 @@ iframe {
     animation: fadeIn 0.35s ease-out;
 }
 
-.settings-header {
-    margin-bottom: 28px;
-}
-
+/* Styles the .settings-header h1 UI element and manages its visual layout. */
 .settings-header h1 {
     color: #fff;
     font-size: 44px;
@@ -4569,6 +4321,7 @@ iframe {
     margin-bottom: 8px;
 }
 
+/* Styles the .settings-header p UI element and manages its visual layout. */
 .settings-header p {
     color: var(--text-muted);
     font-size: 16px;
@@ -4584,16 +4337,7 @@ iframe {
     box-shadow: var(--shadow-panel);
 }
 
-.section-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 18px;
-    color: #fff;
-    font-size: 22px;
-    font-weight: 800;
-}
-
+/* Styles the .section-icon UI element and manages its visual layout. */
 .section-icon {
     width: 26px;
     height: 26px;
@@ -4670,12 +4414,6 @@ iframe {
     transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
 }
 
-/* Active click state tactile shrink for the edit trigger button */
-.edit-trigger:active {
-    background: rgba(255, 255, 255, 0.2) !important;
-    transform: scale(0.95);
-}
-
 /* Interactive hover focus state for the edit trigger button */
 .edit-trigger:hover,
 .edit-trigger:focus,
@@ -4695,18 +4433,25 @@ iframe {
 
 /* Standard focusable button styles for modal action clicks */
 .action-btn {
-    min-width: 118px;
-    padding: 0 18px;
-    height: 48px;
+    align-items: center;
     background: rgba(255, 255, 255, 0.1);
-    color: #fff;
     border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
     font-size: 15px;
     font-weight: 800;
+    gap: 12px;
+    height: 48px;
+    justify-content: flex-start;
+    min-height: 48px;
+    min-width: 118px;
+    padding: 0 18px;
 }
 
 /* Secondary outline button styles for modal action clicks */
-.action-btn.secondary {
+.ghost-btn, .action-btn.secondary {
     background: transparent;
 }
 
@@ -4715,7 +4460,10 @@ iframe {
 .action-btn:focus,
 .action-btn.focused {
     background: #fff;
+    border-color: #fff !important;
+    box-shadow: var(--focus-ring);
     color: #050505;
+    outline: none;
 }
 
 /* Text label display for update progress status logs */
@@ -4737,15 +4485,15 @@ iframe {
 /* Circular keyframe border pulsing animation used during reordering */
 @keyframes pulse-border {
     0% {
-        box-shadow: 0 0 2px rgba(var(--primary-rgb), 0.2);
+    box-shadow: 0 0 2px rgba(var(--primary-rgb), 0.2);
     }
     100% {
-        box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.6);
+    box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.6);
     }
 }
 
-/* Active click state opacity flash and tactile shrink for option chip buttons */
-.option-chip:active {
+/* Active click state tactile shrink for the edit trigger button */
+.edit-trigger:active, .option-chip:active {
     background: rgba(255, 255, 255, 0.2) !important;
     transform: scale(0.95);
 }
@@ -4843,64 +4591,69 @@ iframe {
     cursor: pointer;
 }
 
+/* Styles the .loader-inline-container .ivids-loader UI element and manages its visual layout. */
 .loader-inline-container .ivids-loader {
     width: 100%;
     height: 100%;
 }
 
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    background: rgba(0, 0, 0, 0.82);
-    opacity: 0;
-    transition: opacity 0.18s ease;
-}
-
+/* Styles the .modal-overlay.show UI element and manages its visual layout. */
 .modal-overlay.show {
     display: flex;
     opacity: 1;
 }
 
+/* Styles the .modal-content UI element and manages its visual layout. */
 .modal-content {
-    width: min(760px, 94vw);
-    max-height: 86vh;
+    background: #161616;
+    background-color: #222;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-panel);
     display: flex;
     flex-direction: column;
+    max-height: 86vh;
+    max-width: 90%;
     overflow: hidden;
-    border-radius: var(--radius-lg);
-    background: #161616;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: var(--shadow-panel);
+    overflow-y: auto;
+    padding: 28px;
+    text-align: center;
+    width: min(760px, 94vw);
 }
 
 /* Styles the title text inside structured responsive popup dialogs. */
 .modal-title {
-    padding: 24px 28px 18px;
     color: #fff;
     font-family: 'Outfit', sans-serif;
     font-size: 26px;
     font-weight: 600;
+    margin-bottom: 14px;
+    margin-top: 0;
+    padding: 24px 28px 18px;
+    text-align: center;
 }
 
+/* Styles the .modal-body UI element and manages its visual layout. */
 .modal-body {
+    display: flex;
     flex: 1;
+    flex-direction: column;
+    gap: 18px;
     overflow-y: auto;
     padding: 0 28px 10px;
 }
 
+/* Styles the .modal-footer UI element and manages its visual layout. */
 .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 18px 28px 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding: 18px 28px 24px;
 }
 
+/* Styles the .modal-btn UI element and manages its visual layout. */
 .modal-btn {
     min-width: 120px;
     height: 48px;
@@ -4909,17 +4662,20 @@ iframe {
     font-weight: 900;
 }
 
-.modal-btn.primary {
+/* Combined styles for .error-btn-primary, .primary-btn */
+.error-btn-primary, .primary-btn, .modal-btn.primary {
     background: #fff;
     color: #050505;
 }
 
+/* Styles the .modal-btn.secondary UI element and manages its visual layout. */
 .modal-btn.secondary {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.12);
 }
 
+/* Styles the .option-grid UI element and manages its visual layout. */
 .option-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4946,11 +4702,15 @@ iframe {
     transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
 }
 
+/* Styles the .option-chip.active UI element and manages its visual layout. */
 .option-chip.active {
     border-color: var(--primary-color) !important;
     background: rgba(var(--primary-rgb), 0.18);
 }
 
+/* Styles the .option-chip:hover,
+.option-chip:focus,
+.option-chip.focused UI element and manages its visual layout. */
 .option-chip:hover,
 .option-chip:focus,
 .option-chip.focused {
@@ -4959,6 +4719,7 @@ iframe {
     outline: none;
 }
 
+/* Styles the .option-chip.active::after UI element and manages its visual layout. */
 .option-chip.active::after {
     content: "";
     position: absolute;
@@ -4970,14 +4731,17 @@ iframe {
     background: var(--primary-color);
 }
 
+/* Styles the .color-option-grid UI element and manages its visual layout. */
 .color-option-grid {
     grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
+/* Styles the .option-chip.color-only UI element and manages its visual layout. */
 .option-chip.color-only {
     min-height: 88px;
 }
 
+/* Styles the .color-dot UI element and manages its visual layout. */
 .color-dot {
     width: 44px;
     height: 44px;
@@ -4985,6 +4749,7 @@ iframe {
     border: 2px solid rgba(255, 255, 255, 0.32);
 }
 
+/* Styles the .warning-container UI element and manages its visual layout. */
 .warning-container {
     margin-top: 4px;
     padding: 14px 16px;
@@ -5001,6 +4766,7 @@ iframe {
     .settings-header h1 {
         font-size: 38px;
     }
+
 }
 
 @media (max-width: 767px), (orientation: portrait) {
@@ -5015,17 +4781,20 @@ iframe {
         box-sizing: border-box;
     }
 
+    /* Styles the .settings-header UI element and manages its visual layout. */
     .settings-header {
         margin-bottom: 20px;
         text-align: left;
         padding-left: 6px;
     }
 
+    /* Styles the .settings-header h1 UI element and manages its visual layout. */
     .settings-header h1 {
         font-size: 28px;
         letter-spacing: -0.02em;
     }
 
+    /* Styles the .settings-header p UI element and manages its visual layout. */
     .settings-header p {
         font-size: 14px;
     }
@@ -5040,12 +4809,14 @@ iframe {
         border-color: rgba(255, 255, 255, 0.05);
     }
 
+    /* Styles the .section-title UI element and manages its visual layout. */
     .section-title {
         font-size: 18px;
         margin-bottom: 14px;
         gap: 10px;
     }
 
+    /* Styles the .section-icon UI element and manages its visual layout. */
     .section-icon {
         width: 22px;
         height: 22px;
@@ -5066,18 +4837,21 @@ iframe {
         padding: 14px 0;
     }
 
+    /* Styles the .setting-info UI element and manages its visual layout. */
     .setting-info {
         flex: 1;
         min-width: 0;
         padding-right: 4px;
     }
 
+    /* Styles the .setting-label UI element and manages its visual layout. */
     .setting-label {
         font-size: 15px;
         margin-bottom: 2px;
         font-weight: 700;
     }
 
+    /* Styles the .setting-description UI element and manages its visual layout. */
     .setting-description {
         font-size: 12px;
         line-height: 1.3;
@@ -5097,6 +4871,7 @@ iframe {
         flex-shrink: 0;
     }
 
+    /* Styles the .current-value-display UI element and manages its visual layout. */
     .current-value-display {
         min-width: 90px;
         padding: 6px 12px;
@@ -5110,6 +4885,7 @@ iframe {
         white-space: nowrap;
     }
 
+    /* Styles the .edit-trigger UI element and manages its visual layout. */
     .edit-trigger {
         width: 38px;
         height: 38px;
@@ -5136,6 +4912,7 @@ iframe {
         gap: 12px;
     }
 
+    /* Styles the .setting-control.m3u-control UI element and manages its visual layout. */
     .setting-control.m3u-control {
         display: flex;
         flex-direction: row;
@@ -5144,6 +4921,7 @@ iframe {
         width: 100%;
     }
 
+    /* Styles the .m3u-control .settings-input UI element and manages its visual layout. */
     .m3u-control .settings-input {
         width: 100% !important;
         max-width: 100%;
@@ -5152,6 +4930,7 @@ iframe {
         margin-bottom: 2px;
     }
 
+    /* Styles the .m3u-control .action-btn UI element and manages its visual layout. */
     .m3u-control .action-btn {
         flex: 1;
         min-width: 0;
@@ -5173,6 +4952,7 @@ iframe {
         width: 100%;
     }
 
+    /* Styles the .update-status-label UI element and manages its visual layout. */
     .update-status-label {
         text-align: center;
         font-size: 13px;
@@ -5181,6 +4961,7 @@ iframe {
         font-weight: 700;
     }
 
+    /* Styles the .update-control .action-btn UI element and manages its visual layout. */
     .update-control .action-btn {
         width: 100% !important;
         height: 44px;
@@ -5193,9 +4974,10 @@ iframe {
     */
     .modal-overlay {
         align-items: flex-end;
-        padding: 0; /* Full edge-to-edge touch */
+        padding: 0;
     }
 
+    /* Styles the .modal-content UI element and manages its visual layout. */
     .modal-content {
         width: 100%;
         max-height: 85vh;
@@ -5215,15 +4997,18 @@ iframe {
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
+    /* Styles the .modal-body UI element and manages its visual layout. */
     .modal-body {
         padding: 16px 20px 8px;
     }
 
+    /* Styles the .modal-footer UI element and manages its visual layout. */
     .modal-footer {
         padding: 12px 20px 24px;
         background: rgba(0, 0, 0, 0.2);
     }
 
+    /* Styles the .modal-btn UI element and manages its visual layout. */
     .modal-btn {
         flex: 1;
         height: 44px;
@@ -5242,6 +5027,7 @@ iframe {
         padding: 4px 0 12px;
     }
 
+    /* Styles the .option-chip UI element and manages its visual layout. */
     .option-chip {
         min-height: 52px;
         padding: 10px 8px;
@@ -5250,6 +5036,7 @@ iframe {
         border-width: 1.5px;
     }
 
+    /* Styles the .option-chip.active::after UI element and manages its visual layout. */
     .option-chip.active::after {
         top: 6px;
         right: 6px;
@@ -5266,27 +5053,30 @@ iframe {
         gap: 10px;
     }
 
+    /* Styles the .option-chip.color-only UI element and manages its visual layout. */
     .option-chip.color-only {
         min-height: 72px;
     }
 
+    /* Styles the .color-dot UI element and manages its visual layout. */
     .color-dot {
         width: 36px;
         height: 36px;
     }
 
+    /* Styles the .warning-container UI element and manages its visual layout. */
     .warning-container {
         font-size: 12px;
         padding: 12px;
         border-radius: var(--radius-sm);
     }
+
 }
 
 /* ==========================================================================
    SECTION 17: PAGE SPECIFIC - ACCOUNT AND PROFILE MANAGEMENT
    Source File: account.css
    ========================================================================== */
-
 .account-container {
     width: min(1040px, 100%);
     margin: 0 auto;
@@ -5294,16 +5084,19 @@ iframe {
     animation: fadeIn 0.35s ease;
 }
 
-.account-header {
+/* Combined styles for .settings-header, .account-header */
+.settings-header, .account-header {
     margin-bottom: 28px;
 }
 
+/* Styles the .account-header h1 UI element and manages its visual layout. */
 .account-header h1 {
     color: #fff;
     font-size: 44px;
     line-height: 1.1;
 }
 
+/* Styles the .account-section UI element and manages its visual layout. */
 .account-section {
     padding: 28px;
     border-radius: var(--radius-lg);
@@ -5312,15 +5105,24 @@ iframe {
     box-shadow: var(--shadow-panel);
 }
 
+/* Styles EPG category headers for Playing Now and Upcoming sections. */
 .section-title {
-    margin-bottom: 24px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--text-muted);
+    display: flex;
     font-size: 15px;
     font-weight: 900;
-    text-transform: uppercase;
+    gap: 12px;
     letter-spacing: 0.08em;
+    margin: 0;
+    margin-bottom: 24px;
+    padding-bottom: 8px;
+    text-align: left;
+    text-transform: uppercase;
 }
 
+/* Styles the .profile-display UI element and manages its visual layout. */
 .profile-display {
     display: flex;
     align-items: center;
@@ -5343,6 +5145,9 @@ iframe {
     box-shadow: var(--shadow-card);
 }
 
+/* Styles the .profile-avatar.large.focusable:focus,
+.profile-avatar.large.focused,
+.profile-avatar.large:hover UI element and manages its visual layout. */
 .profile-avatar.large.focusable:focus,
 .profile-avatar.large.focused,
 .profile-avatar.large:hover {
@@ -5350,11 +5155,13 @@ iframe {
     box-shadow: var(--focus-ring-strong);
 }
 
-.profile-details {
+/* Episodes List */
+.toast-content, .episodes-list, .profile-details {
     flex: 1;
     min-width: 0;
 }
 
+/* Styles the .profile-name-text UI element and manages its visual layout. */
 .profile-name-text {
     max-width: 100%;
     margin-bottom: 18px;
@@ -5366,7 +5173,8 @@ iframe {
     white-space: nowrap;
 }
 
-.profile-actions {
+/* Combined styles for .hero-buttons, .color-picker */
+.hero-buttons, .color-picker, .profile-actions {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
@@ -5387,18 +5195,22 @@ iframe {
 }
 
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .account-container UI element and manages its visual layout. */
     .account-container {
         padding: 24px 18px 104px;
     }
 
+    /* Styles the .account-header h1 UI element and manages its visual layout. */
     .account-header h1 {
         font-size: 32px;
     }
 
+    /* Styles the .account-section UI element and manages its visual layout. */
     .account-section {
         padding: 20px;
     }
 
+    /* Styles the .profile-display UI element and manages its visual layout. */
     .profile-display {
         flex-direction: column;
         align-items: stretch;
@@ -5406,36 +5218,43 @@ iframe {
         gap: 22px;
     }
 
+    /* Styles the .profile-avatar.large UI element and manages its visual layout. */
     .profile-avatar.large {
         margin: 0 auto;
     }
 
+    /* Styles the .profile-name-text UI element and manages its visual layout. */
     .profile-name-text {
         font-size: 28px;
     }
 
+    /* Styles the .profile-actions UI element and manages its visual layout. */
     .profile-actions {
         flex-direction: column;
     }
+
 }
 
 /* Custom Modal Overrides for perfect visibility and rendering */
 .modal-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 99999 !important;
-    display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
     background: rgba(0, 0, 0, 0.82) !important;
+    display: flex !important;
+    height: 100vh !important;
+    inset: 0 !important;
+    justify-content: center !important;
     opacity: 0 !important;
-    visibility: hidden !important;
+    padding: 32px;
     pointer-events: none !important;
+    position: fixed !important;
     transition: opacity 0.28s ease, visibility 0.28s ease !important;
+    visibility: hidden !important;
+    width: 100vw !important;
+    z-index: 99999 !important;
 }
 
+/* Styles the .modal-overlay.active,
+.modal-overlay.show UI element and manages its visual layout. */
 .modal-overlay.active,
 .modal-overlay.show {
     opacity: 1 !important;
@@ -5461,7 +5280,6 @@ iframe {
    - .update-btn-primary: The primary high-contrast focus action (e.g. "Install Now").
    - .update-btn-secondary: The subtle secondary focus action (e.g. "Cancel / Later").
    ========================================================================== */
-
 /* Full-viewport overlay glassmorphic backdrop overlay for the update notification screen */
 .update-modal-overlay {
     position: fixed;
@@ -5481,8 +5299,8 @@ iframe {
     transition: opacity 0.3s ease-in-out;
 }
 
-/* Modal activation style to smoothly fade in the overlay container */
-.update-modal-overlay.visible {
+/* Combined styles for .error-modal.visible, .tv-overlay.show */
+.error-modal.visible, .tv-overlay.show, .update-modal-overlay.visible {
     opacity: 1;
     pointer-events: auto;
 }
@@ -5727,31 +5545,38 @@ iframe {
 
 /* Smartphone portrait responsiveness and layout wrapping overrides for the update modal */
 @media (max-width: 767px), (orientation: portrait) {
+    /* Styles the .update-modal-overlay UI element and manages its visual layout. */
     .update-modal-overlay {
         padding: 16px;
     }
 
+    /* Styles the .update-modal UI element and manages its visual layout. */
     .update-modal {
         padding: 24px !important;
     }
 
+    /* Styles the .update-title UI element and manages its visual layout. */
     .update-title {
         font-size: 20px;
     }
 
+    /* Styles the .update-release-name UI element and manages its visual layout. */
     .update-release-name {
         font-size: 14px;
     }
 
+    /* Styles the .update-footer-actions UI element and manages its visual layout. */
     .update-footer-actions {
         flex-direction: column;
         gap: 10px;
     }
 
+    /* Styles the .update-footer-actions .btn UI element and manages its visual layout. */
     .update-footer-actions .btn {
         width: 100%;
         min-height: 46px;
     }
+
 }
 
 /* Clickable Toast Actions & Buttons for TV Update Prompts */
@@ -5761,28 +5586,35 @@ iframe {
     margin-top: 10px;
 }
 
+/* ==========================================================================
+   SECTION 5: PLAYER PAGE SPECIFIC STYLES
+   Source File: player.css
+   ========================================================================== */
+/* Styles the .toast-btn UI element and manages its visual layout. */
 .toast-btn {
-    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 6px 14px;
+    border: 2px solid transparent;
     border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
     font-size: 13px;
     font-weight: 700;
-    cursor: pointer;
-    border: 2px solid transparent;
+    justify-content: center;
+    padding: 6px 14px;
     transition: all 0.2s ease;
 }
 
+/* Styles the .toast-btn-primary UI element and manages its visual layout. */
 .toast-btn-primary {
     background: var(--primary-color, #46d369);
     color: #050505;
 }
 
+/* Styles the .toast-btn-secondary UI element and manages its visual layout. */
 .toast-btn-secondary {
     background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
     border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
 }
 
 /* Strict compliant focus highlights - no scale, just thick white border */
@@ -5799,81 +5631,91 @@ iframe {
     width: clamp(320px, 60vw, 640px) !important;
 }
 
+/* Styles the .scrollable-modal-body UI element and manages its visual layout. */
 .scrollable-modal-body {
-    overflow-y: auto !important;
     max-height: 50vh !important;
+    overflow-y: auto !important;
     padding-right: 8px;
 }
 
 /* Custom premium scrollbar matching standard tokens */
-.scrollable-modal-body::-webkit-scrollbar {
+.livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar, .scrollable-modal-body::-webkit-scrollbar {
     width: 6px;
 }
 
+/* Styles the .scrollable-modal-body::-webkit-scrollbar-track UI element and manages its visual layout. */
 .scrollable-modal-body::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 4px;
 }
 
+/* Styles the .scrollable-modal-body::-webkit-scrollbar-thumb UI element and manages its visual layout. */
 .scrollable-modal-body::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.12);
     border-radius: 4px;
 }
 
+/* Styles the .scrollable-modal-body::-webkit-scrollbar-thumb:hover UI element and manages its visual layout. */
 .scrollable-modal-body::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* Styles the .version-option-grid UI element and manages its visual layout. */
 .version-option-grid {
-    grid-template-columns: 1fr !important;
     gap: 12px !important;
+    grid-template-columns: 1fr !important;
 }
 
 /* Custom badges and info rows inside version list chips */
 .version-chip-content {
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
     gap: 4px;
+    width: 100%;
 }
 
-.version-chip-header {
-    display: flex;
+/* Styles the timeline progress wrapper for the active show. */
+.hero-epg-progress-wrapper, .version-chip-header {
     align-items: center;
+    display: flex;
     gap: 10px;
     width: 100%;
 }
 
+/* Styles the .version-tag-badge UI element and manages its visual layout. */
 .version-tag-badge {
     background: var(--primary-color, #46d369);
+    border-radius: 4px;
     color: #050505;
     font-size: 11px;
     font-weight: 900;
     padding: 2px 8px;
-    border-radius: 4px;
     text-transform: uppercase;
 }
 
+/* Styles the .version-date-label UI element and manages its visual layout. */
 .version-date-label {
-    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
     margin-left: auto;
 }
 
+/* Styles the .version-chip-title UI element and manages its visual layout. */
 .version-chip-title {
+    color: #ffffff;
     font-size: 15px;
     font-weight: 700;
-    color: #ffffff;
 }
 
+/* Styles the .version-chip-desc UI element and manages its visual layout. */
 .version-chip-desc {
-    font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
-    text-align: left;
-    white-space: nowrap;
+    font-size: 12px;
     overflow: hidden;
+    text-align: left;
     text-overflow: ellipsis;
+    white-space: nowrap;
     width: 100%;
 }
 
@@ -5881,289 +5723,84 @@ iframe {
    SECTION 5: PLAYER PAGE SPECIFIC STYLES
    Source File: player.css
    ========================================================================== */
-
 /* Outer wrapper container that spans the full viewport to house the player page. */
 .video-container {
-    width: 100%;
-    height: 100%;
     background: #000;
+    height: 100%;
+    width: 100%;
 }
 
 /* Style for the iframe embedded video player player container. */
 .player-container {
+    height: 100%;
     position: relative;
     width: 100%;
-    height: 100%;
 }
 
 /* Base style for the player iframe to fill the container. */
 iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
     background: #000;
+    border: none;
+    height: 100%;
+    width: 100%;
 }
 
 /* Overlay panel displayed when the player loading takes too long or fails. */
 .player-status-panel {
-    position: absolute;
-    left: 10%;
-    top: 30%;
-    width: 80%;
-    height: auto;
-    z-index: 200;
-    padding: 3%;
-    border-radius: var(--radius-lg);
     background: rgba(18, 18, 18, 0.96);
     border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-panel);
-    text-align: center;
-    color: #fff;
     box-sizing: border-box;
+    color: #fff;
+    height: auto;
+    left: 10%;
+    padding: 3%;
+    position: absolute;
+    text-align: center;
+    top: 30%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    z-index: 200;
 }
 
 /* Action buttons container within the status panel. */
 .player-status-actions {
     display: flex;
-    justify-content: center;
     gap: 2%;
+    justify-content: center;
     margin-top: 3%;
 }
 
 /* Button style for the back navigation action. */
 .btn-back {
-    display: flex;
     align-items: center;
-    gap: 8px;
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    padding: 10px 20px;
     border-radius: 8px;
-    font-size: 16px;
+    color: #fff;
     cursor: pointer;
+    display: flex;
+    font-size: 16px;
+    gap: 8px;
+    padding: 10px 20px;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 /* Button style for the next episode action. */
 .btn-next {
-    display: flex;
     align-items: center;
-    gap: 8px;
     background: var(--primary-color);
     border: 2px solid var(--primary-color);
-    color: #fff;
-    padding: 10px 20px;
+    border-color: rgba(var(--primary-rgb), 0.52);
     border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.toast-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s ease;
-}
-
-.toast-btn-primary {
-    background: var(--primary-color, #46d369);
-    color: #050505;
-}
-
-.toast-btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Strict compliant focus highlights - no scale, just thick white border */
-.toast-btn:hover,
-.toast-btn:focus,
-.toast-btn.focused {
-    border-color: #ffffff !important;
-    outline: none !important;
-}
-
-/* Version Selector Scrollable Modal Layouts */
-.version-modal-content {
-    max-height: 80vh !important;
-    width: clamp(320px, 60vw, 640px) !important;
-}
-
-.scrollable-modal-body {
-    overflow-y: auto !important;
-    max-height: 50vh !important;
-    padding-right: 8px;
-}
-
-/* Custom premium scrollbar matching standard tokens */
-.scrollable-modal-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.scrollable-modal-body::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 4px;
-}
-
-.scrollable-modal-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 4px;
-}
-
-.scrollable-modal-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.version-option-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-}
-
-/* Custom badges and info rows inside version list chips */
-.version-chip-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    gap: 4px;
-}
-
-.version-chip-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-}
-
-.version-tag-badge {
-    background: var(--primary-color, #46d369);
-    color: #050505;
-    font-size: 11px;
-    font-weight: 900;
-    padding: 2px 8px;
-    border-radius: 4px;
-    text-transform: uppercase;
-}
-
-.version-date-label {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
-    margin-left: auto;
-}
-
-.version-chip-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.version-chip-desc {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-}
-
-/* ==========================================================================
-   SECTION 5: PLAYER PAGE SPECIFIC STYLES
-   Source File: player.css
-   ========================================================================== */
-
-/* Outer wrapper container that spans the full viewport to house the player page. */
-.video-container {
-    width: 100%;
-    height: 100%;
-    background: #000;
-}
-
-/* Style for the iframe embedded video player player container. */
-.player-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-/* Base style for the player iframe to fill the container. */
-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: #000;
-}
-
-/* Overlay panel displayed when the player loading takes too long or fails. */
-.player-status-panel {
-    position: absolute;
-    left: 10%;
-    top: 30%;
-    width: 80%;
-    height: auto;
-    z-index: 200;
-    padding: 3%;
-    border-radius: var(--radius-lg);
-    background: rgba(18, 18, 18, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: var(--shadow-panel);
-    text-align: center;
     color: #fff;
-    box-sizing: border-box;
-}
-
-/* Action buttons container within the status panel. */
-.player-status-actions {
+    cursor: pointer;
     display: flex;
-    justify-content: center;
-    gap: 2%;
-    margin-top: 3%;
-}
-
-/* Button style for the back navigation action. */
-.btn-back {
-    display: flex;
-    align-items: center;
+    font-size: 16px;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
     padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* Button style for the next episode action. */
-.btn-next {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* Highlighted button borders for back buttons on focus/hover. */
-.btn-back:focus, .btn-back:hover {
-    outline: none !important;
-    background: rgba(255, 255, 255, 0.18);
-    border: 3px solid #fff !important;
 }
 
 /* Highlighted button borders for next buttons on focus/hover. */
@@ -6253,8 +5890,8 @@ iframe {
     width: 100%;
 }
 
-/* Hide scrollbars inside server selector. */
-.server-list::-webkit-scrollbar {
+/* Combined styles for #main-view::-webkit-scrollbar, *::-webkit-scrollbar, .hero::after */
+#main-view::-webkit-scrollbar, *::-webkit-scrollbar, .hero::after, .details-page::after, .details-page::before, .episodes-list:empty, .livetv-categories-bar::-webkit-scrollbar, .recent-searches-row.hidden, .filter-chip input, .server-list::-webkit-scrollbar {
     display: none;
 }
 
@@ -6279,8 +5916,8 @@ iframe {
     font-weight: 700;
 }
 
-/* Focus and hover borders for server selectors. */
-.server-btn:focus, .server-btn:hover {
+/* Highlighted button borders for back buttons on focus/hover. */
+.btn-back:focus, .btn-back:hover, .server-btn:focus, .server-btn:hover {
     outline: none !important;
     background: rgba(255, 255, 255, 0.18);
     border: 3px solid #fff !important;

@@ -2,6 +2,8 @@ import { Playlists } from '../../logic/playlists.js';
 import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
+import { manageModal } from '../js/utils/ui-helper.js';
+
 
 let currentPlaylistId = null;
 
@@ -175,31 +177,6 @@ function openItemContextModal(item, index, total) {
     moveUpBtn.style.display = index > 0 ? 'block' : 'none';
     moveDownBtn.style.display = index < total - 1 ? 'block' : 'none';
 
-    const originalParent = modal.parentElement;
-
-    // Move to body to escape parent stacking context or overflow bounds
-    document.body.appendChild(modal);
-
-    // Force inline display settings to override any stylesheet conflicts
-    modal.style.setProperty('display', 'flex', 'important');
-    modal.style.setProperty('visibility', 'visible', 'important');
-    modal.style.setProperty('z-index', '99999', 'important');
-
-    const closeModal = () => {
-        modal.classList.remove('show');
-        modal.style.setProperty('opacity', '0', 'important');
-        setTimeout(() => {
-            modal.classList.remove('active');
-            modal.style.setProperty('display', 'none', 'important');
-            modal.style.setProperty('visibility', 'hidden', 'important');
-            if (originalParent && originalParent.appendChild) {
-                originalParent.appendChild(modal);
-            }
-        }, 300);
-        SpatialNav.clearFocusTrap();
-        SpatialNav.refocus();
-    };
-
     // Clean listeners by node replacement
     const playClone = playBtn.cloneNode(true);
     const detailsClone = detailsBtn.cloneNode(true);
@@ -214,6 +191,8 @@ function openItemContextModal(item, index, total) {
     moveDownBtn.parentNode.replaceChild(moveDownClone, moveDownBtn);
     removeBtn.parentNode.replaceChild(removeClone, removeBtn);
     cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
+
+    const closeModal = manageModal(modal);
 
     playClone.onclick = () => {
         closeModal();
@@ -252,13 +231,6 @@ function openItemContextModal(item, index, total) {
     cancelClone.onclick = () => {
         closeModal();
     };
-
-    setTimeout(() => {
-        modal.style.setProperty('opacity', '1', 'important');
-        modal.classList.add('active', 'show');
-    }, 10);
-    SpatialNav.setFocusTrap(modal);
-    SpatialNav.focusFirst();
 }
 
 /**
@@ -279,36 +251,13 @@ function openEditPlaylistModal(playlist) {
 
     inputEl.value = playlist.name;
 
-    const originalParent = modal.parentElement;
-
-    // Move to body to escape parent stacking context or overflow bounds
-    document.body.appendChild(modal);
-
-    // Force inline display settings to override any stylesheet conflicts
-    modal.style.setProperty('display', 'flex', 'important');
-    modal.style.setProperty('visibility', 'visible', 'important');
-    modal.style.setProperty('z-index', '99999', 'important');
-
-    const closeModal = () => {
-        modal.classList.remove('show');
-        modal.style.setProperty('opacity', '0', 'important');
-        setTimeout(() => {
-            modal.classList.remove('active');
-            modal.style.setProperty('display', 'none', 'important');
-            modal.style.setProperty('visibility', 'hidden', 'important');
-            if (originalParent && originalParent.appendChild) {
-                originalParent.appendChild(modal);
-            }
-        }, 300);
-        SpatialNav.clearFocusTrap();
-        SpatialNav.refocus();
-    };
-
     const confirmClone = confirmBtn.cloneNode(true);
     const cancelClone = cancelBtn.cloneNode(true);
 
     confirmBtn.parentNode.replaceChild(confirmClone, confirmBtn);
     cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
+
+    const closeModal = manageModal(modal, inputEl);
 
     confirmClone.onclick = () => {
         const val = inputEl.value.trim();
@@ -322,13 +271,6 @@ function openEditPlaylistModal(playlist) {
     cancelClone.onclick = () => {
         closeModal();
     };
-
-    setTimeout(() => {
-        modal.style.setProperty('opacity', '1', 'important');
-        modal.classList.add('active', 'show');
-    }, 10);
-    SpatialNav.setFocusTrap(modal);
-    SpatialNav.focusFirst();
 }
 
 /**
@@ -416,36 +358,13 @@ function showConfirmationModal(title, message, onConfirm) {
     titleEl.textContent = title;
     messageEl.textContent = message;
 
-    const originalParent = modal.parentElement;
-
-    // Move to body to escape parent stacking context or overflow bounds
-    document.body.appendChild(modal);
-
-    // Force inline display settings to override any stylesheet conflicts
-    modal.style.setProperty('display', 'flex', 'important');
-    modal.style.setProperty('visibility', 'visible', 'important');
-    modal.style.setProperty('z-index', '99999', 'important');
-
-    const closeModal = () => {
-        modal.classList.remove('show');
-        modal.style.setProperty('opacity', '0', 'important');
-        setTimeout(() => {
-            modal.classList.remove('active');
-            modal.style.setProperty('display', 'none', 'important');
-            modal.style.setProperty('visibility', 'hidden', 'important');
-            if (originalParent && originalParent.appendChild) {
-                originalParent.appendChild(modal);
-            }
-        }, 300);
-        SpatialNav.clearFocusTrap();
-        SpatialNav.refocus();
-    };
-
     const confirmClone = confirmBtn.cloneNode(true);
     const cancelClone = cancelBtn.cloneNode(true);
 
     confirmBtn.parentNode.replaceChild(confirmClone, confirmBtn);
     cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
+
+    const closeModal = manageModal(modal);
 
     confirmClone.onclick = () => {
         onConfirm();
@@ -455,11 +374,5 @@ function showConfirmationModal(title, message, onConfirm) {
     cancelClone.onclick = () => {
         closeModal();
     };
-
-    setTimeout(() => {
-        modal.style.setProperty('opacity', '1', 'important');
-        modal.classList.add('active', 'show');
-    }, 10);
-    SpatialNav.setFocusTrap(modal);
-    SpatialNav.focusFirst();
 }
+

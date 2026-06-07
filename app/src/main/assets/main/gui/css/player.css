@@ -1,5 +1,4 @@
 /* Player Page Styles */
-
 /* Outer wrapper container that spans the full viewport to house the player page. */
 .video-container {
     width: 100%;
@@ -76,13 +75,6 @@ iframe {
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* Highlighted button borders for back buttons on focus/hover. */
-.btn-back:focus, .btn-back:hover {
-    outline: none !important;
-    background: rgba(255, 255, 255, 0.18);
-    border: 3px solid #fff !important;
 }
 
 /* Highlighted button borders for next buttons on focus/hover. */
@@ -225,8 +217,8 @@ iframe {
     font-weight: 700;
 }
 
-/* Focus and hover borders for server selectors. */
-.server-btn:focus, .server-btn:hover {
+/* Highlighted button borders for back buttons on focus/hover. */
+.btn-back:focus, .btn-back:hover, .server-btn:focus, .server-btn:hover {
     outline: none !important;
     background: rgba(255, 255, 255, 0.18);
     border: 3px solid #fff !important;

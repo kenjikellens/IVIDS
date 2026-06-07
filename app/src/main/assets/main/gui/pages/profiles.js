@@ -2,15 +2,22 @@ import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Splash } from '../js/splash.js';
 import { Api } from '../../logic/api.js';
+import { manageModal } from '../js/utils/ui-helper.js';
+
 
 export const init = async (params) => {
     console.log('Profiles: Initializing...');
+
+    let closeProfileModalFn = null;
+    let closeDeleteConfirmModalFn = null;
+    let closePinModalFn = null;
 
     // Hide Sidebar if it exists
     const sidebar = document.getElementById('sidebar-container');
     if (sidebar) sidebar.style.display = 'none';
 
     const mainView = document.getElementById('main-view');
+
     if (mainView) mainView.style.marginLeft = '0';
 
     let profiles = JSON.parse(localStorage.getItem('ivids-profiles')) || [];
@@ -356,10 +363,9 @@ export const init = async (params) => {
 
         updateColorSelection();
         const profileModal = document.getElementById('profile-modal');
-        profileModal.classList.add('active');
-        SpatialNav.setFocusTrap(profileModal);
-        SpatialNav.setFocus(nameInput);
+        closeProfileModalFn = manageModal(profileModal, nameInput);
     };
+
 
     const updateColorSelection = () => {
         document.querySelectorAll('.color-option').forEach(opt => {
@@ -416,9 +422,10 @@ export const init = async (params) => {
         }
 
         localStorage.setItem('ivids-profiles', JSON.stringify(profiles));
-        const profileModal = document.getElementById('profile-modal');
-        if (profileModal) profileModal.classList.remove('active');
-        SpatialNav.clearFocusTrap();
+        if (closeProfileModalFn) {
+            closeProfileModalFn();
+            closeProfileModalFn = null;
+        }
         renderProfiles();
     };
 
@@ -435,13 +442,16 @@ export const init = async (params) => {
             localStorage.removeItem('ivids-last-route');
         }
 
-        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
-        if (deleteConfirmModal) deleteConfirmModal.classList.remove('active');
+        if (closeDeleteConfirmModalFn) {
+            closeDeleteConfirmModalFn();
+            closeDeleteConfirmModalFn = null;
+        }
 
-        const profileModal = document.getElementById('profile-modal');
-        if (profileModal) profileModal.classList.remove('active');
+        if (closeProfileModalFn) {
+            closeProfileModalFn();
+            closeProfileModalFn = null;
+        }
 
-        SpatialNav.clearFocusTrap();
         renderProfiles();
     };
 
@@ -456,20 +466,21 @@ export const init = async (params) => {
         message = message.replace('{name}', profileToDelete.name);
         deleteConfirmMessage.textContent = message;
 
-        deleteConfirmModal.classList.add('active');
-        SpatialNav.setFocusTrap(deleteConfirmModal);
-        SpatialNav.setFocus(cancelBtn); // Safety first, focus cancel by default
+        closeDeleteConfirmModalFn = manageModal(deleteConfirmModal, cancelBtn);
 
         confirmBtn.onclick = () => deleteProfile(index);
         cancelBtn.onclick = () => {
-            deleteConfirmModal.classList.remove('active');
-            SpatialNav.clearFocusTrap();
+            if (closeDeleteConfirmModalFn) {
+                closeDeleteConfirmModalFn();
+                closeDeleteConfirmModalFn = null;
+            }
             // Go back to profile modal
             const profileModal = document.getElementById('profile-modal');
             SpatialNav.setFocusTrap(profileModal);
             SpatialNav.setFocus(document.getElementById('delete-profile-btn'));
         };
     };
+
 
     const showPinModal = (profile) => {
         const pinMessage = document.getElementById('pin-message');
@@ -487,9 +498,8 @@ export const init = async (params) => {
         }
 
         const pinModal = document.getElementById('pin-modal');
-        if (pinModal) pinModal.classList.add('active');
-        SpatialNav.setFocusTrap(pinModal);
-        SpatialNav.setFocus(document.getElementById('pin-digit-1'));
+        closePinModalFn = manageModal(pinModal, document.getElementById('pin-digit-1'));
+
 
         // Logic to move between digits
         const digits = [1, 2, 3, 4].map(i => document.getElementById(`pin-digit-${i}`));
@@ -512,8 +522,10 @@ export const init = async (params) => {
     const verifyPin = (profile) => {
         const enteredPin = [1, 2, 3, 4].map(i => document.getElementById(`pin-digit-${i}`).value).join('');
         if (enteredPin === profile.pin) {
-            if (pinModal) pinModal.classList.remove('active');
-            SpatialNav.clearFocusTrap();
+            if (closePinModalFn) {
+                closePinModalFn();
+                closePinModalFn = null;
+            }
             selectProfile(profile);
         } else {
             document.getElementById('pin-message').textContent = window.i18n.t('profiles.incorrectPin');
@@ -523,19 +535,20 @@ export const init = async (params) => {
         }
     };
 
-    // Event Handlers for modals
-    const profileModal = document.getElementById('profile-modal');
-    const pinModal = document.getElementById('pin-modal');
-
     document.getElementById('save-profile-btn').onclick = saveProfile;
     document.getElementById('cancel-profile-btn').onclick = () => {
-        profileModal.classList.remove('active');
-        SpatialNav.clearFocusTrap();
+        if (closeProfileModalFn) {
+            closeProfileModalFn();
+            closeProfileModalFn = null;
+        }
     };
     document.getElementById('cancel-pin-btn').onclick = () => {
-        pinModal.classList.remove('active');
-        SpatialNav.clearFocusTrap();
+        if (closePinModalFn) {
+            closePinModalFn();
+            closePinModalFn = null;
+        }
     };
+
 
 
     document.querySelectorAll('.color-option').forEach(opt => {

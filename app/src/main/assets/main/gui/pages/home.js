@@ -3,9 +3,7 @@ import { Router } from '../js/router.js';
 import { getRecentlyWatched } from '../../logic/recentlyWatched.js';
 import { HeroSlider } from '../js/hero-slider.js';
 import { ErrorHandler } from '../js/error-handler.js';
-import { renderSkeletonRow } from '../js/skeleton-renderer.js';
-import { lazyLoader } from '../js/lazy-loader.js';
-import { setupRow } from '../js/utils/ui-helper.js';
+import { setupRow, setupLazyLoadedRows } from '../js/utils/ui-helper.js';
 
 /**
  * Initializes the Home page by loading trending items and recently watched history,
@@ -78,26 +76,8 @@ export async function init() {
             { id: 'fantasy-row', fetcher: () => Api.fetchFantasyMovies() }
         ];
 
-        // 3. Render all skeletons immediately so they are focusable
-        categories.forEach(cat => renderSkeletonRow(cat.id));
-
-        // 4. Initialize Skeletons and Register Lazy Loaders
-        categories.forEach(cat => {
-            // Register lazy loader with a wrapper fetcher
-            lazyLoader.register(cat.id, async () => {
-                // Fetch data
-                return await cat.fetcher();
-            }, (id, data) => {
-                // Render actual content
-                if (data && data.length > 0) {
-                    setupRow(id, data);
-                } else {
-                    // Handle empty data: clear skeleton
-                    const el = document.getElementById(id);
-                    if (el) el.innerHTML = '';
-                }
-            });
-        });
+        // 3. Render all skeletons immediately and register lazy loaders
+        setupLazyLoadedRows(categories);
 
     } catch (error) {
         console.error('Critical error in home.init:', error);

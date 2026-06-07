@@ -5,6 +5,8 @@ import { getWatchedItem } from '../../logic/recentlyWatched.js';
 import { getLoaderHtml } from '../js/loader.js';
 import { lazyLoader } from '../js/lazy-loader.js';
 import { debounce } from '../js/utils/debounce.js';
+import { manageModal } from '../js/utils/ui-helper.js';
+
 
 let currentFilters = {
     type: 'movie',
@@ -33,6 +35,12 @@ export async function init() {
     try {
         const input = document.getElementById('search-input');
         const searchBtn = document.getElementById('search-btn');
+
+        let closeFilterModalFn = null;
+        let closeGenreModalFn = null;
+        let closeSortModalFn = null;
+        let closeCountryModalFn = null;
+
         const filterBtn = document.getElementById('filter-btn');
         const filterModal = document.getElementById('filter-modal');
         const closeFiltersBtn = document.getElementById('close-filters-btn');
@@ -94,23 +102,25 @@ export async function init() {
             filterBtn.onclick = () => {
                 pendingFilters = JSON.parse(JSON.stringify(currentFilters));
                 renderAllFilters(pendingFilters);
-                filterModal.classList.add('active');
-                SpatialNav.setFocusTrap(filterModal);
                 const first = filterModal.querySelector('.focusable');
-                if (first) SpatialNav.setFocus(first);
+                closeFilterModalFn = manageModal(filterModal, first);
             };
 
             const applyFilters = () => {
                 currentFilters = JSON.parse(JSON.stringify(pendingFilters));
-                filterModal.classList.remove('active');
-                SpatialNav.clearFocusTrap();
+                if (closeFilterModalFn) {
+                    closeFilterModalFn();
+                    closeFilterModalFn = null;
+                }
                 SpatialNav.setFocus(filterBtn);
                 performSearch(currentQuery, true);
             };
 
             const cancelFilters = () => {
-                filterModal.classList.remove('active');
-                SpatialNav.clearFocusTrap();
+                if (closeFilterModalFn) {
+                    closeFilterModalFn();
+                    closeFilterModalFn = null;
+                }
                 SpatialNav.setFocus(filterBtn);
             };
 
@@ -127,21 +137,20 @@ export async function init() {
         // Genre Modal Handlers
         if (genreSelectBtn && genreModal) {
             genreSelectBtn.onclick = () => {
-                genreModal.classList.add('active');
-                SpatialNav.setFocusTrap(genreModal);
                 const firstGenre = genreModal.querySelector('.focusable');
-                if (firstGenre) SpatialNav.setFocus(firstGenre);
+                closeGenreModalFn = manageModal(genreModal, firstGenre);
             };
 
             if (genreDoneBtn) {
                 genreDoneBtn.onclick = () => {
-                    genreModal.classList.remove('active');
+                    if (closeGenreModalFn) {
+                        closeGenreModalFn();
+                        closeGenreModalFn = null;
+                    }
                     if (filterModal.classList.contains('active')) {
                         SpatialNav.setFocusTrap(filterModal);
-                    } else {
-                        SpatialNav.clearFocusTrap();
+                        SpatialNav.setFocus(genreSelectBtn);
                     }
-                    SpatialNav.setFocus(genreSelectBtn);
                     updateGenreBadge(pendingFilters);
                 };
             }
@@ -153,10 +162,8 @@ export async function init() {
 
             sortByBtn.onclick = () => {
                 pendingSortValue = pendingFilters.sortBy;
-                sortModal.classList.add('active');
-                SpatialNav.setFocusTrap(sortModal);
                 const selected = sortModal.querySelector('.select-item.selected') || sortModal.querySelector('.focusable');
-                if (selected) SpatialNav.setFocus(selected);
+                closeSortModalFn = manageModal(sortModal, selected);
             };
 
             document.getElementById('sort-options-list').onclick = (e) => {
@@ -175,47 +182,44 @@ export async function init() {
                 if (selectedItem) {
                     document.getElementById('sort-by-label').textContent = selectedItem.textContent;
                 }
-                sortModal.classList.remove('active');
+                if (closeSortModalFn) {
+                    closeSortModalFn();
+                    closeSortModalFn = null;
+                }
                 if (filterModal.classList.contains('active')) {
                     SpatialNav.setFocusTrap(filterModal);
-                } else {
-                    SpatialNav.clearFocusTrap();
+                    SpatialNav.setFocus(sortByBtn);
                 }
-                SpatialNav.setFocus(sortByBtn);
             };
 
             sortCancelBtn.onclick = () => {
-                sortModal.classList.remove('active');
+                if (closeSortModalFn) {
+                    closeSortModalFn();
+                    closeSortModalFn = null;
+                }
                 if (filterModal.classList.contains('active')) {
                     SpatialNav.setFocusTrap(filterModal);
-                } else {
-                    SpatialNav.clearFocusTrap();
+                    SpatialNav.setFocus(sortByBtn);
                 }
-                SpatialNav.setFocus(sortByBtn);
             };
         }
 
         // Initialize Country Modal
         if (countrySelectBtn && countryModal) {
             countrySelectBtn.onclick = () => {
-                countryModal.classList.add('active');
-                SpatialNav.setFocusTrap(countryModal);
-                if (countrySearchInput) {
-                    SpatialNav.setFocus(countrySearchInput);
-                } else {
-                    const selected = countryModal.querySelector('.select-item.selected') || countryModal.querySelector('.focusable');
-                    if (selected) SpatialNav.setFocus(selected);
-                }
+                const selected = countrySearchInput || countryModal.querySelector('.select-item.selected') || countryModal.querySelector('.focusable');
+                closeCountryModalFn = manageModal(countryModal, selected);
             };
 
             const closeCountryModal = () => {
-                countryModal.classList.remove('active');
+                if (closeCountryModalFn) {
+                    closeCountryModalFn();
+                    closeCountryModalFn = null;
+                }
                 if (filterModal.classList.contains('active')) {
                     SpatialNav.setFocusTrap(filterModal);
-                } else {
-                    SpatialNav.clearFocusTrap();
+                    SpatialNav.setFocus(countrySelectBtn);
                 }
-                SpatialNav.setFocus(countrySelectBtn);
             };
 
             countryModal.onclick = (e) => {
@@ -240,23 +244,35 @@ export async function init() {
             const filterModalActive = filterModal.classList.contains('active');
 
             if (activeModal) {
-                activeModal.classList.remove('active');
-                if (filterModalActive) {
+                if (activeModal === genreModal && closeGenreModalFn) {
+                    closeGenreModalFn();
+                    closeGenreModalFn = null;
                     SpatialNav.setFocusTrap(filterModal);
-                    if (activeModal === genreModal) SpatialNav.setFocus(genreSelectBtn);
-                    else if (activeModal === sortModal) SpatialNav.setFocus(sortByBtn);
-                    else if (activeModal === countryModal) SpatialNav.setFocus(countrySelectBtn);
+                    SpatialNav.setFocus(genreSelectBtn);
+                } else if (activeModal === sortModal && closeSortModalFn) {
+                    closeSortModalFn();
+                    closeSortModalFn = null;
+                    SpatialNav.setFocusTrap(filterModal);
+                    SpatialNav.setFocus(sortByBtn);
+                } else if (activeModal === countryModal && closeCountryModalFn) {
+                    closeCountryModalFn();
+                    closeCountryModalFn = null;
+                    SpatialNav.setFocusTrap(filterModal);
+                    SpatialNav.setFocus(countrySelectBtn);
                 } else {
-                    SpatialNav.clearFocusTrap();
+                    activeModal.classList.remove('active');
                 }
             } else if (filterModalActive) {
-                filterModal.classList.remove('active');
-                SpatialNav.clearFocusTrap();
+                if (closeFilterModalFn) {
+                    closeFilterModalFn();
+                    closeFilterModalFn = null;
+                }
                 SpatialNav.setFocus(filterBtn);
             } else if (originalOnBack) {
                 originalOnBack();
             }
         };
+
 
         if (searchBtn) {
             searchBtn.onclick = () => {
