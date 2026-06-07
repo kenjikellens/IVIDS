@@ -1,10 +1,9 @@
 import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { HeroSlider } from '../js/hero-slider.js';
-import { createLoaderElement } from '../js/loader.js';
 import { renderSkeletonRow } from '../js/skeleton-renderer.js';
 import { lazyLoader } from '../js/lazy-loader.js';
-import { domRecycler } from '../js/dom-recycler.js';
+import { setupRow } from '../js/utils/ui-helper.js';
 
 export async function init() {
     try {
@@ -48,7 +47,7 @@ export async function init() {
             lazyLoader.register(cat.id, async () => {
                 return await cat.fetcher();
             }, (id, data) => {
-                if (data) setupRow(id, data);
+                if (data) setupRow(id, data, 'tv');
                 else {
                     const el = document.getElementById(id);
                     if (el) el.innerHTML = '';
@@ -62,89 +61,4 @@ export async function init() {
 }
 
 // Removed setupHero
-
-/**
- * Populates a content row with TV show poster buttons, attaches lazy loading, and runs DOM recycling.
- * @param {string} elementId - The ID of the target row element.
- * @param {Array<Object>} items - List of series objects to render.
- */
-function setupRow(elementId, items) {
-    const rowPosters = document.getElementById(elementId);
-    if (!rowPosters) return;
-    // rowPosters.innerHTML = ''; // Removed to allow reuse of elements
-
-    // Create container if not already wrapped
-    let container = rowPosters.parentElement;
-    if (!container.classList.contains('row-container')) {
-        container = document.createElement('div');
-        container.className = 'row-container';
-        rowPosters.parentNode.insertBefore(container, rowPosters);
-        container.appendChild(rowPosters);
-
-        // Observe row container for DOM recycling
-        domRecycler.observe(container);
-    }
-
-    // Get existing skeleton or poster buttons
-    const existingButtons = Array.from(rowPosters.querySelectorAll('.poster-wrapper, .skeleton-poster'));
-
-    items.forEach((item, index) => {
-        if (!item.poster_path) return;
-
-        let btn;
-        if (existingButtons[index]) {
-            btn = existingButtons[index];
-            btn.innerHTML = '';
-            btn.classList.remove('skeleton-poster');
-            btn.classList.add('poster-wrapper');
-            btn.removeAttribute('aria-hidden');
-        } else {
-            btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'poster-wrapper focusable';
-            rowPosters.appendChild(btn);
-        }
-
-        // Create loader
-        const loader = createLoaderElement();
-        loader.classList.add('poster-loader');
-        btn.appendChild(loader);
-
-        const img = document.createElement('img');
-        img.className = 'poster';
-        img.decoding = 'async';
-        img.style.opacity = '0'; // Hide initially
-        img.onload = () => {
-            img.style.opacity = '1';
-            if (loader.parentNode) loader.parentNode.removeChild(loader);
-        };
-        img.onerror = () => {
-            if (loader.parentNode) loader.parentNode.removeChild(loader);
-            img.style.opacity = '1';
-        };
-        img.dataset.src = Api.getImageUrl(item.poster_path);
-        img.alt = item.title || item.name;
-
-        btn.appendChild(img);
-
-        btn.onclick = () => {
-            try {
-                Router.loadPage('details', { id: item.id, type: 'tv' });
-            } catch (navError) {
-                console.error('Error navigating to details:', navError);
-            }
-        };
-
-        // Observe for lazy loading
-        lazyLoader.observeItem(btn);
-    });
-
-    // Remove any remaining skeletons
-    for (let i = items.length; i < existingButtons.length; i++) {
-        existingButtons[i].remove();
-    }
-}
-
-function truncate(str, n) {
-    return (str && str.length > n) ? str.substr(0, n - 1) + '...' : str;
-}
+// setupRow and truncate removed - imported from ui-helper.js

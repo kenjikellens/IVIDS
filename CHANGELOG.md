@@ -101,3 +101,7 @@
 [15:43 04-06-2026] app/src/main/assets/main/gui/pages/settings.html - Renamed edit-icon class to setting-edit-icon to avoid stylesheet clashes.
 [15:43 04-06-2026] app/src/main/assets/main/gui/css/global.css - Renamed .edit-icon styles to .setting-edit-icon for settings page elements and added mandatory class comments.
 [18:24 04-06-2026] .agents/rules/mockups.md - Updated mockup rule to require deleting mockup files after implementation.
+[15:44 07-06-2026] app/src/main/assets/main/gui/js/utils/ui-helper.js - Created shared utility housing consolidated setupRow logic.
+[15:44 07-06-2026] app/src/main/assets/main/gui/pages/home.js - Refactored to import setupRow from ui-helper.js and removed local setupRow and truncate functions.
+[15:44 07-06-2026] app/src/main/assets/main/gui/pages/movies.js - Refactored to import setupRow from ui-helper.js, passed movie default type, and removed local setupRow and truncate functions.
+[15:44 07-06-2026] app/src/main/assets/main/gui/pages/series.js - Refactored to import setupRow from ui-helper.js, passed tv default type, and removed local setupRow and truncate functions.
