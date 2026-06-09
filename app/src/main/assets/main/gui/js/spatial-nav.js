@@ -248,14 +248,17 @@ export const SpatialNav = {
         // 1. Vertical centering in #main-view
         const mainView = document.getElementById('main-view');
         if (mainView && mainView.contains(el)) {
-            // Optimization: Minimal rect calculation
-            const elTop = el.offsetTop;
-            const elHeight = el.offsetHeight;
-            const viewHeight = mainView.clientHeight;
+            const elementRect = el.getBoundingClientRect();
+            const viewRect = mainView.getBoundingClientRect();
+            const verticalPadding = 24;
+            const isFullyVisible =
+                elementRect.top >= viewRect.top + verticalPadding &&
+                elementRect.bottom <= viewRect.bottom - verticalPadding;
 
-            // Simple centering logic without getBoundingClientRect if possible
-            // But mainView might be scrolled, so we need relative position
-            // Using scrollIntoView is usually GPU accelerated and smoother on TV
+            if (isFullyVisible) {
+                return;
+            }
+
             try {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
             } catch (e) {

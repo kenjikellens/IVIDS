@@ -1,5 +1,14 @@
 <div class="profiles-container">
-    <h1 class="profiles-title" data-i18n="profiles.title">Who's watching?</h1>
+    <div class="profiles-page-header">
+        <div>
+            <p class="profiles-eyebrow" data-i18n="nav.account">Account</p>
+            <h1 class="profiles-title" data-i18n="profiles.title">Who's watching?</h1>
+            <p class="profiles-subtitle">Choose a profile, reorder the lineup, or edit viewing access.</p>
+        </div>
+        <button id="add-profile-action" class="btn btn-primary focusable" type="button" data-i18n="profiles.add">
+            Add Profile
+        </button>
+    </div>
 
     <div id="profiles-grid" class="profiles-grid">
         <!-- Profiles will be injected here -->
@@ -54,7 +63,6 @@
                 data-nav-up="#profile-pin" data-nav-left="#cancel-profile-btn">Save</button>
         </div>
     </div>
-</div>
 </div>
 
 <!-- Delete Confirmation Modal -->

@@ -116,6 +116,7 @@ export const Router = {
 
             // Clear loader and set content
             mainView.innerHTML = html;
+            mainView.scrollTop = 0;
 
             // 2. Load JS Module
             try {

@@ -1,7 +1,6 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Splash } from '../js/splash.js';
-import { Api } from '../../logic/api.js';
 import { manageModal } from '../js/utils/ui-helper.js';
 
 
@@ -12,41 +11,11 @@ export const init = async (params) => {
     let closeDeleteConfirmModalFn = null;
     let closePinModalFn = null;
 
-    // Hide Sidebar if it exists
-    const sidebar = document.getElementById('sidebar-container');
-    if (sidebar) sidebar.style.display = 'none';
-
-    const mainView = document.getElementById('main-view');
-
-    if (mainView) mainView.style.marginLeft = '0';
-
     let profiles = JSON.parse(localStorage.getItem('ivids-profiles')) || [];
     let guestPos = parseInt(localStorage.getItem('ivids-guest-pos')) || 0; // Index in the list (0 = first after Add)
     let currentEditingIndex = -1;
     const DEFAULT_COLOR = '#E50914';
     let selectedColor = DEFAULT_COLOR;
-
-    // Preload home screen data in the background to speed up transition
-    setTimeout(async () => {
-        try {
-            console.log('Profiles: Preloading home screen data and images...');
-            const trending = await Api.fetchTrending();
-            
-            // Aggressively prefetch the first few hero/poster images
-            if (trending && trending.length > 0) {
-                trending.slice(0, 10).forEach(item => {
-                    if (item.backdrop_path) Api.prefetchImage(item.backdrop_path, Api.getRecommendedBackdropSize());
-                    if (item.poster_path) Api.prefetchImage(item.poster_path);
-                });
-            }
-
-            Api.fetchHighlyRated();
-            Api.fetchNewThisYear();
-            Api.fetchPopularTV();
-        } catch (e) {
-            console.error('Profiles: Background preload failed', e);
-        }
-    }, 1000);
 
     const renderProfiles = () => {
         const profilesGrid = document.getElementById('profiles-grid');
@@ -64,10 +33,15 @@ export const init = async (params) => {
             addCard.id = 'add-profile-card';
             addCard.className = 'profile-card focusable';
             addCard.innerHTML = `
-                <div class="profile-avatar-container">
-                    <div class="profile-avatar" style="background: #333;">+</div>
+                <div class="profile-card-surface add-profile-surface">
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar add-avatar">+</div>
+                    </div>
+                    <div class="profile-card-copy">
+                        <div class="profile-name" data-i18n="profiles.add">Add Profile</div>
+                        <div class="profile-meta">Create a new viewer</div>
+                    </div>
                 </div>
-                <div class="profile-name" data-i18n="profiles.add">Add Profile</div>
             `;
             addCard.dataset.navRight = `#profile-card-0`; // Points to first item in displayList
             addCard.onclick = () => showProfileModal();
@@ -97,9 +71,12 @@ export const init = async (params) => {
                 }
             }
 
-            const addBtn = document.getElementById('add-profile-card');
-            if (addBtn) {
-                SpatialNav.setFocus(addBtn);
+            const firstProfile = document.getElementById('profile-card-0');
+            const addAction = document.getElementById('add-profile-action');
+            if (firstProfile) {
+                SpatialNav.setFocus(firstProfile);
+            } else if (addAction) {
+                SpatialNav.setFocus(addAction);
             } else {
                 SpatialNav.focusFirst();
             }
@@ -119,35 +96,31 @@ export const init = async (params) => {
         }
 
         // Down goes to the controls (Right to Edit for Users, Right to Move for Guest)
-        card.dataset.navDown = isGuest ? `#move-left-${index}` : `#edit-btn-${index}`;
+        card.dataset.navDown = `#profile-card-${index + 1}`;
+
+        const hasPin = !!profile.pin;
+        const meta = isGuest ? 'Guest access' : (hasPin ? 'PIN protected' : 'Ready to watch');
 
         card.innerHTML = `
-            <div class="profile-avatar-container">
-                <div class="profile-avatar" style="background: ${profile.color || DEFAULT_COLOR}">
-                    ${profile.name.charAt(0).toUpperCase()}
-                </div>
+    <div class="profile-card-surface">
+        <div class="profile-avatar-container">
+            <div class="profile-avatar" style="background: ${profile.color || DEFAULT_COLOR}">
+                ${profile.name.charAt(0).toUpperCase()}
             </div>
+        </div>
+        <div class="profile-card-copy">
             <div class="profile-name">${profile.name}</div>
-            <div class="profile-manage-controls">
-                <div id="move-left-${index}" class="manage-btn move-left-btn focusable" title="Move Left" 
-                    data-nav-up="#profile-card-${index}" 
-                    data-nav-right="${isGuest ? `#move-right-${index}` : `#edit-btn-${index}`}">
-                    <img src="images/arrow.svg" alt="Left">
-                </div>
-                ${!isGuest ? `
-                <div id="edit-btn-${index}" class="manage-btn edit-btn focusable" title="Edit" 
-                    data-nav-up="#profile-card-${index}" 
-                    data-nav-left="#move-left-${index}" 
-                    data-nav-right="#move-right-${index}">
-                    <img src="images/edit.svg" alt="Edit">
-                </div>` : ''}
-                <div id="move-right-${index}" class="manage-btn move-right-btn focusable" title="Move Right" 
-                    data-nav-up="#profile-card-${index}" 
-                    data-nav-left="${isGuest ? `#move-left-${index}` : `#edit-btn-${index}`}">
-                    <img src="images/arrow.svg" alt="Right">
-                </div>
-            </div>
-        `;
+            <div class="profile-meta">${meta}</div>
+        </div>
+        <div class="profile-manage-controls" aria-label="Profile actions">
+            ${!isGuest ? `
+            <button id="edit-btn-${index}" class="manage-btn edit-btn focusable" type="button" title="Edit"
+                data-nav-up="#profile-card-${index}">
+                <img src="images/edit.svg" alt="Edit">
+            </button>` : ''}
+        </div>
+    </div>
+`;
 
         card.onclick = (e) => {
             if (e.target.closest('.manage-btn')) return;
@@ -155,11 +128,8 @@ export const init = async (params) => {
         };
 
         // Click handlers for buttons
-        const moveLeft = card.querySelector('.move-left-btn');
-        const moveRight = card.querySelector('.move-right-btn');
         const edit = card.querySelector('.edit-btn');
 
-        if (moveLeft) moveLeft.onclick = (e) => { e.stopPropagation(); reorderProfile(index, -1); };
         if (moveRight) moveRight.onclick = (e) => { e.stopPropagation(); reorderProfile(index, 1); };
         if (edit) edit.onclick = (e) => { e.stopPropagation(); showProfileModal(getUserIndex(index)); };
 
@@ -306,10 +276,6 @@ export const init = async (params) => {
 
     const selectProfile = (profile) => {
         localStorage.setItem('ivids-current-profile', JSON.stringify(profile));
-
-        // Show sidebar back for other pages
-        if (sidebar) sidebar.style.display = 'block';
-        if (mainView) mainView.style.marginLeft = '';
 
         // Navigate to last route or home
         const lastRouteData = localStorage.getItem('ivids-last-route');
@@ -549,7 +515,10 @@ export const init = async (params) => {
         }
     };
 
-
+    const addProfileAction = document.getElementById('add-profile-action');
+    if (addProfileAction) {
+        addProfileAction.onclick = () => showProfileModal();
+    }
 
     document.querySelectorAll('.color-option').forEach(opt => {
         opt.onclick = () => {

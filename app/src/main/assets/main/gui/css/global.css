@@ -662,7 +662,7 @@ textarea.active-typing:not(.input-wrapper *) {
     visibility: visible;
     opacity: 1;
     background: var(--background-color, #050505);
-    transition: opacity 0.5s ease-in-out, visibility 0.5s;
+    transition: opacity 0.28s ease-in-out, visibility 0.28s;
     overflow: hidden;
 }
 
@@ -677,24 +677,24 @@ textarea.active-typing:not(.input-wrapper *) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 34px;
+    gap: 28px;
 }
 
 /* Styles the vertical alignment container for the logo image and text on the splash screen. */
 .splash-logo-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 18px;
     margin-bottom: 0;
 }
 
 /* Styles the splash screen logo image loaded from icon.ico. */
 .splash-logo-img {
-    width: 90px;
-    height: 90px;
-    flex: 0 0 90px;
+    width: 72px;
+    height: 72px;
+    flex: 0 0 72px;
     display: block;
     object-fit: contain;
 }
@@ -703,10 +703,11 @@ textarea.active-typing:not(.input-wrapper *) {
 .splash-logo-text {
     margin: 0;
     color: #fff;
-    font-size: 56px;
+    font-size: 52px;
+    line-height: 1;
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
 }
 
 /* Styles the .splash-loader-container UI element and manages its visual layout. */
@@ -718,6 +719,26 @@ textarea.active-typing:not(.input-wrapper *) {
 /* Combined styles for .hero-content.transitioning, .splash-loader-container.hidden */
 .hero-content.transitioning, .splash-loader-container.hidden {
     opacity: 0;
+}
+
+@media (max-width: 767px), (orientation: portrait) {
+    .splash-content {
+        gap: 24px;
+    }
+
+    .splash-logo-container {
+        gap: 14px;
+    }
+
+    .splash-logo-img {
+        width: 58px;
+        height: 58px;
+        flex-basis: 58px;
+    }
+
+    .splash-logo-text {
+        font-size: 42px;
+    }
 }
 
 /* ==========================================================================
@@ -1251,88 +1272,150 @@ textarea.active-typing:not(.input-wrapper *) {
    SECTION 7: PAGE SPECIFIC - USER PROFILES OVERVIEW
    Source File: profiles.css
    ========================================================================== */
-/* Sidebar container is hidden programmatically via profiles.js javascript */
 .profiles-container {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
+    justify-content: flex-start;
+    padding: 44px clamp(24px, 4vw, 64px) 56px;
     background:
-        radial-gradient(circle at 50% 18%, rgba(var(--primary-rgb), 0.16), transparent 28%),
-        linear-gradient(180deg, #111, #050505 70%);
+        radial-gradient(circle at 22% 8%, rgba(var(--primary-rgb), 0.18), transparent 30%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 36%);
     color: #fff;
+}
+
+.profiles-page-header {
+    width: min(1180px, 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0 auto 28px;
+}
+
+.profiles-eyebrow {
+    margin: 0 0 8px;
+    color: var(--primary-color);
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
 }
 
 /* Styles the page header text on the profile selection screen. */
 .profiles-title {
-    margin-bottom: 42px;
+    margin: 0;
     color: #fff;
     font-family: 'Outfit', sans-serif;
-    font-size: 48px;
+    font-size: clamp(34px, 4vw, 54px);
     line-height: 1.1;
-    font-weight: 600;
-    text-align: center;
+    font-weight: 700;
+    text-align: left;
 }
 
-/* Styles the .profiles-grid UI element and manages its visual layout. */
+.profiles-subtitle {
+    max-width: 560px;
+    margin: 12px 0 0;
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
 .profiles-grid {
+    width: min(500px, 100%); /* Compacte Google breedte */
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    width: min(960px, 100%);
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 auto;
 }
 
 /* Styles the profile card element, outlining user avatar and profile details. */
 .profile-card {
-    width: 160px;
+    min-height: auto !important; 
+    height: 72px; /* Vaste, cleane hoogte per profiel */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    padding: 8px;
-    border-radius: var(--radius-lg);
-    border: 2px solid transparent;
+    width: 100%;
     cursor: pointer;
+    outline: none;
 }
 
-/* Styles the .profile-avatar-container UI element and manages its visual layout. */
-.profile-avatar-container {
-    position: relative;
-    width: 136px;
-    height: 136px;
-    overflow: hidden;
-    border-radius: var(--radius-lg);
-    background: var(--surface-muted);
-    box-shadow: var(--shadow-card);
-}
-
-/* Styles the .profile-avatar UI element and manages its visual layout. */
-.profile-avatar {
+.profile-card-surface {
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: row !important; /* Geforceerd naast elkaar */
+    align-items: center !important;
+    gap: 16px !important;
+    padding: 0 20px !important;
+    border-radius: var(--radius-lg) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease !important;
+}
+
+.profile-card:hover .profile-card-surface,
+.profile-card:focus .profile-card-surface,
+.profile-card.focused .profile-card-surface {
+    transform: none !important; /* Geen beweging */
+    border-color: var(--primary-color) !important;
+    background: rgba(var(--primary-rgb), 0.15) !important; /* Premium accent gloed */
+}
+
+.add-profile-surface {
+    border-style: dashed;
+    justify-content: center;
+}
+
+.profile-avatar-container {
+    width: 44px !important;
+    height: 44px !important;
+    flex: 0 0 44px !important; /* Forceert perfecte proporties, voorkomt vervorming */
+    border-radius: 50% !important; /* Google-style 100% rond */
+    overflow: hidden;
+    box-shadow: none !important;
+    background: var(--surface-soft);
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    font-size: 18px !important;
+    font-weight: 700;
+    display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.add-avatar {
+    background: rgba(255, 255, 255, 0.08);
     color: #fff;
-    font-size: 58px;
-    font-weight: 900;
+    font-size: 42px;
+    font-weight: 500;
+}
+
+.profile-card-copy {
+    min-width: 0;
 }
 
 /* Styles the .profile-name UI element and manages its visual layout. */
 .profile-name {
     width: 100%;
-    color: var(--text-muted);
-    font-size: 18px;
+    color: #fff;
+    font-size: 20px;
     font-weight: 800;
-    text-align: center;
+    text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.profile-meta {
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
 }
 
 /* Styles the .profile-card:focus .profile-name,
@@ -1342,6 +1425,61 @@ textarea.active-typing:not(.input-wrapper *) {
 .profile-card.focused .profile-name,
 .profile-card:hover .profile-name {
     color: #fff;
+}
+
+/* Maak de Add Profile rij apart en anders (Google Style) */
+#add-profile-card .profile-card-surface {
+    border: 2px dashed rgba(255, 255, 255, 0.15) !important;
+    background: transparent !important;
+}
+
+#add-profile-card .profile-avatar {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-muted) !important;
+}
+
+/* Unieke witte hover/focus voor Add Profile, zodat hij verschilt van de rest */
+#add-profile-card:hover .profile-card-surface,
+#add-profile-card:focus .profile-card-surface,
+#add-profile-card.focused .profile-card-surface {
+    border-style: solid !important;
+    border-color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.profile-manage-controls {
+    display: flex !important;
+    gap: 6px !important;
+    margin-top: 0 !important; /* Reset de oude verticale bende */
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.manage-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.manage-btn:hover,
+.manage-btn:focus,
+.manage-btn.focused {
+    border-color: rgba(var(--primary-rgb), 0.8);
+    background: rgba(var(--primary-rgb), 0.22);
+    transform: translateY(-1px);
+}
+
+.manage-btn img {
+    width: 17px;
+    height: 17px;
+    object-fit: contain;
+    filter: invert(1);
+}
+
+.move-left-btn img {
+    transform: rotate(180deg);
 }
 
 /* Styles the .profile-edit-overlay UI element and manages its visual layout. */
@@ -1441,34 +1579,53 @@ textarea.active-typing:not(.input-wrapper *) {
 @media (max-width: 767px), (orientation: portrait) {
     /* Styles the .profiles-container UI element and manages its visual layout. */
     .profiles-container {
-        padding: 28px 18px;
+        padding: 28px 18px 40px;
+    }
+
+    .profiles-page-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 22px;
     }
 
     /* Adapts the profiles selection screen title size for smaller mobile viewports. */
     .profiles-title {
         font-size: 34px;
-        margin-bottom: 30px;
+    }
+
+    .profiles-subtitle {
+        font-size: 14px;
     }
 
     /* Styles the .profiles-grid UI element and manages its visual layout. */
     .profiles-grid {
-        gap: 18px;
+        grid-template-columns: 1fr; /* Mag weg, flex-direction regelt dit nu */
+    }
+    .profile-card-surface {
+        /* Verwijder eventuele flex-direction: column die hier stond */
+        flex-direction: row !important; 
+        padding: 14px 20px !important;
     }
 
     /* Styles the .profile-card UI element and manages its visual layout. */
     .profile-card {
-        width: 128px;
+        min-height: 150px;
     }
 
     /* Styles the .profile-avatar-container UI element and manages its visual layout. */
     .profile-avatar-container {
-        width: 108px;
-        height: 108px;
+        width: 68px;
+        height: 68px;
     }
 
     /* Styles the .profile-avatar UI element and manages its visual layout. */
     .profile-avatar {
-        font-size: 44px;
+        font-size: 28px;
+    }
+
+    .profile-name {
+        font-size: 18px;
     }
 
     /* Styles the .modal-overlay UI element and manages its visual layout. */

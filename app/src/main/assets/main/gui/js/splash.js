@@ -14,12 +14,12 @@ export class Splash {
             return;
         }
 
-        // 1. Min wait timer (0.5 seconds)
+        // 1. Min wait timer, kept short so the app lands on Home quickly.
         setTimeout(() => {
-            console.log('Splash: 0.5s min duration reached.');
+            console.log('Splash: minimum duration reached.');
             this.minTimeElapsed = true;
             this.checkReady();
-        }, 700);
+        }, 300);
 
         // 2. Slow load feedback (10 seconds)
         setTimeout(() => {
@@ -113,6 +113,6 @@ export class Splash {
         this.splashElement.addEventListener('transitionend', cleanup);
 
         // Fallback timeout in case transitionend doesn't fire (e.g. if element is hidden immediately)
-        setTimeout(cleanup, 1000);
+        setTimeout(cleanup, 450);
     }
 }

@@ -500,11 +500,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Remove lingering state data so the app always starts fresh
             localStorage.removeItem('ivids-last-route');
-            localStorage.removeItem('ivids-current-profile');
             localStorage.removeItem('ivids-last-active');
 
-            // Always go to profiles screen on startup
-            Router.loadPage('profiles');
+            // Always go to home on startup. Profiles remain available through Account.
+            Router.loadPage('home');
         } catch (homeError) {
             console.error('Error in initial routing:', homeError);
             ErrorHandler.show(window.i18n.t('error.initError'), () => window.location.reload());
