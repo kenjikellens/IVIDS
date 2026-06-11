@@ -116,7 +116,7 @@ export class UpdatePrompt {
         let release = window.latestRelease;
         if (!release || release.tag_name !== version) {
             try {
-                const response = await fetch('https://corsproxy.io/?https://api.github.com/repos/kenjikellens/IVIDS/releases/latest');
+                const response = await fetch('https://api.github.com/repos/kenjikellens/IVIDS/releases/latest');
                 if (response.ok) {
                     release = await response.json();
                 }
@@ -213,7 +213,11 @@ export class UpdatePrompt {
                 progressText.textContent = `${this.translate('update_status_downloading', 'Downloading Update...')} (0%)`;
             }
             try {
-                window.AndroidUpdate.downloadAndInstall();
+                if (window.latestUpdateDownloadUrl) {
+                    window.AndroidUpdate.downloadAndInstallForUrl(window.latestUpdateDownloadUrl);
+                } else {
+                    window.AndroidUpdate.downloadAndInstall();
+                }
             } catch (err) {
                 console.error('UpdatePrompt: Failed to trigger native download', err);
                 this.handleError();

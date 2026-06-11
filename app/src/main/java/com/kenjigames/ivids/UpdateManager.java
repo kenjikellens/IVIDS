@@ -402,6 +402,18 @@ public class UpdateManager {
     private void installApk(File apkFile) {
         try {
             notifyWebUpdateStatus("installing");
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (!mActivity.getPackageManager().canRequestPackageInstalls()) {
+                    Log.d(TAG, "Requesting install unknown apps permission...");
+                    Intent settingsIntent = new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                    settingsIntent.setData(Uri.parse("package:" + mActivity.getPackageName()));
+                    mActivity.startActivity(settingsIntent);
+                    notifyWebUpdateError();
+                    return;
+                }
+            }
+
             Uri apkUri = FileProvider.getUriForFile(mActivity,
                     mActivity.getPackageName() + ".fileprovider", apkFile);
 

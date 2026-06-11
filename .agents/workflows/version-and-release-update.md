@@ -12,7 +12,11 @@ This document defines the strict, standardized protocol for launching new releas
 
 ### 1. Determine the Target Version via GitHub Releases / Tags (Mandatory Step)
 - **ACTION**: The AI Agent MUST check the **GitHub releases/tags** (e.g., using `git tag`) to identify the latest released version, rather than relying on local configuration files in the workspace (which may be out of date or unbumped).
-- **Version Bump**: Increment the patch digit of the latest tag by 1 (e.g., if the latest tag is `v0.4.1`, the target is `v0.4.2`). Ask the user to confirm this calculated version before modifying any files.
+- **Version Bump**: Determine the target version based on the latest release tag following standard semantic versioning (`vX.Y.Z`):
+  - **Large (Major) Update**: Increment `X` by 1 and reset `Y` and `Z` to 0 (e.g., `v0.4.2` -> `v1.0.0`).
+  - **Medium (Minor) Update**: Increment `Y` by 1 and reset `Z` to 0 (e.g., `v0.4.2` -> `v0.5.0`).
+  - **Small (Patch) Update**: Increment `Z` by 1 (e.g., `v0.4.2` -> `v0.4.3`).
+  Ask the user to confirm this calculated version before modifying any files.
 - **Title and Description Generation**: Once confirmed, formulate a high-quality, professional release title (e.g., `Release v0.4.2 (Prerelease)`) and a detailed, feature-rich release description highlighting all visual, spatial-nav, and core logic improvements.
 
 ### 2. Update Android Version Config

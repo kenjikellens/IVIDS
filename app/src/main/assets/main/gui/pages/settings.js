@@ -463,11 +463,24 @@ class SettingsManager {
                 
                 branchCard.onclick = () => {
                     this.closeModal();
-                    if (window.AndroidUpdate) {
-                        window.AndroidUpdate.downloadFromRepo();
-                    } else {
-                        window.open('https://github.com/kenjikellens/IVIDS/releases', '_blank');
-                    }
+                    console.log('Settings: Selected branch build');
+                    window.latestUpdateDownloadUrl = 'https://github.com/kenjikellens/IVIDS/raw/main/IVIDS.apk';
+                    window.latestUpdateVersion = 'Branch';
+                    window.latestRelease = {
+                        tag_name: 'Branch',
+                        name: window.i18n?.t('settings.branchBuild') || 'Active Branch Build',
+                        body: window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK).'
+                    };
+                    import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                        UpdatePrompt.show('Branch');
+                    }).catch(err => {
+                        console.error('Settings: Failed to load update-prompt.js', err);
+                        if (window.AndroidUpdate) {
+                            window.AndroidUpdate.downloadFromRepo();
+                        } else {
+                            window.open('https://github.com/kenjikellens/IVIDS/releases', '_blank');
+                        }
+                    });
                 };
                 
                 grid.appendChild(branchCard);
@@ -497,12 +510,20 @@ class SettingsManager {
 
                         relCard.onclick = () => {
                             this.closeModal();
-                            console.log(`Settings: Downloading version ${rel.tag_name} via ${downloadUrl}`);
-                            if (window.AndroidUpdate) {
-                                window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
-                            } else {
-                                window.open(downloadUrl, '_blank');
-                            }
+                            console.log(`Settings: Selected version ${rel.tag_name} via ${downloadUrl}`);
+                            window.latestUpdateDownloadUrl = downloadUrl;
+                            window.latestUpdateVersion = rel.tag_name;
+                            window.latestRelease = rel;
+                            import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                                UpdatePrompt.show(rel.tag_name);
+                            }).catch(err => {
+                                console.error('Settings: Failed to load update-prompt.js', err);
+                                if (window.AndroidUpdate) {
+                                    window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
+                                } else {
+                                    window.open(downloadUrl, '_blank');
+                                }
+                            });
                         };
 
                         grid.appendChild(relCard);
@@ -626,7 +647,7 @@ class SettingsManager {
             }
         };
 
-        const cancelBtn = modal.querySelector('.modal-btn.secondary') || modal.querySelector('.action-btn.secondary');
+        const cancelBtn = modal.querySelector('.btn-secondary') || modal.querySelector('.modal-btn.secondary') || modal.querySelector('.action-btn.secondary');
         if (cancelBtn) {
             cancelBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -634,7 +655,7 @@ class SettingsManager {
             };
         }
 
-        const applyBtn = modal.querySelector('.modal-btn.primary') || modal.querySelector('.action-btn.primary');
+        const applyBtn = modal.querySelector('.btn-primary') || modal.querySelector('.modal-btn.primary') || modal.querySelector('.action-btn.primary');
         if (applyBtn) {
             applyBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -1034,21 +1055,17 @@ class SettingsManager {
             checkBtn.style.display = 'inline-block';
             checkBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
             checkBtn.onclick = () => {
-                if (window.AndroidUpdate) {
-                    window.AndroidUpdate.downloadAndInstall();
-                } else if (window.latestUpdateDownloadUrl) {
-                    if (window.ElectronAPI) {
-                        import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                            this.handleCancelUpdate();
-                            UpdatePrompt.show(version);
-                        }).catch(err => {
-                            console.error('Settings: Failed to load update-prompt.js', err);
-                            window.open(window.latestUpdateDownloadUrl, '_blank');
-                        });
-                    } else {
+                import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                    this.handleCancelUpdate();
+                    UpdatePrompt.show(version);
+                }).catch(err => {
+                    console.error('Settings: Failed to load update-prompt.js', err);
+                    if (window.AndroidUpdate) {
+                        window.AndroidUpdate.downloadAndInstall();
+                    } else if (window.latestUpdateDownloadUrl) {
                         window.open(window.latestUpdateDownloadUrl, '_blank');
                     }
-                }
+                });
             };
         }
     }

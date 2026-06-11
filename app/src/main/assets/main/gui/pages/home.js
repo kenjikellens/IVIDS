@@ -6,16 +6,20 @@ import { ErrorHandler } from '../js/error-handler.js';
 import { setupRow, setupLazyLoadedRows } from '../js/utils/ui-helper.js';
 
 /**
- * Initializes the Home page by loading trending items and recently watched history,
- * setting up the Hero Slider with all trending items, and lazy loading other movie/TV rows.
+ * Initializes the Home page by loading trending items and watch history.
+ * Sets up the Hero Slider and initiates lazy loading for content rows.
  */
 export async function init() {
     try {
         // 1. Load Hero and Recently Watched concurrently for faster initial render
-        const [trendingResult, recentResult] = await Promise.allSettled([
-            Api.fetchTrending(),
-            Promise.resolve().then(() => { try { return getRecentlyWatched(); } catch (e) { return []; } })
-        ]);
+        const trendingPromise = Api.fetchTrending()
+            .then(val => ({ status: 'fulfilled', value: val }))
+            .catch(err => ({ status: 'rejected', reason: err }));
+        const recentPromise = Promise.resolve().then(() => { try { return getRecentlyWatched(); } catch (e) { return []; } })
+            .then(val => ({ status: 'fulfilled', value: val }))
+            .catch(err => ({ status: 'rejected', reason: err }));
+
+        const [trendingResult, recentResult] = await Promise.all([trendingPromise, recentPromise]);
 
         const trending = trendingResult.status === 'fulfilled' ? trendingResult.value : [];
         const recentlyWatched = recentResult.status === 'fulfilled' ? recentResult.value : [];

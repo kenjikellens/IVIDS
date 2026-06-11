@@ -20,3 +20,13 @@ This document tracks known issues, architectural discrepancies, and performance 
 
 ## 4. Feature Deficiencies
 * **Program Info (EPG) Failures:** Program information (EPG) and upcoming program lists have never worked correctly. XMLTV parses fail or do not line up with the active channels, resulting in "No program info available" for all streams.
+
+## 5. WebView/APK Startup & Compatibility Crashes
+* **TypeError in app.js on Boot Update Checks:**
+  * **Description:** The global update callbacks in `app.js` checked the active state of `update-overlay` using `document.getElementById('update-overlay')?.style.display === 'flex'`. Since the overlay doesn't exist on boot, this evaluated `style` to `undefined` and crashed on `.display`, throwing a fatal `TypeError` synchronously. This aborted `DOMContentLoaded` execution, preventing page routing (blank/empty UI) and breaking settings button event listeners.
+  * **Status:** Fixed in working copy (replaced with safe element checks).
+* **TMDb API & EPG Loading Failures (Promise.prototype.finally):**
+  * **Description:** The use of `Promise.prototype.finally()` for in-flight request cleanup in `api.js` and `epg-manager.js` threw a `TypeError: finally is not a function` on older Android WebViews/TV engines lacking ES2018 support. This rejected all network request promises instantly, blocking titles, posters, and EPG listings.
+  * **Status:** Fixed in working copy (replaced with standard `.then()`/`.catch()` promise chaining).
+
+

@@ -76,7 +76,7 @@ function render() {
                         <span style="font-size: 60px;">📺</span>
                     </div>
                     <h2 data-i18n="playlists.emptyPlaylist">This playlist is empty.</h2>
-                    <button id="empty-browse-btn" class="empty-action-btn focusable">Browse Content</button>
+                    <button id="empty-browse-btn" class="btn btn-primary focusable">Browse Content</button>
                 </div>
             `;
 

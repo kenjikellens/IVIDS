@@ -47,42 +47,6 @@ iframe {
     margin-top: 3%;
 }
 
-/* Button style for the back navigation action. */
-.btn-back {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* Button style for the next episode action. */
-.btn-next {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* Highlighted button borders for next buttons on focus/hover. */
-.btn-next:focus, .btn-next:hover {
-    outline: none !important;
-    background: var(--primary-color);
-    border: 3px solid #fff !important;
-}
 
 /* The head-up display container containing all controls and metadata. */
 .player-hud {
@@ -217,8 +181,8 @@ iframe {
     font-weight: 700;
 }
 
-/* Highlighted button borders for back buttons on focus/hover. */
-.btn-back:focus, .btn-back:hover, .server-btn:focus, .server-btn:hover {
+/* Styles the focus and hover states for the player server selection buttons. */
+.server-btn:focus, .server-btn:hover {
     outline: none !important;
     background: rgba(255, 255, 255, 0.18);
     border: 3px solid #fff !important;

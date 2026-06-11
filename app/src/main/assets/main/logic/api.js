@@ -63,13 +63,20 @@ async function fetchWithRetry(resource, options = {}) {
 
 /**
  * Wraps fetchWithRetry with in-flight deduplication.
- * If an identical URL is already being fetched, returns the existing promise instead of firing a new request.
+ * Caches and returns existing promises for identical URLs, resolving them via standard Promise chain handlers to avoid compatibility issues.
+ * @param {string} url - The URL endpoint to fetch.
+ * @param {Object} [options] - Configuration options for fetch.
+ * @returns {Promise<Response>} The fetch response promise.
  */
 async function deduplicatedFetch(url, options = {}) {
     if (_inflightRequests.has(url)) {
         return _inflightRequests.get(url);
     }
-    const promise = fetchWithRetry(url, options).finally(() => _inflightRequests.delete(url));
+    const cleanUp = () => _inflightRequests.delete(url);
+    const promise = fetchWithRetry(url, options).then(
+        val => { cleanUp(); return val; },
+        err => { cleanUp(); throw err; }
+    );
     _inflightRequests.set(url, promise);
     return promise;
 }

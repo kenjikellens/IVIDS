@@ -1,4 +1,4 @@
-import { Api } from '../../../../logic/api.js';
+import { Api } from '../../../logic/api.js';
 import { Router } from '../router.js';
 import { createLoaderElement } from '../loader.js';
 import { lazyLoader } from '../lazy-loader.js';

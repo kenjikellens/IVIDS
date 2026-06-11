@@ -10,9 +10,8 @@ import { ErrorHandler } from '../js/error-handler.js';
 let currentSeriesId = null;
 
 /**
- * Initializes the details page by fetching content metadata and recommendations concurrently,
- * rendering the UI, loading TV show seasons if applicable, and setting remote control focus.
- * @param {Object} params - The route parameters containing content ID and type.
+ * Initializes the details page by fetching content metadata and recommendations concurrently.
+ * Renders the UI and sets up season selection and remote control focus.
  */
 export async function init(params) {
     try {
@@ -28,10 +27,14 @@ export async function init(params) {
         let details = null;
         let recommendations = [];
         try {
-            const [detailsResult, recsResult] = await Promise.allSettled([
-                Api.getDetails(params.id, params.type),
-                Api.fetchRecommendations(params.id, params.type)
-            ]);
+            const detailsPromise = Api.getDetails(params.id, params.type)
+                .then(val => ({ status: 'fulfilled', value: val }))
+                .catch(err => ({ status: 'rejected', reason: err }));
+            const recsPromise = Api.fetchRecommendations(params.id, params.type)
+                .then(val => ({ status: 'fulfilled', value: val }))
+                .catch(err => ({ status: 'rejected', reason: err }));
+
+            const [detailsResult, recsResult] = await Promise.all([detailsPromise, recsPromise]);
 
             if (detailsResult.status === 'fulfilled') {
                 details = detailsResult.value;

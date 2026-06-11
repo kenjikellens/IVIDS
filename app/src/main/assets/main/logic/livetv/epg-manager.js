@@ -279,10 +279,10 @@ export class EpgManager {
             .catch(error => {
                 console.warn('EPG XML unavailable:', url, error);
                 return '';
-            })
-            .finally(() => {
-                this.guideFetchPromises.delete(url);
             });
+
+        const cleanUp = () => this.guideFetchPromises.delete(url);
+        request.then(cleanUp, cleanUp);
 
         this.guideFetchPromises.set(url, request);
         return request;
@@ -375,8 +375,12 @@ export class EpgManager {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), this.FETCH_TIMEOUT_MS);
 
-        return fetch(url, { signal: controller.signal })
-            .finally(() => clearTimeout(timeout));
+        const promise = fetch(url, { signal: controller.signal });
+        const cleanUp = () => clearTimeout(timeout);
+        return promise.then(
+            val => { cleanUp(); return val; },
+            err => { cleanUp(); throw err; }
+        );
     }
 
     /**

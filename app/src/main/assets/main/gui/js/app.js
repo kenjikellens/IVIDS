@@ -290,12 +290,19 @@ function initUpdateCheck() {
         }
     };
 
-    // Triggered when native side finds a newer app release
+    /**
+     * Triggered when the native updater or static checker finds a newer release.
+     * Caches the version tag name and routes update UI alerts or toasts.
+     * @param {string} version - The found remote version tag name.
+     */
     window.onUpdateFound = (version) => {
         window.latestFoundVersion = version;
         console.log('App: Update found globally:', version);
 
-        if (Router.currentPage === 'settings' && typeof window.settingsUpdateFoundHandler === 'function') {
+        const overlay = document.getElementById('update-overlay');
+        const isPromptActive = overlay ? overlay.style.display === 'flex' : false;
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateFoundHandler === 'function' && !isPromptActive) {
             window.settingsUpdateFoundHandler(version);
         } else {
             // If the splash screen is still visible, cache this version check
@@ -316,11 +323,18 @@ function initUpdateCheck() {
         }
     };
 
-    // Triggered when native side updates active download status phases
+    /**
+     * Triggered when the native or background updater changes its state phase.
+     * Updates the settings label status or notifies the active update dialog view.
+     * @param {string} statusKey - Key representing the current update phase status.
+     */
     window.onUpdateStatus = (statusKey) => {
         console.log('App: Native update status changed:', statusKey);
 
-        if (Router.currentPage === 'settings' && typeof window.settingsUpdateStatusHandler === 'function') {
+        const overlay = document.getElementById('update-overlay');
+        const isPromptActive = overlay ? overlay.style.display === 'flex' : false;
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateStatusHandler === 'function' && !isPromptActive) {
             window.settingsUpdateStatusHandler(statusKey);
         } else {
             import('./update-prompt.js').then(({ UpdatePrompt }) => {
@@ -329,11 +343,18 @@ function initUpdateCheck() {
         }
     };
 
-    // Triggered when native side supplies downloading progress ratios (0-100%)
+    /**
+     * Triggered when the native or background updater reports download progression.
+     * Passes progress data to the settings updates panel or the active prompt bar.
+     * @param {number} progress - Downloading percentage ratio (0-100).
+     */
     window.onUpdateProgress = (progress) => {
         console.log('App: Native update progress retrieved:', progress);
 
-        if (Router.currentPage === 'settings' && typeof window.settingsUpdateProgressHandler === 'function') {
+        const overlay = document.getElementById('update-overlay');
+        const isPromptActive = overlay ? overlay.style.display === 'flex' : false;
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateProgressHandler === 'function' && !isPromptActive) {
             window.settingsUpdateProgressHandler(progress);
         } else {
             import('./update-prompt.js').then(({ UpdatePrompt }) => {
@@ -342,11 +363,17 @@ function initUpdateCheck() {
         }
     };
 
-    // Triggered if update operations fail natively
+    /**
+     * Triggered if update operations fail natively.
+     * Resets the active settings updating states or displays error notification dialogs.
+     */
     window.onUpdateCheckError = () => {
         console.error('App: Update check or download error caught');
 
-        if (Router.currentPage === 'settings' && typeof window.settingsUpdateErrorHandler === 'function') {
+        const overlay = document.getElementById('update-overlay');
+        const isPromptActive = overlay ? overlay.style.display === 'flex' : false;
+
+        if (Router.currentPage === 'settings' && typeof window.settingsUpdateErrorHandler === 'function' && !isPromptActive) {
             window.settingsUpdateErrorHandler();
         } else {
             import('./update-prompt.js').then(({ UpdatePrompt }) => {

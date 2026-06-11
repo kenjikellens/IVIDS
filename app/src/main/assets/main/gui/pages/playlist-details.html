@@ -15,16 +15,16 @@
                 </div>
 
                 <div class="playlist-actions-sidebar">
-                    <button id="play-all-btn" class="action-btn primary focusable" data-i18n="playlists.playAll">
+                    <button id="play-all-btn" class="btn btn-primary focusable" data-i18n="playlists.playAll">
                         <span class="icon"><img src="images/play.svg" alt="Play"></span> Play All
                     </button>
-                    <button id="edit-info-btn" class="action-btn secondary focusable" data-i18n="playlists.editInfo">
+                    <button id="edit-info-btn" class="btn btn-secondary focusable" data-i18n="playlists.editInfo">
                         <span class="icon"><img src="images/edit.svg" alt="Edit"></span> Edit Info
                     </button>
-                    <button id="back-btn" class="action-btn secondary focusable" data-i18n="details.back">
+                    <button id="back-btn" class="btn btn-secondary focusable" data-i18n="details.back">
                         <span class="icon"><img src="images/back.svg" alt="Back"></span> Back
                     </button>
-                    <button id="delete-playlist-btn" class="action-btn secondary focusable"
+                    <button id="delete-playlist-btn" class="btn btn-danger focusable"
                         data-i18n="playlists.delete">
                         <span class="icon">x</span> Delete Playlist
                     </button>
@@ -46,8 +46,8 @@
             <h2 class="modal-title">Remove Item</h2>
             <p class="modal-message">Are you sure you want to remove this item from the playlist?</p>
             <div class="modal-actions">
-                <button id="modal-cancel-btn" class="action-btn secondary focusable">Cancel</button>
-                <button id="modal-confirm-btn" class="action-btn primary focusable">Remove</button>
+                <button id="modal-cancel-btn" class="btn btn-secondary focusable">Cancel</button>
+                <button id="modal-confirm-btn" class="btn btn-danger focusable">Remove</button>
             </div>
         </div>
     </div>
@@ -60,8 +60,8 @@
                 <input id="edit-playlist-name-input" class="settings-input focusable" type="text" placeholder="Playlist Name" style="width: 100%; padding: 12px; border-radius: var(--radius-md); border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #fff; font-size: 16px; outline: none; margin-bottom: 8px;">
             </div>
             <div class="modal-actions">
-                <button id="edit-playlist-cancel-btn" class="action-btn secondary focusable" data-i18n="playlists.cancel">Cancel</button>
-                <button id="edit-playlist-confirm-btn" class="action-btn primary focusable">Save</button>
+                <button id="edit-playlist-cancel-btn" class="btn btn-secondary focusable" data-i18n="playlists.cancel">Cancel</button>
+                <button id="edit-playlist-confirm-btn" class="btn btn-primary focusable">Save</button>
             </div>
         </div>
     </div>
@@ -71,12 +71,12 @@
         <div class="modal-content" style="max-width: 460px; padding: 28px;">
             <h2 id="context-item-title" class="modal-title" style="margin-bottom: 20px; font-size: 24px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Movie Title</h2>
             <div class="modal-actions" style="flex-direction: column; gap: 10px; width: 100%;">
-                <button id="context-play-btn" class="action-btn primary focusable" style="width: 100%; justify-content: center;" data-i18n="player.play">Play Content</button>
-                <button id="context-details-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;" data-i18n="player.moreInfo">View Info Details</button>
-                <button id="context-move-up-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;">Move Item Up</button>
-                <button id="context-move-down-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;">Move Item Down</button>
-                <button id="context-remove-btn" class="action-btn error-btn focusable" style="width: 100%; justify-content: center; background: #e50914 !important; border-color: transparent !important; color: #fff !important;">Remove from Playlist</button>
-                <button id="context-cancel-btn" class="action-btn secondary focusable" style="width: 100%; justify-content: center;" data-i18n="playlists.cancel">Cancel</button>
+                <button id="context-play-btn" class="btn btn-primary focusable" style="width: 100%; justify-content: center;" data-i18n="player.play">Play Content</button>
+                <button id="context-details-btn" class="btn btn-secondary focusable" style="width: 100%; justify-content: center;" data-i18n="player.moreInfo">View Info Details</button>
+                <button id="context-move-up-btn" class="btn btn-secondary focusable" style="width: 100%; justify-content: center;">Move Item Up</button>
+                <button id="context-move-down-btn" class="btn btn-secondary focusable" style="width: 100%; justify-content: center;">Move Item Down</button>
+                <button id="context-remove-btn" class="btn btn-danger focusable" style="width: 100%; justify-content: center;">Remove from Playlist</button>
+                <button id="context-cancel-btn" class="btn btn-secondary focusable" style="width: 100%; justify-content: center;" data-i18n="playlists.cancel">Cancel</button>
             </div>
         </div>
     </div>

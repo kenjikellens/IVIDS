@@ -456,4 +456,16 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView.loadUrl("file:///android_asset/main/gui/index.html");
     }
+
+    /**
+     * Called when the activity is being destroyed.
+     * Shuts down the update manager executor threads to prevent memory leaks.
+     */
+    @Override
+    protected void onDestroy() {
+        if (mUpdateManager != null) {
+            mUpdateManager.shutdown();
+        }
+        super.onDestroy();
+    }
 }

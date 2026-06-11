@@ -148,12 +148,6 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Styles all clickable and interactive elements on hover/focus to display a unified 2px white outline. */
 .btn:hover, .btn:focus, .btn.focused,
-.modal-btn:hover, .modal-btn:focus, .modal-btn.focused,
-.action-btn:hover, .action-btn:focus, .action-btn.focused,
-.primary-btn:hover, .primary-btn:focus, .primary-btn.focused,
-.small-btn:hover, .small-btn:focus, .small-btn.focused,
-.ghost-btn:hover, .ghost-btn:focus, .ghost-btn.focused,
-.error-btn:hover, .error-btn:focus, .error-btn.focused,
 .nav-item:hover, .nav-item:focus, .nav-item.focused,
 .poster-wrapper:hover, .poster-wrapper:focus, .poster-wrapper.focused,
 .skeleton-poster:hover, .skeleton-poster:focus, .skeleton-poster.focused,
@@ -839,22 +833,9 @@ textarea.active-typing:not(.input-wrapper *) {
     gap: 12px;
 }
 
-/* Styles the .error-btn UI element and manages its visual layout. */
-.error-btn {
+/* Styles buttons inside the error actions container to ensure minimum width. */
+.error-actions .btn {
     min-width: 150px;
-    min-height: 48px;
-    padding: 0 22px;
-    font-size: 15px;
-    font-weight: 900;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
-/* Styles the .error-btn-secondary UI element and manages its visual layout. */
-.error-btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.14);
 }
 
 @media (max-width: 767px), (orientation: portrait) {
@@ -878,8 +859,8 @@ textarea.active-typing:not(.input-wrapper *) {
         flex-direction: column;
     }
 
-    /* Styles the .error-btn UI element and manages its visual layout. */
-    .error-btn {
+    /* Styles error actions buttons to take full width on mobile screens. */
+    .error-actions .btn {
         width: 100%;
     }
 
@@ -1447,6 +1428,7 @@ textarea.active-typing:not(.input-wrapper *) {
     background: rgba(255, 255, 255, 0.06) !important;
 }
 
+/* Styles the container for profile management action buttons. */
 .profile-manage-controls {
     display: flex !important;
     gap: 6px !important;
@@ -1455,6 +1437,7 @@ textarea.active-typing:not(.input-wrapper *) {
     flex-shrink: 0;
 }
 
+/* Styles individual profile management action buttons. */
 .manage-btn {
     width: 32px !important;
     height: 32px !important;
@@ -1463,12 +1446,12 @@ textarea.active-typing:not(.input-wrapper *) {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
+/* Styles the hover and focus states of the profile management buttons with a white border. */
 .manage-btn:hover,
 .manage-btn:focus,
 .manage-btn.focused {
-    border-color: rgba(var(--primary-rgb), 0.8);
-    background: rgba(var(--primary-rgb), 0.22);
-    transform: translateY(-1px);
+    border: 3px solid #fff !important;
+    background: rgba(255, 255, 255, 0.12) !important;
 }
 
 .manage-btn img {
@@ -3622,25 +3605,8 @@ textarea.active-typing:not(.input-wrapper *) {
     font-weight: 900;
 }
 
-/* Styles the .action-btn.primary,
-#play-all-btn UI element and manages its visual layout. */
-.action-btn.primary,
-#play-all-btn {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #fff !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(8px);
-}
-
-/* Combined styles for #create-playlist-btn:hover, #create-playlist-btn:focus, #create-playlist-btn.focused, .action-btn.primary:hover, .action-btn.primary:focus, .action-btn.primary.focused, #play-all-btn:hover, #play-all-btn:focus, #play-all-btn.focused */
-#create-playlist-btn:hover, #create-playlist-btn:focus, #create-playlist-btn.focused, .action-btn.primary:hover, .action-btn.primary:focus, .action-btn.primary.focused, #play-all-btn:hover, #play-all-btn:focus, #play-all-btn.focused {
-    background: #fff !important;
-    color: #050505 !important;
-    border-color: #fff !important;
-}
-
-/* Styles the .action-btn .icon UI element and manages its visual layout. */
-.action-btn .icon {
+/* Styles the icon inside a button and manages its visual layout. */
+.btn .icon {
     width: 22px;
     height: 22px;
     display: inline-flex;
@@ -3651,8 +3617,8 @@ textarea.active-typing:not(.input-wrapper *) {
     font-weight: 900;
 }
 
-/* Combined styles for .toast-icon img, .toast-icon svg, .tv-video */
-.toast-icon img, .toast-icon svg, .tv-video, .action-btn .icon img {
+/* Combined styles for toast, TV video, and button icon images. */
+.toast-icon img, .toast-icon svg, .tv-video, .btn .icon img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -3790,19 +3756,6 @@ textarea.active-typing:not(.input-wrapper *) {
     margin-bottom: 18px;
 }
 
-/* Styles the .empty-action-btn UI element and manages its visual layout. */
-.empty-action-btn {
-    min-height: 46px;
-    margin-top: 20px;
-    padding: 0 20px;
-    border-radius: var(--radius-md);
-    border: 2px solid transparent;
-    background: #fff;
-    color: #050505;
-    font-weight: 900;
-    cursor: pointer;
-}
-
 /* Styles the .modal-message UI element and manages its visual layout. */
 .modal-message {
     margin-bottom: 24px;
@@ -3811,8 +3764,8 @@ textarea.active-typing:not(.input-wrapper *) {
     line-height: 1.5;
 }
 
-/* Styles the .modal-actions .action-btn UI element and manages its visual layout. */
-.modal-actions .action-btn {
+/* Centers button content inside modal actions. */
+.modal-actions .btn {
     justify-content: center;
 }
 
@@ -3983,58 +3936,7 @@ textarea.active-typing:not(.input-wrapper *) {
     width: 100%;
 }
 
-/* Styles the search and filter buttons specifically, reducing their size to match the new text layout. */
-.search-action-btn {
-    height: 48px;
-    font-size: 15px;
-    gap: 8px;
-    padding: 0 24px;
-}
 
-/* Styles the search button to use the theme accent color as its background for better visual hierarchy. */
-#search-btn {
-    background: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    color: #050505;
-}
-
-/* Styles the search button hover and focus states with the standard theme white border outline. */
-#search-btn:hover,
-#search-btn:focus {
-    background: var(--primary-color) !important;
-    border: 3px solid #fff !important;
-    color: #050505 !important;
-}
-
-
-/* Styles the .primary-btn,
-.icon-btn,
-.small-btn,
-.ghost-btn UI element and manages its visual layout. */
-.primary-btn,
-.icon-btn,
-.small-btn,
-.ghost-btn {
-    height: 58px;
-    min-width: 58px;
-    padding: 0 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-md);
-    font-weight: 900;
-}
-
-/* Styles the .icon-btn,
-.small-btn,
-.ghost-btn UI element and manages its visual layout. */
-.icon-btn,
-.small-btn,
-.ghost-btn {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border: 2px solid rgba(255, 255, 255, 0.12);
-}
 
 /* Styles the recent searches row positioned above the search input bar. */
 .recent-searches-row {
@@ -4386,10 +4288,8 @@ textarea.active-typing:not(.input-wrapper *) {
         width: 100%;
     }
 
-    /* Styles the .primary-btn,
-    .icon-btn UI element and manages its visual layout. */
-    .primary-btn,
-    .icon-btn {
+    /* Styles buttons to fill available space on smaller viewports. */
+    .btn {
         flex: 1;
     }
 
@@ -4588,40 +4488,7 @@ textarea.active-typing:not(.input-wrapper *) {
     pointer-events: none;
 }
 
-/* Standard focusable button styles for modal action clicks */
-.action-btn {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-md);
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    font-size: 15px;
-    font-weight: 800;
-    gap: 12px;
-    height: 48px;
-    justify-content: flex-start;
-    min-height: 48px;
-    min-width: 118px;
-    padding: 0 18px;
-}
 
-/* Secondary outline button styles for modal action clicks */
-.ghost-btn, .action-btn.secondary {
-    background: transparent;
-}
-
-/* Focus and hover hover animations for the standard buttons */
-.action-btn:hover,
-.action-btn:focus,
-.action-btn.focused {
-    background: #fff;
-    border-color: #fff !important;
-    box-shadow: var(--focus-ring);
-    color: #050505;
-    outline: none;
-}
 
 /* Text label display for update progress status logs */
 .update-status-label {
@@ -4810,26 +4677,9 @@ textarea.active-typing:not(.input-wrapper *) {
     padding: 18px 28px 24px;
 }
 
-/* Styles the .modal-btn UI element and manages its visual layout. */
-.modal-btn {
+/* Ensures modal footer buttons have a consistent minimum width. */
+.modal-footer .btn {
     min-width: 120px;
-    height: 48px;
-    padding: 0 22px;
-    font-size: 15px;
-    font-weight: 900;
-}
-
-/* Combined styles for .error-btn-primary, .primary-btn */
-.error-btn-primary, .primary-btn, .modal-btn.primary {
-    background: #fff;
-    color: #050505;
-}
-
-/* Styles the .modal-btn.secondary UI element and manages its visual layout. */
-.modal-btn.secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* Styles the .option-grid UI element and manages its visual layout. */
@@ -5087,8 +4937,8 @@ textarea.active-typing:not(.input-wrapper *) {
         margin-bottom: 2px;
     }
 
-    /* Styles the .m3u-control .action-btn UI element and manages its visual layout. */
-    .m3u-control .action-btn {
+    /* Styles buttons inside the m3u control grid to balance screen spacing on mobile. */
+    .m3u-control .btn {
         flex: 1;
         min-width: 0;
         width: calc(50% - 4px) !important;
@@ -5118,8 +4968,8 @@ textarea.active-typing:not(.input-wrapper *) {
         font-weight: 700;
     }
 
-    /* Styles the .update-control .action-btn UI element and manages its visual layout. */
-    .update-control .action-btn {
+    /* Styles update actions buttons to occupy full width on mobile viewports. */
+    .update-control .btn {
         width: 100% !important;
         height: 44px;
         border-radius: var(--radius-sm);
@@ -5165,8 +5015,8 @@ textarea.active-typing:not(.input-wrapper *) {
         background: rgba(0, 0, 0, 0.2);
     }
 
-    /* Styles the .modal-btn UI element and manages its visual layout. */
-    .modal-btn {
+    /* Styles modal footer buttons to flex and fit mobile dialog boundaries. */
+    .modal-footer .btn {
         flex: 1;
         height: 44px;
         font-size: 14px;

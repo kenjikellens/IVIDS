@@ -148,9 +148,9 @@ export async function checkForUpdates(force = false) {
             if (typeof window.onUpdateStatus === 'function') {
                 window.onUpdateStatus('fetching-releases');
             }
-            const response = await fetch('https://corsproxy.io/?https://api.github.com/repos/kenjikellens/IVIDS/releases/latest');
+            const response = await fetch('https://api.github.com/repos/kenjikellens/IVIDS/releases/latest');
             if (!response.ok) {
-                throw new Error(`CORS proxy returned status ${response.status}`);
+                throw new Error(`GitHub API returned status ${response.status}`);
             }
             const release = await response.json();
             
