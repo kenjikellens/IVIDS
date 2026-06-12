@@ -122,8 +122,21 @@ export const SpatialNav = {
         this.focusTrapContainer = null;
     },
 
+    /**
+     * Determines if a DOM element is visible and eligible for receiving focus.
+     * This evaluates standard visibility indicators (display/offsetParent, dimensions, opacity, inline visibility)
+     * and specifically checks if the element is encapsulated inside a hidden or inactive modal overlay.
+     * @param {HTMLElement} el - The target element to evaluate for visibility status.
+     * @returns {boolean} True if the element is visible and focusable, false otherwise.
+     */
     isVisible(el) {
         if (!el) return false;
+
+        // Check if element is inside a modal-overlay that is not currently active or shown
+        const modal = el.closest('.modal-overlay');
+        if (modal && !modal.classList.contains('active') && !modal.classList.contains('show')) {
+            return false;
+        }
 
         // FASTEST CHECK: offsetParent is null if display:none or parent is display:none
         if (el.offsetParent === null && el.style.position !== 'fixed') return false;
@@ -229,7 +242,9 @@ export const SpatialNav = {
 
     /**
      * Centers the focused element in the scroll viewport, bypassing modal overlays to prevent layout shifts.
-     * This affects scrolling position inside the main page view container.
+     * For elements in horizontal movie/series poster rows (.row-posters), this executes a custom Netflix-style
+     * horizontal scrolling behavior where focus stays locked at Column 2 and posters scroll underneath.
+     * For all other layouts, standard scrollIntoView rules apply.
      * @param {HTMLElement} el - The DOM node to center in the viewport.
      */
     centerElement(el) {
@@ -245,11 +260,71 @@ export const SpatialNav = {
             return;
         }
 
-        // 1. Vertical centering in #main-view
+        // Check if the element belongs to a Netflix-style horizontal row container (.row-posters)
+        const rowPosters = el.closest('.row-posters');
+
+        // Retrieve active page logic state from the Router to only apply to home, series, and movies
+        const activePage = window.Router ? window.Router.currentPage : null;
+        const isCarouselPage = activePage === 'home' || activePage === 'movies' || activePage === 'series';
+
+        if (rowPosters && isCarouselPage) {
+            // Calculate and apply custom horizontal carousel scrolling (Netflix-style Column 2 lock)
+            const style = window.getComputedStyle(rowPosters);
+            const paddingLeft = parseFloat(style.paddingLeft) || 0;
+            const posterWidth = el.offsetWidth;
+            const gap = 14; // Standard gap defined in CSS between poster wrappers
+            
+            // Align focused item to Column 2 (one poster width + gap offset from the left padding)
+            const targetOffset = paddingLeft + posterWidth + gap;
+            
+            // Offset position of the poster relative to the scroll container's left border
+            let targetScrollLeft = el.offsetLeft - targetOffset;
+            
+            // Clamp scroll position to row bounds [0, maxScrollLeft]
+            const maxScrollLeft = rowPosters.scrollWidth - rowPosters.clientWidth;
+            targetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScrollLeft));
+            
+            // Perform smooth horizontal scrolling to the calculated index target
+            rowPosters.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+
+            // Next, handle smooth vertical centering of the active row container within #main-view
+            const mainView = document.getElementById('main-view');
+            if (mainView && mainView.contains(rowPosters)) {
+                const rowRect = rowPosters.getBoundingClientRect();
+                const viewRect = mainView.getBoundingClientRect();
+                
+                // Keep the row centered vertically in the viewport
+                const rowCenter = rowRect.top + rowRect.height / 2;
+                const viewCenter = viewRect.top + viewRect.height / 2;
+                const verticalDiff = rowCenter - viewCenter;
+                
+                // Scroll vertically only if the row is shifted beyond a minor tolerance threshold (e.g. 5px)
+                if (Math.abs(verticalDiff) > 5) {
+                    mainView.scrollBy({ top: verticalDiff, behavior: 'smooth' });
+                }
+            }
+            return;
+        }
+
+        // Standard centering logic for non-carousel elements (e.g. settings, buttons, profile selectors, search grid)
+        // Find the nearest vertical scrollable parent element to perform vertical centering
+        let parent = el.parentElement;
+        let scrollParent = null;
+        while (parent && parent !== document.body) {
+            const overflowY = window.getComputedStyle(parent).overflowY;
+            if ((overflowY === 'auto' || overflowY === 'scroll') && parent.scrollHeight > parent.clientHeight) {
+                scrollParent = parent;
+                break;
+            }
+            parent = parent.parentElement;
+        }
+
         const mainView = document.getElementById('main-view');
-        if (mainView && mainView.contains(el)) {
+        const viewContainer = scrollParent || mainView;
+
+        if (viewContainer && viewContainer.contains(el)) {
             const elementRect = el.getBoundingClientRect();
-            const viewRect = mainView.getBoundingClientRect();
+            const viewRect = viewContainer.getBoundingClientRect();
             const verticalPadding = 24;
             const isFullyVisible =
                 elementRect.top >= viewRect.top + verticalPadding &&
@@ -259,10 +334,15 @@ export const SpatialNav = {
                 return;
             }
 
+            // Scroll vertically to center the element and prevent horizontal layout shifting
+            const elCenter = elementRect.top + elementRect.height / 2;
+            const viewCenter = viewRect.top + viewRect.height / 2;
+            const verticalDiff = elCenter - viewCenter;
+
             try {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                viewContainer.scrollBy({ top: verticalDiff, behavior: 'smooth' });
             } catch (e) {
-                el.scrollIntoView(false);
+                viewContainer.scrollTop += verticalDiff;
             }
         } else {
             try {
@@ -380,6 +460,14 @@ export const SpatialNav = {
         }
     },
 
+    /**
+     * Calculates the next focus candidate element in a given direction from the current element.
+     * Respects page-specific spatial overrides, manual data navigation paths, and visibility constraints.
+     * Uses a distance-based scoring heuristic to find the closest element in the navigation direction.
+     * @param {HTMLElement} current - The currently focused element.
+     * @param {string} direction - The navigation direction ('up', 'down', 'left', 'right').
+     * @returns {HTMLElement|null} The next focus target element, or null if no valid target.
+     */
     findNext(current, direction) {
         // 0. Check for page-specific spatial logic override
         if (this.currentPageLogic && typeof this.currentPageLogic.findNext === 'function') {
@@ -436,11 +524,8 @@ export const SpatialNav = {
             el = allElements[i];
             if (el === current) continue;
 
-            // Fast visibility check first
-            if (el.offsetParent === null) continue;
-
-            // Optimization: check inline visibility/display used by recycler
-            if (el.style.visibility === 'hidden' || el.style.display === 'none') continue;
+            // Validate that the element is active, laid out, and visible
+            if (!this.isVisible(el)) continue;
 
             elRect = el.getBoundingClientRect();
 

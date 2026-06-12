@@ -8,7 +8,8 @@ export const spatialNavSearch = {
      */
     findNext: (current, direction) => {
         const scope = document;
-        const inSidebar = current.closest('.search-sidebar') !== null;
+        // Check if the current element is located within the global sidebar navigation panel
+        const inSidebar = current.closest('#sidebar-container') !== null;
         const inMain = current.closest('.search-main') !== null;
 
         if (inSidebar) {

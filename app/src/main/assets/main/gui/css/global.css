@@ -99,6 +99,13 @@ button {
     transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1), flex-basis 0.24s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 
+ * Explanation:
+ * - #main-view: The primary vertical scroll viewport container for all pages (Home, Movies, Series, etc.).
+ * - Configured to hide scrollbars and utilize smooth scrolling behavior for remote controls.
+ * - Employs a linear gradient mask-image to create a fluent, premium fade-out effect at the top and bottom 
+ *   viewport borders, ensuring scrolling lists and banner transitions blend smoothly instead of clipping abruptly.
+ */
 #main-view {
     flex: 1;
     min-width: 0;
@@ -108,6 +115,8 @@ button {
     position: relative;
     scroll-behavior: smooth;
     scrollbar-width: none;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
 }
 
 #app.fullscreen-layout #sidebar-container {
@@ -4072,17 +4081,34 @@ textarea.active-typing:not(.input-wrapper *) {
 }
 
 /* Styles the search results container with open space/gutters on both sides. */
+/* 
+ * Explanation:
+ * - .results-container: The scrollable area containing the search results grid.
+ * - Restructured with percentage padding to center layout space dynamically based on device size.
+ * - Sets a top padding of 8% to prevent the top row of posters from being affected by the gradient mask when scrolled to the top.
+ * - Utilizes a stationary linear gradient mask-image on both top and bottom edges so that the grid 
+ *   posters fade out fluently when scrolled towards boundaries, rather than abruptly disappearing.
+ */
 .results-container {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
-    padding-left: 10%;
-    padding-right: 10%;
-    padding-bottom: 5%;
+    padding-left: 6%;
+    padding-right: 6%;
+    padding-top: 8%;
+    padding-bottom: 6%;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
 }
 
-/* Styles the .search-results-grid UI element and manages its visual layout. */
+/* 
+ * Explanation:
+ * - .search-results-grid: The grid container managing search result posters layout.
+ * - Overrides the poster width to be slightly smaller specifically for the search results page.
+ * - Arranges poster cards dynamically utilizing a responsive auto-fill layout flow.
+ */
 .search-results-grid {
+    --poster-width: clamp(105px, 9.5vw, 136px);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
     gap: clamp(12px, 1.5vw, 18px);

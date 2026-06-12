@@ -304,3 +304,4 @@ export const Router = {
         return fallbacks[currentPage] || 'home';
     }
 };
+window.Router = Router;
