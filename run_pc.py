@@ -405,13 +405,15 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def log_message(self, format, *args):
         """
-        Suppresses verbose .ts segment logs to keep the console readable.
-        Only logs non-segment proxy requests and static file requests.
+        Suppresses verbose successful HTTP request logs to keep the terminal clean.
+        Only logs requests that result in error status codes (>= 400) to assist in debugging.
         """
-        message = format % args
-        if '.ts' in message and '/proxy' in message:
-            return  # Suppress noisy segment logs
-        sys.stderr.write(f"[IVIDS] {message}\n")
+        try:
+            status_code = int(args[1])
+            if status_code >= 400:
+                sys.stderr.write(f"[IVIDS] {format % args}\n")
+        except (IndexError, ValueError):
+            pass
 
 
 def start_server():

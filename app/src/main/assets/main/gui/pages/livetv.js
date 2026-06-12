@@ -60,14 +60,14 @@ const countriesList = new Set([
 ]);
 
 /**
- * Initializes the Live TV grid page, resetting state variables, clearing active preview,
+ * Initializes the Live TV list page, resetting state variables, clearing active preview,
  * setting up event listeners, and starting IPTV playlist loading in the background.
  * Affects the global page states, SpatialNav focus, EpgManager, and starts loading all playlist sources.
  * 
  * @param {object} params - Routing parameters.
  */
 export async function init(params) {
-    console.log('Live TV Grid UI initializing...');
+    console.log('Live TV List UI initializing...');
 
     // Reset state variables to prevent carry-over from cached ES modules when returning from player
     searchQuery = '';
@@ -511,13 +511,16 @@ function loadPreviewStream(url) {
         console.warn('Preview video playback failed for URL:', url);
         updateChannelStatus(url, 'offline');
     };
-
     const streamUrl = proxyUrl(url);
 
     if (window.Hls && window.Hls.isSupported()) {
         previewHls = new window.Hls({
             maxMaxBufferLength: 5,
-            liveSyncDuration: 2
+            maxBufferLength: 3,
+            liveSyncDurationCount: 2,
+            initialLiveManifestSize: 2,
+            enableWorker: true,
+            lowLatencyMode: true
         });
         previewHls.loadSource(streamUrl);
         previewHls.attachMedia(video);

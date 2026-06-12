@@ -89,7 +89,11 @@ export async function init(params) {
             console.log('TV Player: Playing stream using HLS.js library');
             hlsInstance = new window.Hls({
                 maxMaxBufferLength: 10,
-                liveSyncDuration: 3
+                maxBufferLength: 6,
+                liveSyncDurationCount: 2,
+                initialLiveManifestSize: 2,
+                enableWorker: true,
+                lowLatencyMode: true
             });
             hlsInstance.loadSource(streamUrl);
             hlsInstance.attachMedia(video);
@@ -388,7 +392,7 @@ export async function init(params) {
 }
 
 /**
- * Persists channel health so the Live TV grid can hide broken streams by default.
+ * Persists channel health so the Live TV list can hide broken streams by default.
  *
  * @param {string} url - Channel stream URL.
  * @param {string} status - online/offline.

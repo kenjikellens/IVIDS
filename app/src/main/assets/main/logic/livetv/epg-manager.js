@@ -299,17 +299,23 @@ export class EpgManager {
     static async readResponseBody(response, url) {
         const isGzip = url.toLowerCase().endsWith('.gz');
         if (isGzip && typeof DecompressionStream !== 'undefined' && response.body) {
-            const decompressedStream = response.body.pipeThrough(new DecompressionStream('gzip'));
-            const reader = decompressedStream.getReader();
-            const decoder = new TextDecoder('utf-8');
-            let result = '';
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                result += decoder.decode(value, { stream: true });
+            const fallbackResponse = response.clone();
+            try {
+                const decompressedStream = response.body.pipeThrough(new DecompressionStream('gzip'));
+                const reader = decompressedStream.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let result = '';
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    result += decoder.decode(value, { stream: true });
+                }
+                result += decoder.decode();
+                return result;
+            } catch (e) {
+                console.warn('Decompression failed (response may be pre-decompressed by proxy). Falling back to raw response text:', e);
+                return fallbackResponse.text();
             }
-            result += decoder.decode();
-            return result;
         }
         return response.text();
     }

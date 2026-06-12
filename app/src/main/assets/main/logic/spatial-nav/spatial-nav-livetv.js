@@ -1,11 +1,11 @@
 /**
- * Spatial navigation configuration stub for the Live TV grid page.
+ * Spatial navigation configuration stub for the Live TV list page.
  */
 export const spatialNavLivetv = {
     id: 'livetv',
     /**
-     * Determines the next focusable element on the Live TV grid page based on direction.
-     * Returns null to fall back to the default spatial navigation grid algorithm.
+     * Determines the next focusable element on the Live TV list page based on direction.
+     * Returns null to fall back to the default spatial navigation list algorithm.
      * 
      * @param {HTMLElement} current - The currently focused element.
      * @param {string} direction - The direction of navigation.

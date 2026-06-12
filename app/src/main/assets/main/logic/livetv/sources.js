@@ -130,7 +130,8 @@ export const PRESET_SOURCES = {
         category: "North America",
         priority: 5
     },
-    // FAST Channels (Free Ad-supported Streaming TV) via de bekende Matt Huisman-lijsten (zeer stabiel en legaal)
+    // FAST Channels (Free Ad-supported Streaming TV) via de bekende Matt Huisman-lijsten (TEMPORARILY OFFLINE - 404 UPSTREAM)
+    /*
     "pluto_tv": {
         name: "Pluto TV Global",
         url: "https://i.mjh.nz/PlutoTV/all.m3u8",
@@ -155,6 +156,7 @@ export const PRESET_SOURCES = {
         category: "FAST Channels",
         priority: 3
     },
+    */
 
     // Kodinerds IPTV (Een uitstekend onderhouden, legaal community-project, vooral sterk in West-Europa/DACH-regio)
     "kodinerds_tv": {
