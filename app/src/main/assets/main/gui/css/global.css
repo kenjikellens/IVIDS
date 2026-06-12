@@ -20,8 +20,8 @@
     --primary-rgb: 70, 211, 105;
     --focus-border-color: #ffffff;
     --card-bg: var(--surface-color);
-    --app-sidebar-width: clamp(64px, 4.5vw, 72px);
-    --app-sidebar-expanded-width: clamp(220px, 15vw, 240px);
+    --app-sidebar-width: clamp(70px, 5vw, 79px);
+    --app-sidebar-expanded-width: clamp(242px, 16.5vw, 264px);
     --app-content-padding-x: clamp(24px, 3.5vw, 48px);
     --app-content-padding-y: clamp(24px, 3vw, 40px);
     --radius-xs: 4px;
@@ -1080,7 +1080,7 @@ textarea.active-typing:not(.input-wrapper *) {
 /* Styles the .nav-item UI element and manages its visual layout. */
 .nav-item {
     position: relative;
-    min-height: 48px;
+    min-height: 42px;
     display: flex;
     align-items: center;
     padding: 0 12px;
