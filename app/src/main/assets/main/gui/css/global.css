@@ -99,13 +99,7 @@ button {
     transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1), flex-basis 0.24s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 
- * Explanation:
- * - #main-view: The primary vertical scroll viewport container for all pages (Home, Movies, Series, etc.).
- * - Configured to hide scrollbars and utilize smooth scrolling behavior for remote controls.
- * - Employs a linear gradient mask-image to create a fluent, premium fade-out effect at the top and bottom 
- *   viewport borders, ensuring scrolling lists and banner transitions blend smoothly instead of clipping abruptly.
- */
+/* Styles the primary vertical scroll viewport container, with a premium fade-out effect only at the bottom border. */
 #main-view {
     flex: 1;
     min-width: 0;
@@ -115,8 +109,8 @@ button {
     position: relative;
     scroll-behavior: smooth;
     scrollbar-width: none;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
 }
 
 #app.fullscreen-layout #sidebar-container {
