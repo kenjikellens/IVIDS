@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Účet",
-        "logout": "Přepnout profil",
-        "editProfile": "Upravit profil",
-        "currentProfile": "Aktuální profil"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Nastavení",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Servery"
+        "serversCount": "{count} Servery",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Zavřít",
@@ -173,7 +180,7 @@
         "empty": "Nebyly nalezeny žádné playlisty. Vytvořte jeden!",
         "items": "položky",
         "delete": "Odstranit playlist",
-        "deleteConfirmTitle": "Odstranit playlist",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Opravdu chcete tento playlist odstranit?",
         "deleteConfirmMessageNamed": "Opravdu chcete odstranit",
         "cancel": "Zrušit",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Kdo se dívá?",
-        "add": "Přidat profil",
+        "add": "Add Account",
         "guest": "Host",
-        "edit": "Upravit profily",
+        "edit": "Edit Accounts",
         "done": "Hotovo",
-        "createTitle": "Vytvořit profil",
-        "editTitle": "Upravit profil",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Jméno",
         "colorLabel": "Barva profilu",
         "pinLabel": "PIN (Volitelný)",
         "save": "Uložit",
         "delete": "Odstranit",
         "cancel": "Zrušit",
-        "deleteConfirmTitle": "Odstranit profil",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Opravdu chcete odstranit profil {name}?",
         "confirmDelete": "Odstranit",
         "enterPin": "Zadejte PIN pro {name}",

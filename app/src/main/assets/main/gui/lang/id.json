@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Akun",
-        "logout": "Ganti Profil",
-        "editProfile": "Edit Profil",
-        "currentProfile": "Profil Saat Ini"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Pengaturan",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Server"
+        "serversCount": "{count} Server",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Tutup",
@@ -173,7 +180,7 @@
         "empty": "Daftar putar tidak ditemukan. Buat sekarang!",
         "items": "item",
         "delete": "Hapus Daftar Putar",
-        "deleteConfirmTitle": "Hapus Daftar Putar",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Apakah Anda yakin ingin menghapus daftar putar ini?",
         "deleteConfirmMessageNamed": "Apakah Anda yakin ingin menghapus",
         "cancel": "Batal",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Siapa yang menonton?",
-        "add": "Tambah Profil",
+        "add": "Add Account",
         "guest": "Tamu",
-        "edit": "Edit Profil",
+        "edit": "Edit Accounts",
         "done": "Selesai",
-        "createTitle": "Buat Profil",
-        "editTitle": "Edit Profil",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Nama",
         "colorLabel": "Warna Profil",
         "pinLabel": "PIN (Opsional)",
         "save": "Simpan",
         "delete": "Hapus",
         "cancel": "Batal",
-        "deleteConfirmTitle": "Hapus Profil",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Apakah Anda yakin ingin menghapus {name}?",
         "confirmDelete": "Hapus",
         "enterPin": "Masukkan PIN untuk {name}",

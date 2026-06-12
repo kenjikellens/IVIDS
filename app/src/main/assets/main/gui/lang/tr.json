@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Hesap",
-        "logout": "Profil Değiştir",
-        "editProfile": "Profili Düzenle",
-        "currentProfile": "Mevcut Profil"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Ayarlar",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Sunucu"
+        "serversCount": "{count} Sunucu",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Kapat",
@@ -173,7 +180,7 @@
         "empty": "Oynatma listesi bulunamadı. Bir tane oluşturun!",
         "items": "öğe",
         "delete": "Listeyi Sil",
-        "deleteConfirmTitle": "Listeyi Sil",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Bu oynatma listesini silmek istediğinizden emin misiniz?",
         "deleteConfirmMessageNamed": "Silmek istediğinizden emin misiniz:",
         "cancel": "İptal",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Kim izliyor?",
-        "add": "Profil Ekle",
+        "add": "Add Account",
         "guest": "Misafir",
-        "edit": "Profilleri Düzenle",
+        "edit": "Edit Accounts",
         "done": "Bitti",
-        "createTitle": "Profil Oluştur",
-        "editTitle": "Profili Düzenle",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "İsim",
         "colorLabel": "Profil Rengi",
         "pinLabel": "PIN (İsteğe bağlı)",
         "save": "Kaydet",
         "delete": "Sil",
         "cancel": "İptal",
-        "deleteConfirmTitle": "Profili Sil",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "{name} profilini silmek istediğinizden emin misiniz?",
         "confirmDelete": "Sil",
         "enterPin": "{name} için PIN girin",

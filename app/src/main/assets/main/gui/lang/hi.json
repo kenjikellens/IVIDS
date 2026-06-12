@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "अकाउंट",
-        "logout": "प्रोफ़ाइल बदलें",
-        "editProfile": "प्रोफ़ाइल संपादित करें",
-        "currentProfile": "वर्तमान प्रोफ़ाइल"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "सेटिंग्स",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} सर्वर"
+        "serversCount": "{count} सर्वर",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "बंद करें",
@@ -173,7 +180,7 @@
         "empty": "कोई प्लेलिस्ट नहीं मिली। एक बनाएं!",
         "items": "आइटम",
         "delete": "प्लेलिस्ट हटाएं",
-        "deleteConfirmTitle": "प्लेलिस्ट हटाएं",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "क्या आप वाकई इस प्लेलिस्ट को हटाना चाहते हैं?",
         "deleteConfirmMessageNamed": "क्या आप वाकई इसे हटाना चाहते हैं",
         "cancel": "रद्द करें",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "कौन देख रहा है?",
-        "add": "प्रोफ़ाइल जोड़ें",
+        "add": "Add Account",
         "guest": "अतिथि",
-        "edit": "प्रोफ़ाइल संपादित करें",
+        "edit": "Edit Accounts",
         "done": "हो गया",
-        "createTitle": "प्रोफ़ाइल बनाएं",
-        "editTitle": "प्रोफ़ाइल संपादित करें",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "नाम",
         "colorLabel": "प्रोफ़ाइल रंग",
         "pinLabel": "पिन (वैकल्पिक)",
         "save": "सहेजें",
         "delete": "हटाएं",
         "cancel": "रद्द करें",
-        "deleteConfirmTitle": "प्रोफ़ाइल हटाएं",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "क्या आप वाकई {name} हटाना चाहते हैं?",
         "confirmDelete": "हटाएं",
         "enterPin": "{name} के लिए पिन दर्ज करें",

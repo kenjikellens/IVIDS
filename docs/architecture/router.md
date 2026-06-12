@@ -30,16 +30,34 @@ When `Router.loadPage(pageName, params)` is called, the following sequence occur
 
 ## 📜 History & Routing State
 
-### Persistence
-The router maintains state in two ways:
-1.  **In-Memory Stack**: `Router.history` — Used for immediate `goBack()` navigation.
-2.  **LocalStorage**: `ivids-last-route` — Stores `{ page, params }` to allow the app to resume exactly where the user left off after a restart.
+### Boot Flow & Reset
+On app launch, the application initialization listener (`app.js`'s `DOMContentLoaded`) executes a clean-up routine:
+- Removes any lingering `ivids-last-route` and `ivids-last-active` keys from `localStorage` to ensure a completely fresh start.
+- Invokes `Router.loadPage('home')` to immediately boot the user to the landing page.
+- Profiles are no longer required at launch; the user enters as the current active profile (or the guest profile by default) and can manage or switch profiles inside the **Account** panel accessed from the sidebar.
 
-### Context-Aware Fallbacks
-If `goBack()` is called while the history is empty (e.g., after a fresh boot), it uses an internal fallback map to determine the logical parent:
-- **Player** → **Details**
-- **Details** → **Home**
-- **Settings** → **Home**
+### In-Session Persistence
+The router maintains navigation state in two ways during an active session:
+1. **In-Memory Stack (`Router.history`)**: A standard array stack storing previous page names and their parameter sets. Used to support D-pad back transitions via `Router.goBack()`.
+2. **Fallback Parent Maps**: If the stack is empty (e.g., returning from settings after direct selection), the router resolves logical parent relationships (e.g. `Player` -> `Details` -> `Home`).
+
+---
+
+## ⚡ Performance: Caching & Race-Condition Prevention
+
+To guarantee a "zero-latency" SPA experience, the router implements two internal subsystems:
+
+### 1. Template Caching (`_htmlCache`)
+- A file-level in-memory `Map` that caches HTML templates (`pages/${pageName}.html`) on their first retrieval.
+- Subsequent navigations to the same page resolve instantly from `_htmlCache`, avoiding HTTP requests, eliminating network lag, and preventing screen styling flashes.
+
+### 2. Load Generation Tracking (`_loadGeneration`)
+- **The Race Condition**: Fast-clicking users or remote triggers can request a new page while a slow network fetch is still resolving an earlier page. This can cause the wrong template to be injected out-of-order when the first fetch resolves late.
+- **The Solution**: An internal monotonic counter `_loadGeneration`.
+  - Every call to `loadPage()` increments `_loadGeneration` and captures the value as a local variable (`currentGen`).
+  - At every asynchronous resolution stage (HTML fetch completion, script import, custom spatial nav bind, post-init signals), the engine verifies `currentGen === _loadGeneration`.
+  - If a mismatch is detected, execution is immediately aborted, discarding outdated page load routines in favor of the most recent navigation request.
+
 
 ---
 

@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Аккаунт",
-        "logout": "Сменить профиль",
-        "editProfile": "Изменить профиль",
-        "currentProfile": "Текущий профиль"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Настройки",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Серверов"
+        "serversCount": "{count} Серверов",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Закрыть",
@@ -173,7 +180,7 @@
         "empty": "Плейлисты не найдены. Создайте один!",
         "items": "объектов",
         "delete": "Удалить плейлист",
-        "deleteConfirmTitle": "Удаление плейлиста",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Вы уверены, что хотите удалить этот плейлист?",
         "deleteConfirmMessageNamed": "Вы уверены, что хотите удалить",
         "cancel": "Отмена",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Кто смотрит?",
-        "add": "Добавить",
+        "add": "Add Account",
         "guest": "Гость",
-        "edit": "Изменить",
+        "edit": "Edit Accounts",
         "done": "Готово",
-        "createTitle": "Создать профиль",
-        "editTitle": "Изменить профиль",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Имя",
         "colorLabel": "Цвет",
         "pinLabel": "PIN (опционально)",
         "save": "Сохранить",
         "delete": "Удалить",
         "cancel": "Отмена",
-        "deleteConfirmTitle": "Удаление профиля",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Вы уверены, что хотите удалить {name}?",
         "confirmDelete": "Удалить",
         "enterPin": "Введите PIN для {name}",

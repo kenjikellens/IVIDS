@@ -2,12 +2,20 @@
 
 The API layer (`api.js`) is the primary interface for content discovery, metadata retrieval, and provider routing. It is built to minimize latency and maximize display quality across heterogeneous hardware.
 
-## 📡 Resilient API Fetching (`fetchWithRetry`)
+## 📡 Resilient API Fetching (`fetchWithRetry` & `deduplicatedFetch`)
 
-All TMDB requests go through an intelligent fetch wrapper that implements:
-- **Exponential Backoff**: Retries with increasing delays (`500ms * 2^i`) to recover from transient carrier drops.
-- **Hard Timeouts**: Requests are aborted after 8 seconds (via `AbortController`) to avoid blocking the UI.
-- **Idempotency**: Requests for static metadata (Top Rated, etc.) are automatically cached after the first successful response.
+All TMDB and media requests route through unified helper layers to optimize network efficiency:
+- **Exponential Backoff**: `fetchWithRetry` retries failed requests up to 2 times with increasing delays (`500ms * 2^i`) to recover from transient carrier drops.
+- **Hard Timeouts**: Requests abort after 8 seconds (via `AbortController`) to prevent lockups on slow TV connections.
+- **In-flight Deduplication (`deduplicatedFetch`)**:
+  - A file-scope Map (`_inflightRequests`) tracks current, pending request promises keyed by their full URL endpoints.
+  - If a duplicate fetch call is initiated concurrently (e.g. while generating multiple movie row feeds or during fast page transitions), the API layer immediately returns the existing promise instead of spawning a new network request.
+  - Once resolved or rejected, callbacks automatically clean up the URL key from the map.
+- **WebView Compatibility Migration**:
+  - Older Android System WebView versions lack robust support for `.finally()` handler chains.
+  - To prevent uncaught Promise lockups on these platforms, `deduplicatedFetch` cleans up its cache map using explicit double handlers: `.then(val => { cleanUp(); return val; }, err => { cleanUp(); throw err; })` instead of a `.finally(cleanUp)` block.
+- **Static Idempotency**: Results are cached in the global `cacheManager` after successful fetch parsing.
+
 
 ---
 

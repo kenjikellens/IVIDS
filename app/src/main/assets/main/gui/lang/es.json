@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Cuenta",
-        "logout": "Cambiar perfil",
-        "editProfile": "Editar perfil",
-        "currentProfile": "Perfil actual"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Configuración",
@@ -81,7 +87,8 @@
         "moveProvider": "Mover",
         "addM3uPlaylist": "Añadir lista",
         "playlistsCount": "{count} Listas de reproducción",
-        "serversCount": "{count} Servidores"
+        "serversCount": "{count} Servidores",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Cerrar",
@@ -166,7 +173,7 @@
         "empty": "No se encontraron listas. ¡Crea una!",
         "items": "elementos",
         "delete": "Eliminar lista",
-        "deleteConfirmTitle": "Eliminar lista",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar esta lista?",
         "deleteConfirmMessageNamed": "¿Estás seguro de que quieres eliminar",
         "cancel": "Cancelar",
@@ -278,19 +285,19 @@
     },
     "profiles": {
         "title": "¿Quién está viendo?",
-        "add": "Agregar perfil",
+        "add": "Add Account",
         "guest": "Invitado",
-        "edit": "Editar perfiles",
+        "edit": "Edit Accounts",
         "done": "Hecho",
-        "createTitle": "Crear perfil",
-        "editTitle": "Editar perfil",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Nombre",
         "colorLabel": "Color de perfil",
         "pinLabel": "PIN (Opcional)",
         "save": "Guardar",
         "delete": "Eliminar",
         "cancel": "Cancelar",
-        "deleteConfirmTitle": "Eliminar perfil",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar a {name}?",
         "confirmDelete": "Eliminar",
         "enterPin": "Introduce el PIN de {name}",

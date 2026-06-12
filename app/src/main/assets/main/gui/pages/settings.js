@@ -2,6 +2,7 @@ console.log('Settings.js: Script loaded');
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Toast } from '../js/toast.js';
 import { manageModal } from '../js/utils/ui-helper.js';
+import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 
 
 let settingsManagerInstance = null;
@@ -95,50 +96,53 @@ class SettingsManager {
             m3uPlaylists: []
         };
         try {
-            const saved = localStorage.getItem('ivids-settings');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                // Auto-migrate from blocked legacy vidsrc domains
-                if (parsed.playerBaseUrl && (parsed.playerBaseUrl.includes('vidsrc.xyz') || parsed.playerBaseUrl.includes('vidsrc.me') || parsed.playerBaseUrl.includes('vidsrc.net'))) {
-                    parsed.playerBaseUrl = 'https://vidlink.pro';
-                }
+            const globalSaved = localStorage.getItem('ivids-settings');
+            const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
 
-                // Migrate playerProviders if missing
-                if (!parsed.playerProviders) {
-                    const defaultProviders = JSON.parse(JSON.stringify(defaultSettings.playerProviders));
-                    if (parsed.playerBaseUrl) {
-                        const matched = defaultProviders.find(p => p.url === parsed.playerBaseUrl);
-                        if (!matched) {
-                            defaultProviders.unshift({
-                                id: 'custom_migrated',
-                                name: 'Custom Server',
-                                url: parsed.playerBaseUrl,
-                                isCustom: true
-                            });
-                        } else {
-                            const idx = defaultProviders.indexOf(matched);
-                            if (idx > -1) {
-                                defaultProviders.splice(idx, 1);
-                                defaultProviders.unshift(matched);
-                            }
+            const userKey = getNamespacedKey('settings');
+            const userSaved = localStorage.getItem(userKey);
+            const userSettings = userSaved ? JSON.parse(userSaved) : {};
+
+            const parsed = { ...globalSettings, ...userSettings };
+
+            if (parsed.playerBaseUrl && (parsed.playerBaseUrl.includes('vidsrc.xyz') || parsed.playerBaseUrl.includes('vidsrc.me') || parsed.playerBaseUrl.includes('vidsrc.net'))) {
+                parsed.playerBaseUrl = 'https://vidlink.pro';
+            }
+
+            // Migrate playerProviders if missing
+            if (!parsed.playerProviders) {
+                const defaultProviders = JSON.parse(JSON.stringify(defaultSettings.playerProviders));
+                if (parsed.playerBaseUrl) {
+                    const matched = defaultProviders.find(p => p.url === parsed.playerBaseUrl);
+                    if (!matched) {
+                        defaultProviders.unshift({
+                            id: 'custom_migrated',
+                            name: 'Custom Server',
+                            url: parsed.playerBaseUrl,
+                            isCustom: true
+                        });
+                    } else {
+                        const idx = defaultProviders.indexOf(matched);
+                        if (idx > -1) {
+                            defaultProviders.splice(idx, 1);
+                            defaultProviders.unshift(matched);
                         }
                     }
-                    parsed.playerProviders = defaultProviders;
                 }
-
-                // Migrate m3uPlaylists if missing
-                if (parsed.m3uUrl && (!parsed.m3uPlaylists || parsed.m3uPlaylists.length === 0)) {
-                    parsed.m3uPlaylists = [{
-                        id: 'custom_m3u',
-                        name: 'Custom Playlist',
-                        url: parsed.m3uUrl,
-                        isCustom: true
-                    }];
-                }
-
-                return { ...defaultSettings, ...parsed };
+                parsed.playerProviders = defaultProviders;
             }
-            return defaultSettings;
+
+            // Migrate m3uPlaylists if missing
+            if (parsed.m3uUrl && (!parsed.m3uPlaylists || parsed.m3uPlaylists.length === 0)) {
+                parsed.m3uPlaylists = [{
+                    id: 'custom_m3u',
+                    name: 'Custom Playlist',
+                    url: parsed.m3uUrl,
+                    isCustom: true
+                }];
+            }
+
+            return { ...defaultSettings, ...parsed };
         } catch (e) { return defaultSettings; }
     }
 
@@ -146,7 +150,24 @@ class SettingsManager {
      * Saves active settings configurations to disk and broadcasts changes.
      */
     saveSettings() {
-        localStorage.setItem('ivids-settings', JSON.stringify(this.settings));
+        const globalSettings = {
+            language: this.settings.language,
+            updateMode: this.settings.updateMode
+        };
+        const userSettings = {
+            accentColor: this.settings.accentColor,
+            m3uUrl: this.settings.m3uUrl,
+            playerProvider: this.settings.playerProvider,
+            playerBaseUrl: this.settings.playerBaseUrl,
+            playerProviders: this.settings.playerProviders,
+            m3uPlaylists: this.settings.m3uPlaylists
+        };
+
+        const userKey = getNamespacedKey('settings');
+
+        localStorage.setItem('ivids-settings', JSON.stringify(globalSettings));
+        localStorage.setItem(userKey, JSON.stringify(userSettings));
+
         this.applySettingsGlobally();
     }
 

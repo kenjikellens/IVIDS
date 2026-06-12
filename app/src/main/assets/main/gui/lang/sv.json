@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Konto",
-        "logout": "Byt profil",
-        "editProfile": "Redigera profil",
-        "currentProfile": "Nuvarande profil"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Inställningar",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Servrar"
+        "serversCount": "{count} Servrar",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Stäng",
@@ -173,7 +180,7 @@
         "empty": "Inga spellistor hittades. Skapa en!",
         "items": "objekt",
         "delete": "Ta bort spellista",
-        "deleteConfirmTitle": "Ta bort spellista",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Är du säker på att du vill ta bort den här spellistan?",
         "deleteConfirmMessageNamed": "Är du säker på att du vill ta bort",
         "cancel": "Avbryt",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Vem tittar?",
-        "add": "Lägg till profil",
+        "add": "Add Account",
         "guest": "Gäst",
-        "edit": "Redigera profiler",
+        "edit": "Edit Accounts",
         "done": "Klart",
-        "createTitle": "Skapa profil",
-        "editTitle": "Redigera profil",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Namn",
         "colorLabel": "Profilfärg",
         "pinLabel": "PIN (Valfritt)",
         "save": "Spara",
         "delete": "Ta bort",
         "cancel": "Avbryt",
-        "deleteConfirmTitle": "Ta bort profil",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Är du säker på att du vill ta bort {name}?",
         "confirmDelete": "Ta bort",
         "enterPin": "Ange PIN för {name}",

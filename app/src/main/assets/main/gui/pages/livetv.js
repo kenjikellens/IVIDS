@@ -4,6 +4,23 @@ import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { proxyUrl } from '../js/utils/proxy.js';
+import { getNamespacedKey } from '../../logic/account-helper.js';
+
+function loadMergedSettings() {
+    try {
+        const globalSaved = localStorage.getItem('ivids-settings');
+        const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
+
+        const userKey = getNamespacedKey('settings');
+        const userSaved = localStorage.getItem(userKey);
+        const userSettings = userSaved ? JSON.parse(userSaved) : {};
+
+        return { ...globalSettings, ...userSettings };
+    } catch (e) {
+        console.error('LiveTV: Error loading settings:', e);
+        return {};
+    }
+}
 
 let allChannels = [];
 let filteredChannels = [];
@@ -115,7 +132,7 @@ export async function init(params) {
         if (statsInfo && countEl && totalSrcEl) {
             countEl.textContent = `${allChannels.length} channels`;
             const sourceEntries = Object.entries(PRESET_SOURCES);
-            const settings = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
+            const settings = loadMergedSettings();
             const totalSources = sourceEntries.length + (settings.m3uUrl ? 1 : 0);
             totalSrcEl.textContent = `${totalSources} sources`;
             statsInfo.style.display = 'flex';
@@ -188,7 +205,7 @@ async function loadAllSources() {
         await loadBrokenChannelsDb();
 
         const sourceEntries = Object.entries(PRESET_SOURCES);
-        const settings = JSON.parse(localStorage.getItem('ivids-settings') || '{}');
+        const settings = loadMergedSettings();
         const customPlaylists = settings.m3uPlaylists || [];
         if (customPlaylists.length > 0) {
             customPlaylists.forEach((playlist, idx) => {

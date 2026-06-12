@@ -41,7 +41,31 @@ Local and remote version strings are compared semantically using the `isNewer(lo
 
 ## 🎨 UI Integration & Dialog Hooks
 
-The module triggers callback hooks to notify the UI of updates:
-- **`window.onUpdateStatus(status)`**: Broadcasts current checking state (`connecting-api`, `fetching-releases`, `comparing-versions`) to update UI progress indicators.
-- **`window.onUpdateFound(remoteVersion)`**: Fired when a newer version is available. It launches the Update Dialog modal (`update-prompt.js`) with remote focus trapping and dynamic progress tracking.
-- **`window.onNoUpdateFound()`** / **`window.onUpdateCheckError()`**: Cleanly resets UI states if no update is found or a network error occurs.
+The updater module triggers hooks to notify the client interface when updates are checked:
+- **`window.onUpdateStatus(status)`**: Broadcasts the current checking phase (`connecting-api`, `fetching-releases`, `comparing-versions`) to settings page indicators.
+- **`window.onUpdateFound(remoteVersion)`**: Fired when a newer version is available. It asynchronously imports and launches the `UpdatePrompt` dialog module.
+- **`window.onNoUpdateFound()`** / **`window.onUpdateCheckError()`**: Cleanly resets UI progress animations if the system is up-to-date or encountered API failures.
+
+---
+
+## 🚀 Premium Update Overlay (`update-prompt.js`)
+
+When an update is found, the system instantiates a premium glassmorphic modal defined in `update-prompt.js`:
+
+### 1. Overlay Lifecycle
+- **Instantiation**: The modal is injected programmatically into `document.body` to avoid local container overflow or styling truncations.
+- **Data Load**: Queries the latest GitHub Release JSON. If available, it parses and displays the markdown changelog as formatted bullet points.
+- **Dismissal / Transition**: Fades out using standard CSS transitions. It then restores the user's active cursor/element focus to whatever was highlighted prior to the update popup.
+
+### 2. Spatial Navigation Focus Trap
+To ensure smart TV compatibility (remotes operating purely with D-pad navigation):
+- The modal activates `SpatialNav.setFocusTrap(modalElement)`, disabling D-pad movement to any background page elements.
+- The focus is immediately centered on the **"Install Now"** button.
+- Dismissing the update clears the trap (`SpatialNav.clearFocusTrap()`) and refocuses the settings page focus target.
+
+### 3. Execution Delegation & Progress Tracking
+When the user selects "Install Now", the overlay hides the action buttons, displays a progress bar, and routes the action depending on the host device:
+- **Native Android APKs**: Passes control to the `window.AndroidUpdate.downloadAndInstall()` (or `downloadAndInstallForUrl(url)`) bridge. Native Java code reports download percentages back through `UpdatePrompt.handleProgress(percent)` and switches to "Installing..." upon APK execution.
+- **Electron PC Executables**: Registers progress listeners via `window.ElectronAPI.onUpdateProgress()`, triggers download via `window.ElectronAPI.downloadPcUpdate()`, and executes the local installer via `window.ElectronAPI.installPcUpdate(filePath)`.
+- **Static Web Browsers**: Opens the remote asset download link directly in a new browser tab and closes the modal.
+

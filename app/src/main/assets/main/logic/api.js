@@ -1,4 +1,5 @@
 import { cacheManager } from './cache-manager.js';
+import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
 
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -13,6 +14,7 @@ let _cachedTodayDate = null;
 
 /** Cached player config object, invalidated when settings change. */
 let _cachedPlayerConfig = null;
+let _configOwnerId = null;
 const DEFAULT_PLAYER_PROVIDERS = [
     { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro', isCustom: false },
     { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed', isCustom: false },
@@ -486,7 +488,8 @@ export const Api = {
      * @returns {Object} Config object containing provider settings and the custom list of providers.
      */
     getPlayerConfig() {
-        if (_cachedPlayerConfig) return _cachedPlayerConfig;
+        const currentId = getActiveAccountId();
+        if (_cachedPlayerConfig && _configOwnerId === currentId) return _cachedPlayerConfig;
 
         const defaults = {
             playerProvider: 'custom',
@@ -496,12 +499,21 @@ export const Api = {
         };
 
         try {
-            const raw = localStorage.getItem('ivids-settings');
-            if (raw) {
-                const saved = JSON.parse(raw);
+            const globalSaved = localStorage.getItem('ivids-settings');
+            const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
+
+            const userKey = getNamespacedKey('settings');
+            const userSaved = localStorage.getItem(userKey);
+            const userSettings = userSaved ? JSON.parse(userSaved) : {};
+
+            const saved = { ...globalSettings, ...userSettings };
+
+            if (Object.keys(saved).length > 0) {
+                let needsWriteBack = false;
                 // Auto-migrate from blocked legacy vidsrc domains persistently
                 if (saved.playerBaseUrl && (saved.playerBaseUrl.includes('vidsrc.xyz') || saved.playerBaseUrl.includes('vidsrc.me') || saved.playerBaseUrl.includes('vidsrc.net'))) {
                     saved.playerBaseUrl = DEFAULT_PLAYER_BASE_URL;
+                    needsWriteBack = true;
                 }
 
                 // If saved has no playerProviders, migrate playerBaseUrl to playerProviders
@@ -525,6 +537,7 @@ export const Api = {
                         }
                     }
                     saved.playerProviders = defaultProviders;
+                    needsWriteBack = true;
                 }
 
                 // If saved has legacy single m3uUrl and no m3uPlaylists, migrate it
@@ -535,22 +548,41 @@ export const Api = {
                         url: saved.m3uUrl,
                         isCustom: true
                     }];
+                    needsWriteBack = true;
                 }
 
-                localStorage.setItem('ivids-settings', JSON.stringify(saved));
+                if (needsWriteBack) {
+                    const globalSettingsToSave = {
+                        language: saved.language || 'en',
+                        updateMode: saved.updateMode || 'manual'
+                    };
+                    const userSettingsToSave = {
+                        accentColor: saved.accentColor,
+                        m3uUrl: saved.m3uUrl,
+                        playerProvider: saved.playerProvider,
+                        playerBaseUrl: saved.playerBaseUrl,
+                        playerProviders: saved.playerProviders,
+                        m3uPlaylists: saved.m3uPlaylists
+                    };
+                    localStorage.setItem('ivids-settings', JSON.stringify(globalSettingsToSave));
+                    localStorage.setItem(userKey, JSON.stringify(userSettingsToSave));
+                }
 
                 _cachedPlayerConfig = {
                     ...defaults,
                     ...saved,
                     playerBaseUrl: (saved.playerBaseUrl || defaults.playerBaseUrl).replace(/\/+$/, '')
                 };
+                _configOwnerId = currentId;
                 return _cachedPlayerConfig;
             }
             _cachedPlayerConfig = defaults;
+            _configOwnerId = currentId;
             return defaults;
         } catch (error) {
             console.error('Error reading player config:', error);
             _cachedPlayerConfig = defaults;
+            _configOwnerId = currentId;
             return defaults;
         }
     },

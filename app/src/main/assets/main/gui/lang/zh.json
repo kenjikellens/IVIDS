@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "账户",
-        "logout": "切换配置文件",
-        "editProfile": "编辑配置文件",
-        "currentProfile": "当前配置文件"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "设置",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} 服务器"
+        "serversCount": "{count} 服务器",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "关闭",
@@ -173,7 +180,7 @@
         "empty": "未找到播放列表。创建一个吧！",
         "items": "项",
         "delete": "删除播放列表",
-        "deleteConfirmTitle": "删除播放列表",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "您确定要删除此播放列表吗？",
         "deleteConfirmMessageNamed": "您确定要删除",
         "cancel": "取消",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "谁在观看？",
-        "add": "添加配置文件",
+        "add": "Add Account",
         "guest": "访客",
-        "edit": "编辑配置文件",
+        "edit": "Edit Accounts",
         "done": "完成",
-        "createTitle": "创建配置文件",
-        "editTitle": "编辑配置文件",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "姓名",
         "colorLabel": "配置文件颜色",
         "pinLabel": "个人识别码 (可选)",
         "save": "保存",
         "delete": "删除",
         "cancel": "取消",
-        "deleteConfirmTitle": "删除配置文件",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "您确定要删除 {name} 吗？",
         "confirmDelete": "删除",
         "enterPin": "输入 {name} 的 PIN",

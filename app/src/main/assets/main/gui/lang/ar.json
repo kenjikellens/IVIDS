@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "الحساب",
-        "logout": "تبديل الملف الشخصي",
-        "editProfile": "تعديل الملف الشخصي",
-        "currentProfile": "الملف الشخصي الحالي"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "الإعدادات",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} خوادم"
+        "serversCount": "{count} خوادم",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "إغلاق",
@@ -173,7 +180,7 @@
         "empty": "لم يتم العثور على قوائم تشغيل. أنشئ واحدة!",
         "items": "عناصر",
         "delete": "حذف قائمة التشغيل",
-        "deleteConfirmTitle": "حذف قائمة التشغيل",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "هل أنت متأكد أنك تريد حذف هذه القائمة؟",
         "deleteConfirmMessageNamed": "هل أنت متأكد أنك تريد حذف",
         "cancel": "إلغاء",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "من يشاهد؟",
-        "add": "إضافة ملف شخصي",
+        "add": "Add Account",
         "guest": "ضيف",
-        "edit": "تعديل الملفات الشخصية",
+        "edit": "Edit Accounts",
         "done": "تم",
-        "createTitle": "إنشاء ملف شخصي",
-        "editTitle": "تعديل الملف شخصي",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "الاسم",
         "colorLabel": "لون الملف الشخصي",
         "pinLabel": "رمز PIN (اختياري)",
         "save": "حفظ",
         "delete": "حذف",
         "cancel": "إلغاء",
-        "deleteConfirmTitle": "حذف الملف الشخصي",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "هل أنت متأكد أنك تريد حذف {name}؟",
         "confirmDelete": "حذف",
         "enterPin": "أدخل رمز PIN لـ {name}",

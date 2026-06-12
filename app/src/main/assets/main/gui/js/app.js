@@ -5,6 +5,7 @@ import { Splash } from './splash.js';
 import { ErrorHandler } from './error-handler.js';
 import { Screensaver } from './screensaver.js';
 import { Toast } from './toast.js';
+import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import './loader.js';
 import './i18n.js';
 
@@ -41,39 +42,40 @@ window.onunhandledrejection = function (event) {
 // Load and apply saved settings
 function loadSettings() {
     try {
-        const savedSettings = localStorage.getItem('ivids-settings');
-        if (savedSettings) {
-            try {
-                const settings = JSON.parse(savedSettings);
+        const globalSaved = localStorage.getItem('ivids-settings');
+        const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
 
-                // Apply accent color
-                if (settings.accentColor) {
-                    try {
-                        document.documentElement.style.setProperty('--primary-color', settings.accentColor);
+        const userKey = getNamespacedKey('settings');
+        const userSaved = localStorage.getItem(userKey);
+        const userSettings = userSaved ? JSON.parse(userSaved) : {};
 
-                        // Convert hex to rgb for rgba() usage
-                        const hex = settings.accentColor.replace('#', '');
-                        const r = parseInt(hex.substring(0, 2), 16);
-                        const g = parseInt(hex.substring(2, 4), 16);
-                        const b = parseInt(hex.substring(4, 6), 16);
-                        document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
-                    } catch (colorError) {
-                        console.error('Error applying accent color:', colorError);
-                    }
+        // Merge global settings (language, updateMode) and user settings (accentColor, preferred servers/M3U)
+        const settings = { ...globalSettings, ...userSettings };
+
+        if (settings) {
+            // Apply accent color
+            if (settings.accentColor) {
+                try {
+                    document.documentElement.style.setProperty('--primary-color', settings.accentColor);
+
+                    // Convert hex to rgb for rgba() usage
+                    const hex = settings.accentColor.replace('#', '');
+                    const r = parseInt(hex.substring(0, 2), 16);
+                    const g = parseInt(hex.substring(2, 4), 16);
+                    const b = parseInt(hex.substring(4, 6), 16);
+                    document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+                } catch (colorError) {
+                    console.error('Error applying accent color:', colorError);
                 }
+            }
 
-                // Language settings would be applied here when implemented
-                if (settings.language) {
-                    try {
-                        document.documentElement.setAttribute('lang', settings.language);
-                    } catch (langError) {
-                        console.error('Error applying language setting:', langError);
-                    }
+            // Language settings would be applied here when implemented
+            if (settings.language) {
+                try {
+                    document.documentElement.setAttribute('lang', settings.language);
+                } catch (langError) {
+                    console.error('Error applying language setting:', langError);
                 }
-            } catch (parseError) {
-                console.error('Error parsing saved settings:', parseError);
-                // Clear invalid settings
-                localStorage.removeItem('ivids-settings');
             }
         }
     } catch (error) {
@@ -515,8 +517,16 @@ function initNetworkListeners() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     try {
+        // Run database/storage keys migration first
+        try {
+            const { runMigration } = await import('../../logic/migration.js');
+            await runMigration();
+        } catch (migError) {
+            console.error('App: Migration failure:', migError);
+        }
+
         initServices();
         initHistoryTrap();
         initNetworkListeners();

@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Konto",
-        "logout": "Profil wechseln",
-        "editProfile": "Profil bearbeiten",
-        "currentProfile": "Aktuelles Profil"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Einstellungen",
@@ -81,7 +87,8 @@
         "moveProvider": "Verschieben",
         "addM3uPlaylist": "Wiedergabeliste hinzufügen",
         "playlistsCount": "{count} Wiedergabelisten",
-        "serversCount": "{count} Server"
+        "serversCount": "{count} Server",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Schließen",
@@ -166,7 +173,7 @@
         "empty": "Keine Wiedergabelisten gefunden. Erstellen Sie eine!",
         "items": "Elemente",
         "delete": "Wiedergabeliste löschen",
-        "deleteConfirmTitle": "Wiedergabeliste löschen",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Sind Sie sicher, dass Sie diese Wiedergabeliste löschen möchten?",
         "deleteConfirmMessageNamed": "Sind Sie sicher, dass Sie löschen möchten",
         "cancel": "Abbrechen",
@@ -278,19 +285,19 @@
     },
     "profiles": {
         "title": "Wer schaut gerade?",
-        "add": "Profil hinzufügen",
+        "add": "Add Account",
         "guest": "Gast",
-        "edit": "Profile bearbeiten",
+        "edit": "Edit Accounts",
         "done": "Fertig",
-        "createTitle": "Profil erstellen",
-        "editTitle": "Profil bearbeiten",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Name",
         "colorLabel": "Profilfarbe",
         "pinLabel": "PIN (Optional)",
         "save": "Speichern",
         "delete": "Löschen",
         "cancel": "Abbrechen",
-        "deleteConfirmTitle": "Profil löschen",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Sind Sie sicher, dass Sie {name} löschen möchten?",
         "confirmDelete": "Löschen",
         "enterPin": "PIN für {name} eingeben",

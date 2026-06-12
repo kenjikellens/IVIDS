@@ -1,11 +1,13 @@
 // Utility for managing recently watched content
 import { Toast } from '../gui/js/toast.js';
+import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
 
 const MAX_RECENTLY_WATCHED = 20;
 const STORAGE_KEY = 'recentlyWatched';
 
 // In-memory cache to reduce localStorage access
 let _recentlyWatchedCache = null;
+let _cacheOwnerId = null;
 
 function isMusic(item) {
     const type = item.media_type;
@@ -21,6 +23,9 @@ export function addToRecentlyWatched(item) {
     if (!item || isMusic(item)) return;
 
     try {
+        const currentId = getActiveAccountId();
+        const namespacedKey = getNamespacedKey(STORAGE_KEY);
+
         // Get existing recently watched
         let recentlyWatched = getRecentlyWatched();
 
@@ -46,8 +51,10 @@ export function addToRecentlyWatched(item) {
 
         // Update cache and localStorage
         _recentlyWatchedCache = recentlyWatched;
+        _cacheOwnerId = currentId;
+
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+            localStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
         } catch (setItemError) {
             console.error('Error saving recently watched:', setItemError);
             if (setItemError.name === 'QuotaExceededError' || (setItemError.message && setItemError.message.includes('quota'))) {
@@ -55,8 +62,9 @@ export function addToRecentlyWatched(item) {
                 if (recentlyWatched.length > 10) {
                     recentlyWatched = recentlyWatched.slice(0, 10);
                     _recentlyWatchedCache = recentlyWatched;
+                    _cacheOwnerId = currentId;
                     try {
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+                        localStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
                     } catch (retryError) {
                         const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
                         const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
@@ -81,14 +89,17 @@ export function addToRecentlyWatched(item) {
 }
 
 export function getRecentlyWatched() {
-    if (_recentlyWatchedCache) return [..._recentlyWatchedCache];
+    const currentId = getActiveAccountId();
+    if (_recentlyWatchedCache && _cacheOwnerId === currentId) return [..._recentlyWatchedCache];
 
     try {
-        const stored = localStorage.getItem(STORAGE_KEY);
+        const namespacedKey = getNamespacedKey(STORAGE_KEY);
+        const stored = localStorage.getItem(namespacedKey);
         let items = stored ? JSON.parse(stored) : [];
 
         // Sanitize data once on load
         _recentlyWatchedCache = items.filter(i => !isMusic(i));
+        _cacheOwnerId = currentId;
         return [..._recentlyWatchedCache];
     } catch (e) {
         console.error('Error loading recently watched:', e);
@@ -110,8 +121,10 @@ export function getWatchedItem(id, type) {
 
 export function clearRecentlyWatched() {
     try {
+        const namespacedKey = getNamespacedKey(STORAGE_KEY);
         _recentlyWatchedCache = [];
-        localStorage.removeItem(STORAGE_KEY);
+        _cacheOwnerId = getActiveAccountId();
+        localStorage.removeItem(namespacedKey);
         console.log('Recently watched cleared');
     } catch (e) {
         console.error('Error clearing recently watched:', e);
@@ -125,12 +138,17 @@ export function clearRecentlyWatched() {
  */
 export function removeFromRecentlyWatched(id) {
     try {
+        const currentId = getActiveAccountId();
+        const namespacedKey = getNamespacedKey(STORAGE_KEY);
+
         let recentlyWatched = getRecentlyWatched();
         recentlyWatched = recentlyWatched.filter(i => String(i.id) !== String(id));
 
         _recentlyWatchedCache = recentlyWatched;
+        _cacheOwnerId = currentId;
+
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(recentlyWatched));
+            localStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
         } catch (setItemError) {
             console.error('Error removing from recently watched:', setItemError);
             if (setItemError.name === 'QuotaExceededError' || (setItemError.message && setItemError.message.includes('quota'))) {

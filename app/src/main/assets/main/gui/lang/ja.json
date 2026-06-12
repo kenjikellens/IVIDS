@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "アカウント",
-        "logout": "プロフィールを切り替える",
-        "editProfile": "プロフィールを編集",
-        "currentProfile": "現在のプロフィール"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "設定",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} サーバー"
+        "serversCount": "{count} サーバー",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "閉じる",
@@ -173,7 +180,7 @@
         "empty": "プレイリストがありません。作成しましょう！",
         "items": "アイテム",
         "delete": "プレイリストを削除",
-        "deleteConfirmTitle": "プレイリストを削除",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "このプレイリストを削除してもよろしいですか？",
         "deleteConfirmMessageNamed": "次を削除してもよろしいですか：",
         "cancel": "キャンセル",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "誰が視聴しますか？",
-        "add": "プロフィールを追加",
+        "add": "Add Account",
         "guest": "ゲスト",
-        "edit": "プロフィールを編集",
+        "edit": "Edit Accounts",
         "done": "完了",
-        "createTitle": "プロフィールを作成",
-        "editTitle": "プロフィールを編集",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "名前",
         "colorLabel": "プロフィールの色",
         "pinLabel": "PIN（任意）",
         "save": "保存",
         "delete": "削除",
         "cancel": "キャンセル",
-        "deleteConfirmTitle": "プロフィールを削除",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "{name} を削除してもよろしいですか？",
         "confirmDelete": "削除",
         "enterPin": "{name} のPINを入力してください",

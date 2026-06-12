@@ -4,7 +4,7 @@
     </div>
 
     <div class="account-section current-profile-section">
-        <h2 class="section-title" data-i18n="account.currentProfile">Current Profile</h2>
+        <h2 class="section-title" id="account-section-title" data-i18n="account.currentProfile">Current Account</h2>
         <div class="profile-display">
             <div id="current-profile-avatar" class="profile-avatar large">
                 <!-- Avatar text injected here -->
@@ -12,10 +12,16 @@
             <div class="profile-details">
                 <h3 id="current-profile-name" class="profile-name-text"></h3>
                 <div class="profile-actions">
+                    <button id="account-sign-in-btn" class="btn btn-primary focusable"
+                        data-i18n="account.signIn" style="display: none;">Sign In</button>
+                    <button id="account-create-acc-btn" class="btn btn-secondary focusable"
+                        data-i18n="account.createAccount" style="display: none;">Create Account</button>
                     <button id="account-edit-profile-btn" class="btn btn-secondary focusable"
-                        data-i18n="account.editProfile">Edit Profile</button>
+                        data-i18n="account.editProfile" style="display: none;">Edit Account</button>
                     <button id="account-switch-profile-btn" class="btn btn-primary focusable"
-                        data-i18n="account.logout">Switch Profile</button>
+                        data-i18n="account.switchAccount" style="display: none;">Switch Account</button>
+                    <button id="account-sign-out-btn" class="btn btn-danger focusable"
+                        data-i18n="account.signOut" style="display: none;">Sign Out</button>
                 </div>
             </div>
         </div>

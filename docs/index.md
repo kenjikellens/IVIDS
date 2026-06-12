@@ -15,6 +15,7 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 
 ## GUI & Design
 - [Design System](gui/design-system.md) — CSS Variables, Units, and UI tokens.
+- [Pages & UI (Page Inventory)](gui/pages.md) — Complete screen inventory (Account, Profiles, Playlists, Details, etc.) and page modules.
 - [Performance & Optimization](gui/performance.md) — DOM Recycling, Hybrid Caching, and GPU acceleration.
 
 ## Workflow & Standards
@@ -22,4 +23,5 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 - [AI Agent Standards](../.agents/rules/agent-standards.md) — Mandatory protocols for coding agents.
 
 ---
-*Single Source of Truth v3.2*
+*Single Source of Truth v0.4.3*
+

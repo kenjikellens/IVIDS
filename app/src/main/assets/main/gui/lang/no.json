@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Konto",
-        "logout": "Bytt profil",
-        "editProfile": "Rediger profil",
-        "currentProfile": "Gjeldende profil"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Innstillinger",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Servere"
+        "serversCount": "{count} Servere",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Lukk",
@@ -173,7 +180,7 @@
         "empty": "Ingen spillelister funnet. Opprett en!",
         "items": "elementer",
         "delete": "Slett spilleliste",
-        "deleteConfirmTitle": "Slett spilleliste",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Er du sikker på at du vil slette denne spillelisten?",
         "deleteConfirmMessageNamed": "Er du sikker på at du vil slette",
         "cancel": "Avbryt",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Hvem ser på?",
-        "add": "Legg til profil",
+        "add": "Add Account",
         "guest": "Gjest",
-        "edit": "Rediger profiler",
+        "edit": "Edit Accounts",
         "done": "Ferdig",
-        "createTitle": "Opprett profil",
-        "editTitle": "Rediger profil",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Navn",
         "colorLabel": "Profilfarge",
         "pinLabel": "PIN (Valgfritt)",
         "save": "Lagre",
         "delete": "Slett",
         "cancel": "Avbryt",
-        "deleteConfirmTitle": "Slett profil",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Er du sikker på at du vil slette {name}?",
         "confirmDelete": "Slett",
         "enterPin": "Skriv inn PIN for {name}",

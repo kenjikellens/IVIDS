@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Tài khoản",
-        "logout": "Đổi hồ sơ",
-        "editProfile": "Sửa hồ sơ",
-        "currentProfile": "Hồ sơ hiện tại"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Cài đặt",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Máy chủ"
+        "serversCount": "{count} Máy chủ",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Đóng",
@@ -173,7 +180,7 @@
         "empty": "Không có danh sách phát nào. Hãy tạo một cái!",
         "items": "mục",
         "delete": "Xóa danh sách phát",
-        "deleteConfirmTitle": "Xóa danh sách phát",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa danh sách phát này?",
         "deleteConfirmMessageNamed": "Bạn có chắc chắn muốn xóa",
         "cancel": "Hủy",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Ai đang xem?",
-        "add": "Thêm hồ sơ",
+        "add": "Add Account",
         "guest": "Khách",
-        "edit": "Sửa hồ sơ",
+        "edit": "Edit Accounts",
         "done": "Xong",
-        "createTitle": "Tạo hồ sơ",
-        "editTitle": "Sửa hồ sơ",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Tên",
         "colorLabel": "Màu hồ sơ",
         "pinLabel": "Mã PIN (Tùy chọn)",
         "save": "Lưu",
         "delete": "Xóa",
         "cancel": "Hủy",
-        "deleteConfirmTitle": "Xóa hồ sơ",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa {name}?",
         "confirmDelete": "Xóa",
         "enterPin": "Nhập mã PIN cho {name}",

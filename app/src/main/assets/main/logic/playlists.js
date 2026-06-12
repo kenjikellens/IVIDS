@@ -1,12 +1,14 @@
 // logic/playlists.js
 import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched } from './recentlyWatched.js';
 import { Toast } from '../gui/js/toast.js';
+import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
 
 const STORAGE_KEY = 'user_playlists';
 const HISTORY_ID = 'history';
 
 // Module-level cache
 let _playlistsCache = null;
+let _cacheOwnerId = null;
 
 function isMusic(item) {
     const type = item.media_type;
@@ -16,9 +18,13 @@ function isMusic(item) {
 export const Playlists = {
     getPlaylists() {
         try {
-            if (!_playlistsCache) {
-                const stored = localStorage.getItem(STORAGE_KEY);
+            const currentId = getActiveAccountId();
+            const namespacedKey = getNamespacedKey(STORAGE_KEY);
+
+            if (!_playlistsCache || _cacheOwnerId !== currentId) {
+                const stored = localStorage.getItem(namespacedKey);
                 _playlistsCache = stored ? JSON.parse(stored) : [];
+                _cacheOwnerId = currentId;
 
                 // Content sanitization on initial load
                 _playlistsCache.forEach(p => {
@@ -61,9 +67,13 @@ export const Playlists = {
      */
     savePlaylists(playlists) {
         try {
+            const currentId = getActiveAccountId();
+            const namespacedKey = getNamespacedKey(STORAGE_KEY);
+
             // Only save user playlists (filter out system ones like history)
             _playlistsCache = (playlists || []).filter(p => !p.isSystem && p.id !== HISTORY_ID);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(_playlistsCache));
+            _cacheOwnerId = currentId;
+            localStorage.setItem(namespacedKey, JSON.stringify(_playlistsCache));
         } catch (e) {
             console.error('Error saving playlists:', e);
             if (e.name === 'QuotaExceededError' || (e.message && e.message.includes('quota'))) {

@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Cont",
-        "logout": "Schimbă profilul",
-        "editProfile": "Editează profilul",
-        "currentProfile": "Profil curent"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Setări",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} Servere"
+        "serversCount": "{count} Servere",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Închide",
@@ -173,7 +180,7 @@
         "empty": "Nu s-au găsit liste. Creează una!",
         "items": "elemente",
         "delete": "Șterge lista",
-        "deleteConfirmTitle": "Șterge lista",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Ești sigur că vrei să ștergi această listă?",
         "deleteConfirmMessageNamed": "Ești sigur că vrei să ștergi",
         "cancel": "Anulează",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "Cine vizionează?",
-        "add": "Adaugă profil",
+        "add": "Add Account",
         "guest": "Oaspete",
-        "edit": "Editează profilurile",
+        "edit": "Edit Accounts",
         "done": "Gata",
-        "createTitle": "Creează profil",
-        "editTitle": "Editează profilul",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Nume",
         "colorLabel": "Culoare profil",
         "pinLabel": "PIN (Opțional)",
         "save": "Salvează",
         "delete": "Șterge",
         "cancel": "Anulează",
-        "deleteConfirmTitle": "Șterge profilul",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Ești sigur că vrei să ștergi {name}?",
         "confirmDelete": "Șterge",
         "enterPin": "Introdu PIN-ul pentru {name}",

@@ -217,13 +217,13 @@ textarea.active-typing:not(.input-wrapper *) {
 .btn {
     min-height: 48px;
     border-radius: var(--radius-md);
-    border: 2px solid transparent;
+    border: 3px solid transparent; /* Prevents layout shifting on hover/focus */
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 10px 24px;
+    padding: 9px 23px; /* Adjusted padding to compensate for 3px border thickness */
     font-size: 15px;
     font-weight: 800;
     white-space: nowrap;
@@ -251,7 +251,7 @@ textarea.active-typing:not(.input-wrapper *) {
 .btn-secondary {
     background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
-    border: 2px solid rgba(255, 255, 255, 0.12);
+    border: 3px solid rgba(255, 255, 255, 0.12); /* Prevents layout shifting on hover/focus */
 }
 
 /* Styles the secondary button hover/focus with the standard thick white border. */
@@ -268,7 +268,7 @@ textarea.active-typing:not(.input-wrapper *) {
 .btn-danger {
     background: #b92b23;
     color: #ffffff;
-    border: 2px solid #b92b23;
+    border: 3px solid #b92b23; /* Prevents layout shifting on hover/focus */
 }
 
 /* Styles the danger button hover/focus with the standard thick white border. */
@@ -577,10 +577,10 @@ textarea.active-typing:not(.input-wrapper *) {
         padding-bottom: var(--app-sidebar-width);
     }
 
-    /* Styles the .hero UI element and manages its visual layout. */
+    /* Styles the .hero UI element and manages its visual layout, adjusted to be 15% less tall in mobile viewports. */
     .hero {
-        min-height: 560px;
-        height: 64vh;
+        min-height: 476px;
+        height: 54vh;
         align-items: flex-end;
         justify-content: center;
         padding: 0 22px 44px;
@@ -1303,11 +1303,23 @@ textarea.active-typing:not(.input-wrapper *) {
 }
 
 .profiles-grid {
-    width: min(500px, 100%); /* Compacte Google breedte */
+    width: min(550px, 100%); /* Slightly wider to accommodate side-by-side edit button */
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin: 0 auto;
+}
+
+.profile-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-row .profile-card {
+    flex: 1;
 }
 
 /* Styles the profile card element, outlining user avatar and profile details. */
@@ -1318,6 +1330,7 @@ textarea.active-typing:not(.input-wrapper *) {
     width: 100%;
     cursor: pointer;
     outline: none;
+    border-radius: var(--radius-lg) !important; /* Ensures the hover/focus box-shadow outline curves with the card rounded corners */
 }
 
 .profile-card-surface {
@@ -1437,28 +1450,35 @@ textarea.active-typing:not(.input-wrapper *) {
     flex-shrink: 0;
 }
 
-/* Styles individual profile management action buttons. */
+/* Styles individual profile management action buttons as rounded squares matching profile card height. */
 .manage-btn {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    width: 72px !important;
+    height: 72px !important;
+    border-radius: var(--radius-lg) !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    outline: none !important; /* Disables default rectangular browser focus outline to preserve custom shape */
 }
 
-/* Styles the hover and focus states of the profile management buttons with a white border. */
+/* Styles the hover and focus states of the profile management buttons with a thick white border. */
 .manage-btn:hover,
 .manage-btn:focus,
 .manage-btn.focused {
+    outline: none !important; /* Disables default rectangular browser focus outline to preserve custom shape */
     border: 3px solid #fff !important;
     background: rgba(255, 255, 255, 0.12) !important;
 }
 
+/* Styles the icon inside the profile management button. */
 .manage-btn img {
-    width: 17px;
-    height: 17px;
+    width: 22px;
+    height: 22px;
     object-fit: contain;
-    filter: invert(1);
+    /* Do not apply filter: invert(1) because the SVGs are already white by default */
 }
 
 .move-left-btn img {
@@ -6028,4 +6048,12 @@ iframe {
     background-color: var(--primary-color);
     width: 18px;
     height: 18px;
+}
+
+/* Smartphone portrait responsiveness to hide the hero slider indicators in mobile viewports. */
+@media (max-width: 767px), (orientation: portrait) {
+    /* Hides the hero indicators container element in mobile modes. */
+    .hero-indicators {
+        display: none !important;
+    }
 }

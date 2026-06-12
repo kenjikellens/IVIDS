@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Account",
-        "logout": "Profiel wisselen",
-        "editProfile": "Profiel bewerken",
-        "currentProfile": "Huidig profiel"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Instellingen",
@@ -81,7 +87,8 @@
         "moveProvider": "Verplaatsen",
         "addM3uPlaylist": "Afspeellijst toevoegen",
         "playlistsCount": "{count} Afspeellijsten",
-        "serversCount": "{count} Servers"
+        "serversCount": "{count} Servers",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Sluiten",
@@ -166,7 +173,7 @@
         "empty": "Geen afspeellijsten gevonden. Maak er een!",
         "items": "items",
         "delete": "Verwijder Afspeellijst",
-        "deleteConfirmTitle": "Verwijder Afspeellijst",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Weet u zeker dat u deze afspeellijst wilt verwijderen?",
         "deleteConfirmMessageNamed": "Weet u zeker dat u wilt verwijderen",
         "cancel": "Annuleren",
@@ -278,19 +285,19 @@
     },
     "profiles": {
         "title": "Wie kijkt er?",
-        "add": "Profiel toevoegen",
+        "add": "Add Account",
         "guest": "Gast",
-        "edit": "Profielen beheren",
+        "edit": "Edit Accounts",
         "done": "Gereed",
-        "createTitle": "Profiel maken",
-        "editTitle": "Profiel bewerken",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Naam",
         "colorLabel": "Profielkleur",
         "pinLabel": "PIN (Optioneel)",
         "save": "Opslaan",
         "delete": "Verwijderen",
         "cancel": "Annuleren",
-        "deleteConfirmTitle": "Profiel verwijderen",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Weet u zeker dat u {name} wilt verwijderen?",
         "confirmDelete": "Verwijderen",
         "enterPin": "Voer PIN in voor {name}",

@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "계정",
-        "logout": "프로필 전환",
-        "editProfile": "프로필 수정",
-        "currentProfile": "현재 프로필"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "설정",
@@ -88,7 +94,8 @@
         "moveProvider": "Move",
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
-        "serversCount": "{count} 서버"
+        "serversCount": "{count} 서버",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "닫기",
@@ -173,7 +180,7 @@
         "empty": "플레이리스트가 없습니다. 하나 만들어보세요!",
         "items": "항목",
         "delete": "플레이리스트 삭제",
-        "deleteConfirmTitle": "플레이리스트 삭제",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "이 플레이리스트를 삭제하시겠습니까?",
         "deleteConfirmMessageNamed": "삭제하시겠습니까:",
         "cancel": "취소",
@@ -285,19 +292,19 @@
     },
     "profiles": {
         "title": "누가 시청하고 있나요?",
-        "add": "프로필 추가",
+        "add": "Add Account",
         "guest": "게스트",
-        "edit": "프로필 수정",
+        "edit": "Edit Accounts",
         "done": "완료",
-        "createTitle": "프로필 만들기",
-        "editTitle": "프로필 수정",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "이름",
         "colorLabel": "프로필 색상",
         "pinLabel": "PIN (선택 사항)",
         "save": "저장",
         "delete": "삭제",
         "cancel": "취소",
-        "deleteConfirmTitle": "프로필 삭제",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "정말로 {name} 프로필을 삭제하시겠습니까?",
         "confirmDelete": "삭제",
         "enterPin": "{name}의 PIN 입력",

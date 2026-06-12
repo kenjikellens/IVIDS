@@ -15,9 +15,15 @@
     },
     "account": {
         "title": "Compte",
-        "logout": "Changer de profil",
-        "editProfile": "Modifier le profil",
-        "currentProfile": "Profil actuel"
+        "logout": "Switch Account",
+        "editProfile": "Edit Account",
+        "currentProfile": "Current Account",
+        "switchAccount": "Switch Account",
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "signOut": "Sign Out",
+        "anonymousMode": "Guest Mode",
+        "notLoggedIn": "Not Signed In"
     },
     "settings": {
         "title": "Paramètres",
@@ -81,7 +87,8 @@
         "moveProvider": "Déplacer",
         "addM3uPlaylist": "Ajouter une liste",
         "playlistsCount": "{count} listes de lecture",
-        "serversCount": "{count} Serveurs"
+        "serversCount": "{count} Serveurs",
+        "accentColorSelect": "Select Color"
     },
     "common": {
         "close": "Fermer",
@@ -166,7 +173,7 @@
         "empty": "Aucune liste trouvée. Créez-en une !",
         "items": "éléments",
         "delete": "Supprimer la liste",
-        "deleteConfirmTitle": "Supprimer la liste",
+        "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer cette liste ?",
         "deleteConfirmMessageNamed": "Êtes-vous sûr de vouloir supprimer",
         "cancel": "Annuler",
@@ -278,19 +285,19 @@
     },
     "profiles": {
         "title": "Qui regarde ?",
-        "add": "Ajouter un profil",
+        "add": "Add Account",
         "guest": "Invité",
-        "edit": "Modifier les profils",
+        "edit": "Edit Accounts",
         "done": "Terminé",
-        "createTitle": "Créer un profil",
-        "editTitle": "Modifier le profil",
+        "createTitle": "Create Account",
+        "editTitle": "Edit Account",
         "nameLabel": "Nom",
         "colorLabel": "Couleur du profil",
         "pinLabel": "Code PIN (facultatif)",
         "save": "Enregistrer",
         "delete": "Supprimer",
         "cancel": "Annuler",
-        "deleteConfirmTitle": "Supprimer le profil",
+        "deleteConfirmTitle": "Delete Account",
         "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer {name} ?",
         "confirmDelete": "Supprimer",
         "enterPin": "Entrez le code PIN pour {name}",
