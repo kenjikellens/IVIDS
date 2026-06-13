@@ -475,9 +475,9 @@ class SettingsManager {
                     <div class="version-chip-content">
                         <div class="version-chip-header">
                             <span class="version-tag-badge" style="background: var(--primary-color)">Branch</span>
-                            <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
                             <span class="version-date-label">Latest</span>
                         </div>
+                        <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
                         <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK)'}</div>
                     </div>
                 `;
@@ -505,7 +505,7 @@ class SettingsManager {
                 };
                 
                 grid.appendChild(branchCard);
-
+ 
                 // Add each release as a focusable option chip
                 releases.forEach(rel => {
                     // Find the APK asset
@@ -522,9 +522,9 @@ class SettingsManager {
                             <div class="version-chip-content">
                                 <div class="version-chip-header">
                                     <span class="version-tag-badge">${rel.tag_name}</span>
-                                    <span class="version-chip-title">${rel.name || 'Release Build'}</span>
                                     <span class="version-date-label">${date}</span>
                                 </div>
+                                <span class="version-chip-title">${rel.name || 'Release Build'}</span>
                                 <div class="version-chip-desc">${rel.body ? rel.body.replace(/[\r\n]+/g, ' ') : 'No notes available'}</div>
                             </div>
                         `;
@@ -653,6 +653,9 @@ class SettingsManager {
                     this.applySettings();
                     this.applySettingsGlobally();
                 }
+            }
+            if (modalId === 'version-selector-modal') {
+                this.handleCancelUpdate();
             }
             this.movingProviderId = null;
             this.movingM3uId = null;
