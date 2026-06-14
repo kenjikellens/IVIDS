@@ -1,40 +1,45 @@
 <div class="page-container" style="padding: 0; height: 100%;">
-    <div id="playlist-details-view" class="playlist-details-container">
-        <!-- Cinematic Background -->
+    <div id="playlist-details-view" class="details-page" style="display: block; opacity: 1;">
+        <!-- Cinematic Background backdrop -->
         <div class="playlist-backdrop" id="playlist-backdrop">
             <div class="backdrop-overlay"></div>
         </div>
 
-        <!-- Content Area -->
-        <div class="playlist-content-wrapper">
-            <!-- Sidebar -->
-            <div class="playlist-sidebar">
-                <h1 class="playlist-title" id="playlist-title">Playlist Name</h1>
-                <div class="playlist-meta-row">
-                    <span class="meta-item" id="playlist-count">0 items</span>
+        <div class="details-layout">
+            <div class="details-top">
+                <div class="details-info">
+                    <h1 class="details-title" id="playlist-title">Playlist Name</h1>
+                    <div class="details-genres">
+                        <span id="playlist-count">0 items</span>
+                        <span data-i18n="playlists.type_label">Playlist</span>
+                    </div>
+                    <p class="details-overview" id="playlist-desc" data-i18n="playlists.description_default">Your personal collection of favorite movies and shows.</p>
+                    <div class="details-actions">
+                        <button id="play-all-btn" class="btn btn-primary focusable" data-i18n="playlists.playAll">
+                            Play All
+                        </button>
+                        <button id="edit-info-btn" class="btn btn-secondary focusable" data-i18n="playlists.editInfo">
+                            Edit Info
+                        </button>
+                        <button id="back-btn" class="btn btn-secondary focusable" data-i18n="details.back">
+                            Back
+                        </button>
+                        <button id="delete-playlist-btn" class="btn btn-danger focusable" data-i18n="playlists.delete">
+                            Delete Playlist
+                        </button>
+                    </div>
                 </div>
-
-                <div class="playlist-actions-sidebar">
-                    <button id="play-all-btn" class="btn btn-primary focusable" data-i18n="playlists.playAll">
-                        <span class="icon"><img src="images/play.svg" alt="Play"></span> Play All
-                    </button>
-                    <button id="edit-info-btn" class="btn btn-secondary focusable" data-i18n="playlists.editInfo">
-                        <span class="icon"><img src="images/edit.svg" alt="Edit"></span> Edit Info
-                    </button>
-                    <button id="back-btn" class="btn btn-secondary focusable" data-i18n="details.back">
-                        <span class="icon"><img src="images/back.svg" alt="Back"></span> Back
-                    </button>
-                    <button id="delete-playlist-btn" class="btn btn-danger focusable"
-                        data-i18n="playlists.delete">
-                        <span class="icon">x</span> Delete Playlist
-                    </button>
+                <div class="details-poster-container">
+                    <img id="playlist-poster" class="details-hero-poster" src="" alt="Backdrop">
                 </div>
             </div>
 
-            <!-- Items Grid -->
-            <div class="playlist-items-section">
-                <div id="playlist-items-container" class="playlist-items-grid">
-                    <!-- Items injected via JS -->
+            <div class="details-bottom">
+                <div class="recommendations-section" style="display: block; margin-top: 20px;">
+                    <h3 class="row-title" style="margin-bottom:20px; font-size:24px; color:#fff;" data-i18n="playlists.items">Playlist Items</h3>
+                    <div id="playlist-items-container" class="playlist-items-grid">
+                        <!-- Items injected via JS -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,7 +86,4 @@
         </div>
     </div>
 </div>
-
-<!-- Enforce trailing target to protect fragment SVGs from Live Server script injection corruption -->
 </body>
-

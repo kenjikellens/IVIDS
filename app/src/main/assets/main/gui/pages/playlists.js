@@ -3,6 +3,10 @@ import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 
+/**
+ * Initializes the playlists overview page controller.
+ * Establishes spatial navigation routing and initiates rendering.
+ */
 export const init = async () => {
     console.log('Initializing Playlists Page');
 
@@ -22,6 +26,9 @@ export const init = async () => {
     attachListeners();
 };
 
+/**
+ * Fetches all playlists and renders them into the playlists grid container.
+ */
 function render() {
     const grid = document.getElementById('playlists-grid');
     if (!grid) return;
@@ -45,6 +52,12 @@ function render() {
     }, 100);
 }
 
+/**
+ * Constructs a focusable playlist poster card with an overlay containing title and size.
+ * 
+ * @param {object} playlist - The playlist data model containing items and name.
+ * @returns {HTMLDivElement} A focusable poster-style playlist card element.
+ */
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'playlist-card focusable';
@@ -66,12 +79,9 @@ function createPlaylistCard(playlist) {
         <div class="playlist-cover">
             <img src="${imageUrl}" alt="${playlist.name}" loading="lazy">
             <div class="playlist-overlay">
-                <div class="playlist-play-icon">▶</div>
+                <div class="playlist-name">${playlist.name}</div>
+                <div class="playlist-meta">${itemText}</div>
             </div>
-        </div>
-        <div class="playlist-info">
-            <div class="playlist-name">${playlist.name}</div>
-            <div class="playlist-meta">${itemText}</div>
         </div>
     `;
 
@@ -82,6 +92,9 @@ function createPlaylistCard(playlist) {
     return card;
 }
 
+/**
+ * Attaches event listeners for the playlist creation modal triggers and actions.
+ */
 function attachListeners() {
     const createBtn = document.getElementById('create-playlist-btn');
     const modal = document.getElementById('create-playlist-modal');

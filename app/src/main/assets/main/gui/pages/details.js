@@ -10,7 +10,7 @@ import { ErrorHandler } from '../js/error-handler.js';
 let currentSeriesId = null;
 
 /**
- * Initializes the details page by fetching content metadata and recommendations concurrently.
+ * Initializes the details page by fetching content metadata.
  * Renders the UI and sets up season selection and remote control focus.
  */
 export async function init(params) {
@@ -23,32 +23,12 @@ export async function init(params) {
 
         currentSeriesId = params.id;
 
-        // Fetch details and recommendations concurrently to avoid sequential network roundtrips.
+        // Fetch details from the API.
         let details = null;
-        let recommendations = [];
         try {
-            const detailsPromise = Api.getDetails(params.id, params.type)
-                .then(val => ({ status: 'fulfilled', value: val }))
-                .catch(err => ({ status: 'rejected', reason: err }));
-            const recsPromise = Api.fetchRecommendations(params.id, params.type)
-                .then(val => ({ status: 'fulfilled', value: val }))
-                .catch(err => ({ status: 'rejected', reason: err }));
-
-            const [detailsResult, recsResult] = await Promise.all([detailsPromise, recsPromise]);
-
-            if (detailsResult.status === 'fulfilled') {
-                details = detailsResult.value;
-            } else {
-                console.error('Error fetching details from API:', detailsResult.reason);
-            }
-
-            if (recsResult.status === 'fulfilled') {
-                recommendations = recsResult.value;
-            } else {
-                console.error('Error fetching recommendations from API:', recsResult.reason);
-            }
-        } catch (parallelError) {
-            console.error('Error in parallel details init:', parallelError);
+            details = await Api.getDetails(params.id, params.type);
+        } catch (detailsError) {
+            console.error('Error fetching details from API:', detailsError);
         }
 
         // Fallback for mock data if API key is missing and getDetails returns null/mock
@@ -93,13 +73,6 @@ export async function init(params) {
                 console.error('Error setting focus:', focusError);
             }
 
-            // Render recommendations since they were already fetched concurrently
-            try {
-                renderRecommendations(recommendations);
-            } catch (recError) {
-                console.error('Error rendering recommendations:', recError);
-            }
-
         } else {
             console.error('No details available for this item');
             ErrorHandler.show('Failed to load details. Please try again.', () => init(params));
@@ -110,9 +83,15 @@ export async function init(params) {
     }
 }
 
+/**
+ * Renders the details page content, setting up metadata, backdrop image, buttons, and seasons.
+ * Updates the details DOM elements and checks recently watched history.
+ * @param {Object} item - The details metadata object of the content.
+ * @param {string} type - The media type ('movie' or 'tv').
+ */
 function render(item, type) {
     try {
-        const bg = document.getElementById('details-bg');
+        const bg = document.getElementById('details-backdrop');
         const title = document.getElementById('details-title');
         const date = document.getElementById('details-date');
         const overview = document.getElementById('details-overview');
@@ -178,17 +157,19 @@ function render(item, type) {
         }
 
         if (bg && item.backdrop_path) {
-            const backdropUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
-            bg.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url(${backdropUrl})`;
-            bg.style.backgroundSize = 'cover';
-            bg.style.backgroundPosition = 'center';
+            const width = bg.clientWidth;
+            const sizeKey = Api.getRecommendedSizeForContainer(width, true);
+            const backdropUrl = Api.getImageUrl(item.backdrop_path, sizeKey);
+            bg.style.backgroundImage = `url(${backdropUrl})`;
             bg.style.willChange = 'background-image';
         }
 
         const poster = document.getElementById('details-poster');
         if (poster && item.poster_path) {
             try {
-                poster.src = Api.getImageUrl(item.poster_path, Api.getRecommendedDetailPosterSize());
+                const width = poster.parentElement ? poster.parentElement.clientWidth : 0;
+                const sizeKey = Api.getRecommendedSizeForContainer(width, false);
+                poster.src = Api.getImageUrl(item.poster_path, sizeKey);
                 poster.style.willChange = 'transform';
             } catch (pError) {
                 console.error('Error setting poster image:', pError);
@@ -238,50 +219,6 @@ function render(item, type) {
     } catch (error) {
         console.error('Error in render function:', error);
         ErrorHandler.show('Failed to render details. Some information may be missing.');
-    }
-}
-
-function renderRecommendations(items) {
-    try {
-        const container = document.getElementById('recommendations-container');
-        const row = document.getElementById('recommendations-row');
-
-        if (!container || !row) return;
-
-        if (!items || items.length === 0) {
-            container.style.display = 'none';
-            return;
-        }
-
-        container.style.display = 'block';
-        row.innerHTML = '';
-
-        items.forEach(item => {
-            if (!item.poster_path) return;
-
-            const img = document.createElement('img');
-            img.className = 'poster focusable';
-            img.src = Api.getImageUrl(item.poster_path, Api.getRecommendedPosterSize());
-            img.alt = item.title || item.name;
-            img.tabIndex = 0;
-
-            img.onclick = () => {
-                // Navigate to the new item details
-                Router.loadPage('details', { id: item.id, type: item.media_type || (item.title ? 'movie' : 'tv') });
-            };
-
-            // Keyboard support
-            img.onkeydown = (e) => {
-                if (e.key === 'Enter') {
-                    img.click();
-                }
-            };
-
-            row.appendChild(img);
-        });
-
-    } catch (error) {
-        console.error('Error rendering recommendations:', error);
     }
 }
 

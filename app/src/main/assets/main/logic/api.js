@@ -164,6 +164,44 @@ export const Api = {
     },
 
     /**
+     * Determines the optimal TMDb image size key that is closest and larger than (or equal to) the container width.
+     * Uses a CSS-clamp and window width estimation fallback if the container is hidden or not yet measured.
+     * @param {number} containerWidth - The width of the container in CSS pixels.
+     * @param {boolean} isBackdrop - True if selecting a horizontal backdrop size, false for vertical posters.
+     * @returns {string} The TMDb size path segment key (e.g. 'w342', 'w780', or 'original').
+     */
+    getRecommendedSizeForContainer: (containerWidth, isBackdrop = false) => {
+        const dpr = window.devicePixelRatio || 1;
+        const physicalWidth = containerWidth * dpr;
+
+        if (isBackdrop) {
+            // Available sizes: w300, w780, w1280, original
+            if (physicalWidth <= 0) {
+                const estWidth = window.innerWidth * dpr;
+                return Api.getRecommendedSizeForContainer(estWidth, true);
+            }
+            if (physicalWidth <= 300) return 'w300';
+            if (physicalWidth <= 780) return 'w780';
+            if (physicalWidth <= 1280) return 'w1280';
+            return 'original';
+        } else {
+            // Available sizes: w92, w154, w185, w342, w500, w780, original
+            if (physicalWidth <= 0) {
+                const vw = window.innerWidth;
+                const estWidth = Api.isTV() ? 112 : Math.min(Math.max(120, vw * 0.11), 156);
+                return Api.getRecommendedSizeForContainer(estWidth, false);
+            }
+            if (physicalWidth <= 92) return 'w92';
+            if (physicalWidth <= 154) return 'w154';
+            if (physicalWidth <= 185) return 'w185';
+            if (physicalWidth <= 342) return 'w342';
+            if (physicalWidth <= 500) return 'w500';
+            if (physicalWidth <= 780) return 'w780';
+            return 'original';
+        }
+    },
+
+    /**
      * Optimized image URL generation.
      * TMDB CDN automatically serves WebP if the browser sends the correct Accept header.
      * Here we focus on ensuring size mapping is precise for the current screen.

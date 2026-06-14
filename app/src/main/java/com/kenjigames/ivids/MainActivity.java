@@ -417,6 +417,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new WebView(this);
         setContentView(mWebView);
 
+        // Enable hardware acceleration for the WebView to optimize core usage and rendering performance
+        mWebView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);

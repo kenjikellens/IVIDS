@@ -8,6 +8,12 @@ const { spawn } = require('child_process');
 // Enable GPU rasterization for smoother CSS animations and scrolling
 app.commandLine.appendSwitch('enable-gpu-rasterization');
 
+// Performance optimizations for better core and hardware utilization
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('enable-zero-copy');
+app.commandLine.appendSwitch('enable-hardware-overlays');
+app.commandLine.appendSwitch('enable-features', 'WebAssemblyThreads,SharedArrayBuffer');
+
 const GITHUB_RELEASE_API_URL = 'https://api.github.com/repos/kenjikellens/IVIDS/releases/latest';
 
 // Determine local directories for cached/downloaded files inside User Data

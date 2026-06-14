@@ -45,6 +45,19 @@ function render() {
     if (titleEl) titleEl.textContent = playlist.name;
     if (countEl) countEl.textContent = `${playlist.items.length} items`;
 
+    // Update Hero Poster Image
+    const posterEl = document.getElementById('playlist-poster');
+    if (posterEl) {
+        if (playlist.items.length > 0) {
+            const firstItem = playlist.items[0];
+            const posterUrl = Api.getImageUrl(firstItem.poster_path || firstItem.backdrop_path);
+            posterEl.src = posterUrl;
+            posterEl.style.display = 'block';
+        } else {
+            posterEl.src = 'images/placeholder-playlist.svg';
+        }
+    }
+
     // Cinematic Ambient Backdrop
     if (backdropEl) {
         if (playlist.items.length > 0) {
@@ -71,11 +84,11 @@ function render() {
 
         if (playlist.items.length === 0) {
             container.innerHTML = `
-                <div class="playlist-empty-state">
-                    <div class="empty-icon">
-                        <span style="font-size: 60px;">📺</span>
+                <div class="empty-state">
+                    <div class="empty-icon" style="font-size: 48px; margin-bottom: 18px;">
+                        <span>📺</span>
                     </div>
-                    <h2 data-i18n="playlists.emptyPlaylist">This playlist is empty.</h2>
+                    <h2 data-i18n="playlists.emptyPlaylist" style="margin-bottom: 22px; color: #fff; font-size: 24px;">This playlist is empty.</h2>
                     <button id="empty-browse-btn" class="btn btn-primary focusable">Browse Content</button>
                 </div>
             `;
@@ -120,23 +133,14 @@ function render() {
  */
 function createItemElement(item, index, total) {
     const el = document.createElement('div');
-    el.className = 'playlist-item-card focusable';
+    el.className = 'poster-wrapper focusable';
     el.dataset.id = item.id;
     el.dataset.type = item.media_type;
 
-    const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path);
+    const imageUrl = Api.getImageUrl(item.poster_path || item.backdrop_path);
 
     el.innerHTML = `
-        <div class="item-thumbnail">
-            <img src="${imageUrl}" loading="lazy" decoding="async">
-        </div>
-        <div class="item-info">
-            <div class="item-title">${item.title || item.name}</div>
-            <div class="item-meta">
-                <span>${item.media_type === 'tv' ? 'Series' : 'Movie'}</span>
-                <span>#${index + 1}</span>
-            </div>
-        </div>
+        <img class="poster" src="${imageUrl}" loading="lazy" decoding="async" alt="${item.title || item.name}">
     `;
 
     // Programmatic click opens custom context actions modal

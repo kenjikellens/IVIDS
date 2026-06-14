@@ -83,7 +83,9 @@ export function setupRow(elementId, items, defaultType = null) {
                     if (loader.parentNode) loader.parentNode.removeChild(loader);
                     img.style.opacity = '1';
                 };
-                img.dataset.src = Api.getImageUrl(item.poster_path);
+                const containerWidth = btn.clientWidth;
+                const sizeKey = Api.getRecommendedSizeForContainer(containerWidth, false);
+                img.dataset.src = Api.getImageUrl(item.poster_path, sizeKey);
                 img.alt = item.title || item.name || 'Unknown';
 
                 btn.appendChild(img);

@@ -123,10 +123,14 @@ button {
     padding: 0 !important;
 }
 
-/* Sets expanded width for the sidebar container when on search, playlists, settings, or account page. */
 #app.sidebar-always-expanded #sidebar-container {
     width: var(--app-sidebar-expanded-width);
     flex: 0 0 var(--app-sidebar-expanded-width);
+}
+
+/* Shows text labels, logo text, profile edit overlay, and carousel handles on active states. */
+#app.sidebar-always-expanded .nav-item span, #app.sidebar-always-expanded .logo-text, .navbar:hover .nav-item span, .navbar:focus-within .nav-item span, .navbar:hover .logo-text, .navbar:focus-within .logo-text, .edit-mode .profile-edit-overlay, .row-container:hover .handle, .handle:focus, .handle.focused {
+    opacity: 1;
 }
 
 /* Styles the active typing container parent or standalone input/textarea when actively being edited. */
@@ -162,8 +166,6 @@ textarea.active-typing:not(.input-wrapper *) {
 .channel-list-item:hover, .channel-list-item:focus, .channel-list-item.focused,
 .tv-control-btn:hover, .tv-control-btn:focus, .tv-control-btn.focused,
 .playlist-card:hover, .playlist-card:focus, .playlist-card.focused,
-.playlist-item-card:hover, .playlist-item-card:focus, .playlist-item-card.focused,
-.icon-btn-mini:hover, .icon-btn-mini:focus, .icon-btn-mini.focused,
 .recent-chip:hover, .recent-chip:focus, .recent-chip.focused,
 .recent-search-item:hover, .recent-search-item:focus, .recent-search-item.focused,
 .filter-chip:hover, .filter-chip:focus, .filter-chip.focused,
@@ -404,10 +406,10 @@ textarea.active-typing:not(.input-wrapper *) {
     contain: layout;
 }
 
-/* Styles the .poster-wrapper,
-.skeleton-poster UI element and manages its visual layout. */
+/* Styles the .poster-wrapper, .skeleton-poster, and .playlist-card UI elements and manages their visual layout. */
 .poster-wrapper,
-.skeleton-poster {
+.skeleton-poster,
+.playlist-card {
     flex: 0 0 var(--poster-width);
     width: var(--poster-width);
     height: var(--poster-height);
@@ -696,13 +698,19 @@ textarea.active-typing:not(.input-wrapper *) {
     object-fit: contain;
 }
 
-/* Styles the large branded logo text below the logo image on the splash screen. */
-.splash-logo-text {
+/* Shared styling for large page and branding titles with Outfit font. */
+.splash-logo-text,
+.page-title,
+.profiles-title {
     margin: 0;
     color: #fff;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Styles the large branded logo text below the logo image on the splash screen. */
+.splash-logo-text {
     font-size: 52px;
     line-height: 1;
-    font-family: 'Outfit', sans-serif;
     font-weight: 600;
     letter-spacing: 0;
 }
@@ -782,6 +790,17 @@ textarea.active-typing:not(.input-wrapper *) {
     background: rgba(var(--primary-rgb), 0.14);
 }
 
+/* Shared mask-based icon properties across error, toast, filter, and settings masks. */
+.error-icon-mask,
+.toast-icon-mask,
+.filter-icon-small,
+.settings-icon-small {
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
 /* Styles the .error-icon-mask UI element and manages its visual layout. */
 .error-icon-mask {
     width: 38px;
@@ -789,10 +808,6 @@ textarea.active-typing:not(.input-wrapper *) {
     background-color: var(--primary-color);
     -webkit-mask-image: url('../images/error.svg');
     mask-image: url('../images/error.svg');
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
 }
@@ -937,10 +952,6 @@ textarea.active-typing:not(.input-wrapper *) {
     background-color: currentColor;
     -webkit-mask-image: var(--icon-url);
     mask-image: var(--icon-url);
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
 }
 
 /* Styles the .toast-title UI element and manages its visual layout. */
@@ -1288,9 +1299,6 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Styles the page header text on the profile selection screen. */
 .profiles-title {
-    margin: 0;
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: clamp(34px, 4vw, 54px);
     line-height: 1.1;
     font-weight: 700;
@@ -1313,12 +1321,19 @@ textarea.active-typing:not(.input-wrapper *) {
     margin: 0 auto;
 }
 
-.profile-row {
+/* Shared layout properties for row containers and update information/progress blocks. */
+.profile-row,
+.update-info-block,
+.update-progress-container {
     width: 100%;
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 12px;
+}
+
+/* Styles the individual profile row grid container layout. */
+.profile-row {
+    flex-direction: row;
 }
 
 .profile-row .profile-card {
@@ -1396,16 +1411,21 @@ textarea.active-typing:not(.input-wrapper *) {
     min-width: 0;
 }
 
+/* Shared styling for high-emphasis name labels (profile and channel list names). */
+.profile-name,
+.channel-list-name {
+    font-size: 19px;
+    font-weight: 800;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Styles the .profile-name UI element and manages its visual layout. */
 .profile-name {
     width: 100%;
-    color: #fff;
-    font-size: 20px;
-    font-weight: 800;
     text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .profile-meta {
@@ -1518,8 +1538,9 @@ textarea.active-typing:not(.input-wrapper *) {
     opacity: 0.5;
 }
 
-/* Styles the .input-group label UI element and manages its visual layout. */
-.input-group label {
+/* Styles uppercase muted small metadata labels across input groups and recent searches. */
+.input-group label,
+.recent-label {
     color: var(--text-muted);
     font-size: 14px;
     font-weight: 900;
@@ -1773,6 +1794,28 @@ textarea.active-typing:not(.input-wrapper *) {
     padding-bottom: 3rem;
 }
 
+/* Styles the cinematic details page background wrapper. */
+.details-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center top;
+    height: 70vh;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Styles the details page backdrop gradients for text readability. */
+.details-backdrop-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+}
+
 /* Styles the .details-layout UI element and manages its visual layout. */
 .details-layout {
     position: relative;
@@ -1828,23 +1871,24 @@ textarea.active-typing:not(.input-wrapper *) {
     font-size: 18px;
 }
 
-/* Styles the .date-box UI element and manages its visual layout. */
-.date-box {
-    background: var(--primary-color);
-    color: #000;
+/* Styling for metadata tags in the details view (date box and rating chip). */
+.date-box,
+.rating-chip {
     padding: 4px 10px;
     border-radius: 4px;
     font-weight: bold;
     font-size: 16px;
 }
 
-/* Styles the .rating-chip UI element and manages its visual layout. */
+/* Specific styling for the release date tag */
+.date-box {
+    background: var(--primary-color);
+    color: #000;
+}
+
+/* Specific styling for age rating indicator tags */
 .rating-chip {
     background: rgba(255, 255, 255, 0.1);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 16px;
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -2090,123 +2134,6 @@ textarea.active-typing:not(.input-wrapper *) {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Styles the .details-page .row-posters UI element and manages its visual layout. */
-.details-page .row-posters {
-    display: flex;
-    overflow-y: hidden;
-    overflow-x: auto;
-    padding: 20px 0;
-    gap: 20px;
-    scroll-behavior: smooth;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
-}
-
-/* Styles the .details-page .row-posters::-webkit-scrollbar UI element and manages its visual layout. */
-.details-page .row-posters::-webkit-scrollbar {
-    height: 8px;
-}
-
-/* Styles the .details-page .row-posters::-webkit-scrollbar-track UI element and manages its visual layout. */
-.details-page .row-posters::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-}
-
-/* Styles the .details-page .row-posters::-webkit-scrollbar-thumb UI element and manages its visual layout. */
-.details-page .row-posters::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 10px;
-}
-
-/* Styles the .details-page .row-posters::-webkit-scrollbar-thumb:hover UI element and manages its visual layout. */
-.details-page .row-posters::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-hover-color);
-}
-
-/* Styles the .details-page .row-posters .poster:hover,
-.details-page .row-posters .poster:focus UI element and manages its visual layout. */
-.details-page .row-posters .poster:hover,
-.details-page .row-posters .poster:focus {
-    border-color: #fff;
-    outline: none;
-    z-index: 10;
-}
-
-/* Add a subtle animation on load */
-@keyframes fadeInSlide {
-    from {
-    opacity: 0;
-    }
-    to {
-    opacity: 1;
-    }
-}
-
-/* Styles the .details-page .row-posters .poster UI element and manages its visual layout. */
-.details-page .row-posters .poster {
-    animation: fadeInSlide 0.4s ease-out backwards;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-    flex-shrink: 0;
-    height: 225px;
-    min-width: 150px;
-    object-fit: cover;
-    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 150px;
-}
-
-/* Styles the .row-posters .poster:nth-child(1) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(1) {
-    animation-delay: 0.05s;
-}
-
-/* Styles the .row-posters .poster:nth-child(2) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-/* Styles the .row-posters .poster:nth-child(3) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(3) {
-    animation-delay: 0.15s;
-}
-
-/* Combined styles for .row:nth-child(4), .row-posters .poster:nth-child(4) */
-.row:nth-child(4), .row-posters .poster:nth-child(4) {
-    animation-delay: 0.2s;
-}
-
-/* Styles the .row-posters .poster:nth-child(5) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(5) {
-    animation-delay: 0.25s;
-}
-
-/* Styles the .row-posters .poster:nth-child(6) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(6) {
-    animation-delay: 0.3s;
-}
-
-/* Styles the .row-posters .poster:nth-child(7) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(7) {
-    animation-delay: 0.35s;
-}
-
-/* Styles the .row-posters .poster:nth-child(8) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(8) {
-    animation-delay: 0.4s;
-}
-
-/* Styles the .row-posters .poster:nth-child(9) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(9) {
-    animation-delay: 0.45s;
-}
-
-/* Styles the .row-posters .poster:nth-child(10) UI element and manages its visual layout. */
-.row-posters .poster:nth-child(10) {
-    animation-delay: 0.5s;
-}
 
 /* ==========================================================================
    Mobile Responsiveness for Details Page
@@ -2387,26 +2314,40 @@ textarea.active-typing:not(.input-wrapper *) {
     gap: 8px;
 }
 
+/* Shared layout properties for form control wrappers (filter selector and search input wrappers). */
+.filter-select-wrapper,
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 /* Styles the select dropdown wrapper, providing a unified height and small border radius. */
 .filter-select-wrapper {
     height: 54px;
-    display: flex;
-    align-items: center;
     border-radius: var(--radius-xs);
-    border: 2px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
     box-sizing: border-box;
+}
+
+/* Shared focus and hover styles for form control wrappers. */
+.filter-select-wrapper:focus-within,
+.filter-select-wrapper.focused,
+.filter-select-wrapper:hover,
+.input-wrapper:focus-within,
+.input-wrapper.focused,
+.input-wrapper:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
 }
 
 /* Styles the select dropdown wrapper on focus-within, focus, or hover to show the white outline. */
 .filter-select-wrapper:focus-within,
 .filter-select-wrapper.focused,
 .filter-select-wrapper:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.08);
     box-shadow: var(--focus-ring-strong);
 }
 
@@ -2466,10 +2407,6 @@ textarea.active-typing:not(.input-wrapper *) {
     background-color: currentColor;
     -webkit-mask-image: url('../images/filter.svg');
     mask-image: url('../images/filter.svg');
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
     margin-right: 8px;
 }
 
@@ -2480,10 +2417,6 @@ textarea.active-typing:not(.input-wrapper *) {
     background-color: currentColor;
     -webkit-mask-image: url('../images/settings.svg');
     mask-image: url('../images/settings.svg');
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
     margin-right: 8px;
 }
 
@@ -2789,16 +2722,6 @@ textarea.active-typing:not(.input-wrapper *) {
     min-width: 0;
 }
 
-/* Styles the .channel-list-name UI element and manages its visual layout. */
-.channel-list-name {
-    font-size: 19px;
-    font-weight: 800;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 /* Styles the .channel-list-group-tag UI element and manages its visual layout. */
 .channel-list-group-tag {
     font-size: 11px;
@@ -2809,22 +2732,29 @@ textarea.active-typing:not(.input-wrapper *) {
     flex-shrink: 0;
 }
 
-/* Combined styles for .channels-list, .channel-list-epg-info */
-.channels-list, .channel-list-epg-info {
+/* Shared layout properties for vertical listings (channels list, EPG info, version chip content). */
+.channels-list,
+.channel-list-epg-info,
+.version-chip-content {
     display: flex;
     flex-direction: column;
     gap: 4px;
     width: 100%;
 }
 
-/* Styles the .channel-list-epg-title UI element and manages its visual layout. */
-.channel-list-epg-title {
-    font-size: 12px;
-    color: var(--text-muted);
+/* Shared layout properties for EPG guide title text items. */
+.channel-list-epg-title,
+.upcoming-program-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
+}
+
+/* Styles the .channel-list-epg-title UI element and manages its visual layout. */
+.channel-list-epg-title {
+    font-size: 12px;
+    color: var(--text-muted);
 }
 
 /* Styles the .channel-list-epg-progress-container UI element and manages its visual layout. */
@@ -2870,17 +2800,22 @@ textarea.active-typing:not(.input-wrapper *) {
     box-sizing: border-box;
 }
 
-/* Styles the loader centering element for the video stream loading state. */
-.preview-video-loading {
+/* Shared layout properties for absolute centered overlay loading states. */
+.preview-video-loading,
+.player-loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Styles the loader centering element for the video stream loading state. */
+.preview-video-loading {
+    background: rgba(0, 0, 0, 0.5);
     z-index: 2;
 }
 
@@ -2990,16 +2925,10 @@ textarea.active-typing:not(.input-wrapper *) {
     font-size: 15px;
     font-weight: 700;
     color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: left;
 }
 
-/* Styles the .loading-center,
-.no-results-msg UI element and manages its visual layout. */
-.loading-center,
-.no-results-msg {
+/* Styles the .loading-center UI element and manages its visual layout. */
+.loading-center {
     min-height: 200px;
     display: flex;
     align-items: center;
@@ -3352,13 +3281,14 @@ textarea.active-typing:not(.input-wrapper *) {
    SECTION 13: PAGE SPECIFIC - PLAYLIST OVERVIEW
    Source File: playlists.css
    ========================================================================== */
+/* Styles the primary container for the playlists overview list page. */
 .playlists-container {
     height: 100%;
     overflow-y: auto;
     padding: var(--app-content-padding-y) var(--app-content-padding-x) 72px;
 }
 
-/* Styles the .page-header UI element and manages its visual layout. */
+/* Styles the page header wrapper to arrange titles and action buttons in a row. */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -3370,15 +3300,13 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Styles the primary page title header for standard content views. */
 .page-title {
-    margin: 0;
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 42px;
     line-height: 1.1;
     font-weight: 600;
     letter-spacing: -0.02em;
 }
 
+/* Styles the button for creating a new playlist. */
 #create-playlist-btn {
     background: rgba(255, 255, 255, 0.1) !important;
     color: #fff !important;
@@ -3389,7 +3317,7 @@ textarea.active-typing:not(.input-wrapper *) {
 /* Styles the .playlists-grid UI element and manages its visual layout. */
 .playlists-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 20vw, 280px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
     gap: clamp(12px, 1.5vw, 18px);
     animation: fadeInUp 0.32s ease-out;
 }
@@ -3406,72 +3334,70 @@ textarea.active-typing:not(.input-wrapper *) {
     text-align: center;
 }
 
-/* Styles the individual playlist card container. */
-.playlist-card {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--radius-md);
-    border: 2px solid transparent;
-    background: var(--surface-color);
-    cursor: pointer;
-    box-shadow: var(--shadow-card);
-    transition: border-color 0.16s ease, box-shadow 0.16s ease;
-}
-
-/* Styles the .playlist-cover UI element and manages its visual layout. */
+/* Styles the cover art container inside individual playlists. */
 .playlist-cover {
     position: relative;
-    aspect-ratio: 16 / 9;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background: #101010;
 }
 
-/* Styles the .playlist-overlay UI element and manages its visual layout. */
+/* Styles the bottom dark gradient overlay text container on a playlist card. */
 .playlist-overlay {
     position: absolute;
-    inset: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 10px 10px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    color: #fff;
     display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.38);
-    opacity: 0;
-    transition: opacity 0.16s ease;
+    pointer-events: none;
+    opacity: 1;
 }
 
-/* Styles the .playlist-play-icon UI element and manages its visual layout. */
-.playlist-play-icon {
-    color: #fff;
-    font-size: 42px;
-    font-weight: 900;
-}
-
-/* Styles the .playlist-info UI element and manages its visual layout. */
-.playlist-info {
-    padding: 14px;
-    background: var(--surface-color);
-}
-
-/* Styles the .playlist-name UI element and manages its visual layout. */
+/* Styles the text label containing the playlist name. */
 .playlist-name {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     color: #fff;
-    font-size: 16px;
-    font-weight: 900;
+    font-size: 14px;
+    font-weight: 800;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* Styles the .modal-content h2 UI element and manages its visual layout. */
+/* Styles metadata elements such as active epg times, playlist sizes, and movie items. */
+.epg-time, .playlist-meta, .item-meta {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Styles the count text displayed below the name in the card overlay. */
+.playlist-meta {
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+/* Styles header tags inside standard modal content elements. */
 .modal-content h2 {
     margin-bottom: 22px;
     color: #fff;
     font-size: 24px;
 }
 
-/* Styles the .input-group UI element and manages its visual layout. */
+/* Styles standard horizontal/vertical text and buttons inputs wrapper groups. */
 .input-group {
     display: flex;
     flex-direction: column;
@@ -3479,7 +3405,7 @@ textarea.active-typing:not(.input-wrapper *) {
     margin-bottom: 22px;
 }
 
-/* Styles the .input-group input UI element and manages its visual layout. */
+/* Styles text textboxes and text inputs inside input-groups. */
 .input-group input {
     background: rgba(0, 0, 0, 0.36);
     border: 2px solid rgba(255, 255, 255, 0.12);
@@ -3492,82 +3418,54 @@ textarea.active-typing:not(.input-wrapper *) {
     width: 100%;
 }
 
-/* Styles the .modal-actions .btn UI element and manages its visual layout. */
+/* Styles buttons layouts positioned at the footer of standard modals. */
 .modal-actions .btn {
     flex: 1;
     margin: 0;
-}
-
-@media (max-width: 1279px) {
-    /* Styles the .playlists-grid UI element and manages its visual layout. */
-    .playlists-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
+    justify-content: center;
 }
 
 @media (max-width: 767px), (orientation: portrait) {
-    /* Styles the .playlists-container UI element and manages its visual layout. */
+    /* Responsive styles for playlists container on mobile. */
     .playlists-container {
         padding: 24px 18px 104px;
     }
 
-    /* Styles the .page-header UI element and manages its visual layout. */
+    /* Responsive styles for playlists header page wrapper. */
     .page-header {
         align-items: stretch;
         flex-direction: column;
     }
 
-    /* Adapts the main page title header size for portrait and mobile viewports. */
+    /* Responsive styles for title elements on narrow screens. */
     .page-title {
         font-size: 32px;
     }
 
-    /* Styles the .playlists-grid UI element and manages its visual layout. */
+    /* Responsive grid columns adjustment for overview grid. */
     .playlists-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
         gap: 12px;
     }
-
-    /* Styles the .modal-overlay UI element and manages its visual layout. */
-    .modal-overlay {
-        align-items: flex-end;
-        padding: 16px;
-    }
-
-    /* Styles the .modal-content UI element and manages its visual layout. */
-    .modal-content {
-        width: 100%;
-        padding: 22px;
-    }
-
 }
 
 /* ==========================================================================
-   SECTION 14: PAGE SPECIFIC - PLAYLIST GRID DETAILS
+   SECTION 14: PAGE SPECIFIC - PLAYLIST DETAILS
    Source File: playlist-details.css
    ========================================================================== */
+/* Styles the overall container of a full-screen view. */
 .page-container {
     height: 100%;
 }
 
-/* Styles the .playlist-details-container UI element and manages its visual layout. */
-.playlist-details-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: var(--background-color);
-}
-
-/* Styles the .playlist-backdrop UI element and manages its visual layout. */
+/* Styles the playlist-backdrop UI element and manages its visual layout. */
 .playlist-backdrop {
     position: absolute;
     inset: 0;
     z-index: 0;
 }
 
-/* Styles the .playlist-backdrop img UI element and manages its visual layout. */
+/* Styles the playlist-backdrop img UI element and manages its visual layout. */
 .playlist-backdrop img {
     width: 100%;
     height: 100%;
@@ -3575,7 +3473,7 @@ textarea.active-typing:not(.input-wrapper *) {
     opacity: 0.22;
 }
 
-/* Styles the .backdrop-overlay UI element and manages its visual layout. */
+/* Styles the backdrop-overlay UI element and manages its visual layout. */
 .backdrop-overlay {
     position: absolute;
     inset: 0;
@@ -3584,202 +3482,15 @@ textarea.active-typing:not(.input-wrapper *) {
         linear-gradient(0deg, var(--background-color), transparent 54%);
 }
 
-/* Styles the .playlist-content-wrapper UI element and manages its visual layout. */
-.playlist-content-wrapper {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    display: grid;
-    grid-template-columns: clamp(240px, 22%, 300px) minmax(0, 1fr);
-    gap: 34px;
-    padding: var(--app-content-padding-y) var(--app-content-padding-x);
-}
-
-/* Styles the .playlist-sidebar UI element and manages its visual layout. */
-.playlist-sidebar {
-    min-width: 0;
-    padding-top: 18px;
-}
-
-/* Styles the .playlist-title UI element and manages its visual layout. */
-.playlist-title {
-    margin-bottom: 12px;
-    color: #fff;
-    font-size: 42px;
-    line-height: 1.08;
-    font-weight: 900;
-}
-
-/* Styles the .playlist-meta-row UI element and manages its visual layout. */
-.playlist-meta-row {
-    margin-bottom: 28px;
-    display: flex;
-    gap: 10px;
-}
-
-/* Styles the .meta-item UI element and manages its visual layout. */
-.meta-item {
-    min-height: 30px;
-    padding: 5px 10px;
-    border-radius: var(--radius-xs);
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 900;
-}
-
-/* Styles the icon inside a button and manages its visual layout. */
-.btn .icon {
-    width: 22px;
-    height: 22px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 22px;
-    font-size: 18px;
-    font-weight: 900;
-}
-
-/* Combined styles for toast, TV video, and button icon images. */
-.toast-icon img, .toast-icon svg, .tv-video, .btn .icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-/* Styles the .playlist-items-section UI element and manages its visual layout. */
-.playlist-items-section {
-    min-width: 0;
-    overflow-y: auto;
-    padding-top: 18px;
-}
-
-/* Styles the .playlist-items-grid UI element and manages its visual layout. */
+/* Styles the playlist-items-grid UI element and manages its visual layout. */
 .playlist-items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
-    gap: clamp(12px, 1.5vw, 16px);
+    gap: clamp(12px, 1.5vw, 18px);
     padding-bottom: 64px;
 }
 
-/* Styles the individual item card within a playlist. */
-.playlist-item-card {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--radius-md);
-    border: 2px solid transparent;
-    background: var(--surface-color);
-    cursor: pointer;
-    box-shadow: var(--shadow-card);
-}
-
-/* Combined styles for .playlist-card:hover, .playlist-card:focus, .playlist-card.focused, .playlist-item-card:hover, .playlist-item-card:focus, .playlist-item-card.focused */
-.playlist-card:hover, .playlist-card:focus, .playlist-card.focused, .playlist-item-card:hover, .playlist-item-card:focus, .playlist-item-card.focused {
-    border-color: #fff;
-    box-shadow: var(--focus-ring-strong);
-    outline: none;
-    z-index: 10;
-}
-
-/* Styles the .item-thumbnail UI element and manages its visual layout. */
-.item-thumbnail {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #111;
-}
-
-/* Styles the actual video player element inside the preview card to fill the container. */
-.preview-card-video video, .playlist-cover img, .item-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Styles the .item-info UI element and manages its visual layout. */
-.item-info {
-    padding: 14px;
-}
-
-/* Styles the .item-title UI element and manages its visual layout. */
-.item-title {
-    margin-bottom: 5px;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 900;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Styles start and end time text indicators for active and upcoming shows. */
-.epg-time, .playlist-meta, .item-meta {
-    color: var(--text-muted);
-    font-size: 13px;
-    font-weight: 700;
-}
-
-/* Styles the .item-actions-overlay UI element and manages its visual layout. */
-.item-actions-overlay {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: flex;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 0.16s ease;
-}
-
-/* Shows text labels and logo text when the sidebar is always expanded. */
-#app.sidebar-always-expanded .nav-item span, #app.sidebar-always-expanded .logo-text, .navbar:hover .nav-item span, .navbar:focus-within .nav-item span, .navbar:hover .logo-text, .navbar:focus-within .logo-text, .edit-mode .profile-edit-overlay, .row-container:hover .handle, .handle:focus, .handle.focused, .playlist-card:hover .playlist-overlay, .playlist-card.focused .playlist-overlay, .playlist-item-card:hover .item-actions-overlay, .playlist-item-card.focused .item-actions-overlay {
-    opacity: 1;
-}
-
-/* Styles the mini icon buttons used in playlist actions. */
-.icon-btn-mini {
-    width: 34px;
-    height: 34px;
-    border-radius: var(--radius-sm);
-    border: 2px solid rgba(255, 255, 255, 0.18);
-    background: rgba(0, 0, 0, 0.72);
-    color: #fff;
-    cursor: pointer;
-}
-
-/* Styles the .icon-btn-mini:hover,
-.icon-btn-mini:focus,
-.icon-btn-mini.focused UI element and manages its visual layout. */
-.icon-btn-mini:hover,
-.icon-btn-mini:focus,
-.icon-btn-mini.focused {
-    border-color: #fff;
-    background: #fff;
-    color: #050505;
-}
-
-/* Styles the .playlist-empty-state UI element and manages its visual layout. */
-.playlist-empty-state {
-    grid-column: 1 / -1;
-    min-height: 260px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.045);
-    color: var(--text-muted);
-    text-align: center;
-}
-
-/* Styles the .empty-icon UI element and manages its visual layout. */
-.empty-icon {
-    font-size: 48px;
-    margin-bottom: 18px;
-}
-
-/* Styles the .modal-message UI element and manages its visual layout. */
+/* Styles the modal-message UI element and manages its visual layout. */
 .modal-message {
     margin-bottom: 24px;
     color: var(--text-muted);
@@ -3787,70 +3498,12 @@ textarea.active-typing:not(.input-wrapper *) {
     line-height: 1.5;
 }
 
-/* Centers button content inside modal actions. */
-.modal-actions .btn {
-    justify-content: center;
-}
-
-@media (max-width: 1279px) {
-    /* Styles the .playlist-content-wrapper UI element and manages its visual layout. */
-    .playlist-content-wrapper {
-        grid-template-columns: 260px minmax(0, 1fr);
-    }
-
-    /* Styles the .playlist-items-grid UI element and manages its visual layout. */
-    .playlist-items-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-}
-
 @media (max-width: 767px), (orientation: portrait) {
-    /* Styles the .playlist-details-container UI element and manages its visual layout. */
-    .playlist-details-container {
-        overflow-y: auto;
-    }
-
-    /* Styles the .playlist-content-wrapper UI element and manages its visual layout. */
-    .playlist-content-wrapper {
-        height: auto;
-        grid-template-columns: 1fr;
-        padding: 24px 18px 104px;
-    }
-
-    /* Styles the .playlist-title UI element and manages its visual layout. */
-    .playlist-title {
-        font-size: 32px;
-    }
-
-    /* Styles the .playlist-actions-sidebar UI element and manages its visual layout. */
-    .playlist-actions-sidebar {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    /* Styles the .playlist-items-section UI element and manages its visual layout. */
-    .playlist-items-section {
-        overflow: visible;
-    }
-
-    /* Styles the .playlist-items-grid UI element and manages its visual layout. */
+    /* Responsive columns adjustment for playlist details grid. */
     .playlist-items-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
         gap: 12px;
     }
-
-    /* Styles the .modal-overlay UI element and manages its visual layout. */
-    .modal-overlay {
-        align-items: flex-end;
-        padding: 16px;
-    }
-
-    /* Styles the .modal-content UI element and manages its visual layout. */
-    .modal-content {
-        width: 100%;
-    }
-
 }
 
 /* ==========================================================================
@@ -3892,24 +3545,16 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Styles the input text box wrapper, setting height and a small border radius. */
 .input-wrapper {
-    align-items: center;
-    backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.07);
-    border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-md);
-    display: flex;
     height: 58px;
     padding: 0 16px;
-    position: relative;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Styles the input text box wrapper on focus-within, focus, or hover to show the white outline. */
 .input-wrapper:focus-within,
 .input-wrapper.focused,
 .input-wrapper:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: #fff;
     box-shadow: var(--focus-ring);
 }
 
@@ -3969,14 +3614,6 @@ textarea.active-typing:not(.input-wrapper *) {
     gap: 12px;
     margin-bottom: 20px;
     width: 100%;
-}
-
-/* Styles the .recent-label UI element and manages its visual layout. */
-.recent-label {
-    color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 900;
-    text-transform: uppercase;
 }
 
 /* Styles the .recent-list UI element and manages its visual layout. */
@@ -4116,17 +3753,6 @@ textarea.active-typing:not(.input-wrapper *) {
     aspect-ratio: 2 / 3;
     content-visibility: auto;
     contain-intrinsic-size: auto var(--poster-height);
-}
-
-/* Styles the .no-results-msg UI element and manages its visual layout. */
-.no-results-msg {
-    grid-column: 1 / -1;
-    padding: 42px;
-    border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.045);
-    color: var(--text-muted);
-    text-align: center;
-    font-size: 18px;
 }
 
 /* Styles the .modal-overlay.active UI element and manages its visual layout. */
@@ -4298,8 +3924,8 @@ textarea.active-typing:not(.input-wrapper *) {
     padding: 0 28px 16px;
 }
 
-/* Combined styles for .seasons-list-content, .playlist-actions-sidebar */
-.seasons-list-content, .playlist-actions-sidebar, .select-options-list {
+/* Combined styles for .seasons-list-content, .select-options-list */
+.seasons-list-content, .select-options-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -4620,17 +4246,22 @@ textarea.active-typing:not(.input-wrapper *) {
     align-items: center;
 }
 
-/* Button to toggle moving mode on a provider item */
-.provider-move-btn {
+/* Shared layout properties for custom provider list action buttons (move and delete). */
+.provider-move-btn,
+.provider-delete-btn {
     min-width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-md);
     cursor: pointer;
+}
+
+/* Button to toggle moving mode on a provider item */
+.provider-move-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.12);
 }
 
 /* Active style for move button when moving mode is currently active */
@@ -4643,16 +4274,9 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Button to delete a custom provider item */
 .provider-delete-btn {
-    min-width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: rgba(255, 59, 48, 0.1);
     border: 2px solid rgba(255, 59, 48, 0.2);
     color: #ff3b30;
-    border-radius: var(--radius-md);
-    cursor: pointer;
 }
 
 /* Styles the .loader-inline-container .ivids-loader UI element and manages its visual layout. */
@@ -5428,11 +5052,7 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Layout block organizing the version comparison badges and release details */
 .update-info-block {
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
 }
 
 /* Horizontal flex alignment wrapper for the source and target versions */
@@ -5586,12 +5206,9 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Progress container layout structuring the download progress metrics and bars */
 .update-progress-container {
-    width: 100%;
     margin-bottom: 20px;
     display: none;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
 }
 
 /* Background track representing progress bar 0-100% capacity container */
@@ -5813,10 +5430,6 @@ textarea.active-typing:not(.input-wrapper *) {
 /* Custom badges and info rows inside version list chips */
 .version-chip-content {
     align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
 }
 
 /* Styles the timeline progress wrapper for the active show. */
@@ -5918,11 +5531,10 @@ iframe {
     margin-top: 3%;
 }
 
-/* Button style for the back navigation action. */
-.btn-back {
+/* Shared layout properties for player status action buttons. */
+.btn-back,
+.btn-next {
     align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     color: #fff;
     cursor: pointer;
@@ -5933,20 +5545,17 @@ iframe {
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Button style for the next episode action. */
+/* Specific background and border for the player back button. */
+.btn-back {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Specific background and border for the player next button. */
 .btn-next {
-    align-items: center;
     background: var(--primary-color);
     border: 2px solid var(--primary-color);
     border-color: rgba(var(--primary-rgb), 0.52);
-    border-radius: 8px;
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    font-size: 16px;
-    gap: 8px;
-    padding: 10px 20px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 /* Highlighted button borders for next buttons on focus/hover. */
@@ -6077,17 +5686,9 @@ iframe {
 
 /* Absolute overlay displayed during initial content loading state. */
 .player-loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background: #000;
     z-index: 150;
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     gap: 20px;
 }
 

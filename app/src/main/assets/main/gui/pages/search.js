@@ -440,6 +440,12 @@ async function performSearch(query, reset = false) {
     await fetchResults(reset);
 }
 
+/**
+ * Fetches content results from the API based on current query and active filters, supporting pagination.
+ * It renders the returned list of items in the search grid or displays an empty state if nothing is found.
+ * @param {boolean} reset - If true, resets the grid and re-fetches from page 1.
+ * @returns {Promise<void>}
+ */
 async function fetchResults(reset) {
     isLoading = true;
     try {
@@ -489,7 +495,7 @@ async function fetchResults(reset) {
 
         if (results.length === 0) {
             if (currentPage === 1) {
-                grid.innerHTML = `<div class="no-results-msg" data-i18n="search.noResults">${window.i18n.t('search.noResults')}</div>`;
+                grid.innerHTML = `<div class="empty-state" data-i18n="search.noResults">${window.i18n.t('search.noResults')}</div>`;
             }
             hasMoreResults = false;
         } else {
