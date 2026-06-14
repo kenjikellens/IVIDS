@@ -19,41 +19,37 @@ This document defines the strict, standardized protocol for launching new releas
   Ask the user to confirm this calculated version before modifying any files.
 - **Title and Description Generation**: Once confirmed, formulate a high-quality, professional release title (e.g., `Release v0.4.2 (Prerelease)`) and a detailed, feature-rich release description highlighting all visual, spatial-nav, and core logic improvements.
 
-### 2. Update Android Version Config
-- **ACTION**: Modify the Android build configuration in [build.gradle.kts](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/build.gradle.kts):
-  - Bump `versionName` to match the target version precisely (e.g., `versionName = "v0.2.1"`).
-  - Increment the integer `versionCode` by 1.
-- **CHANGELOG HOOK**: Immediately document this gradle modification in [CHANGELOG.md](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/CHANGELOG.md) in the exact format:
-  `[HH:mm DD-MM-YYYY] app/build.gradle.kts - Bumped versionName to vX.Y.Z and incremented versionCode to N.`
-
-### 3. Compile the Application Packages (APK and EXE)
-- **Android APK Compilation**: Execute the Gradle wrapper command in PowerShell to compile the application and produce the APK:
+### 2. Update Application Versions Automatically
+- **ACTION**: Run the automatic version updater via `build.bat` in the workspace root:
   ```powershell
-  .\gradlew assembleDebug
+  .\build.bat version vX.Y.Z
   ```
-  *(Or execute `.\gradlew assembleRelease` if building a signed production-ready package).*
-- **Windows PC EXE Compilation**: Install dependencies and package the Electron app:
-  ```powershell
-  npm install
-  npm run dist
-  ```
+  *(Replace `vX.Y.Z` with your target version, e.g. `v0.4.4` or `0.4.4`).*
+- **Automated Actions**: This command will automatically:
+  1. Update the `version` field in [package.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package.json).
+  2. Update the version fields in [package-lock.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package-lock.json).
+  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/build.gradle.kts).
+  4. Append the modification log entry to [CHANGELOG.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/CHANGELOG.md).
 
-### 4. Relocate and Rename the Packages to the Workspace Root
-- **Android Package (APK)**: Copy the compiled APK to the root workspace directory and rename it to `IVIDS.apk`.
-  - **Source Path**: `app/build/outputs/apk/debug/app-debug.apk` (or matching release path).
-  - **Destination Path**: [IVIDS.apk](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/IVIDS.apk) (root).
-  - **PowerShell Copy Command**:
+### 3. Compile and Package the Applications (APK and EXE)
+- **ACTION**: Run the automated build script to compile the packages:
+  - For **Debug Build** (default):
     ```powershell
-    Copy-Item -Path "app/build/outputs/apk/debug/app-debug.apk" -Destination "IVIDS.apk" -Force
+    .\build.bat
     ```
-- **Windows Package (EXE)**: Copy the compiled portable executable to the root workspace directory and rename it to `IVIDS.exe`.
-  - **Source Path**: `dist/ivids*.exe` (or matching portable exe path).
-  - **Destination Path**: [IVIDS.exe](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/IVIDS.exe) (root).
-  - **PowerShell Copy Command**:
+  - For **Release/Production Build**:
     ```powershell
-    Copy-Item -Path "dist/*.exe" -Destination "IVIDS.exe" -Force
+    .\build.bat release
     ```
-- **CHANGELOG HOOK**: Immediately document the copying and creation of both binaries in [CHANGELOG.md](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/CHANGELOG.md) in the exact format:
+- **Automated Actions**: This script will automatically:
+  1. Compile the Windows Portable Executable using `npm run dist`.
+  2. Compile the Android APK (debug or release variant).
+  3. Copy and rename the compiled Windows binary to the workspace root as [IVIDS.exe](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/IVIDS.exe).
+  4. Copy and rename the compiled Android APK to the workspace root as [IVIDS.apk](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/IVIDS.apk).
+  5. Clean up temporary build artifacts (the `dist` folder).
+
+### 4. Document Build Binaries in Changelog
+- **CHANGELOG HOOK**: Document the copy/creation of the binaries in [CHANGELOG.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/CHANGELOG.md) in the exact format:
   `[HH:mm DD-MM-YYYY] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.`
   `[HH:mm DD-MM-YYYY] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.`
 

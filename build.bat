@@ -14,6 +14,26 @@ echo   Started at: %DATE% %TIME%
 echo ===================================================
 echo.
 
+
+:: ──────────────────────────────────────────────────────────
+:: Check for version update command
+:: ──────────────────────────────────────────────────────────
+if "%~1"=="version" (
+    if "%~2"=="" (
+        echo [ERROR] Version string not specified.
+        echo Usage: build.bat version [version_number]
+        exit /b 1
+    )
+    echo [INFO] Running automatic version updater for: %~2
+    node update-version.js %~2
+    if !errorlevel! neq 0 (
+        echo [ERROR] Version update failed.
+        exit /b 1
+    )
+    echo [INFO] Version update successful.
+    exit /b 0
+)
+
 :: ──────────────────────────────────────────────────────────
 :: Parse build type argument (debug or release)
 :: ──────────────────────────────────────────────────────────
@@ -22,6 +42,7 @@ if "%~1"=="release"   set BUILD_TYPE=release
 if "%~1"=="--release"  set BUILD_TYPE=release
 
 echo [INFO] Build type: %BUILD_TYPE%
+
 echo.
 
 :: ===========================================================
