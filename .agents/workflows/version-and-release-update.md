@@ -53,11 +53,32 @@ This document defines the strict, standardized protocol for launching new releas
   `[HH:mm DD-MM-YYYY] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.`
   `[HH:mm DD-MM-YYYY] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.`
 
-### 5. Tag and Push the Release
+### 5. Tag and Push the Release Tag
 - **ACTION**: You MUST autonomously commit the release changes locally and tag the release commit, but you must push ONLY the tag to the remote GitHub repository. You are strictly FORBIDDEN from pushing the release commit directly to the `main` branch autonomously; the `main` branch push must be explicitly authorized by the developer later.
   ```powershell
   git commit -m "Release vX.Y.Z"
   git tag -a vX.Y.Z -m "Release vX.Y.Z"
   git push origin vX.Y.Z
   ```
-- **GitHub Release Entry**: Draft a new release on GitHub autonomously using the pushed tag, applying the high-quality title and description formulated in Step 1. Ensure you attach the compiled `IVIDS.apk` and `IVIDS.exe` as assets.
+
+### 6. Create the GitHub Release Online (MANDATORY — DO NOT SKIP)
+> **⚠️ CRITICAL: This step is NON-NEGOTIABLE. A pushed tag without a live GitHub release is INCOMPLETE. The release is NOT done until this step succeeds.**
+
+- **ACTION**: You MUST autonomously create a **live, published GitHub release** using the `gh` CLI. The release MUST include the compiled `IVIDS.apk` and `IVIDS.exe` as downloadable assets.
+- **AUTH FIX**: If `gh` fails with a `401 Unauthorized` error, it is likely caused by an invalid `GITHUB_TOKEN` environment variable overriding the valid keyring credentials. Fix this by clearing the variable before running `gh`:
+  ```powershell
+  $env:GITHUB_TOKEN = ""; gh release create vX.Y.Z "IVIDS.apk" "IVIDS.exe" --title "Release vX.Y.Z" --notes "<release notes>" --latest
+  ```
+- **RELEASE NOTES**: Use the high-quality title and description formulated in Step 1. Include a "What's Changed" section summarizing the key improvements.
+
+### 7. Verify the Release is Live (MANDATORY — DO NOT SKIP)
+- **ACTION**: After creating the release, you MUST verify it is actually live and accessible by running:
+  ```powershell
+  $env:GITHUB_TOKEN = ""; gh release view vX.Y.Z
+  ```
+- **VALIDATION CHECKLIST** — the release is only complete when ALL of the following are true:
+  1. ✅ The release URL is returned and accessible (e.g., `https://github.com/kenjikellens/IVIDS/releases/tag/vX.Y.Z`)
+  2. ✅ The release title and description are present
+  3. ✅ `IVIDS.apk` is listed as an attached asset
+  4. ✅ `IVIDS.exe` is listed as an attached asset
+- **FAILURE HANDLING**: If ANY of the above checks fail, you MUST retry or report the specific failure to the user. Do NOT silently proceed as if the release succeeded.
