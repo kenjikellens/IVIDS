@@ -99,6 +99,10 @@ export async function init(params) {
             hlsInstance.attachMedia(video);
             hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
                 video.play().catch(e => {
+                    if (e.name === 'AbortError') {
+                        console.log('Playback request was interrupted (AbortError), ignoring.');
+                        return;
+                    }
                     console.error('Error starting TV stream (HLS.js):', e);
                     updateStoredChannelStatus(url, 'offline');
                     scheduleNextPlayableChannel();
@@ -141,6 +145,10 @@ export async function init(params) {
             console.log('TV Player: Playing stream natively');
             video.src = streamUrl;
             video.play().catch(e => {
+                if (e.name === 'AbortError') {
+                    console.log('Playback request was interrupted (AbortError), ignoring.');
+                    return;
+                }
                 console.error('Error starting TV stream (Native):', e);
                 updateStoredChannelStatus(url, 'offline');
                 scheduleNextPlayableChannel();
