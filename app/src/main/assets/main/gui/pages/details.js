@@ -44,23 +44,6 @@ export async function init(params) {
         if (details) {
             render(details, params.type);
 
-            // If it's a TV show, render seasons and fetch season 1 by default
-            if (params.type === 'tv') {
-                if (details.seasons) {
-                    try {
-                        renderSeasons(details.seasons, params.id);
-                        // Default to first season (usually season 1, but sometimes season 0 is specials)
-                        // We prefer Season 1 if available.
-                        const defaultSeason = details.seasons.find(s => s.season_number === 1) || details.seasons[0];
-                        if (defaultSeason) {
-                            loadSeasonEpisodes(params.id, defaultSeason.season_number);
-                        }
-                    } catch (seasonError) {
-                        console.error('Error loading seasons:', seasonError);
-                    }
-                }
-            }
-
             // Focus on the Play button for remote control navigation
             try {
                 setTimeout(() => {
@@ -84,7 +67,7 @@ export async function init(params) {
 }
 
 /**
- * Renders the details page content, setting up metadata, backdrop image, buttons, and seasons.
+ * Renders the details page content, setting up metadata, backdrop image, buttons, and tabs.
  * Updates the details DOM elements and checks recently watched history.
  * @param {Object} item - The details metadata object of the content.
  * @param {string} type - The media type ('movie' or 'tv').
@@ -96,8 +79,8 @@ function render(item, type) {
         const date = document.getElementById('details-date');
         const overview = document.getElementById('details-overview');
         const playBtn = document.getElementById('details-play');
+        const trailerBtn = document.getElementById('details-trailer');
         const playlistBtn = document.getElementById('details-playlist');
-        const seasonsContainer = document.getElementById('seasons-container');
 
         // Check for critical DOM elements
         if (!title || !playBtn) {
@@ -191,13 +174,45 @@ function render(item, type) {
                 });
             } else {
                 playBtn.textContent = I18n.t('details.play');
-                playBtn.onclick = () => Router.loadPage('player', { id: item.id, type: type });
+                playBtn.onclick = () => {
+                    if (type === 'tv') {
+                        Router.loadPage('player', { id: item.id, type: type, season: 1, episode: 1 });
+                    } else {
+                        Router.loadPage('player', { id: item.id, type: type });
+                    }
+                };
             }
         } catch (watchError) {
             console.error('Error checking watch history:', watchError);
             // Fallback to normal play button
             playBtn.textContent = I18n.t('details.play');
-            playBtn.onclick = () => Router.loadPage('player', { id: item.id, type: type });
+            playBtn.onclick = () => {
+                if (type === 'tv') {
+                    Router.loadPage('player', { id: item.id, type: type, season: 1, episode: 1 });
+                } else {
+                    Router.loadPage('player', { id: item.id, type: type });
+                }
+            };
+        }
+
+        // Watch Trailer Button Logic
+        let mainTrailerKey = null;
+        if (item.videos?.results) {
+            const trailer = item.videos.results.find(v => v.site.toLowerCase() === 'youtube' && v.type.toLowerCase() === 'trailer');
+            const fallback = item.videos.results.find(v => v.site.toLowerCase() === 'youtube' && (v.type.toLowerCase() === 'teaser' || v.type.toLowerCase() === 'clip'));
+            mainTrailerKey = trailer ? trailer.key : (fallback ? fallback.key : null);
+        }
+
+        if (trailerBtn) {
+            if (mainTrailerKey) {
+                trailerBtn.style.display = 'inline-block';
+                const trailerObj = item.videos.results.find(v => v.key === mainTrailerKey);
+                const trailerName = trailerObj ? ` (${trailerObj.name})` : '';
+                trailerBtn.textContent = `${I18n.t('details.watchTrailer')}${trailerName}`;
+                trailerBtn.onclick = () => Router.loadPage('player', { id: item.id, type: 'trailer', ytKey: mainTrailerKey, mediaType: type });
+            } else {
+                trailerBtn.style.display = 'none';
+            }
         }
 
         // Playlist Button Logic
@@ -212,22 +227,48 @@ function render(item, type) {
             };
         }
 
-        // Show/Hide Seasons Container
-        if (seasonsContainer) {
-            seasonsContainer.style.display = (type === 'tv') ? 'block' : 'none';
+        // Render Tab Panels Data
+        renderExtras(item.videos, item.id, type);
+        renderAbout(item.overview, item.credits);
+
+        // Bind tab buttons click events
+        const tabSeasons = document.getElementById('tab-seasons');
+        const tabExtra = document.getElementById('tab-extra');
+        const tabAbout = document.getElementById('tab-about');
+        if (tabSeasons) tabSeasons.onclick = () => switchTab('seasons');
+        if (tabExtra) tabExtra.onclick = () => switchTab('extra');
+        if (tabAbout) tabAbout.onclick = () => switchTab('about');
+
+        // Toggle Seasons tab based on content type
+        if (tabSeasons) {
+            if (type === 'tv' && item.seasons) {
+                tabSeasons.style.display = 'inline-block';
+                renderSeasons(item.seasons, item.id);
+                switchTab('seasons');
+            } else {
+                tabSeasons.style.display = 'none';
+                switchTab('extra');
+            }
         }
+
     } catch (error) {
         console.error('Error in render function:', error);
         ErrorHandler.show('Failed to render details. Some information may be missing.');
     }
 }
 
+/**
+ * Gets the release rating certification (e.g. PG-13, TV-MA).
+ * Returns rating key or empty string.
+ * @param {Object} item - Media details metadata.
+ * @param {string} type - Media type ('movie' or 'tv').
+ * @returns {string} Rating string.
+ */
 function getRating(item, type) {
     try {
         if (type === 'movie' && item.release_dates && item.release_dates.results) {
             const usRelease = item.release_dates.results.find(r => r.iso_3166_1 === 'US');
             if (usRelease && usRelease.release_dates) {
-                // Find the first certification that is not empty
                 const cert = usRelease.release_dates.find(d => d.certification);
                 return cert ? cert.certification : '';
             }
@@ -241,6 +282,12 @@ function getRating(item, type) {
     return '';
 }
 
+/**
+ * Handles opening and populating the Playlist selection modal list.
+ * Updates the modal layout and binds item addition click events.
+ * @param {Object} item - Media details metadata.
+ * @param {string} type - Media type ('movie' or 'tv').
+ */
 function openPlaylistModal(item, type) {
     try {
         const modal = document.getElementById('add-to-playlist-modal');
@@ -275,7 +322,6 @@ function openPlaylistModal(item, type) {
                     div.tabIndex = 0;
                     div.textContent = playlist.name || I18n.t('details.unnamedPlaylist');
 
-                    // Check if already in playlist
                     const exists = playlist.items && playlist.items.some(i => i.id === item.id && i.media_type === type);
                     if (exists) {
                         div.textContent += ' (Added)';
@@ -285,7 +331,6 @@ function openPlaylistModal(item, type) {
                     div.onclick = () => {
                         try {
                             if (!exists) {
-                                // Ensure we have all necessary fields
                                 const itemToAdd = {
                                     id: item.id,
                                     title: item.title,
@@ -326,6 +371,12 @@ function openPlaylistModal(item, type) {
     }
 }
 
+/**
+ * Renders the seasons button list for D-pad navigation.
+ * Updates the horizontal scroll list of seasons.
+ * @param {Array} seasons - List of season metadata objects.
+ * @param {number|string} seriesId - TMDB Series ID.
+ */
 function renderSeasons(seasons, seriesId) {
     try {
         const container = document.getElementById('seasons-list');
@@ -341,7 +392,6 @@ function renderSeasons(seasons, seriesId) {
             return;
         }
 
-        // Filter out Season 0 (Specials) if desired, or keep them. Usually keep them.
         // Sort by season number
         try {
             seasons.sort((a, b) => (a.season_number || 0) - (b.season_number || 0));
@@ -351,7 +401,6 @@ function renderSeasons(seasons, seriesId) {
 
         seasons.forEach(season => {
             try {
-                // Skip if season_number is 0 and we want to hide specials, but let's keep it for now.
                 const btn = document.createElement('button');
                 btn.className = 'season-btn focusable';
                 btn.textContent = season.name || `${I18n.t('details.season')} ${season.season_number || '?'}`; // e.g. "Season 1"
@@ -359,8 +408,7 @@ function renderSeasons(seasons, seriesId) {
 
                 btn.onclick = () => {
                     try {
-                        // Update active state
-                        document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+                        container.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
 
                         loadSeasonEpisodes(seriesId, season.season_number);
@@ -375,10 +423,13 @@ function renderSeasons(seasons, seriesId) {
             }
         });
 
-        // Set first one active initially if it exists
+        // Set first one active initially if it exists and load its episodes
         try {
             const firstBtn = container.querySelector('.season-btn[data-season-number="1"]') || container.querySelector('.season-btn');
-            if (firstBtn) firstBtn.classList.add('active');
+            if (firstBtn) {
+                firstBtn.classList.add('active');
+                loadSeasonEpisodes(seriesId, firstBtn.dataset.seasonNumber);
+            }
         } catch (activateError) {
             console.error('Error activating first season:', activateError);
         }
@@ -387,6 +438,12 @@ function renderSeasons(seasons, seriesId) {
     }
 }
 
+/**
+ * Fetches episodes metadata for a specific season from TMDb and triggers rendering.
+ * Affects the display of episodes inside the seasons tab panel.
+ * @param {number|string} seriesId - The TMDB Series ID.
+ * @param {number} seasonNumber - The season number.
+ */
 async function loadSeasonEpisodes(seriesId, seasonNumber) {
     try {
         const container = document.getElementById('details-episodes');
@@ -402,7 +459,7 @@ async function loadSeasonEpisodes(seriesId, seasonNumber) {
             seasonDetails = await Api.getSeasonDetails(seriesId, seasonNumber);
         } catch (apiError) {
             console.error('Error fetching season details:', apiError);
-            container.innerHTML = '<div style="text-align:center; color:#f44;">Failed to load episodes. Please try again.</div>';
+            container.innerHTML = `<div style="text-align:center; color:#f44;">Failed to load episodes. Please try again.</div>`;
             return;
         }
 
@@ -420,6 +477,13 @@ async function loadSeasonEpisodes(seriesId, seasonNumber) {
     }
 }
 
+/**
+ * Renders the episodes vertical list for TV shows.
+ * Updates the episodes container inside the seasons tab panel.
+ * @param {Array} episodes - List of episode metadata objects.
+ * @param {number|string} seriesId - TMDB Series ID.
+ * @param {number} seasonNumber - Season number.
+ */
 function renderEpisodes(episodes, seriesId, seasonNumber) {
     try {
         const container = document.getElementById('details-episodes');
@@ -428,10 +492,10 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
             return;
         }
 
-        container.innerHTML = `<h2 class="episodes-title">${I18n.t('details.episodes')} (${I18n.t('details.season')} ${seasonNumber})</h2>`;
+        container.innerHTML = '';
 
         if (!episodes || episodes.length === 0) {
-            container.innerHTML += `<div style="text-align:center; color:#aaa;">${I18n.t('details.noEpisodes')}</div>`;
+            container.innerHTML = `<div style="text-align:center; color:#aaa;">${I18n.t('details.noEpisodes')}</div>`;
             return;
         }
 
@@ -446,7 +510,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
         episodes.forEach(episode => {
             try {
                 const el = document.createElement('div');
-                el.className = 'episode-item focusable';
+                el.className = 'disney-episode-item focusable';
                 el.tabIndex = 0; // Make focusable
 
                 // Check if this episode was watched
@@ -458,15 +522,15 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 const episodeName = episode.name || I18n.t('details.untitled');
                 const episodeOverview = episode.overview || I18n.t('details.noDescription');
                 const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.STILL_SIZE) : '';
+                const bgImage = stillPath ? `url('${stillPath}')` : 'none';
 
                 el.innerHTML = `
-                    <div class="episode-image" style="${stillPath ? `background-image: url('${stillPath}')` : ''}; will-change: transform;"></div>
-                    <div class="episode-info">
-                        <div class="episode-header">
-                            <span class="episode-number">${episodeNumber}.</span>
-                            <span class="episode-name">${episodeName}</span>
+                    <div class="disney-episode-thumb" style="background-image: ${bgImage};"></div>
+                    <div class="disney-episode-info">
+                        <div class="disney-episode-title">
+                            ${episodeNumber}. ${episodeName}
                         </div>
-                        <p class="episode-overview">${episodeOverview}</p>
+                        <p class="disney-episode-overview">${episodeOverview}</p>
                     </div>
                 `;
 
@@ -490,5 +554,143 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
         if (container) {
             container.innerHTML = '<div style="text-align:center; color:#f44;">Failed to render episodes.</div>';
         }
+    }
+}
+
+/**
+ * Switches the active tab panel view and highlights the selected tab button.
+ * Affects display states of tab buttons and content panels.
+ * @param {string} tabName - The ID name of the tab to open.
+ */
+function switchTab(tabName) {
+    try {
+        document.querySelectorAll('.disney-tab-panel').forEach(panel => {
+            panel.style.display = 'none';
+        });
+        
+        document.querySelectorAll('.disney-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        const activePanel = document.getElementById(`panel-${tabName}`);
+        if (activePanel) {
+            activePanel.style.display = 'block';
+        }
+        
+        const activeBtn = document.getElementById(`tab-${tabName}`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+    } catch (e) {
+        console.error('Error switching tabs:', e);
+    }
+}
+
+/**
+ * Renders extra videos (trailers, clips, featurettes) inside a vertical list layout.
+ * Affects the list of extra videos in the Extras panel.
+ * @param {Object} videos - The TMDb videos response object.
+ * @param {number|string} contentId - The TMDb content ID.
+ * @param {string} mediaType - The media type ('movie' or 'tv').
+ */
+function renderExtras(videos, contentId, mediaType) {
+    try {
+        const container = document.getElementById('extras-list');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        if (!videos || !videos.results || videos.results.length === 0) {
+            container.innerHTML = `<p style="color: #aaa; padding: 20px 0;">${I18n.t('details.noExtras')}</p>`;
+            return;
+        }
+        
+        // Sort trailers and teasers to the top
+        const sortedVideos = [...videos.results].sort((a, b) => {
+            const typeA = (a.type || '').toLowerCase();
+            const typeB = (b.type || '').toLowerCase();
+            if (typeA === 'trailer' && typeB !== 'trailer') return -1;
+            if (typeA !== 'trailer' && typeB === 'trailer') return 1;
+            if (typeA === 'teaser' && typeB !== 'teaser') return -1;
+            if (typeA !== 'teaser' && typeB === 'teaser') return 1;
+            return 0;
+        });
+        
+        sortedVideos.forEach(video => {
+            if (video.site.toLowerCase() !== 'youtube') return;
+            
+            const card = document.createElement('div');
+            card.className = 'disney-extra-item focusable';
+            card.tabIndex = 0;
+            card.onclick = () => Router.loadPage('player', { id: contentId, type: 'trailer', ytKey: video.key, mediaType: mediaType });
+            
+            const thumbUrl = `https://img.youtube.com/vi/${video.key}/mqdefault.jpg`;
+            
+            let pubDateStr = '';
+            if (video.published_at) {
+                try {
+                    const date = new Date(video.published_at);
+                    pubDateStr = ` • Published: ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
+                } catch (e) {
+                    pubDateStr = '';
+                }
+            }
+            
+            card.innerHTML = `
+                <div class="disney-extra-thumb-left" style="background-image: url('${thumbUrl}');">
+                    <div class="disney-extra-play-icon">▶</div>
+                </div>
+                <div class="disney-extra-info">
+                    <div class="disney-extra-type">${video.type}</div>
+                    <div class="disney-extra-title">${video.name}</div>
+                    <p class="disney-extra-description">${video.type}${pubDateStr}</p>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error rendering extras:', error);
+    }
+}
+
+/**
+ * Renders content details inside the About panel, including synopsis and top cast members.
+ * Affects the display text and actor profile grids in the About panel.
+ * @param {string} overview - The synopsis text.
+ * @param {Object} credits - The credits TMDb object holding cast arrays.
+ */
+function renderAbout(overview, credits) {
+    try {
+        const descEl = document.getElementById('about-description');
+        if (descEl) {
+            descEl.textContent = overview || I18n.t('details.noDescription');
+        }
+        
+        const castContainer = document.getElementById('about-cast');
+        if (!castContainer) return;
+        castContainer.innerHTML = '';
+        
+        if (!credits || !credits.cast || credits.cast.length === 0) {
+            castContainer.innerHTML = `<p style="color: #aaa; padding: 20px 0;">${I18n.t('details.noCast')}</p>`;
+            return;
+        }
+        
+        const topCast = credits.cast.slice(0, 12);
+        topCast.forEach(actor => {
+            const card = document.createElement('div');
+            card.className = 'disney-cast-card';
+            
+            const profileImgStyle = actor.profile_path 
+                ? `style="background-image: url('https://image.tmdb.org/t/p/w185${actor.profile_path}');"` 
+                : '';
+            
+            card.innerHTML = `
+                <div class="disney-cast-img" ${profileImgStyle}></div>
+                <div class="disney-cast-name">${actor.name}</div>
+                <div class="disney-cast-character">${actor.character || ''}</div>
+            `;
+            castContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error rendering about info:', error);
     }
 }

@@ -170,7 +170,8 @@
         "createShort": "+ Create Playlist",
         "create": "Create New Playlist",
         "empty": "No playlists found. Create one!",
-        "items": "items",
+        "items": "Playlist Items",
+        "type_label": "Playlist",
         "delete": "Delete Playlist",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Are you sure you want to delete this playlist?",
@@ -249,7 +250,14 @@
         "unknownTitle": "Unknown Title",
         "noDescription": "No description available.",
         "unnamedPlaylist": "Unnamed Playlist",
-        "untitled": "Untitled"
+        "untitled": "Untitled",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Live TV",

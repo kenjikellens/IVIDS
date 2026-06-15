@@ -171,7 +171,7 @@
         "createShort": "+ Créer une liste",
         "create": "Créer une nouvelle liste",
         "empty": "Aucune liste trouvée. Créez-en une !",
-        "items": "éléments",
+        "items": "Éléments de la playlist",
         "delete": "Supprimer la liste",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer cette liste ?",
@@ -182,7 +182,8 @@
         "namePlaceholder": "Nom de la liste",
         "emptyPlaylist": "Cette liste est vide.",
         "playAll": "Tout lire",
-        "editInfo": "Modifier les infos"
+        "editInfo": "Modifier les infos",
+        "type_label": "Playlist"
     },
     "row": {
         "trending": "Tendances actuelles",
@@ -250,7 +251,14 @@
         "unknownTitle": "Titre inconnu",
         "noDescription": "Aucune description disponible.",
         "unnamedPlaylist": "Liste sans nom",
-        "untitled": "Sans titre"
+        "untitled": "Sans titre",
+        "extra": "Extra",
+        "about": "À propos",
+        "watchTrailer": "Bande-annonce",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Distribution",
+        "noExtras": "Aucun extra ou bande-annonce disponible.",
+        "noCast": "Aucune information sur les acteurs disponible."
     },
     "livetv": {
         "title": "Live TV",

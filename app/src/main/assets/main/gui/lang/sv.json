@@ -178,7 +178,7 @@
         "createShort": "+ Skapa lista",
         "create": "Skapa ny spellista",
         "empty": "Inga spellistor hittades. Skapa en!",
-        "items": "objekt",
+        "items": "Spellistans objekt",
         "delete": "Ta bort spellista",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Är du säker på att du vill ta bort den här spellistan?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Spellistans namn",
         "emptyPlaylist": "Den här spellistan är tom.",
         "playAll": "Spela alla",
-        "editInfo": "Redigera info"
+        "editInfo": "Redigera info",
+        "type_label": "Spellista"
     },
     "row": {
         "trending": "Trendar just nu",
@@ -257,7 +258,14 @@
         "unknownTitle": "Okänd titel",
         "noDescription": "Ingen beskrivning tillgänglig.",
         "unnamedPlaylist": "Namnlös spellista",
-        "untitled": "Namnlös"
+        "untitled": "Namnlös",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Live TV",

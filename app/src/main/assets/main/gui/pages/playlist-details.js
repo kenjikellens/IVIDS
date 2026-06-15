@@ -43,14 +43,17 @@ function render() {
     const deleteBtn = document.getElementById('delete-playlist-btn');
 
     if (titleEl) titleEl.textContent = playlist.name;
-    if (countEl) countEl.textContent = `${playlist.items.length} items`;
+    if (countEl) {
+        const count = playlist.items.length;
+        countEl.textContent = count === 1 ? '1 item' : `${count} items`;
+    }
 
     // Update Hero Poster Image
     const posterEl = document.getElementById('playlist-poster');
     if (posterEl) {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
-            const posterUrl = Api.getImageUrl(firstItem.poster_path || firstItem.backdrop_path);
+            const posterUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path);
             posterEl.src = posterUrl;
             posterEl.style.display = 'block';
         } else {
@@ -300,12 +303,17 @@ function attachListeners(playlist) {
         }
     };
 
-    if (playAllBtn && playlist.items.length > 0) {
-        playAllBtn.onclick = () => {
-            const firstItem = playlist.items[0];
-            Router.loadPage('details', { id: firstItem.id, type: firstItem.media_type });
-        };
-        playAllBtn.addEventListener('keydown', handleLeftNav);
+    if (playAllBtn) {
+        if (playlist.items.length > 0) {
+            playAllBtn.style.display = 'flex';
+            playAllBtn.onclick = () => {
+                const firstItem = playlist.items[0];
+                Router.loadPage('details', { id: firstItem.id, type: firstItem.media_type });
+            };
+            playAllBtn.addEventListener('keydown', handleLeftNav);
+        } else {
+            playAllBtn.style.display = 'none';
+        }
     }
 
     if (backBtn) {

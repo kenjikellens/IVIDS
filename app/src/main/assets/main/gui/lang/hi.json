@@ -178,7 +178,7 @@
         "createShort": "+ प्लेलिस्ट बनाएं",
         "create": "नई प्लेलिस्ट बनाएं",
         "empty": "कोई प्लेलिस्ट नहीं मिली। एक बनाएं!",
-        "items": "आइटम",
+        "items": "प्लेलिस्ट आइटम",
         "delete": "प्लेलिस्ट हटाएं",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "क्या आप वाकई इस प्लेलिस्ट को हटाना चाहते हैं?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "प्लेलिस्ट का नाम",
         "emptyPlaylist": "यह प्लेलिस्ट खाली है।",
         "playAll": "सब चलाएं",
-        "editInfo": "जानकारी संपादित करें"
+        "editInfo": "जानकारी संपादित करें",
+        "type_label": "प्लेलिस्ट"
     },
     "row": {
         "trending": "ट्रेंडिंग",
@@ -257,7 +258,14 @@
         "unknownTitle": "अज्ञात शीर्षक",
         "noDescription": "कोई विवरण उपलब्ध नहीं है।",
         "unnamedPlaylist": "बिना नाम की प्लेलिस्ट",
-        "untitled": "बिना शीर्षक का"
+        "untitled": "बिना शीर्षक का",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "लाइव टीवी",

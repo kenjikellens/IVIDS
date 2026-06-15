@@ -178,7 +178,7 @@
         "createShort": "+ Oluştur",
         "create": "Yeni Oynatma Listesi Oluştur",
         "empty": "Oynatma listesi bulunamadı. Bir tane oluşturun!",
-        "items": "öğe",
+        "items": "Oynatma Listesi Öğeleri",
         "delete": "Listeyi Sil",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Bu oynatma listesini silmek istediğinizden emin misiniz?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Liste Adı",
         "emptyPlaylist": "Bu liste boş.",
         "playAll": "Tümünü Oynat",
-        "editInfo": "Bilgileri Düzenle"
+        "editInfo": "Bilgileri Düzenle",
+        "type_label": "Oynatma listesi"
     },
     "row": {
         "trending": "Trendler",
@@ -257,7 +258,14 @@
         "unknownTitle": "Bilinmeyen Başlık",
         "noDescription": "Açıklama bulunmuyor.",
         "unnamedPlaylist": "Adsız Liste",
-        "untitled": "Başlıksız"
+        "untitled": "Başlıksız",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Canlı TV",

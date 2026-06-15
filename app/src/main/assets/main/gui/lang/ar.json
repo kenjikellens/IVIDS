@@ -178,7 +178,7 @@
         "createShort": "+ إنشاء قائمة",
         "create": "إنشاء قائمة تشغيل جديدة",
         "empty": "لم يتم العثور على قوائم تشغيل. أنشئ واحدة!",
-        "items": "عناصر",
+        "items": "عناصر قائمة التشغيل",
         "delete": "حذف قائمة التشغيل",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "هل أنت متأكد أنك تريد حذف هذه القائمة؟",
@@ -189,7 +189,8 @@
         "namePlaceholder": "اسم قائمة التشغيل",
         "emptyPlaylist": "هذه القائمة فارغة.",
         "playAll": "تشغيل الكل",
-        "editInfo": "تعديل المعلومات"
+        "editInfo": "تعديل المعلومات",
+        "type_label": "قائمة تشغيل"
     },
     "row": {
         "trending": "الأكثر تداولاً",
@@ -257,7 +258,14 @@
         "unknownTitle": "عنوان غير معروف",
         "noDescription": "لا يوجد وصف متاح.",
         "unnamedPlaylist": "قائمة بدون اسم",
-        "untitled": "بدون عنوان"
+        "untitled": "بدون عنوان",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "البث المباشر",

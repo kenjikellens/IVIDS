@@ -178,7 +178,7 @@
         "createShort": "+ プレイリストを作成",
         "create": "新しいプレイリストを作成",
         "empty": "プレイリストがありません。作成しましょう！",
-        "items": "アイテム",
+        "items": "プレイリストの項目",
         "delete": "プレイリストを削除",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "このプレイリストを削除してもよろしいですか？",
@@ -189,7 +189,8 @@
         "namePlaceholder": "プレイリスト名",
         "emptyPlaylist": "このプレイリストは空です。",
         "playAll": "すべて再生",
-        "editInfo": "情報を編集"
+        "editInfo": "情報を編集",
+        "type_label": "プレイリスト"
     },
     "row": {
         "trending": "今注目の作品",
@@ -257,7 +258,14 @@
         "unknownTitle": "不明なタイトル",
         "noDescription": "説明がありません。",
         "unnamedPlaylist": "無題のプレイリスト",
-        "untitled": "無題"
+        "untitled": "無題",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "ライブTV",

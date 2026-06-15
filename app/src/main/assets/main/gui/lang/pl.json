@@ -178,7 +178,7 @@
         "createShort": "+ Utwórz listę",
         "create": "Utwórz nową playlistę",
         "empty": "Nie znaleziono playlist. Utwórz jedną!",
-        "items": "elementy",
+        "items": "Elementy playlisty",
         "delete": "Usuń playlistę",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Czy na pewno chcesz usunąć tę playlistę?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Nazwa playlisty",
         "emptyPlaylist": "Ta playlista jest pusta.",
         "playAll": "Odtwórz wszystko",
-        "editInfo": "Edytuj informacje"
+        "editInfo": "Edytuj informacje",
+        "type_label": "Playlista"
     },
     "row": {
         "trending": "Na czasie",
@@ -257,7 +258,14 @@
         "unknownTitle": "Nieznany tytuł",
         "noDescription": "Brak opisu.",
         "unnamedPlaylist": "Playlista bez nazwy",
-        "untitled": "Bez tytułu"
+        "untitled": "Bez tytułu",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "TV na żywo",

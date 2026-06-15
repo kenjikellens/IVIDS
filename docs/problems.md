@@ -2,13 +2,9 @@
 
 This document tracks known issues, architectural discrepancies, and performance bottlenecks identified within the IVIDS application.
 
-## 1. Stream Playback & Preview Reliability
-* **High Failure Rate:** Approximately 80% of preview/player streams fail to play. This is due to a combination of:
-  * Expired or dead upstream source URLs in preset M3U playlists.
-  * Geographic restrictions (geo-blocks) on stream CDNs.
-  * User-Agent or hotlinking protections that block requests even when routed through the local proxy.
-* **Segment & Sub-Playlist Failures:** Rewritten proxy URLs for HLS sub-playlists/segments frequently fail with `502 Bad Gateway` or `404 Not Found` due to expired authorization tokens or server drops on the upstream end.
-* **Browser Playback Interruptions (`AbortError`):** Rapid navigation/zapping causes HLS `play()` calls to be interrupted by subsequent `pause()` calls, and browsers automatically suspend video-only background streams to save power.
-* **Codec Support Limitations (`NotSupportedError`):** Playback attempts on certain formats trigger browser errors (`The element has no supported sources`) when HLS.js or the native media player lacks appropriate decoding codecs.
+## UI/UX & Layout Issues
 
-
+### 1. Playlist Cards Aspect Ratio & Image Containment
+- **Problem**: The list of playlists currently displays thumbnails/icons using a vertical `2:3` aspect ratio (like movie posters). Since playlist covers and list items are suited for horizontal imagery, they should be displayed in a horizontal `16:9` aspect ratio.
+- **Image Fit**: In addition to updating the card container aspect ratio, the image or icon inside these playlist items must be configured to fit nicely (e.g., using `object-fit: cover` or appropriate CSS containment) so that they are not distorted, squished, or cropped awkwardly.
+- **Impacted Components**: Playlist list item CSS/HTML containers (e.g., `playlists.html`, `playlists.css`, and related card generation logic).

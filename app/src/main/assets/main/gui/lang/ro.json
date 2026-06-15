@@ -178,7 +178,7 @@
         "createShort": "+ Creează listă",
         "create": "Creează o listă nouă",
         "empty": "Nu s-au găsit liste. Creează una!",
-        "items": "elemente",
+        "items": "Elemente playlist",
         "delete": "Șterge lista",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Ești sigur că vrei să ștergi această listă?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Nume listă",
         "emptyPlaylist": "Această listă este goală.",
         "playAll": "Redă tot",
-        "editInfo": "Editează informațiile"
+        "editInfo": "Editează informațiile",
+        "type_label": "Playlist"
     },
     "row": {
         "trending": "În tendințe",
@@ -257,7 +258,14 @@
         "unknownTitle": "Titlu necunoscut",
         "noDescription": "Nicio descriere disponibilă.",
         "unnamedPlaylist": "Listă fără nume",
-        "untitled": "Fără titlu"
+        "untitled": "Fără titlu",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "TV în direct",

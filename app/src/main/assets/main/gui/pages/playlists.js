@@ -53,10 +53,11 @@ function render() {
 }
 
 /**
- * Constructs a focusable playlist poster card with an overlay containing title and size.
+ * Constructs a focusable playlist widescreen 16:9 card with a cover image, overlay title/size, and a playlist badge icon.
+ * It manages card markup generation and routes click interactions to the playlist details view.
  * 
  * @param {object} playlist - The playlist data model containing items and name.
- * @returns {HTMLDivElement} A focusable poster-style playlist card element.
+ * @returns {HTMLDivElement} A focusable widescreen playlist card element.
  */
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
@@ -78,6 +79,16 @@ function createPlaylistCard(playlist) {
     card.innerHTML = `
         <div class="playlist-cover">
             <img src="${imageUrl}" alt="${playlist.name}" loading="lazy">
+            <div class="playlist-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="8" y1="6" x2="21" y2="6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="8" y1="12" x2="21" y2="12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="8" y1="18" x2="21" y2="18" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <div class="playlist-overlay">
                 <div class="playlist-name">${playlist.name}</div>
                 <div class="playlist-meta">${itemText}</div>

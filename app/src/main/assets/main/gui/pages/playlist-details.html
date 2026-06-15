@@ -11,6 +11,7 @@
                     <h1 class="details-title" id="playlist-title">Playlist Name</h1>
                     <div class="details-genres">
                         <span id="playlist-count">0 items</span>
+                        <span class="details-separator" style="color: var(--text-dim); margin: 0 4px;">•</span>
                         <span data-i18n="playlists.type_label">Playlist</span>
                     </div>
                     <p class="details-overview" id="playlist-desc" data-i18n="playlists.description_default">Your personal collection of favorite movies and shows.</p>
@@ -30,12 +31,12 @@
                     </div>
                 </div>
                 <div class="details-poster-container">
-                    <img id="playlist-poster" class="details-hero-poster" src="" alt="Backdrop">
+                    <img id="playlist-poster" class="details-hero-poster playlist-hero-cover" src="" alt="Backdrop">
                 </div>
             </div>
 
             <div class="details-bottom">
-                <div class="recommendations-section" style="display: block; margin-top: 20px;">
+                <div class="recommendations-section" style="display: block; margin-top: 20px; width: 100%;">
                     <h3 class="row-title" style="margin-bottom:20px; font-size:24px; color:#fff;" data-i18n="playlists.items">Playlist Items</h3>
                     <div id="playlist-items-container" class="playlist-items-grid">
                         <!-- Items injected via JS -->

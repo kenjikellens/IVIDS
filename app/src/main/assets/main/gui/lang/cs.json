@@ -178,7 +178,7 @@
         "createShort": "+ Vytvořit seznam",
         "create": "Vytvořit nový playlist",
         "empty": "Nebyly nalezeny žádné playlisty. Vytvořte jeden!",
-        "items": "položky",
+        "items": "Položky playlistu",
         "delete": "Odstranit playlist",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Opravdu chcete tento playlist odstranit?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Název playlistu",
         "emptyPlaylist": "Tento playlist je prázdný.",
         "playAll": "Přehrát vše",
-        "editInfo": "Upravit informace"
+        "editInfo": "Upravit informace",
+        "type_label": "Playlist"
     },
     "row": {
         "trending": "Právě letí",
@@ -257,7 +258,14 @@
         "unknownTitle": "Neznámý název",
         "noDescription": "Popis není k dispozici.",
         "unnamedPlaylist": "Playlist bez názvu",
-        "untitled": "Bez názvu"
+        "untitled": "Bez názvu",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Živé TV",

@@ -178,7 +178,7 @@
         "createShort": "+ Buat Daftar",
         "create": "Buat Daftar Putar Baru",
         "empty": "Daftar putar tidak ditemukan. Buat sekarang!",
-        "items": "item",
+        "items": "Item Playlist",
         "delete": "Hapus Daftar Putar",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Apakah Anda yakin ingin menghapus daftar putar ini?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Nama Daftar Putar",
         "emptyPlaylist": "Daftar putar ini kosong.",
         "playAll": "Putar Semua",
-        "editInfo": "Edit Info"
+        "editInfo": "Edit Info",
+        "type_label": "Playlist"
     },
     "row": {
         "trending": "Sedang Tren",
@@ -257,7 +258,14 @@
         "unknownTitle": "Judul Tidak Diketahui",
         "noDescription": "Deskripsi tidak tersedia.",
         "unnamedPlaylist": "Daftar Putar Tanpa Nama",
-        "untitled": "Tanpa Judul"
+        "untitled": "Tanpa Judul",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "TV Langsung",

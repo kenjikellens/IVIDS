@@ -178,7 +178,7 @@
         "createShort": "+ Tạo danh sách",
         "create": "Tạo danh sách phát mới",
         "empty": "Không có danh sách phát nào. Hãy tạo một cái!",
-        "items": "mục",
+        "items": "Mục trong danh sách phát",
         "delete": "Xóa danh sách phát",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa danh sách phát này?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Tên danh sách phát",
         "emptyPlaylist": "Danh sách phát này đang trống.",
         "playAll": "Phát tất cả",
-        "editInfo": "Sửa thông tin"
+        "editInfo": "Sửa thông tin",
+        "type_label": "Danh sách phát"
     },
     "row": {
         "trending": "Xu hướng",
@@ -257,7 +258,14 @@
         "unknownTitle": "Tiêu đề không xác định",
         "noDescription": "Không có mô tả.",
         "unnamedPlaylist": "Danh sách chưa đặt tên",
-        "untitled": "Chưa có tiêu đề"
+        "untitled": "Chưa có tiêu đề",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Live TV",

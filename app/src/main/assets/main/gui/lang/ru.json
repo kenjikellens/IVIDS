@@ -178,7 +178,7 @@
         "createShort": "+ Создать",
         "create": "Создать новый плейлист",
         "empty": "Плейлисты не найдены. Создайте один!",
-        "items": "объектов",
+        "items": "Элементы плейлиста",
         "delete": "Удалить плейлист",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Вы уверены, что хотите удалить этот плейлист?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Название плейлиста",
         "emptyPlaylist": "Плейлист пуст.",
         "playAll": "Смотреть все",
-        "editInfo": "Изменить инфо"
+        "editInfo": "Изменить инфо",
+        "type_label": "Плейлист"
     },
     "row": {
         "trending": "В тренде",
@@ -257,7 +258,14 @@
         "unknownTitle": "Без названия",
         "noDescription": "Описание отсутствует.",
         "unnamedPlaylist": "Плейлист без названия",
-        "untitled": "Без названия"
+        "untitled": "Без названия",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Live TV",

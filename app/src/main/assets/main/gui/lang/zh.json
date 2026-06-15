@@ -178,7 +178,7 @@
         "createShort": "+ 创建播放列表",
         "create": "创建新播放列表",
         "empty": "未找到播放列表。创建一个吧！",
-        "items": "项",
+        "items": "播放列表项目",
         "delete": "删除播放列表",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "您确定要删除此播放列表吗？",
@@ -189,7 +189,8 @@
         "namePlaceholder": "播放列表名称",
         "emptyPlaylist": "此播放列表为空。",
         "playAll": "播放全部",
-        "editInfo": "编辑信息"
+        "editInfo": "编辑信息",
+        "type_label": "播放列表"
     },
     "row": {
         "trending": "当下流行",
@@ -257,7 +258,14 @@
         "unknownTitle": "未知标题",
         "noDescription": "暂无描述。",
         "unnamedPlaylist": "未命名播放列表",
-        "untitled": "无标题"
+        "untitled": "无标题",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "电视直播",

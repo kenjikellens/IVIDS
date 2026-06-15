@@ -178,7 +178,7 @@
         "createShort": "+ Crea Playlist",
         "create": "Crea Nuova Playlist",
         "empty": "Nessuna playlist trovata. Creane una!",
-        "items": "elementi",
+        "items": "Elementi della playlist",
         "delete": "Elimina Playlist",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Sei sicuro di voler eliminare questa playlist?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Nome Playlist",
         "emptyPlaylist": "Questa playlist è vuota.",
         "playAll": "Riproduci Tutto",
-        "editInfo": "Modifica Info"
+        "editInfo": "Modifica Info",
+        "type_label": "Playlist"
     },
     "row": {
         "trending": "In Tendenza",
@@ -257,7 +258,14 @@
         "unknownTitle": "Titolo Sconosciuto",
         "noDescription": "Nessuna descrizione disponibile.",
         "unnamedPlaylist": "Playlist Senza Nome",
-        "untitled": "Senza Titolo"
+        "untitled": "Senza Titolo",
+        "extra": "Extra",
+        "about": "Informazioni",
+        "watchTrailer": "Guarda il trailer",
+        "synopsis": "Sinossi",
+        "castAndCrew": "Cast e troupe",
+        "noExtras": "Nessun extra o trailer disponibile.",
+        "noCast": "Nessuna informazione sul cast disponibile."
     },
     "livetv": {
         "title": "Live TV",

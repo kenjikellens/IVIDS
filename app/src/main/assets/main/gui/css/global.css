@@ -3314,15 +3314,23 @@ textarea.active-typing:not(.input-wrapper *) {
     box-shadow: none !important;
 }
 
-/* Styles the .playlists-grid UI element and manages its visual layout. */
+/* Styles the grid container for playlist cards using pixel-less responsive columns. */
 .playlists-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr));
     gap: clamp(12px, 1.5vw, 18px);
     animation: fadeInUp 0.32s ease-out;
 }
 
-/* Styles the .empty-state UI element and manages its visual layout. */
+/* Styles the playlist-card element to force a widescreen 16:9 aspect ratio and override poster defaults. */
+.playlist-card {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
+/* Styles the empty state container when no items or playlists are present. */
 .empty-state {
     grid-column: 1 / -1;
     padding: 54px;
@@ -3343,37 +3351,65 @@ textarea.active-typing:not(.input-wrapper *) {
     background: #101010;
 }
 
+/* Styles the image element within the playlist cover art container. */
+.playlist-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Styles the overlay badge on the top right corner of a playlist card. */
+.playlist-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Styles the SVG icon inside the playlist badge. */
+.playlist-badge-icon {
+    width: 16px;
+    height: 16px;
+    color: #fff;
+}
+
 /* Styles the bottom dark gradient overlay text container on a playlist card. */
 .playlist-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 20px 10px 10px 10px;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-    color: #fff;
+    padding: 24px 14px 12px 14px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: center;
+    align-items: flex-start;
     pointer-events: none;
     opacity: 1;
 }
 
 /* Styles the text label containing the playlist name. */
 .playlist-name {
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     color: #fff;
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 16px;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Styles metadata elements such as active epg times, playlist sizes, and movie items. */
@@ -3385,8 +3421,9 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Styles the count text displayed below the name in the card overlay. */
 .playlist-meta {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
     text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
@@ -3456,6 +3493,13 @@ textarea.active-typing:not(.input-wrapper *) {
 /* Styles the overall container of a full-screen view. */
 .page-container {
     height: 100%;
+}
+
+/* Styles the playlist hero cover to render as a widescreen 16:9 frame. */
+.playlist-hero-cover {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    height: auto !important;
 }
 
 /* Styles the playlist-backdrop UI element and manages its visual layout. */

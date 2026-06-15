@@ -496,10 +496,15 @@ export const Api = {
         }
     },
 
+    /**
+     * Fetches detailed information for a movie or TV show, appending videos and credits.
+     * This affects the media details state by making additional TMDB metadata available.
+     */
     async getDetails(id, type) {
         if (API_KEY.includes('TODO')) return null;
         try {
-            const append = type === 'movie' ? 'release_dates' : 'content_ratings';
+            const baseAppend = type === 'movie' ? 'release_dates' : 'content_ratings';
+            const append = `${baseAppend},videos,credits`;
             const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}`);
             return await response.json();
         } catch (error) {

@@ -171,7 +171,7 @@
         "createShort": "+ Maak Afspeellijst",
         "create": "Maak Nieuwe Afspeellijst",
         "empty": "Geen afspeellijsten gevonden. Maak er een!",
-        "items": "items",
+        "items": "Afspeellijst items",
         "delete": "Verwijder Afspeellijst",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Weet u zeker dat u deze afspeellijst wilt verwijderen?",
@@ -182,7 +182,8 @@
         "namePlaceholder": "Naam Afspeellijst",
         "emptyPlaylist": "Deze afspeellijst is leeg.",
         "playAll": "Alles afspelen",
-        "editInfo": "Info bewerken"
+        "editInfo": "Info bewerken",
+        "type_label": "Afspeellijst"
     },
     "row": {
         "trending": "Nu Trending",
@@ -250,7 +251,14 @@
         "unknownTitle": "Onbekende Titel",
         "noDescription": "Geen beschrijving beschikbaar.",
         "unnamedPlaylist": "Naamloze Afspeellijst",
-        "untitled": "Naamloos"
+        "untitled": "Naamloos",
+        "extra": "Extra",
+        "about": "Over",
+        "watchTrailer": "Trailer bekijken",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "Geen extra's of trailers beschikbaar.",
+        "noCast": "Geen castinformatie beschikbaar."
     },
     "livetv": {
         "title": "Live TV",

@@ -171,7 +171,7 @@
         "createShort": "+ Liste erstellen",
         "create": "Neue Wiedergabeliste erstellen",
         "empty": "Keine Wiedergabelisten gefunden. Erstellen Sie eine!",
-        "items": "Elemente",
+        "items": "Playlist-Elemente",
         "delete": "Wiedergabeliste löschen",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Sind Sie sicher, dass Sie diese Wiedergabeliste löschen möchten?",
@@ -182,7 +182,8 @@
         "namePlaceholder": "Name der Wiedergabeliste",
         "emptyPlaylist": "Diese Wiedergabeliste ist leer.",
         "playAll": "Alle abspielen",
-        "editInfo": "Info bearbeiten"
+        "editInfo": "Info bearbeiten",
+        "type_label": "Wiedergabeliste"
     },
     "row": {
         "trending": "Gerade angesagt",
@@ -250,7 +251,14 @@
         "unknownTitle": "Unbekannter Titel",
         "noDescription": "Keine Beschreibung verfügbar.",
         "unnamedPlaylist": "Unbenannte Wiedergabeliste",
-        "untitled": "Unbenannt"
+        "untitled": "Unbenannt",
+        "extra": "Extra",
+        "about": "Über",
+        "watchTrailer": "Trailer ansehen",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Besetzung & Crew",
+        "noExtras": "Keine Extras oder Trailer verfügbar.",
+        "noCast": "Keine Besetzungsinformationen verfügbar."
     },
     "livetv": {
         "title": "Live TV",

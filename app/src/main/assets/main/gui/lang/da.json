@@ -178,7 +178,7 @@
         "createShort": "+ Opret liste",
         "create": "Opret ny playliste",
         "empty": "Ingen playlister fundet. Opret en!",
-        "items": "elementer",
+        "items": "Playliste-elementer",
         "delete": "Slet playliste",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Er du sikker på, at du vil slette denne playliste?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Playlistenavn",
         "emptyPlaylist": "Denne playliste er tom.",
         "playAll": "Afspil alle",
-        "editInfo": "Rediger info"
+        "editInfo": "Rediger info",
+        "type_label": "Playliste"
     },
     "row": {
         "trending": "Trending nu",
@@ -257,7 +258,14 @@
         "unknownTitle": "Ukendt titel",
         "noDescription": "Ingen beskrivelse tilgængelig.",
         "unnamedPlaylist": "Navnløs playliste",
-        "untitled": "Uden titel"
+        "untitled": "Uden titel",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Live TV",

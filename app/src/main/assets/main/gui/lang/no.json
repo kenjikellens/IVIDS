@@ -178,7 +178,7 @@
         "createShort": "+ Opprett liste",
         "create": "Opprett ny spilleliste",
         "empty": "Ingen spillelister funnet. Opprett en!",
-        "items": "elementer",
+        "items": "Spillelisteelementer",
         "delete": "Slett spilleliste",
         "deleteConfirmTitle": "Delete Playlist",
         "deleteConfirmMessage": "Er du sikker på at du vil slette denne spillelisten?",
@@ -189,7 +189,8 @@
         "namePlaceholder": "Navn på spilleliste",
         "emptyPlaylist": "Denne spillelisten er tom.",
         "playAll": "Spill alle",
-        "editInfo": "Rediger info"
+        "editInfo": "Rediger info",
+        "type_label": "Spilleliste"
     },
     "row": {
         "trending": "Trending nå",
@@ -257,7 +258,14 @@
         "unknownTitle": "Ukjent tittel",
         "noDescription": "Ingen beskrivelse tilgjengelig.",
         "unnamedPlaylist": "Navnløs spilleliste",
-        "untitled": "Uten tittel"
+        "untitled": "Uten tittel",
+        "extra": "Extra",
+        "about": "About",
+        "watchTrailer": "Watch Trailer",
+        "synopsis": "Synopsis",
+        "castAndCrew": "Cast & Crew",
+        "noExtras": "No extras or trailers available.",
+        "noCast": "No cast information available."
     },
     "livetv": {
         "title": "Live TV",

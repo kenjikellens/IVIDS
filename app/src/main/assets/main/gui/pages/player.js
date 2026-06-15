@@ -39,7 +39,8 @@ function exitPlayer(params) {
     if (params && params.type === 'live') {
         Router.goBack('home');
     } else if (params) {
-        Router.goBack('details', { id: params.id, type: params.type });
+        const backType = params.type === 'trailer' ? params.mediaType : params.type;
+        Router.goBack('details', { id: params.id, type: backType });
     } else {
         Router.loadPage('home');
     }
@@ -180,7 +181,7 @@ export async function init(params) {
         }
 
         // Fetch details to add to recently watched in the background (non-blocking)
-        if (params.type !== 'live') {
+        if (params.type !== 'live' && params.type !== 'trailer') {
             Api.getDetails(params.id, params.type).then(details => {
                 if (details) {
                     try {
@@ -231,12 +232,17 @@ export async function init(params) {
 
         let url = '';
         try {
-            url = Api.getVideoUrl(params.id, params.type, params.season, params.episode);
+            if (params.type === 'trailer') {
+                url = `https://www.youtube.com/embed/${params.ytKey}?autoplay=1&enablejsapi=1`;
+            } else {
+                url = Api.getVideoUrl(params.id, params.type, params.season, params.episode);
+            }
         } catch (urlError) {
             console.error('Error generating video URL:', urlError);
             ErrorHandler.show('Failed to generate video URL.', () => init(params));
             if (loadingOverlay) loadingOverlay.style.display = 'none';
-            Router.loadPage('details', { id: params.id, type: params.type });
+            const backType = params.type === 'trailer' ? params.mediaType : params.type;
+            Router.loadPage('details', { id: params.id, type: backType });
             return;
         }
 
@@ -380,8 +386,23 @@ function showNextButton(seriesId, nextSeason, nextEpisode) {
  * @param {Object} params - Route parameters containing content ID and type details.
  * @param {HTMLIFrameElement} iframe - The player iframe element.
  */
+/**
+ * Renders the available streaming server source buttons and configures their click behavior.
+ * This modifies the player server list container and updates the player iframe source URL upon selection.
+ * @param {Object} params - Route parameters containing content ID and type details.
+ * @param {HTMLIFrameElement} iframe - The player iframe element.
+ */
 function renderServerSelection(params, iframe) {
+    const overlay = document.getElementById('server-selection-overlay');
     const serverList = document.getElementById('player-server-list');
+    
+    if (params.type === 'trailer') {
+        if (overlay) overlay.style.display = 'none';
+        return;
+    } else {
+        if (overlay) overlay.style.display = 'block';
+    }
+
     if (!serverList) return;
 
     serverList.innerHTML = '';
