@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "अपडेट डाउनलोड हो रहा है...",
     "update_status_installing": "अपडेट इंस्टॉल हो रहा है...",
-    "update_status_connecting": "सर्वर से कनेक्ट हो रहा है..."
+    "update_status_connecting": "सर्वर से कनेक्ट हो रहा है...",
+    "exit": {
+        "title": "एप्लिकेशन से बाहर निकलें",
+        "message": "क्या आप वाकई IVIDS से बाहर निकलना चाहते हैं?",
+        "confirm": "बाहर निकलें",
+        "cancel": "रद्द करें"
+    }
 }

@@ -23,7 +23,7 @@ export function setupRow(elementId, items, defaultType = null) {
         }
 
         // Get existing skeleton or poster buttons
-        const existingButtons = Array.from(rowPosters.querySelectorAll('.poster-wrapper, .skeleton-poster'));
+        const existingButtons = Array.from(rowPosters.querySelectorAll('.poster-wrapper'));
 
         if (!items || items.length === 0) {
             console.log(`No items for row ${elementId}`);
@@ -56,8 +56,7 @@ export function setupRow(elementId, items, defaultType = null) {
                 if (existingButtons[index]) {
                     btn = existingButtons[index];
                     btn.innerHTML = '';
-                    btn.classList.remove('skeleton-poster');
-                    btn.classList.add('poster-wrapper');
+                    btn.classList.remove('is-skeleton');
                     btn.removeAttribute('aria-hidden');
                 } else {
                     btn = document.createElement('button');
@@ -169,7 +168,13 @@ export function manageModal(modal, focusTarget = null) {
     modal.style.setProperty('visibility', 'visible', 'important');
     modal.style.setProperty('z-index', '99999', 'important');
 
+    let modalBackHandler;
+
     const closeModal = () => {
+        if (modalBackHandler) {
+            SpatialNav.popBackHandler(modalBackHandler);
+            modalBackHandler = null;
+        }
         modal.classList.remove('show');
         modal.style.setProperty('opacity', '0', 'important');
         setTimeout(() => {
@@ -183,6 +188,12 @@ export function manageModal(modal, focusTarget = null) {
         SpatialNav.clearFocusTrap();
         SpatialNav.refocus();
     };
+
+    modalBackHandler = () => {
+        closeModal();
+        return true; // Handled
+    };
+    SpatialNav.pushBackHandler(modalBackHandler);
 
     setTimeout(() => {
         modal.style.setProperty('opacity', '1', 'important');

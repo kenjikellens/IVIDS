@@ -243,13 +243,30 @@ export const Api = {
         document.head.appendChild(link);
     },
 
+    /**
+     * Retrieves the current user language code, mapping general codes to TMDB supported formats.
+     * This affects TMDB queries by ensuring content is fetched in the appropriate language.
+     * @returns {string} The ISO 639-1 language code.
+     */
+    getLanguageCode() {
+        const lang = (typeof window !== 'undefined' && window.i18n && window.i18n.currentLanguage) || 'en';
+        if (lang === 'zh') return 'zh-CN';
+        return lang;
+    },
+
+    /**
+     * Fetches trending movies and TV shows from TMDB for the week.
+     * This updates the trending category carousel on the home screen.
+     * @returns {Promise<Array>} List of trending content.
+     */
     async fetchTrending() {
-        const cacheKey = 'trending_all_week';
+        const lang = this.getLanguageCode();
+        const cacheKey = `trending_all_week_${lang}`;
         const cached = cacheManager.get(cacheKey);
         if (cached) return shuffleArray([...cached]);
 
         try {
-            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false`);
+            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false&language=${lang}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -272,14 +289,20 @@ export const Api = {
         }
     },
 
+    /**
+     * Fetches the top-rated movies from TMDB.
+     * This updates the top-rated movies row or carousel on the home screen.
+     * @returns {Promise<Array>} List of top-rated movies.
+     */
     async fetchTopRated() {
-        const cacheKey = 'movie_top_rated';
+        const lang = this.getLanguageCode();
+        const cacheKey = `movie_top_rated_${lang}`;
         const cached = cacheManager.get(cacheKey);
         if (cached) return shuffleArray([...cached]);
 
         try {
             const today = getTodayDate();
-            const response = await deduplicatedFetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}&language=${lang}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -293,8 +316,16 @@ export const Api = {
         }
     },
 
+    /**
+     * Fetches content list from TMDB using the discover endpoint for a specific type and parameters.
+     * This affects discover lists and category rails across the browse pages.
+     * @param {string} type - 'movie' or 'tv'.
+     * @param {string} params - Query parameters for TMDB discover endpoint.
+     * @returns {Promise<Array>} List of discovered content.
+     */
     async _fetchDiscover(type, params) {
-        const cacheKey = `discover_${type}_${params}`;
+        const lang = this.getLanguageCode();
+        const cacheKey = `discover_${type}_${params}_${lang}`;
         const cached = cacheManager.get(cacheKey);
         if (cached) return shuffleArray([...cached]); // Return a shuffled clone
 
@@ -306,7 +337,7 @@ export const Api = {
                 : `first_air_date.lte=${today}`;
 
             // Always exclude adult content from browse/discovery pages
-            const response = await deduplicatedFetch(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}&language=${lang}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -350,10 +381,12 @@ export const Api = {
     fetchStudioGhibli() { return this._fetchDiscover('movie', 'with_companies=10342'); },
     /**
      * Fetches a combined list of popular Netflix original movies and TV series.
-     * Caches the results to prevent repeated network requests.
+     * This affects the Netflix originals carousel on the home screen.
+     * @returns {Promise<Array>} List of combined Netflix originals.
      */
     async fetchNetflixOriginals() {
-        const cacheKey = 'netflix_originals_combined';
+        const lang = this.getLanguageCode();
+        const cacheKey = `netflix_originals_combined_${lang}`;
         const cached = cacheManager.get(cacheKey);
         if (cached) return shuffleArray([...cached]);
 
@@ -408,14 +441,20 @@ export const Api = {
     fetchNetflixSeries() { return this._fetchDiscover('tv', 'with_companies=213&sort_by=popularity.desc'); },
     fetchKoreanSeries() { return this._fetchDiscover('tv', 'with_original_language=ko&sort_by=popularity.desc'); },
 
+    /**
+     * Fetches popular TV shows from TMDB.
+     * This updates the popular TV shows category row on the home screen.
+     * @returns {Promise<Array>} List of popular TV shows.
+     */
     async fetchPopularTV() {
-        const cacheKey = 'tv_popular';
+        const lang = this.getLanguageCode();
+        const cacheKey = `tv_popular_${lang}`;
         const cached = cacheManager.get(cacheKey);
         if (cached) return shuffleArray([...cached]);
 
         try {
             const today = getTodayDate();
-            const response = await deduplicatedFetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -429,14 +468,20 @@ export const Api = {
         }
     },
 
+    /**
+     * Fetches top-rated TV shows from TMDB.
+     * This updates the top-rated TV shows category row on the home screen.
+     * @returns {Promise<Array>} List of top-rated TV shows.
+     */
     async fetchTopRatedTV() {
-        const cacheKey = 'tv_top_rated';
+        const lang = this.getLanguageCode();
+        const cacheKey = `tv_top_rated_${lang}`;
         const cached = cacheManager.get(cacheKey);
         if (cached) return shuffleArray([...cached]);
 
         try {
             const today = getTodayDate();
-            const response = await deduplicatedFetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}`);
             const data = await response.json();
 
             if (data && data.results) {
@@ -450,12 +495,20 @@ export const Api = {
         }
     },
 
+    /**
+     * Searches TMDB for movies and TV shows matching a query.
+     * This affects the results list displayed on the search page.
+     * @param {string} query - The search query.
+     * @param {number} [page=1] - The page number of search results.
+     * @returns {Promise<Array>} List of search results.
+     */
     async searchContent(query, page = 1) {
         if (API_KEY.includes('TODO')) return [];
         try {
+            const lang = this.getLanguageCode();
             // Note: include_adult is NOT set to false here intentionally
             // Adult content can be found via explicit search only
-            const response = await deduplicatedFetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}&language=${lang}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -474,10 +527,18 @@ export const Api = {
         }
     },
 
+    /**
+     * Fetches recommended movies or TV shows based on a specific content ID.
+     * This updates the recommendations grid on the details page.
+     * @param {number|string} id - The TMDB content ID.
+     * @param {string} type - 'movie' or 'tv'.
+     * @returns {Promise<Array>} List of recommended content.
+     */
     async fetchRecommendations(id, type) {
         if (API_KEY.includes('TODO')) return [];
         try {
-            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=false`);
+            const lang = this.getLanguageCode();
+            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=false&language=${lang}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -499,13 +560,17 @@ export const Api = {
     /**
      * Fetches detailed information for a movie or TV show, appending videos and credits.
      * This affects the media details state by making additional TMDB metadata available.
+     * @param {number|string} id - The TMDB content ID.
+     * @param {string} type - 'movie' or 'tv'.
+     * @returns {Promise<Object>} Detailed content metadata.
      */
     async getDetails(id, type) {
         if (API_KEY.includes('TODO')) return null;
         try {
+            const lang = this.getLanguageCode();
             const baseAppend = type === 'movie' ? 'release_dates' : 'content_ratings';
             const append = `${baseAppend},videos,credits`;
-            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}&language=${lang}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching details:', error);
@@ -513,10 +578,18 @@ export const Api = {
         }
     },
 
+    /**
+     * Fetches details for a specific season of a TV show, including episode lists.
+     * This affects the episodes section in the series detail page.
+     * @param {number|string} seriesId - The TMDB TV show ID.
+     * @param {number|string} seasonNumber - The season number.
+     * @returns {Promise<Object>} Detailed season metadata.
+     */
     async getSeasonDetails(seriesId, seasonNumber) {
         if (API_KEY.includes('TODO')) return null;
         try {
-            const response = await deduplicatedFetch(`${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?api_key=${API_KEY}`);
+            const lang = this.getLanguageCode();
+            const response = await deduplicatedFetch(`${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?api_key=${API_KEY}&language=${lang}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching season details:', error);
@@ -732,9 +805,15 @@ export const Api = {
         return ["G", "PG", "PG-13", "R", "NC-17", "TV-Y", "TV-Y7", "TV-G", "TV-PG", "TV-14", "TV-MA"];
     },
 
+    /**
+     * Fetches a list of countries supported by TMDB.
+     * This affects the country selection options in settings.
+     * @returns {Promise<Array>} List of country configuration objects.
+     */
     async fetchCountries() {
         try {
-            const response = await deduplicatedFetch(`${BASE_URL}/configuration/countries?api_key=${API_KEY}`);
+            const lang = this.getLanguageCode();
+            const response = await deduplicatedFetch(`${BASE_URL}/configuration/countries?api_key=${API_KEY}&language=${lang}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching countries:', error);
@@ -742,9 +821,17 @@ export const Api = {
         }
     },
 
+    /**
+     * Fetches watch providers for a given content type and region from TMDB.
+     * This affects the provider filter options on the discover screen.
+     * @param {string} [type='movie'] - Content type ('movie' or 'tv').
+     * @param {string} [region='US'] - Watch region ISO code.
+     * @returns {Promise<Array>} List of watch providers.
+     */
     async fetchWatchProviders(type = 'movie', region = 'US') {
         try {
-            const response = await deduplicatedFetch(`${BASE_URL}/watch/providers/${type}?api_key=${API_KEY}&watch_region=${region}`);
+            const lang = this.getLanguageCode();
+            const response = await deduplicatedFetch(`${BASE_URL}/watch/providers/${type}?api_key=${API_KEY}&watch_region=${region}&language=${lang}`);
             const data = await response.json();
             return data.results || [];
         } catch (error) {
@@ -753,15 +840,23 @@ export const Api = {
         }
     },
 
+    /**
+     * Discovers content on TMDB using dynamic filters like genres, year, and watch providers.
+     * This updates the content list on the main filter/discover page.
+     * @param {Object} filters - Search filters like genres, year, and watch providers.
+     * @returns {Promise<Array>} List of discovered content.
+     */
     async discoverContent(filters) {
         if (API_KEY.includes('TODO')) return [];
         try {
+            const lang = this.getLanguageCode();
             let params = new URLSearchParams({
                 api_key: API_KEY,
                 sort_by: filters.sortBy || 'popularity.desc',
                 include_adult: false,
                 include_video: false,
-                page: filters.page || 1
+                page: filters.page || 1,
+                language: lang
             });
 
             if (filters.genres && filters.genres.length > 0) {

@@ -314,5 +314,11 @@
     },
     "update_status_downloading": "Downloading Update...",
     "update_status_installing": "Installing Update...",
-    "update_status_connecting": "Connecting to Server..."
+    "update_status_connecting": "Connecting to Server...",
+    "exit": {
+        "title": "Exit Application",
+        "message": "Are you sure you want to exit IVIDS?",
+        "confirm": "Exit",
+        "cancel": "Cancel"
+    }
 }

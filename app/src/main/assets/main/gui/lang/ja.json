@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "アップデートをダウンロード中...",
     "update_status_installing": "アップデートをインストール中...",
-    "update_status_connecting": "サーバーに接続中..."
+    "update_status_connecting": "サーバーに接続中...",
+    "exit": {
+        "title": "アプリを終了",
+        "message": "本当に IVIDS を終了しますか？",
+        "confirm": "終了",
+        "cancel": "キャンセル"
+    }
 }

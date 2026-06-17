@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Laster ned oppdatering...",
     "update_status_installing": "Installerer oppdatering...",
-    "update_status_connecting": "Kobler til server..."
+    "update_status_connecting": "Kobler til server...",
+    "exit": {
+        "title": "Avslutt applikasjon",
+        "message": "Er du sikker på at du vil avslutte IVIDS?",
+        "confirm": "Avslutt",
+        "cancel": "Avbryt"
+    }
 }

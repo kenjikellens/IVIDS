@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Mengunduh Pembaruan...",
     "update_status_installing": "Menginstal Pembaruan...",
-    "update_status_connecting": "Menghubungkan ke Server..."
+    "update_status_connecting": "Menghubungkan ke Server...",
+    "exit": {
+        "title": "Keluar Aplikasi",
+        "message": "Apakah Anda yakin ingin keluar dari IVIDS?",
+        "confirm": "Keluar",
+        "cancel": "Batal"
+    }
 }

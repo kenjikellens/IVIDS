@@ -21,8 +21,12 @@ export const Router = {
     isLoading: false,
 
     /**
-     * Loads a page's HTML, JS controller, and spatial navigation logic asynchronously.
-     * Updates the main content viewport, toggles the sidebar expansion state class, highlights the route, and resets focus.
+     * Loads page HTML templates, JS controllers, and spatial navigation rules, updating viewport layout and sidebar display status.
+     * Affects page loading state, route history stack, active sidebar visibility/display style, and focus target.
+     * @param {string} pageName - The ID of the page to load.
+     * @param {Object} params - Route parameter mapping.
+     * @param {boolean} addToHistory - Whether to push the previous route onto the history stack.
+     * @param {HTMLElement|string} targetFocus - Optional element/selector to focus after load.
      */
     async loadPage(pageName, params = {}, addToHistory = true, targetFocus = null) {
         if (this.isLoading) return; // Prevent double loading
@@ -71,6 +75,16 @@ export const Router = {
                 app.classList.add('sidebar-always-expanded');
             } else {
                 app.classList.remove('sidebar-always-expanded');
+            }
+        }
+
+        // Explicitly hide sidebar for player pages to prevent DOM traversal/focus issues
+        const sidebar = document.getElementById('sidebar-container');
+        if (sidebar) {
+            if (pageName === 'player' || pageName === 'tv-player' || pageName === 'profiles') {
+                sidebar.style.display = 'none';
+            } else {
+                sidebar.style.display = '';
             }
         }
 

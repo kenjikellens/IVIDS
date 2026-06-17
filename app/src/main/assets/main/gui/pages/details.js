@@ -97,10 +97,14 @@ function render(item, type) {
                 genresContainer.innerHTML = '';
                 if (item.genres && item.genres.length > 0) {
                     item.genres.forEach(genre => {
-                        const span = document.createElement('span');
-                        span.className = 'genre-chip';
-                        span.textContent = genre.name || '';
-                        genresContainer.appendChild(span);
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'genre-chip focusable';
+                        btn.textContent = genre.name || '';
+                        btn.onclick = () => {
+                            Router.loadPage('search', { genreId: genre.id, type: type });
+                        };
+                        genresContainer.appendChild(btn);
                     });
                 }
             } catch (genreError) {
@@ -205,7 +209,7 @@ function render(item, type) {
 
         if (trailerBtn) {
             if (mainTrailerKey) {
-                trailerBtn.style.display = 'inline-block';
+                trailerBtn.style.display = 'inline-flex';
                 const trailerObj = item.videos.results.find(v => v.key === mainTrailerKey);
                 const trailerName = trailerObj ? ` (${trailerObj.name})` : '';
                 trailerBtn.textContent = `${I18n.t('details.watchTrailer')}${trailerName}`;
@@ -402,7 +406,7 @@ function renderSeasons(seasons, seriesId) {
         seasons.forEach(season => {
             try {
                 const btn = document.createElement('button');
-                btn.className = 'season-btn focusable';
+                btn.className = 'btn btn-secondary season-btn focusable';
                 btn.textContent = season.name || `${I18n.t('details.season')} ${season.season_number || '?'}`; // e.g. "Season 1"
                 btn.dataset.seasonNumber = season.season_number || 0;
 

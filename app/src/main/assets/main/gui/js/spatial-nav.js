@@ -21,6 +21,7 @@ export const SpatialNav = {
     lastFocusedElement: null,
     _initialized: false,
     isMouseInteraction: false,
+    backHandlers: [],
 
     isPortrait() {
         return window.matchMedia('(orientation: portrait)').matches;
@@ -53,9 +54,7 @@ export const SpatialNav = {
                 // If it's an input, we also want to activate it for mouse users
                 if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
                     if (target.readOnly) {
-                        target.readOnly = false;
-                        target.removeAttribute('inputmode');
-                        target.classList.add('active-typing');
+                        this.activateInput(target);
                     }
                 }
             } else {
@@ -63,10 +62,8 @@ export const SpatialNav = {
                 const current = document.querySelector('.focused');
                 if (current && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
                     if (!current.readOnly) {
-                        current.readOnly = true;
-                        current.classList.remove('active-typing');
+                        this.deactivateInput(current);
                         current.dispatchEvent(new Event('change', { bubbles: true }));
-                        current.blur();
                     }
                 }
             }
@@ -103,6 +100,66 @@ export const SpatialNav = {
         });
     },
 
+    /**
+     * Pushes a callback to the top of the back handler stack.
+     * The callback should return true if it handles the back key event, or false otherwise.
+     * @param {Function} handler - The back action handler function.
+     */
+    pushBackHandler(handler) {
+        this.backHandlers.push(handler);
+    },
+
+    /**
+     * Removes a specific callback from the back handler stack.
+     * @param {Function} handler - The back action handler function to remove.
+     */
+    popBackHandler(handler) {
+        this.backHandlers = this.backHandlers.filter(h => h !== handler);
+    },
+
+    /**
+     * Activates the active-typing mode on a text input or textarea, making it editable.
+     * Also pushes a back handler to exit this mode on Escape/Back press.
+     * @param {HTMLInputElement|HTMLTextAreaElement} input - The input element to activate.
+     */
+    activateInput(input) {
+        if (!input || !input.readOnly) return;
+        input.readOnly = false;
+        input.removeAttribute('inputmode');
+        input.classList.add('active-typing');
+        input.focus();
+
+        const inputBackHandler = () => {
+            if (!input.readOnly) {
+                input.readOnly = true;
+                input.classList.remove('active-typing');
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                input.blur();
+                this.popBackHandler(inputBackHandler);
+                return true;
+            }
+            return false;
+        };
+        this.pushBackHandler(inputBackHandler);
+        input._backHandler = inputBackHandler;
+    },
+
+    /**
+     * Deactivates the active-typing mode on a text input or textarea.
+     * Removes the associated back handler if present.
+     * @param {HTMLInputElement|HTMLTextAreaElement} input - The input element to deactivate.
+     */
+    deactivateInput(input) {
+        if (!input) return;
+        input.readOnly = true;
+        input.classList.remove('active-typing');
+        input.blur();
+        if (input._backHandler) {
+            this.popBackHandler(input._backHandler);
+            delete input._backHandler;
+        }
+    },
+
     setPageLogic(logic) {
         this.currentPageLogic = logic;
     },
@@ -124,8 +181,7 @@ export const SpatialNav = {
 
     /**
      * Determines if a DOM element is visible and eligible for receiving focus.
-     * This evaluates standard visibility indicators (display/offsetParent, dimensions, opacity, inline visibility)
-     * and specifically checks if the element is encapsulated inside a hidden or inactive modal overlay.
+     * Evaluates display, visibility, opacity, dimensions, and performs ancestor visibility walks (especially for fixed elements).
      * @param {HTMLElement} el - The target element to evaluate for visibility status.
      * @returns {boolean} True if the element is visible and focusable, false otherwise.
      */
@@ -138,8 +194,32 @@ export const SpatialNav = {
             return false;
         }
 
-        // FASTEST CHECK: offsetParent is null if display:none or parent is display:none
-        if (el.offsetParent === null && el.style.position !== 'fixed') return false;
+        // FASTEST CHECK: offsetParent is null if display:none or parent is display:none.
+        // However, position: fixed elements or their descendants also have offsetParent === null in many browsers.
+        // To resolve this, we do a deeper computed style walk only when offsetParent is null.
+        if (el.offsetParent === null) {
+            let curr = el;
+            let depth = 0;
+            let hasFixedAncestor = false;
+            while (curr && curr !== document.body && depth < 12) {
+                if (curr.style.display === 'none') {
+                    return false;
+                }
+                const style = window.getComputedStyle(curr);
+                if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0' || style.pointerEvents === 'none') {
+                    return false;
+                }
+                if (style.position === 'fixed') {
+                    hasFixedAncestor = true;
+                }
+                curr = curr.parentElement;
+                depth++;
+            }
+            // If it has no fixed ancestor and offsetParent is null, it is hidden or detached.
+            if (!hasFixedAncestor) {
+                return false;
+            }
+        }
 
         // Size check
         if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
@@ -147,6 +227,8 @@ export const SpatialNav = {
         // Skip expensive computed style checks for common elements if checking visibility heavily
         // We only do the deep check if strictly necessary or for specific edge cases
         if (el.style.opacity === '0' || el.style.visibility === 'hidden') return false;
+
+        if (window.getComputedStyle(el).pointerEvents === 'none') return false;
 
         return true;
     },
@@ -196,11 +278,7 @@ export const SpatialNav = {
 
         if (current && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA')) {
             // Always cleanup input state when moving focus, regardless of orientation
-            current.readOnly = true;
-            current.classList.remove('active-typing');
-
-            // CRITICAL: Explicitly blur to prevent browser from keeping focus border/caret
-            current.blur();
+            this.deactivateInput(current);
         }
 
         // Optimization: Use classList directly on the known current instead of querySelectorAll
@@ -223,9 +301,7 @@ export const SpatialNav = {
         */
 
         if (this.isPortrait() && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
-            element.readOnly = false;
-            element.removeAttribute('inputmode');
-            element.classList.add('active-typing');
+            this.activateInput(element);
         }
 
         this.centerElement(element);
@@ -395,15 +471,10 @@ export const SpatialNav = {
         if (isAction) {
             if (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA') {
                 if (current.readOnly) {
-                    current.readOnly = false;
-                    current.removeAttribute('inputmode');
-                    current.classList.add('active-typing');
-                    // On some TVs, we need to explicitly call focus() again after making it editable
-                    current.focus();
+                    this.activateInput(current);
                 } else {
                     if (!this.isPortrait()) {
-                        current.readOnly = true;
-                        current.classList.remove('active-typing');
+                        this.deactivateInput(current);
                         // Trigger a change event so listeners know editing is done
                         current.dispatchEvent(new Event('change', { bubbles: true }));
                     }
@@ -419,24 +490,41 @@ export const SpatialNav = {
 
         // Back keys
         if (isBack) {
-            // Handle character deletion for remote back buttons (4, 10009) and backspace (8)
-            if (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA') {
-                if (!current.readOnly) {
-                    if (keyCode === 8) {
-                        // Let browser handle native backspace deletion and input dispatching
-                        return; // Prevent global back navigation, let default browser backspace action occur
-                    }
-                    if (keyCode === 4 || keyCode === 10009) {
-                        const val = current.value;
-                        if (val.length > 0) {
-                            current.value = val.slice(0, -1);
-                            current.dispatchEvent(new Event('input', { bubbles: true }));
-                        }
+            // If focused on an active input, and keyCode is 8 (Backspace), do NOT run back handlers,
+            // let the browser handle character deletion natively.
+            const isEditingInput = current && (current.tagName === 'INPUT' || current.tagName === 'TEXTAREA') && !current.readOnly;
+            if (isEditingInput && keyCode === 8) {
+                return;
+            }
+
+            // Run stack handlers in LIFO order
+            for (let i = this.backHandlers.length - 1; i >= 0; i--) {
+                try {
+                    if (this.backHandlers[i]()) {
                         e.preventDefault();
-                        return; // Prevent global back navigation
+                        return;
                     }
+                } catch (err) {
+                    console.error('Error in spatial-nav back handler:', err);
                 }
             }
+
+            // If focused on sidebar, return focus to main content and prevent page navigation
+            const sidebar = document.getElementById('sidebar-container');
+            if (sidebar && sidebar.contains(current)) {
+                e.preventDefault();
+                const mainView = document.getElementById('main-view');
+                if (mainView) {
+                    const firstFocusable = mainView.querySelector(this.focusableSelector);
+                    if (firstFocusable && this.isVisible(firstFocusable)) {
+                        this.setFocus(firstFocusable);
+                        return;
+                    }
+                }
+                this.focusFirst();
+                return;
+            }
+
             e.preventDefault();
             if (this.onBack) this.onBack();
             return;

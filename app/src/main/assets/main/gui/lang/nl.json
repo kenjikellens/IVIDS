@@ -315,5 +315,11 @@
     },
     "update_status_downloading": "Update downloaden...",
     "update_status_installing": "Update installeren...",
-    "update_status_connecting": "Verbinden met server..."
+    "update_status_connecting": "Verbinden met server...",
+    "exit": {
+        "title": "Applicatie Sluiten",
+        "message": "Weet je zeker dat je IVIDS wilt sluiten?",
+        "confirm": "Sluiten",
+        "cancel": "Annuleren"
+    }
 }

@@ -315,5 +315,11 @@
     },
     "update_status_downloading": "Update wird heruntergeladen...",
     "update_status_installing": "Update wird installiert...",
-    "update_status_connecting": "Verbindung zum Server..."
+    "update_status_connecting": "Verbindung zum Server...",
+    "exit": {
+        "title": "Anwendung beenden",
+        "message": "Sind Sie sicher, dass Sie IVIDS beenden möchten?",
+        "confirm": "Beenden",
+        "cancel": "Abbrechen"
+    }
 }

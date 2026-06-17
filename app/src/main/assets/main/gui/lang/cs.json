@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Stahování aktualizace...",
     "update_status_installing": "Instalace aktualizace...",
-    "update_status_connecting": "Připojování k serveru..."
+    "update_status_connecting": "Připojování k serveru...",
+    "exit": {
+        "title": "Ukončit aplikaci",
+        "message": "Opravdu chcete ukončit IVIDS?",
+        "confirm": "Ukončit",
+        "cancel": "Zrušit"
+    }
 }

@@ -9,7 +9,7 @@ import { manageModal } from '../js/utils/ui-helper.js';
 
 
 let currentFilters = {
-    type: 'movie',
+    types: ['movie', 'tv'],
     genres: [],
     certification: null,
     originCountry: '',
@@ -31,8 +31,27 @@ let isSearchMode = false;
  * and renders the initial list of items.
  * @returns {Promise<void>}
  */
-export async function init() {
+/**
+ * Initializes the search page inputs, buttons, filter modal handlers, infinite scrolling,
+ * and renders the initial list of items.
+ * @param {Object} [params] - Navigation parameters (e.g. genreId and type).
+ * @returns {Promise<void>}
+ */
+export async function init(params) {
     try {
+        if (params && params.genreId) {
+            currentFilters.genres = [parseInt(params.genreId)];
+            currentFilters.types = params.type ? [params.type] : ['movie', 'tv'];
+            currentFilters.sortBy = 'popularity.desc';
+            currentFilters.certification = null;
+            currentFilters.originCountry = '';
+            currentFilters.year = null;
+            pendingFilters = JSON.parse(JSON.stringify(currentFilters));
+        } else {
+            resetFilters(currentFilters);
+            pendingFilters = JSON.parse(JSON.stringify(currentFilters));
+        }
+
         const input = document.getElementById('search-input');
         const searchBtn = document.getElementById('search-btn');
 
@@ -289,13 +308,29 @@ export async function init() {
     }
 }
 
+/**
+ * Renders and updates all filter options in the search/discover filter modal.
+ * This affects the visual state of the category checkboxes, genre chips, and select labels.
+ * @param {Object} filtersObj - The filter object containing active states.
+ * @returns {Promise<void>}
+ */
 async function renderAllFilters(filtersObj) {
     try {
-        // 1. Media Type
-        document.querySelectorAll('input[name="media-type"]').forEach(radio => {
-            radio.checked = filtersObj.type === radio.value;
-            radio.onchange = (e) => {
-                filtersObj.type = e.target.value;
+        // 1. Media Type Checkboxes
+        document.querySelectorAll('input[name="media-type"]').forEach(cb => {
+            const isChecked = filtersObj.types.includes(cb.value);
+            cb.checked = isChecked;
+            const chip = cb.closest('.filter-chip');
+            if (chip) chip.classList.toggle('selected', isChecked);
+
+            cb.onchange = () => {
+                const checkedTypes = Array.from(document.querySelectorAll('input[name="media-type"]:checked')).map(c => c.value);
+                if (checkedTypes.length === 0) {
+                    // Prevent unchecking the last active option
+                    cb.checked = true;
+                    return;
+                }
+                filtersObj.types = checkedTypes;
                 renderAllFilters(filtersObj);
             };
         });
@@ -406,15 +441,20 @@ function updateGenreBadge(filtersObj) {
     }
 }
 
+/**
+ * Resets all filter values to their default states.
+ * This resets checked items in the DOM and filters object.
+ * @param {Object} filtersObj - The filters object to reset.
+ */
 function resetFilters(filtersObj) {
-    filtersObj.type = 'movie';
+    filtersObj.types = ['movie', 'tv'];
     filtersObj.genres = [];
     filtersObj.certification = null;
     filtersObj.originCountry = '';
     filtersObj.sortBy = 'popularity.desc';
     filtersObj.year = null;
 
-    document.querySelectorAll('input[name="media-type"][value="movie"]').forEach(r => r.checked = true);
+    document.querySelectorAll('input[name="media-type"]').forEach(cb => cb.checked = true);
     document.querySelectorAll('#sort-modal .select-item').forEach(el => {
         el.classList.toggle('selected', el.dataset.value === 'popularity.desc');
     });
@@ -456,7 +496,10 @@ async function fetchResults(reset) {
             if (isSearchMode) {
                 const allResults = await Api.searchContent(currentQuery, pageToFetch);
                 return allResults.filter(item => {
-                    if (currentFilters.type && item.media_type && item.media_type !== currentFilters.type) return false;
+                    // Filter out non-media types like people/actors
+                    if (item.media_type && item.media_type !== 'movie' && item.media_type !== 'tv') return false;
+                    // Filter based on the selected media types
+                    if (item.media_type && !currentFilters.types.includes(item.media_type)) return false;
                     if (currentFilters.genres.length > 0) {
                         if (!item.genre_ids) return false;
                         const hasGenre = currentFilters.genres.every(id => item.genre_ids.includes(id));
@@ -472,10 +515,30 @@ async function fetchResults(reset) {
                     return true;
                 });
             } else {
-                return await Api.discoverContent({
-                    ...currentFilters,
-                    page: pageToFetch
-                });
+                const promises = currentFilters.types.map(type => 
+                    Api.discoverContent({ ...currentFilters, type, page: pageToFetch })
+                );
+                const responses = await Promise.all(promises);
+                const combined = responses.flat();
+
+                // If both types are queried, we need to sort the combined list by active sorting parameter
+                if (currentFilters.types.length > 1) {
+                    const sortBy = currentFilters.sortBy || 'popularity.desc';
+                    if (sortBy.startsWith('popularity')) {
+                        combined.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+                    } else if (sortBy.startsWith('vote_average')) {
+                        combined.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
+                    } else if (sortBy.startsWith('primary_release_date')) {
+                        combined.sort((a, b) => {
+                            const dateA = a.release_date || a.first_air_date || '';
+                            const dateB = b.release_date || b.first_air_date || '';
+                            return dateB.localeCompare(dateA);
+                        });
+                    } else if (sortBy.startsWith('vote_count')) {
+                        combined.sort((a, b) => (b.vote_count || 0) - (a.vote_count || 0));
+                    }
+                }
+                return combined;
             }
         };
 
@@ -516,7 +579,12 @@ async function fetchResults(reset) {
 function renderResultItems(items, container) {
     items.forEach(item => {
         if (!item.poster_path) return;
-        const isWatched = getWatchedItem(item.id, item.media_type || currentFilters.type);
+        // Determine the media type fallback if missing
+        let mediaType = item.media_type;
+        if (!mediaType || mediaType === 'all') {
+            mediaType = item.title ? 'movie' : 'tv';
+        }
+        const isWatched = getWatchedItem(item.id, mediaType);
 
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -542,7 +610,7 @@ function renderResultItems(items, container) {
         lazyLoader.observeItem(btn);
 
         btn.onclick = () => {
-            Router.loadPage('details', { id: item.id, type: item.media_type || currentFilters.type });
+            Router.loadPage('details', { id: item.id, type: mediaType });
         };
     });
 }

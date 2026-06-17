@@ -2,6 +2,7 @@ import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { addToRecentlyWatched } from '../../logic/recentlyWatched.js';
 import { ErrorHandler } from '../js/error-handler.js';
+import { SpatialNav } from '../js/spatial-nav.js';
 
 let hudTimeout = null;
 let providerTimeout = null;
@@ -277,19 +278,31 @@ export async function init(params) {
             const statusSettings = document.getElementById('player-status-settings');
             let iframeLoaded = false;
 
+            /**
+             * Displays the provider loading warning status panel if the iframe fails to load.
+             * Toggles status panel visibility and focuses the back action element.
+             */
             const showProviderWarning = () => {
                 if (iframeLoaded || !statusPanel) return;
                 statusPanel.style.display = 'block';
                 if (statusBack) statusBack.onclick = () => exitPlayer(params);
                 if (statusSettings) statusSettings.onclick = () => Router.loadPage('settings', {}, true);
-                if (statusBack) statusBack.focus();
+                if (statusBack) SpatialNav.setFocus(statusBack);
             };
 
+            /**
+             * Handles the iframe onload event to mark the player loaded, clear loading timeouts,
+             * hide the warning panel, and transfer focus to the player iframe.
+             */
             iframe.onload = () => {
                 iframeLoaded = true;
                 if (providerTimeout) clearTimeout(providerTimeout);
-                if (statusPanel) statusPanel.style.display = 'none';
+                if (statusPanel) {
+                    statusPanel.style.display = 'none';
+                    statusPanel.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+                }
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
+                SpatialNav.setFocus(iframe);
             };
 
             providerTimeout = setTimeout(showProviderWarning, 12000);
@@ -446,6 +459,10 @@ function setupOverlayVisibility(params) {
     const playerHud = document.getElementById('player-hud');
     if (!playerHud) return;
 
+    /**
+     * Reveals the player HUD overlay, sets up auto-hide timers, and handles default control focus.
+     * Affects the display style and visibility state of the HUD elements, and updates spatial focus.
+     */
     const showHUD = () => {
         if (hudTimeout) {
             clearTimeout(hudTimeout);
@@ -459,10 +476,10 @@ function setupOverlayVisibility(params) {
             if (wasHidden) {
                 const activeServer = playerHud.querySelector('.server-btn.active');
                 if (activeServer) {
-                    activeServer.focus();
+                    SpatialNav.setFocus(activeServer);
                 } else {
                     const backBtn = document.getElementById('player-back');
-                    if (backBtn) backBtn.focus();
+                    if (backBtn) SpatialNav.setFocus(backBtn);
                 }
             }
         });
@@ -479,18 +496,28 @@ function setupOverlayVisibility(params) {
         }, 4000);
     };
 
+    /**
+     * Hides the player HUD overlay and shifts spatial focus back to the primary video playback container.
+     * Resets the display style of HUD elements and blurs any active HUD controls.
+     */
     const hideHUD = () => {
         playerHud.classList.remove('visible');
+        playerHud.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+        
+        if (document.activeElement && playerHud.contains(document.activeElement)) {
+            document.activeElement.blur();
+            const iframe = document.getElementById('player-iframe');
+            if (iframe) {
+                SpatialNav.setFocus(iframe);
+            } else {
+                const nativeVideo = document.getElementById('native-video-player');
+                if (nativeVideo) nativeVideo.focus();
+            }
+        }
         
         setTimeout(() => {
             if (!playerHud.classList.contains('visible')) {
                 playerHud.style.display = 'none';
-                
-                if (document.activeElement && playerHud.contains(document.activeElement)) {
-                    document.activeElement.blur();
-                    const iframe = document.getElementById('player-iframe');
-                    if (iframe) iframe.focus();
-                }
             }
         }, 400);
     };

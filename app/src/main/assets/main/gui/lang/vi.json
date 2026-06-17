@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Đang tải bản cập nhật...",
     "update_status_installing": "Đang cài đặt bản cập nhật...",
-    "update_status_connecting": "Đang kết nối tới máy chủ..."
+    "update_status_connecting": "Đang kết nối tới máy chủ...",
+    "exit": {
+        "title": "Thoát ứng dụng",
+        "message": "Bạn có chắc chắn muốn thoát IVIDS?",
+        "confirm": "Thoát",
+        "cancel": "Hủy"
+    }
 }

@@ -258,16 +258,28 @@ export async function init(params) {
     }
 
     /**
-     * showOverlay function
-     * ====================
-     * Explains: Sets overlay class to show, resets the auto-hide timer, and makes overlay elements visible.
+     * Toggles visibility of the TV controls overlay and manages spatial focus.
+     * Shows the overlay, triggers focusFirst to select controls, and handles auto-hiding of elements.
      */
     const showOverlay = () => {
+        const wasHidden = overlay && !overlay.classList.contains('show');
         if (overlay) overlay.classList.add('show');
+        
+        if (wasHidden) {
+            SpatialNav.focusFirst();
+        }
+
         clearTimeout(overlayTimeout);
         overlayTimeout = setTimeout(() => {
-            if (overlay && !document.querySelector('.focused')?.closest('.tv-overlay')) {
+            if (overlay) {
                 overlay.classList.remove('show');
+                // Remove focused class and blur elements inside the overlay when it hides
+                overlay.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+                if (document.activeElement && overlay.contains(document.activeElement)) {
+                    document.activeElement.blur();
+                    const tvVideo = document.getElementById('tv-video');
+                    if (tvVideo) tvVideo.focus();
+                }
             }
         }, 4000);
     };
@@ -350,12 +362,26 @@ export async function init(params) {
         autoZapTimer = setTimeout(() => zapChannel(1), 900);
     }
 
-    // Keyboard handlers
+    /**
+     * Keydown handler that triggers showing the control overlay.
+     * Ensures overlays are visible upon user activity.
+     * @param {KeyboardEvent} e - The keydown event object.
+     */
     const keydownHandler = (e) => {
         showOverlay();
     };
 
+    /**
+     * Event handler for zapping channels using ArrowUp/ArrowDown keys.
+     * Only executes channel switches if the control overlay is hidden.
+     * @param {KeyboardEvent} e - The keydown event object.
+     */
     const zappingHandler = (e) => {
+        const isOverlayVisible = overlay && overlay.classList.contains('show');
+        if (isOverlayVisible) {
+            return;
+        }
+
         if (e.key === 'ArrowUp') {
             e.preventDefault();
             zapChannel(-1);
@@ -365,6 +391,10 @@ export async function init(params) {
         }
     };
 
+    /**
+     * Mouse movement handler that triggers showing the control overlay.
+     * Ensures overlays are visible upon user mouse activity.
+     */
     const mousemoveHandler = () => {
         showOverlay();
     };

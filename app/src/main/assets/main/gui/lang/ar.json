@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "جاري تنزيل التحديث...",
     "update_status_installing": "جاري تثبيت التحديث...",
-    "update_status_connecting": "الاتصال بالخادم..."
+    "update_status_connecting": "الاتصال بالخادم...",
+    "exit": {
+        "title": "الخروج من التطبيق",
+        "message": "هل أنت متأكد أنك تريد الخروج من IVIDS؟",
+        "confirm": "خروج",
+        "cancel": "إلغاء"
+    }
 }

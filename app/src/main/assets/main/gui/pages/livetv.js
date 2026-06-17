@@ -174,11 +174,12 @@ function renderLoadingSkeletons() {
         list.innerHTML = '';
         for (let i = 0; i < 6; i++) {
             const skeleton = document.createElement('div');
-            skeleton.className = 'channel-list-item skeleton-item';
+            skeleton.className = 'channel-list-item focusable is-skeleton';
+            skeleton.tabIndex = 0;
             skeleton.innerHTML = `
                 <span class="list-status-dot checking"></span>
-                <div class="channel-list-logo-container skeleton-logo-placeholder">
-                    <div class="skeleton-mini-spinner"></div>
+                <div class="channel-list-logo-container">
+                    <div class="skeleton-logo-placeholder"></div>
                 </div>
                 <div class="channel-list-meta-container">
                     <div class="skeleton-text skeleton-name"></div>

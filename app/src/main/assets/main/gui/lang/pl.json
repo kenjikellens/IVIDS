@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Pobieranie aktualizacji...",
     "update_status_installing": "Instalowanie aktualizacji...",
-    "update_status_connecting": "Łączenie z serwerem..."
+    "update_status_connecting": "Łączenie z serwerem...",
+    "exit": {
+        "title": "Zamknij aplikację",
+        "message": "Czy na pewno chcesz zamknąć IVIDS?",
+        "confirm": "Zamknij",
+        "cancel": "Anuluj"
+    }
 }

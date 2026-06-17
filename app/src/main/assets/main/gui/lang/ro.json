@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Se descarcă actualizarea...",
     "update_status_installing": "Se instalează actualizarea...",
-    "update_status_connecting": "Se conectează la server..."
+    "update_status_connecting": "Se conectează la server...",
+    "exit": {
+        "title": "Închidere aplicație",
+        "message": "Sigur doriți să închideți IVIDS?",
+        "confirm": "Închidere",
+        "cancel": "Anulează"
+    }
 }

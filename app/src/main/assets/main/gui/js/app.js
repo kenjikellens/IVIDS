@@ -6,6 +6,7 @@ import { ErrorHandler } from './error-handler.js';
 import { Screensaver } from './screensaver.js';
 import { Toast } from './toast.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
+import { manageModal } from './utils/ui-helper.js';
 import './loader.js';
 import './i18n.js';
 
@@ -416,7 +417,7 @@ function initUI() {
 
 /**
  * Initializes spatial navigation listeners and configures global click and focus synchronization.
- * This sets up remote key bindings, popstate history tracking, and mouse/touch sync.
+ * This sets up remote key bindings, popstate history tracking, and mouse/touch sync, affecting page navigation state.
  */
 function initNavigation() {
     try {
@@ -438,6 +439,18 @@ function initNavigation() {
                     }
 
                     return;
+                }
+
+                // 2. If on profiles screen
+                if (Router.currentPage === 'profiles') {
+                    const activeProfile = localStorage.getItem('ivids-current-profile');
+                    if (!activeProfile) {
+                        showExitConfirmation();
+                        return;
+                    } else {
+                        Router.loadPage('account');
+                        return;
+                    }
                 }
 
                 // Use Router's consolidated back logic (handles history + fallbacks)
@@ -467,6 +480,49 @@ function initNavigation() {
             }
         }
     });
+}
+
+/**
+ * Triggers the Exit Application modal dialog, traps focus inside it,
+ * and sets up platform-specific application shutdown upon confirmation.
+ */
+function showExitConfirmation() {
+    const exitModal = document.getElementById('exit-modal');
+    if (!exitModal) return;
+
+    const confirmBtn = document.getElementById('confirm-exit-btn');
+    const cancelBtn = document.getElementById('cancel-exit-btn');
+
+    const closeModal = manageModal(exitModal, cancelBtn);
+
+    confirmBtn.onclick = () => {
+        closeModal();
+        console.log('Exiting IVIDS application...');
+
+        // Platform-specific exit strategies
+        if (window.tizen && window.tizen.application) {
+            try {
+                window.tizen.application.getCurrentApplication().exit();
+            } catch (e) {
+                console.error('Tizen exit failed:', e);
+            }
+        }
+        
+        if (window.webOS && typeof window.webOS.platformBack === 'function') {
+            try {
+                window.webOS.platformBack();
+            } catch (e) {
+                console.error('webOS exit failed:', e);
+            }
+        }
+
+        // Default closure (works for Electron and general browser window close)
+        window.close();
+    };
+
+    cancelBtn.onclick = () => {
+        closeModal();
+    };
 }
 
 

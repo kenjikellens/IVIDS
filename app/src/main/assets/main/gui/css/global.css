@@ -157,7 +157,6 @@ textarea.active-typing:not(.input-wrapper *) {
 .btn:hover, .btn:focus, .btn.focused,
 .nav-item:hover, .nav-item:focus, .nav-item.focused,
 .poster-wrapper:hover, .poster-wrapper:focus, .poster-wrapper.focused,
-.skeleton-poster:hover, .skeleton-poster:focus, .skeleton-poster.focused,
 .profile-card:hover, .profile-card:focus, .profile-card.focused,
 .profile-avatar.large:hover, .profile-avatar.large:focus, .profile-avatar.large.focused,
 .color-option:hover, .color-option:focus, .color-option.focused,
@@ -237,17 +236,17 @@ textarea.active-typing:not(.input-wrapper *) {
 
 /* Styles the primary action button using the green theme accent color. */
 .btn-primary {
-    background: var(--primary-color);
-    color: #050505;
-    border-color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.25);
+    color: #ffffff;
+    border-color: rgba(var(--primary-rgb), 0.4);
 }
 
 /* Styles the primary button hover/focus with the standard thick white border. */
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary.focused {
-    background: var(--primary-color) !important;
-    color: #050505 !important;
+    background: rgba(var(--primary-rgb), 0.4) !important;
+    color: #ffffff !important;
     border: 3px solid #fff !important;
     outline: none !important;
 }
@@ -306,8 +305,8 @@ textarea.active-typing:not(.input-wrapper *) {
     background-size: cover;
     background-position: center top;
     transition: background-image 0.6s ease-in-out;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
     z-index: 1;
     pointer-events: none;
 }
@@ -318,8 +317,8 @@ textarea.active-typing:not(.input-wrapper *) {
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
     z-index: 2;
     pointer-events: none;
 }
@@ -359,24 +358,7 @@ textarea.active-typing:not(.input-wrapper *) {
     overflow: hidden;
 }
 
-#play-btn,
-#details-play {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(8px);
-}
 
-#play-btn:hover,
-#play-btn:focus,
-#play-btn.focused,
-#details-play:hover,
-#details-play:focus,
-#details-play.focused {
-    background: #ffffff !important;
-    color: #050505 !important;
-    border-color: #ffffff !important;
-}
 
 /* Styles the .loader-center-container UI element and manages its visual layout. */
 .loader-center-container {
@@ -406,9 +388,8 @@ textarea.active-typing:not(.input-wrapper *) {
     contain: layout;
 }
 
-/* Styles the .poster-wrapper, .skeleton-poster, and .playlist-card UI elements and manages their visual layout. */
+/* Styles the .poster-wrapper and .playlist-card UI elements and manages their visual layout. */
 .poster-wrapper,
-.skeleton-poster,
 .playlist-card {
     flex: 0 0 var(--poster-width);
     width: var(--poster-width);
@@ -438,10 +419,7 @@ textarea.active-typing:not(.input-wrapper *) {
 /* Sets higher stacking index for movie posters when hovered or focused. */
 .poster-wrapper:hover,
 .poster-wrapper:focus,
-.poster-wrapper.focused,
-.skeleton-poster:hover,
-.skeleton-poster:focus,
-.skeleton-poster.focused {
+.poster-wrapper.focused {
     z-index: 100;
 }
 
@@ -1910,14 +1888,25 @@ textarea.active-typing:not(.input-wrapper *) {
     margin-bottom: 20px;
 }
 
-/* Styles the .genre-chip UI element and manages its visual layout. */
+/* Styles the .genre-chip button element, setting font size, padding, border radius, and translucent background. */
 .genre-chip {
     background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: inherit;
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 14px;
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+/* Styles the hover/focus state of the .genre-chip element with a white thicker border. */
+.genre-chip.focused, .genre-chip:hover {
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    cursor: pointer;
 }
 
 /* Styles the .details-overview UI element and manages its visual layout. */
@@ -1947,6 +1936,7 @@ textarea.active-typing:not(.input-wrapper *) {
 }
 
 #details-playlist,
+#details-trailer,
 #details-back {
     background-color: rgba(255, 255, 255, 0.15) !important;
     color: #fff !important;
@@ -1991,34 +1981,28 @@ textarea.active-typing:not(.input-wrapper *) {
     padding-bottom: 10px;
 }
 
-/* Styles the season select button in the series detail view. */
+/* Layout alignment styles for the season select buttons in detail view sidebar. */
 .season-btn {
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: #ccc;
-    padding: 12px 15px;
     text-align: left;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 16px;
+    justify-content: flex-start;
+    width: 100%;
 }
 
-/* Styles the .season-btn:hover,
-.season-btn.focused UI element and manages its visual layout. */
-.season-btn:hover,
-.season-btn.focused {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #fff;
-    color: #fff;
-}
-
-/* Styles the .season-btn.active UI element and manages its visual layout. */
+/* Highlight state for the active selected season button with the accent color background. */
 .season-btn.active {
-    background: var(--primary-color);
-    color: #000;
-    border-color: var(--primary-color);
+    background: var(--primary-color) !important;
+    color: #050505 !important;
+    border-color: var(--primary-color) !important;
     font-weight: bold;
+}
+
+/* Hover and focus states for the active season button showing a thicker white border. */
+.season-btn.active:hover,
+.season-btn.active.focused {
+    background: var(--primary-color) !important;
+    color: #050505 !important;
+    border: 3px solid #fff !important;
+    outline: none !important;
 }
 
 /* Styles the .episodes-title UI element and manages its visual layout. */
@@ -2641,14 +2625,14 @@ textarea.active-typing:not(.input-wrapper *) {
     border-radius: 3px;
 }
 
-/* Styles the channel list item container row with a transparent default border. */
+/* Styles the channel list item container row with a subtle visible border. */
 .channel-list-item {
     position: relative;
     display: flex;
     align-items: center;
     padding: 6px 12px;
     border-radius: var(--radius-md);
-    border: 2px solid transparent;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.04);
     cursor: pointer;
     box-sizing: border-box;
@@ -2732,14 +2716,23 @@ textarea.active-typing:not(.input-wrapper *) {
     flex-shrink: 0;
 }
 
-/* Shared layout properties for vertical listings (channels list, EPG info, version chip content). */
-.channels-list,
+/* Shared layout properties for vertical listings (EPG info, version chip content). */
 .channel-list-epg-info,
 .version-chip-content {
     display: flex;
     flex-direction: column;
     gap: 4px;
     width: 100%;
+}
+
+/* Styles the channels list container with internal padding to prevent item borders from touching edges. */
+.channels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    padding: 6px;
+    box-sizing: border-box;
 }
 
 /* Shared layout properties for EPG guide title text items. */
@@ -5736,29 +5729,7 @@ iframe {
     gap: 20px;
 }
 
-/* Circular loading indicator spinner using theme accent colors. */
-.player-spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(255, 255, 255, 0.1);
-    border-top: 5px solid var(--primary-color);
-    border-radius: 50%;
-    animation: player-spin 1s linear infinite;
-}
 
-/* Text status indicator below the loading spinner. */
-.player-loading-text {
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: 500;
-    letter-spacing: 1px;
-}
-
-/* Core keyframe definition for circular spin loaders. */
-@keyframes player-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
 
 /* Sliding track container aligning all slide background panels horizontally */
 .hero-slides-track {
@@ -5820,4 +5791,326 @@ iframe {
     .hero-indicators {
         display: none !important;
     }
+}
+
+/* === Migrated from index.html === */
+        /* Inline critical splash styles to eliminate FOUC during stylesheet download. */
+        body { margin: 0; background: #050505; overflow: hidden; }
+        #splash-screen {
+            position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            background: #050505; transition: opacity 0.28s ease-in-out, visibility 0.28s;
+        }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .splash-content { display: flex; flex-direction: column; align-items: center; gap: 34px; }
+        .splash-logo-container { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 18px; }
+        .splash-logo-img { width: 72px; height: 72px; object-fit: contain; }
+        .splash-logo-text { margin: 0; color: #fff; font-size: 52px; line-height: 1; font-family: 'Outfit', sans-serif; font-weight: 600; }
+        @media (max-width: 767px), (orientation: portrait) {
+            .splash-logo-container { gap: 14px; }
+            .splash-logo-img { width: 58px; height: 58px; }
+            .splash-logo-text { font-size: 42px; }
+        }
+    
+/* === Migrated from details.html === */
+    /* Tab switcher navigation bar for switching between content panels */
+    .disney-tabs {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.75rem;
+    }
+
+    /* Styles the tab switch buttons inside the details view panels. */
+    .disney-tab-btn {
+        font-family: 'Outfit', sans-serif;
+    }
+
+    /* Highlight state for the active selected tab button with the accent color background. */
+    .disney-tab-btn.active {
+        background: var(--primary-color) !important;
+        color: #050505 !important;
+        border-color: var(--primary-color) !important;
+    }
+
+    /* Hover and focus states for the active tab button showing a thicker white border. */
+    .disney-tab-btn.active:hover, .disney-tab-btn.active.focused {
+        background: var(--primary-color) !important;
+        color: #050505 !important;
+        border: 3px solid #fff !important;
+        outline: none !important;
+    }
+
+    /* Vertical layout container for season select buttons */
+    .seasons-list-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+    }
+
+    /* List wrapper for displaying extra content rows vertically */
+    .disney-extras-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-bottom: 3.75rem;
+        width: 100%;
+    }
+
+    /* Interactive row container representing a trailer or extra clip */
+    .disney-extra-item {
+        display: flex;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.16s ease, background-color 0.16s ease;
+        width: 100%;
+    }
+
+    /* Hover and focus layout for extra items showing a thicker white border */
+    .disney-extra-item:hover, .disney-extra-item.focused {
+        border-color: #ffffff;
+        background: rgba(255, 255, 255, 0.08);
+        outline: none;
+    }
+
+    /* Left side thumbnail container for trailer items */
+    .disney-extra-thumb-left {
+        width: 25%;
+        aspect-ratio: 16 / 9;
+        background-size: cover;
+        background-position: center;
+        background-color: var(--surface-soft);
+        position: relative;
+    }
+
+    /* Circular play icon overlaid on the trailer thumbnail */
+    .disney-extra-play-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 3rem;
+        height: 3rem;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.5rem;
+        border: 2px solid #fff;
+        opacity: 0.8;
+        transition: opacity 0.16s ease, background-color 0.16s ease;
+        transform: translate(-50%, -50%);
+    }
+
+    /* Hover and focus visual override to highlight the thumbnail play button in accent color */
+    .disney-extra-item:hover .disney-extra-play-icon, .disney-extra-item.focused .disney-extra-play-icon {
+        opacity: 1;
+        background-color: var(--primary-color);
+    }
+
+    /* Text block container on the right containing metadata and description */
+    .disney-extra-info {
+        padding: 1.25rem 1.85rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 75%;
+    }
+
+    /* Metadata details category text for extra rows */
+    .disney-extra-type {
+        font-size: 0.8rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Title label of the extra video card */
+    .disney-extra-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    /* Description text label of the extra video card */
+    .disney-extra-description {
+        font-size: 1rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        white-space: normal;
+    }
+
+    /* Two-column display wrapper layout for synopsis and cast */
+    .disney-about-content {
+        display: flex;
+        gap: 2.5rem;
+        padding-bottom: 3.75rem;
+        width: 100%;
+    }
+
+    /* Left column of about panel for synopsis description text */
+    .disney-about-left {
+        width: 50%;
+    }
+
+    /* Right column of about panel for cast and crew grid list */
+    .disney-about-right {
+        width: 50%;
+    }
+
+    /* Subsection divider header title in the about panel */
+    .disney-about-section-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.4rem;
+        color: var(--text-color);
+        margin-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+    }
+
+    /* About panel main synopsis paragraph style */
+    .disney-about-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-muted);
+    }
+
+    /* Grid container for placing cast profile cards dynamically */
+    .disney-cast-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 1rem;
+        width: 100%;
+    }
+
+    /* Individual cast member card with profile headshot and name metadata */
+    .disney-cast-card {
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        border: 2px solid transparent;
+        text-align: center;
+        padding-bottom: 0.5rem;
+        transition: border-color 0.16s ease;
+    }
+
+    /* Focus highlight thicker border for actor profiles */
+    .disney-cast-card:hover, .disney-cast-card.focused {
+        border-color: #ffffff;
+        outline: none;
+    }
+
+    /* Cast headshot image box with fallback styles */
+    .disney-cast-img {
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        background-size: cover;
+        background-position: center;
+        background-color: var(--surface-soft);
+    }
+
+    /* Real name text of the actor */
+    .disney-cast-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-color);
+        padding: 0.35rem 0.25rem 0.1rem 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Character name text of the role played */
+    .disney-cast-character {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        padding: 0 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Vertical episodes list container */
+    .disney-episodes-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-bottom: 3.75rem;
+        width: 100%;
+    }
+
+    /* Interactive row layout block representing an episode */
+    .disney-episode-item {
+        display: flex;
+        background: rgba(255,255,255,0.03);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.16s ease, background-color 0.16s ease;
+        width: 100%;
+    }
+
+    /* Thicker white focus outline for episodes list */
+    .disney-episode-item:hover, .disney-episode-item.focused {
+        border-color: #ffffff;
+        background: rgba(255,255,255,0.08);
+        outline: none;
+    }
+
+    /* Thumbnail frame for the episode card */
+    .disney-episode-thumb {
+        width: 25%;
+        aspect-ratio: 16 / 9;
+        background-size: cover;
+        background-position: center;
+        background-color: var(--surface-soft);
+    }
+
+    /* Text block container inside the episode card layout */
+    .disney-episode-info {
+        padding: 1.25rem 1.85rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 75%;
+    }
+
+    /* Main text title of the episode card */
+    .disney-episode-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    /* Overview text block summary within the episode card */
+    .disney-episode-overview {
+        font-size: 1rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Cinematic backdrop container representing the 16:9 widescreen background image dimmed for readability */
+    .details-backdrop {
+        opacity: 0.6;
+    }
+
+/* Text status indicator below the loading spinner. */
+.player-loading-text {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    letter-spacing: 1px;
 }

@@ -23,7 +23,7 @@ export function renderSkeletonRow(elementId, count = 20) {
     for (let i = 0; i < count; i++) {
         const skeleton = document.createElement('button');
         skeleton.type = 'button';
-        skeleton.className = 'skeleton-poster focusable';
+        skeleton.className = 'poster-wrapper focusable is-skeleton';
         skeleton.setAttribute('aria-hidden', 'true'); // Placeholder only
 
         // We use a CSS-only shimmer effect instead of injecting multiple loader dots

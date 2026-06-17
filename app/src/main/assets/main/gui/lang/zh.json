@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "正在下载更新...",
     "update_status_installing": "正在安装更新...",
-    "update_status_connecting": "正在连接服务器..."
+    "update_status_connecting": "正在连接服务器...",
+    "exit": {
+        "title": "退出应用",
+        "message": "您确定要退出 IVIDS 吗？",
+        "confirm": "退出",
+        "cancel": "取消"
+    }
 }

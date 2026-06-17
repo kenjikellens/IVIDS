@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Download dell'aggiornamento...",
     "update_status_installing": "Installazione dell'aggiornamento...",
-    "update_status_connecting": "Connessione al server..."
+    "update_status_connecting": "Connessione al server...",
+    "exit": {
+        "title": "Esci dall'applicazione",
+        "message": "Sei sicuro di voler uscire da IVIDS?",
+        "confirm": "Esci",
+        "cancel": "Annulla"
+    }
 }

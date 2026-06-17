@@ -13,25 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Critical inline CSS for instant splash screen render before external stylesheets load -->
-    <style>
-        /* Inline critical splash styles to eliminate FOUC during stylesheet download. */
-        body { margin: 0; background: #050505; overflow: hidden; }
-        #splash-screen {
-            position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            background: #050505; transition: opacity 0.28s ease-in-out, visibility 0.28s;
-        }
-        #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .splash-content { display: flex; flex-direction: column; align-items: center; gap: 34px; }
-        .splash-logo-container { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 18px; }
-        .splash-logo-img { width: 72px; height: 72px; object-fit: contain; }
-        .splash-logo-text { margin: 0; color: #fff; font-size: 52px; line-height: 1; font-family: 'Outfit', sans-serif; font-weight: 600; }
-        @media (max-width: 767px), (orientation: portrait) {
-            .splash-logo-container { gap: 14px; }
-            .splash-logo-img { width: 58px; height: 58px; }
-            .splash-logo-text { font-size: 42px; }
-        }
-    </style>
 
     <!-- Unified Stylesheet -->
     <link rel="stylesheet" href="css/global.css?v=20260520T1345">
@@ -50,6 +31,19 @@
             </div>
             <div class="splash-loader-container">
                 <div class="ivids-loader"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Exit Confirmation Modal -->
+    <div id="exit-modal" class="modal-overlay">
+        <div class="modal-content exit-modal-content">
+            <h2 class="modal-title" data-i18n="exit.title">Exit Application</h2>
+            <p class="exit-message" data-i18n="exit.message">Are you sure you want to exit IVIDS?</p>
+            <div class="modal-footer">
+                <button id="confirm-exit-btn" class="btn btn-danger focusable" data-i18n="exit.confirm">Exit</button>
+                <button id="cancel-exit-btn" class="btn btn-secondary focusable" data-i18n="exit.cancel">Cancel</button>
             </div>
         </div>
     </div>

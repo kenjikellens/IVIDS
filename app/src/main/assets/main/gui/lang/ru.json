@@ -322,5 +322,11 @@
     },
     "update_status_downloading": "Загрузка обновления...",
     "update_status_installing": "Установка обновления...",
-    "update_status_connecting": "Подключение к серверу..."
+    "update_status_connecting": "Подключение к серверу...",
+    "exit": {
+        "title": "Выйти из приложения",
+        "message": "Вы уверены, что хотите выйти из IVIDS?",
+        "confirm": "Выйти",
+        "cancel": "Отмена"
+    }
 }
