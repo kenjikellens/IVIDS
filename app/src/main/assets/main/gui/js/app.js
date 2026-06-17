@@ -193,7 +193,8 @@ function initUpdateCheck() {
         const toastEl = Toast.show(msgHtml, {
             title: title,
             type: 'info',
-            duration: 15000 // Display for 15 seconds
+            duration: 15000, // Display for 15 seconds
+            isHtml: true
         });
 
         if (toastEl) {
@@ -243,7 +244,8 @@ function initUpdateCheck() {
         const toastEl = Toast.show(msgHtml, {
             title: title,
             type: 'warning',
-            duration: 20000 // 20 seconds for developer choice
+            duration: 20000, // 20 seconds for developer choice
+            isHtml: true
         });
 
         if (toastEl) {

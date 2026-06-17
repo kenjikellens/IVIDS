@@ -55,7 +55,13 @@ export class Toast {
             if (titleEl) titleEl.textContent = title;
         }
         const messageEl = toast.querySelector('.toast-message');
-        if (messageEl) messageEl.textContent = message;
+        if (messageEl) {
+            if (options.isHtml) {
+                messageEl.innerHTML = message;
+            } else {
+                messageEl.textContent = message;
+            }
+        }
 
         container.appendChild(toast);
 
