@@ -321,5 +321,32 @@
         "message": "¿Está seguro de que desea salir de IVIDS?",
         "confirm": "Salir",
         "cancel": "Cancelar"
+    },
+    "login": {
+        "title": "Sign In to IVIDS",
+        "signInTab": "Sign In",
+        "registerTab": "Register",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter your email",
+        "usernameLabel": "Username",
+        "usernamePlaceholder": "Enter your username",
+        "pinLabel": "PIN Code",
+        "pinHint": "4 to 8 digits",
+        "signInBtn": "Sign In",
+        "registerBtn": "Create Account",
+        "guestBtn": "Continue as Guest",
+        "errorInvalidEmail": "Please enter a valid email",
+        "errorEmptyUsername": "Username is required",
+        "errorPinLength": "PIN must be 4 to 8 digits",
+        "errorLoginFailed": "Invalid credentials. Please try again.",
+        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
+        "errorNetwork": "Could not reach the server. Check your connection.",
+        "errorAlreadyRegistered": "This account already exists. Try signing in.",
+        "successRegistered": "Account created!",
+        "successLoggedIn": "Welcome back, {name}!",
+        "signInTitle": "Iniciar sesión",
+        "registerTitle": "Registrarse",
+        "signInSubtitle": "Inicie sesión en su cuenta",
+        "registerSubtitle": "Registre su cuenta"
     }
 }

@@ -2,6 +2,10 @@ import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { getActiveAccount } from '../../logic/account-helper.js';
 
+/**
+ * Initializes the account page details, displays current profile state,
+ * and sets up authentication handlers for signing in and out.
+ */
 export async function init() {
     console.log('Account page initialized');
 
@@ -12,15 +16,11 @@ export async function init() {
     
     const signInBtn = document.getElementById('account-sign-in-btn');
     const createAccBtn = document.getElementById('account-create-acc-btn');
-    const editBtn = document.getElementById('account-edit-profile-btn');
-    const switchBtn = document.getElementById('account-switch-profile-btn');
     const signOutBtn = document.getElementById('account-sign-out-btn');
 
     // Hide all actions first
     if (signInBtn) signInBtn.style.display = 'none';
     if (createAccBtn) createAccBtn.style.display = 'none';
-    if (editBtn) editBtn.style.display = 'none';
-    if (switchBtn) switchBtn.style.display = 'none';
     if (signOutBtn) signOutBtn.style.display = 'none';
 
     if (account) {
@@ -30,8 +30,6 @@ export async function init() {
         avatarEl.style.backgroundColor = account.color || '#E50914';
         avatarEl.textContent = account.name.charAt(0).toUpperCase();
 
-        if (editBtn) editBtn.style.display = 'inline-block';
-        if (switchBtn) switchBtn.style.display = 'inline-block';
         if (signOutBtn) signOutBtn.style.display = 'inline-block';
     } else {
         // Anonymous (Logged Out) state
@@ -52,31 +50,21 @@ export async function init() {
     // Handlers
     if (signInBtn) {
         signInBtn.onclick = () => {
-            Router.loadPage('profiles');
+            Router.loadPage('login');
         };
     }
 
     if (createAccBtn) {
         createAccBtn.onclick = () => {
-            Router.loadPage('profiles'); // Redirects to profile selector screen which contains "+"
-        };
-    }
-
-    if (switchBtn) {
-        switchBtn.onclick = () => {
-            Router.loadPage('profiles');
-        };
-    }
-
-    if (editBtn) {
-        editBtn.onclick = () => {
-            Router.loadPage('profiles', { editMode: true });
+            Router.loadPage('login', { mode: 'register' });
         };
     }
 
     if (signOutBtn) {
         signOutBtn.onclick = () => {
             localStorage.removeItem('ivids-current-profile');
+            localStorage.removeItem('ivids-cloud-session');
+            import('../../logic/crypto.js').then(m => m.clearSession());
             // Reapply primary/accent color to default settings if any, or reload
             const savedSettings = localStorage.getItem('ivids-settings');
             const globalSettings = savedSettings ? JSON.parse(savedSettings) : {};

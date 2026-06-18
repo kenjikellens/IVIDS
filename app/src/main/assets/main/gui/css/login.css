@@ -1,0 +1,6 @@
+/* 
+   Consolidated! 
+   This file is no longer requested dynamically to prevent FOUC (Flash of Unstyled Content). 
+   All login page styles have been merged into the unified design system stylesheet:
+   app/src/main/assets/main/gui/css/global.css (Section 5)
+*/

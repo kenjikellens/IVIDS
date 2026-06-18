@@ -40,11 +40,28 @@ window.onunhandledrejection = function (event) {
     // Don't show modal for every background promise failure unless it's critical
 };
 
-// Load and apply saved settings
+/**
+ * Loads the application settings from localStorage and falls back to document cookies for global settings.
+ * Merges and applies the theme and language configurations.
+ */
 function loadSettings() {
     try {
         const globalSaved = localStorage.getItem('ivids-settings');
         const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
+
+        // Fallback to cookies for updateMode and language if not in localStorage
+        if (!globalSettings.updateMode) {
+            const match = document.cookie.match(/(?:^|; )updateMode=([^;]*)/);
+            if (match) {
+                globalSettings.updateMode = decodeURIComponent(match[1]);
+            }
+        }
+        if (!globalSettings.language) {
+            const match = document.cookie.match(/(?:^|; )language=([^;]*)/);
+            if (match) {
+                globalSettings.language = decodeURIComponent(match[1]);
+            }
+        }
 
         const userKey = getNamespacedKey('settings');
         const userSaved = localStorage.getItem(userKey);
@@ -114,11 +131,21 @@ function initUpdateCheck() {
     window.latestFoundVersion = null;
     window.pendingUpdateVersion = null;
 
-    // Helper to retrieve update mode
+    /**
+     * Helper to retrieve the current update mode from localStorage, falling back to document cookies.
+     * @returns {string} The active update mode (e.g. 'auto', 'manual', 'advanced', 'none').
+     */
     const getUpdateMode = () => {
         try {
             const saved = localStorage.getItem('ivids-settings');
-            if (saved) return JSON.parse(saved).updateMode || 'manual';
+            if (saved) {
+                const settings = JSON.parse(saved);
+                if (settings.updateMode) return settings.updateMode;
+            }
+            const match = document.cookie.match(/(?:^|; )updateMode=([^;]*)/);
+            if (match) {
+                return decodeURIComponent(match[1]);
+            }
         } catch (e) {
             console.error('App: Failed to get update mode', e);
         }
@@ -441,17 +468,6 @@ function initNavigation() {
                     return;
                 }
 
-                // 2. If on profiles screen
-                if (Router.currentPage === 'profiles') {
-                    const activeProfile = localStorage.getItem('ivids-current-profile');
-                    if (!activeProfile) {
-                        showExitConfirmation();
-                        return;
-                    } else {
-                        Router.loadPage('account');
-                        return;
-                    }
-                }
 
                 // Use Router's consolidated back logic (handles history + fallbacks)
                 Router.goBack();
@@ -597,7 +613,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('ivids-last-route');
             localStorage.removeItem('ivids-last-active');
 
-            // Always go to home on startup. Profiles remain available through Account.
+            // Always go to home on startup.
             Router.loadPage('home');
         } catch (homeError) {
             console.error('Error in initial routing:', homeError);

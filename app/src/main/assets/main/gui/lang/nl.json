@@ -321,5 +321,32 @@
         "message": "Weet je zeker dat je IVIDS wilt sluiten?",
         "confirm": "Sluiten",
         "cancel": "Annuleren"
+    },
+    "login": {
+        "title": "Sign In to IVIDS",
+        "signInTab": "Sign In",
+        "registerTab": "Register",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter your email",
+        "usernameLabel": "Username",
+        "usernamePlaceholder": "Enter your username",
+        "pinLabel": "PIN Code",
+        "pinHint": "4 to 8 digits",
+        "signInBtn": "Sign In",
+        "registerBtn": "Create Account",
+        "guestBtn": "Continue as Guest",
+        "errorInvalidEmail": "Please enter a valid email",
+        "errorEmptyUsername": "Username is required",
+        "errorPinLength": "PIN must be 4 to 8 digits",
+        "errorLoginFailed": "Invalid credentials. Please try again.",
+        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
+        "errorNetwork": "Could not reach the server. Check your connection.",
+        "errorAlreadyRegistered": "This account already exists. Try signing in.",
+        "successRegistered": "Account created!",
+        "successLoggedIn": "Welcome back, {name}!",
+        "signInTitle": "Inloggen",
+        "registerTitle": "Registreren",
+        "signInSubtitle": "Log in op uw account",
+        "registerSubtitle": "Registreer uw account"
     }
 }

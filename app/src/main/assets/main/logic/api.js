@@ -618,6 +618,20 @@ export const Api = {
             const globalSaved = localStorage.getItem('ivids-settings');
             const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
 
+            // Fallback to cookies for updateMode and language if not in localStorage
+            if (!globalSettings.updateMode) {
+                const match = document.cookie.match(/(?:^|; )updateMode=([^;]*)/);
+                if (match) {
+                    globalSettings.updateMode = decodeURIComponent(match[1]);
+                }
+            }
+            if (!globalSettings.language) {
+                const match = document.cookie.match(/(?:^|; )language=([^;]*)/);
+                if (match) {
+                    globalSettings.language = decodeURIComponent(match[1]);
+                }
+            }
+
             const userKey = getNamespacedKey('settings');
             const userSaved = localStorage.getItem(userKey);
             const userSettings = userSaved ? JSON.parse(userSaved) : {};

@@ -3,6 +3,7 @@ import { SpatialNav } from '../js/spatial-nav.js';
 import { Toast } from '../js/toast.js';
 import { manageModal } from '../js/utils/ui-helper.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
+import { Api } from '../../logic/api.js';
 
 
 let settingsManagerInstance = null;
@@ -99,6 +100,20 @@ class SettingsManager {
             const globalSaved = localStorage.getItem('ivids-settings');
             const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
 
+            // Fallback to cookies for updateMode and language if not in localStorage
+            if (!globalSettings.updateMode) {
+                const match = document.cookie.match(/(?:^|; )updateMode=([^;]*)/);
+                if (match) {
+                    globalSettings.updateMode = decodeURIComponent(match[1]);
+                }
+            }
+            if (!globalSettings.language) {
+                const match = document.cookie.match(/(?:^|; )language=([^;]*)/);
+                if (match) {
+                    globalSettings.language = decodeURIComponent(match[1]);
+                }
+            }
+
             const userKey = getNamespacedKey('settings');
             const userSaved = localStorage.getItem(userKey);
             const userSettings = userSaved ? JSON.parse(userSaved) : {};
@@ -168,6 +183,12 @@ class SettingsManager {
         localStorage.setItem('ivids-settings', JSON.stringify(globalSettings));
         localStorage.setItem(userKey, JSON.stringify(userSettings));
 
+        // Save updateMode and language to cookies for native integration
+        document.cookie = `updateMode=${encodeURIComponent(this.settings.updateMode)}; path=/; max-age=31536000; SameSite=Lax`;
+        document.cookie = `language=${encodeURIComponent(this.settings.language)}; path=/; max-age=31536000; SameSite=Lax`;
+
+        Api.invalidatePlayerConfig();
+
         this.applySettingsGlobally();
     }
 
@@ -201,6 +222,11 @@ class SettingsManager {
         const editUpdateModeBtn = document.getElementById('edit-update-mode-btn');
         if (editUpdateModeBtn) {
             editUpdateModeBtn.onclick = () => this.openModal('update-mode-modal');
+        }
+
+        const appInfoBtn = document.getElementById('app-info-btn');
+        if (appInfoBtn) {
+            appInfoBtn.onclick = () => this.openModal('app-info-modal');
         }
 
         const checkBtn = document.getElementById('check-updates-btn');
@@ -525,9 +551,23 @@ class SettingsManager {
                                     <span class="version-date-label">${date}</span>
                                 </div>
                                 <span class="version-chip-title">${rel.name || 'Release Build'}</span>
-                                <div class="version-chip-desc">${rel.body ? rel.body.replace(/[\r\n]+/g, ' ') : 'No notes available'}</div>
                             </div>
+                            <button class="version-info-btn focusable" title="View changes">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </button>
                         `;
+
+                        const infoBtn = relCard.querySelector('.version-info-btn');
+                        if (infoBtn) {
+                            infoBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                this.openChangesPopup(rel.name || rel.tag_name, rel.body || 'No release notes available.');
+                            };
+                        }
 
                         relCard.onclick = () => {
                             this.closeModal();
@@ -568,6 +608,44 @@ class SettingsManager {
                 `;
             }
         }
+    }
+
+    /**
+     * Opens the release changes popup modal and renders the specified markdown changelog text.
+     * Updates the changes modal content area and sets focus to the close button.
+     * @param {string} title - The title of the release version.
+     * @param {string} body - The raw markdown text containing release changes.
+     */
+    openChangesPopup(title, body) {
+        console.log(`Settings: Opening changes popup for ${title}`);
+        const modal = document.getElementById('changes-modal');
+        if (!modal) return;
+
+        const titleEl = document.getElementById('changes-modal-title');
+        if (titleEl) {
+            titleEl.textContent = title;
+        }
+
+        const contentEl = document.getElementById('changes-modal-content');
+        if (contentEl) {
+            contentEl.textContent = body;
+        }
+
+        const prevModal = this.currentModal;
+        const prevCloseFn = this.closeModalFn;
+
+        this.openModal('changes-modal');
+
+        const originalCloseFn = this.closeModalFn;
+        this.closeModalFn = (revert = true) => {
+            if (originalCloseFn) originalCloseFn(revert);
+            this.currentModal = prevModal;
+            this.closeModalFn = prevCloseFn;
+            if (prevModal) {
+                prevModal.classList.add('show');
+                if (window.SpatialNav) window.SpatialNav.refocus();
+            }
+        };
     }
 
     /**
@@ -674,6 +752,14 @@ class SettingsManager {
         const cancelBtn = modal.querySelector('.btn-secondary') || modal.querySelector('.modal-btn.secondary') || modal.querySelector('.action-btn.secondary');
         if (cancelBtn) {
             cancelBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.closeModal();
+            };
+        }
+
+        const closeXBtn = modal.querySelector('.modal-close-x');
+        if (closeXBtn) {
+            closeXBtn.onclick = (e) => {
                 e.stopPropagation();
                 this.closeModal();
             };

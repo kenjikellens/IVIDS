@@ -1,0 +1,61 @@
+<div class="login-page-wrapper">
+    <div class="login-card-container">
+        <button id="login-circle-back" class="login-back-circle focusable" title="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <div class="modal-content login-card">
+            <header class="login-header">
+                <div>
+                    <h1 id="login-title" class="page-title login-title-text" data-i18n="login.signInTitle">Sign In</h1>
+                    <p id="login-subtitle" class="login-subtitle-text" data-i18n="login.signInSubtitle">Log in to your account</p>
+                </div>
+            </header>
+
+            <div class="login-form-container">
+                <div class="login-tabs-row">
+                    <button id="login-signin-tab" class="category-chip focusable login-tab login-tab-btn active" type="button" data-mode="signin"
+                        data-i18n="login.signInTab">Sign In</button>
+                    <button id="login-register-tab" class="category-chip focusable login-tab login-tab-btn" type="button" data-mode="register"
+                        data-i18n="login.registerTab">Register</button>
+                </div>
+
+                <form id="login-form" class="login-form-container">
+                    <div class="input-group login-input-group">
+                        <label for="login-email" data-i18n="login.emailLabel">Email</label>
+                        <input id="login-email" class="focusable" type="email" autocomplete="email"
+                            data-i18n="login.emailPlaceholder" placeholder="Enter your email" readonly inputmode="none">
+                    </div>
+
+                    <div class="input-group login-input-group" id="username-field">
+                        <label for="login-username" data-i18n="login.usernameLabel">Username</label>
+                        <input id="login-username" class="focusable" type="text" autocomplete="username"
+                            data-i18n="login.usernamePlaceholder" placeholder="Enter your username" readonly
+                            inputmode="none">
+                    </div>
+
+                    <div class="input-group login-input-group">
+                        <div class="login-pin-row">
+                            <label for="login-pin" data-i18n="login.pinLabel">PIN Code</label>
+                            <small class="login-pin-hint" data-i18n="login.pinHint">4 to 8 digits</small>
+                        </div>
+                        <input id="login-pin" class="focusable" type="password"
+                            maxlength="8" inputmode="none" readonly placeholder="Enter PIN">
+                    </div>
+
+                    <div id="login-message" class="form-message" aria-live="polite"></div>
+
+                    <div class="login-footer">
+                        <button id="login-submit" class="btn btn-primary focusable login-submit-btn" type="submit"
+                            data-i18n="login.signInBtn">Sign In</button>
+                        <button id="login-back" class="btn btn-secondary focusable login-back-btn" type="button"
+                            data-i18n="common.cancel">Back</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

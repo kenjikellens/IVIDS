@@ -9,19 +9,29 @@ class I18n {
         ];
     }
 
+    /**
+     * Initializes the internationalization service.
+     * Loads the saved language from local storage, falling back to document cookies and then English.
+     */
     async init() {
-        // Load saved language or use default
+        let language = 'en';
         try {
             const savedSettings = localStorage.getItem('ivids-settings');
             if (savedSettings) {
                 const settings = JSON.parse(savedSettings);
-                this.currentLanguage = settings.language || 'en';
+                language = settings.language;
+            }
+            if (!language) {
+                const match = document.cookie.match(/(?:^|; )language=([^;]*)/);
+                if (match) {
+                    language = decodeURIComponent(match[1]);
+                }
             }
         } catch (e) {
             console.error('Error loading language settings:', e);
         }
 
-        // Load the current language
+        this.currentLanguage = language || 'en';
         await this.loadLanguage(this.currentLanguage);
     }
 

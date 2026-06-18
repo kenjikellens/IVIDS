@@ -9,6 +9,14 @@
  */
 export function getActiveAccount() {
     try {
+        const cloudSession = localStorage.getItem('ivids-cloud-session');
+        if (cloudSession) {
+            const session = JSON.parse(cloudSession);
+            if (session && session.pushId && session.username) {
+                return { id: session.pushId, name: session.username, isCloud: true };
+            }
+        }
+
         const stored = localStorage.getItem('ivids-current-profile');
         if (!stored) return null;
         const acc = JSON.parse(stored);

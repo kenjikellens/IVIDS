@@ -28,7 +28,7 @@ COMPRESSIBLE_TYPES = {
 VENDOR_PATTERNS = {'hls.min.js', 'hls.js'}
 
 
-# Define port and target assets directory
+# Define preferred port and target assets directory
 PORT = 8000
 ASSETS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app', 'src', 'main', 'assets', 'main'))
 BROKEN_CHANNELS_PATH = os.path.join(ASSETS_DIR, 'logic', 'livetv', 'broken-channels.json')
@@ -108,6 +108,40 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     # Instance flag to track whether Cache-Control was explicitly set by a handler
     _cache_control_set = False
 
+    def __init__(self, *args, **kwargs):
+        """
+        Pins static serving to ASSETS_DIR regardless of the process working directory.
+        This avoids 404s when run_pc.py is launched from an IDE, shortcut, or stale shell cwd.
+        """
+        super().__init__(*args, directory=ASSETS_DIR, **kwargs)
+
+    def translate_path(self, path):
+        """
+        Translates a request path to a local file path inside ASSETS_DIR.
+        Supports Android-style prefixes, maps empty requests to the root index.html,
+        and automatically falls back to serving files from the 'gui' subdirectory.
+        """
+        parsed = urllib.parse.urlparse(path)
+        clean_path = urllib.parse.unquote(parsed.path)
+        clean_path = clean_path.split('?', 1)[0].split('#', 1)[0]
+        clean_path = clean_path.replace('\\', '/')
+
+        # Strip Android asset prefix
+        android_prefix = '/app/src/main/assets/main/'
+
+        if clean_path.startswith(android_prefix):
+            clean_path = clean_path[len(android_prefix):]
+
+        parts = [p for p in clean_path.split('/') if p and p not in ('.', '..')]
+
+        # Default root or map to gui directory if the resource belongs to the GUI frontend
+        if not parts:
+            parts = ['gui', 'index.html']
+        elif parts[0] not in {'gui', 'logic', 'config.xml', 'icon.png'}:
+            parts.insert(0, 'gui')
+
+        return os.path.join(ASSETS_DIR, *parts)
+
     def do_OPTIONS(self):
         """
         Handles CORS preflight OPTIONS requests by returning permissive access headers.
@@ -121,19 +155,20 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         """
-        Handles HTTP GET requests. Routes /proxy requests to the reverse proxy handler,
-        redirects root path (/) to /gui/index.html, and serves static files otherwise.
+        Handles HTTP GET requests by routing API, proxy, and stub requests to their handlers.
+        Redirects empty roots to index.html and serves static assets with compression.
         """
         parsed_path = urllib.parse.urlparse(self.path).path
+        decoded_path = urllib.parse.unquote(parsed_path)
         if parsed_path == '/' or parsed_path == '':
             self.send_response(301)
-            self.send_header('Location', '/gui/index.html')
+            self.send_header('Location', '/index.html')
             self.end_headers()
         elif parsed_path == '/api/broken-channels':
             self._handle_get_broken_channels()
         elif parsed_path == '/api/version':
             self._handle_get_version()
-        elif '$WEBAPIS/webapis/webapis.js' in parsed_path:
+        elif '$WEBAPIS/webapis/webapis.js' in decoded_path:
             self._handle_webapis_stub()
         elif parsed_path.startswith('/proxy'):
             self._handle_proxy()
@@ -418,28 +453,42 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def start_server():
     """
-    Initializes and starts the threaded HTTP server, opens the browser to the web interface,
-    and handles graceful shutdown on keyboard interrupts.
+    Initializes and starts the threaded HTTP server on an available port, opening the browser to the interface.
+    Gracefully handles port conflicts by auto-incrementing and shuts down on keyboard interrupts.
     """
     # Change working directory to the assets directory to ensure correct path resolution
     os.chdir(ASSETS_DIR)
 
-    server = ThreadingHTTPServer(("", PORT), IVIDSHTTPRequestHandler)
-    server.allow_reuse_address = True
+    port = PORT
+    # Enable address reuse on the class level to prevent "address already in use" errors on restart
+    ThreadingHTTPServer.allow_reuse_address = True
+    while True:
+        try:
+            server = ThreadingHTTPServer(("", port), IVIDSHTTPRequestHandler)
+            break
+        except OSError:
+            if port >= PORT + 40:
+                raise
+            port += 1
 
-    url = f"http://localhost:{PORT}/gui/index.html"
+    url = f"http://localhost:{port}/"
     print("=" * 60)
     print("                  IVIDS PC UI TEST SERVER")
     print("=" * 60)
-    print(f"Server is running at: http://localhost:{PORT}/")
-    print(f"CORS Proxy available: http://localhost:{PORT}/proxy?url=<stream_url>")
+    print(f"Server is running at: http://localhost:{port}/")
+    print(f"CORS Proxy available: http://localhost:{port}/proxy?url=<stream_url>")
     print(f"Opening browser to:   {url}")
     print("Press Ctrl+C to stop the server.")
     print("=" * 60)
 
     # Open default web browser after starting the server
     try:
-        webbrowser.open(url)
+        if sys.platform == 'win32':
+            # Use a separate shell subprocess on Windows to isolate native ShellExecute crashes (0x80000003) from Python
+            import subprocess
+            subprocess.Popen(f'start {url}', shell=True)
+        else:
+            webbrowser.open(url)
     except Exception as e:
         print(f"Warning: Could not open browser automatically: {e}", file=sys.stderr)
 

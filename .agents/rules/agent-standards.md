@@ -17,6 +17,9 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 ## 3. Pixel-Less Layout
 - **RULE**: Avoid `px` for containers. Use `%` of the screen.
 
+## 4. No Browser Subagent
+- **RULE**: DO NOT use the browser subagent under any circumstances for testing, visual checks, or navigating.
+
 ## 6. Temporary Files
 - **RULE**: Any temporary file or script (like translation scripts, test files, or data dumps) MUST be created in the agent's `scratch` folder (e.g., `C:\Users\kenji\.gemini\antigravity-ide\scratch\`).
 - **CLEANUP**: You must delete any temporary files you created after use (when they are no longer needed).

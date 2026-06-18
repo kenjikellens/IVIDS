@@ -217,17 +217,29 @@ export async function checkForUpdates(force = false) {
 
 /**
  * Initializes the auto-updater background service on boot.
- * Schedules an automatic check if update mode is enabled and last check was > 24 hours ago.
+ * Schedules an automatic check if update mode is enabled (checking both localStorage and cookies fallback) and last check was > 24 hours ago.
  */
 export function initAutoCheck() {
     try {
+        let updateMode = null;
         const savedSettings = localStorage.getItem('ivids-settings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
-            if (settings.updateMode && settings.updateMode !== 'none') {
-                console.log('Updater: Starting automatic boot update check...');
-                checkForUpdates(false);
+            updateMode = settings.updateMode;
+        }
+        if (!updateMode) {
+            const match = document.cookie.match(/(?:^|; )updateMode=([^;]*)/);
+            if (match) {
+                updateMode = decodeURIComponent(match[1]);
             }
+        }
+        if (!updateMode) {
+            updateMode = 'manual'; // Default fallback
+        }
+
+        if (updateMode !== 'none') {
+            console.log('Updater: Starting automatic boot update check...');
+            checkForUpdates(false);
         }
     } catch (e) {
         console.error('Updater: Error in initAutoCheck trigger', e);

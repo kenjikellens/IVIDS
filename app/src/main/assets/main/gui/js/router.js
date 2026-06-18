@@ -69,6 +69,9 @@ export const Router = {
         const app = document.getElementById('app');
         if (app) {
             app.classList.remove('fullscreen-layout');
+            if (pageName === 'login') {
+                app.classList.add('fullscreen-layout');
+            }
             // Toggle always-expanded sidebar class based on page
             const alwaysExpandedPages = ['search', 'playlists', 'settings', 'account'];
             if (alwaysExpandedPages.includes(pageName)) {
@@ -81,7 +84,7 @@ export const Router = {
         // Explicitly hide sidebar for player pages to prevent DOM traversal/focus issues
         const sidebar = document.getElementById('sidebar-container');
         if (sidebar) {
-            if (pageName === 'player' || pageName === 'tv-player' || pageName === 'profiles') {
+            if (pageName === 'player' || pageName === 'tv-player' || pageName === 'login') {
                 sidebar.style.display = 'none';
             } else {
                 sidebar.style.display = '';
@@ -300,6 +303,13 @@ export const Router = {
         }
     },
 
+    /**
+     * Determines the appropriate fallback page to load when there is no navigation history.
+     * Maps the current page to its logical parent page in the app hierarchy.
+     * @param {string} currentPage - The name of the active page.
+     * @param {Object} [params] - Route parameter mapping.
+     * @returns {string} The name of the fallback page.
+     */
     getFallbackPage(currentPage, params) {
         const fallbacks = {
             'player': 'details',
@@ -309,6 +319,7 @@ export const Router = {
             'playlists': 'home',
             'settings': 'home',
             'account': 'home',
+            'login': 'account',
             'search': 'home',
             'movies': 'home',
             'series': 'home',
