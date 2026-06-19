@@ -160,7 +160,7 @@ export function setupLazyLoadedRows(categories, defaultType = null) {
 
 /**
  * Sets up a horizontal content row containing widescreen collection cards.
- * Manages rendering, lazy loading, cover overlays, and routing to the collection details page.
+ * It configures row containers with collection classes and manages image rendering and routing.
  * @param {string} elementId - The ID of the target row element in the DOM.
  * @param {Array<Object>} collections - The list of collection objects to render.
  */
@@ -170,6 +170,11 @@ export function setupCollectionRow(elementId, collections) {
         if (!rowPosters) {
             console.warn(`Row element ${elementId} not found`);
             return;
+        }
+
+        // Add collection-posters to rowPosters classes
+        if (!rowPosters.classList.contains('collection-posters')) {
+            rowPosters.classList.add('collection-posters');
         }
 
         // Get existing collection cards in the row
@@ -186,7 +191,7 @@ export function setupCollectionRow(elementId, collections) {
             let container = rowPosters.parentElement;
             if (container && !container.classList.contains('row-container')) {
                 container = document.createElement('div');
-                container.className = 'row-container';
+                container.className = 'row-container collection-row-container';
                 rowPosters.parentNode.insertBefore(container, rowPosters);
                 container.appendChild(rowPosters);
 

@@ -4847,3 +4847,72 @@ iframe,
     -webkit-mask-image: url('../images/settings.svg');
     mask-image: url('../images/settings.svg');
 }
+
+/* Glassy integrated accent background and layout wrapper for popular collections rows to enclose the title and posters in a single unified card. */
+.row:has(#popular-collections-row),
+.row:has(#popular-collections-series-row) {
+    background: rgba(var(--primary-rgb), 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
+    border-radius: var(--radius-lg);
+    margin: 32px var(--app-content-padding-x);
+    padding: 24px 0 12px;
+}
+
+/* Styles the container wrapper around a collections row to override the default row heights. */
+.collection-row-container {
+    min-height: auto !important;
+    margin-bottom: 0px;
+    background: transparent;
+    padding: 0 !important;
+}
+
+/* Styles the horizontal flex scroll list of collection cards in a row with increased padding and a transparent background. */
+.collection-posters {
+    min-height: auto !important;
+    padding: 24px var(--app-content-padding-x) !important;
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    width: 100%;
+    background: transparent;
+}
+
+/* Styles the widescreen 16:9 clickable collection card item. */
+.collection-card {
+    align-self: center;
+    /* Prevents vertical stretching in flex container rows */
+    aspect-ratio: 16 / 9 !important;
+    background: #101010;
+    border: 3px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    flex: 0 0 clamp(240px, 20vw, 320px) !important;
+    height: auto !important;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    width: clamp(240px, 20vw, 320px) !important;
+}
+
+/* Styles the active hover or focus state of poster wrappers, playlist cards, and collection cards with a white border outline, an accent-color shadow, and scaling. */
+.poster-wrapper:hover,
+.poster-wrapper:focus,
+.poster-wrapper.focused,
+.playlist-card:hover,
+.playlist-card:focus,
+.playlist-card.focused,
+.collection-card:hover,
+.collection-card:focus,
+.collection-card.focused {
+    border-color: #ffffff;
+    box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.5);
+    outline: 2px solid #ffffff;
+    outline-offset: 0px;
+    transform: scale(1.04);
+    z-index: 100;
+}

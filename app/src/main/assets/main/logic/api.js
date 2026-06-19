@@ -1078,58 +1078,79 @@ export const Api = {
     },
 
     /**
-     * Fetches detailed information for a collection, including all parts (movies).
+     * Fetches detailed information for a collection, retrying without language code if localized fetch fails, and includes movies.
      * @param {number|string} collectionId - The TMDB collection ID.
      * @returns {Promise<Object>} Detailed collection metadata.
      */
     async getCollectionDetails(collectionId) {
         if (API_KEY.includes('TODO')) return null;
+        const lang = this.getLanguageCode();
         try {
-            const lang = this.getLanguageCode();
             const response = await deduplicatedFetch(`${BASE_URL}/collection/${collectionId}?api_key=${API_KEY}&language=${lang}`);
             const data = await response.json();
             if (data && data.parts) {
                 const today = getTodayDate();
-                // Filter out unreleased/unaired movies
+                // Filter out unreleased future movies, but keep movies with missing release dates
                 data.parts = data.parts.filter(item => {
                     const releaseDate = item.release_date;
-                    return releaseDate && releaseDate <= today;
+                    return !releaseDate || releaseDate <= today;
                 });
             }
             return data;
         } catch (error) {
-            console.error('Error fetching collection details:', error);
-            return null;
+            console.warn(`Failed to fetch collection details with language ${lang}, retrying with fallback language...`, error);
+            try {
+                // Retry without the language parameter to fall back to English/default
+                const response = await deduplicatedFetch(`${BASE_URL}/collection/${collectionId}?api_key=${API_KEY}`);
+                const data = await response.json();
+                if (data && data.parts) {
+                    const today = getTodayDate();
+                    data.parts = data.parts.filter(item => {
+                        const releaseDate = item.release_date;
+                        return !releaseDate || releaseDate <= today;
+                    });
+                }
+                return data;
+            } catch (fallbackError) {
+                console.error('Error fetching collection details in fallback mode:', fallbackError);
+                return null;
+            }
         }
     },
 
     /**
-     * Fully softcoded collection discovery.
-     * Inspects the details of currently popular and trending movies to dynamically extract parent franchises/collections.
-     * Caches the list for 24 hours to optimize performance and prevent API limits.
+     * Discovers parent collections by inspecting a randomized pool of popular and trending movies, verifying each collection's validity before return.
+     * This affects the popular collections carousels shown on the home and series pages by providing dynamic and working items.
      * @returns {Promise<Array>} List of discovered popular collections.
      */
     async fetchPopularCollections() {
         const lang = this.getLanguageCode();
-        const cacheKey = `popular_collections_discovered_${lang}`;
-        const cached = cacheManager.get(cacheKey);
-        if (cached) return [...cached];
-
         try {
-            // Fetch popular and trending movies lists concurrently
-            const [popularRes, trendingRes] = await Promise.all([
+            // Fetch popular pages 1 & 2 and trending pages 1 & 2 concurrently to build a larger movie pool
+            const [popularRes1, popularRes2, trendingRes1, trendingRes2] = await Promise.all([
                 deduplicatedFetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=${lang}&page=1`),
-                deduplicatedFetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=${lang}&page=1`)
+                deduplicatedFetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=${lang}&page=2`),
+                deduplicatedFetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=${lang}&page=1`),
+                deduplicatedFetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=${lang}&page=2`)
             ]);
 
-            const popularData = await popularRes.json();
-            const trendingData = await trendingRes.json();
+            const [popularData1, popularData2, trendingData1, trendingData2] = await Promise.all([
+                popularRes1.json(),
+                popularRes2.json(),
+                trendingRes1.json(),
+                trendingRes2.json()
+            ]);
 
             const movies = [];
             const seenMovieIds = new Set();
 
-            // Merge movie results from both endpoints
-            const rawMovies = [...(popularData.results || []), ...(trendingData.results || [])];
+            // Merge movie results from all fetched endpoints
+            const rawMovies = [
+                ...(popularData1.results || []),
+                ...(popularData2.results || []),
+                ...(trendingData1.results || []),
+                ...(trendingData2.results || [])
+            ];
             for (const m of rawMovies) {
                 if (m && m.id && !seenMovieIds.has(m.id)) {
                     seenMovieIds.add(m.id);
@@ -1137,10 +1158,13 @@ export const Api = {
                 }
             }
 
-            // Limit details lookup to the top 30 most popular/trending items to prevent API overload
-            const targetMovies = movies.slice(0, 30);
+            // Shuffle the movies pool to ensure dynamic discovery on each page load
+            shuffleArray(movies);
 
-            // Fetch details for all 30 target movies in parallel to find collections
+            // Limit details lookup to the top 20 items to prevent TMDB API rate-limiting/overload
+            const targetMovies = movies.slice(0, 20);
+
+            // Fetch details for all 20 target movies in parallel to find collections
             const collectionPromises = targetMovies.map(async (movie) => {
                 try {
                     const detailRes = await deduplicatedFetch(`${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&language=${lang}`);
@@ -1170,12 +1194,30 @@ export const Api = {
                 }
             }
 
-            // Cache for 24 hours (1440 minutes) since franchise collections are static
-            if (uniqueCollections.length > 0) {
-                cacheManager.set(cacheKey, uniqueCollections, 1440);
-            }
+            // Verify each unique collection against TMDB to ensure it returns 200 and has released parts
+            const verifiedCollections = [];
+            const verificationPromises = uniqueCollections.map(async (col) => {
+                try {
+                    const testRes = await deduplicatedFetch(`${BASE_URL}/collection/${col.id}?api_key=${API_KEY}`);
+                    const testData = await testRes.json();
+                    if (testData && testData.parts && testData.parts.length > 0) {
+                        const today = getTodayDate();
+                        // Keep only collections that have at least one released part
+                        const hasReleased = testData.parts.some(item => {
+                            const releaseDate = item.release_date;
+                            return !releaseDate || releaseDate <= today;
+                        });
+                        if (hasReleased) {
+                            verifiedCollections.push(col);
+                        }
+                    }
+                } catch (e) {
+                    console.warn(`Collection ${col.id} (${col.name}) failed verification, discarding:`, e);
+                }
+            });
+            await Promise.all(verificationPromises);
 
-            return uniqueCollections;
+            return verifiedCollections;
         } catch (error) {
             console.error('Error executing softcoded collection discovery:', error);
             return [];
