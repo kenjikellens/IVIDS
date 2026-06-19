@@ -2,6 +2,7 @@ console.log('Settings.js: Script loaded');
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Toast } from '../js/toast.js';
 import { manageModal } from '../js/utils/ui-helper.js';
+import { parseMarkdown } from '../js/utils/markdown-parser.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { Api } from '../../logic/api.js';
 
@@ -628,7 +629,7 @@ class SettingsManager {
 
         const contentEl = document.getElementById('changes-modal-content');
         if (contentEl) {
-            contentEl.textContent = body;
+            contentEl.innerHTML = parseMarkdown(body);
         }
 
         const prevModal = this.currentModal;

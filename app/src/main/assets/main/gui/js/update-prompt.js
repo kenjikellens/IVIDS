@@ -1,4 +1,5 @@
 import { SpatialNav } from './spatial-nav.js';
+import { parseMarkdown } from './utils/markdown-parser.js';
 
 /**
  * UpdatePrompt Class
@@ -151,10 +152,10 @@ export class UpdatePrompt {
             return;
         }
 
-        // Format raw markdown bodies to simple bullet points
-        const cleanBody = release.body 
-            ? release.body.replace(/[#*`]/g, '').trim().split('\n').slice(0, 8).join('<br>• ') 
-            : 'Performance and core interface enhancements.';
+        // Format raw markdown bodies using the markdown parser
+        const parsedBody = release.body 
+            ? parseMarkdown(release.body) 
+            : '<p>Performance and core interface enhancements.</p>';
 
         titleEl.textContent = this.translate('settings.updateNotification', 'New Version Available!');
         changelogTitleEl.textContent = this.translate('settings.whatsNew', "What's New:");
@@ -164,7 +165,7 @@ export class UpdatePrompt {
         currentBadgeEl.textContent = currentVer;
         remoteBadgeEl.textContent = release.tag_name;
         releaseNameEl.textContent = release.name || 'Prerelease Update';
-        changelogBodyEl.innerHTML = `• ${cleanBody}`;
+        changelogBodyEl.innerHTML = parsedBody;
 
         // Reset progress bar visibility and reset visual states
         progressContainer.style.display = 'none';

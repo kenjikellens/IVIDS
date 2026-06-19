@@ -92,7 +92,7 @@ function render() {
                         <span>📺</span>
                     </div>
                     <h2 data-i18n="playlists.emptyPlaylist" style="margin-bottom: 22px; color: #fff; font-size: 24px;">This playlist is empty.</h2>
-                    <button id="empty-browse-btn" class="btn btn-primary focusable">Browse Content</button>
+                    <button id="empty-browse-btn" class="btn btn-secondary focusable">Browse Content</button>
                 </div>
             `;
 

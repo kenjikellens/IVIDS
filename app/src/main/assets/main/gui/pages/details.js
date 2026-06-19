@@ -321,18 +321,18 @@ function openPlaylistModal(item, type) {
         } else {
             playlists.forEach(playlist => {
                 try {
-                    const div = document.createElement('div');
-                    div.className = 'playlist-option focusable';
-                    div.tabIndex = 0;
-                    div.textContent = playlist.name || I18n.t('details.unnamedPlaylist');
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn btn-secondary focusable';
+                    btn.textContent = playlist.name || I18n.t('details.unnamedPlaylist');
 
                     const exists = playlist.items && playlist.items.some(i => i.id === item.id && i.media_type === type);
                     if (exists) {
-                        div.textContent += ' (Added)';
-                        div.style.color = '#aaa';
+                        btn.textContent += ` (${I18n.t('details.added', 'Added')})`;
+                        btn.classList.add('btn-added');
                     }
 
-                    div.onclick = () => {
+                    btn.onclick = () => {
                         try {
                             if (!exists) {
                                 const itemToAdd = {
@@ -357,7 +357,7 @@ function openPlaylistModal(item, type) {
                         }
                     };
 
-                    listContainer.appendChild(div);
+                    listContainer.appendChild(btn);
                 } catch (itemError) {
                     console.error('Error rendering playlist item:', itemError);
                 }

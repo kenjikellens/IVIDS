@@ -15,7 +15,7 @@
                 <p class="details-overview" id="details-overview"></p>
                 <div class="details-actions">
                     <button class="btn btn-primary focusable" id="details-play" data-i18n="details.play">Play</button>
-                    <button class="btn btn-secondary focusable" id="details-trailer" style="display: none;" data-i18n="details.watchTrailer">Watch Trailer</button>
+                    <button class="btn btn-secondary focusable hidden" id="details-trailer" data-i18n="details.watchTrailer">Watch Trailer</button>
                     <button class="btn btn-secondary focusable" id="details-playlist"
                         data-i18n="details.addToPlaylist">Add to Playlist</button>
                 </div>
@@ -44,14 +44,14 @@
         </div>
 
         <!-- Tab Panel: Extra (Trailers & Specials) -->
-        <div class="disney-tab-panel" id="panel-extra" style="display: none;">
+        <div class="disney-tab-panel hidden" id="panel-extra">
             <div class="disney-extras-list" id="extras-list">
                 <!-- Filled by JS -->
             </div>
         </div>
 
         <!-- Tab Panel: About (Synopsis & Cast) -->
-        <div class="disney-tab-panel" id="panel-about" style="display: none;">
+        <div class="disney-tab-panel hidden" id="panel-about">
             <div class="disney-about-content">
                 <div class="disney-about-left">
                     <h4 class="disney-about-section-title" data-i18n="details.synopsis">Synopsis</h4>
@@ -82,4 +82,3 @@
     </div>
 </div>
 
-</style>

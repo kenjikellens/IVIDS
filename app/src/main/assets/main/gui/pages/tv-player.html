@@ -3,7 +3,7 @@
     <video id="tv-video" class="tv-video" autoplay></video>
 
     <!-- Zapping HUD Overlay (Top Right, temporary indicator) -->
-    <div id="tv-zapping-hud" class="tv-zapping-hud" style="display: none;">
+    <div id="tv-zapping-hud" class="tv-zapping-hud hidden">
         <span class="zapping-label" data-i18n="livetv.zappingTo">Zapping to...</span>
         <span id="zapping-channel-name" class="zapping-channel-name">Channel Name</span>
     </div>
@@ -27,7 +27,7 @@
                         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                     </svg>
                     <!-- Play Icon -->
-                    <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style="display: none;">
+                    <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor" width="28" height="28" class="hidden">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
                 </button>

@@ -6,7 +6,7 @@
                 <img src="images/search.svg" class="search-icon" alt="Search">
                 <input type="text" id="search-input" class="focusable" placeholder="Search for channels..."
                     data-i18n="livetv.searchPlaceholder" readonly>
-                <button id="search-clear" class="search-clear-btn focusable" style="display: none;">&times;</button>
+                <button id="search-clear" class="search-clear-btn focusable hidden">&times;</button>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
                 <!-- Dynamically injected wide rectangular rows -->
             </div>
 
-            <div id="no-channels-message" class="empty-state" style="display: none;">
+            <div id="no-channels-message" class="empty-state hidden">
                 <p data-i18n="livetv.noChannels">No channels found</p>
             </div>
         </div>
@@ -52,12 +52,12 @@
             </div>
 
             <!-- Active Channel Details -->
-            <div id="hero-active-content" class="hero-active-content" style="display: none;">
+            <div id="hero-active-content" class="hero-active-content hidden">
                 <!-- Top Card: Video Preview / Channel info & Watch button -->
                 <!-- Top Card: Video Preview -->
                 <div class="preview-card-video">
                     <video id="livetv-preview-video" autoplay muted playsinline></video>
-                    <div id="preview-video-loading" class="preview-video-loading" style="display: none;">
+                    <div id="preview-video-loading" class="preview-video-loading hidden">
                         <div class="ivids-loader"></div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                 <!-- Bottom Card: Current & Upcoming Program EPG Schedules -->
                 <div class="epg-card">
                     <!-- Current Program Schedule -->
-                    <div id="hero-epg-container" class="details-epg-section" style="display: none;">
+                    <div id="hero-epg-container" class="details-epg-section hidden">
                         <h3 class="section-title">
                             <span class="live-badge" data-i18n="livetv.live">LIVE</span>
                             <span data-i18n="livetv.playingNow">Playing Now</span>

@@ -1,5 +1,5 @@
-<div class="page-container" style="padding: 0; height: 100%;">
-    <div id="collection-details-view" class="details-page" style="display: block; opacity: 1;">
+<div class="page-container">
+    <div id="collection-details-view" class="details-page">
         <!-- Cinematic Background backdrop -->
         <div class="playlist-backdrop" id="collection-backdrop">
             <div class="backdrop-overlay"></div>
@@ -11,12 +11,12 @@
                     <h1 class="details-title" id="collection-title">Collection Name</h1>
                     <div class="details-genres">
                         <span id="collection-count">0 items</span>
-                        <span class="details-separator" style="color: var(--text-dim); margin: 0 4px;">•</span>
+                        <span class="details-separator meta-separator-dot">•</span>
                         <span data-i18n="nav.collections">Collection</span>
                     </div>
                     <p class="details-overview" id="collection-overview">Loading collection overview...</p>
                     <div class="details-actions">
-                        <button id="save-collection-btn" class="btn btn-primary focusable" data-i18n="collections.saveToPlaylist">
+                        <button id="save-collection-btn" class="btn btn-secondary focusable" data-i18n="collections.saveToPlaylist">
                             Save as Playlist
                         </button>
                         <button id="collection-back-btn" class="btn btn-secondary focusable" data-i18n="details.back">
@@ -30,8 +30,8 @@
             </div>
 
             <div class="details-bottom">
-                <div class="recommendations-section" style="display: block; margin-top: 20px; width: 100%;">
-                    <h3 class="row-title" style="margin-bottom:20px; font-size:24px; color:#fff;" data-i18n="playlists.items">Collection Items</h3>
+                <div class="recommendations-section recommendations-section-layout">
+                    <h3 class="row-title large-title-white" data-i18n="playlists.items">Collection Items</h3>
                     <div id="collection-items-container" class="playlist-items-grid">
                         <!-- Items injected via JS -->
                     </div>
