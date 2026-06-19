@@ -4607,77 +4607,6 @@ iframe,
 }
 
 /* ==========================================================================
-   COLLECTIONS FEATURE STYLES
-   ========================================================================== */
-
-/* Outer wrapper for the Collections search and grid page layout. */
-.collections-container {
-    animation: fadeIn 0.4s ease-out;
-    padding: 3% 4% 5% 4%;
-    width: 100%;
-}
-
-/* Flexbox container positioning the search input and trigger button. */
-.collections-search-bar {
-    align-items: center;
-    display: flex;
-    gap: 16px;
-    margin-bottom: 36px;
-    width: 100%;
-}
-
-/* Outer layout wrapper for the horizontal scroll rows displaying collections. */
-#popular-collections-row,
-#popular-collections-series-row {
-    display: flex;
-    flex-direction: row;
-    gap: 14px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 10px 0;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    width: 100%;
-}
-
-/* Widescreen 16:9 clickable card used in Collections grids and rows. */
-.collection-card {
-    align-self: center;
-    /* Prevents vertical stretching in flex container rows */
-    aspect-ratio: 16 / 9 !important;
-    background: #101010;
-    border: 3px solid transparent;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    flex: 0 0 clamp(200px, 18vw, 280px);
-    height: auto !important;
-    overflow: hidden;
-    padding: 0;
-    position: relative;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    width: 100%;
-}
-
-/* White thicker border hover/focus state for collection cards, adhering to no-scale rules. */
-.collection-card:hover,
-.collection-card:focus,
-.collection-card.focused {
-    border-color: #ffffff !important;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-    outline: none !important;
-    z-index: 10;
-}
-
-/* Grid layout for search results and popular collections list. */
-.collections-grid {
-    animation: fadeInUp 0.32s ease-out;
-    display: grid;
-    gap: clamp(12px, 1.5vw, 18px);
-    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr));
-    width: 100%;
-}
-
-/* ==========================================================================
    SECTION 27: UTILITY & LAYOUT REFACTORING CLASSES (REMOVING INLINE STYLES)
    ========================================================================== */
 
@@ -4847,68 +4776,12 @@ iframe,
     -webkit-mask-image: url('../images/settings.svg');
     mask-image: url('../images/settings.svg');
 }
-
-/* Glassy integrated accent background and layout wrapper for popular collections rows to enclose the title and posters in a single unified card. */
-.row:has(#popular-collections-row),
-.row:has(#popular-collections-series-row) {
-    background: rgba(var(--primary-rgb), 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(var(--primary-rgb), 0.15);
-    border-radius: var(--radius-lg);
-    margin: 32px var(--app-content-padding-x);
-    padding: 24px 0 12px;
-}
-
-/* Styles the container wrapper around a collections row to override the default row heights. */
-.collection-row-container {
-    min-height: auto !important;
-    margin-bottom: 0px;
-    background: transparent;
-    padding: 0 !important;
-}
-
-/* Styles the horizontal flex scroll list of collection cards in a row with increased padding and a transparent background. */
-.collection-posters {
-    min-height: auto !important;
-    padding: 24px var(--app-content-padding-x) !important;
-    display: flex;
-    gap: 24px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    width: 100%;
-    background: transparent;
-}
-
-/* Styles the widescreen 16:9 clickable collection card item. */
-.collection-card {
-    align-self: center;
-    /* Prevents vertical stretching in flex container rows */
-    aspect-ratio: 16 / 9 !important;
-    background: #101010;
-    border: 3px solid transparent;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    flex: 0 0 clamp(240px, 20vw, 320px) !important;
-    height: auto !important;
-    overflow: hidden;
-    padding: 0;
-    position: relative;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-    width: clamp(240px, 20vw, 320px) !important;
-}
-
-/* Styles the active hover or focus state of poster wrappers, playlist cards, and collection cards with a white border outline, an accent-color shadow, and scaling. */
 .poster-wrapper:hover,
 .poster-wrapper:focus,
 .poster-wrapper.focused,
 .playlist-card:hover,
 .playlist-card:focus,
-.playlist-card.focused,
-.collection-card:hover,
-.collection-card:focus,
-.collection-card.focused {
+.playlist-card.focused {
     border-color: #ffffff;
     box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.5);
     outline: 2px solid #ffffff;

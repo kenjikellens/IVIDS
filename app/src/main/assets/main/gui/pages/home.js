@@ -54,7 +54,6 @@ export async function init() {
         // 2. Define Lazy Load Configuration
         const categories = [
             { id: 'highly-rated-row', fetcher: () => Api.fetchHighlyRated() },
-            { id: 'popular-collections-row', fetcher: () => Api.fetchPopularCollections(), type: 'collection' },
             { id: 'new-this-year-row', fetcher: () => Api.fetchNewThisYear() },
             { id: 'award-winners-row', fetcher: () => Api.fetchAwardWinners() },
             { id: 'top-rated-row', fetcher: () => Api.fetchTopRated() },

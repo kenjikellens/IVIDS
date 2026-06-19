@@ -13,6 +13,16 @@ export class HeroSlider {
      * @param {Object} config - Configuration mapping container, title, description, and button IDs.
      */
     constructor(items, config) {
+        // Destroy existing global slider if any to prevent memory leaks and interval conflicts
+        if (window.activeHeroSlider && typeof window.activeHeroSlider.destroy === 'function') {
+            try {
+                window.activeHeroSlider.destroy();
+            } catch (e) {
+                console.error('Error destroying previous hero slider:', e);
+            }
+        }
+        window.activeHeroSlider = this;
+
         // Filter out items without backdrop_path
         this.items = items.filter(item => item.backdrop_path);
         this.config = config;
@@ -25,7 +35,7 @@ export class HeroSlider {
 
         this.currentIndex = 0;
         this.interval = null;
-        this.duration = 12000; // 12 seconds
+        this.duration = 20000; // 20 seconds
         this.isDestroyed = false;
 
         if (!this.container || this.items.length === 0) {

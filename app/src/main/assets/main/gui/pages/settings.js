@@ -750,7 +750,7 @@ class SettingsManager {
             }
         };
 
-        const cancelBtn = modal.querySelector('.btn-secondary') || modal.querySelector('.modal-btn.secondary') || modal.querySelector('.action-btn.secondary');
+        const cancelBtn = modal.querySelector('.modal-footer .btn-secondary') || modal.querySelector('.modal-footer .modal-btn.secondary') || modal.querySelector('.modal-footer .action-btn.secondary');
         if (cancelBtn) {
             cancelBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -766,7 +766,7 @@ class SettingsManager {
             };
         }
 
-        const applyBtn = modal.querySelector('.btn-primary') || modal.querySelector('.modal-btn.primary') || modal.querySelector('.action-btn.primary');
+        const applyBtn = modal.querySelector('.modal-footer .btn-primary') || modal.querySelector('.modal-footer .modal-btn.primary') || modal.querySelector('.modal-footer .action-btn.primary');
         if (applyBtn) {
             applyBtn.onclick = (e) => {
                 e.stopPropagation();

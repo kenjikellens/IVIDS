@@ -31,6 +31,15 @@ export const Router = {
     async loadPage(pageName, params = {}, addToHistory = true, targetFocus = null) {
         if (this.isLoading) return; // Prevent double loading
 
+        if (window.activeHeroSlider && typeof window.activeHeroSlider.destroy === 'function') {
+            try {
+                window.activeHeroSlider.destroy();
+                window.activeHeroSlider = null;
+            } catch (e) {
+                console.error('Error destroying hero slider on page navigation:', e);
+            }
+        }
+
         // Prevent loading the same page again
         if (this.currentPage === pageName && JSON.stringify(this.params) === JSON.stringify(params)) {
             console.log(`Already on page: ${pageName}, skipping load.`);
@@ -316,7 +325,6 @@ export const Router = {
             'tv-player': 'livetv',
             'details': 'home',
             'playlist-details': 'playlists',
-            'collection-details': 'home',
             'playlists': 'home',
             'settings': 'home',
             'account': 'home',
