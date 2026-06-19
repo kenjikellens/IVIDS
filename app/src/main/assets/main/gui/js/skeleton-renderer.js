@@ -5,7 +5,7 @@ import { createLoaderElement } from './loader.js';
  * @param {string} elementId - The ID of the row container element.
  * @param {number} count - Number of skeleton posters to render (default 20).
  */
-export function renderSkeletonRow(elementId, count = 20) {
+export function renderSkeletonRow(elementId, count = 20, cardType = 'poster') {
     const rowPosters = document.getElementById(elementId);
     if (!rowPosters) return;
 
@@ -23,7 +23,9 @@ export function renderSkeletonRow(elementId, count = 20) {
     for (let i = 0; i < count; i++) {
         const skeleton = document.createElement('button');
         skeleton.type = 'button';
-        skeleton.className = 'poster-wrapper focusable is-skeleton';
+        skeleton.className = cardType === 'collection'
+            ? 'collection-card focusable is-skeleton'
+            : 'poster-wrapper focusable is-skeleton';
         skeleton.setAttribute('aria-hidden', 'true'); // Placeholder only
 
         // We use a CSS-only shimmer effect instead of injecting multiple loader dots

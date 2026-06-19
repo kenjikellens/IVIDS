@@ -130,24 +130,141 @@ export function setupRow(elementId, items, defaultType = null) {
 /**
  * Sets up skeleton rows immediately and registers lazy loaders to populate content.
  * It manages the lifecycle of rendering skeletons, fetching actual content, and updating rows.
+ * Supports rendering collection cards dynamically based on the category's type configuration.
  * @param {Array<Object>} categories - List of category objects containing element id and fetcher function.
  * @param {string} [defaultType] - Default media type ('movie' or 'tv') passed down to setupRow.
  */
 export function setupLazyLoadedRows(categories, defaultType = null) {
-    categories.forEach(cat => renderSkeletonRow(cat.id));
+    categories.forEach(cat => {
+        const cardType = cat.type === 'collection' ? 'collection' : 'poster';
+        renderSkeletonRow(cat.id, 20, cardType);
+    });
 
     categories.forEach(cat => {
         lazyLoader.register(cat.id, async () => {
             return await cat.fetcher();
         }, (id, data) => {
             if (data) {
-                setupRow(id, data, defaultType);
+                if (cat.type === 'collection') {
+                    setupCollectionRow(id, data);
+                } else {
+                    setupRow(id, data, defaultType);
+                }
             } else {
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = '';
             }
         });
     });
+}
+
+/**
+ * Sets up a horizontal content row containing widescreen collection cards.
+ * Manages rendering, lazy loading, cover overlays, and routing to the collection details page.
+ * @param {string} elementId - The ID of the target row element in the DOM.
+ * @param {Array<Object>} collections - The list of collection objects to render.
+ */
+export function setupCollectionRow(elementId, collections) {
+    try {
+        const rowPosters = document.getElementById(elementId);
+        if (!rowPosters) {
+            console.warn(`Row element ${elementId} not found`);
+            return;
+        }
+
+        // Get existing collection cards in the row
+        const existingButtons = Array.from(rowPosters.querySelectorAll('.collection-card'));
+
+        if (!collections || collections.length === 0) {
+            console.log(`No collections for row ${elementId}`);
+            existingButtons.forEach(btn => btn.remove());
+            return;
+        }
+
+        // Create container if not already wrapped (idempotency check)
+        try {
+            let container = rowPosters.parentElement;
+            if (container && !container.classList.contains('row-container')) {
+                container = document.createElement('div');
+                container.className = 'row-container';
+                rowPosters.parentNode.insertBefore(container, rowPosters);
+                container.appendChild(rowPosters);
+
+                // Observe container for DOM recycling (pruning off-screen rows)
+                domRecycler.observe(container);
+            }
+        } catch (containerError) {
+            console.error('Error creating collection row container:', containerError);
+        }
+
+        collections.forEach((item, index) => {
+            try {
+                if (!item.backdrop_path && !item.poster_path) return;
+
+                let btn;
+                if (existingButtons[index]) {
+                    btn = existingButtons[index];
+                    btn.innerHTML = '';
+                } else {
+                    btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'collection-card focusable';
+                    rowPosters.appendChild(btn);
+                }
+
+                // Create loader for the image session
+                const loader = createLoaderElement();
+                loader.classList.add('poster-loader');
+                btn.appendChild(loader);
+
+                // Create cover div to match playlist-card structure
+                const coverDiv = document.createElement('div');
+                coverDiv.className = 'playlist-cover';
+
+                const img = document.createElement('img');
+                img.decoding = 'async';
+                img.style.opacity = '0'; // Hide initially
+                img.onload = () => {
+                    img.style.opacity = '1';
+                    if (loader.parentNode) loader.parentNode.removeChild(loader);
+                };
+                img.onerror = () => {
+                    if (loader.parentNode) loader.parentNode.removeChild(loader);
+                    img.style.opacity = '1';
+                };
+                img.dataset.src = Api.getImageUrl(item.backdrop_path || item.poster_path, 'w500');
+                img.alt = item.name || 'Unknown Collection';
+
+                const overlay = document.createElement('div');
+                overlay.className = 'playlist-overlay';
+                overlay.innerHTML = `<div class="playlist-name">${item.name}</div>`;
+
+                coverDiv.appendChild(img);
+                coverDiv.appendChild(overlay);
+                btn.appendChild(coverDiv);
+
+                btn.onclick = () => {
+                    try {
+                        Router.loadPage('collection-details', { id: item.id });
+                    } catch (navError) {
+                        console.error('Error navigating to collection details:', navError);
+                    }
+                };
+
+                // Observe the container for lazy loading the image
+                lazyLoader.observeItem(btn);
+            } catch (itemError) {
+                console.error('Error rendering collection item:', itemError);
+            }
+        });
+
+        // Remove any remaining buttons if data count is smaller
+        for (let i = collections.length; i < existingButtons.length; i++) {
+            existingButtons[i].remove();
+        }
+    } catch (error) {
+        console.error(`Error in setupCollectionRow for ${elementId}:`, error);
+    }
 }
 
 /**

@@ -316,6 +316,7 @@ export const Router = {
             'tv-player': 'livetv',
             'details': 'home',
             'playlist-details': 'playlists',
+            'collection-details': 'home',
             'playlists': 'home',
             'settings': 'home',
             'account': 'home',

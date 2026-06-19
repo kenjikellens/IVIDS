@@ -11,7 +11,7 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **CLARIFICATION**: If the user asks for "green" or "colored" elements, ask if they mean the accent color.
 
 ## 2. No Scale Animations
-- **RULE**: Buttons NEVER have scale or moving animations on hover/focus.
+- **RULE**: NEVER add moving animations on hover/focus, unless the user wants to.
 - **FEEDBACK**: Use a white thicker border for focus/hover.
 
 ## 3. Pixel-Less Layout
@@ -23,3 +23,7 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 ## 6. Temporary Files
 - **RULE**: Any temporary file or script (like translation scripts, test files, or data dumps) MUST be created in the agent's `scratch` folder (e.g., `C:\Users\kenji\.gemini\antigravity-ide\scratch\`).
 - **CLEANUP**: You must delete any temporary files you created after use (when they are no longer needed).
+
+## 7. Class Reusability & CSS Minimization
+- **RULE**: ALWAYS prioritize reusing already made CSS classes (e.g. `.playlist-card`, `.playlist-cover`, `.playlist-overlay`, `.poster-wrapper`, etc.) instead of writing duplicate styles or creating new classes.
+- **RULE**: Only add new CSS rules when absolutely necessary for custom layouts that cannot be achieved using existing class declarations.

@@ -11,7 +11,8 @@
         "settings": "Paramètres",
         "playlists": "Listes",
         "account": "Compte",
-        "livetv": "Live TV"
+        "livetv": "Live TV",
+        "collections": "Collections"
     },
     "account": {
         "title": "Compte",
@@ -152,7 +153,25 @@
         "cancel": "Annuler",
         "searchCountries": "Chercher des pays...",
         "na": "N.A.",
-        "clearRecents": "Effacer"
+        "clearRecents": "Effacer",
+        "network": "Réseau de diffusion",
+        "selectNetwork": "Sélectionner le réseau",
+        "allNetworks": "Tous les réseaux",
+        "runtime": "Durée",
+        "selectRuntime": "Sélectionner la durée",
+        "allRuntimes": "Toutes les durées",
+        "runtimeShort": "Court (< 90m)",
+        "runtimeMedium": "Moyen (90m - 120m)",
+        "runtimeLong": "Long (> 120m)",
+        "decade": "Décennie",
+        "selectDecade": "Sélectionner la décennie",
+        "allDecades": "Toutes les décennies",
+        "decade2020": "Années 2020",
+        "decade2010": "Années 2010",
+        "decade2000": "Années 2000",
+        "decade1990": "Années 90",
+        "decade1980": "Années 80",
+        "decade1970": "Années 70 et avant"
     },
     "player": {
         "play": "Lire",
@@ -229,7 +248,15 @@
         "netflix": "Originaux Netflix",
         "korean": "Contenu coréen",
         "bollywood": "Bollywood",
-        "classics": "Films classiques"
+        "classics": "Films classiques",
+        "trending_today": "Tendances du jour",
+        "tv_movies": "Téléfilms",
+        "eighties_nostalgia": "Nostalgie des années 80",
+        "nineties_nostalgia": "Nostalgie des années 90",
+        "hbo_series": "Séries HBO/Max",
+        "disney_plus_series": "Séries Disney+",
+        "talk_news": "Talk & Infos",
+        "popularCollections": "Popular Collections"
     },
     "details": {
         "play": "Lire",
@@ -348,5 +375,15 @@
         "registerTitle": "S'inscrire",
         "signInSubtitle": "Connectez-vous à votre compte",
         "registerSubtitle": "Enregistrez votre compte"
+    },
+    "collections": {
+        "title": "Collections",
+        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
+        "popular": "Popular Collections",
+        "noResults": "No collections found",
+        "films": "{count} films",
+        "saveToPlaylist": "Save as Playlist",
+        "savedSuccess": "Collection saved as playlist!",
+        "alreadySaved": "This collection is already saved"
     }
 }

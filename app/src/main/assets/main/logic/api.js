@@ -290,6 +290,41 @@ export const Api = {
     },
 
     /**
+     * Fetches daily trending movies and TV shows from TMDB.
+     * This updates the trending today category row on the home and browse pages.
+     * @returns {Promise<Array>} List of today's trending content.
+     */
+    async fetchTrendingToday() {
+        const lang = this.getLanguageCode();
+        const cacheKey = `trending_all_day_${lang}`;
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return shuffleArray([...cached]);
+
+        try {
+            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&include_adult=false&language=${lang}`);
+            const data = await response.json();
+            const today = getTodayDate();
+
+            if (!data || !data.results) return [];
+
+            // Filter by release dates - only show released/aired content
+            const filtered = data.results.filter(item => {
+                const releaseDate = item.release_date || item.first_air_date;
+                return releaseDate && releaseDate <= today;
+            });
+
+            if (filtered.length > 0) {
+                cacheManager.set(cacheKey, filtered, 15);
+            }
+
+            return shuffleArray(filtered);
+        } catch (error) {
+            console.error('Error fetching trending today:', error);
+            return [];
+        }
+    },
+
+    /**
      * Fetches the top-rated movies from TMDB.
      * This updates the top-rated movies row or carousel on the home screen.
      * @returns {Promise<Array>} List of top-rated movies.
@@ -415,6 +450,19 @@ export const Api = {
     fetchNewThisYear() { return this._fetchDiscover('movie', 'primary_release_date.gte=2025-01-01&sort_by=popularity.desc'); },
     fetchClassicMovies() { return this._fetchDiscover('movie', 'primary_release_date.gte=1970-01-01&primary_release_date.lte=1999-12-31&vote_count.gte=500&sort_by=vote_average.desc'); },
     fetchAwardWinners() { return this._fetchDiscover('movie', 'vote_average.gte=7.5&vote_count.gte=5000&sort_by=vote_count.desc'); },
+    /**
+     * Fetches movies released within a specific decade range.
+     * @param {string} type - 'movie' or 'tv'.
+     * @param {number} startYear - Start year of the decade (e.g. 1980).
+     * @param {number} endYear - End year of the decade (e.g. 1989).
+     * @returns {Promise<Array>} List of discovered content.
+     */
+    fetchDecadeContent(type, startYear, endYear) {
+        const dateParam = type === 'movie'
+            ? `primary_release_date.gte=${startYear}-01-01&primary_release_date.lte=${endYear}-12-31`
+            : `first_air_date.gte=${startYear}-01-01&first_air_date.lte=${endYear}-12-31`;
+        return this._fetchDiscover(type, `${dateParam}&sort_by=popularity.desc`);
+    },
 
     // Regional Content
     fetchBollywood() { return this._fetchDiscover('movie', 'with_original_language=hi&sort_by=popularity.desc'); },
@@ -440,6 +488,35 @@ export const Api = {
     fetchMarvelSeries() { return this._fetchDiscover('tv', 'with_companies=420'); },
     fetchNetflixSeries() { return this._fetchDiscover('tv', 'with_companies=213&sort_by=popularity.desc'); },
     fetchKoreanSeries() { return this._fetchDiscover('tv', 'with_original_language=ko&sort_by=popularity.desc'); },
+    /**
+     * Fetches TV movies from TMDB.
+     * @returns {Promise<Array>} List of TV movies.
+     */
+    fetchTvMovies() { return this._fetchDiscover('movie', 'with_genres=10770'); },
+    /**
+     * Fetches series/movies belonging to a specific network or company mapping.
+     * @param {string} type - 'movie' or 'tv'.
+     * @param {number} networkId - The network/provider ID.
+     * @returns {Promise<Array>} List of network content.
+     */
+    fetchNetworkContent(type, networkId) {
+        if (type === 'tv') {
+            return this._fetchDiscover('tv', `with_networks=${networkId}`);
+        } else {
+            let companyId = '';
+            if (networkId === 213) companyId = '213|178464|171251'; // Netflix
+            else if (networkId === 49) companyId = '3287|3268'; // HBO
+            else if (networkId === 2739) companyId = '2'; // Disney
+            else if (networkId === 1024) companyId = '20580'; // Amazon Prime
+            else if (networkId === 2552) companyId = '131018'; // Apple TV+
+            return this._fetchDiscover('movie', `with_companies=${companyId}`);
+        }
+    },
+    /**
+     * Fetches TV series categorized in News or Talk genres.
+     * @returns {Promise<Array>} List of talk and news shows.
+     */
+    fetchTalkNewsSeries() { return this._fetchDiscover('tv', 'with_genres=10767|10763'); },
 
     /**
      * Fetches popular TV shows from TMDB.
@@ -882,9 +959,59 @@ export const Api = {
                 params.append('certification', filters.certification);
             }
 
+            const type = filters.type || 'movie';
+
             if (filters.year) {
                 params.append('primary_release_year', filters.year);
                 params.append('first_air_date_year', filters.year);
+            } else if (filters.decade) {
+                const start = parseInt(filters.decade);
+                if (start === 1970) {
+                    // 70s & older
+                    if (type === 'movie') {
+                        params.append('primary_release_date.lte', '1979-12-31');
+                    } else {
+                        params.append('first_air_date.lte', '1979-12-31');
+                    }
+                } else {
+                    const end = start + 9;
+                    if (type === 'movie') {
+                        params.append('primary_release_date.gte', `${start}-01-01`);
+                        params.append('primary_release_date.lte', `${end}-12-31`);
+                    } else {
+                        params.append('first_air_date.gte', `${start}-01-01`);
+                        params.append('first_air_date.lte', `${end}-12-31`);
+                    }
+                }
+            }
+
+            if (filters.runtime) {
+                if (filters.runtime === 'short') {
+                    params.append('with_runtime.lte', 90);
+                } else if (filters.runtime === 'medium') {
+                    params.append('with_runtime.gte', 90);
+                    params.append('with_runtime.lte', 120);
+                } else if (filters.runtime === 'long') {
+                    params.append('with_runtime.gte', 120);
+                }
+            }
+
+            if (filters.network) {
+                if (type === 'tv') {
+                    params.append('with_networks', filters.network);
+                } else {
+                    // movie company mapping
+                    let companyId = '';
+                    const netId = parseInt(filters.network);
+                    if (netId === 213) companyId = '213|178464|171251'; // Netflix
+                    else if (netId === 49) companyId = '3287|3268'; // HBO
+                    else if (netId === 2739) companyId = '2'; // Disney
+                    else if (netId === 1024) companyId = '20580'; // Amazon Prime
+                    else if (netId === 2552) companyId = '131018'; // Apple TV+
+                    if (companyId) {
+                        params.append('with_companies', companyId);
+                    }
+                }
             }
 
             if (filters.originCountry) {
@@ -899,8 +1026,6 @@ export const Api = {
             if (filters.voteCount) {
                 params.append('vote_count.gte', filters.voteCount);
             }
-
-            const type = filters.type || 'movie';
 
             const response = await deduplicatedFetch(`${BASE_URL}/discover/${type}?${params.toString()}`);
             const data = await response.json();
@@ -931,5 +1056,130 @@ export const Api = {
                 media_type: "tv"
             }
         ];
+    },
+
+    /**
+     * Searches TMDB for collections matching a query.
+     * @param {string} query - The search query.
+     * @param {number} [page=1] - The page number.
+     * @returns {Promise<Array>} List of collections.
+     */
+    async searchCollections(query, page = 1) {
+        if (API_KEY.includes('TODO')) return [];
+        try {
+            const lang = this.getLanguageCode();
+            const response = await deduplicatedFetch(`${BASE_URL}/search/collection?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}&language=${lang}`);
+            const data = await response.json();
+            return data.results || [];
+        } catch (error) {
+            console.error('Error searching collections:', error);
+            return [];
+        }
+    },
+
+    /**
+     * Fetches detailed information for a collection, including all parts (movies).
+     * @param {number|string} collectionId - The TMDB collection ID.
+     * @returns {Promise<Object>} Detailed collection metadata.
+     */
+    async getCollectionDetails(collectionId) {
+        if (API_KEY.includes('TODO')) return null;
+        try {
+            const lang = this.getLanguageCode();
+            const response = await deduplicatedFetch(`${BASE_URL}/collection/${collectionId}?api_key=${API_KEY}&language=${lang}`);
+            const data = await response.json();
+            if (data && data.parts) {
+                const today = getTodayDate();
+                // Filter out unreleased/unaired movies
+                data.parts = data.parts.filter(item => {
+                    const releaseDate = item.release_date;
+                    return releaseDate && releaseDate <= today;
+                });
+            }
+            return data;
+        } catch (error) {
+            console.error('Error fetching collection details:', error);
+            return null;
+        }
+    },
+
+    /**
+     * Fully softcoded collection discovery.
+     * Inspects the details of currently popular and trending movies to dynamically extract parent franchises/collections.
+     * Caches the list for 24 hours to optimize performance and prevent API limits.
+     * @returns {Promise<Array>} List of discovered popular collections.
+     */
+    async fetchPopularCollections() {
+        const lang = this.getLanguageCode();
+        const cacheKey = `popular_collections_discovered_${lang}`;
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return [...cached];
+
+        try {
+            // Fetch popular and trending movies lists concurrently
+            const [popularRes, trendingRes] = await Promise.all([
+                deduplicatedFetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=${lang}&page=1`),
+                deduplicatedFetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=${lang}&page=1`)
+            ]);
+
+            const popularData = await popularRes.json();
+            const trendingData = await trendingRes.json();
+
+            const movies = [];
+            const seenMovieIds = new Set();
+
+            // Merge movie results from both endpoints
+            const rawMovies = [...(popularData.results || []), ...(trendingData.results || [])];
+            for (const m of rawMovies) {
+                if (m && m.id && !seenMovieIds.has(m.id)) {
+                    seenMovieIds.add(m.id);
+                    movies.push(m);
+                }
+            }
+
+            // Limit details lookup to the top 30 most popular/trending items to prevent API overload
+            const targetMovies = movies.slice(0, 30);
+
+            // Fetch details for all 30 target movies in parallel to find collections
+            const collectionPromises = targetMovies.map(async (movie) => {
+                try {
+                    const detailRes = await deduplicatedFetch(`${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&language=${lang}`);
+                    const detail = await detailRes.json();
+                    return detail && detail.belongs_to_collection ? detail.belongs_to_collection : null;
+                } catch (e) {
+                    console.error(`Error resolving parent collection for movie ${movie.id}:`, e);
+                    return null;
+                }
+            });
+
+            const resolvedCollections = await Promise.all(collectionPromises);
+
+            // Filter out nulls and deduplicate collections by their TMDB ID
+            const uniqueCollections = [];
+            const seenCollectionIds = new Set();
+
+            for (const col of resolvedCollections) {
+                if (col && col.id && !seenCollectionIds.has(col.id)) {
+                    seenCollectionIds.add(col.id);
+                    uniqueCollections.push({
+                        id: col.id,
+                        name: col.name,
+                        poster_path: col.poster_path,
+                        backdrop_path: col.backdrop_path
+                    });
+                }
+            }
+
+            // Cache for 24 hours (1440 minutes) since franchise collections are static
+            if (uniqueCollections.length > 0) {
+                cacheManager.set(cacheKey, uniqueCollections, 1440);
+            }
+
+            return uniqueCollections;
+        } catch (error) {
+            console.error('Error executing softcoded collection discovery:', error);
+            return [];
+        }
     }
 };
+

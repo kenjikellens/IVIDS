@@ -2510,3 +2510,70 @@
     color: #ffffff;
     outline: none;
 }
+
+/* ==========================================================================
+   COLLECTIONS FEATURE STYLES
+   ========================================================================== */
+
+/* Outer wrapper for the Collections search and grid page layout. */
+.collections-container {
+    animation: fadeIn 0.4s ease-out;
+    padding: 3% 4% 5% 4%;
+    width: 100%;
+}
+
+/* Flexbox container positioning the search input and trigger button. */
+.collections-search-bar {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 36px;
+    width: 100%;
+}
+
+/* Outer layout wrapper for the horizontal scroll rows displaying collections. */
+#popular-collections-row, #popular-collections-series-row {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    width: 100%;
+}
+
+/* Widescreen 16:9 clickable card used in Collections grids and rows. */
+.collection-card {
+    align-self: center; /* Prevents vertical stretching in flex container rows */
+    aspect-ratio: 16 / 9 !important;
+    background: #101010;
+    border: 3px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    flex: 0 0 clamp(200px, 18vw, 280px);
+    height: auto !important;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+}
+
+/* White thicker border hover/focus state for collection cards, adhering to no-scale rules. */
+.collection-card:hover, .collection-card:focus, .collection-card.focused {
+    border-color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    outline: none !important;
+    z-index: 10;
+}
+
+/* Grid layout for search results and popular collections list. */
+.collections-grid {
+    animation: fadeInUp 0.32s ease-out;
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr));
+    width: 100%;
+}

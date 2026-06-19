@@ -11,7 +11,8 @@
         "settings": "Instellingen",
         "playlists": "Afspeellijsten",
         "account": "Account",
-        "livetv": "Live TV"
+        "livetv": "Live TV",
+        "collections": "Collections"
     },
     "account": {
         "title": "Account",
@@ -152,7 +153,25 @@
         "cancel": "Annuleren",
         "searchCountries": "Landen zoeken...",
         "na": "N.v.t.",
-        "clearRecents": "Wissen"
+        "clearRecents": "Wissen",
+        "network": "Streamingdienst",
+        "selectNetwork": "Selecteer Netwerk",
+        "allNetworks": "Alle Netwerken",
+        "runtime": "Speelduur",
+        "selectRuntime": "Selecteer Speelduur",
+        "allRuntimes": "Alle Speelduren",
+        "runtimeShort": "Kort (< 90m)",
+        "runtimeMedium": "Gemiddeld (90m - 120m)",
+        "runtimeLong": "Lang (> 120m)",
+        "decade": "Decennium",
+        "selectDecade": "Selecteer Decennium",
+        "allDecades": "Alle Decennia",
+        "decade2020": "Jaren '20",
+        "decade2010": "Jaren '10",
+        "decade2000": "Jaren 2000",
+        "decade1990": "Jaren '90",
+        "decade1980": "Jaren '80",
+        "decade1970": "Jaren '70 & ouder"
     },
     "player": {
         "play": "Afspelen",
@@ -229,7 +248,15 @@
         "netflix": "Netflix Originals",
         "korean": "Koreaanse Content",
         "bollywood": "Bollywood",
-        "classics": "Klassieke Films"
+        "classics": "Klassieke Films",
+        "trending_today": "Vandaag Trending",
+        "tv_movies": "TV Films",
+        "eighties_nostalgia": "Jaren '80 Nostalgie",
+        "nineties_nostalgia": "Jaren '90 Nostalgie",
+        "hbo_series": "HBO/Max Series",
+        "disney_plus_series": "Disney+ Series",
+        "talk_news": "Talk & Nieuws",
+        "popularCollections": "Popular Collections"
     },
     "details": {
         "play": "Afspelen",
@@ -348,5 +375,15 @@
         "registerTitle": "Registreren",
         "signInSubtitle": "Log in op uw account",
         "registerSubtitle": "Registreer uw account"
+    },
+    "collections": {
+        "title": "Collections",
+        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
+        "popular": "Popular Collections",
+        "noResults": "No collections found",
+        "films": "{count} films",
+        "saveToPlaylist": "Save as Playlist",
+        "savedSuccess": "Collection saved as playlist!",
+        "alreadySaved": "This collection is already saved"
     }
 }

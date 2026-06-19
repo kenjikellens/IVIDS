@@ -11,7 +11,8 @@
         "settings": "Indstillinger",
         "playlists": "Playlister",
         "account": "Konto",
-        "livetv": "Live TV"
+        "livetv": "Live TV",
+        "collections": "Collections"
     },
     "account": {
         "title": "Konto",
@@ -159,7 +160,25 @@
         "cancel": "Annuller",
         "searchCountries": "Søg efter lande...",
         "na": "N/A",
-        "clearRecents": "Ryd"
+        "clearRecents": "Ryd",
+        "network": "Streaming Network",
+        "selectNetwork": "Select Network",
+        "allNetworks": "All Networks",
+        "runtime": "Runtime",
+        "selectRuntime": "Select Runtime",
+        "allRuntimes": "All Runtimes",
+        "runtimeShort": "Short (< 90m)",
+        "runtimeMedium": "Medium (90m - 120m)",
+        "runtimeLong": "Long (> 120m)",
+        "decade": "Decade",
+        "selectDecade": "Select Decade",
+        "allDecades": "All Decades",
+        "decade2020": "2020s",
+        "decade2010": "2010s",
+        "decade2000": "2000s",
+        "decade1990": "1990s",
+        "decade1980": "1980s",
+        "decade1970": "1970s & older"
     },
     "player": {
         "play": "Afspil",
@@ -236,7 +255,15 @@
         "netflix": "Netflix Originals",
         "korean": "Koreansk indhold",
         "bollywood": "Bollywood",
-        "classics": "Klassiske film"
+        "classics": "Klassiske film",
+        "trending_today": "Trending Today",
+        "tv_movies": "TV Movies",
+        "eighties_nostalgia": "80s Nostalgia",
+        "nineties_nostalgia": "90s Nostalgia",
+        "hbo_series": "HBO/Max Shows",
+        "disney_plus_series": "Disney+ Series",
+        "talk_news": "Talk & News",
+        "popularCollections": "Popular Collections"
     },
     "details": {
         "play": "Afspil",
@@ -355,5 +382,15 @@
         "registerTitle": "Registrer",
         "signInSubtitle": "Log ind på din konto",
         "registerSubtitle": "Registrer din konto"
+    },
+    "collections": {
+        "title": "Collections",
+        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
+        "popular": "Popular Collections",
+        "noResults": "No collections found",
+        "films": "{count} films",
+        "saveToPlaylist": "Save as Playlist",
+        "savedSuccess": "Collection saved as playlist!",
+        "alreadySaved": "This collection is already saved"
     }
 }

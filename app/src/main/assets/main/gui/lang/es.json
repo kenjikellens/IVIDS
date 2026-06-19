@@ -11,7 +11,8 @@
         "settings": "Configuración",
         "playlists": "Listas",
         "account": "Cuenta",
-        "livetv": "Live TV"
+        "livetv": "Live TV",
+        "collections": "Collections"
     },
     "account": {
         "title": "Cuenta",
@@ -152,7 +153,25 @@
         "cancel": "Cancelar",
         "searchCountries": "Buscar países...",
         "na": "N/A",
-        "clearRecents": "Borrar"
+        "clearRecents": "Borrar",
+        "network": "Red de streaming",
+        "selectNetwork": "Seleccionar red",
+        "allNetworks": "Todas las redes",
+        "runtime": "Duración",
+        "selectRuntime": "Seleccionar duración",
+        "allRuntimes": "Todas las duraciones",
+        "runtimeShort": "Corto (< 90m)",
+        "runtimeMedium": "Medio (90m - 120m)",
+        "runtimeLong": "Largo (> 120m)",
+        "decade": "Década",
+        "selectDecade": "Seleccionar década",
+        "allDecades": "Todas las décadas",
+        "decade2020": "Años 2020",
+        "decade2010": "Años 2010",
+        "decade2000": "Años 2000",
+        "decade1990": "Años 90",
+        "decade1980": "Años 80",
+        "decade1970": "Años 70 y anteriores"
     },
     "player": {
         "play": "Reproducir",
@@ -229,7 +248,15 @@
         "netflix": "Originales de Netflix",
         "korean": "Contenido coreano",
         "bollywood": "Bollywood",
-        "classics": "Películas clásicas"
+        "classics": "Películas clásicas",
+        "trending_today": "Tendencias de hoy",
+        "tv_movies": "Películas de TV",
+        "eighties_nostalgia": "Nostalgia de los 80",
+        "nineties_nostalgia": "Nostalgia de los 90",
+        "hbo_series": "Series de HBO/Max",
+        "disney_plus_series": "Series de Disney+",
+        "talk_news": "Talk & Noticias",
+        "popularCollections": "Popular Collections"
     },
     "details": {
         "play": "Reproducir",
@@ -348,5 +375,15 @@
         "registerTitle": "Registrarse",
         "signInSubtitle": "Inicie sesión en su cuenta",
         "registerSubtitle": "Registre su cuenta"
+    },
+    "collections": {
+        "title": "Collections",
+        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
+        "popular": "Popular Collections",
+        "noResults": "No collections found",
+        "films": "{count} films",
+        "saveToPlaylist": "Save as Playlist",
+        "savedSuccess": "Collection saved as playlist!",
+        "alreadySaved": "This collection is already saved"
     }
 }

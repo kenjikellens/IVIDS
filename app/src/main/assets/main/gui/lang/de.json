@@ -11,7 +11,8 @@
         "settings": "Einstellungen",
         "playlists": "Wiedergabelisten",
         "account": "Konto",
-        "livetv": "Live TV"
+        "livetv": "Live TV",
+        "collections": "Collections"
     },
     "account": {
         "title": "Konto",
@@ -152,7 +153,25 @@
         "cancel": "Abbrechen",
         "searchCountries": "Länder suchen...",
         "na": "N.V.",
-        "clearRecents": "Löschen"
+        "clearRecents": "Löschen",
+        "network": "Streaming-Netzwerk",
+        "selectNetwork": "Netzwerk auswählen",
+        "allNetworks": "Alle Netzwerke",
+        "runtime": "Laufzeit",
+        "selectRuntime": "Laufzeit auswählen",
+        "allRuntimes": "Alle Laufzeiten",
+        "runtimeShort": "Kurz (< 90 Min.)",
+        "runtimeMedium": "Mittel (90 - 120 Min.)",
+        "runtimeLong": "Lang (> 120 Min.)",
+        "decade": "Jahrzehnt",
+        "selectDecade": "Jahrzehnt auswählen",
+        "allDecades": "Alle Jahrzehnte",
+        "decade2020": "2020er",
+        "decade2010": "2010er",
+        "decade2000": "2000er",
+        "decade1990": "1990er",
+        "decade1980": "1980er",
+        "decade1970": "1970er & älter"
     },
     "player": {
         "play": "Abspielen",
@@ -229,7 +248,15 @@
         "netflix": "Netflix Originals",
         "korean": "Koreanische Inhalte",
         "bollywood": "Bollywood",
-        "classics": "Filmklassiker"
+        "classics": "Filmklassiker",
+        "trending_today": "Heute im Trend",
+        "tv_movies": "Fernsehfilme",
+        "eighties_nostalgia": "80er Nostalgie",
+        "nineties_nostalgia": "90er Nostalgie",
+        "hbo_series": "HBO/Max Serien",
+        "disney_plus_series": "Disney+ Serien",
+        "talk_news": "Talk & Nachrichten",
+        "popularCollections": "Popular Collections"
     },
     "details": {
         "play": "Abspielen",
@@ -348,5 +375,15 @@
         "registerTitle": "Registrieren",
         "signInSubtitle": "Melden Sie sich bei Ihrem Konto an",
         "registerSubtitle": "Registrieren Sie Ihr Konto"
+    },
+    "collections": {
+        "title": "Collections",
+        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
+        "popular": "Popular Collections",
+        "noResults": "No collections found",
+        "films": "{count} films",
+        "saveToPlaylist": "Save as Playlist",
+        "savedSuccess": "Collection saved as playlist!",
+        "alreadySaved": "This collection is already saved"
     }
 }
