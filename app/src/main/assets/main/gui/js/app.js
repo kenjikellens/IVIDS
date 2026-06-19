@@ -213,8 +213,8 @@ function initUpdateCheck() {
         const msgHtml = `
             <span>v${version} is available.</span>
             <div class="toast-actions">
-                <button class="toast-btn toast-btn-primary focusable" id="toast-download-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
-                <button class="toast-btn toast-btn-secondary focusable" id="toast-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
+                <button class="btn btn-primary focusable" id="toast-download-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                <button class="btn btn-secondary focusable" id="toast-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
             </div>
         `;
 
@@ -263,9 +263,9 @@ function initUpdateCheck() {
         const msgHtml = `
             <span>Developer version v${version} found.</span>
             <div class="toast-actions">
-                <button class="toast-btn toast-btn-primary focusable" id="toast-dev-dl-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
-                <button class="toast-btn toast-btn-secondary focusable" id="toast-dev-select-btn">${window.i18n?.t('settings.toast.select') || 'Select Version'}</button>
-                <button class="toast-btn toast-btn-secondary focusable" id="toast-dev-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
+                <button class="btn btn-primary focusable" id="toast-dev-dl-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                <button class="btn btn-secondary focusable" id="toast-dev-select-btn">${window.i18n?.t('settings.toast.select') || 'Select Version'}</button>
+                <button class="btn btn-secondary focusable" id="toast-dev-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
             </div>
         `;
 

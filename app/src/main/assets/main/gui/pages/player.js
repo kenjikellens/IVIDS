@@ -430,16 +430,24 @@ function renderServerSelection(params, iframe) {
 
     Api.SERVERS.forEach(server => {
         const btn = document.createElement('button');
-        btn.className = 'server-btn focusable';
-        if (server.id === currentServerId) btn.classList.add('active');
+        btn.className = 'btn server-btn focusable';
+        if (server.id === currentServerId) {
+            btn.classList.add('active', 'btn-primary');
+        } else {
+            btn.classList.add('btn-secondary');
+        }
         btn.textContent = server.name;
         btn.dataset.serverId = server.id;
 
         btn.onclick = () => {
             if (currentServerId === server.id) return;
             
-            document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            document.querySelectorAll('.server-btn').forEach(b => {
+                b.classList.remove('active', 'btn-primary');
+                b.classList.add('btn-secondary');
+            });
+            btn.classList.add('active', 'btn-primary');
+            btn.classList.remove('btn-secondary');
             currentServerId = server.id;
 
             const newUrl = Api.getVideoUrl(params.id, params.type, params.season, params.episode, server.id);

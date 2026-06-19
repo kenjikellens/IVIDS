@@ -1,6 +1,8 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { getActiveAccount } from '../../logic/account-helper.js';
+// Import session clearing logic to reset cloud credentials on logout
+import { clearSession } from '../../logic/crypto.js';
 
 /**
  * Initializes the account page details, displays current profile state,
@@ -62,9 +64,13 @@ export async function init() {
 
     if (signOutBtn) {
         signOutBtn.onclick = () => {
+            // Remove user profiles and session data from local storage
             localStorage.removeItem('ivids-current-profile');
             localStorage.removeItem('ivids-cloud-session');
-            import('../../logic/crypto.js').then(m => m.clearSession());
+            
+            // Clear in-memory crypto credentials
+            clearSession();
+            
             // Reapply primary/accent color to default settings if any, or reload
             const savedSettings = localStorage.getItem('ivids-settings');
             const globalSettings = savedSettings ? JSON.parse(savedSettings) : {};
@@ -73,6 +79,9 @@ export async function init() {
             } else {
                 document.documentElement.style.setProperty('--primary-color', '#46d369'); // default green accent
             }
+            
+            // Reset Router's current page to force reload the account view
+            Router.currentPage = null;
             Router.loadPage('account');
         };
     }
