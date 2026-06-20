@@ -285,7 +285,7 @@ export const Api = {
             return shuffleArray(filtered);
         } catch (error) {
             console.error('Error fetching trending:', error);
-            return [];
+            throw error;
         }
     },
 
@@ -320,7 +320,7 @@ export const Api = {
             return shuffleArray(filtered);
         } catch (error) {
             console.error('Error fetching trending today:', error);
-            return [];
+            throw error;
         }
     },
 
@@ -347,7 +347,7 @@ export const Api = {
             return [];
         } catch (error) {
             console.error('Error fetching top rated:', error);
-            return [];
+            throw error;
         }
     },
 
@@ -382,7 +382,7 @@ export const Api = {
             return [];
         } catch (error) {
             console.error(`Error fetching ${type} with params ${params}:`, error);
-            return [];
+            throw error;
         }
     },
 
@@ -441,7 +441,7 @@ export const Api = {
             return shuffleArray(combined);
         } catch (error) {
             console.error('Error fetching netflix originals:', error);
-            return [];
+            throw error;
         }
     },
 
@@ -541,7 +541,7 @@ export const Api = {
             return [];
         } catch (error) {
             console.error('Error fetching popular TV:', error);
-            return [];
+            throw error;
         }
     },
 
@@ -568,7 +568,7 @@ export const Api = {
             return [];
         } catch (error) {
             console.error('Error fetching top rated TV:', error);
-            return [];
+            throw error;
         }
     },
 

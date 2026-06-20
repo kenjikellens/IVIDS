@@ -110,7 +110,10 @@
         "close": "Sluiten",
         "systemError": "Er is een onverwachte systeemfout opgetreden",
         "initError": "Initialiseren van de applicatie mislukt. Herlaad de pagina aub.",
-        "criticalInit": "Er is een kritieke fout opgetreden tijdens de initialisatie."
+        "criticalInit": "Er is een kritieke fout opgetreden tijdens de initialisatie.",
+        "networkError": "Netwerkverbindingsfout. Controleer uw internetverbinding.",
+        "serverError": "Serverfout ({status}): Laden van inhoud mislukt.",
+        "contentLoadFailed": "Laden van inhoud mislukt. Probeer het later opnieuw."
     },
     "splash": {
         "loadingStatus": "Gebruikerservaring optimaliseren...",

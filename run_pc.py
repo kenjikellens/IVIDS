@@ -419,11 +419,23 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(body)
 
         except urllib.error.HTTPError as e:
-            self.send_error(e.code, f'Upstream error: {e.reason}')
+            try:
+                self.send_error(e.code, f'Upstream error: {e.reason}')
+            except Exception as se:
+                sys.stderr.write(f"[IVIDS] Failed to send HTTPError response to client: {str(se)}\n")
         except urllib.error.URLError as e:
-            self.send_error(502, f'Proxy connection failed: {e.reason}')
+            try:
+                self.send_error(502, f'Proxy connection failed: {e.reason}')
+            except Exception as se:
+                sys.stderr.write(f"[IVIDS] Failed to send URLError response to client: {str(se)}\n")
+        except (ConnectionError, OSError) as e:
+            # Client connection aborted, reset, or closed gracefully
+            sys.stderr.write(f"[IVIDS] Client connection closed or aborted during proxying: {str(e)}\n")
         except Exception as e:
-            self.send_error(500, f'Proxy error: {str(e)}')
+            try:
+                self.send_error(500, f'Proxy error: {str(e)}')
+            except Exception as se:
+                sys.stderr.write(f"[IVIDS] Failed to send error response to client: {str(se)}\n")
 
     def end_headers(self):
         """

@@ -109,7 +109,10 @@
         "close": "Close",
         "systemError": "An unexpected system error occurred",
         "initError": "Failed to initialize application. Please reload the page.",
-        "criticalInit": "A critical error occurred during initialization."
+        "criticalInit": "A critical error occurred during initialization.",
+        "networkError": "Network connection error. Please check your internet connection.",
+        "serverError": "Server error ({status}): Failed to load content.",
+        "contentLoadFailed": "Failed to load content. Please try again later."
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",

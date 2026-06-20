@@ -1,5 +1,13 @@
+/**
+ * Configuration options for the screensaver behavior.
+ */
+const CONFIG = {
+    INACTIVITY_TIMEOUT: 10 * 60 * 1000, // Inactivity timeout duration (ms)
+    THROTTLE_DELAY: 2000                // Throttle delay for checking activity (ms)
+};
+
 export const Screensaver = {
-    timeout: 10 * 60 * 1000, // 10 minutes
+    timeout: CONFIG.INACTIVITY_TIMEOUT,
     timer: null,
     overlay: null,
     _listenersAttached: false,
@@ -74,7 +82,7 @@ export const Screensaver = {
 
         // Throttled reset to avoid performance hit on mousemove
         let lastReset = 0;
-        const throttleDelay = 2000; // 2 seconds
+        const throttleDelay = CONFIG.THROTTLE_DELAY;
 
         const handleActivity = () => {
             const now = Date.now();

@@ -117,7 +117,10 @@
         "close": "Chiudi",
         "systemError": "Si è verificato un errore di sistema imprevisto",
         "initError": "Impossibile inizializzare l'applicazione. Ricarica la pagina.",
-        "criticalInit": "Si è verificato un errore critico durante l'inizializzazione."
+        "criticalInit": "Si è verificato un errore critico durante l'inizializzazione.",
+        "networkError": "Errore di connessione di rete. Si prega di controllare la connessione internet.",
+        "serverError": "Errore del server ({status}): Impossibile caricare il contenuto.",
+        "contentLoadFailed": "Impossibile caricare il contenuto. Si prega di riprovare più tardi."
     },
     "splash": {
         "loadingStatus": "Ottimizzazione dell'esperienza utente...",

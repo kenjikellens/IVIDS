@@ -25,6 +25,7 @@ let isLoading = false;
 let hasMoreResults = true;
 let currentQuery = '';
 let isSearchMode = false;
+let cachedCountryItems = null;
 
 /**
  * Initializes the search page inputs, buttons, filter modal handlers, infinite scrolling,
@@ -39,6 +40,7 @@ let isSearchMode = false;
  */
 export async function init(params) {
     try {
+        cachedCountryItems = null;
         if (params && params.genreId) {
             currentFilters.genres = [parseInt(params.genreId)];
             currentFilters.types = params.type ? [params.type] : ['movie', 'tv'];
@@ -82,10 +84,10 @@ export async function init(params) {
         // Initialize UI with current filters
         await renderAllFilters(currentFilters);
 
-        // Debounce search input to avoid API spamming, waiting 3000ms after typing finishes
+        // Debounce search input to avoid API spamming, waiting 600ms after typing finishes
         const debouncedSearch = debounce((val) => {
             performSearch(val, true);
-        }, 3000);
+        }, 600);
 
         input.oninput = (e) => debouncedSearch(e.target.value);
 
@@ -384,6 +386,7 @@ async function renderAllFilters(filtersObj) {
                 opt.textContent = c.english_name;
                 countryList.appendChild(opt);
             });
+            cachedCountryItems = null;
         }
 
         // 4. Age Ratings
@@ -577,6 +580,8 @@ async function fetchResults(reset) {
  * @param {HTMLElement} container - The DOM grid container element.
  */
 function renderResultItems(items, container) {
+    const fragment = document.createDocumentFragment();
+
     items.forEach(item => {
         if (!item.poster_path) return;
         // Determine the media type fallback if missing
@@ -604,7 +609,7 @@ function renderResultItems(items, container) {
             btn.appendChild(watched);
         }
 
-        container.appendChild(btn);
+        fragment.appendChild(btn);
 
         // Observe for lazy loading
         lazyLoader.observeItem(btn);
@@ -613,6 +618,8 @@ function renderResultItems(items, container) {
             Router.loadPage('details', { id: item.id, type: mediaType });
         };
     });
+
+    container.appendChild(fragment);
 }
 
 function initInfiniteScroll() {
@@ -714,11 +721,18 @@ function removeRecentSearch(q) {
     }
 }
 
+/**
+ * Filters the visible country items in the selector list based on the search query.
+ * Caches country elements to optimize DOM lookups during character typing.
+ */
 function filterCountries(query) {
-    const items = document.querySelectorAll('#country-options-list .select-item');
-    items.forEach(item => {
+    if (!cachedCountryItems) {
+        cachedCountryItems = document.querySelectorAll('#country-options-list .select-item');
+    }
+    const lowerQuery = query.toLowerCase();
+    cachedCountryItems.forEach(item => {
         const text = item.textContent.toLowerCase();
-        const visible = text.includes(query.toLowerCase());
+        const visible = text.includes(lowerQuery);
         item.style.display = visible ? 'flex' : 'none';
         if (visible) item.classList.add('focusable');
         else item.classList.remove('focusable');

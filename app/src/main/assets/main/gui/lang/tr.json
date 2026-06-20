@@ -117,7 +117,10 @@
         "close": "Kapat",
         "systemError": "Beklenmedik bir sistem hatası oluştu",
         "initError": "Uygulama başlatılamadı. Lütfen sayfayı yenileyin.",
-        "criticalInit": "Başlatma sırasında kritik bir hata oluştu."
+        "criticalInit": "Başlatma sırasında kritik bir hata oluştu.",
+        "networkError": "Ağ bağlantısı hatası. Lütfen internet bağlantınızı kontrol edin.",
+        "serverError": "Sunucu hatası ({status}): İçerik yüklenemedi.",
+        "contentLoadFailed": "İçerik yüklenemedi. Lütfen daha sonra tekrar deneyin."
     },
     "splash": {
         "loadingStatus": "Deneyim optimize ediliyor...",

@@ -182,12 +182,27 @@ export const Router = {
                 _initialLoadComplete = true;
                 Splash.signalContentLoaded();
 
-                // Pre-import critical page modules after initial load for faster subsequent navigation
+                // Pre-import critical page modules and prefetch HTML templates after initial load for faster subsequent navigation
                 setTimeout(() => {
                     const criticalPages = ['home', 'details', 'search', 'movies', 'series'];
                     criticalPages.forEach(p => {
                         if (p !== pageName) {
                             import(`../pages/${p}.js`).catch(() => { /* silent preload failure is OK */ });
+                            
+                            // Prefetch HTML template and cache it
+                            if (!_htmlCache.has(p)) {
+                                fetch(`pages/${p}.html`)
+                                    .then(response => {
+                                        if (response.ok) {
+                                            return response.text();
+                                        }
+                                        throw new Error(`Failed to prefetch ${p}`);
+                                    })
+                                    .then(html => {
+                                        _htmlCache.set(p, html);
+                                    })
+                                    .catch(() => { /* silent preload failure is OK */ });
+                            }
                         }
                     });
                 }, 2000);
@@ -196,7 +211,7 @@ export const Router = {
             // Apply translations
             try {
                 if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
-                    window.i18n.applyTranslations();
+                    window.i18n.applyTranslations(mainView);
                 }
             } catch (i18nError) {
                 console.error('Error applying translations:', i18nError);
@@ -245,7 +260,7 @@ export const Router = {
                     };
                 }
 
-                if (window.i18n) window.i18n.applyTranslations();
+                if (window.i18n) window.i18n.applyTranslations(mainView);
                 if (retryBtn && SpatialNav) SpatialNav.setFocus(retryBtn);
             }, 100);
 

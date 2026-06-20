@@ -110,7 +110,10 @@
         "close": "Cerrar",
         "systemError": "Se ha producido un error inesperado del sistema",
         "initError": "Error al inicializar la aplicación. Por favor, recarga la página.",
-        "criticalInit": "Se ha producido un error crítico durante la inicialización."
+        "criticalInit": "Se ha producido un error crítico durante la inicialización.",
+        "networkError": "Error de conexión de red. Por favor, compruebe su conexión a internet.",
+        "serverError": "Error del servidor ({status}): No se pudo cargar el contenido.",
+        "contentLoadFailed": "No se pudo cargar el contenido. Por favor, inténtelo de nuevo más tarde."
     },
     "splash": {
         "loadingStatus": "Optimizando la experiencia del usuario...",

@@ -414,6 +414,7 @@ textarea.active-typing:not(.input-wrapper *) {
    SECTION 3: GLOBAL UI COMPONENTS - SPLASH SCREEN INITIAL GLOW
    Source File: splash.css
    ========================================================================== */
+/* Styles the main fullscreen splash screen container overlay and its transition effects. */
 #splash-screen {
     align-items: center;
     background: #050505;
@@ -424,7 +425,7 @@ textarea.active-typing:not(.input-wrapper *) {
     opacity: 1;
     overflow: hidden;
     position: fixed;
-    transition: opacity 0.28s ease-in-out, visibility 0.28s;
+    transition: opacity 0.2s ease-in-out, visibility 0.2s;
     visibility: visible;
     width: 100vw;
     z-index: 9999;

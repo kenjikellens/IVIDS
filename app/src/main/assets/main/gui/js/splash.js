@@ -1,4 +1,18 @@
+/**
+ * Configuration options for the splash screen timings and durations.
+ */
+const CONFIG = {
+    MIN_DURATION: 250,         // Minimum duration splash screen is shown (ms)
+    SLOW_LOAD_TIMEOUT: 10000,   // Time before showing warning feedback for slow loading (ms)
+    MAX_DURATION: 60000,       // Max duration before forcing dismissal of the splash (ms)
+    TRANSITION_FALLBACK: 400   // Fallback timeout in case CSS transitionend event fails to fire (ms)
+};
+
 export class Splash {
+    /**
+     * Initializes the splash screen timers and loading state tracking.
+     * Sets up minimum display duration, warning notifications, and fallback limits.
+     */
     static init() {
         // Prevent double initialization
         if (this.isInitialized) return;
@@ -19,23 +33,23 @@ export class Splash {
             console.log('Splash: minimum duration reached.');
             this.minTimeElapsed = true;
             this.checkReady();
-        }, 300);
+        }, CONFIG.MIN_DURATION);
 
-        // 2. Slow load feedback (10 seconds)
+        // 2. Slow load feedback
         setTimeout(() => {
             if (!this.contentLoaded && !this.isDismissed) {
                 console.log('Splash: Load is taking longer than usual...');
                 this.showFeedback(window.i18n.t('splash.loadingStatus'));
             }
-        }, 10000);
+        }, CONFIG.SLOW_LOAD_TIMEOUT);
 
-        // 3. Max wait timer (60 seconds) - Force dismissal
+        // 3. Max wait timer - Force dismissal
         setTimeout(async () => {
             if (!this.isDismissed) {
-                console.warn('Splash: 60s max duration reached. Forcing dismissal.');
+                console.warn('Splash: max duration reached. Forcing dismissal.');
                 this.dismiss();
 
-                // If it reached 1 minute without load, we might be offline
+                // If it reached maximum duration without load, we might be offline
                 if (!window.navigator.onLine) {
                     try {
                         const { Toast } = await import('./toast.js');
@@ -48,7 +62,7 @@ export class Splash {
                     } catch (e) { }
                 }
             }
-        }, 60000);
+        }, CONFIG.MAX_DURATION);
     }
 
     static signalContentLoaded() {
@@ -113,6 +127,6 @@ export class Splash {
         this.splashElement.addEventListener('transitionend', cleanup);
 
         // Fallback timeout in case transitionend doesn't fire (e.g. if element is hidden immediately)
-        setTimeout(cleanup, 450);
+        setTimeout(cleanup, CONFIG.TRANSITION_FALLBACK);
     }
 }

@@ -117,7 +117,10 @@
         "close": "Đóng",
         "systemError": "Đã xảy ra lỗi hệ thống không mong muốn",
         "initError": "Không thể khởi tạo ứng dụng. Vui lòng tải lại trang.",
-        "criticalInit": "Đã xảy ra lỗi nghiêm trọng trong quá trình khởi tạo."
+        "criticalInit": "Đã xảy ra lỗi nghiêm trọng trong quá trình khởi tạo.",
+        "networkError": "Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet của bạn.",
+        "serverError": "Lỗi máy chủ ({status}): Không thể tải nội dung.",
+        "contentLoadFailed": "Không thể tải nội dung. Vui lòng thử lại sau."
     },
     "splash": {
         "loadingStatus": "Đang tối ưu hóa trải nghiệm...",

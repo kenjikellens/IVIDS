@@ -117,7 +117,10 @@
         "close": "Tutup",
         "systemError": "Terjadi kesalahan sistem yang tidak terduga",
         "initError": "Gagal menginisialisasi aplikasi. Silakan muat ulang halaman.",
-        "criticalInit": "Terjadi kesalahan kritis saat inisialisasi."
+        "criticalInit": "Terjadi kesalahan kritis saat inisialisasi.",
+        "networkError": "Kesalahan koneksi jaringan. Silakan periksa koneksi internet Anda.",
+        "serverError": "Kesalahan server ({status}): Gagal memuat konten.",
+        "contentLoadFailed": "Gagal memuat konten. Silakan coba lagi nanti."
     },
     "splash": {
         "loadingStatus": "Mengoptimalkan pengalaman pengguna...",

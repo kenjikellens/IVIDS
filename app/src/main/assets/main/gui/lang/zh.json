@@ -117,7 +117,10 @@
         "close": "关闭",
         "systemError": "发生意外系统错误",
         "initError": "无法初始化应用。请重新加载页面。",
-        "criticalInit": "初始化过程中发生严重错误。"
+        "criticalInit": "初始化过程中发生严重错误。",
+        "networkError": "网络连接错误。请检查您的互联网连接。",
+        "serverError": "服务器错误 ({status})：加载内容失败。",
+        "contentLoadFailed": "加载内容失败。请稍后重试。"
     },
     "splash": {
         "loadingStatus": "正在优化用户体验...",

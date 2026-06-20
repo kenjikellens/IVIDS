@@ -117,7 +117,10 @@
         "close": "Luk",
         "systemError": "Der opstod en uventet systemfejl",
         "initError": "Kunne ikke initialisere applikationen. Genindlæs venligst siden.",
-        "criticalInit": "Der opstod en kritisk fejl under initialiseringen."
+        "criticalInit": "Der opstod en kritisk fejl under initialiseringen.",
+        "networkError": "Netværksforbindelsesfejl. Tjek venligst din internetforbindelse.",
+        "serverError": "Serverfejl ({status}): Kunne ikke indlæse indhold.",
+        "contentLoadFailed": "Kunne ikke indlæse indhold. Prøv venligst igen senere."
     },
     "splash": {
         "loadingStatus": "Optimerer brugeroplevelsen...",

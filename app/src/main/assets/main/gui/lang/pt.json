@@ -117,7 +117,10 @@
         "close": "Fechar",
         "systemError": "Ocorreu um erro de sistema inesperado",
         "initError": "Falha ao inicializar a aplicação. Recarregue a página.",
-        "criticalInit": "Ocorreu um erro crítico durante a inicialização."
+        "criticalInit": "Ocorreu um erro crítico durante a inicialização.",
+        "networkError": "Erro de ligação à rede. Por favor, verifique a sua ligação à internet.",
+        "serverError": "Erro do servidor ({status}): Falha ao carregar o conteúdo.",
+        "contentLoadFailed": "Falha ao carregar o conteúdo. Por favor, tente novamente mais tarde."
     },
     "splash": {
         "loadingStatus": "A otimizar a experiência do utilizador...",

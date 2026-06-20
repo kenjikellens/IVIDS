@@ -117,7 +117,10 @@
         "close": "Zamknij",
         "systemError": "Wystąpił nieoczekiwany błąd systemu",
         "initError": "Błąd inicjalizacji aplikacji. Odśwież stronę.",
-        "criticalInit": "Wystąpił krytyczny błąd podczas inicjalizacji."
+        "criticalInit": "Wystąpił krytyczny błąd podczas inicjalizacji.",
+        "networkError": "Błąd połączenia sieciowego. Sprawdź swoje połączenie internetowe.",
+        "serverError": "Błąd serwera ({status}): Nie udało się załadować zawartości.",
+        "contentLoadFailed": "Nie udało się załadować zawartości. Spróbuj ponownie później."
     },
     "splash": {
         "loadingStatus": "Optymalizacja doświadczenia użytkownika...",

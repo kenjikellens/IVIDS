@@ -1,4 +1,12 @@
 /**
+ * Configuration options for visibility-based intersection observer lazy loading.
+ */
+const CONFIG = {
+    ROOT_MARGIN: '400px', // Pre-load elements before they enter viewport (px or %)
+    THRESHOLD: 0.01       // Visibility percentage required to trigger load (0.0 to 1.0)
+};
+
+/**
  * LazyLoader - Handles visibility-based fetching and rendering.
  * Supports:
  * 1. Row-based lazy loading (fetching data when row is visible)
@@ -11,11 +19,15 @@ export class LazyLoader {
         this.init();
     }
 
+    /**
+     * Initializes the IntersectionObserver options (root margin and threshold).
+     * Binds visibility intersections to image source lazy loading.
+     */
     init() {
         const options = {
             root: null, // viewport
-            rootMargin: '400px', // Pre-load well before it comes into view
-            threshold: 0.01 // Trigger as soon as 1% is visible
+            rootMargin: CONFIG.ROOT_MARGIN, // Pre-load well before it comes into view
+            threshold: CONFIG.THRESHOLD // Trigger as soon as 1% is visible
         };
 
         this.observer = new IntersectionObserver((entries) => {
@@ -46,6 +58,11 @@ export class LazyLoader {
         this.observer.observe(element);
     }
 
+    /**
+     * Handles intersection events for registered elements by loading row data or setting image sources.
+     * This coordinates row rendering on visibility and handles cleanups or error propagation.
+     * @param {HTMLElement} element - The intersecting DOM element.
+     */
     async handleIntersection(element) {
         // Case 1: Row registration
         const id = element.id;
@@ -58,10 +75,13 @@ export class LazyLoader {
             try {
                 const data = await reg.fetcher();
                 if (reg.renderer) {
-                    reg.renderer(id, data);
+                    reg.renderer(id, data, null);
                 }
             } catch (error) {
                 console.error(`Lazy load failed for row ${id}:`, error);
+                if (reg.renderer) {
+                    reg.renderer(id, null, error);
+                }
             }
             return;
         }

@@ -117,7 +117,10 @@
         "close": "Zavřít",
         "systemError": "Došlo k neočekávané systémové chybě",
         "initError": "Nepodařilo se inicializovat aplikaci. Obnovte prosím stránku.",
-        "criticalInit": "Během inicializace došlo ke kritické chybě."
+        "criticalInit": "Během inicializace došlo ke kritické chybě.",
+        "networkError": "Chyba síťového připojení. Zkontrolujte prosím své připojení k internetu.",
+        "serverError": "Chyba serveru ({status}): Nepodařilo se načíst obsah.",
+        "contentLoadFailed": "Nepodařilo se načíst obsah. Zkuste to prosím později."
     },
     "splash": {
         "loadingStatus": "Optimalizace uživatelského zážitku...",

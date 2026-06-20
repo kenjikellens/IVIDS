@@ -1,4 +1,12 @@
 /**
+ * Default configuration constants for Toast notifications.
+ */
+const CONFIG = {
+    DEFAULT_DURATION: 5000,       // Default display duration for the toast (ms)
+    HIDE_TRANSITION_DELAY: 600    // Animation transition removal delay (ms)
+};
+
+/**
  * Toast Notification Utility
  * Provides non-intrusive feedback in the corner of the screen.
  */
@@ -22,7 +30,7 @@ export class Toast {
         const {
             title = '',
             type = 'success',
-            duration = 5000,
+            duration = CONFIG.DEFAULT_DURATION,
             position = 'bottom-right'
         } = options;
 
@@ -78,6 +86,10 @@ export class Toast {
         return toast;
     }
 
+    /**
+     * Hides the toast notification with a fade-out animation.
+     * Removes the element from the DOM after the transition delay.
+     */
     static hide(toast) {
         if (!toast) return;
         toast.classList.remove('visible');
@@ -85,6 +97,6 @@ export class Toast {
             if (toast.parentNode) {
                 toast.parentNode.removeChild(toast);
             }
-        }, 600);
+        }, CONFIG.HIDE_TRANSITION_DELAY);
     }
 }

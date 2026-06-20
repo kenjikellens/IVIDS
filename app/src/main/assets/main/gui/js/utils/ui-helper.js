@@ -3,7 +3,7 @@ import { Router } from '../router.js';
 import { createLoaderElement } from '../loader.js';
 import { lazyLoader } from '../lazy-loader.js';
 import { domRecycler } from '../dom-recycler.js';
-import { renderSkeletonRow } from '../skeleton-renderer.js';
+import { renderSkeletonRow, renderSkeletonErrorRow } from '../skeleton-renderer.js';
 import { SpatialNav } from '../spatial-nav.js';
 
 
@@ -48,6 +48,8 @@ export function setupRow(elementId, items, defaultType = null) {
             console.error('Error creating row container:', containerError);
         }
 
+        let rowButtonWidth = null;
+
         items.forEach((item, index) => {
             try {
                 if (!item.poster_path) return;
@@ -82,7 +84,10 @@ export function setupRow(elementId, items, defaultType = null) {
                     if (loader.parentNode) loader.parentNode.removeChild(loader);
                     img.style.opacity = '1';
                 };
-                const containerWidth = btn.clientWidth;
+                if (rowButtonWidth === null) {
+                    rowButtonWidth = btn.clientWidth || 0;
+                }
+                const containerWidth = rowButtonWidth;
                 const sizeKey = Api.getRecommendedSizeForContainer(containerWidth, false);
                 img.dataset.src = Api.getImageUrl(item.poster_path, sizeKey);
                 img.alt = item.title || item.name || 'Unknown';
@@ -141,8 +146,10 @@ export function setupLazyLoadedRows(categories, defaultType = null) {
     categories.forEach(cat => {
         lazyLoader.register(cat.id, async () => {
             return await cat.fetcher();
-        }, (id, data) => {
-            if (data) {
+        }, (id, data, error) => {
+            if (error) {
+                renderSkeletonErrorRow(id, error);
+            } else if (data) {
                 setupRow(id, data, defaultType);
             } else {
                 const el = document.getElementById(id);

@@ -117,7 +117,10 @@
         "close": "닫기",
         "systemError": "예기치 않은 시스템 오류가 발생했습니다",
         "initError": "애플리케이션 초기화 실패. 페이지를 새로 고치세요.",
-        "criticalInit": "초기화 중 심각한 오류가 발생했습니다."
+        "criticalInit": "초기화 중 심각한 오류가 발생했습니다.",
+        "networkError": "네트워크 연결 오류. 인터넷 연결을 확인하십시오.",
+        "serverError": "서버 오류 ({status}): 콘텐츠를 로드하지 못했습니다.",
+        "contentLoadFailed": "콘텐츠를 로드하지 못했습니다. 나중에 다시 시도하십시오."
     },
     "splash": {
         "loadingStatus": "사용자 경험 최적화 중...",

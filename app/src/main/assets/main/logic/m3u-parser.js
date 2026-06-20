@@ -28,12 +28,23 @@ export const M3UParser = {
     parse(m3uString) {
         if (!m3uString) return [];
 
-        const lines = m3uString.split('\n');
         const channels = [];
         let currentChannel = null;
 
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim();
+        let pos = 0;
+        const len = m3uString.length;
+
+        while (pos < len) {
+            let nextLineEnd = m3uString.indexOf('\n', pos);
+            let line;
+            if (nextLineEnd === -1) {
+                line = m3uString.substring(pos).trim();
+                pos = len;
+            } else {
+                line = m3uString.substring(pos, nextLineEnd).trim();
+                pos = nextLineEnd + 1;
+            }
+
             if (!line) continue;
 
             if (line.startsWith('#EXTM3U')) {

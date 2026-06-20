@@ -110,7 +110,10 @@
         "close": "Fermer",
         "systemError": "Une erreur système inattendue s'est produite",
         "initError": "Échec de l'initialisation de l'application. Veuillez recharger la page.",
-        "criticalInit": "Une erreur critique s'est produite lors de l'initialisation."
+        "criticalInit": "Une erreur critique s'est produite lors de l'initialisation.",
+        "networkError": "Erreur de connexion réseau. Veuillez vérifier votre connexion internet.",
+        "serverError": "Erreur du serveur ({status}): Échec du chargement du contenu.",
+        "contentLoadFailed": "Échec du chargement du contenu. Veuillez réessayer plus tard."
     },
     "splash": {
         "loadingStatus": "Optimisation de l'expérience utilisateur...",

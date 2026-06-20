@@ -117,7 +117,10 @@
         "close": "Lukk",
         "systemError": "En uventet systemfeil oppsto",
         "initError": "Kunne ikke initialisere applikasjonen. Vennligst last inn siden på nytt.",
-        "criticalInit": "En kritisk feil oppsto under initialiseringen."
+        "criticalInit": "En kritisk feil oppsto under initialiseringen.",
+        "networkError": "Nettverksforbindelsesfeil. Vennligst sjekk internettforbindelsen din.",
+        "serverError": "Serverfeil ({status}): Kunne ikke laste inn innhold.",
+        "contentLoadFailed": "Kunne ikke laste inn innhold. Vennligst prøv igjen senere."
     },
     "splash": {
         "loadingStatus": "Optimaliserer brukeropplevelsen...",

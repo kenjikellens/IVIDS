@@ -110,7 +110,10 @@
         "close": "Schließen",
         "systemError": "Ein unerwarteter Systemfehler ist aufgetreten",
         "initError": "Initialisierung der Anwendung fehlgeschlagen. Bitte laden Sie die Seite neu.",
-        "criticalInit": "Ein kritischer Fehler ist während der Initialisierung aufgetreten."
+        "criticalInit": "Ein kritischer Fehler ist während der Initialisierung aufgetreten.",
+        "networkError": "Netzwerkverbindungsfehler. Bitte überprüfen Sie Ihre Internetverbindung.",
+        "serverError": "Serverfehler ({status}): Inhalt konnte nicht geladen werden.",
+        "contentLoadFailed": "Inhalt konnte nicht geladen werden. Bitte versuchen Sie es später noch einmal."
     },
     "splash": {
         "loadingStatus": "Benutzererlebnis wird optimiert...",

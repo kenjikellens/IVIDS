@@ -117,7 +117,10 @@
         "close": "Stäng",
         "systemError": "Ett oväntat systemfel uppstod",
         "initError": "Misslyckades med att initiera applikationen. Ladda om sidan.",
-        "criticalInit": "Ett kritiskt fel uppstod under initieringen."
+        "criticalInit": "Ett kritiskt fel uppstod under initieringen.",
+        "networkError": "Nätverksanslutningsfel. Kontrollera din internetanslutning.",
+        "serverError": "Serverfel ({status}): Det gick inte att ladda innehåll.",
+        "contentLoadFailed": "Det gick inte att ladda innehåll. Försök igen senare."
     },
     "splash": {
         "loadingStatus": "Optimerar användarupplevelsen...",

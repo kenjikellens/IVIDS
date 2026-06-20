@@ -3,6 +3,15 @@ import { Router } from '../js/router.js';
 import { Splash } from './splash.js';
 
 /**
+ * Default configuration parameters for Hero Slider rendering, transitions, and truncation.
+ */
+const CONFIG = {
+    DEFAULT_DURATION: 20000,      // Slide transition cycle time when auto-play is enabled (ms)
+    FADE_TRANSITION_TIMEOUT: 300, // Duration of slide text content fade transition (ms)
+    TRUNCATE_LIMIT: 450           // Maximum character limit for overview descriptions
+};
+
+/**
  * Helper class that sets up and manages the home/movies/series hero slider.
  * Handles background sliding transition tracks, indicator dots, auto-play, and content fades.
  */
@@ -35,7 +44,7 @@ export class HeroSlider {
 
         this.currentIndex = 0;
         this.interval = null;
-        this.duration = 20000; // 20 seconds
+        this.duration = CONFIG.DEFAULT_DURATION;
         this.isDestroyed = false;
 
         if (!this.container || this.items.length === 0) {
@@ -57,12 +66,17 @@ export class HeroSlider {
         this.track.style.width = `${this.items.length * 100}%`;
 
         // 2. Add slide backdrop images
-        this.items.forEach(item => {
+        this.items.forEach((item, idx) => {
             const slide = document.createElement('div');
             slide.className = 'hero-slide';
             slide.style.width = `${100 / this.items.length}%`;
             const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
-            slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${imageUrl})`;
+            if (idx === 0) {
+                slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${imageUrl})`;
+                slide.dataset.loaded = 'true';
+            } else {
+                slide.dataset.src = imageUrl;
+            }
             this.track.appendChild(slide);
         });
 
@@ -108,6 +122,7 @@ export class HeroSlider {
     /**
      * Renders the hero slide at the specified index, shifting the background and updating title/description elements.
      * This method directly modifies the DOM content of the hero section and manages the fade transition state.
+     * Also lazy loads the current slide's backdrop and pre-fetches the next slide's backdrop.
      * @param {number} index - Index of slide to render.
      * @param {boolean} [isInitial=false] - True if this is the first render, skipping animation.
      */
@@ -120,6 +135,26 @@ export class HeroSlider {
         // Shift background track horizontally
         if (this.track) {
             this.track.style.left = `-${index * 100}%`;
+        }
+
+        // Lazy load slide backdrop image if not loaded
+        const slides = this.track ? this.track.querySelectorAll('.hero-slide') : [];
+        const currentSlide = slides[index];
+        if (currentSlide && currentSlide.dataset.loaded !== 'true' && currentSlide.dataset.src) {
+            currentSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${currentSlide.dataset.src})`;
+            currentSlide.dataset.loaded = 'true';
+        }
+
+        // Pre-fetch the next slide to keep transitions smooth
+        const nextIndex = (index + 1) % this.items.length;
+        const nextSlide = slides[nextIndex];
+        if (nextSlide && nextSlide.dataset.loaded !== 'true' && nextSlide.dataset.src) {
+            const img = new Image();
+            img.src = nextSlide.dataset.src;
+            img.onload = () => {
+                nextSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${nextSlide.dataset.src})`;
+                nextSlide.dataset.loaded = 'true';
+            };
         }
 
         // Highlight matching circular dot indicator
@@ -140,7 +175,7 @@ export class HeroSlider {
         if (isInitial) {
             // Initial render - set text content instantly without fade out
             if (this.titleEl) this.titleEl.textContent = item.title || item.name;
-            if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 450);
+            if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', CONFIG.TRUNCATE_LIMIT);
             this.updateButtonHandlers(item);
             Splash.signalContentLoaded();
         } else {
@@ -151,11 +186,11 @@ export class HeroSlider {
                 if (this.isDestroyed) return;
 
                 if (this.titleEl) this.titleEl.textContent = item.title || item.name;
-                if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', 450);
+                if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', CONFIG.TRUNCATE_LIMIT);
                 this.updateButtonHandlers(item);
 
                 if (content) content.classList.remove('transitioning');
-            }, 300);
+            }, CONFIG.FADE_TRANSITION_TIMEOUT);
         }
     }
 

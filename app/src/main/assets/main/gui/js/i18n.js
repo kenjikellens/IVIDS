@@ -3,6 +3,7 @@ class I18n {
     constructor() {
         this.currentLanguage = 'en';
         this.translations = {};
+        this.translationCache = {}; // Cache for fast translation string lookups
         this.availableLanguages = [
             'ar', 'cs', 'da', 'de', 'en', 'es', 'fr', 'hi', 'id', 'it', 'ja',
             'ko', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'vi', 'zh'
@@ -50,6 +51,7 @@ class I18n {
             if (!response.ok) throw new Error(`Failed to load ${lang}.json`);
 
             this.translations = await response.json();
+            this.translationCache = {}; // Reset cache on language change
             this.currentLanguage = lang;
 
             // Apply translations to the page
@@ -82,6 +84,7 @@ class I18n {
                         storageFullTitle: "Storage Full"
                     }
                 };
+                this.translationCache = {}; // Clear cache on emergency fallback
                 this.applyTranslations();
             }
         }
@@ -91,10 +94,20 @@ class I18n {
         await this.loadLanguage(lang);
     }
 
-    applyTranslations() {
+    /**
+     * Scans and applies translations to all elements with data-i18n attribute inside a root element.
+     * This avoids scanning the entire document DOM when translating scoped page transitions.
+     * @param {HTMLElement|Document} [rootElement=document] - The parent element to translate.
+     */
+    applyTranslations(rootElement = document) {
         try {
-            // Find all elements with data-i18n attribute
-            const elements = document.querySelectorAll('[data-i18n]');
+            // Find all matching descendant elements
+            const elements = Array.from(rootElement.querySelectorAll('[data-i18n]'));
+            
+            // Check if rootElement itself needs to be translated
+            if (rootElement.hasAttribute && rootElement.hasAttribute('data-i18n')) {
+                elements.push(rootElement);
+            }
 
             elements.forEach(element => {
                 const key = element.getAttribute('data-i18n');
@@ -114,8 +127,15 @@ class I18n {
         }
     }
 
+    /**
+     * Resolves a dot-notated translation key to its corresponding localized string.
+     * Leverages an in-memory cache to optimize nested lookups.
+     */
     getTranslation(key) {
         if (!key) return null;
+        if (this.translationCache[key] !== undefined) {
+            return this.translationCache[key];
+        }
 
         // Support nested keys like "app.name" or "nav.home"
         const keys = key.split('.');
@@ -125,11 +145,12 @@ class I18n {
             if (value && typeof value === 'object' && k in value) {
                 value = value[k];
             } else {
-                // console.warn(`Translation key not found: ${key}`);
+                this.translationCache[key] = null;
                 return null;
             }
         }
 
+        this.translationCache[key] = value;
         return value;
     }
 

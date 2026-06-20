@@ -117,7 +117,10 @@
         "close": "Închide",
         "systemError": "A apărut o eroare de sistem neașteptată",
         "initError": "Eșec la inițializarea aplicației. Te rugăm să reîncarci pagina.",
-        "criticalInit": "A apărut o eroare critică în timpul inițializării."
+        "criticalInit": "A apărut o eroare critică în timpul inițializării.",
+        "networkError": "Eroare de conexiune la rețea. Vă rugăm să verificați conexiunea la internet.",
+        "serverError": "Eroare de server ({status}): Eșec la încărcarea conținutului.",
+        "contentLoadFailed": "Eșec la încărcarea conținutului. Vă rugăm să încercați din nou mai târziu."
     },
     "splash": {
         "loadingStatus": "Se optimizează experiența utilizatorului...",

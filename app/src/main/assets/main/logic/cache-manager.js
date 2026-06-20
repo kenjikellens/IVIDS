@@ -147,7 +147,13 @@ class CacheManager {
      * Prevents gradual sessionStorage quota pressure during long sessions.
      */
     _startPeriodicCleanup() {
-        this._cleanupInterval = setInterval(() => this.clearExpiredStorage(), 5 * 60 * 1000);
+        this._cleanupInterval = setInterval(() => {
+            if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+                window.requestIdleCallback(() => this.clearExpiredStorage());
+            } else {
+                this.clearExpiredStorage();
+            }
+        }, 5 * 60 * 1000);
     }
 
     /**

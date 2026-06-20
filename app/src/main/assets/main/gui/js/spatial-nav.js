@@ -612,9 +612,6 @@ export const SpatialNav = {
             el = allElements[i];
             if (el === current) continue;
 
-            // Validate that the element is active, laid out, and visible
-            if (!this.isVisible(el)) continue;
-
             elRect = el.getBoundingClientRect();
 
             // Optimization: Direction pre-check using rects before expensive logic
@@ -624,8 +621,8 @@ export const SpatialNav = {
             if (direction === 'up' && elRect.top >= rect.top) continue;
             if (direction === 'down' && elRect.bottom <= rect.bottom) continue;
 
-            // Only now do we check strict visibility (costly) if needed, but we used offsetParent above
-            // so we can likely skip full isVisible() if we trust the loop
+            // Validate that the element is active, laid out, and visible (expensive walk)
+            if (!this.isVisible(el)) continue;
 
             const elCenter = {
                 x: elRect.left + elRect.width / 2,

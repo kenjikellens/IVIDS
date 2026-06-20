@@ -21,6 +21,8 @@ export function renderSkeletonRow(elementId, count = 20, cardType = 'poster') {
         container.appendChild(rowPosters);
     }
 
+    const fragment = document.createDocumentFragment();
+
     for (let i = 0; i < count; i++) {
         const skeleton = document.createElement('button');
         skeleton.type = 'button';
@@ -34,6 +36,62 @@ export function renderSkeletonRow(elementId, count = 20, cardType = 'poster') {
         const loader = createLoaderElement();
         skeleton.appendChild(loader);
 
-        rowPosters.appendChild(skeleton);
+        fragment.appendChild(skeleton);
     }
+
+    rowPosters.appendChild(fragment);
+}
+
+/**
+ * Puts the skeleton elements of a row into an error state when API load fails.
+ * It replaces the loaders with an error icon, retains D-pad focus, and sets up a click toast handler.
+ * @param {string} elementId - The ID of the row container element.
+ * @param {Error|any} error - The error object that caused the fetch failure.
+ */
+export function renderSkeletonErrorRow(elementId, error) {
+    const rowPosters = document.getElementById(elementId);
+    if (!rowPosters) return;
+
+    const skeletons = rowPosters.querySelectorAll('.is-skeleton');
+    skeletons.forEach(skeleton => {
+        // Stop shimmer/loading animation
+        skeleton.classList.remove('is-skeleton');
+        skeleton.classList.add('has-error');
+
+        // Replace loading spinner with error SVG icon (using localized title for accessibility)
+        skeleton.innerHTML = `
+            <div class="skeleton-error-container">
+                <img src="svg/error.svg" class="skeleton-error-icon" alt="${window.i18n.t('error.title')}" />
+            </div>
+        `;
+
+        // Handle click event to show Toast with dynamic error context
+        skeleton.onclick = async () => {
+            try {
+                // Dynamically import Toast to avoid circular dependency issues
+                const { Toast } = await import('./toast.js');
+                let message = window.i18n.t('error.contentLoadFailed');
+
+                const isOffline = !navigator.onLine;
+                const errMessage = error?.message || String(error || '');
+
+                if (isOffline || errMessage.includes('Failed to fetch') || errMessage.includes('NetworkError') || errMessage.includes('network')) {
+                    message = window.i18n.t('error.networkError');
+                } else {
+                    const httpMatch = errMessage.match(/HTTP error! status:\s*(\d+)/i);
+                    if (httpMatch && httpMatch[1]) {
+                        message = window.i18n.t('error.serverError').replace('{status}', httpMatch[1]);
+                    }
+                }
+
+                Toast.show(message, {
+                    title: window.i18n.t('error.title'),
+                    type: 'error',
+                    duration: 5000
+                });
+            } catch (err) {
+                console.error('Failed to show error toast:', err);
+            }
+        };
+    });
 }

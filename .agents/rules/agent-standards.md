@@ -18,7 +18,7 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **RULE**: Avoid `px` for containers. Use `%` of the screen.
 
 ## 4. No Browser Subagent
-- **RULE**: DO NOT use the browser subagent under any circumstances for testing, visual checks, or navigating.
+- **RULE**: DO NOT use the browser subagent autonomously for testing, visual checks, or navigating. You are only allowed to use it if explicitly instructed by the user.
 
 ## 6. Temporary Files
 - **RULE**: Any temporary file or script (like translation scripts, test files, or data dumps) MUST be created in the agent's `scratch` folder (e.g., `C:\Users\kenji\.gemini\antigravity-ide\scratch\`).
