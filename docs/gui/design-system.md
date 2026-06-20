@@ -19,7 +19,7 @@ Variables are defined in `:root` and user-selectable values (like accent color) 
 - **TV/Typography Styling**: Use `vh` units (e.g., `3vh` font-size) to keep typography scalable on huge television screens.
 - **Pixel Layouts (`px`)**: The codebase utilizes `px` units extensively (e.g. `min-height: 476px`, `padding: 22px`, indicator dimensions) to guarantee exact borders, padding, and constraints where browser-specific scaling can introduce alignment bugs.
 
-## Button Class Naming (v0.4.3 Standardization)
+## Button Class Naming (v0.4.3+ Standardization)
 All legacy button classes (`.action-btn`, `.modal-btn`, `.ghost-btn`, etc.) have been renamed and consolidated into a standard base class with variant modifiers:
 - `.btn`: Base class containing shared metrics (height, cursor, flex alignment, transition times).
 - `.btn-primary`: Green theme accent button utilizing `var(--primary-color)`.

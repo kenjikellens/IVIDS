@@ -9,7 +9,7 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 - [Update Checker](architecture/updater.md) — Cross-platform native/web automatic update service.
 
 ## Logic & Data
-- [Content API (TMDB)](logic/api.md) — Integration with The Movie Database and VidLink.
+- [Content API (TMDB)](logic/api.md) — Integration with The Movie Database and player providers (VidLink, VidSrc.to, Videasy, VidSrc.cc).
 - [Data Management & Caching](logic/data-management.md) — LocalStorage, Profiles, and Hybrid Caching.
 - [Live TV & M3U](logic/livetv.md) — M3U parsing and IPTV stream integration.
 
@@ -23,5 +23,5 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 - [AI Agent Standards](../.agents/rules/agent-standards.md) — Mandatory protocols for coding agents.
 
 ---
-*Single Source of Truth v0.4.3*
+*Single Source of Truth v0.4.5*
 

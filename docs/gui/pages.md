@@ -92,26 +92,23 @@ This document details all 13 pages, their purpose, key components, and user flow
 ### 12. Account (`account.html` / `account.js`)
 - **Purpose**: Profile and session control center.
 - **Key Features**:
-  - Displays current active profile info (name, custom avatar color).
-  - Quick action to sign out (resets session) or switch profiles (navigates to profiles screen).
-  - List of account preferences.
+  - Displays current active account info (name, custom avatar color).
+  - Quick action to sign out (clears cloud session and resets settings) or sign in/register.
+  - Links to authentication flow.
 
-### 13. Profiles (`profiles.html` / `profiles.js`)
-- **Purpose**: Multi-user profile management panel.
+### 13. Login (`login.html` / `login.js`)
+- **Purpose**: User registration and sign-in interface.
 - **Key Features**:
-  - Displays grid of up to 5 profiles, including the permanent hardcoded "Guest" profile.
-  - Interactive modal dialogs for:
-    - Creating a new profile (name, custom color selection).
-    - Editing an existing profile.
-    - PIN code entry validation.
-  - Drag-and-drop / long-press interface to reorder profiles.
+  - Supports signing in or creating a new account (registration).
+  - Form validation for email formats, PIN length (4-8 digits), and username requirements.
+  - Implements client-side cryptographically secure PBKDF2/AES-GCM key derivation for database entries.
+  - Implements login rate-limiting / login lockouts on repeated sign-in failures.
 
 ---
 
 ## 👥 Profile & Account Systems Flow
 
-The profiles system isolates preferences and custom configurations locally:
-1. **Boot routing**: App boots directly to `home` page in a default state. Users can access `profiles` via `account` inside the sidebar.
-2. **Guest Profile**: Hardcoded default profile. Always present, position saved in `ivids-guest-pos`.
-3. **PIN Verification**: Users can set a 4-digit PIN for custom profiles. Verification matches user input against the plaintext value stored under the profile object inside `ivids-profiles`.
-4. **Data Isolation**: Switching profiles updates the active profile in `ivids-current-profile`. User playlists (`user_playlists`) are segmented by profile ID to keep contents isolated.
+The account system isolates user profiles and custom configurations:
+1. **Boot routing**: The app boots directly to the `home` page in a default state. If a cloud session exists, it automatically pre-populates settings, playlists, and history. Otherwise, it operates in Guest mode.
+2. **Authentication**: Users sign in or register on the `login` page. The app derives cryptographic keys from their email and PIN, encrypting user settings, history, and playlists.
+3. **Data Isolation & Sync**: Namespaced storage keys (e.g., `ivids-acc-{id}-user_playlists`) segment user-created playlists and watch history per account. Upon successful login/actions, updates are synced securely back to the Firebase Realtime Database.

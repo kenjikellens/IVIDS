@@ -22,32 +22,35 @@ To avoid redundant TMDB API calls, the app uses a dual-layer caching strategy:
 
 ## 👤 User Data Persistence
 
-Primary user state is managed in `LocalStorage` with the following keys:
+Primary user state is managed in `LocalStorage` with the following namespaced keys:
 
 | Key | Format | Description |
 |-----|--------|-------------|
-| `ivids-settings` | JSON Object | Theme colors, language, and player provider. |
-| `ivids-profiles` | JSON Array | Array of user profile objects with plaintext PINs. |
-| `ivids-current-profile` | ID | The active profile for the session. |
-| `recentlyWatched` | JSON Array | List of recently watched items with progress. |
-| `user_playlists` | JSON Object | Map of user-created playlists by profile ID. |
-| `ivids-guest-pos` | Number | Left/X coordinate position of the default Guest profile icon in settings/profiles screen layout. |
-| `ivids-last-route` | JSON Object | Page and params of the last active route (cleared on fresh startup to ensure clean boots). |
-| `ivids-last-active` | Number | Timestamp of the last visibility state change when the app went to background. |
+| `ivids-settings` | JSON Object | Global theme colors, language, and player provider. |
+| `ivids-cloud-session` | JSON Object | Logged in user session credentials `{ pushId, username, email }`. |
+| `ivids-current-profile` | JSON Object | The active profile details for the session `{ id, name, color }`. |
+| `ivids-acc-{id}-user_playlists` | JSON Array | Namespaced array of user-created playlists for the active account. |
+| `ivids-acc-{id}-recently-watched` | JSON Array | Namespaced recently watched items with progress for the active account. |
+| `ivids-acc-{id}-settings` | JSON Object | Namespaced preferences (like custom accent colors) for the active account. |
+| `ivids-acc-{id}-watch-progress` | JSON Object | Namespaced map of watch positions and durations. |
 
 ---
 
 ## 📂 Virtual & Dynamic Playlists
 
-While user-created playlists are stored in `user_playlists`, the **Recently Watched / Watch History** list is synthesized dynamically at runtime. It functions as a virtual/system playlist:
-- Read directly from the `recentlyWatched` localStorage array.
+While user-created playlists are stored in namespaced key storage, the **Recently Watched / Watch History** list is synthesized dynamically at runtime. It functions as a virtual/system playlist:
+- Read directly from the `ivids-acc-{id}-recently-watched` (or anonymous fallback) localStorage array.
 - Presented seamlessly alongside user-created playlists in the Playlists UI.
 - Updates automatically whenever media playback starts or progresses.
 
 ---
 
-## 🔒 Security & Profile Isolation
+## 🔒 Security & Data Encryption
 
-- **PIN Protection**: Profile PINs are stored locally (not on a server). In the current implementation (v0.4.3), they are stored as **plaintext** within the `ivids-profiles` JSON array. There is no hashing or encryption applied.
-- **Isolation**: When switching profiles, the user playlists and recently watched entries are loaded dynamically based on the active profile ID, preventing cross-contamination between family members.
+- **Cloud Authentication & Encryption**: User accounts are registered and authenticated via a Firebase Realtime Database.
+- **Client-Side PBKDF2 & AES-GCM**: To secure user data, credentials and profile info are encrypted on the client side:
+  - Cryptographic keys are derived from the email and PIN using PBKDF2 (100,000 iterations, SHA-256) and a unique salt generated on registration.
+  - Data payload (including playlists, settings, history) is encrypted using AES-GCM (256-bit) before syncing to Firebase.
+  - The database only sees encrypted binary payloads (hex-encoded), ensuring absolute privacy.
+- **Isolation**: When switching accounts, namespaced local keys (e.g., `ivids-acc-{id}-*`) segment playlists and watch history per account.
 

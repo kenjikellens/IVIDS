@@ -46,7 +46,11 @@ The Discovery engine implements several server-side and client-side filters to e
 
 The `getVideoUrl()` method implements a multi-provider and multi-server routing strategy:
 - **Default Provider**: Uses VidLink.pro (`https://vidlink.pro`) as the primary default video source.
-- **Alternative Servers**: Supports a selection of servers (configured in the `SERVERS` array, e.g., `vidlink` for VidLink and `embed_su` for Embed.su) via the UI playback interface.
-- **Auto-Migration Check**: If the user has a legacy player configuration pointing to blocked `vidsrc` domains, the `getPlayerConfig()` loader automatically migrates their settings to `vidlink.pro` persistently in `localStorage`.
+- **Default Providers List**: Supports a pre-configured selection of servers (configured in the `DEFAULT_PLAYER_PROVIDERS` array) via the UI playback interface:
+  - **VidLink (Primary)**: `https://vidlink.pro` (ID: `vidlink`)
+  - **VidSrc.to (Server 2)**: `https://vidsrc.to/embed` (ID: `vidsrc_to`)
+  - **Videasy (Server 3)**: `https://player.videasy.net` (ID: `videasy`)
+  - **VidSrc.cc (Server 4)**: `https://vidsrc.cc/v2/embed` (ID: `vidsrc_cc`)
+- **Auto-Migration Check**: If the user has a legacy player configuration pointing to blocked `vidsrc` domains (like `vidsrc.xyz`, `vidsrc.me`, or `vidsrc.net`), the `getPlayerConfig()` loader automatically migrates their settings to `vidlink.pro` persistently in `localStorage`.
 - **Deep Linking**: Correctly constructs embed paths and parameters for TV Seasons/Episodes (`/tv/{id}/{season}/{episode}`) vs Movies (`/movie/{id}`).
 - **Uniform Playback Parameters**: Appends URL query parameters like `autoplay=true`, `autoPlay=true`, and `ds_lang=en` to ensure instant playback without manual configuration.
