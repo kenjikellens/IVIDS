@@ -209,7 +209,11 @@
         "emptyPlaylist": "Daftar putar ini kosong.",
         "playAll": "Putar Semua",
         "editInfo": "Edit Info",
-        "type_label": "Playlist"
+        "type_label": "Playlist",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Sedang Tren",

@@ -209,7 +209,11 @@
         "emptyPlaylist": "이 플레이리스트는 비어 있습니다.",
         "playAll": "전체 재생",
         "editInfo": "정보 수정",
-        "type_label": "재생목록"
+        "type_label": "재생목록",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "인기 급상승",

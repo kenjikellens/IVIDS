@@ -202,7 +202,11 @@
         "emptyPlaylist": "Diese Wiedergabeliste ist leer.",
         "playAll": "Alle abspielen",
         "editInfo": "Info bearbeiten",
-        "type_label": "Wiedergabeliste"
+        "type_label": "Wiedergabeliste",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Gerade angesagt",

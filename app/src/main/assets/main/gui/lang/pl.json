@@ -209,7 +209,11 @@
         "emptyPlaylist": "Ta playlista jest pusta.",
         "playAll": "Odtwórz wszystko",
         "editInfo": "Edytuj informacje",
-        "type_label": "Playlista"
+        "type_label": "Playlista",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Na czasie",

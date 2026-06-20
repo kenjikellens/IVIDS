@@ -324,11 +324,14 @@ class SettingsManager {
 
 
     /**
-     * Executes the update check action.
-     * Delegates to the unified JavaScript updater which handles Android, Electron, and Web environments.
+     * Executes the update check action, opening the developer version selector or checking for general updates.
+     * It updates checking state and handles the visibility of trigger buttons and loaders.
      */
     handleMainUpdateAction() {
-
+        if (this.settings.updateMode === 'advanced') {
+            this.openVersionSelector();
+            return;
+        }
 
         this.isCheckingUpdates = true;
 
@@ -354,16 +357,12 @@ class SettingsManager {
             }
         }
 
-        if (this.settings.updateMode === 'advanced') {
-            this.openVersionSelector();
-        } else {
-            import('../js/updater.js').then(({ Updater }) => {
-                Updater.checkForUpdates(true);
-            }).catch(err => {
-                console.error('Settings: Failed to load updater', err);
-                this.handleUpdateError();
-            });
-        }
+        import('../js/updater.js').then(({ Updater }) => {
+            Updater.checkForUpdates(true);
+        }).catch(err => {
+            console.error('Settings: Failed to load updater', err);
+            this.handleUpdateError();
+        });
     }
 
     /**

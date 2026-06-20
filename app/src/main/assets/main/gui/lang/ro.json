@@ -209,7 +209,11 @@
         "emptyPlaylist": "Această listă este goală.",
         "playAll": "Redă tot",
         "editInfo": "Editează informațiile",
-        "type_label": "Playlist"
+        "type_label": "Playlist",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "În tendințe",

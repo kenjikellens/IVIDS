@@ -61,7 +61,7 @@ function render() {
  */
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
-    card.className = 'playlist-card focusable';
+    card.className = 'playlist-card focusable focusable-card';
     card.dataset.id = playlist.id;
 
     // Get cover image from first item or use placeholder

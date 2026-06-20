@@ -209,7 +209,11 @@
         "emptyPlaylist": "यह प्लेलिस्ट खाली है।",
         "playAll": "सब चलाएं",
         "editInfo": "जानकारी संपादित करें",
-        "type_label": "प्लेलिस्ट"
+        "type_label": "प्लेलिस्ट",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "ट्रेंडिंग",

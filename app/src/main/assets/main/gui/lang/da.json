@@ -209,7 +209,11 @@
         "emptyPlaylist": "Denne playliste er tom.",
         "playAll": "Afspil alle",
         "editInfo": "Rediger info",
-        "type_label": "Playliste"
+        "type_label": "Playliste",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Trending nu",

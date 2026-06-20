@@ -209,7 +209,11 @@
         "emptyPlaylist": "Danh sách phát này đang trống.",
         "playAll": "Phát tất cả",
         "editInfo": "Sửa thông tin",
-        "type_label": "Danh sách phát"
+        "type_label": "Danh sách phát",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Xu hướng",

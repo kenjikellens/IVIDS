@@ -7,6 +7,50 @@ import { manageModal } from '../js/utils/ui-helper.js';
 
 let currentPlaylistId = null;
 
+let activeMoveIndex = null;
+
+/**
+ * Returns the current active reordering index, if any.
+ * @returns {number|null} The index of the item currently being reordered.
+ */
+export function getActiveMoveIndex() {
+    return activeMoveIndex;
+}
+
+/**
+ * Sets the active reordering index.
+ * @param {number|null} val - The new move index value.
+ */
+export function setActiveMoveIndex(val) {
+    activeMoveIndex = val;
+}
+
+/**
+ * Gets the total number of items in the current playlist.
+ * @returns {number} The count of items.
+ */
+export function getPlaylistItemsCount() {
+    const playlist = Playlists.getPlaylist(currentPlaylistId);
+    return playlist ? playlist.items.length : 0;
+}
+
+/**
+ * Performs a reorder move action directly from the navigation controls.
+ * @param {number} fromIndex - Original index.
+ * @param {number} toIndex - New target index.
+ * @returns {boolean} True if successfully moved.
+ */
+export function moveItemInActivePlaylist(fromIndex, toIndex) {
+    return Playlists.moveItem(currentPlaylistId, fromIndex, toIndex);
+}
+
+/**
+ * Re-renders the playlist details screen content.
+ */
+export function reRenderList() {
+    render();
+}
+
 /**
  * Initializes the Playlist Details page controller.
  * Establishes params, fetches the appropriate list entry, and paints the initial screen.
@@ -15,6 +59,7 @@ let currentPlaylistId = null;
  */
 export const init = async (params) => {
     console.log('Initializing Playlist Details', params);
+    activeMoveIndex = null;
     if (params && params.id) {
         currentPlaylistId = params.id;
         render();
@@ -125,109 +170,127 @@ function render() {
 }
 
 /**
- * Constructs a focusable item poster card.
- * Nested mini action overlays are completely removed to resolve Spatial D-pad conflict.
- * Clicking a card triggers the TV context action modal.
+ * Toggles move reordering mode for a given playlist item index.
+ * Registers or removes spatial navigation back handlers accordingly.
+ * 
+ * @param {number} index - Index of the item to move.
+ */
+function toggleMoveMode(index) {
+    if (activeMoveIndex === index) {
+        activeMoveIndex = null;
+        render();
+        // Shift focus back to the move button of the item
+        setTimeout(() => {
+            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"]`);
+            if (btn) btn.focus();
+        }, 10);
+    } else {
+        activeMoveIndex = index;
+        render();
+
+        const moveBackHandler = () => {
+            if (activeMoveIndex !== null) {
+                activeMoveIndex = null;
+                render();
+                SpatialNav.popBackHandler(moveBackHandler);
+                return true;
+            }
+            return false;
+        };
+        SpatialNav.pushBackHandler(moveBackHandler);
+
+        // Shift focus back to the move button of the item
+        setTimeout(() => {
+            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"]`);
+            if (btn) btn.focus();
+        }, 10);
+    }
+}
+
+/**
+ * Constructs a focusable item row resembling the episode listings.
+ * Contains the movie details card and circular Move and Delete action buttons.
  * 
  * @param {object} item - Movie or Series object details.
  * @param {number} index - Current position index.
  * @param {number} total - Total entries in the list.
- * @returns {HTMLDivElement} Configured focusable DOM card element.
+ * @returns {HTMLDivElement} Configured item row element.
  */
 function createItemElement(item, index, total) {
-    const el = document.createElement('div');
-    el.className = 'poster-wrapper focusable';
-    el.dataset.id = item.id;
-    el.dataset.type = item.media_type;
-
-    const imageUrl = Api.getImageUrl(item.poster_path || item.backdrop_path);
-
-    el.innerHTML = `
-        <img class="poster" src="${imageUrl}" loading="lazy" decoding="async" alt="${item.title || item.name}">
-    `;
-
-    // Programmatic click opens custom context actions modal
-    el.onclick = (e) => {
-        e.stopPropagation();
-        openItemContextModal(item, index, total);
-    };
-
-    return el;
-}
-
-/**
- * Opens a focused item actions sheet to play, inspect, remove, or shift indices.
- * Removes previous event bindings using cloneNode to prevent execution leaking.
- * 
- * @param {object} item - Target movie or series object.
- * @param {number} index - Position index.
- * @param {number} total - List total count.
- */
-function openItemContextModal(item, index, total) {
-    const modal = document.getElementById('item-context-modal');
-    const titleEl = document.getElementById('context-item-title');
-    const playBtn = document.getElementById('context-play-btn');
-    const detailsBtn = document.getElementById('context-details-btn');
-    const moveUpBtn = document.getElementById('context-move-up-btn');
-    const moveDownBtn = document.getElementById('context-move-down-btn');
-    const removeBtn = document.getElementById('context-remove-btn');
-    const cancelBtn = document.getElementById('context-cancel-btn');
-
-    if (!modal || !titleEl || !playBtn || !detailsBtn || !moveUpBtn || !moveDownBtn || !removeBtn || !cancelBtn) {
-        console.error('Context modal elements not found');
-        return;
+    const row = document.createElement('div');
+    row.className = 'playlist-item-row';
+    if (activeMoveIndex === index) {
+        row.classList.add('moving-active');
     }
 
-    titleEl.textContent = item.title || item.name;
+    const cardWrapper = document.createElement('div');
+    cardWrapper.className = 'playlist-item-card-wrapper';
 
-    // Up/Down button boundary visibility
-    moveUpBtn.style.display = index > 0 ? 'block' : 'none';
-    moveDownBtn.style.display = index < total - 1 ? 'block' : 'none';
+    const itemCard = document.createElement('div');
+    itemCard.className = 'episode-item focusable';
+    itemCard.tabIndex = 0;
+    itemCard.dataset.id = item.id;
+    itemCard.dataset.type = item.media_type;
 
-    // Clean listeners by node replacement
-    const playClone = playBtn.cloneNode(true);
-    const detailsClone = detailsBtn.cloneNode(true);
-    const moveUpClone = moveUpBtn.cloneNode(true);
-    const moveDownClone = moveDownBtn.cloneNode(true);
-    const removeClone = removeBtn.cloneNode(true);
-    const cancelClone = cancelBtn.cloneNode(true);
+    const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path, Api.STILL_SIZE);
+    const bgImage = imageUrl ? `url('${imageUrl}')` : 'none';
 
-    playBtn.parentNode.replaceChild(playClone, playBtn);
-    detailsBtn.parentNode.replaceChild(detailsClone, detailsBtn);
-    moveUpBtn.parentNode.replaceChild(moveUpClone, moveUpBtn);
-    moveDownBtn.parentNode.replaceChild(moveDownClone, moveDownBtn);
-    removeBtn.parentNode.replaceChild(removeClone, removeBtn);
-    cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
+    itemCard.innerHTML = `
+        <div class="episode-image" style="background-image: ${bgImage};"></div>
+        <div class="episode-info">
+            <div class="episode-header">
+                <span class="episode-number">${index + 1}</span>
+                <span class="episode-name">${item.title || item.name}</span>
+            </div>
+            <p class="episode-overview">${item.overview || ''}</p>
+        </div>
+    `;
 
-    const closeModal = manageModal(modal);
-
-    playClone.onclick = () => {
-        closeModal();
-        Router.loadPage('player', { id: item.id, type: item.media_type });
-    };
-
-    detailsClone.onclick = () => {
-        closeModal();
+    // Click on item card navigates to content details
+    itemCard.onclick = () => {
         Router.loadPage('details', { id: item.id, type: item.media_type });
     };
 
-    moveUpClone.onclick = () => {
-        closeModal();
-        Playlists.moveItem(currentPlaylistId, index, index - 1);
-        render();
+    const actionsWrapper = document.createElement('div');
+    actionsWrapper.className = 'playlist-item-actions';
+
+    // Circular Move button
+    const moveBtn = document.createElement('button');
+    moveBtn.className = 'btn btn-secondary btn-circle playlist-action-btn focusable';
+    if (activeMoveIndex === index) {
+        moveBtn.classList.add('move-active');
+    }
+    moveBtn.dataset.index = index;
+    moveBtn.title = window.i18n ? window.i18n.t('playlists.moveItem') : "Move Item";
+    moveBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
+        </svg>
+    `;
+
+    moveBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleMoveMode(index);
     };
 
-    moveDownClone.onclick = () => {
-        closeModal();
-        Playlists.moveItem(currentPlaylistId, index, index + 1);
-        render();
-    };
+    // Circular Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn btn-secondary btn-circle playlist-action-btn focusable';
+    deleteBtn.dataset.index = index;
+    deleteBtn.title = window.i18n ? window.i18n.t('playlists.deleteItem') : "Remove Item";
+    deleteBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+        </svg>
+    `;
 
-    removeClone.onclick = () => {
-        closeModal();
+    deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        const title = window.i18n ? window.i18n.t('playlists.removeItemTitle') : 'Remove Item';
+        const msg = window.i18n ? window.i18n.t('playlists.removeItemMessage') : 'Are you sure you want to remove this item from the playlist?';
         showConfirmationModal(
-            'Remove Item',
-            'Are you sure you want to remove this item from the playlist?',
+            title,
+            msg,
             () => {
                 Playlists.removeFromPlaylist(currentPlaylistId, item.id);
                 render();
@@ -235,9 +298,14 @@ function openItemContextModal(item, index, total) {
         );
     };
 
-    cancelClone.onclick = () => {
-        closeModal();
-    };
+    cardWrapper.appendChild(itemCard);
+    actionsWrapper.appendChild(moveBtn);
+    actionsWrapper.appendChild(deleteBtn);
+
+    row.appendChild(cardWrapper);
+    row.appendChild(actionsWrapper);
+
+    return row;
 }
 
 /**

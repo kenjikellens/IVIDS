@@ -588,7 +588,7 @@ function renderResultItems(items, container) {
 
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'poster-wrapper focusable';
+        btn.className = 'poster-wrapper focusable focusable-card';
         const img = document.createElement('img');
         img.className = 'poster-img';
         img.decoding = 'async';

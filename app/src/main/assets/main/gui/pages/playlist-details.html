@@ -38,7 +38,7 @@
             <div class="details-bottom">
                 <div class="recommendations-section recommendations-section-layout">
                     <h3 class="row-title large-title-white" data-i18n="playlists.items">Playlist Items</h3>
-                    <div id="playlist-items-container" class="playlist-items-grid">
+                    <div id="playlist-items-container" class="episodes-list">
                         <!-- Items injected via JS -->
                     </div>
                 </div>
@@ -49,11 +49,11 @@
     <!-- Confirmation Modal -->
     <div id="confirmation-modal" class="modal-overlay">
         <div class="modal-content">
-            <h2 class="modal-title">Remove Item</h2>
-            <p class="modal-message">Are you sure you want to remove this item from the playlist?</p>
+            <h2 class="modal-title" data-i18n="playlists.removeItemTitle">Remove Item</h2>
+            <p class="modal-message" data-i18n="playlists.removeItemMessage">Are you sure you want to remove this item from the playlist?</p>
             <div class="modal-actions">
-                <button id="modal-cancel-btn" class="btn btn-secondary focusable">Cancel</button>
-                <button id="modal-confirm-btn" class="btn btn-danger focusable">Remove</button>
+                <button id="modal-cancel-btn" class="btn btn-secondary focusable" data-i18n="playlists.cancel">Cancel</button>
+                <button id="modal-confirm-btn" class="btn btn-danger focusable" data-i18n="playlists.deleteItem">Remove</button>
             </div>
         </div>
     </div>

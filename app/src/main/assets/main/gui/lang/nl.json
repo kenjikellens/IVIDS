@@ -202,7 +202,11 @@
         "emptyPlaylist": "Deze afspeellijst is leeg.",
         "playAll": "Alles afspelen",
         "editInfo": "Info bewerken",
-        "type_label": "Afspeellijst"
+        "type_label": "Afspeellijst",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Nu Trending",

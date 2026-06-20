@@ -61,7 +61,7 @@ export function setupRow(elementId, items, defaultType = null) {
                 } else {
                     btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'poster-wrapper focusable';
+                    btn.className = 'poster-wrapper focusable focusable-card';
                     rowPosters.appendChild(btn);
                 }
 

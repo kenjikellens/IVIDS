@@ -202,7 +202,11 @@
         "emptyPlaylist": "Cette liste est vide.",
         "playAll": "Tout lire",
         "editInfo": "Modifier les infos",
-        "type_label": "Playlist"
+        "type_label": "Playlist",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Tendances actuelles",

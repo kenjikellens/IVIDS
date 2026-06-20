@@ -201,7 +201,11 @@
         "namePlaceholder": "Playlist Name",
         "emptyPlaylist": "This playlist is empty.",
         "playAll": "Play All",
-        "editInfo": "Edit Info"
+        "editInfo": "Edit Info",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Trending Now",

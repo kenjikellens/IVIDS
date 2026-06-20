@@ -105,7 +105,9 @@ button {
     overflow: hidden auto;
 }
 
+/* Utility class to completely hide any UI elements from rendering and layout. */
 #app.fullscreen-layout #sidebar-container,
+.btn.hidden,
 .hidden {
     display: none;
 }
@@ -328,13 +330,10 @@ textarea.active-typing:not(.input-wrapper *) {
     width: 100%;
 }
 
-/* Sets higher stacking index, scales, and adds an accent-color shadow to posters and playlist cards when hovered/focused. */
-.poster-wrapper:hover,
-.poster-wrapper:focus,
-.poster-wrapper.focused,
-.playlist-card:hover,
-.playlist-card:focus,
-.playlist-card.focused {
+/* Sets higher stacking index, scales, and adds an accent-color shadow to focusable card elements when hovered/focused. */
+.focusable-card:hover,
+.focusable-card:focus,
+.focusable-card.focused {
     box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.4);
     transform: scale(1.04);
     z-index: 100;
@@ -2598,6 +2597,62 @@ textarea.active-typing:not(.input-wrapper *) {
     padding-bottom: 64px;
 }
 
+/* Container row that places the episode-styled card and its action buttons side-by-side. */
+.playlist-item-row {
+    align-items: center;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+/* Flex item containing the movie card, set to grow to fill available space. */
+.playlist-item-card-wrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Vertical layout containing the circular move and delete buttons. */
+.playlist-item-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* Custom dimensions and styles for the move and delete circular buttons. */
+.playlist-action-btn {
+    align-items: center;
+    border-radius: 50%;
+    display: inline-flex;
+    height: 48px;
+    justify-content: center;
+    padding: 0;
+    width: 48px;
+    flex-shrink: 0;
+}
+
+/* Thicker white focus outline for the circular buttons without scale animations. */
+.playlist-action-btn:hover,
+.playlist-action-btn:focus,
+.playlist-action-btn.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Accent color background styling for the Move button when active move mode is enabled. */
+.playlist-action-btn.move-active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #050505;
+}
+
+/* Glowing border styling for the entire row to indicate it is currently being moved. */
+.playlist-item-row.moving-active .episode-item {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+}
+
 .modal-message {
     color: var(--text-muted);
     font-size: 15px;
@@ -4442,125 +4497,26 @@ iframe,
    FOCUS AND HOVER SPECIFICITY RESOLUTION BLOCK
    ========================================================================== */
 /* 1. Mega Focus/Hover Outline for standard focusable elements */
-.btn:hover,
-.btn:focus,
-.btn.focused,
-.nav-item:hover,
-.nav-item:focus,
-.nav-item.focused,
-.poster-wrapper:hover,
-.poster-wrapper:focus,
-.poster-wrapper.focused,
-.profile-card:hover,
-.profile-card:focus,
-.profile-card.focused,
-.profile-avatar.large:hover,
-.profile-avatar.large:focus,
-.profile-avatar.large.focused,
-.color-option:hover,
-.color-option:focus,
-.color-option.focused,
-.season-btn:hover,
-.season-btn:focus,
-.season-btn.focused,
-.episode-item:hover,
-.episode-item:focus,
-.episode-item.focused,
-.channel-list-item:hover,
-.channel-list-item:focus,
-.channel-list-item.focused,
-.playlist-card:hover,
-.playlist-card:focus,
-.playlist-card.focused,
-.recent-chip:hover,
-.recent-chip:focus,
-.recent-chip.focused,
-.recent-search-item:hover,
-.recent-search-item:focus,
-.recent-search-item.focused,
-.filter-chip:hover,
-.filter-chip:focus,
-.filter-chip.focused,
-.select-item:hover,
-.select-item:focus,
-.select-item.focused,
-.filter-input:hover,
-.filter-input:focus,
-.filter-input.focused,
-.filter-select-btn:hover,
-.filter-select-btn:focus,
-.filter-select-btn.focused,
-.filter-select-wrapper:hover,
-.filter-select-wrapper:focus-within,
-.filter-select-wrapper.focused,
-.input-wrapper:hover,
-.input-wrapper:focus-within,
-.input-wrapper.focused,
-.modal-search-input:hover,
-.modal-search-input:focus,
-.modal-search-input.focused,
-.edit-trigger:hover,
-.edit-trigger:focus,
-.edit-trigger.focused,
-.settings-input:hover,
-.settings-input:focus,
-.settings-input.focused,
-.input-group input:hover,
-.input-group input:focus,
-.input-group input.focused,
-.pin-digit:hover,
-.pin-digit:focus,
-.pin-digit.focused,
-.option-chip:hover,
-.option-chip:focus,
-.option-chip.focused,
-.update-btn:hover,
-.update-btn:focus,
-.update-btn.focused,
-.search-clear-btn:hover,
-.search-clear-btn:focus,
-.search-clear-btn.focused,
+/* Applies a high-visibility focus outline to any focused or hovered interactive element, including custom wrapper containers. */
 .focusable:hover,
 .focusable:focus,
 .focusable.focused,
-.recent-item:hover,
-.recent-item:focus,
-.recent-item.focused,
-.disney-cast-card:hover,
-.disney-cast-card:focus,
-.disney-cast-card.focused,
-.version-info-btn:hover,
-.version-info-btn:focus,
-.livetv-setting-row:hover,
-.livetv-setting-row:focus,
-.livetv-setting-row.focused {
+.focusable:focus-within,
+.focusable-container:hover,
+.focusable-container:focus-within,
+.focusable-container.focused {
     border-color: #ffffff;
     box-shadow: none;
     outline: 2px solid #ffffff;
     outline-offset: 0px;
 }
 
-/* 2. Nested input outline suppression */
+/* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input,
-.input-wrapper input:hover,
-.input-wrapper input:focus,
-.input-wrapper input.focused,
 .input-wrapper button,
-.input-wrapper button:hover,
-.input-wrapper button:focus,
-.input-wrapper button.focused,
 .input-wrapper .focusable,
-.input-wrapper .focusable:hover,
-.input-wrapper .focusable:focus,
-.input-wrapper .focusable.focused,
 .filter-select-wrapper select,
-.filter-select-wrapper select:hover,
-.filter-select-wrapper select:focus,
-.filter-select-wrapper select.focused,
-.filter-select-wrapper .focusable,
-.filter-select-wrapper .focusable:hover,
-.filter-select-wrapper .focusable:focus,
-.filter-select-wrapper .focusable.focused {
+.filter-select-wrapper .focusable {
     border: none;
     box-shadow: none;
     outline: none;
@@ -4776,12 +4732,10 @@ iframe,
     -webkit-mask-image: url('../images/settings.svg');
     mask-image: url('../images/settings.svg');
 }
-.poster-wrapper:hover,
-.poster-wrapper:focus,
-.poster-wrapper.focused,
-.playlist-card:hover,
-.playlist-card:focus,
-.playlist-card.focused {
+/* Styles the hover and focused outline and zoom states for focusable card components. */
+.focusable-card:hover,
+.focusable-card:focus,
+.focusable-card.focused {
     border-color: #ffffff;
     box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.5);
     outline: 2px solid #ffffff;

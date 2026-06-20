@@ -209,7 +209,11 @@
         "emptyPlaylist": "Den här spellistan är tom.",
         "playAll": "Spela alla",
         "editInfo": "Redigera info",
-        "type_label": "Spellista"
+        "type_label": "Spellista",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Trendar just nu",

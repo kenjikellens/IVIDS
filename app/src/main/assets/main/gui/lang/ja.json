@@ -209,7 +209,11 @@
         "emptyPlaylist": "このプレイリストは空です。",
         "playAll": "すべて再生",
         "editInfo": "情報を編集",
-        "type_label": "プレイリスト"
+        "type_label": "プレイリスト",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "今注目の作品",

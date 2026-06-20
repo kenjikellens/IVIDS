@@ -209,7 +209,11 @@
         "emptyPlaylist": "Плейлист пуст.",
         "playAll": "Смотреть все",
         "editInfo": "Изменить инфо",
-        "type_label": "Плейлист"
+        "type_label": "Плейлист",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "В тренде",

@@ -209,7 +209,11 @@
         "emptyPlaylist": "هذه القائمة فارغة.",
         "playAll": "تشغيل الكل",
         "editInfo": "تعديل المعلومات",
-        "type_label": "قائمة تشغيل"
+        "type_label": "قائمة تشغيل",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "الأكثر تداولاً",

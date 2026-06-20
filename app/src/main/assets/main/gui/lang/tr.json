@@ -209,7 +209,11 @@
         "emptyPlaylist": "Bu liste boş.",
         "playAll": "Tümünü Oynat",
         "editInfo": "Bilgileri Düzenle",
-        "type_label": "Oynatma listesi"
+        "type_label": "Oynatma listesi",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "Trendler",

@@ -209,7 +209,11 @@
         "emptyPlaylist": "此播放列表为空。",
         "playAll": "播放全部",
         "editInfo": "编辑信息",
-        "type_label": "播放列表"
+        "type_label": "播放列表",
+        "removeItemTitle": "Remove Item",
+        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
+        "moveItem": "Move Item",
+        "deleteItem": "Remove Item"
     },
     "row": {
         "trending": "当下流行",
