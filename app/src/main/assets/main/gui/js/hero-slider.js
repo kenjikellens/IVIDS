@@ -6,9 +6,9 @@ import { Splash } from './splash.js';
  * Default configuration parameters for Hero Slider rendering, transitions, and truncation.
  */
 const CONFIG = {
-    DEFAULT_DURATION: 20000,      // Slide transition cycle time when auto-play is enabled (ms)
-    FADE_TRANSITION_TIMEOUT: 300, // Duration of slide text content fade transition (ms)
-    TRUNCATE_LIMIT: 450           // Maximum character limit for overview descriptions
+    DEFAULT_DURATION: 10000,      // Slide transition cycle time when auto-play is enabled (ms)
+    FADE_TRANSITION_TIMEOUT: 500, // Duration of slide text content fade transition (ms)
+    TRUNCATE_LIMIT: 250           // Maximum character limit for overview descriptions
 };
 
 /**
@@ -87,24 +87,7 @@ export class HeroSlider {
         const loader = this.container.querySelector('.loader-center-container');
         if (loader) loader.style.display = 'none';
 
-        // 3. Create indicators container and circular dots
-        this.indicatorsContainer = document.createElement('div');
-        this.indicatorsContainer.className = 'hero-indicators';
 
-        this.items.forEach((_, idx) => {
-            const dot = document.createElement('div');
-            dot.className = 'hero-indicator-dot';
-            if (idx === this.currentIndex) dot.classList.add('active');
-            
-            // Allow manual dot clicks to change slide
-            dot.onclick = () => {
-                this.goTo(idx);
-                this.startAutoPlay(); // Restart timer on manual interaction
-            };
-            this.indicatorsContainer.appendChild(dot);
-        });
-
-        this.container.appendChild(this.indicatorsContainer);
 
         // 4. Initial render to set text content
         this.render(this.currentIndex, true);
@@ -177,7 +160,6 @@ export class HeroSlider {
             if (this.titleEl) this.titleEl.textContent = item.title || item.name;
             if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', CONFIG.TRUNCATE_LIMIT);
             this.updateButtonHandlers(item);
-            Splash.signalContentLoaded();
         } else {
             // Subsequent transitions - fade out content, change text, fade in
             if (content) content.classList.add('transitioning');

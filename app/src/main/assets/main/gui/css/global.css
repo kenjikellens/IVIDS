@@ -1155,14 +1155,14 @@ textarea.active-typing:not(.input-wrapper *) {
     padding: 0 var(--app-content-padding-x);
 }
 
-/* Wrapper for content rows. Uses content-visibility for browser-level off-screen rendering skip. */
+/* Layout wrapper container for movie and series content rails. */
 .row-container {
     align-items: center;
     contain: layout;
     contain-intrinsic-size: auto var(--row-min-height);
     content-visibility: auto;
     display: flex;
-    margin-bottom: 22px;
+    margin-bottom: 14px;
     min-height: var(--row-min-height);
     position: relative;
     width: 100%;
@@ -1328,6 +1328,7 @@ textarea.active-typing:not(.input-wrapper *) {
     color: #fff;
 }
 
+/* Container for genre tags displaying categories associated with a title. */
 .details-genres {
     display: flex;
     flex-wrap: wrap;
@@ -4743,4 +4744,202 @@ iframe,
     outline-offset: 0px;
     transform: scale(1.04);
     z-index: 100;
+}
+
+/* Media query for large laptops and 1080p displays. */
+@media (min-aspect-ratio: 3/4) and ((max-width: 1440px) or (max-height: 900px)) {
+    /* Base root variables to override sizes on large/1080p screens. */
+    :root {
+        --app-content-padding-x: 32px;
+        --app-content-padding-y: 28px;
+        --app-sidebar-width: 68px;
+        --app-sidebar-expanded-width: 220px;
+        --poster-width: 124px;
+    }
+
+    /* Styles the hero section with a slightly reduced height. */
+    .hero {
+        height: 56vh;
+        min-height: 460px;
+        padding-bottom: 50px;
+    }
+
+    /* Scales down the hero heading text size slightly. */
+    .hero-title {
+        font-size: 46px;
+        margin-bottom: 14px;
+    }
+
+    /* Restricts description margins slightly. */
+    .hero-desc {
+        font-size: 15px;
+        margin-bottom: 24px;
+    }
+
+    /* Scales down category row heading size slightly. */
+    .row-title {
+        font-size: 20px;
+    }
+}
+
+/* Media query for medium/small screens like 720p TV and laptops. */
+@media (min-aspect-ratio: 3/4) and ((max-width: 1280px) or (max-height: 720px)) {
+    /* Base root variables to override sizes on 720p screens. */
+    :root {
+        --app-content-padding-x: 24px;
+        --app-content-padding-y: 20px;
+        --app-sidebar-width: 64px;
+        --app-sidebar-expanded-width: 210px;
+        --poster-width: 110px;
+    }
+
+    /* Styles the hero section with a reduced height for 720p screens. */
+    .hero {
+        height: 52vh;
+        min-height: 380px;
+        padding-bottom: 40px;
+    }
+
+    /* Scales down the hero heading text size. */
+    .hero-title {
+        font-size: 38px;
+        margin-bottom: 12px;
+    }
+
+    /* Restricts description lines and reduces font size. */
+    .hero-desc {
+        font-size: 14px;
+        margin-bottom: 20px;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+    }
+
+    /* Scales down category row heading size. */
+    .row-title {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+
+    /* Reduces spacing for rows container. */
+    .row-container {
+        margin-bottom: 10px;
+    }
+
+    /* Styles primary details page top layout with smaller gaps. */
+    .details-top {
+        gap: 24px;
+    }
+
+    /* Reduces title text size on the detail page. */
+    .details-title {
+        font-size: 36px;
+    }
+
+    /* Reduces height for detail backdrop image. */
+    .details-backdrop {
+        height: 50vh;
+    }
+}
+
+/* Media query for very small viewports like 480p screen or small displays. */
+@media (min-aspect-ratio: 3/4) and ((max-width: 900px) or (max-height: 520px)) {
+    /* Base root variables to override sizes on 480p screens. */
+    :root {
+        --app-content-padding-x: 16px;
+        --app-content-padding-y: 12px;
+        --app-sidebar-width: 54px;
+        --app-sidebar-expanded-width: 170px;
+        --poster-width: 85px;
+    }
+
+    /* Styles the hero section with a compact height for 480p screens. */
+    .hero {
+        height: 48vh;
+        min-height: 240px;
+        padding-bottom: 20px;
+    }
+
+    /* Highly compact typography size for very small hero title. */
+    .hero-title {
+        font-size: 26px;
+        margin-bottom: 8px;
+    }
+
+    /* Compact description text with double line clamp. */
+    .hero-desc {
+        font-size: 12px;
+        margin-bottom: 12px;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    /* Reduces button padding and sizes for compact layout. */
+    .btn {
+        min-height: 36px;
+        font-size: 12px;
+        padding: 6px 14px;
+    }
+
+    /* Scales down the hero indicator track. */
+    .hero-indicators {
+        top: 12px;
+        gap: 6px;
+    }
+
+    /* Sizes down hero carousel indicator dots. */
+    .hero-indicator-dot {
+        height: 8px;
+        width: 8px;
+    }
+
+    /* Adjusts active indicator dot size. */
+    .hero-indicator-dot.active {
+        height: 10px;
+        width: 10px;
+    }
+
+    /* Scales down category rail heading size. */
+    .row-title {
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    /* Highly compact row spacing. */
+    .row-container {
+        margin-bottom: 8px;
+    }
+
+    /* details page layout stack to vertical on tiny displays. */
+    .details-top {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        text-align: center;
+    }
+
+    /* Centers detail information block text. */
+    .details-info {
+        text-align: center;
+    }
+
+    /* detail poster sizing. */
+    .details-hero-poster {
+        width: 120px;
+    }
+
+    /* detail title sizing. */
+    .details-title {
+        font-size: 24px;
+    }
+
+    /* detail actions wrapper layout. */
+    .details-actions {
+        justify-content: center;
+    }
+
+    /* detail bottom seasons layout. */
+    .details-bottom {
+        flex-direction: column;
+        gap: 12px;
+    }
 }

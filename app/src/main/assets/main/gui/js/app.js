@@ -434,6 +434,17 @@ function initUI() {
     // Initialize Splash Screen
     Splash.init();
 
+    // Safety fallback timeout to guarantee splash screen dismissal after 3.5 seconds
+    setTimeout(() => {
+        if (window.bootImagesLoadedCount !== undefined) {
+            console.log('App: Boot images target not met in 3.5s, dismissing splash screen...');
+            if (typeof Splash !== 'undefined' && Splash.signalContentLoaded) {
+                Splash.signalContentLoaded();
+            }
+            delete window.bootImagesLoadedCount;
+        }
+    }, 3500);
+
     // Initialize Sidebar
     try {
         Sidebar.init();
@@ -592,6 +603,8 @@ function initNetworkListeners() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize boot images load counter for splash screen dismissal tracking
+    window.bootImagesLoadedCount = 0;
     try {
         // Run database/storage keys migration first
         try {

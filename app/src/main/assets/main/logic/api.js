@@ -119,23 +119,61 @@ export const Api = {
         return ua.includes('tizen') || ua.includes('webos') || ua.includes('android tv') || ua.includes('smarttv') || !!window.tizen;
     },
 
+    /**
+     * Determines the optimal TMDb poster size based on responsive layout breakpoints and the device pixel ratio.
+     * Estimates the exact CSS poster width based on screen width/height and resolves it to a TMDb size key.
+     * @returns {string} The TMDb poster size path key.
+     */
     getRecommendedPosterSize: () => {
-        const width = window.innerWidth;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
         const dpr = window.devicePixelRatio || 1;
-        const effectiveWidth = width * dpr;
+        const isPortrait = window.matchMedia('(max-aspect-ratio: 3/4)').matches;
 
-        // On TV, we prioritize performance over pixel-perfection
-        if (Api.isTV()) {
-            if (width > 1400) return 'w342';
-            return 'w185';
+        let estWidth;
+        if (isPortrait) {
+            // General portrait mobile size: clamp(96px, 24vw, 112px)
+            estWidth = Math.min(Math.max(96, vw * 0.24), 112);
+        } else {
+            // Check landscape breakpoints in order of screen sizes
+            if (vw <= 900 || vh <= 520) {
+                // 480p landscape
+                estWidth = 85;
+            } else if (vw <= 1280 || vh <= 720) {
+                // 720p landscape
+                estWidth = 110;
+            } else if (vw <= 1440 || vh <= 900) {
+                // 1080p landscape
+                estWidth = 124;
+            } else {
+                // Default large screen landscape: clamp(120px, 11vw, 156px)
+                estWidth = Math.min(Math.max(120, vw * 0.11), 156);
+            }
         }
 
-        // Standard grid posters are small (~150px-200px)
-        if (effectiveWidth > 1000) return 'w342';
-        if (effectiveWidth > 600) return 'w185';
-        return 'w154';
+        const physicalWidth = estWidth * dpr;
+
+        // On TV, prioritize performance by capping poster size to w342 maximum
+        if (Api.isTV()) {
+            if (physicalWidth <= 185) return 'w185';
+            return 'w342';
+        }
+
+        // Available TMDB poster sizes: w92, w154, w185, w342, w500, w780, original
+        if (physicalWidth <= 92) return 'w92';
+        if (physicalWidth <= 154) return 'w154';
+        if (physicalWidth <= 185) return 'w185';
+        if (physicalWidth <= 342) return 'w342';
+        if (physicalWidth <= 500) return 'w500';
+        if (physicalWidth <= 780) return 'w780';
+        return 'original';
     },
 
+    /**
+     * Determines the optimal TMDb detail poster size based on screen width.
+     * Estimates larger detail image keys to prevent blurry assets on high-res detail pages.
+     * @returns {string} The TMDb poster size key.
+     */
     getRecommendedDetailPosterSize: () => {
         const width = window.innerWidth;
         const dpr = window.devicePixelRatio || 1;
@@ -147,6 +185,11 @@ export const Api = {
         return 'w185';
     },
 
+    /**
+     * Determines the optimal TMDb backdrop size for hero carousel sections.
+     * Selects w780 on TVs for performance, and maps screen size to w1280 or original.
+     * @returns {string} The TMDb backdrop size key.
+     */
     getRecommendedBackdropSize: () => {
         const width = window.innerWidth;
         const dpr = window.devicePixelRatio || 1;
@@ -187,9 +230,7 @@ export const Api = {
         } else {
             // Available sizes: w92, w154, w185, w342, w500, w780, original
             if (physicalWidth <= 0) {
-                const vw = window.innerWidth;
-                const estWidth = Api.isTV() ? 112 : Math.min(Math.max(120, vw * 0.11), 156);
-                return Api.getRecommendedSizeForContainer(estWidth, false);
+                return Api.getRecommendedPosterSize();
             }
             if (physicalWidth <= 92) return 'w92';
             if (physicalWidth <= 154) return 'w154';
@@ -337,14 +378,25 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await deduplicatedFetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}&language=${lang}`);
-            const data = await response.json();
+            const urls = [
+                `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}&language=${lang}&page=1`,
+                `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}&language=${lang}&page=2`
+            ];
+            const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
+            const dataResults = await Promise.all(responses.map(res => res.json()));
 
-            if (data && data.results) {
-                cacheManager.set(cacheKey, data.results, 60); // Top rated changes slowly, cache for 1 hour
-                return shuffleArray(data.results);
+            let combined = [];
+            dataResults.forEach(data => {
+                if (data && data.results) {
+                    combined = combined.concat(data.results);
+                }
+            });
+
+            const finalResults = combined.slice(0, 30);
+            if (finalResults.length > 0) {
+                cacheManager.set(cacheKey, finalResults, 60); // Top rated changes slowly, cache for 1 hour
             }
-            return [];
+            return shuffleArray(finalResults);
         } catch (error) {
             console.error('Error fetching top rated:', error);
             throw error;
@@ -371,15 +423,29 @@ export const Api = {
                 ? `primary_release_date.lte=${today}`
                 : `first_air_date.lte=${today}`;
 
-            // Always exclude adult content from browse/discovery pages
-            const response = await deduplicatedFetch(`${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}&language=${lang}`);
-            const data = await response.json();
+            // Fetch page 1 and page 2 concurrently for 30 items
+            const urls = [
+                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}&language=${lang}&page=1`,
+                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}&language=${lang}&page=2`
+            ];
+            
+            const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
+            const dataResults = await Promise.all(responses.map(res => res.json()));
 
-            if (data && data.results) {
-                cacheManager.set(cacheKey, data.results, 15); // Cache for 15 minutes
-                return shuffleArray(data.results);
+            let combined = [];
+            dataResults.forEach(data => {
+                if (data && data.results) {
+                    combined = combined.concat(data.results);
+                }
+            });
+
+            // Limit to exactly 30 items
+            const finalResults = combined.slice(0, 30);
+
+            if (finalResults.length > 0) {
+                cacheManager.set(cacheKey, finalResults, 15); // Cache for 15 minutes
             }
-            return [];
+            return shuffleArray(finalResults);
         } catch (error) {
             console.error(`Error fetching ${type} with params ${params}:`, error);
             throw error;
@@ -435,10 +501,11 @@ export const Api = {
             const tvItems = (tv || []).map(item => ({ ...item, media_type: 'tv' }));
             
             const combined = [...movieItems, ...tvItems];
-            if (combined.length > 0) {
-                cacheManager.set(cacheKey, combined, 15);
+            const finalResults = combined.slice(0, 30);
+            if (finalResults.length > 0) {
+                cacheManager.set(cacheKey, finalResults, 15);
             }
-            return shuffleArray(combined);
+            return shuffleArray(finalResults);
         } catch (error) {
             console.error('Error fetching netflix originals:', error);
             throw error;
@@ -531,14 +598,25 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await deduplicatedFetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}`);
-            const data = await response.json();
+            const urls = [
+                `${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=1`,
+                `${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=2`
+            ];
+            const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
+            const dataResults = await Promise.all(responses.map(res => res.json()));
 
-            if (data && data.results) {
-                cacheManager.set(cacheKey, data.results, 15);
-                return shuffleArray(data.results);
+            let combined = [];
+            dataResults.forEach(data => {
+                if (data && data.results) {
+                    combined = combined.concat(data.results);
+                }
+            });
+
+            const finalResults = combined.slice(0, 30);
+            if (finalResults.length > 0) {
+                cacheManager.set(cacheKey, finalResults, 15);
             }
-            return [];
+            return shuffleArray(finalResults);
         } catch (error) {
             console.error('Error fetching popular TV:', error);
             throw error;
@@ -558,14 +636,25 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            const response = await deduplicatedFetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}`);
-            const data = await response.json();
+            const urls = [
+                `${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=1`,
+                `${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=2`
+            ];
+            const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
+            const dataResults = await Promise.all(responses.map(res => res.json()));
 
-            if (data && data.results) {
-                cacheManager.set(cacheKey, data.results, 60);
-                return shuffleArray(data.results);
+            let combined = [];
+            dataResults.forEach(data => {
+                if (data && data.results) {
+                    combined = combined.concat(data.results);
+                }
+            });
+
+            const finalResults = combined.slice(0, 30);
+            if (finalResults.length > 0) {
+                cacheManager.set(cacheKey, finalResults, 60);
             }
-            return [];
+            return shuffleArray(finalResults);
         } catch (error) {
             console.error('Error fetching top rated TV:', error);
             throw error;

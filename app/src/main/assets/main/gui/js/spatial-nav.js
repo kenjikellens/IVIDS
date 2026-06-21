@@ -23,8 +23,13 @@ export const SpatialNav = {
     isMouseInteraction: false,
     backHandlers: [],
 
+    /**
+     * Checks if the viewport is in portrait mode based on aspect ratio (less than or equal to 3:4).
+     * Affects the input focus behavior and navigation layout decisions.
+     * @returns {boolean} True if the aspect ratio is within the portrait range.
+     */
     isPortrait() {
-        return window.matchMedia('(orientation: portrait)').matches;
+        return window.matchMedia('(max-aspect-ratio: 3/4)').matches;
     },
 
     /**

@@ -8,6 +8,24 @@ import { SpatialNav } from '../spatial-nav.js';
 
 
 /**
+ * Increments the global boot images loaded counter and signals the Splash screen when 12 items have loaded.
+ * Affects the window.bootImagesLoadedCount state and potentially triggers Splash screen dismissal.
+ */
+function triggerBootImageLoaded() {
+    if (window.bootImagesLoadedCount !== undefined) {
+        window.bootImagesLoadedCount++;
+        if (window.bootImagesLoadedCount >= 12) {
+            import('../splash.js').then(({ Splash }) => {
+                Splash.signalContentLoaded();
+            }).catch(err => {
+                console.error('Error importing Splash in triggerBootImageLoaded:', err);
+            });
+            delete window.bootImagesLoadedCount;
+        }
+    }
+}
+
+/**
  * Populates a content row with poster buttons, configures lazy loading, and runs DOM recycling.
  * It dynamically creates button/image elements in the specified container and links clicking them to page routing.
  * @param {string} elementId - The ID of the target row element.
@@ -67,24 +85,23 @@ export function setupRow(elementId, items, defaultType = null) {
                     rowPosters.appendChild(btn);
                 }
 
-                // Create loader for the image session
-                const loader = createLoaderElement();
-                loader.classList.add('poster-loader');
-                btn.appendChild(loader);
-
                 const img = document.createElement('img');
                 img.className = 'poster';
                 img.decoding = 'async';
                 img.style.opacity = '0'; // Hide initially
                 img.onload = () => {
                     img.style.opacity = '1';
-                    if (loader.parentNode) loader.parentNode.removeChild(loader);
+                    const loader = btn.querySelector('.poster-loader');
+                    if (loader) loader.remove();
+                    triggerBootImageLoaded();
                 };
                 img.onerror = () => {
-                    if (loader.parentNode) loader.parentNode.removeChild(loader);
+                    const loader = btn.querySelector('.poster-loader');
+                    if (loader) loader.remove();
                     img.style.opacity = '1';
+                    triggerBootImageLoaded();
                 };
-                if (rowButtonWidth === null) {
+                if (rowButtonWidth === null || rowButtonWidth === 0) {
                     rowButtonWidth = btn.clientWidth || 0;
                 }
                 const containerWidth = rowButtonWidth;
@@ -133,18 +150,16 @@ export function setupRow(elementId, items, defaultType = null) {
 }
 
 /**
- * Sets up skeleton rows immediately and registers lazy loaders to populate content.
+ * Registers lazy loaders for content rows and renders skeleton rows dynamically on intersection.
  * It manages the lifecycle of rendering skeletons, fetching actual content, and updating rows.
  * @param {Array<Object>} categories - List of category objects containing element id and fetcher function.
  * @param {string} [defaultType] - Default media type ('movie' or 'tv') passed down to setupRow.
  */
 export function setupLazyLoadedRows(categories, defaultType = null) {
     categories.forEach(cat => {
-        renderSkeletonRow(cat.id, 20, 'poster');
-    });
-
-    categories.forEach(cat => {
         lazyLoader.register(cat.id, async () => {
+            // Render the skeletons only when the row is about to load/fetch
+            renderSkeletonRow(cat.id, 20, 'poster');
             return await cat.fetcher();
         }, (id, data, error) => {
             if (error) {

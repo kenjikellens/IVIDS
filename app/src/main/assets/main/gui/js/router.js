@@ -146,12 +146,15 @@ export const Router = {
 
             // 2. Load JS Module
             try {
-                const module = await import(`../pages/${pageName}.js`);
+                const isBrowsePage = ['home', 'movies', 'series'].includes(pageName);
+                const modulePath = isBrowsePage ? '../pages/browse.js' : `../pages/${pageName}.js`;
+                const module = await import(modulePath);
                 if (currentGen !== _loadGeneration) return;
 
                 // 3. Initialize Page
                 if (module && module.init) {
-                    await module.init(params);
+                    const initParams = isBrowsePage ? { ...params, route: pageName } : params;
+                    await module.init(initParams);
                 } else {
                     console.warn(`No init function found for ${pageName}`);
                 }
@@ -187,7 +190,9 @@ export const Router = {
                     const criticalPages = ['home', 'details', 'search', 'movies', 'series'];
                     criticalPages.forEach(p => {
                         if (p !== pageName) {
-                            import(`../pages/${p}.js`).catch(() => { /* silent preload failure is OK */ });
+                            const isBrowse = ['home', 'movies', 'series'].includes(p);
+                            const modulePath = isBrowse ? '../pages/browse.js' : `../pages/${p}.js`;
+                            import(modulePath).catch(() => { /* silent preload failure is OK */ });
                             
                             // Prefetch HTML template and cache it
                             if (!_htmlCache.has(p)) {

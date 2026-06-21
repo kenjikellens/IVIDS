@@ -1,3 +1,5 @@
+import { createLoaderElement } from './loader.js';
+
 /**
  * Configuration options for visibility-based intersection observer lazy loading.
  */
@@ -60,7 +62,7 @@ export class LazyLoader {
 
     /**
      * Handles intersection events for registered elements by loading row data or setting image sources.
-     * This coordinates row rendering on visibility and handles cleanups or error propagation.
+     * This coordinates row rendering on visibility, lazy-creates loading spinners, and manages image loaded state transitions.
      * @param {HTMLElement} element - The intersecting DOM element.
      */
     async handleIntersection(element) {
@@ -93,9 +95,18 @@ export class LazyLoader {
         if (img && img.dataset.src) {
             this.observer.unobserve(element);
 
+            // Create and append spinner loader only when loading starts
+            if (!img.complete && !element.querySelector('.poster-loader')) {
+                const loader = createLoaderElement();
+                loader.classList.add('poster-loader');
+                element.appendChild(loader);
+            }
+
             // Handle fade-in using addEventListener to avoid overwriting existing onload handlers
             img.addEventListener('load', () => {
                 img.style.opacity = '1';
+                const loader = element.querySelector('.poster-loader');
+                if (loader) loader.remove();
             });
 
             // Set source
@@ -105,6 +116,8 @@ export class LazyLoader {
             // Fallback for cached images
             if (img.complete) {
                 img.style.opacity = '1';
+                const loader = element.querySelector('.poster-loader');
+                if (loader) loader.remove();
             }
         }
     }
