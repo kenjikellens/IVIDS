@@ -36,10 +36,15 @@ export class Splash {
         }, CONFIG.MIN_DURATION);
 
         // 2. Slow load feedback
-        setTimeout(() => {
+        setTimeout(async () => {
             if (!this.contentLoaded && !this.isDismissed) {
                 console.log('Splash: Load is taking longer than usual...');
-                this.showFeedback(window.i18n.t('splash.loadingStatus'));
+                try {
+                    const { NetworkStatusOverlay } = await import('./toast.js');
+                    NetworkStatusOverlay.show('slow');
+                } catch (e) {
+                    console.error('Splash: Failed to load NetworkStatusOverlay', e);
+                }
             }
         }, CONFIG.SLOW_LOAD_TIMEOUT);
 
@@ -49,12 +54,15 @@ export class Splash {
                 console.warn('Splash: max duration reached. Forcing dismissal.');
                 this.dismiss();
 
-                // If it reached maximum duration without load, we might be offline
-                if (!window.navigator.onLine) {
-                    try {
-                        const { NetworkStatusOverlay } = await import('./toast.js');
-                        NetworkStatusOverlay.show('slow');
-                    } catch (e) { }
+                try {
+                    const { ErrorHandler } = await import('./error-handler.js');
+                    ErrorHandler.show(
+                        window.i18n.t('error.initError'),
+                        () => window.location.reload(),
+                        window.i18n.t('error.title')
+                    );
+                } catch (e) {
+                    console.error('Splash: Failed to load ErrorHandler', e);
                 }
             }
         }, CONFIG.MAX_DURATION);
