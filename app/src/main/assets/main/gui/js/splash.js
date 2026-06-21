@@ -52,13 +52,8 @@ export class Splash {
                 // If it reached maximum duration without load, we might be offline
                 if (!window.navigator.onLine) {
                     try {
-                        const { Toast } = await import('./toast.js');
-                        Toast.show(window.i18n.t('splash.slowConnection'), {
-                            title: window.i18n.t('toast.slowConnectionTitle'),
-                            type: 'warning',
-                            position: 'top-right',
-                            duration: 0
-                        });
+                        const { NetworkStatusOverlay } = await import('./toast.js');
+                        NetworkStatusOverlay.show('slow');
                     } catch (e) { }
                 }
             }

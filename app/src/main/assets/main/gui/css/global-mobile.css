@@ -566,3 +566,30 @@
 .provider-actions {
     justify-content: flex-end;
 }
+
+/* CSS Class: Mobile layout override to center the toast notifications horizontally at the top */
+.toast-container {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 400px;
+    top: 20px;
+    bottom: auto;
+}
+
+/* CSS Class: Mobile override for bottom-right toast positioning, pulling to top-center */
+.toast-container.bottom-right {
+    bottom: auto;
+    left: 0;
+    right: 0;
+    top: 20px;
+}
+
+/* CSS Class: Mobile override for top-right toast positioning, pulling to top-center */
+.toast-container.top-right {
+    bottom: auto;
+    left: 0;
+    right: 0;
+    top: 20px;
+}

@@ -32,6 +32,8 @@
         "appearance": "Giao diện",
         "language": "Ngôn ngữ",
         "languageDesc": "Chọn ngôn ngữ ưu tiên của bạn",
+        "uiScale": "Tỷ lệ giao diện",
+        "uiScaleDesc": "Điều chỉnh kích thước giao diện người dùng",
         "accentColor": "Màu nhấn",
         "accentColorDesc": "Chọn màu chủ đề ưu tiên của bạn",
         "accent": "Nhấn",

@@ -32,6 +32,8 @@
         "appearance": "Utseende",
         "language": "Språk",
         "languageDesc": "Velg ditt foretrukne språk",
+        "uiScale": "UI-skalering",
+        "uiScaleDesc": "Juster størrelsen på brukergrensesnittet",
         "accentColor": "Aksentfarge",
         "accentColorDesc": "Velg din foretrukne temafarge",
         "accent": "Aksent",

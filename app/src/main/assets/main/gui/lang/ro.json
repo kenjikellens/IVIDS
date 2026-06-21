@@ -32,6 +32,8 @@
         "appearance": "Aspect",
         "language": "Limbă",
         "languageDesc": "Alege limba preferată",
+        "uiScale": "Scala interfeței",
+        "uiScaleDesc": "Ajustați dimensiunea interfeței utilizatorului",
         "accentColor": "Culoare accent",
         "accentColorDesc": "Alege culoarea temei preferate",
         "accent": "Accent",

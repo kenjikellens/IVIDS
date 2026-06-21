@@ -32,6 +32,8 @@
         "appearance": "Aspetto",
         "language": "Lingua",
         "languageDesc": "Scegli la tua lingua preferita",
+        "uiScale": "Scala dell'interfaccia",
+        "uiScaleDesc": "Regola la dimensione dell'interfaccia utente",
         "accentColor": "Colore Accento",
         "accentColorDesc": "Scegli il colore del tema preferito",
         "accent": "Accento",

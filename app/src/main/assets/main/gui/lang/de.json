@@ -32,6 +32,8 @@
         "appearance": "Erscheinungsbild",
         "language": "Sprache",
         "languageDesc": "Wählen Sie Ihre bevorzugte Sprache",
+        "uiScale": "UI-Skalierung",
+        "uiScaleDesc": "Größe der Benutzeroberfläche anpassen",
         "accentColor": "Akzentfarbe",
         "accentColorDesc": "Wählen Sie Ihre bevorzugte Theme-Farbe",
         "saved": "Einstellungen gespeichert!",

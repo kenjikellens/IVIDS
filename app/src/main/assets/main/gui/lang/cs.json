@@ -32,6 +32,8 @@
         "appearance": "Vzhled",
         "language": "Jazyk",
         "languageDesc": "Vyberte preferovaný jazyk",
+        "uiScale": "Měřítko rozhraní",
+        "uiScaleDesc": "Upravit velikost uživatelského rozhraní",
         "accentColor": "Barva akcentu",
         "accentColorDesc": "Vyberte preferovanou barvu motivu",
         "accent": "Akcent",

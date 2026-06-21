@@ -32,6 +32,8 @@
         "appearance": "दिखावट",
         "language": "भाषा",
         "languageDesc": "अपनी पसंदीदा भाषा चुनें",
+        "uiScale": "यूआई स्केल",
+        "uiScaleDesc": "यूज़र इंटरफ़ेस का आकार समायोजित करें",
         "accentColor": "एक्सेंट रंग",
         "accentColorDesc": "अपना पसंदीदा थीम रंग चुनें",
         "accent": "एक्सेंट",

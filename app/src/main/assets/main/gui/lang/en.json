@@ -32,6 +32,8 @@
         "appearance": "Appearance",
         "language": "Language",
         "languageDesc": "Choose your preferred language",
+        "uiScale": "UI Scale",
+        "uiScaleDesc": "Adjust the size of the user interface",
         "accentColor": "Accent Color",
         "accentColorDesc": "Choose your preferred theme color",
         "saved": "Settings saved!",

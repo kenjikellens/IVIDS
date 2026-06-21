@@ -32,6 +32,8 @@
         "appearance": "外观",
         "language": "语言",
         "languageDesc": "选择您的首选语言",
+        "uiScale": "界面缩放",
+        "uiScaleDesc": "调整用户界面的大小",
         "accentColor": "强调色",
         "accentColorDesc": "选择您的首选主题颜色",
         "accent": "强调色",

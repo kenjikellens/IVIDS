@@ -32,6 +32,8 @@
         "appearance": "Görünüm",
         "language": "Dil",
         "languageDesc": "Tercih ettiğiniz dili seçin",
+        "uiScale": "Arayüz Ölçeği",
+        "uiScaleDesc": "Kullanıcı arayüzünün boyutunu ayarla",
         "accentColor": "Vurgu Rengi",
         "accentColorDesc": "Tercih ettiğiniz tema rengini seçin",
         "accent": "Vurgu",

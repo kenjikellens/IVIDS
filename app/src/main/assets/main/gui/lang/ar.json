@@ -32,6 +32,8 @@
         "appearance": "المظهر",
         "language": "اللغة",
         "languageDesc": "اختر لغتك المفضلة",
+        "uiScale": "مقياس واجهة المستخدم",
+        "uiScaleDesc": "ضبط حجم واجهة المستخدم",
         "accentColor": "لون التمييز",
         "accentColorDesc": "اختر لون السمة المفضل لديك",
         "accent": "تمييز",

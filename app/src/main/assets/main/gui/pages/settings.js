@@ -84,6 +84,7 @@ class SettingsManager {
     loadSettings() {
         const defaultSettings = {
             language: 'en',
+            uiScale: '1.0',
             accentColor: '#46d369',
             updateMode: 'manual',
             m3uUrl: '',
@@ -168,7 +169,8 @@ class SettingsManager {
     saveSettings() {
         const globalSettings = {
             language: this.settings.language,
-            updateMode: this.settings.updateMode
+            updateMode: this.settings.updateMode,
+            uiScale: this.settings.uiScale
         };
         const userSettings = {
             accentColor: this.settings.accentColor,
@@ -208,6 +210,28 @@ class SettingsManager {
         const editColorBtn = document.getElementById('edit-color-btn');
         if (editColorBtn) {
             editColorBtn.onclick = () => this.openModal('color-modal');
+        }
+
+        const decBtn = document.getElementById('dec-uiscale-btn');
+        if (decBtn) {
+            decBtn.onclick = () => {
+                let currentScale = parseFloat(this.settings.uiScale || '1.0');
+                currentScale = Math.max(0.5, Math.round((currentScale - 0.1) * 10) / 10);
+                this.settings.uiScale = currentScale.toFixed(1);
+                this.saveSettings();
+                this.updateDisplays();
+            };
+        }
+
+        const incBtn = document.getElementById('inc-uiscale-btn');
+        if (incBtn) {
+            incBtn.onclick = () => {
+                let currentScale = parseFloat(this.settings.uiScale || '1.0');
+                currentScale = Math.min(2.0, Math.round((currentScale + 0.1) * 10) / 10);
+                this.settings.uiScale = currentScale.toFixed(1);
+                this.saveSettings();
+                this.updateDisplays();
+            };
         }
 
         const editPlayerBtn = document.getElementById('edit-player-btn');
@@ -402,6 +426,12 @@ class SettingsManager {
         if (colorDisplay) {
             colorDisplay.style.borderBottomColor = this.settings.accentColor;
             colorDisplay.textContent = 'Accent';
+        }
+
+        const scaleDisplay = document.getElementById('current-uiscale-display');
+        if (scaleDisplay) {
+            const pct = Math.round(parseFloat(this.settings.uiScale || '1.0') * 100);
+            scaleDisplay.textContent = `${pct}%`;
         }
 
         const playerDisplay = document.getElementById('current-player-display');
@@ -1109,6 +1139,7 @@ class SettingsManager {
         const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
         document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
         document.documentElement.setAttribute('lang', this.settings.language);
+        document.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
     }
 
     /**
@@ -1122,6 +1153,7 @@ class SettingsManager {
             const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
             mainDoc.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
             mainDoc.documentElement.setAttribute('lang', this.settings.language);
+            mainDoc.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
         } catch (e) {
             console.log('Cross-origin iframe parent access restricted, applying configurations to local document viewport only.');
             document.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
@@ -1129,6 +1161,7 @@ class SettingsManager {
             const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
             document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
             document.documentElement.setAttribute('lang', this.settings.language);
+            document.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
         }
     }
 

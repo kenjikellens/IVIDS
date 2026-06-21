@@ -4,7 +4,7 @@ import { Sidebar } from '../components/sidebar/sidebar.js';
 import { Splash } from './splash.js';
 import { ErrorHandler } from './error-handler.js';
 import { Screensaver } from './screensaver.js';
-import { Toast } from './toast.js';
+import { Toast, NetworkStatusOverlay } from './toast.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { manageModal } from './utils/ui-helper.js';
 import './loader.js';
@@ -93,6 +93,15 @@ function loadSettings() {
                     document.documentElement.setAttribute('lang', settings.language);
                 } catch (langError) {
                     console.error('Error applying language setting:', langError);
+                }
+            }
+
+            // Apply UI Scale setting
+            if (settings.uiScale) {
+                try {
+                    document.documentElement.style.setProperty('--ui-scale', settings.uiScale);
+                } catch (scaleError) {
+                    console.error('Error applying UI scale setting:', scaleError);
                 }
             }
         }
@@ -573,23 +582,11 @@ function initHistoryTrap() {
 
 function initNetworkListeners() {
     window.addEventListener('offline', () => {
-        Toast.show(window.i18n.t('toast.connectionLost'), {
-            title: window.i18n.t('toast.connectionLostTitle'),
-            type: 'error',
-            duration: 0 // Keep visible until online
-        });
+        NetworkStatusOverlay.show('lost');
     });
 
     window.addEventListener('online', () => {
-        // Find existing error toasts and hide them
-        const toasts = document.querySelectorAll('.toast-error');
-        toasts.forEach(t => Toast.hide(t));
-
-        Toast.show(window.i18n.t('toast.connected'), {
-            title: window.i18n.t('toast.connectedTitle'),
-            type: 'success',
-            duration: 3000
-        });
+        NetworkStatusOverlay.show('connected');
         console.log('Back online');
     });
 

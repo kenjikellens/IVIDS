@@ -32,6 +32,8 @@
         "appearance": "Tampilan",
         "language": "Bahasa",
         "languageDesc": "Pilih bahasa pilihan Anda",
+        "uiScale": "Skala UI",
+        "uiScaleDesc": "Sesuaikan ukuran antarmuka pengguna",
         "accentColor": "Warna Aksen",
         "accentColorDesc": "Pilih warna tema pilihan Anda",
         "accent": "Aksen",

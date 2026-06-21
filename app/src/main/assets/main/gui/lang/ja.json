@@ -32,6 +32,8 @@
         "appearance": "外観",
         "language": "言語",
         "languageDesc": "希望の言語を選択してください",
+        "uiScale": "UIの倍率",
+        "uiScaleDesc": "ユーザーインターフェースのサイズを調整します",
         "accentColor": "アクセントカラー",
         "accentColorDesc": "希望のテーマカラーを選択してください",
         "accent": "アクセント",
