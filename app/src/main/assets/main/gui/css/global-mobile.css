@@ -1,6 +1,9 @@
-/* Custom variables for portrait viewports. */
+/*
+  Custom root variables defining design system tokens for portrait mobile viewports.
+  Specifies slightly larger poster sizes and margins for readability.
+*/
 :root {
-    --poster-width: clamp(96px, 24vw, 112px);
+    --poster-width: clamp(110px, 27vw, 128px);
     --app-content-padding-x: 4%;
     --app-content-padding-y: 3%;
 }

@@ -3,7 +3,7 @@
   This vector graphic represents the standalone IVIDS brand icon (the play button).
   It uses custom CSS variables (primary-color and primary-dark-color) for dynamic color theme support.
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
   <defs>
     <!-- Primary Gradient -->
     <linearGradient id="logo-grad" x1="0%" y1="0%" x2="0%" y2="100%">

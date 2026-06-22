@@ -27,7 +27,8 @@
     --focus-ring: none;
     --focus-ring-strong: none;
     --poster-height: calc(var(--poster-width) * 1.5);
-    --poster-width: clamp(120px, 11vw, 156px);
+    /* Specifies slightly larger poster dimensions for enhanced visibility */
+    --poster-width: clamp(150px, 13.5vw, 196px);
     --primary-color: #46d369;
     --primary-rgb: 70, 211, 105;
     --radius-lg: 12px;
@@ -69,7 +70,7 @@ input, textarea, select { font: inherit; }
 
 #app { background: transparent; display: flex; flex-direction: row; height: 100%; position: relative; width: 100%; }
 
-#sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1), flex-basis 0.24s cubic-bezier(0.4, 0, 0.2, 1); width: var(--app-sidebar-width); z-index: 2000; }
+#sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: none; width: var(--app-sidebar-width); z-index: 2000; }
 
 /* Styles the primary vertical scroll viewport container, with a premium fade-out effect only at the bottom border. */
 #main-view {
@@ -171,10 +172,11 @@ input, textarea, select { font: inherit; }
 
 .hero-content { padding-top: 24px; position: relative; transition: opacity 0.35s ease; width: min(1100px, 90%); z-index: 2; }
 
+/* Styles the main hero heading title with Outfit font, larger sizing, and a premium shadow */
 .hero-title {
     color: #fff;
     font-family: 'Outfit', sans-serif;
-    font-size: 56px;
+    font-size: 60px;
     font-weight: 700;
     line-height: 1.04;
     margin-bottom: 18px;
@@ -182,12 +184,13 @@ input, textarea, select { font: inherit; }
     text-shadow: 0 4px 22px rgba(0, 0, 0, 0.66);
 }
 
+/* Styles the hero content description block with multi-line clamping and a readable line height */
 .hero-desc {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
     color: rgba(255, 255, 255, 0.78);
     display: -webkit-box;
-    font-size: 16px;
+    font-size: 17px;
     line-clamp: 4;
     line-height: 1.55;
     margin-bottom: 28px;
@@ -251,12 +254,13 @@ input, textarea, select { font: inherit; }
 /* Styles the hover and focused outline and zoom states for focusable card components. */
 .focusable-card:hover, .focusable-card:focus, .focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.5); outline: 2px solid #ffffff; outline-offset: 0px; transform: scale(1.04); z-index: 100; }
 
+/* Styles the overlay badges (e.g., HD, UHD, 4K, ratings) placed on top of media posters */
 .poster-overlay {
     background: rgba(0, 0, 0, 0.76);
     border-radius: var(--radius-xs);
     bottom: 8px;
     color: #fff;
-    font-size: 12px;
+    font-size: 13.5px;
     font-weight: 800;
     padding: 3px 7px;
     pointer-events: none;
@@ -605,7 +609,7 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 28px 10px;
     position: relative;
-    transition: width 0.18s ease;
+    transition: none;
     width: var(--app-sidebar-width);
     z-index: 1000;
 }
@@ -634,33 +638,40 @@ input, textarea, select { font: inherit; }
     font-weight: 600;
     letter-spacing: -0.03em;
     opacity: 0;
-    transition: opacity 0.14s ease;
+    transition: none;
 }
 
 .nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
 
 .nav-utilities { display: flex; flex-direction: column; gap: 5px; margin-top: auto; width: 100%; }
 
+/* Sidebar navigation menu link button container. Collapsed (default) state is a perfect square with centered icon. */
 .nav-item {
     align-items: center;
+    justify-content: center;
     border: 2px solid transparent;
     border-radius: var(--radius-sm);
     color: rgba(255, 255, 255, 0.72);
     display: flex;
     font-size: 16px;
     font-weight: 700;
-    min-height: 42px;
-    padding: 0 12px;
+    min-height: 0;
+    width: calc(var(--app-sidebar-width) - 20px);
+    height: calc(var(--app-sidebar-width) - 20px);
+    padding: 0;
     position: relative;
     text-decoration: none;
     transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
     white-space: nowrap;
 }
 
+/* Hover, focus and active states for navigation menu link buttons. */
 .nav-item:hover, .nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
+/* Active navigation item background color highlight styling. */
 .nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #fff; }
 
+/* Navigation icon mask style. Margins are 0 when collapsed to keep the icon centered. */
 .nav-icon {
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -668,16 +679,48 @@ input, textarea, select { font: inherit; }
     background-color: currentColor;
     flex: 0 0 24px;
     height: 24px;
-    margin-right: 16px;
+    margin-right: 0;
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: contain;
     width: 24px;
 }
 
+/* Active navigation icon color style using primary theme accent color. */
 .nav-item.active .nav-icon { background-color: var(--primary-color); }
 
-.nav-item span { opacity: 0; transition: opacity 0.14s ease; }
+/* Navigation item text label. Positioned absolutely to prevent it from pushing the icon when collapsed. */
+.nav-item span {
+    opacity: 0;
+    position: absolute;
+    left: 48px;
+    pointer-events: none;
+}
+
+/* Expanded state overrides for navigation items when sidebar is expanded. */
+#app.sidebar-always-expanded .nav-item,
+.navbar:hover .nav-item,
+.navbar:focus-within .nav-item {
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 12px;
+}
+
+/* Expanded state overrides for navigation icons. Adds margin-right to separate icon from text. */
+#app.sidebar-always-expanded .nav-icon,
+.navbar:hover .nav-icon,
+.navbar:focus-within .nav-icon {
+    margin-right: 16px;
+}
+
+/* Expanded state overrides for navigation item text labels. Returns to static layout flow. */
+#app.sidebar-always-expanded .nav-item span,
+.navbar:hover .nav-item span,
+.navbar:focus-within .nav-item span {
+    opacity: 1;
+    position: static;
+    pointer-events: auto;
+}
 
 /* ==========================================================================
    SECTION 7: PAGE SPECIFIC - USER PROFILES OVERVIEW
@@ -872,10 +915,11 @@ input, textarea, select { font: inherit; }
    ========================================================================== */
 .row { animation: fadeIn 0.35s ease-out forwards; opacity: 0; padding: 0; position: relative; z-index: 20; }
 
+/* Styles the vertical category row headings (e.g. Recently Watched, Popular, Comedy Series) */
 .row-title {
     color: #fff;
     font-family: 'Outfit', sans-serif;
-    font-size: 23px;
+    font-size: 25px;
     font-weight: 600;
     letter-spacing: -0.01em;
     margin: 0 0 6px;
@@ -2984,28 +3028,36 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 /* Media query for large laptops and 1080p displays. */
 @media (min-aspect-ratio: 3/4) and ((max-width: 1440px) or (max-height: 900px)) {
-    /* Base root variables to override sizes on large/1080p screens. */ :root { --app-content-padding-x: 32px; --app-content-padding-y: 28px; --app-sidebar-expanded-width: 220px; --app-sidebar-width: 68px; --poster-width: 124px; }
+    /*
+      Root variables override for large displays and 1080p laptops.
+      Adjusts paddings, sidebar width, and increases poster size slightly for better visibility.
+    */
+    :root { --app-content-padding-x: 32px; --app-content-padding-y: 28px; --app-sidebar-expanded-width: 220px; --app-sidebar-width: 68px; --poster-width: 154px; }
 
     /* Styles the hero section with a slightly reduced height. */ .hero { height: 56vh; min-height: 460px; padding-bottom: 50px; }
 
-    /* Scales down the hero heading text size slightly. */ .hero-title { font-size: 46px; margin-bottom: 14px; }
+    /* Scales down the hero heading text size slightly. */ .hero-title { font-size: 50px; margin-bottom: 14px; }
 
-    /* Restricts description margins slightly. */ .hero-desc { font-size: 15px; margin-bottom: 24px; }
+    /* Restricts description margins slightly. */ .hero-desc { font-size: 16px; margin-bottom: 24px; }
 
-    /* Scales down category row heading size slightly. */ .row-title { font-size: 20px; }
+    /* Scales down category row heading size slightly. */ .row-title { font-size: 22px; }
 }
 
 /* Media query for medium/small screens like 720p TV and laptops. */
 @media (min-aspect-ratio: 3/4) and ((max-width: 1280px) or (max-height: 720px)) {
-    /* Base root variables to override sizes on 720p screens. */ :root { --app-content-padding-x: 24px; --app-content-padding-y: 20px; --app-sidebar-expanded-width: 210px; --app-sidebar-width: 64px; --poster-width: 110px; }
+    /*
+      Root variables override for 720p displays and mid-sized laptops.
+      Sets custom margins, sidebar width, and increases poster size for better visibility.
+    */
+    :root { --app-content-padding-x: 24px; --app-content-padding-y: 20px; --app-sidebar-expanded-width: 210px; --app-sidebar-width: 64px; --poster-width: 136px; }
 
     /* Styles the hero section with a reduced height for 720p screens. */ .hero { height: 52vh; min-height: 380px; padding-bottom: 40px; }
 
-    /* Scales down the hero heading text size. */ .hero-title { font-size: 38px; margin-bottom: 12px; }
+    /* Scales down the hero heading text size. */ .hero-title { font-size: 42px; margin-bottom: 12px; }
 
-    /* Restricts description lines and reduces font size. */ .hero-desc { -webkit-line-clamp: 3; font-size: 14px; line-clamp: 3; margin-bottom: 20px; }
+    /* Restricts description lines and reduces font size. */ .hero-desc { -webkit-line-clamp: 3; font-size: 15px; line-clamp: 3; margin-bottom: 20px; }
 
-    /* Scales down category row heading size. */ .row-title { font-size: 18px; margin-bottom: 4px; }
+    /* Scales down category row heading size. */ .row-title { font-size: 20px; margin-bottom: 4px; }
 
     /* Reduces spacing for rows container. */ .row-container { margin-bottom: 10px; }
 
@@ -3018,13 +3070,17 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 /* Media query for very small viewports like 480p screen or small displays. */
 @media (min-aspect-ratio: 3/4) and ((max-width: 900px) or (max-height: 520px)) {
-    /* Base root variables to override sizes on 480p screens. */ :root { --app-content-padding-x: 16px; --app-content-padding-y: 12px; --app-sidebar-expanded-width: 170px; --app-sidebar-width: 54px; --poster-width: 85px; }
+    /*
+      Root variables override for small 480p displays.
+      Establishes compact paddings, sidebar width, and increases poster size for better visibility.
+    */
+    :root { --app-content-padding-x: 16px; --app-content-padding-y: 12px; --app-sidebar-expanded-width: 170px; --app-sidebar-width: 54px; --poster-width: 106px; }
 
     /* Styles the hero section with a compact height for 480p screens. */ .hero { height: 48vh; min-height: 240px; padding-bottom: 20px; }
 
-    /* Highly compact typography size for very small hero title. */ .hero-title { font-size: 26px; margin-bottom: 8px; }
+    /* Highly compact typography size for very small hero title. */ .hero-title { font-size: 28px; margin-bottom: 8px; }
 
-    /* Compact description text with double line clamp. */ .hero-desc { -webkit-line-clamp: 2; font-size: 12px; line-clamp: 2; margin-bottom: 12px; }
+    /* Compact description text with double line clamp. */ .hero-desc { -webkit-line-clamp: 2; font-size: 13px; line-clamp: 2; margin-bottom: 12px; }
 
     /* Reduces button padding and sizes for compact layout. */ .btn { font-size: 12px; min-height: 36px; padding: 6px 14px; }
 
@@ -3034,7 +3090,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
     /* Adjusts active indicator dot size. */ .hero-indicator-dot.active { height: 10px; width: 10px; }
 
-    /* Scales down category rail heading size. */ .row-title { font-size: 14px; margin-bottom: 2px; }
+    /* Scales down category rail heading size. */ .row-title { font-size: 16px; margin-bottom: 2px; }
 
     /* Highly compact row spacing. */ .row-container { margin-bottom: 8px; }
 
