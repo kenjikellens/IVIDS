@@ -11,7 +11,7 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **CLARIFICATION**: If the user asks for "green" or "colored" elements, ask if they mean the accent color.
 
 ## 2. No Scale Animations
-- **RULE**: NEVER add moving animations on hover/focus, unless the user wants to.
+- **RULE**: NEVER add moving animations on hover/focus yourself, unless the user wants to.
 - **FEEDBACK**: Use a white thicker border for focus/hover.
 
 ## 3. Pixel-Less Layout
