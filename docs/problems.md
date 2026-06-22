@@ -4,6 +4,5 @@ This document tracks known issues, architectural discrepancies, and performance 
 
 ## UI/UX & Layout Issues
 
-### 1. SIDEBAR ISSUES
+### 1. updaterissues in mobile mode
 
-the sidebar icon arent square and now move when the sidebar is opened, as if the collapsed sidebar and the opened sidebar arent the same (They should be).
