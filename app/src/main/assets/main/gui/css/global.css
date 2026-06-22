@@ -134,7 +134,27 @@ input, textarea, select { font: inherit; }
 
 .btn-danger { background: #b92b23; border: 3px solid #b92b23; color: #ffffff; }
 
-.btn-circle { border-radius: 50%; padding: 0; }
+/* Explains: Circular button modifier. Sets rounded border-radius, flexbox centering, and default circle dimensions. */
+.btn-circle {
+    align-items: center;
+    border-radius: 50%;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 48px;
+    justify-content: center;
+    padding: 0;
+    width: 48px;
+}
+
+/* Explains: Small button modifier. Sets compact height, padding, and font size for back/cancel actions. Fits width to content and prevents flex stretching. */
+.btn-small {
+    align-self: center;
+    flex: none;
+    font-size: 13px;
+    min-height: 38px;
+    padding: 6px 16px;
+    width: fit-content;
+}
 
 .hero {
     align-items: flex-end;
@@ -1214,7 +1234,7 @@ input, textarea, select { font: inherit; }
     width: 6px;
 }
 
-.filter-btn-compact { border-radius: var(--radius-xs); font-size: 18px; font-weight: 700; height: 54px; min-height: 54px; padding: 0 18px; }
+
 
 .livetv-settings-content { max-width: 560px; }
 
@@ -1681,7 +1701,7 @@ input, textarea, select { font: inherit; }
 
 .page-header { align-items: center; animation: fadeInDown 0.28s ease-out; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 30px; }
 
-#create-playlist-btn { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.14); box-shadow: none; color: #fff; }
+
 
 .playlists-grid { animation: fadeInUp 0.32s ease-out; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr)); }
 
@@ -1794,23 +1814,7 @@ input, textarea, select { font: inherit; }
 /* Vertical layout containing the circular move and delete buttons. */
 .playlist-item-actions { display: flex; flex-shrink: 0; gap: 10px; }
 
-/* Custom dimensions and styles for the move and delete circular buttons. */
-.playlist-action-btn {
-    align-items: center;
-    border-radius: 50%;
-    display: inline-flex;
-    flex-shrink: 0;
-    height: 48px;
-    justify-content: center;
-    padding: 0;
-    width: 48px;
-}
 
-/* Thicker white focus outline for the circular buttons without scale animations. */
-.playlist-action-btn:hover, .playlist-action-btn:focus, .playlist-action-btn.focused { border-color: #ffffff; box-shadow: none; transform: none; }
-
-/* Accent color background styling for the Move button when active move mode is enabled. */
-.playlist-action-btn.move-active { background-color: var(--primary-color); border-color: var(--primary-color); color: #050505; }
 
 /* Glowing border styling for the entire row to indicate it is currently being moved. */
 .playlist-item-row.moving-active .episode-item { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5); }

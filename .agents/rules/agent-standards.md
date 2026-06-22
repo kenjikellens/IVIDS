@@ -25,5 +25,5 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **CLEANUP**: You must delete any temporary files you created after use (when they are no longer needed).
 
 ## 7. Class Reusability & CSS Minimization
-- **RULE**: ALWAYS prioritize reusing already made CSS classes (e.g. `.playlist-card`, `.playlist-cover`, `.playlist-overlay`, `.poster-wrapper`, etc.) instead of writing duplicate styles or creating new classes.
+- **RULE**: ALWAYS prioritize reusing already made CSS classes (e.g. `.playlist-card`, `.playlist-cover`, `.playlist-overlay`, `.poster-wrapper`, etc.) instead of writing duplicate styles or creating new classes, most classes for buttons are already defined.
 - **RULE**: Only add new CSS rules when absolutely necessary for custom layouts that cannot be achieved using existing class declarations.

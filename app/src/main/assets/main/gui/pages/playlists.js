@@ -2,6 +2,7 @@ import { Playlists } from '../../logic/playlists.js';
 import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
+import { manageModal } from '../js/utils/ui-helper.js';
 
 /**
  * Initializes the playlists overview page controller.
@@ -119,20 +120,24 @@ function attachListeners() {
         if (el) el.classList.remove('focusable');
     });
 
+    let activeModalClose = null;
+
     if (createBtn) {
         createBtn.addEventListener('click', () => {
-            modal.classList.add('active');
             // Make modal elements focusable
             modalElements.forEach(el => {
                 if (el) el.classList.add('focusable');
             });
             input.value = '';
-            input.focus();
+            activeModalClose = manageModal(modal, input);
         });
     }
 
     const closeModal = () => {
-        modal.classList.remove('active');
+        if (activeModalClose) {
+            activeModalClose();
+            activeModalClose = null;
+        }
         // Remove focusable from modal elements
         modalElements.forEach(el => {
             if (el) el.classList.remove('focusable');
