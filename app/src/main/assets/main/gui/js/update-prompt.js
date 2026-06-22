@@ -25,9 +25,11 @@ export class UpdatePrompt {
         this.modalElement.className = 'update-modal-overlay';
         
         this.modalElement.innerHTML = `
-            <div class="update-modal glassmorphism">
+            <div class="update-modal">
                 <div class="update-header">
-                    <div class="update-rocket">🚀</div>
+                    <div class="update-icon-container">
+                        <div class="update-icon-mask"></div>
+                    </div>
                     <h2 class="update-title"></h2>
                 </div>
                 <div class="update-info-block">

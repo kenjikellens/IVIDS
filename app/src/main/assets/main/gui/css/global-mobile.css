@@ -596,3 +596,20 @@
     right: 0;
     top: 20px;
 }
+
+/* CSS Class: Mobile override for the version selector modal options grid to ensure a stacked layout. */
+#app .version-option-grid {
+    grid-template-columns: 1fr;
+}
+
+/* CSS Class: Mobile override for version badge container to stack version badges vertically. */
+#app .version-badge-container {
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+/* CSS Class: Mobile override for version badge arrow to point downwards in vertical layout. */
+#app .version-arrow {
+    transform: rotate(90deg);
+}

@@ -2032,11 +2032,10 @@ input, textarea, select { font: inherit; }
 /* ==========================================================================
    SECTION 26: PREMIUM TV-FIRST & MOBILE-RESPONSIVE APP UPDATE SYSTEM MODAL
    ========================================================================== */
+/* CSS Class: Fullscreen overlay container with dark backdrop for the update modal. */
 .update-modal-overlay {
-    -webkit-backdrop-filter: blur(15px);
     align-items: center;
-    backdrop-filter: blur(15px);
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.88);
     display: none;
     height: 100%;
     justify-content: center;
@@ -2052,26 +2051,53 @@ input, textarea, select { font: inherit; }
 
 .error-modal.visible, .tv-overlay.show, .update-modal-overlay.visible { opacity: 1; pointer-events: auto; }
 
+/* CSS Class: Main update dialog card container styled with premium solid dark background. */
 .update-modal {
-    -webkit-backdrop-filter: blur(35px) saturate(1.6);
-    backdrop-filter: blur(35px) saturate(1.6);
-    background: rgba(20, 20, 20, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-panel);
     display: flex;
     flex-direction: column;
     gap: 20px;
     max-width: 90%;
-    padding: 28px;
+    padding: 36px;
     text-align: center;
-    width: 460px;
+    width: min(480px, 92vw);
 }
 
+/* CSS Class: Header block centering title and icon within the update modal. */
 .update-header { align-items: center; display: flex; flex-direction: column; gap: 8px; }
 
-.update-rocket { font-size: 3rem; line-height: 1; }
+/* CSS Class: Rounded container wrapper holding the green themed update SVG icon. */
+.update-icon-container {
+    align-items: center;
+    background: rgba(var(--primary-rgb), 0.14);
+    border-radius: var(--radius-lg);
+    display: flex;
+    height: 76px;
+    justify-content: center;
+    margin-bottom: 12px;
+    width: 76px;
+    align-self: center;
+}
 
+/* CSS Class: Vector SVG mask graphic representing update activity. */
+.update-icon-mask {
+    -webkit-mask-image: url('../images/update.svg');
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    background-color: var(--primary-color);
+    height: 38px;
+    mask-image: url('../images/update.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    width: 38px;
+}
+
+/* CSS Class: Title typography displaying the update availability heading. */
 .update-title { color: #fff; font-size: 1.5rem; font-weight: 700; margin: 0; }
 
 .version-badge-container { align-items: center; display: flex; gap: 10px; }
