@@ -1,0 +1,39 @@
+<!--
+  IVIDS Scalable Brand Icon (SVG)
+  This vector graphic represents the standalone IVIDS brand icon (the play button).
+  It uses custom CSS variables (primary-color and primary-dark-color) for dynamic color theme support.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <!-- Primary Gradient -->
+    <linearGradient id="logo-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="var(--primary-color, #46d369)" />
+      <stop offset="100%" stop-color="var(--primary-dark-color, #2b9348)" />
+    </linearGradient>
+
+    <!-- Neon Glow Filter -->
+    <filter id="neon-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Clip Path for the Play Button -->
+    <clipPath id="play-clip">
+      <path d="M 37,27.5 L 86,56.5 C 89,58.5 89,61.5 86,63.5 L 37,92.5 C 33,94.5 31,92 31,88.5 L 31,31.5 C 31,28 33,25.5 37,27.5 Z" />
+    </clipPath>
+  </defs>
+  
+  <g filter="url(#neon-glow)">
+    <!-- The Play Button Triangle (Centered) -->
+    <path class="logo-play" d="M 37,27.5 L 86,56.5 C 89,58.5 89,61.5 86,63.5 L 37,92.5 C 33,94.5 31,92 31,88.5 L 31,31.5 C 31,28 33,25.5 37,27.5 Z" fill="url(#logo-grad)" />
+    
+    <!-- Glassmorphic Overlays -->
+    <g clip-path="url(#play-clip)">
+      <path class="logo-glass-top" d="M 31,35 C 51,30 68,45 88,60 C 64,75 47,60 31,75 Z" fill="rgba(255, 255, 255, 0.24)" style="mix-blend-mode: overlay;" />
+      <path class="logo-glass-bottom" d="M 31,45 C 47,40 64,50 88,60 C 60,65 49,75 31,91.5 Z" fill="rgba(255, 255, 255, 0.16)" />
+    </g>
+  </g>
+</svg>
