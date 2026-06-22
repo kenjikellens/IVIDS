@@ -70,7 +70,7 @@ input, textarea, select { font: inherit; }
 
 #app { background: transparent; display: flex; flex-direction: row; height: 100%; position: relative; width: 100%; }
 
-#sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: none; width: var(--app-sidebar-width); z-index: 2000; }
+#sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.25s ease, flex-basis 0.25s ease; width: var(--app-sidebar-width); z-index: 2000; }
 
 /* Styles the primary vertical scroll viewport container, with a premium fade-out effect only at the bottom border. */
 #main-view {
@@ -252,7 +252,7 @@ input, textarea, select { font: inherit; }
 
 /* Sets higher stacking index, scales, and adds an accent-color shadow to focusable card elements when hovered/focused. */
 /* Styles the hover and focused outline and zoom states for focusable card components. */
-.focusable-card:hover, .focusable-card:focus, .focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.5); outline: 2px solid #ffffff; outline-offset: 0px; transform: scale(1.04); z-index: 100; }
+.focusable-card:hover, .focusable-card:focus, .focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.5); outline: 2px solid #ffffff; outline-offset: 0px; transform: scale(1.03); z-index: 100; }
 
 /* Styles the overlay badges (e.g., HD, UHD, 4K, ratings) placed on top of media posters */
 .poster-overlay {
@@ -609,7 +609,7 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 28px 10px;
     position: relative;
-    transition: none;
+    transition: width 0.25s ease;
     width: var(--app-sidebar-width);
     z-index: 1000;
 }
@@ -638,7 +638,7 @@ input, textarea, select { font: inherit; }
     font-weight: 600;
     letter-spacing: -0.03em;
     opacity: 0;
-    transition: none;
+    transition: opacity 0.25s ease;
 }
 
 .nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
@@ -648,8 +648,8 @@ input, textarea, select { font: inherit; }
 /* Sidebar navigation menu link button container. Collapsed (default) state is a perfect square with centered icon. */
 .nav-item {
     align-items: center;
-    justify-content: center;
-    border: 2px solid transparent;
+    justify-content: flex-start;
+    border: 3px solid transparent;
     border-radius: var(--radius-sm);
     color: rgba(255, 255, 255, 0.72);
     display: flex;
@@ -659,14 +659,15 @@ input, textarea, select { font: inherit; }
     width: calc(var(--app-sidebar-width) - 20px);
     height: calc(var(--app-sidebar-width) - 20px);
     padding: 0;
+    overflow: hidden;
     position: relative;
     text-decoration: none;
-    transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    transition: width 0.25s ease, background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
     white-space: nowrap;
 }
 
 /* Hover, focus and active states for navigation menu link buttons. */
-.nav-item:hover, .nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.nav-item:hover, .nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: #ffffff; }
 
 /* Active navigation item background color highlight styling. */
 .nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #fff; }
@@ -679,7 +680,8 @@ input, textarea, select { font: inherit; }
     background-color: currentColor;
     flex: 0 0 24px;
     height: 24px;
-    margin-right: 0;
+    margin-left: calc((var(--app-sidebar-width) - 50px) / 2);
+    margin-right: 16px;
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: contain;
@@ -692,25 +694,14 @@ input, textarea, select { font: inherit; }
 /* Navigation item text label. Positioned absolutely to prevent it from pushing the icon when collapsed. */
 .nav-item span {
     opacity: 0;
-    position: absolute;
-    left: 48px;
-    pointer-events: none;
+    transition: opacity 0.25s ease;
 }
 
 /* Expanded state overrides for navigation items when sidebar is expanded. */
 #app.sidebar-always-expanded .nav-item,
 .navbar:hover .nav-item,
 .navbar:focus-within .nav-item {
-    justify-content: flex-start;
     width: 100%;
-    padding: 0 12px;
-}
-
-/* Expanded state overrides for navigation icons. Adds margin-right to separate icon from text. */
-#app.sidebar-always-expanded .nav-icon,
-.navbar:hover .nav-icon,
-.navbar:focus-within .nav-icon {
-    margin-right: 16px;
 }
 
 /* Expanded state overrides for navigation item text labels. Returns to static layout flow. */
@@ -718,7 +709,6 @@ input, textarea, select { font: inherit; }
 .navbar:hover .nav-item span,
 .navbar:focus-within .nav-item span {
     opacity: 1;
-    position: static;
     pointer-events: auto;
 }
 
