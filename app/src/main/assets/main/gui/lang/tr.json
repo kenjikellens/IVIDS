@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Sunucu",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "Ne var ne yok:",
+        "later": "Daha sonra",
+        "changes": "Değişiklikler"
     },
     "common": {
         "close": "Kapat",
         "apply": "Uygula",
-        "cancel": "İptal"
+        "cancel": "İptal",
+        "create": "Yaratmak",
+        "save": "Kaydetmek"
     },
     "home": {
         "welcome": "IVIDS'e Hoş Geldiniz",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "Uygula"
     },
     "player": {
         "play": "Oynat",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Favori film ve şovlardan oluşan kişisel koleksiyonunuz.",
+        "create_new": "Yeni Çalma Listesi Oluştur",
+        "moveUp": "Öğeyi Yukarı Taşı",
+        "moveDown": "Öğeyi Aşağı Taşı",
+        "removeFromPlaylist": "Oynatma Listesinden kaldır"
     },
     "row": {
         "trending": "Trendler",
@@ -324,7 +335,9 @@
         "noEpgInfo": "Program bilgisi mevcut de?il",
         "settings": "Settings",
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
-        "hideBrokenDesc": "Automatically hide channels after playback fails."
+        "hideBrokenDesc": "Automatically hide channels after playback fails.",
+        "selectSubtitle": "Yüzlerce canlı kanalı keşfedin ve izleyin",
+        "zapChannel": "Zap Kanalı"
     },
     "settings_livetv": {
         "title": "Canlı TV Yapılandırması",
@@ -366,31 +379,31 @@
         "cancel": "İptal"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
-        "signInTitle": "Giriş Yap",
-        "registerTitle": "Kayıt Ol",
+        "title": "IVIDS'te oturum açın",
+        "signInTitle": "Oturum aç",
+        "registerTitle": "Kayıt olmak",
         "signInSubtitle": "Hesabınıza giriş yapın",
-        "registerSubtitle": "Hesabınızı kaydedin"
+        "registerSubtitle": "Hesabınızı kaydedin",
+        "signInTab": "Oturum aç",
+        "registerTab": "Kayıt olmak",
+        "emailLabel": "E-posta",
+        "emailPlaceholder": "E-postanızı girin",
+        "usernameLabel": "Kullanıcı adı",
+        "usernamePlaceholder": "Kullanıcı adınızı girin",
+        "pinLabel": "PIN Kodu",
+        "pinHint": "4 ila 8 hane",
+        "signInBtn": "Oturum aç",
+        "registerBtn": "Hesap oluşturmak",
+        "guestBtn": "Misafir olarak devam et",
+        "errorInvalidEmail": "Lütfen geçerli bir e-posta girin",
+        "errorEmptyUsername": "Kullanıcı adı gerekli",
+        "errorPinLength": "PIN 4 ila 8 haneli olmalıdır",
+        "errorLoginFailed": "Geçersiz kimlik bilgileri. Lütfen tekrar deneyin.",
+        "errorRateLimit": "Çok fazla deneme. {seconds}'lerde tekrar deneyin.",
+        "errorNetwork": "Sunucuya ulaşılamadı. Bağlantınızı kontrol edin.",
+        "errorAlreadyRegistered": "Bu hesap zaten mevcut. Oturum açmayı deneyin.",
+        "successRegistered": "Hesap oluşturuldu!",
+        "successLoggedIn": "Tekrar hoş geldiniz, {name}!"
     },
     "collections": {
         "title": "Collections",

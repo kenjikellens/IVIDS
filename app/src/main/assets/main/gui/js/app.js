@@ -617,6 +617,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         initUI();
         initNavigation();
 
+        // Wait for translations to load to prevent any flashing of English keys
+        if (window.i18n && typeof window.i18n.init === 'function') {
+            try {
+                await window.i18n.init();
+            } catch (i18nInitError) {
+                console.error('Error waiting for i18n initialization:', i18nInitError);
+            }
+        }
+
         // Initial Routing Flow
         try {
             // Remove lingering state data so the app always starts fresh

@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Aggiungi playlist",
         "playlistsCount": "{count} Playlist",
         "serversCount": "{count} Server",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "Cosa c'è di nuovo:",
+        "later": "Dopo",
+        "changes": "Cambiamenti"
     },
     "common": {
         "close": "Chiudi",
         "apply": "Applica",
-        "cancel": "Annulla"
+        "cancel": "Annulla",
+        "create": "Creare",
+        "save": "Salva"
     },
     "home": {
         "welcome": "Benvenuti in IVIDS",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "Fare domanda a"
     },
     "player": {
         "play": "Riproduci",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "La tua raccolta personale di film e programmi preferiti.",
+        "create_new": "Crea nuova playlist",
+        "moveUp": "Sposta elemento in alto",
+        "moveDown": "Sposta l'elemento in basso",
+        "removeFromPlaylist": "Rimuovi dalla playlist"
     },
     "row": {
         "trending": "In Tendenza",
@@ -324,7 +335,9 @@
         "noEpgInfo": "Nessuna informazione sul programma disponibile",
         "settings": "Impostazioni",
         "settingsSubtitle": "Regola Live TV per riproduzione e filtri canale.",
-        "hideBrokenDesc": "Nascondi automaticamente i canali dopo un errore di riproduzione."
+        "hideBrokenDesc": "Nascondi automaticamente i canali dopo un errore di riproduzione.",
+        "selectSubtitle": "Scopri e guarda centinaia di canali live",
+        "zapChannel": "Zap Canale"
     },
     "settings_livetv": {
         "title": "Configurazione Live TV",
@@ -366,31 +379,31 @@
         "cancel": "Annulla"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
-        "signInTitle": "Accedi",
-        "registerTitle": "Registrati",
+        "title": "Accedi a IVIDS",
+        "signInTitle": "Registrazione",
+        "registerTitle": "Registro",
         "signInSubtitle": "Accedi al tuo account",
-        "registerSubtitle": "Registra il tuo account"
+        "registerSubtitle": "Registra il tuo account",
+        "signInTab": "Registrazione",
+        "registerTab": "Registro",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Inserisci la tua email",
+        "usernameLabel": "Nome utente",
+        "usernamePlaceholder": "Inserisci il tuo nome utente",
+        "pinLabel": "Codice PIN",
+        "pinHint": "Da 4 a 8 cifre",
+        "signInBtn": "Registrazione",
+        "registerBtn": "Creare un account",
+        "guestBtn": "Continua come ospite",
+        "errorInvalidEmail": "Inserisci un'e-mail valida",
+        "errorEmptyUsername": "Il nome utente è obbligatorio",
+        "errorPinLength": "Il PIN deve contenere da 4 a 8 cifre",
+        "errorLoginFailed": "Credenziali non valide. Per favore riprova.",
+        "errorRateLimit": "Troppi tentativi. Riprova tra {seconds}.",
+        "errorNetwork": "Impossibile raggiungere il server. Controlla la tua connessione.",
+        "errorAlreadyRegistered": "Questo account esiste già. Prova ad accedere.",
+        "successRegistered": "Account creato!",
+        "successLoggedIn": "Bentornato, {name}!"
     },
     "collections": {
         "title": "Collections",

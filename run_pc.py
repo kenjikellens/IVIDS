@@ -372,51 +372,91 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             with urllib.request.urlopen(req, timeout=15) as response:
                 content_type = response.headers.get('Content-Type', 'application/octet-stream')
                 
-                # Limit size and read in chunks (MAX_PROXY_RESPONSE_SIZE = 50 MB)
-                MAX_PROXY_RESPONSE_SIZE = 50 * 1024 * 1024
-                body_parts = []
-                total_read = 0
-                while True:
-                    chunk = response.read(65536)
-                    if not chunk:
-                        break
-                    total_read += len(chunk)
-                    if total_read > MAX_PROXY_RESPONSE_SIZE:
-                        self.send_error(413, 'Payload Too Large')
-                        return
-                    body_parts.append(chunk)
-                body = b''.join(body_parts)
+                # Check URL path and headers first
+                parsed_target = urllib.parse.urlparse(target_url)
+                target_path_lower = parsed_target.path.lower()
+                
+                is_m3u8 = target_path_lower.endswith('.m3u8') or 'mpegurl' in content_type.lower()
+                
+                # Read the first chunk (up to 65536 bytes) to detect magic bytes of gzip or start streaming
+                first_chunk = response.read(65536)
+                
+                is_gzip = False
+                if first_chunk:
+                    is_gzip = (
+                        target_path_lower.endswith('.gz') or 
+                        response.headers.get('Content-Encoding') == 'gzip' or 
+                        first_chunk.startswith(b'\x1f\x8b')
+                    )
 
-                # Decompress gzip files if the target URL has .gz or response is gzip-encoded
-                is_gzip = '.gz' in target_url.lower() or response.headers.get('Content-Encoding') == 'gzip'
-                if is_gzip:
-                    try:
-                        body = gzip.decompress(body)
-                        content_type = 'application/xml'
-                    except Exception as e:
-                        sys.stderr.write(f"[IVIDS] Failed to decompress gzip: {str(e)}\n")
+                if is_m3u8 or is_gzip:
+                    # Limit size and read the rest in chunks (MAX_PROXY_RESPONSE_SIZE = 50 MB)
+                    MAX_PROXY_RESPONSE_SIZE = 50 * 1024 * 1024
+                    body_parts = [first_chunk] if first_chunk else []
+                    total_read = len(first_chunk)
+                    while True:
+                        chunk = response.read(65536)
+                        if not chunk:
+                            break
+                        total_read += len(chunk)
+                        if total_read > MAX_PROXY_RESPONSE_SIZE:
+                            self.send_error(413, 'Payload Too Large')
+                            return
+                        body_parts.append(chunk)
+                    body = b''.join(body_parts)
 
-                # Rewrite .m3u8 manifests so sub-resources also proxy
-                is_m3u8 = target_url.endswith('.m3u8') or 'mpegurl' in content_type.lower()
-                if is_m3u8:
-                    text = body.decode('utf-8', errors='replace')
-                    proxy_prefix = f'/proxy?url='
-                    text = rewrite_m3u8(text, target_url, proxy_prefix)
-                    body = text.encode('utf-8')
-                    content_type = 'application/vnd.apple.mpegurl'
+                    # Decompress gzip files if needed
+                    if is_gzip:
+                        try:
+                            body = gzip.decompress(body)
+                            content_type = 'application/xml'
+                        except Exception as e:
+                            sys.stderr.write(f"[IVIDS] Failed to decompress gzip: {str(e)}\n")
 
-                self.send_response(200)
-                self.send_header('Content-Type', content_type)
-                self.send_header('Content-Length', str(len(body)))
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-                self.send_header('Access-Control-Allow-Headers', '*')
-                if '.m3u' in target_url.lower():
-                    self.send_header('Cache-Control', 'public, max-age=7200')
+                    # Rewrite .m3u8 manifests so sub-resources also proxy
+                    if is_m3u8:
+                        text = body.decode('utf-8', errors='replace')
+                        proxy_prefix = f'/proxy?url='
+                        text = rewrite_m3u8(text, target_url, proxy_prefix)
+                        body = text.encode('utf-8')
+                        content_type = 'application/vnd.apple.mpegurl'
+
+                    self.send_response(200)
+                    self.send_header('Content-Type', content_type)
+                    self.send_header('Content-Length', str(len(body)))
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+                    self.send_header('Access-Control-Allow-Headers', '*')
+                    if '.m3u' in target_url.lower():
+                        self.send_header('Cache-Control', 'public, max-age=7200')
+                    else:
+                        self.send_header('Cache-Control', 'no-store')
+                    self.end_headers()
+                    self.wfile.write(body)
                 else:
-                    self.send_header('Cache-Control', 'no-store')
-                self.end_headers()
-                self.wfile.write(body)
+                    # Stream directly to client
+                    self.send_response(200)
+                    self.send_header('Content-Type', content_type)
+                    upstream_len = response.headers.get('Content-Length')
+                    if upstream_len:
+                        self.send_header('Content-Length', upstream_len)
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+                    self.send_header('Access-Control-Allow-Headers', '*')
+                    if '.m3u' in target_url.lower():
+                        self.send_header('Cache-Control', 'public, max-age=7200')
+                    else:
+                        self.send_header('Cache-Control', 'no-store')
+                    self.end_headers()
+
+                    if first_chunk:
+                        self.wfile.write(first_chunk)
+                    
+                    while True:
+                        chunk = response.read(65536)
+                        if not chunk:
+                            break
+                        self.wfile.write(chunk)
 
         except urllib.error.HTTPError as e:
             try:

@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} 서버",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "새로운 기능:",
+        "later": "나중에",
+        "changes": "변경 사항"
     },
     "common": {
         "close": "닫기",
         "apply": "적용",
-        "cancel": "취소"
+        "cancel": "취소",
+        "create": "만들다",
+        "save": "구하다"
     },
     "home": {
         "welcome": "IVIDS에 오신 것을 환영합니다",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "적용하다"
     },
     "player": {
         "play": "재생",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "좋아하는 영화와 프로그램의 개인 컬렉션입니다.",
+        "create_new": "새 재생목록 만들기",
+        "moveUp": "항목을 위로 이동",
+        "moveDown": "항목을 아래로 이동",
+        "removeFromPlaylist": "재생목록에서 제거"
     },
     "row": {
         "trending": "인기 급상승",
@@ -324,7 +335,9 @@
         "noEpgInfo": "???? ??? ??? ? ????",
         "settings": "??",
         "settingsSubtitle": "?? ? ?? ?? ??? ?????.",
-        "hideBrokenDesc": "?? ?? ? ??? ???? ????."
+        "hideBrokenDesc": "?? ?? ? ??? ???? ????.",
+        "selectSubtitle": "수백 개의 실시간 채널을 발견하고 시청하세요",
+        "zapChannel": "잽 채널"
     },
     "settings_livetv": {
         "title": "라이브 TV 설정",
@@ -366,31 +379,31 @@
         "cancel": "취소"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "IVIDS에 로그인",
         "signInTitle": "로그인",
-        "registerTitle": "회원가입",
-        "signInSubtitle": "계정에 로그인하십시오",
-        "registerSubtitle": "계정을 등록하십시오"
+        "registerTitle": "등록하다",
+        "signInSubtitle": "귀하의 계정에 로그인하십시오",
+        "registerSubtitle": "계정을 등록하세요",
+        "signInTab": "로그인",
+        "registerTab": "등록하다",
+        "emailLabel": "이메일",
+        "emailPlaceholder": "이메일을 입력하세요",
+        "usernameLabel": "사용자 이름",
+        "usernamePlaceholder": "사용자 이름을 입력하세요",
+        "pinLabel": "핀 코드",
+        "pinHint": "4~8자리",
+        "signInBtn": "로그인",
+        "registerBtn": "계정 만들기",
+        "guestBtn": "게스트로 계속",
+        "errorInvalidEmail": "유효한 이메일을 입력해주세요",
+        "errorEmptyUsername": "사용자 이름이 필요합니다",
+        "errorPinLength": "PIN은 4~8자리여야 합니다.",
+        "errorLoginFailed": "자격 증명이 잘못되었습니다. 다시 시도해 주세요.",
+        "errorRateLimit": "시도 횟수가 너무 많습니다. {seconds}초에 다시 시도하세요.",
+        "errorNetwork": "서버에 연결할 수 없습니다. 연결을 확인하세요.",
+        "errorAlreadyRegistered": "이 계정은 이미 존재합니다. 로그인해 보세요.",
+        "successRegistered": "계정이 생성되었습니다!",
+        "successLoggedIn": "돌아온 걸 환영해요, {name}!"
     },
     "collections": {
         "title": "Collections",

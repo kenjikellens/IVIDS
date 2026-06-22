@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Серверов",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "Что нового:",
+        "later": "Позже",
+        "changes": "Изменения"
     },
     "common": {
         "close": "Закрыть",
         "apply": "Применить",
-        "cancel": "Отмена"
+        "cancel": "Отмена",
+        "create": "Создавать",
+        "save": "Сохранять"
     },
     "home": {
         "welcome": "Добро пожаловать в IVIDS",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "Применять"
     },
     "player": {
         "play": "Смотреть",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Ваша личная коллекция любимых фильмов и сериалов.",
+        "create_new": "Создать новый плейлист",
+        "moveUp": "Переместить элемент вверх",
+        "moveDown": "Переместить элемент вниз",
+        "removeFromPlaylist": "Удалить из плейлиста"
     },
     "row": {
         "trending": "В тренде",
@@ -324,7 +335,9 @@
         "noEpgInfo": "?????????? ? ????????? ??????????",
         "settings": "Settings",
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
-        "hideBrokenDesc": "Automatically hide channels after playback fails."
+        "hideBrokenDesc": "Automatically hide channels after playback fails.",
+        "selectSubtitle": "Откройте для себя и смотрите сотни каналов в прямом эфире",
+        "zapChannel": "Зап канал"
     },
     "settings_livetv": {
         "title": "Настройка Live TV",
@@ -366,31 +379,31 @@
         "cancel": "Отмена"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "Войдите в систему IVIDS",
         "signInTitle": "Войти",
-        "registerTitle": "Регистрация",
-        "signInSubtitle": "Войдите в свой аккаунт",
-        "registerSubtitle": "Зарегистрируйте свой аккаунт"
+        "registerTitle": "Зарегистрироваться",
+        "signInSubtitle": "Войдите в свою учетную запись",
+        "registerSubtitle": "Зарегистрируйте свой аккаунт",
+        "signInTab": "Войти",
+        "registerTab": "Зарегистрироваться",
+        "emailLabel": "Электронная почта",
+        "emailPlaceholder": "Введите адрес электронной почты",
+        "usernameLabel": "Имя пользователя",
+        "usernamePlaceholder": "Введите свое имя пользователя",
+        "pinLabel": "ПИН-код",
+        "pinHint": "от 4 до 8 цифр",
+        "signInBtn": "Войти",
+        "registerBtn": "Зарегистрироваться",
+        "guestBtn": "Продолжить как гость",
+        "errorInvalidEmail": "Пожалуйста, введите действительный адрес электронной почты",
+        "errorEmptyUsername": "Требуется имя пользователя",
+        "errorPinLength": "PIN-код должен состоять из 4–8 цифр.",
+        "errorLoginFailed": "Неверные учетные данные. Пожалуйста, попробуйте еще раз.",
+        "errorRateLimit": "Слишком много попыток. Попробуйте еще раз в {seconds}с.",
+        "errorNetwork": "Не удалось связаться с сервером. Проверьте свое соединение.",
+        "errorAlreadyRegistered": "Этот аккаунт уже существует. Попробуйте войти.",
+        "successRegistered": "Аккаунт создан!",
+        "successLoggedIn": "С возвращением, {name}!"
     },
     "collections": {
         "title": "Collections",

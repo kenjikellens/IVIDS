@@ -18,10 +18,18 @@ import re
 import json
 import time
 import argparse
-import urllib.request
-import urllib.error
+import requests
+from requests.adapters import HTTPAdapter
 import concurrent.futures
 from collections import OrderedDict
+
+# Create a shared requests Session with connection pooling
+session = requests.Session()
+# Setup adapter to allow connection pooling for worker threads
+adapter = HTTPAdapter(pool_connections=100, pool_maxsize=100)
+session.mount('http://', adapter)
+session.mount('https://', adapter)
+
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
@@ -89,45 +97,36 @@ def fetch_playlist(url):
     Returns a list of (name, url) tuples, returning an empty list on failure.
     """
     try:
-        req = urllib.request.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (IVIDS Scanner)')
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            content = resp.read().decode('utf-8', errors='replace')
+        headers = {'User-Agent': 'Mozilla/5.0 (IVIDS Scanner)'}
+        resp = session.get(url, headers=headers, timeout=20)
+        if resp.status_code < 400:
+            content = resp.content.decode('utf-8', errors='replace')
             return parse_m3u(content)
     except Exception as e:
         print(f"  ⚠ Failed to fetch playlist: {e}")
-        return []
+    return []
 
 
 # ── Stream Verification ──────────────────────────────────────────────────────
 
 def check_stream(url, timeout):
     """
-    Tests a single stream URL with a HEAD request, falling back to a ranged GET.
+    Tests a single stream URL using a direct ranged GET request (bytes=0-0) with stream=True.
+    Many IPTV servers reject HEAD requests, so performing a ranged GET directly avoids redundant handshakes.
     Returns True if the stream is online, or False if the request fails or times out.
     """
     headers = {
         'User-Agent': 'Mozilla/5.0 (IVIDS Scanner)',
-        'Accept': '*/*'
+        'Accept': '*/*',
+        'Range': 'bytes=0-0'
     }
 
-    # Try HEAD first
     try:
-        req = urllib.request.Request(url, method='HEAD', headers=headers)
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            if resp.status < 400:
-                return True
-    except Exception:
-        pass
-
-    # Fall back to ranged GET (some servers reject HEAD)
-    try:
-        get_headers = dict(headers)
-        get_headers['Range'] = 'bytes=0-0'
-        req = urllib.request.Request(url, headers=get_headers)
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            if resp.status < 400:
-                return True
+        # Use stream=True to avoid buffering the stream body
+        response = session.get(url, headers=headers, timeout=timeout, stream=True)
+        if response.status_code < 400:
+            response.close() # Close to return connection to the pool
+            return True
     except Exception:
         pass
 

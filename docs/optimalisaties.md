@@ -19,36 +19,25 @@ Dit document bevat de geïdentificeerde optimalisatiemogelijkheden in de codebas
 * Geen prestatieoptimalisaties nodig; dit is een simpel build/release script dat sequentieel draait en weinig resources verbruikt.
 
 ### [run_pc.py](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/run_pc.py)
-* **Streaming CORS-proxy (Performance & Geheugen)**: Momenteel laadt de proxy in `_handle_proxy` het hele upstream bestand in het geheugen (tot 50MB in `body_parts`) voordat het naar de cliënt wordt verstuurd.
-  * *Optimalisatie*: Stream de chunks direct naar de cliënt (`self.wfile.write(chunk)`) voor bestanden die geen herschrijflogica vereisen (zoals `.ts` segmenten of afbeeldingen). Dit voorkomt onnodige geheugenallocatie en verlaagt de latency.
-* **Gzip Magische Bytes Check**: De controle `is_gzip = '.gz' in target_url.lower()` is kwetsbaar voor URL-parameters en ongebruikelijke extensies.
-  * *Optimalisatie*: Controleer de HTTP headers (`Content-Encoding: gzip`) of verifieer de magische bytes (`1f 8b`) aan het begin van de response body.
+* Geen openstaande optimalisaties. De CORS-proxy streamt direct chunks naar de cliënt voor niet-manifest/gzip bronnen en verifieert de gzip-status via magische bytes.
 
 ### [scan_broken_channels.py](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/scan_broken_channels.py)
-* **HTTP Connection Pooling (Performance/Snelheid)**: Het script opent voor elke stream een nieuwe verbinding (`urllib.request.urlopen`), wat leidt tot herhaalde TCP en TLS handshakes.
-  * *Optimalisatie*: Introduceer connectie-hergebruik (connection pooling). Als externe bibliotheken zijn toegestaan, gebruik `requests.Session` of `urllib3`. Dit verlaagt de scantijd drastisch.
-* **HEAD/GET Dubbele Connectie**: Als een stream HEAD weigert, voert het script direct daarna een ranged GET uit.
-  * *Optimalisatie*: Probeer direct een ranged GET (`Range: bytes=0-0`) te doen voor IPTV streams, aangezien veel IPTV-servers HEAD weigeren. Dit halveert de overhead voor offline/ongedocumenteerde streams.
+* Geen openstaande optimalisaties. Connectie-pooling via requests.Session is geïmplementeerd en zenders worden direct via ranged GET-aanroepen geverifieerd.
 
 
 ## 2. Core Logic (assets/main/logic/)
 
 ### [account-helper.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/account-helper.js)
-* **In-memory Account Caching (Performance)**: `getActiveAccount()` voert bij elke aanroep twee `localStorage.getItem` en twee `JSON.parse` operaties uit. Functies zoals `getNamespacedKey` roepen dit herhaaldelijk aan.
-  * *Optimalisatie*: Cache het actieve account in een in-memory variabele (`let _activeAccountCache = null`) bij de eerste aanroep en valideer of wis deze bij in-/uitloggen. Dit voorkomt dure synchrone schijf- en parseeracties in loops.
+* Geen openstaande optimalisaties. In-memory caching van het actieve account is geïmplementeerd.
 
 ### [api.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/api.js)
-* **Redundante Account/Settings Lookups**: `getPlayerConfig` roept zowel `getActiveAccountId()` als `getNamespacedKey('settings')` aan, wat leidt tot meerdere dubbele `localStorage`-query's achter elkaar. Caching in `account-helper.js` lost dit automatisch op.
+* Geen openstaande optimalisaties. De redundante storage queries zijn opgelost door de caching in `account-helper.js`.
 
 ### [crypto.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/crypto.js)
-* **O(N) PBKDF2 Login Bottleneck (Performance)**: De `login` methode haalt *alle* gebruikers op uit Firebase en voert voor elke record sequentieel `deriveKey` (PBKDF2 met 100.000 iteraties) uit totdat een match is gevonden. Dit is extreem traag op mobiele/TV-apparaten.
-  * *Optimalisatie*: Sla gebruikersrecords in Firebase op onder een hash van hun e-mailadres of gebruikersnaam (bijv. `/users/<hashed_email>.json`). Hierdoor kan de client direct het juiste record ophalen en hoeft PBKDF2 slechts één keer uitgevoerd te worden.
-* **bytesToHex Micro-optimalisatie**: `bytesToHex` maakt een array aan, mapt elke byte en vult deze aan met `padStart`.
-  * *Optimalisatie*: Gebruik een vooraf gegenereerde Lookup Table (LUT) van hexadecimale waarden om de array-allocaties en `padStart`-aanroepen te vermijden.
+* Geen openstaande optimalisaties. PBKDF2-operaties zijn gereduceerd tot O(1) door gebruikers te registreren en op te zoeken onder hun gehashte e-mailadres via Firebase PUT. `bytesToHex` is micro-geoptimaliseerd met een vooraf berekende LUT.
 
 ### [m3u-parser.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/m3u-parser.js)
-* **Ontbrekende Retry Logic**: In tegenstelling tot `api.js` mist `fetchPlaylist` een retry-mechanisme.
-  * *Optimalisatie*: Hergebruik `fetchWithRetry` of implementeer een vergelijkbare logica voor playlist-aanvragen om tijdelijke netwerkfouten op Smart TV's op te vangen.
+* Geen openstaande optimalisaties. Retry-logica met exponentiële back-off is geïmplementeerd om tijdelijke netwerkfouten op te vangen.
 
 ### [migration.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/migration.js), [playlists.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/playlists.js), [recentlyWatched.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/recentlyWatched.js)
 * Geen kritieke prestatie- of redundantieproblemen. `playlists.js` en `recentlyWatched.js` maken al correct gebruik van in-memory caching (`_playlistsCache` en `_recentlyWatchedCache`).

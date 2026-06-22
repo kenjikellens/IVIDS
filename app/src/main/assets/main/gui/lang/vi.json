@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Máy chủ",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "Có gì mới:",
+        "later": "Sau đó",
+        "changes": "Thay đổi"
     },
     "common": {
         "close": "Đóng",
         "apply": "Áp dụng",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "create": "Tạo nên",
+        "save": "Cứu"
     },
     "home": {
         "welcome": "Chào mừng bạn đến với IVIDS",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "Áp dụng"
     },
     "player": {
         "play": "Phát",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Bộ sưu tập cá nhân của bạn về các bộ phim và chương trình yêu thích.",
+        "create_new": "Tạo danh sách phát mới",
+        "moveUp": "Di chuyển mục lên",
+        "moveDown": "Di chuyển mục xuống",
+        "removeFromPlaylist": "Xóa khỏi Danh sách phát"
     },
     "row": {
         "trending": "Xu hướng",
@@ -324,7 +335,9 @@
         "noEpgInfo": "Kh?ng c? th?ng tin ch??ng tr?nh",
         "settings": "Settings",
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
-        "hideBrokenDesc": "Automatically hide channels after playback fails."
+        "hideBrokenDesc": "Automatically hide channels after playback fails.",
+        "selectSubtitle": "Khám phá và xem hàng trăm kênh trực tiếp",
+        "zapChannel": "Kênh Zap"
     },
     "settings_livetv": {
         "title": "Cấu hình Live TV",
@@ -366,31 +379,31 @@
         "cancel": "Hủy"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "Đăng nhập vào IVIDS",
         "signInTitle": "Đăng nhập",
         "registerTitle": "Đăng ký",
         "signInSubtitle": "Đăng nhập vào tài khoản của bạn",
-        "registerSubtitle": "Đăng ký tài khoản của bạn"
+        "registerSubtitle": "Đăng ký tài khoản của bạn",
+        "signInTab": "Đăng nhập",
+        "registerTab": "Đăng ký",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Nhập email của bạn",
+        "usernameLabel": "Tên người dùng",
+        "usernamePlaceholder": "Nhập tên người dùng của bạn",
+        "pinLabel": "Mã PIN",
+        "pinHint": "4 đến 8 chữ số",
+        "signInBtn": "Đăng nhập",
+        "registerBtn": "Tạo tài khoản",
+        "guestBtn": "Tiếp tục với tư cách là khách",
+        "errorInvalidEmail": "Vui lòng nhập email hợp lệ",
+        "errorEmptyUsername": "Tên người dùng là bắt buộc",
+        "errorPinLength": "Mã PIN phải có từ 4 đến 8 chữ số",
+        "errorLoginFailed": "Thông tin xác thực không hợp lệ. Vui lòng thử lại.",
+        "errorRateLimit": "Quá nhiều nỗ lực. Hãy thử lại sau {seconds}.",
+        "errorNetwork": "Không thể truy cập máy chủ. Kiểm tra kết nối của bạn.",
+        "errorAlreadyRegistered": "Tài khoản này đã tồn tại. Hãy thử đăng nhập.",
+        "successRegistered": "Tài khoản đã được tạo!",
+        "successLoggedIn": "Chào mừng trở lại, {name}!"
     },
     "collections": {
         "title": "Collections",

@@ -91,12 +91,19 @@
         "addM3uPlaylist": "Añadir lista",
         "playlistsCount": "{count} Listas de reproducción",
         "serversCount": "{count} Servidores",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "playerProvider": "Proveedor de jugadores",
+        "playerProviderDesc": "Configure el punto final de inserción utilizado por el reproductor de películas y series",
+        "whatsNew": "Qué hay de nuevo:",
+        "later": "Más tarde",
+        "changes": "Cambios"
     },
     "common": {
         "close": "Cerrar",
         "apply": "Aplicar",
-        "cancel": "Cancelar"
+        "cancel": "Cancelar",
+        "create": "Crear",
+        "save": "Ahorrar"
     },
     "home": {
         "welcome": "Bienvenido a IVIDS",
@@ -176,7 +183,8 @@
         "decade2000": "Años 2000",
         "decade1990": "Años 90",
         "decade1980": "Años 80",
-        "decade1970": "Años 70 y anteriores"
+        "decade1970": "Años 70 y anteriores",
+        "apply": "Aplicar"
     },
     "player": {
         "play": "Reproducir",
@@ -211,7 +219,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Tu colección personal de películas y programas favoritos.",
+        "create_new": "Crear nueva lista de reproducción",
+        "moveUp": "Mover elemento hacia arriba",
+        "moveDown": "Mover elemento hacia abajo",
+        "removeFromPlaylist": "Eliminar de la lista de reproducción"
     },
     "row": {
         "trending": "Tendencias ahora",
@@ -317,7 +330,9 @@
         "noEpgInfo": "No hay informaci?n del programa disponible",
         "settings": "Ajustes",
         "settingsSubtitle": "Ajusta Live TV para la reproducci?n y el filtrado de canales.",
-        "hideBrokenDesc": "Oculta autom?ticamente los canales cuando falla la reproducci?n."
+        "hideBrokenDesc": "Oculta autom?ticamente los canales cuando falla la reproducci?n.",
+        "selectSubtitle": "Descubre y mira cientos de canales en vivo.",
+        "zapChannel": "Canal Zap"
     },
     "settings_livetv": {
         "title": "Configuración de Live TV",
@@ -359,31 +374,31 @@
         "cancel": "Cancelar"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "Iniciar sesión en IVIDS",
         "signInTitle": "Iniciar sesión",
-        "registerTitle": "Registrarse",
-        "signInSubtitle": "Inicie sesión en su cuenta",
-        "registerSubtitle": "Registre su cuenta"
+        "registerTitle": "Registro",
+        "signInSubtitle": "Inicia sesión en tu cuenta",
+        "registerSubtitle": "Registre su cuenta",
+        "signInTab": "Iniciar sesión",
+        "registerTab": "Registro",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "Introduce tu correo electrónico",
+        "usernameLabel": "Nombre de usuario",
+        "usernamePlaceholder": "Ingrese su nombre de usuario",
+        "pinLabel": "Código PIN",
+        "pinHint": "4 a 8 dígitos",
+        "signInBtn": "Iniciar sesión",
+        "registerBtn": "Crear una cuenta",
+        "guestBtn": "Continuar como invitado",
+        "errorInvalidEmail": "Por favor introduce un correo electrónico válido",
+        "errorEmptyUsername": "El nombre de usuario es obligatorio",
+        "errorPinLength": "El PIN debe tener entre 4 y 8 dígitos",
+        "errorLoginFailed": "Credenciales no válidas. Por favor inténtalo de nuevo.",
+        "errorRateLimit": "Demasiados intentos. Inténtalo de nuevo en {seconds}s.",
+        "errorNetwork": "No se pudo llegar al servidor. Comprueba tu conexión.",
+        "errorAlreadyRegistered": "Esta cuenta ya existe. Intenta iniciar sesión.",
+        "successRegistered": "¡Cuenta creada!",
+        "successLoggedIn": "¡Bienvenido de nuevo, {name}!"
     },
     "collections": {
         "title": "Collections",

@@ -91,12 +91,19 @@
         "addM3uPlaylist": "Afspeellijst toevoegen",
         "playlistsCount": "{count} Afspeellijsten",
         "serversCount": "{count} Servers",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "playerProvider": "Speler provider",
+        "playerProviderDesc": "Configureer het embed-eindpunt dat wordt gebruikt door de film- en serie-speler",
+        "whatsNew": "Wat is er nieuw:",
+        "later": "Later",
+        "changes": "Wijzigingen"
     },
     "common": {
         "close": "Sluiten",
         "apply": "Toepassen",
-        "cancel": "Annuleren"
+        "cancel": "Annuleren",
+        "create": "Maken",
+        "save": "Opslaan"
     },
     "home": {
         "welcome": "Welkom bij IVIDS",
@@ -176,7 +183,8 @@
         "decade2000": "Jaren 2000",
         "decade1990": "Jaren '90",
         "decade1980": "Jaren '80",
-        "decade1970": "Jaren '70 & ouder"
+        "decade1970": "Jaren '70 & ouder",
+        "apply": "Toepassen"
     },
     "player": {
         "play": "Afspelen",
@@ -211,7 +219,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Je persoonlijke verzameling van favoriete films en series.",
+        "create_new": "Nieuwe afspeellijst maken",
+        "moveUp": "Item omhoog verplaatsen",
+        "moveDown": "Item omlaag verplaatsen",
+        "removeFromPlaylist": "Verwijderen uit afspeellijst"
     },
     "row": {
         "trending": "Nu Trending",
@@ -317,7 +330,9 @@
         "noEpgInfo": "Geen programma-informatie beschikbaar",
         "settings": "Instellingen",
         "settingsSubtitle": "Pas Live TV-gedrag aan voor afspelen en kanaalfilters.",
-        "hideBrokenDesc": "Verberg kanalen automatisch nadat afspelen mislukt."
+        "hideBrokenDesc": "Verberg kanalen automatisch nadat afspelen mislukt.",
+        "selectSubtitle": "Ontdek en bekijk honderden live zenders",
+        "zapChannel": "Zender zappen"
     },
     "settings_livetv": {
         "title": "Live TV Configuratie",
@@ -359,31 +374,31 @@
         "cancel": "Annuleren"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "Inloggen bij IVIDS",
         "signInTitle": "Inloggen",
         "registerTitle": "Registreren",
         "signInSubtitle": "Log in op uw account",
-        "registerSubtitle": "Registreer uw account"
+        "registerSubtitle": "Registreer uw account",
+        "signInTab": "Inloggen",
+        "registerTab": "Registreren",
+        "emailLabel": "E-mailadres",
+        "emailPlaceholder": "Voer uw e-mailadres in",
+        "usernameLabel": "Gebruikersnaam",
+        "usernamePlaceholder": "Voer uw gebruikersnaam in",
+        "pinLabel": "PIN-code",
+        "pinHint": "4 tot 8 cijfers",
+        "signInBtn": "Inloggen",
+        "registerBtn": "Account aanmaken",
+        "guestBtn": "Doorgaan als gast",
+        "errorInvalidEmail": "Voer een geldig e-mailadres in",
+        "errorEmptyUsername": "Gebruikersnaam is verplicht",
+        "errorPinLength": "PIN moet 4 tot 8 cijfers lang zijn",
+        "errorLoginFailed": "Ongeldige inloggegevens. Probeer het opnieuw.",
+        "errorRateLimit": "Te veel pogingen. Probeer het opnieuw over {seconds}s.",
+        "errorNetwork": "Kan de server niet bereiken. Controleer uw verbinding.",
+        "errorAlreadyRegistered": "Dit account bestaat al. Probeer in te loggen.",
+        "successRegistered": "Account aangemaakt!",
+        "successLoggedIn": "Welkom terug, {name}!"
     },
     "collections": {
         "title": "Collections",

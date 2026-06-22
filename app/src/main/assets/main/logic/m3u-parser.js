@@ -103,19 +103,33 @@ export const M3UParser = {
      * @returns {Promise<Array>} Parsed list of channels.
      */
     async fetchPlaylist(url) {
-        try {
+        const timeout = 4000;
+        const retries = 2;
+        let lastError;
+
+        for (let i = 0; i <= retries; i++) {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000);
-            
-            const response = await fetch(url, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) throw new Error('Failed to fetch playlist');
-            const content = await response.text();
-            return this.parse(content);
-        } catch (error) {
-            console.error('Error fetching M3U playlist:', error, url);
-            return [];
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            try {
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const content = await response.text();
+                return this.parse(content);
+            } catch (error) {
+                clearTimeout(timeoutId);
+                lastError = error;
+                if (i < retries) {
+                    // Wait slightly before retrying (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
+                }
+            }
         }
+        console.error('Error fetching M3U playlist after retries:', lastError, url);
+        return [];
     }
 };

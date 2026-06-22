@@ -7,10 +7,35 @@ let _cachedKey = null;
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
+// Pre-generated Lookup Table (LUT) to avoid array allocations during bytesToHex
+const byteToHexLUT = [];
+for (let i = 0; i < 256; i++) {
+    byteToHexLUT.push(i.toString(16).padStart(2, '0'));
+}
+
 export function bytesToHex(buf) {
-    return Array.from(new Uint8Array(buf))
-        .map(byte => byte.toString(16).padStart(2, '0'))
-        .join('');
+    const bytes = new Uint8Array(buf);
+    let hex = '';
+    for (let i = 0; i < bytes.length; i++) {
+        hex += byteToHexLUT[bytes[i]];
+    }
+    return hex;
+}
+
+/**
+ * Generates a SHA-256 hash of the normalized email to use as a secure, unique Firebase path.
+ * @param {string} email
+ * @returns {Promise<string>}
+ */
+async function getEmailHash(email) {
+    const msgBuffer = textEncoder.encode(email.trim().toLowerCase());
+    const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    let hex = '';
+    for (let i = 0; i < hashArray.length; i++) {
+        hex += byteToHexLUT[hashArray[i]];
+    }
+    return hex;
 }
 
 export function hexToBytes(hex) {
@@ -100,32 +125,28 @@ function getDefaultInfo(username) {
     };
 }
 
-export async function fetchAllUsers() {
-    const records = await firebaseJson('/users.json');
-    return records || {};
-}
-
 export async function login(email, username, pin) {
     const normalizedEmail = email.trim().toLowerCase();
-    const normalizedUsername = username.trim();
-    const records = await fetchAllUsers();
+    const normalizedUsername = username ? username.trim() : '';
+    const emailHash = await getEmailHash(normalizedEmail);
 
-    for (const [pushId, record] of Object.entries(records)) {
-        if (!isValidRecord(record)) continue;
-
-        try {
-            const key = await deriveKey(normalizedEmail, pin, record.salt);
-            const decryptedUser = await decrypt(key, record.user.iv, record.user.ct);
-
-            if (decryptedUser === normalizedUsername) {
-                const decryptedInfo = await decrypt(key, record.info.iv, record.info.ct);
-                const info = JSON.parse(decryptedInfo);
-                _cachedKey = key;
-                return { success: true, info, pushId, key };
-            }
-        } catch (error) {
-            continue;
+    try {
+        const record = await firebaseJson(`/users/${emailHash}.json`);
+        if (!record || !isValidRecord(record)) {
+            return { success: false };
         }
+
+        const key = await deriveKey(normalizedEmail, pin, record.salt);
+        const decryptedUser = await decrypt(key, record.user.iv, record.user.ct);
+
+        if (!normalizedUsername || decryptedUser === normalizedUsername) {
+            const decryptedInfo = await decrypt(key, record.info.iv, record.info.ct);
+            const info = JSON.parse(decryptedInfo);
+            _cachedKey = key;
+            return { success: true, info, pushId: emailHash, key, username: decryptedUser };
+        }
+    } catch (error) {
+        // Fall through to failure on validation/decryption error
     }
 
     return { success: false };
@@ -134,8 +155,9 @@ export async function login(email, username, pin) {
 export async function register(email, username, pin) {
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedUsername = username.trim();
+    
+    // Check duplication by checking if we can log in with this email hash
     const duplicate = await login(normalizedEmail, normalizedUsername, pin);
-
     if (duplicate.success) {
         return { success: false, reason: 'already_registered' };
     }
@@ -146,18 +168,15 @@ export async function register(email, username, pin) {
     const info = getDefaultInfo(normalizedUsername);
     const infoBlob = await encrypt(key, JSON.stringify(info));
 
-    const result = await firebaseJson('/users.json', {
-        method: 'POST',
+    const emailHash = await getEmailHash(normalizedEmail);
+    await firebaseJson(`/users/${emailHash}.json`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ salt: saltHex, user: userBlob, info: infoBlob })
     });
 
-    if (!result || !result.name) {
-        throw new Error('Firebase did not return a push id');
-    }
-
     _cachedKey = key;
-    return { success: true, pushId: result.name, key, info };
+    return { success: true, pushId: emailHash, key, info };
 }
 
 export async function syncInfo(pushId, key, info) {

@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} 服务器",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "什么是新的：",
+        "later": "之后",
+        "changes": "变化"
     },
     "common": {
         "close": "关闭",
         "apply": "应用",
-        "cancel": "取消"
+        "cancel": "取消",
+        "create": "创造",
+        "save": "节省"
     },
     "home": {
         "welcome": "欢迎来到 IVIDS",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "申请"
     },
     "player": {
         "play": "播放",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "您最喜欢的电影和节目的个人收藏。",
+        "create_new": "创建新的播放列表",
+        "moveUp": "上移项目",
+        "moveDown": "下移项目",
+        "removeFromPlaylist": "从播放列表中删除"
     },
     "row": {
         "trending": "当下流行",
@@ -324,7 +335,9 @@
         "noEpgInfo": "??????",
         "settings": "??",
         "settingsSubtitle": "?????????????????",
-        "hideBrokenDesc": "????????????"
+        "hideBrokenDesc": "????????????",
+        "selectSubtitle": "发现并观看数百个直播频道",
+        "zapChannel": "电击频道"
     },
     "settings_livetv": {
         "title": "电视直播配置",
@@ -366,31 +379,31 @@
         "cancel": "取消"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
-        "signInTitle": "登录",
-        "registerTitle": "注册",
+        "title": "登录 IVIDS",
+        "signInTitle": "登入",
+        "registerTitle": "登记",
         "signInSubtitle": "登录您的帐户",
-        "registerSubtitle": "注册您的帐户"
+        "registerSubtitle": "注册您的帐户",
+        "signInTab": "登入",
+        "registerTab": "登记",
+        "emailLabel": "电子邮件",
+        "emailPlaceholder": "输入您的电子邮件",
+        "usernameLabel": "用户名",
+        "usernamePlaceholder": "输入您的用户名",
+        "pinLabel": "密码",
+        "pinHint": "4 至 8 位数字",
+        "signInBtn": "登入",
+        "registerBtn": "创建账户",
+        "guestBtn": "继续以访客身份",
+        "errorInvalidEmail": "请输入有效的电子邮件",
+        "errorEmptyUsername": "用户名是必需的",
+        "errorPinLength": "PIN 码必须为 4 至 8 位数字",
+        "errorLoginFailed": "凭证无效。请再试一次。",
+        "errorRateLimit": "尝试次数太多。 {seconds} 秒后重试。",
+        "errorNetwork": "无法到达服务器。检查您的连接。",
+        "errorAlreadyRegistered": "该帐户已存在。尝试登录。",
+        "successRegistered": "帐户已创建！",
+        "successLoggedIn": "欢迎回来，{name}！"
     },
     "collections": {
         "title": "Collections",

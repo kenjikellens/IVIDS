@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Servrar",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "Vad är nytt:",
+        "later": "Senare",
+        "changes": "Ändringar"
     },
     "common": {
         "close": "Stäng",
         "apply": "Använda",
-        "cancel": "Avbryt"
+        "cancel": "Avbryt",
+        "create": "Skapa",
+        "save": "Spara"
     },
     "home": {
         "welcome": "Välkommen till IVIDS",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "Tillämpas"
     },
     "player": {
         "play": "Spela",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Din personliga samling av favoritfilmer och -program.",
+        "create_new": "Skapa ny spellista",
+        "moveUp": "Flytta objekt upp",
+        "moveDown": "Flytta objekt nedåt",
+        "removeFromPlaylist": "Ta bort från spellistan"
     },
     "row": {
         "trending": "Trendar just nu",
@@ -324,7 +335,9 @@
         "noEpgInfo": "Ingen programinformation tillg?nglig",
         "settings": "Settings",
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
-        "hideBrokenDesc": "Automatically hide channels after playback fails."
+        "hideBrokenDesc": "Automatically hide channels after playback fails.",
+        "selectSubtitle": "Upptäck och titta på hundratals livekanaler",
+        "zapChannel": "Zap kanal"
     },
     "settings_livetv": {
         "title": "Konfiguration av Live TV",
@@ -366,31 +379,31 @@
         "cancel": "Avbryt"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "Logga in på IVIDS",
         "signInTitle": "Logga in",
-        "registerTitle": "Registrera",
+        "registerTitle": "Register",
         "signInSubtitle": "Logga in på ditt konto",
-        "registerSubtitle": "Registrera ditt konto"
+        "registerSubtitle": "Registrera ditt konto",
+        "signInTab": "Logga in",
+        "registerTab": "Register",
+        "emailLabel": "E-post",
+        "emailPlaceholder": "Ange din e-postadress",
+        "usernameLabel": "Användarnamn",
+        "usernamePlaceholder": "Ange ditt användarnamn",
+        "pinLabel": "PIN-kod",
+        "pinHint": "4 till 8 siffror",
+        "signInBtn": "Logga in",
+        "registerBtn": "Skapa konto",
+        "guestBtn": "Fortsätt som gäst",
+        "errorInvalidEmail": "Vänligen ange en giltig e-postadress",
+        "errorEmptyUsername": "Användarnamn krävs",
+        "errorPinLength": "PIN-koden måste vara 4 till 8 siffror",
+        "errorLoginFailed": "Ogiltiga användaruppgifter. Försök igen.",
+        "errorRateLimit": "För många försök. Försök igen om {seconds}s.",
+        "errorNetwork": "Kunde inte nå servern. Kontrollera din anslutning.",
+        "errorAlreadyRegistered": "Det här kontot finns redan. Testa att logga in.",
+        "successRegistered": "Konto skapat!",
+        "successLoggedIn": "Välkommen tillbaka, {name}!"
     },
     "collections": {
         "title": "Collections",

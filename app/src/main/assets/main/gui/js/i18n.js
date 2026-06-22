@@ -8,32 +8,42 @@ class I18n {
             'ar', 'cs', 'da', 'de', 'en', 'es', 'fr', 'hi', 'id', 'it', 'ja',
             'ko', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'vi', 'zh'
         ];
+        this.initialized = false;
+        this.initializedPromise = null;
     }
 
     /**
      * Initializes the internationalization service.
      * Loads the saved language from local storage, falling back to document cookies and then English.
+     * Uses caching to prevent parallel initialization fetches.
      */
     async init() {
-        let language = 'en';
-        try {
-            const savedSettings = localStorage.getItem('ivids-settings');
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                language = settings.language;
-            }
-            if (!language) {
-                const match = document.cookie.match(/(?:^|; )language=([^;]*)/);
-                if (match) {
-                    language = decodeURIComponent(match[1]);
-                }
-            }
-        } catch (e) {
-            console.error('Error loading language settings:', e);
+        if (this.initialized) {
+            return this.initializedPromise;
         }
+        this.initialized = true;
+        this.initializedPromise = (async () => {
+            let language = 'en';
+            try {
+                const savedSettings = localStorage.getItem('ivids-settings');
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    language = settings.language;
+                }
+                if (!language) {
+                    const match = document.cookie.match(/(?:^|; )language=([^;]*)/);
+                    if (match) {
+                        language = decodeURIComponent(match[1]);
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading language settings:', e);
+            }
 
-        this.currentLanguage = language || 'en';
-        await this.loadLanguage(this.currentLanguage);
+            this.currentLanguage = language || 'en';
+            await this.loadLanguage(this.currentLanguage);
+        })();
+        return this.initializedPromise;
     }
 
     /**

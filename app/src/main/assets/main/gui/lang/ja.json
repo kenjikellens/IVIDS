@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} サーバー",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "新着情報：",
+        "later": "後で",
+        "changes": "変更点"
     },
     "common": {
         "close": "閉じる",
         "apply": "適用",
-        "cancel": "キャンセル"
+        "cancel": "キャンセル",
+        "create": "作成する",
+        "save": "保存"
     },
     "home": {
         "welcome": "IVIDSへようこそ",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "適用する"
     },
     "player": {
         "play": "再生",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "お気に入りの映画や番組の個人的なコレクション。",
+        "create_new": "新しいプレイリストを作成する",
+        "moveUp": "項目を上に移動",
+        "moveDown": "項目を下に移動",
+        "removeFromPlaylist": "プレイリストから削除"
     },
     "row": {
         "trending": "今注目の作品",
@@ -324,7 +335,9 @@
         "noEpgInfo": "??????????",
         "settings": "??",
         "settingsSubtitle": "??????????????????????",
-        "hideBrokenDesc": "?????????????????????????"
+        "hideBrokenDesc": "?????????????????????????",
+        "selectSubtitle": "何百ものライブチャンネルを見つけて視聴する",
+        "zapChannel": "ザップチャンネル"
     },
     "settings_livetv": {
         "title": "ライブTV設定",
@@ -366,31 +379,31 @@
         "cancel": "キャンセル"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "IVIDS にサインインする",
         "signInTitle": "サインイン",
-        "registerTitle": "新規登録",
-        "signInSubtitle": "アカウントにログイン",
-        "registerSubtitle": "アカウントを登録"
+        "registerTitle": "登録する",
+        "signInSubtitle": "アカウントにログインします",
+        "registerSubtitle": "アカウントを登録してください",
+        "signInTab": "サインイン",
+        "registerTab": "登録する",
+        "emailLabel": "電子メール",
+        "emailPlaceholder": "メールアドレスを入力してください",
+        "usernameLabel": "ユーザー名",
+        "usernamePlaceholder": "ユーザー名を入力してください",
+        "pinLabel": "PINコード",
+        "pinHint": "4～8桁",
+        "signInBtn": "サインイン",
+        "registerBtn": "アカウントを作成する",
+        "guestBtn": "ゲストとして続行",
+        "errorInvalidEmail": "有効なメールアドレスを入力してください",
+        "errorEmptyUsername": "ユーザー名は必須です",
+        "errorPinLength": "PIN は 4 ～ 8 桁である必要があります",
+        "errorLoginFailed": "無効な資格情報です。もう一度試してください。",
+        "errorRateLimit": "試行回数が多すぎます。 {seconds}秒後に再試行してください。",
+        "errorNetwork": "サーバーに到達できませんでした。接続を確認してください。",
+        "errorAlreadyRegistered": "このアカウントはすでに存在します。サインインしてみてください。",
+        "successRegistered": "アカウントが作成されました！",
+        "successLoggedIn": "おかえりなさい、{name}!"
     },
     "collections": {
         "title": "Collections",

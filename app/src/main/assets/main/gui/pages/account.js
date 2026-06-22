@@ -1,6 +1,6 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
-import { getActiveAccount } from '../../logic/account-helper.js';
+import { getActiveAccount, clearActiveAccountCache } from '../../logic/account-helper.js';
 // Import session clearing logic to reset cloud credentials on logout
 import { clearSession } from '../../logic/crypto.js';
 
@@ -67,6 +67,7 @@ export async function init() {
             // Remove user profiles and session data from local storage
             localStorage.removeItem('ivids-current-profile');
             localStorage.removeItem('ivids-cloud-session');
+            clearActiveAccountCache();
             
             // Clear in-memory crypto credentials
             clearSession();

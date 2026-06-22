@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Servere",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "Hvad er nyt:",
+        "later": "Senere",
+        "changes": "Ændringer"
     },
     "common": {
         "close": "Luk",
         "apply": "Anvend",
-        "cancel": "Annuller"
+        "cancel": "Annuller",
+        "create": "Skabe",
+        "save": "Spare"
     },
     "home": {
         "welcome": "Velkommen til IVIDS",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "Anvende"
     },
     "player": {
         "play": "Afspil",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Din personlige samling af yndlingsfilm og -serier.",
+        "create_new": "Opret ny afspilningsliste",
+        "moveUp": "Flyt element op",
+        "moveDown": "Flyt element ned",
+        "removeFromPlaylist": "Fjern fra afspilningsliste"
     },
     "row": {
         "trending": "Trending nu",
@@ -324,7 +335,9 @@
         "noEpgInfo": "Ingen programinformation tilg?ngelig",
         "settings": "Settings",
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
-        "hideBrokenDesc": "Automatically hide channels after playback fails."
+        "hideBrokenDesc": "Automatically hide channels after playback fails.",
+        "selectSubtitle": "Oplev og se hundredvis af live-kanaler",
+        "zapChannel": "Zap kanal"
     },
     "settings_livetv": {
         "title": "Konfiguration af Live TV",
@@ -366,31 +379,31 @@
         "cancel": "Annuller"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "Log ind på IVIDS",
         "signInTitle": "Log ind",
-        "registerTitle": "Registrer",
+        "registerTitle": "Register",
         "signInSubtitle": "Log ind på din konto",
-        "registerSubtitle": "Registrer din konto"
+        "registerSubtitle": "Registrer din konto",
+        "signInTab": "Log ind",
+        "registerTab": "Register",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Indtast din e-mail",
+        "usernameLabel": "Brugernavn",
+        "usernamePlaceholder": "Indtast dit brugernavn",
+        "pinLabel": "PIN-kode",
+        "pinHint": "4 til 8 cifre",
+        "signInBtn": "Log ind",
+        "registerBtn": "Opret konto",
+        "guestBtn": "Fortsæt som gæst",
+        "errorInvalidEmail": "Indtast venligst en gyldig e-mail",
+        "errorEmptyUsername": "Brugernavn er påkrævet",
+        "errorPinLength": "PIN-koden skal være på 4 til 8 cifre",
+        "errorLoginFailed": "Ugyldige legitimationsoplysninger. Prøv venligst igen.",
+        "errorRateLimit": "For mange forsøg. Prøv igen om {seconds}s.",
+        "errorNetwork": "Kunne ikke nå serveren. Tjek din forbindelse.",
+        "errorAlreadyRegistered": "Denne konto eksisterer allerede. Prøv at logge ind.",
+        "successRegistered": "Konto oprettet!",
+        "successLoggedIn": "Velkommen tilbage, {name}!"
     },
     "collections": {
         "title": "Collections",

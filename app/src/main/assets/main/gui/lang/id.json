@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Server",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "Apa yang Baru:",
+        "later": "Nanti",
+        "changes": "Perubahan"
     },
     "common": {
         "close": "Tutup",
         "apply": "Terapkan",
-        "cancel": "Batal"
+        "cancel": "Batal",
+        "create": "Membuat",
+        "save": "Menyimpan"
     },
     "home": {
         "welcome": "Selamat Datang di IVIDS",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "Menerapkan"
     },
     "player": {
         "play": "Putar",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "Koleksi pribadi film dan acara favorit Anda.",
+        "create_new": "Buat Daftar Putar Baru",
+        "moveUp": "Pindahkan Barang ke Atas",
+        "moveDown": "Pindahkan Barang ke Bawah",
+        "removeFromPlaylist": "Hapus dari Daftar Putar"
     },
     "row": {
         "trending": "Sedang Tren",
@@ -324,7 +335,9 @@
         "noEpgInfo": "Info program tidak tersedia",
         "settings": "Settings",
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
-        "hideBrokenDesc": "Automatically hide channels after playback fails."
+        "hideBrokenDesc": "Automatically hide channels after playback fails.",
+        "selectSubtitle": "Temukan dan tonton ratusan saluran langsung",
+        "zapChannel": "Saluran Zap"
     },
     "settings_livetv": {
         "title": "Konfigurasi TV Langsung",
@@ -366,31 +379,31 @@
         "cancel": "Batal"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
+        "title": "Masuk ke IVIDS",
         "signInTitle": "Masuk",
         "registerTitle": "Daftar",
         "signInSubtitle": "Masuk ke akun Anda",
-        "registerSubtitle": "Daftarkan akun Anda"
+        "registerSubtitle": "Daftarkan akun Anda",
+        "signInTab": "Masuk",
+        "registerTab": "Daftar",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "Masukkan email Anda",
+        "usernameLabel": "Nama belakang",
+        "usernamePlaceholder": "Masukkan nama pengguna Anda",
+        "pinLabel": "Kode PIN",
+        "pinHint": "4 hingga 8 digit",
+        "signInBtn": "Masuk",
+        "registerBtn": "Buat Akun",
+        "guestBtn": "Lanjutkan sebagai Tamu",
+        "errorInvalidEmail": "Silakan masukkan email yang valid",
+        "errorEmptyUsername": "Nama pengguna diperlukan",
+        "errorPinLength": "PIN harus terdiri dari 4 hingga 8 digit",
+        "errorLoginFailed": "Kredensial tidak valid. Silakan coba lagi.",
+        "errorRateLimit": "Terlalu banyak upaya. Coba lagi di tahun {seconds}an.",
+        "errorNetwork": "Tidak dapat menjangkau server. Periksa koneksi Anda.",
+        "errorAlreadyRegistered": "Akun ini sudah ada. Coba masuk.",
+        "successRegistered": "Akun dibuat!",
+        "successLoggedIn": "Selamat datang kembali, {name}!"
     },
     "collections": {
         "title": "Collections",

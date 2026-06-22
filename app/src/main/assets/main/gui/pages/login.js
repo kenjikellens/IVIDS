@@ -1,6 +1,7 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { login, register } from '../../logic/crypto.js';
+import { clearActiveAccountCache } from '../../logic/account-helper.js';
 
 const RATE_LIMIT_KEY = 'ivids-login-rate-limit';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -236,6 +237,7 @@ function hydrateSession({ pushId, username, email, info }) {
         name: profile.name || username,
         color: profile.color || '#E50914'
     }));
+    clearActiveAccountCache();
     localStorage.setItem(`${ns}-user_playlists`, JSON.stringify(info.playlists || []));
     localStorage.setItem(`${ns}-recently-watched`, JSON.stringify(info.recentlyWatched || []));
     localStorage.setItem(`${ns}-settings`, JSON.stringify(info.settings || {}));

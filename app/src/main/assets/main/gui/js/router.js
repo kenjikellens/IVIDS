@@ -144,6 +144,15 @@ export const Router = {
             mainView.innerHTML = html;
             mainView.scrollTop = 0;
 
+            // Apply translations immediately and synchronously to prevent visual glitching of default English texts
+            try {
+                if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
+                    window.i18n.applyTranslations(mainView);
+                }
+            } catch (i18nError) {
+                console.error('Error applying translations immediately:', i18nError);
+            }
+
             // 2. Load JS Module
             try {
                 const isBrowsePage = ['home', 'movies', 'series'].includes(pageName);

@@ -1,3 +1,5 @@
+import { clearActiveAccountCache } from './account-helper.js';
+
 /**
  * Data Migration Utility for IVIDS.
  * Converted legacy profile layouts and plaintext storage keys into secure,
@@ -95,6 +97,7 @@ export async function runMigration() {
         
         // Mark migration as complete
         localStorage.setItem('ivids-migrated-v0.5.0', 'true');
+        clearActiveAccountCache();
         console.log('Migration: Migration completed successfully.');
     } catch (error) {
         console.error('Migration: Critical migration error:', error);

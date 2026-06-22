@@ -98,12 +98,17 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} सर्वर",
-        "accentColorSelect": "Select Color"
+        "accentColorSelect": "Select Color",
+        "whatsNew": "नया क्या है:",
+        "later": "बाद में",
+        "changes": "परिवर्तन"
     },
     "common": {
         "close": "बंद करें",
         "apply": "लागू करें",
-        "cancel": "रद्द करें"
+        "cancel": "रद्द करें",
+        "create": "बनाएं",
+        "save": "बचाना"
     },
     "home": {
         "welcome": "IVIDS में आपका स्वागत है",
@@ -183,7 +188,8 @@
         "decade2000": "2000s",
         "decade1990": "1990s",
         "decade1980": "1980s",
-        "decade1970": "1970s & older"
+        "decade1970": "1970s & older",
+        "apply": "आवेदन करना"
     },
     "player": {
         "play": "चलाएं",
@@ -218,7 +224,12 @@
         "removeItemTitle": "Remove Item",
         "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
         "moveItem": "Move Item",
-        "deleteItem": "Remove Item"
+        "deleteItem": "Remove Item",
+        "description_default": "पसंदीदा फिल्मों और शो का आपका निजी संग्रह।",
+        "create_new": "नई प्लेलिस्ट बनाएं",
+        "moveUp": "आइटम को ऊपर ले जाएं",
+        "moveDown": "आइटम को नीचे ले जाएँ",
+        "removeFromPlaylist": "प्लेलिस्ट से हटाएँ"
     },
     "row": {
         "trending": "ट्रेंडिंग",
@@ -324,7 +335,9 @@
         "noEpgInfo": "????????? ?? ??????? ?????? ???? ??",
         "settings": "Settings",
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
-        "hideBrokenDesc": "Automatically hide channels after playback fails."
+        "hideBrokenDesc": "Automatically hide channels after playback fails.",
+        "selectSubtitle": "सैकड़ों लाइव चैनल खोजें और देखें",
+        "zapChannel": "जैप चैनल"
     },
     "settings_livetv": {
         "title": "लाइव टीवी कॉन्फ़िगरेशन",
@@ -366,31 +379,31 @@
         "cancel": "रद्द करें"
     },
     "login": {
-        "title": "Sign In to IVIDS",
-        "signInTab": "Sign In",
-        "registerTab": "Register",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter your email",
-        "usernameLabel": "Username",
-        "usernamePlaceholder": "Enter your username",
-        "pinLabel": "PIN Code",
-        "pinHint": "4 to 8 digits",
-        "signInBtn": "Sign In",
-        "registerBtn": "Create Account",
-        "guestBtn": "Continue as Guest",
-        "errorInvalidEmail": "Please enter a valid email",
-        "errorEmptyUsername": "Username is required",
-        "errorPinLength": "PIN must be 4 to 8 digits",
-        "errorLoginFailed": "Invalid credentials. Please try again.",
-        "errorRateLimit": "Too many attempts. Try again in {seconds}s.",
-        "errorNetwork": "Could not reach the server. Check your connection.",
-        "errorAlreadyRegistered": "This account already exists. Try signing in.",
-        "successRegistered": "Account created!",
-        "successLoggedIn": "Welcome back, {name}!",
-        "signInTitle": "साइन इन करें",
-        "registerTitle": "रजिस्टर करें",
-        "signInSubtitle": "अपने खाते में लॉग इन करें",
-        "registerSubtitle": "अपना खाता पंजीकृत करें"
+        "title": "आईवीआईडीएस में साइन इन करें",
+        "signInTitle": "दाखिल करना",
+        "registerTitle": "पंजीकरण करवाना",
+        "signInSubtitle": "अपने अकाउंट में लॉग इन करें",
+        "registerSubtitle": "अपना खाता पंजीकृत करें",
+        "signInTab": "दाखिल करना",
+        "registerTab": "पंजीकरण करवाना",
+        "emailLabel": "ईमेल",
+        "emailPlaceholder": "अपना ईमेल दर्ज करें",
+        "usernameLabel": "उपयोगकर्ता नाम",
+        "usernamePlaceholder": "अपना उपयोगकर्ता नाम दर्ज करें",
+        "pinLabel": "पिन कोड",
+        "pinHint": "4 से 8 अंक",
+        "signInBtn": "दाखिल करना",
+        "registerBtn": "खाता बनाएं",
+        "guestBtn": "अतिथि के रूप में जारी रखें",
+        "errorInvalidEmail": "कृपया एक मान्य ईमेल दर्ज करें",
+        "errorEmptyUsername": "उपयोगकर्ता नाम आवश्यक है",
+        "errorPinLength": "पिन 4 से 8 अंकों का होना चाहिए",
+        "errorLoginFailed": "अवैध प्रत्यय पत्र। कृपया पुन: प्रयास करें।",
+        "errorRateLimit": "बहुत अधिक प्रयास. {seconds}s में पुनः प्रयास करें।",
+        "errorNetwork": "सर्वर तक नहीं पहुंच सका. अपना कनेक्शन जांचें.",
+        "errorAlreadyRegistered": "यह खाता पहले से ही मोजूद है। साइन इन करने का प्रयास करें.",
+        "successRegistered": "खाता बनाया गया!",
+        "successLoggedIn": "पुनः स्वागत है, {name}!"
     },
     "collections": {
         "title": "Collections",
