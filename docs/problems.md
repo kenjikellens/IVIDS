@@ -6,4 +6,4 @@ This document tracks known issues, architectural discrepancies, and performance 
 
 ### 1. SIDEBAR ISSUES
 
-the sidebar icon arent square and now move when the sidebar is opened, as if the collapsed sidebar and the opened sidebar arent the same.
+the sidebar icon arent square and now move when the sidebar is opened, as if the collapsed sidebar and the opened sidebar arent the same (They should be).
