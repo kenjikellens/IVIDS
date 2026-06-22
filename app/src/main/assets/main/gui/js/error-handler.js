@@ -46,6 +46,13 @@ export class ErrorHandler {
         }
     }
 
+    /**
+     * Displays the system error modal with a custom message, optional title, and optional retry action.
+     * Modifies the DOM content of the modal elements and redirects spatial focus to the active modal buttons.
+     * @param {string} message - The description of the error to show.
+     * @param {function} [retryCallback] - Callback executed when the retry button is activated.
+     * @param {string} [title] - Custom title text for the error header.
+     */
     static show(message, retryCallback = null, title = null) {
         try {
             const modal = document.getElementById('error-modal');
@@ -86,11 +93,9 @@ export class ErrorHandler {
             if (retryCallback) {
                 if (retryBtn) {
                     retryBtn.style.display = 'inline-block';
-                    // Remove old listeners to avoid stacking
-                    const newRetryBtn = retryBtn.cloneNode(true);
-                    retryBtn.parentNode.replaceChild(newRetryBtn, retryBtn);
-
-                    newRetryBtn.onclick = () => {
+                    
+                    // Directly assign the onclick listener to prevent event stacking without DOM cloning overhead
+                    retryBtn.onclick = () => {
                         ErrorHandler.hide();
                         try {
                             retryCallback();
@@ -102,9 +107,9 @@ export class ErrorHandler {
                     // Handle focus based on device/available tools
                     setTimeout(() => {
                         if (SpatialNav && typeof SpatialNav.setFocus === 'function') {
-                            SpatialNav.setFocus(newRetryBtn);
+                            SpatialNav.setFocus(retryBtn);
                         } else {
-                            newRetryBtn.focus();
+                            retryBtn.focus();
                         }
                     }, 100);
                 }

@@ -44,13 +44,17 @@ export function renderSkeletonRow(elementId, count = 20, cardType = 'poster') {
 
 /**
  * Puts the skeleton elements of a row into an error state when API load fails.
- * It replaces the loaders with an error icon, retains D-pad focus, and sets up a click toast handler.
+ * It replaces the loaders with error icons and establishes a delegated click listener on the parent container
+ * to display detailed error toast alerts without attaching individual event listeners to each card.
  * @param {string} elementId - The ID of the row container element.
  * @param {Error|any} error - The error object that caused the fetch failure.
  */
 export function renderSkeletonErrorRow(elementId, error) {
     const rowPosters = document.getElementById(elementId);
     if (!rowPosters) return;
+
+    // Cache the error context on the row element for delegated retrieval
+    rowPosters._errorContext = error;
 
     const skeletons = rowPosters.querySelectorAll('.is-skeleton');
     skeletons.forEach(skeleton => {
@@ -64,16 +68,22 @@ export function renderSkeletonErrorRow(elementId, error) {
                 <img src="svg/error.svg" class="skeleton-error-icon" alt="${window.i18n.t('error.title')}" />
             </div>
         `;
+    });
 
-        // Handle click event to show Toast with dynamic error context
-        skeleton.onclick = async () => {
+    // Establish a single delegated listener on the parent container if not already present
+    if (!rowPosters._hasErrorDelegation) {
+        rowPosters.addEventListener('click', async (e) => {
+            const errorCard = e.target.closest('.has-error');
+            if (!errorCard || !rowPosters.contains(errorCard)) return;
+
             try {
                 // Dynamically import Toast to avoid circular dependency issues
                 const { Toast } = await import('./toast.js');
+                const rowErr = rowPosters._errorContext;
                 let message = window.i18n.t('error.contentLoadFailed');
 
                 const isOffline = !navigator.onLine;
-                const errMessage = error?.message || String(error || '');
+                const errMessage = rowErr?.message || String(rowErr || '');
 
                 if (isOffline || errMessage.includes('Failed to fetch') || errMessage.includes('NetworkError') || errMessage.includes('network')) {
                     message = window.i18n.t('error.networkError');
@@ -92,6 +102,7 @@ export function renderSkeletonErrorRow(elementId, error) {
             } catch (err) {
                 console.error('Failed to show error toast:', err);
             }
-        };
-    });
+        });
+        rowPosters._hasErrorDelegation = true;
+    }
 }

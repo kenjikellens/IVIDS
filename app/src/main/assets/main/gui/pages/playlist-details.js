@@ -310,7 +310,7 @@ function createItemElement(item, index, total) {
 
 /**
  * Handles opening the Edit Playlist name/title renaming modal.
- * 
+ * Updates the modal input with the current playlist name and configures confirm/cancel click actions.
  * @param {object} playlist - Target playlist object.
  */
 function openEditPlaylistModal(playlist) {
@@ -326,15 +326,9 @@ function openEditPlaylistModal(playlist) {
 
     inputEl.value = playlist.name;
 
-    const confirmClone = confirmBtn.cloneNode(true);
-    const cancelClone = cancelBtn.cloneNode(true);
-
-    confirmBtn.parentNode.replaceChild(confirmClone, confirmBtn);
-    cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
-
     const closeModal = manageModal(modal, inputEl);
 
-    confirmClone.onclick = () => {
+    confirmBtn.onclick = () => {
         const val = inputEl.value.trim();
         if (val) {
             Playlists.renamePlaylist(currentPlaylistId, val);
@@ -343,7 +337,7 @@ function openEditPlaylistModal(playlist) {
         }
     };
 
-    cancelClone.onclick = () => {
+    cancelBtn.onclick = () => {
         closeModal();
     };
 }
@@ -418,7 +412,7 @@ function attachListeners(playlist) {
 
 /**
  * Triggers a full modal overlay to confirm destructive items removal or deletion.
- * 
+ * Updates the confirmation dialog text and registers directly-assigned click actions for confirmation and cancellation.
  * @param {string} title - Heading title for the prompt.
  * @param {string} message - Explanatory prompt string.
  * @param {function} onConfirm - Success callback to invoke on proceed.
@@ -438,20 +432,14 @@ function showConfirmationModal(title, message, onConfirm) {
     titleEl.textContent = title;
     messageEl.textContent = message;
 
-    const confirmClone = confirmBtn.cloneNode(true);
-    const cancelClone = cancelBtn.cloneNode(true);
-
-    confirmBtn.parentNode.replaceChild(confirmClone, confirmBtn);
-    cancelBtn.parentNode.replaceChild(cancelClone, cancelBtn);
-
     const closeModal = manageModal(modal);
 
-    confirmClone.onclick = () => {
+    confirmBtn.onclick = () => {
         onConfirm();
         closeModal();
     };
 
-    cancelClone.onclick = () => {
+    cancelBtn.onclick = () => {
         closeModal();
     };
 }

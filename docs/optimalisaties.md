@@ -54,12 +54,10 @@ Dit document bevat de geïdentificeerde optimalisatiemogelijkheden in de codebas
   * *Optimalisatie*: Consolideer deze twee systemen tot één enkele vertaalmanager (bij voorkeur `i18n.js` vanwege de dynamische laadmogelijkheid om bundelgrootte te beperken) en verwijder de andere.
 
 ### [skeleton-renderer.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/skeleton-renderer.js)
-* **Event Delegation voor Error Cards (Performance/Geheugen)**: Voegt een `onclick` handler toe aan elke individuele skeleton card in een error-rij. Dit leidt tot $N$ listener-toewijzingen en eventuele memory leaks.
-  * *Optimalisatie*: Gebruik Event Delegation door één enkele click listener toe te voegen aan de parent container (`rowPosters`) en te controleren of het geklikte element een error card is.
+* Geen openstaande optimalisaties. Event delegation voor error cards is geïmplementeerd op de parent container (`rowPosters`) om listener-allocatie en memory leaks te voorkomen.
 
 ### [error-handler.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/error-handler.js)
-* **Redundante DOM Vervanging**: Gebruikt `replaceChild` met een kloon van de retry-knop om oude listeners te verwijderen.
-  * *Optimalisatie*: In plaats van een DOM-node te klonen en te vervangen, kan simpelweg `retryBtn.onclick = ...` worden overschreven. Dit voorkomt onnodige layout-invalidaties en repaint-overhead.
+* Geen openstaande optimalisaties. De redundante DOM-vervanging van de retry-knop via klonen is vervangen door een directe `.onclick` toewijzing om layout-invalidatie te voorkomen.
 
 ### [lazy-loader.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/lazy-loader.js)
 * **Browser-Native Image Lazy Loading**: Gebruikt een handmatige IntersectionObserver voor image lazy loading.
@@ -78,8 +76,7 @@ Dit document bevat de geïdentificeerde optimalisatiemogelijkheden in de codebas
   * *Optimalisatie*: Houd de cache in-memory (`statusCache` map) en schrijf deze debounced weg naar `localStorage` (bijv. 1-2 seconden na de laatste zapping-actie) in plaats van synchroon bij elke wijziging.
 
 ### [playlist-details.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/playlist-details.js)
-* **DOM-recreatie via Klonen (Performance)**: Gebruikt `cloneNode(true)` en `replaceChild` op `confirmBtn` en `cancelBtn` in `openEditPlaylistModal` en `showConfirmationModal` om oude event listeners te wissen.
-  * *Optimalisatie*: Overschrijf simpelweg de `.onclick` property (`btn.onclick = ...`). Dit voorkomt onnodige DOM-mutaties, style recalculations en reflows.
+* Geen openstaande optimalisaties. De confirm- en cancel-knoppen maken nu gebruik van directe `.onclick` toewijzingen in plaats van DOM-node klonen en replaceChild om reflows te voorkomen.
 
 ### Overige pagina's ([sidebar.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/components/sidebar/sidebar.js), [account.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/account.js), [browse.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/browse.js), [details.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/details.js), [login.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/login.js), [player.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/player.js), [playlists.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/playlists.js), [search.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/search.js), [settings.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/settings.js), [tv-player.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/tv-player.js))
 * Geen significante prestatie- of redundantieoptimalisaties gevonden. Bestanden zoals `search.js` maken al correct gebruik van query-caching (`cachedCountryItems`) en `settings.js`/`tv-player.js` ruimen event listeners netjes op.

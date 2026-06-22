@@ -73,45 +73,74 @@ echo [PRE] All prerequisites satisfied.
 echo.
 
 :: ===========================================================
-:: STEP 1 / 5 — Build Windows Portable Executable
+:: STEP 1 & 2 / 5 — Build Windows Portable Executable & Android APK (Concurrently)
 :: ===========================================================
 echo ---------------------------------------------------
-echo [1/5] Building Windows Portable Executable...
+echo [1-2/5] Building Windows Executable and Android APK Concurrently...
 echo ---------------------------------------------------
 
-call npm run dist
-if !errorlevel! neq 0 (
-    echo.
-    echo [ERROR] npm run dist failed with exit code !errorlevel!.
-    echo [ERROR] Step 1/5 FAILED — Windows executable was NOT built.
-    echo [ERROR] Build aborted at: %DATE% %TIME%
-    exit /b 1
-)
+set "WIN_STATUS=%TEMP%\win_build_%RANDOM%.status"
+set "APK_STATUS=%TEMP%\apk_build_%RANDOM%.status"
 
-echo [1/5] SUCCESS — Windows executable built.
-echo.
+if exist "%WIN_STATUS%" del "%WIN_STATUS%"
+if exist "%APK_STATUS%" del "%APK_STATUS%"
 
-:: ===========================================================
-:: STEP 2 / 5 — Build Android APK
-:: ===========================================================
-echo ---------------------------------------------------
-echo [2/5] Building Android APK (%BUILD_TYPE%)...
-echo ---------------------------------------------------
+:: Start Windows build in background
+echo [INFO] Starting Windows build in background...
+start "Build Windows" /b cmd /c "npm run dist & call echo %%errorlevel%% > "%WIN_STATUS%""
 
+:: Start Android build in background
+echo [INFO] Starting Android build (%BUILD_TYPE%) in background...
 if "%BUILD_TYPE%"=="release" (
-    call gradlew.bat assembleRelease
+    start "Build Android" /b cmd /c "gradlew.bat assembleRelease & call echo %%errorlevel%% > "%APK_STATUS%""
 ) else (
-    call gradlew.bat assembleDebug
+    start "Build Android" /b cmd /c "gradlew.bat assembleDebug & call echo %%errorlevel%% > "%APK_STATUS%""
 )
-if !errorlevel! neq 0 (
+
+echo [INFO] Waiting for parallel builds to complete...
+
+:wait_loop
+timeout /t 2 /nobreak >nul
+if not exist "%WIN_STATUS%" goto wait_loop
+if not exist "%APK_STATUS%" goto wait_loop
+
+:: Read exit codes
+set /p WIN_ERR=<"%WIN_STATUS%"
+set /p APK_ERR=<"%APK_STATUS%"
+
+:: Clean up status files
+del "%WIN_STATUS%" >nul 2>&1
+del "%APK_STATUS%" >nul 2>&1
+
+:: Check results
+set BUILD_FAILED=0
+
+:: Trim whitespace from read values
+set "WIN_ERR=%WIN_ERR: =%"
+set "APK_ERR=%APK_ERR: =%"
+
+if "%WIN_ERR%" neq "0" (
     echo.
-    echo [ERROR] Gradle build failed with exit code !errorlevel!.
-    echo [ERROR] Step 2/5 FAILED — Android APK was NOT built.
+    echo [ERROR] Windows build failed with exit code %WIN_ERR%.
+    set BUILD_FAILED=1
+) else (
+    echo [1/5] SUCCESS — Windows executable built.
+)
+
+if "%APK_ERR%" neq "0" (
+    echo.
+    echo [ERROR] Android APK build failed with exit code %APK_ERR%.
+    set BUILD_FAILED=1
+) else (
+    echo [2/5] SUCCESS — Android APK built (%BUILD_TYPE%).
+)
+
+if "%BUILD_FAILED%"=="1" (
+    echo.
+    echo [ERROR] Parallel build failed.
     echo [ERROR] Build aborted at: %DATE% %TIME%
     exit /b 1
 )
-
-echo [2/5] SUCCESS — Android APK built (%BUILD_TYPE%).
 echo.
 
 :: ===========================================================
