@@ -125,7 +125,7 @@ input, textarea, select { font: inherit; }
 .btn:disabled { opacity: 0.6; pointer-events: none; }
 
 /* CSS Class: Scale transformation override on hover/focus/focused for all button instances. */
-.btn:hover, .btn:focus, .btn.focused { transform: scale(1.03); }
+.btn:hover, .btn:focus, .btn.focused { transform: scale(1.04); }
 
 /* Styles the primary action buttons like Play using a semi-transparent green accent background. */
 .btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid rgba(var(--primary-rgb), 0.4); color: #ffffff; font-weight: 800; }
@@ -229,7 +229,7 @@ input, textarea, select { font: inherit; }
     background: var(--surface-soft);
     border: 2px solid transparent;
     border-radius: var(--radius-sm);
-    contain: content;
+    contain: layout;
     cursor: pointer;
     flex: 0 0 var(--poster-width);
     height: var(--poster-height);
@@ -246,7 +246,7 @@ input, textarea, select { font: inherit; }
     background: var(--surface-soft);
     border: 2px solid transparent;
     border-radius: var(--radius-sm);
-    contain: content;
+    contain: layout;
     cursor: pointer;
     flex: 0 0 auto;
     height: auto;
@@ -258,11 +258,13 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-.poster, .poster-img { display: block; height: 100%; object-fit: cover; transition: opacity 0.25s ease; width: 100%; }
+/* CSS Class: Styles the individual poster image, applying a default 20% dimming filter. */
+.poster, .poster-img { display: block; height: 100%; object-fit: cover; transition: opacity 0.25s ease, filter 0.16s ease; width: 100%; filter: brightness(0.8); }
 
-/* Sets higher stacking index, scales, and adds an accent-color shadow to focusable card elements when hovered/focused. */
-/* Styles the hover and focused outline and zoom states for focusable card components. */
-.focusable-card:hover, .focusable-card:focus, .focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.5); outline: 2px solid #ffffff; outline-offset: 0px; transform: scale(1.03); z-index: 100; }
+/* CSS Class: Restores full brightness to poster images when their wrapper is hovered, focused, or has focused state. */
+.poster-wrapper:hover .poster, .poster-wrapper:focus .poster, .poster-wrapper.focused .poster, .poster-wrapper:hover .poster-img, .poster-wrapper:focus .poster-img, .poster-wrapper.focused .poster-img { filter: brightness(1); }
+
+
 
 
 /* Tab visual header selection state indicator in settings view. */
@@ -2617,6 +2619,9 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* 1. Mega Focus/Hover Outline for standard focusable elements */
 /* Applies a high-visibility focus outline to any focused or hovered interactive element, including custom wrapper containers. */
 .focusable:hover, .focusable:focus, .focusable.focused, .focusable:focus-within, .focusable-container:hover, .focusable-container:focus-within, .focusable-container.focused { border-color: #ffffff; box-shadow: none; outline: 2px solid #ffffff; outline-offset: 0px; }
+
+/* CSS Class: Hover, focus, and focused state styles for focusable cards, applying scale, 3px white outline, and soft accent glow. */
+.focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.7); outline: 3px solid #ffffff; outline-offset: 0px; transform: scale(1.04); z-index: 100; }
 
 /* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable { border: none; box-shadow: none; outline: none; }
