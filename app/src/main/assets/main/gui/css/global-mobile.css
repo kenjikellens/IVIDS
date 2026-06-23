@@ -324,16 +324,30 @@
     width: 100%;
 }
 
-/* Vertical stacking for seasons list and episode list sidebar. */
+/* CSS Class: Vertical stacking layout override for seasons list and episode list on mobile viewports. */
 #app .details-bottom {
     flex-direction: column;
     gap: 20px;
 }
 
-/* Width and max-height constraints for seasons select container. */
+/* CSS Class: Mobile layout override for seasons container to remove borders, padding, and backdrop for dropdown display. */
 #app .details-seasons {
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    padding: 0;
     width: 100%;
-    max-height: 250px;
+    max-height: none;
+}
+
+/* CSS Class: Hide the desktop seasons button list on mobile viewports. */
+#app .seasons-list-content {
+    display: none;
+}
+
+/* CSS Class: Display the seasons select dropdown wrapper on mobile viewports. */
+#app .seasons-dropdown-wrapper {
+    display: flex;
 }
 
 /* Stacked column flow layout for episode description items. */
@@ -444,6 +458,17 @@
 #app .setting-control {
     width: 100%;
     justify-content: flex-start;
+}
+
+/* CSS Class: Centered layout override for update check row container on mobile viewports. */
+#app #manual-check-container {
+    align-items: center;
+    text-align: center;
+}
+
+/* CSS Class: Center-aligned update control buttons and status labels on mobile viewports. */
+#app #manual-check-container .setting-control {
+    justify-content: center;
 }
 
 /* Width fitment for settings current value boxes. */

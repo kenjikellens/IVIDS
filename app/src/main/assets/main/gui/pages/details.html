@@ -26,7 +26,7 @@
         </div>
         <!-- Tabs header bar -->
         <div class="disney-tabs" id="details-tabs">
-            <button class="btn btn-secondary disney-tab-btn focusable active" id="tab-seasons" data-i18n="details.seasons">Seasons</button>
+            <button class="btn btn-primary disney-tab-btn focusable" id="tab-seasons" data-i18n="details.seasons">Seasons</button>
             <button class="btn btn-secondary disney-tab-btn focusable" id="tab-extra" data-i18n="details.extra">Extra</button>
             <button class="btn btn-secondary disney-tab-btn focusable" id="tab-about" data-i18n="details.about">About</button>
         </div>
@@ -34,6 +34,9 @@
         <!-- Tab Panel: Seasons (TV Show only) -->
         <div class="disney-tab-panel details-bottom" id="panel-seasons">
             <div class="details-seasons" id="seasons-container">
+                <div class="seasons-dropdown-wrapper filter-select-wrapper">
+                    <select id="seasons-dropdown" class="filter-select focusable"></select>
+                </div>
                 <div id="seasons-list" class="seasons-list-content">
                     <!-- Filled by JS with IVIDS .season-btn -->
                 </div>

@@ -376,8 +376,8 @@ function openPlaylistModal(item, type) {
 }
 
 /**
- * Renders the seasons button list for D-pad navigation.
- * Updates the horizontal scroll list of seasons.
+ * Renders the seasons button list and dropdown select element for layout modes.
+ * Populates desktop buttons and mobile select tags with seasonal episode lists.
  * @param {Array} seasons - List of season metadata objects.
  * @param {number|string} seriesId - TMDB Series ID.
  */
@@ -390,6 +390,11 @@ function renderSeasons(seasons, seriesId) {
         }
 
         container.innerHTML = '';
+
+        const dropdown = document.getElementById('seasons-dropdown');
+        if (dropdown) {
+            dropdown.innerHTML = '';
+        }
 
         if (!seasons || seasons.length === 0) {
             container.innerHTML = `<p style="color: #aaa;">${I18n.t('details.noSeasons')}</p>`;
@@ -412,8 +417,16 @@ function renderSeasons(seasons, seriesId) {
 
                 btn.onclick = () => {
                     try {
-                        container.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
+                        container.querySelectorAll('.season-btn').forEach(b => {
+                            b.classList.remove('btn-primary');
+                            b.classList.add('btn-secondary');
+                        });
+                        btn.classList.remove('btn-secondary');
+                        btn.classList.add('btn-primary');
+
+                        if (dropdown) {
+                            dropdown.value = season.season_number || 0;
+                        }
 
                         loadSeasonEpisodes(seriesId, season.season_number);
                     } catch (clickError) {
@@ -422,17 +435,46 @@ function renderSeasons(seasons, seriesId) {
                 };
 
                 container.appendChild(btn);
+
+                if (dropdown) {
+                    const opt = document.createElement('option');
+                    opt.value = season.season_number || 0;
+                    opt.textContent = season.name || `${I18n.t('details.season')} ${season.season_number || '?'}`;
+                    dropdown.appendChild(opt);
+                }
             } catch (btnError) {
                 console.error('Error creating season button:', btnError);
             }
         });
 
+        if (dropdown) {
+            dropdown.onchange = (e) => {
+                const selectedVal = parseInt(e.target.value);
+                container.querySelectorAll('.season-btn').forEach(b => {
+                    if (parseInt(b.dataset.seasonNumber) === selectedVal) {
+                        b.classList.remove('btn-secondary');
+                        b.classList.add('btn-primary');
+                    } else {
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-secondary');
+                    }
+                });
+                loadSeasonEpisodes(seriesId, selectedVal);
+            };
+        }
+
         // Set first one active initially if it exists and load its episodes
         try {
             const firstBtn = container.querySelector('.season-btn[data-season-number="1"]') || container.querySelector('.season-btn');
             if (firstBtn) {
-                firstBtn.classList.add('active');
-                loadSeasonEpisodes(seriesId, firstBtn.dataset.seasonNumber);
+                firstBtn.classList.remove('btn-secondary');
+                firstBtn.classList.add('btn-primary');
+
+                const selectedVal = parseInt(firstBtn.dataset.seasonNumber);
+                if (dropdown) {
+                    dropdown.value = selectedVal;
+                }
+                loadSeasonEpisodes(seriesId, selectedVal);
             }
         } catch (activateError) {
             console.error('Error activating first season:', activateError);
@@ -569,21 +611,23 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
 function switchTab(tabName) {
     try {
         document.querySelectorAll('.disney-tab-panel').forEach(panel => {
-            panel.style.display = 'none';
+            panel.classList.add('hidden');
         });
         
         document.querySelectorAll('.disney-tab-btn').forEach(btn => {
-            btn.classList.remove('active');
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-secondary');
         });
         
         const activePanel = document.getElementById(`panel-${tabName}`);
         if (activePanel) {
-            activePanel.style.display = 'block';
+            activePanel.classList.remove('hidden');
         }
         
         const activeBtn = document.getElementById(`tab-${tabName}`);
         if (activeBtn) {
-            activeBtn.classList.add('active');
+            activeBtn.classList.remove('btn-secondary');
+            activeBtn.classList.add('btn-primary');
         }
     } catch (e) {
         console.error('Error switching tabs:', e);

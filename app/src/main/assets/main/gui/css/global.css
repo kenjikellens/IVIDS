@@ -118,13 +118,14 @@ input, textarea, select { font: inherit; }
     justify-content: center;
     min-height: 48px;
     padding: 9px 23px;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
     white-space: nowrap;
 }
 
-.btn.active { background: var(--primary-color); border-color: var(--primary-color); color: #050505; }
-
 .btn:disabled { opacity: 0.6; pointer-events: none; }
+
+/* CSS Class: Scale transformation override on hover/focus/focused for all button instances. */
+.btn:hover, .btn:focus, .btn.focused { transform: scale(1.03); }
 
 /* Styles the primary action buttons like Play using a semi-transparent green accent background. */
 .btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid rgba(var(--primary-rgb), 0.4); color: #ffffff; font-weight: 800; }
@@ -626,7 +627,7 @@ input, textarea, select { font: inherit; }
     font-weight: 700;
     min-height: 0;
     width: calc(var(--app-sidebar-width) - 20px);
-    height: calc(var(--app-sidebar-width) - 34px);
+    height: calc(var(--app-sidebar-width) - 46px);
     padding: 0;
     overflow: hidden;
     position: relative;
@@ -2370,6 +2371,9 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* === Migrated from details.html === */
+/* CSS Class: Dropdown select wrapper container for seasons in details page, hidden by default on desktop/TV. */
+.seasons-dropdown-wrapper { display: none; width: 100%; }
+
 /* Explains: Tab bar navigation container for Disney layout panels in the details view. */
 .disney-tabs { border-bottom: 2px solid rgba(255, 255, 255, 0.1); display: flex; gap: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; }
 
@@ -2617,8 +2621,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable { border: none; box-shadow: none; outline: none; }
 
-/* 3. Button Active Hover & Focus overrides (must win over mega outline) */
-.btn.active:hover, .btn.active:focus, .btn.active.focused { background: var(--primary-color); border: 3px solid #fff; color: #050505; outline: none; }
+
 
 /* Styles the hover/focus active state of primary buttons, adding a white thicker border on top of transparent green. */
 .btn-primary:hover, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.4); border: 3px solid #fff; color: #ffffff; outline: none; }
