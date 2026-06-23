@@ -627,7 +627,7 @@ input, textarea, select { font: inherit; }
     font-weight: 700;
     min-height: 0;
     width: calc(var(--app-sidebar-width) - 20px);
-    height: calc(var(--app-sidebar-width) - 46px);
+    height: calc(var(--app-sidebar-width) - 34px);
     padding: 0;
     overflow: hidden;
     position: relative;
