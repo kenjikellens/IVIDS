@@ -603,13 +603,13 @@
 }
 
 /* CSS Class: Mobile override for version badge container to stack version badges vertically. */
-#app .version-badge-container {
+.version-badge-container {
     flex-direction: column;
     gap: 6px;
     align-items: center;
 }
 
 /* CSS Class: Mobile override for version badge arrow to point downwards in vertical layout. */
-#app .version-arrow {
+.version-arrow {
     transform: rotate(90deg);
 }

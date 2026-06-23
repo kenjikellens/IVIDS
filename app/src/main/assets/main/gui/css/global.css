@@ -626,7 +626,7 @@ input, textarea, select { font: inherit; }
     font-weight: 700;
     min-height: 0;
     width: calc(var(--app-sidebar-width) - 20px);
-    height: calc(var(--app-sidebar-width) - 28px);
+    height: calc(var(--app-sidebar-width) - 34px);
     padding: 0;
     overflow: hidden;
     position: relative;
@@ -2100,7 +2100,8 @@ input, textarea, select { font: inherit; }
 /* CSS Class: Title typography displaying the update availability heading. */
 .update-title { color: #fff; font-size: 1.5rem; font-weight: 700; margin: 0; }
 
-.version-badge-container { align-items: center; display: flex; gap: 10px; }
+/* CSS Class: Container for displaying current and remote version badges stacked vertically. */
+.version-badge-container { align-items: center; display: flex; flex-direction: column; gap: 6px; }
 
 .version-badge { border-radius: 12px; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; }
 
@@ -2108,7 +2109,8 @@ input, textarea, select { font: inherit; }
 
 .version-badge.remote { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); color: var(--primary-color); }
 
-.version-arrow { color: rgba(255, 255, 255, 0.4); font-size: 1rem; }
+/* CSS Class: Arrow indicating transition between versions, rotated downwards for vertical layout. */
+.version-arrow { color: rgba(255, 255, 255, 0.4); font-size: 1rem; transform: rotate(90deg); }
 
 .update-release-name { color: #fff; font-size: 1.1rem; font-weight: 600; }
 
@@ -2183,18 +2185,18 @@ input, textarea, select { font: inherit; }
    SECTION 5: PLAYER PAGE SPECIFIC STYLES
    Source File: player.css
    ========================================================================== */
-/* Version Selector Scrollable Modal Layouts.
-   Forces the version modal to use flex-column with overflow hidden,
-   so the scrollable body shrinks and the footer is always pinned visible. */
-.version-modal-content { display: flex; flex-direction: column; max-height: 80vh; overflow: hidden; padding: 20px; width: min(580px, 85vw); }
+/* CSS Class: Content container for the version selector modal with minimized padding and wider layout. */
+.version-modal-content { display: flex; flex-direction: column; max-height: 80vh; overflow: hidden; padding: 6px 6px 2px 6px; width: min(640px, 90vw); }
+
+/* CSS Class: Title override specifically for version modal to minimize top space. */
+.version-modal-content .modal-title { padding: 12px 16px 6px; margin-bottom: 6px; }
 
 /* Scrollable body inside version modal. Uses flex-shrink so it yields
    space to the footer, preventing buttons from clipping out of view. */
-.scrollable-modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 4px 8px; scrollbar-color: rgba(255, 255, 255, 0.35) transparent; scrollbar-width: thin; }
+.scrollable-modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 4px 16px; scrollbar-color: rgba(255, 255, 255, 0.35) transparent; scrollbar-width: thin; }
 
-/* Footer pinned at bottom of version modal. flex-shrink: 0 ensures
-   the Cancel button always stays fully visible inside the container. */
-.version-modal-content .modal-footer { flex-shrink: 0; margin-top: 12px; padding: 12px 8px 4px; }
+/* CSS Class: Footer inside the version modal with extra button padding and reduced margin. */
+.version-modal-content .modal-footer { flex-shrink: 0; margin-top: 4px; padding: 12px 8px 8px; }
 
 .livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar, .scrollable-modal-body::-webkit-scrollbar { width: 6px; }
 
@@ -2204,16 +2206,31 @@ input, textarea, select { font: inherit; }
 
 .scrollable-modal-body::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
 
-.version-option-grid { gap: 12px; grid-template-columns: 1fr; overflow: hidden; width: 100%; }
+/* CSS Class: Version selector option grid with single column display and tight vertical gaps. */
+.option-grid.version-option-grid { gap: 6px; grid-template-columns: 1fr; overflow: hidden; width: 100%; }
 
+/* CSS Class: Row wrapper containing a version chip and its corresponding info button side by side. */
+.version-row-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: calc(100% - 16px);
+    margin: 0 auto;
+}
+
+/* CSS Class: Individual option chip card within the version selector, stretching to fill the row width. */
 .version-option-grid .option-chip {
     align-items: center;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    max-width: 100%;
+    flex: 1;
     overflow: hidden;
-    width: 100%;
+}
+
+/* CSS Class: Version details info button with margin reset. */
+.version-option-grid .version-info-btn {
+    margin: 0;
 }
 
 .hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 10px; width: 100%; }
@@ -2228,7 +2245,8 @@ input, textarea, select { font: inherit; }
     text-transform: uppercase;
 }
 
-.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; margin-left: auto; }
+/* CSS Class: Date label positioned next to the version badge without taking up extra margins. */
+.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; }
 
 .version-chip-title { color: #ffffff; font-size: 14px; font-weight: 700; margin-top: 4px; text-align: left; }
 
@@ -2500,10 +2518,11 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 #login-circle-back { height: 48px; left: -54px; position: absolute; top: 0; width: 48px; z-index: 10; }
 
+/* CSS Class: Version details info button with transparent border by default (only visible on focus/hover). */
 .version-info-btn {
     align-items: center;
     background: transparent;
-    border: 2px solid var(--text-muted);
+    border: 2px solid transparent;
     border-radius: 50%;
     color: var(--text-muted);
     cursor: pointer;
@@ -2515,6 +2534,22 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     min-width: 34px;
     transition: color 0.16s ease, border-color 0.16s ease;
     width: 34px;
+}
+
+/* CSS Class: Masked SVG element displaying the version info 'i' letter. */
+.version-info-icon {
+    -webkit-mask-image: url('../images/info.svg');
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    background-color: currentColor;
+    height: 20px;
+    mask-image: url('../images/info.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    width: 20px;
+    pointer-events: none;
 }
 
 .modal-close-x {

@@ -512,7 +512,14 @@ class SettingsManager {
         const loader = document.getElementById('version-list-loader');
         const grid = document.getElementById('version-options');
 
-        if (loader) loader.style.display = 'flex';
+        if (loader) {
+            loader.style.display = 'flex';
+            loader.innerHTML = '<div class="ivids-loader"></div>';
+            if (window.LoaderManager && window.LoaderManager.createLoader) {
+                const loaderEl = loader.querySelector('.ivids-loader');
+                window.LoaderManager.createLoader(loaderEl);
+            }
+        }
         if (grid) {
             grid.style.display = 'none';
             grid.innerHTML = '';
@@ -531,20 +538,22 @@ class SettingsManager {
                 grid.style.display = 'grid';
                 
                 // Add the top chip: Active Branch Build
-                const branchCard = document.createElement('div');
-                branchCard.className = 'option-chip focusable';
-                branchCard.setAttribute('data-value', 'branch');
-                branchCard.innerHTML = `
-                    <div class="version-chip-content">
-                        <div class="version-chip-header">
-                            <span class="version-tag-badge" style="background: var(--primary-color)">Branch</span>
-                            <span class="version-date-label">Latest</span>
+                const branchRow = document.createElement('div');
+                branchRow.className = 'version-row-container';
+                branchRow.innerHTML = `
+                    <div class="option-chip focusable" data-value="branch">
+                        <div class="version-chip-content">
+                            <div class="version-chip-header">
+                                <span class="version-tag-badge" style="background: var(--primary-color)">Branch</span>
+                                <span class="version-date-label">Latest</span>
+                            </div>
+                            <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
+                            <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK)'}</div>
                         </div>
-                        <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
-                        <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK)'}</div>
                     </div>
                 `;
                 
+                const branchCard = branchRow.querySelector('.option-chip');
                 branchCard.onclick = () => {
                     this.closeModal();
                     console.log('Settings: Selected branch build');
@@ -567,7 +576,7 @@ class SettingsManager {
                     });
                 };
                 
-                grid.appendChild(branchCard);
+                grid.appendChild(branchRow);
  
                 // Add each release as a focusable option chip
                 releases.forEach(rel => {
@@ -577,28 +586,25 @@ class SettingsManager {
                     
                     if (downloadUrl) {
                         const date = new Date(rel.published_at).toLocaleDateString();
-                        const relCard = document.createElement('div');
-                        relCard.className = 'option-chip focusable';
-                        relCard.setAttribute('data-value', rel.tag_name);
+                        const relRow = document.createElement('div');
+                        relRow.className = 'version-row-container';
                         
-                        relCard.innerHTML = `
-                            <div class="version-chip-content">
-                                <div class="version-chip-header">
-                                    <span class="version-tag-badge">${rel.tag_name}</span>
-                                    <span class="version-date-label">${date}</span>
+                        relRow.innerHTML = `
+                            <div class="option-chip focusable" data-value="${rel.tag_name}">
+                                <div class="version-chip-content">
+                                    <div class="version-chip-header">
+                                        <span class="version-tag-badge">${rel.tag_name}</span>
+                                        <span class="version-date-label">${date}</span>
+                                    </div>
+                                    <span class="version-chip-title">${rel.name || 'Release Build'}</span>
                                 </div>
-                                <span class="version-chip-title">${rel.name || 'Release Build'}</span>
                             </div>
                             <button class="version-info-btn focusable" title="View changes">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                </svg>
+                                <div class="version-info-icon"></div>
                             </button>
                         `;
 
-                        const infoBtn = relCard.querySelector('.version-info-btn');
+                        const infoBtn = relRow.querySelector('.version-info-btn');
                         if (infoBtn) {
                             infoBtn.onclick = (e) => {
                                 e.stopPropagation();
@@ -606,6 +612,7 @@ class SettingsManager {
                             };
                         }
 
+                        const relCard = relRow.querySelector('.option-chip');
                         relCard.onclick = () => {
                             this.closeModal();
                             console.log(`Settings: Selected version ${rel.tag_name} via ${downloadUrl}`);
@@ -615,7 +622,7 @@ class SettingsManager {
                             import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
                                 UpdatePrompt.show(rel.tag_name);
                             }).catch(err => {
-                                console.error('Settings: Failed to load update-prompt.js', err);
+                                                    console.error('Settings: Failed to load update-prompt.js', err);
                                 if (window.AndroidUpdate) {
                                     window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
                                 } else {
@@ -624,7 +631,7 @@ class SettingsManager {
                             });
                         };
 
-                        grid.appendChild(relCard);
+                        grid.appendChild(relRow);
                     }
                 });
 
