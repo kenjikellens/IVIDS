@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Development Guides
 
 Standard procedures for extending the IVIDS application.
@@ -21,3 +25,6 @@ Components are stored in `gui/components/`. Use them when UI elements are shared
 - Hero Slider
 - Toast Notifications
 - List Rows
+
+## Info about the app is found in docs/ folder
+in `docs/file_list.md` you can find all files in this project, if needed, do not go through each folder individually to find a file, use this `docs/file_list.md` to help you find it, if you cant, use simple search tools to find the file, and as last resort go through folders!
