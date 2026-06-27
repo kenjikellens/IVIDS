@@ -38,7 +38,10 @@ export class UpdatePrompt {
                         <span class="version-arrow">→</span>
                         <span class="version-badge remote"></span>
                     </div>
-                    <div class="update-release-name"></div>
+                    <div class="update-branch-section">
+                        <div class="update-branch-title"></div>
+                        <div class="update-release-name"></div>
+                    </div>
                     <div class="update-changelog-title"></div>
                     <div class="update-changelog-body"></div>
                 </div>
@@ -102,7 +105,7 @@ export class UpdatePrompt {
     }
 
     /**
-     * Shows the premium glassmorphic update modal dialog.
+     * Shows the premium update modal dialog and populates the release info.
      * Restores/focuses the SpatialNav controls and loads the release changelog body.
      * 
      * @param {string} version - The version tag found on the remote server.
@@ -139,6 +142,7 @@ export class UpdatePrompt {
         const currentVer = await this.getLocalVersion();
 
         const titleEl = this.modalElement.querySelector('.update-title');
+        const branchTitleEl = this.modalElement.querySelector('.update-branch-title');
         const releaseNameEl = this.modalElement.querySelector('.update-release-name');
         const currentBadgeEl = this.modalElement.querySelector('.version-badge.current');
         const remoteBadgeEl = this.modalElement.querySelector('.version-badge.remote');
@@ -160,6 +164,9 @@ export class UpdatePrompt {
             : '<p>Performance and core interface enhancements.</p>';
 
         titleEl.textContent = this.translate('settings.updateNotification', 'New Version Available!');
+        if (branchTitleEl) {
+            branchTitleEl.textContent = this.translate('settings.branch', 'Branch');
+        }
         changelogTitleEl.textContent = this.translate('settings.whatsNew', "What's New:");
         dismissBtn.textContent = this.translate('settings.later', 'Later');
         confirmBtn.textContent = this.translate('settings.updateNow', 'Install Now');
@@ -174,6 +181,10 @@ export class UpdatePrompt {
         actionsContainer.style.display = 'flex';
         confirmBtn.style.display = 'inline-flex';
         dismissBtn.style.display = 'inline-flex';
+
+        // Make sure changelog and branch info elements are visible
+        if (changelogTitleEl) changelogTitleEl.style.display = 'block';
+        if (changelogBodyEl) changelogBodyEl.style.display = 'block';
 
         // Render modal with display and active transition trigger
         this.modalElement.style.display = 'flex';
@@ -197,23 +208,32 @@ export class UpdatePrompt {
 
     /**
      * Programmatically initiates the update download process.
-     * Delegates download actions to Native Android, Electron, or opens the fallback download URL in Web.
+     * Hides the changelog, updates the modal title, and delegates download to native or PC bridge.
      */
     static startDownload() {
         const actionsContainer = document.getElementById('update-actions');
         const progressContainer = document.getElementById('update-progress-container');
         const progressBar = document.getElementById('update-progress-bar');
         const progressText = document.getElementById('update-progress-text');
+        const titleEl = this.modalElement.querySelector('.update-title');
+
+        // Hide changelog section on download for a clean layout
+        const changelogTitle = this.modalElement.querySelector('.update-changelog-title');
+        const changelogBody = this.modalElement.querySelector('.update-changelog-body');
+        if (changelogTitle) changelogTitle.style.display = 'none';
+        if (changelogBody) changelogBody.style.display = 'none';
 
         if (actionsContainer) actionsContainer.style.display = 'none';
         if (progressContainer) progressContainer.style.display = 'flex';
         if (progressBar) progressBar.style.width = '0%';
         
         this.activeStatus = 'downloading';
+        const initialStatus = this.translate('update_status_downloading', 'Downloading Update...');
+        if (titleEl) titleEl.textContent = initialStatus;
         
         if (window.AndroidUpdate) {
             if (progressText) {
-                progressText.textContent = `${this.translate('update_status_downloading', 'Downloading Update...')} (0%)`;
+                progressText.textContent = `${initialStatus} (0%)`;
             }
             try {
                 if (window.latestUpdateDownloadUrl) {
@@ -227,7 +247,7 @@ export class UpdatePrompt {
             }
         } else if (window.ElectronAPI) {
             if (progressText) {
-                progressText.textContent = `${this.translate('update_status_downloading', 'Downloading Update...')} (0%)`;
+                progressText.textContent = `${initialStatus} (0%)`;
             }
             try {
                 // Register progress listener from preload bridge
@@ -266,7 +286,7 @@ export class UpdatePrompt {
             }
         } else if (window.latestUpdateDownloadUrl) {
             if (progressText) {
-                progressText.textContent = this.translate('update_status_downloading', 'Downloading Update...');
+                progressText.textContent = initialStatus;
             }
             window.open(window.latestUpdateDownloadUrl, '_blank');
             this.dismiss();
@@ -278,63 +298,82 @@ export class UpdatePrompt {
 
     /**
      * Translates status updates from the native update controller.
-     * Affects the progress text element.
+     * Dynamically updates the modal title content and progress label text.
      * 
      * @param {string} statusKey - The status key representing the active download/installation phase.
      */
     static handleStatus(statusKey) {
         this.activeStatus = statusKey;
         const progressText = document.getElementById('update-progress-text');
-        if (!progressText) return;
-
+        const titleEl = this.modalElement.querySelector('.update-title');
+        
+        let statusStr = statusKey;
         if (statusKey === 'downloading') {
-            progressText.textContent = this.translate('update_status_downloading', 'Downloading Update...');
+            statusStr = this.translate('update_status_downloading', 'Downloading Update...');
         } else if (statusKey === 'installing') {
-            progressText.textContent = this.translate('update_status_installing', 'Installing Update...');
+            statusStr = this.translate('update_status_installing', 'Installing Update...');
         } else if (statusKey === 'connecting-api') {
-            progressText.textContent = this.translate('update_status_connecting', 'Connecting to Server...');
-        } else {
-            progressText.textContent = statusKey;
+            statusStr = this.translate('update_status_connecting', 'Connecting to Server...');
+        }
+
+        if (progressText) {
+            progressText.textContent = statusStr;
+        }
+        if (titleEl) {
+            titleEl.textContent = statusStr;
         }
     }
 
     /**
      * Updates the progress bar and status text percentage display.
-     * Affects the width of the progress bar fill and text content.
+     * Adjusts progress bar width, progress text label, and updates active status title.
      * 
      * @param {number} percent - The percentage completed (0 to 100).
      */
     static handleProgress(percent) {
         const progressBar = document.getElementById('update-progress-bar');
         const progressText = document.getElementById('update-progress-text');
+        const titleEl = this.modalElement.querySelector('.update-title');
 
         if (progressBar) {
             progressBar.style.width = `${percent}%`;
         }
 
+        let statusStr = this.translate('update_status_downloading', 'Downloading Update...');
+        if (this.activeStatus === 'installing') {
+            statusStr = this.translate('update_status_installing', 'Installing Update...');
+        } else if (this.activeStatus === 'connecting-api') {
+            statusStr = this.translate('update_status_connecting', 'Connecting to Server...');
+        }
+
+        const fullProgressStr = `${statusStr} (${percent}%)`;
         if (progressText) {
-            let statusStr = this.translate('update_status_downloading', 'Downloading Update...');
-            if (this.activeStatus === 'installing') {
-                statusStr = this.translate('update_status_installing', 'Installing Update...');
-            } else if (this.activeStatus === 'connecting-api') {
-                statusStr = this.translate('update_status_connecting', 'Connecting to Server...');
-            }
-            progressText.textContent = `${statusStr} (${percent}%)`;
+            progressText.textContent = fullProgressStr;
+        }
+        if (titleEl) {
+            titleEl.textContent = statusStr;
         }
     }
 
     /**
      * Updates the progress area with error warnings and restores close controls.
-     * Affects progress text style and action button visibility.
+     * Sets the error text message and restores the close button to allow retry/dismissal.
      */
     static handleError() {
         const progressText = document.getElementById('update-progress-text');
         const actionsContainer = document.getElementById('update-actions');
         const confirmBtn = document.getElementById('update-download-btn');
         const dismissBtn = document.getElementById('update-dismiss-btn');
+        const titleEl = this.modalElement.querySelector('.update-title');
+
+        const errMsg = this.translate('settings.updateError', 'Update failed. Please check connection and try again.');
+
+        if (titleEl) {
+            titleEl.textContent = this.translate('error.title', 'Error');
+        }
 
         if (progressText) {
-            progressText.textContent = this.translate('settings.updateError', 'Update failed. Please check connection and try again.');
+            progressText.textContent = errMsg;
             progressText.style.color = '#ef4444'; // Red error warning color tint
         }
 

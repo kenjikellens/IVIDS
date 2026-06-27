@@ -101,7 +101,8 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "Vad är nytt:",
         "later": "Senare",
-        "changes": "Ändringar"
+        "changes": "Ändringar",
+        "branch": "Branch"
     },
     "common": {
         "close": "Stäng",

@@ -101,7 +101,8 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "Hva er nytt:",
         "later": "Seinere",
-        "changes": "Endringer"
+        "changes": "Endringer",
+        "branch": "Branch"
     },
     "common": {
         "close": "Lukk",

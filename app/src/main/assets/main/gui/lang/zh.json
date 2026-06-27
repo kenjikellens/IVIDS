@@ -101,7 +101,8 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "什么是新的：",
         "later": "之后",
-        "changes": "变化"
+        "changes": "变化",
+        "branch": "Branch"
     },
     "common": {
         "close": "关闭",

@@ -101,7 +101,8 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "新着情報：",
         "later": "後で",
-        "changes": "変更点"
+        "changes": "変更点",
+        "branch": "Branch"
     },
     "common": {
         "close": "閉じる",

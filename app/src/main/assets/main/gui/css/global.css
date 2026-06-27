@@ -2062,11 +2062,11 @@ input, textarea, select { font: inherit; }
     box-shadow: var(--shadow-panel);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 22px;
     max-width: 90%;
     padding: 36px;
     text-align: center;
-    width: min(480px, 92vw);
+    width: min(520px, 92vw);
 }
 
 /* CSS Class: Header block centering title and icon within the update modal. */
@@ -2103,20 +2103,47 @@ input, textarea, select { font: inherit; }
 /* CSS Class: Title typography displaying the update availability heading. */
 .update-title { color: #fff; font-size: 1.5rem; font-weight: 700; margin: 0; }
 
-/* CSS Class: Container for displaying current and remote version badges stacked vertically. */
-.version-badge-container { align-items: center; display: flex; flex-direction: column; gap: 6px; }
+/* CSS Class: Horizontal container for displaying current and remote version badges side-by-side. */
+.version-badge-container { align-items: center; display: flex; flex-direction: row; justify-content: center; gap: 14px; margin-bottom: 8px; }
 
+/* CSS Class: Typography styling for the individual version identifier tags. */
 .version-badge { border-radius: 12px; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; }
 
+/* CSS Class: Version badge highlighting the currently installed release. */
 .version-badge.current { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.65); }
 
+/* CSS Class: Version badge highlighting the new/remote update release version. */
 .version-badge.remote { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); color: var(--primary-color); }
 
-/* CSS Class: Arrow indicating transition between versions, rotated downwards for vertical layout. */
-.version-arrow { color: rgba(255, 255, 255, 0.4); font-size: 1rem; transform: rotate(90deg); }
+/* CSS Class: Arrow indicating transition direction between local and remote versions. */
+.version-arrow { color: rgba(255, 255, 255, 0.4); font-size: 1rem; }
 
-.update-release-name { color: #fff; font-size: 1.1rem; font-weight: 600; }
+/* CSS Class: Styled card module enclosing target update branch title and label details. */
+.update-branch-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
 
+/* CSS Class: Sub-heading title labeling the active update branch source. */
+.update-branch-title {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* CSS Class: Text wrapper displaying the release build/branch target name. */
+.update-release-name { color: #fff; font-size: 1.1rem; font-weight: 700; }
+
+/* CSS Class: Header label preceding the update changelog list details. */
 .update-changelog-title {
     align-self: flex-start;
     color: rgba(255, 255, 255, 0.5);
@@ -2127,6 +2154,7 @@ input, textarea, select { font: inherit; }
     text-transform: uppercase;
 }
 
+/* CSS Class: Changelog body content panel rendering scrollable html release details. */
 .update-changelog-body {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -2142,9 +2170,10 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+/* CSS Class: Horizontal footer area wrapping dismissal and confirmation buttons. */
 .update-footer-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; width: 100%; }
 
-/* Button overrides inside the update modal to ensure TV focus compatibility */
+/* CSS Class: Button overrides inside the update modal to ensure TV focus compatibility. */
 .update-footer-actions .btn {
     align-items: center;
     border-radius: 10px;
@@ -2158,19 +2187,31 @@ input, textarea, select { font: inherit; }
     text-decoration: none;
 }
 
+/* CSS Class: Container wrapping downloading elements cleanly stacked on top of each other. */
+.update-progress-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* CSS Class: Loading track background hosting the progress bar loader indicators. */
 .update-progress-bar-bg {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    height: 8px;
+    border-radius: 6px;
+    height: 10px;
     overflow: hidden;
     position: relative;
     width: 100%;
 }
 
+/* CSS Class: Colored bar indicating percentage completed in downloading sequence. */
 .update-progress-bar {
     background: var(--primary-color);
-    border-radius: 4px;
+    border-radius: 6px;
     bottom: 0;
     box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6);
     left: 0;
@@ -2180,7 +2221,8 @@ input, textarea, select { font: inherit; }
     width: 0%;
 }
 
-.update-progress-text { color: var(--text-color, #fff); font-size: 14px; font-weight: 700; }
+/* CSS Class: Status label describing current percentage ratio and loading phase. */
+.update-progress-text { color: var(--text-color, #fff); font-size: 14px; font-weight: 700; margin-top: 4px; }
 
 .toast-actions { display: flex; gap: 8px; margin-top: 10px; }
 

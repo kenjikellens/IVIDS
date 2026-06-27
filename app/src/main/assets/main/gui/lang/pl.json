@@ -101,7 +101,8 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "Co nowego:",
         "later": "Później",
-        "changes": "Zmiany"
+        "changes": "Zmiany",
+        "branch": "Branch"
     },
     "common": {
         "close": "Zamknij",

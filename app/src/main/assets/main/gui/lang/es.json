@@ -96,7 +96,8 @@
         "playerProviderDesc": "Configure el punto final de inserción utilizado por el reproductor de películas y series",
         "whatsNew": "Qué hay de nuevo:",
         "later": "Más tarde",
-        "changes": "Cambios"
+        "changes": "Cambios",
+        "branch": "Branch"
     },
     "common": {
         "close": "Cerrar",

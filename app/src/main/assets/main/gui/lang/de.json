@@ -96,7 +96,8 @@
         "playerProviderDesc": "Konfigurieren Sie den Einbettungsendpunkt, der vom Film- und Serienplayer verwendet wird",
         "whatsNew": "Was ist neu:",
         "later": "Später",
-        "changes": "Änderungen"
+        "changes": "Änderungen",
+        "branch": "Branch"
     },
     "common": {
         "close": "Schließen",

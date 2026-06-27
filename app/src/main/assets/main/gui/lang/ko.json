@@ -101,7 +101,8 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "새로운 기능:",
         "later": "나중에",
-        "changes": "변경 사항"
+        "changes": "변경 사항",
+        "branch": "Branch"
     },
     "common": {
         "close": "닫기",

@@ -95,7 +95,8 @@
         "playerProviderDesc": "Configure the embed endpoint used by the movie and series player",
         "whatsNew": "What's New:",
         "later": "Later",
-        "changes": "Changes"
+        "changes": "Changes",
+        "branch": "Branch"
     },
     "common": {
         "close": "Close",

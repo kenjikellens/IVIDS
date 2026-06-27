@@ -96,7 +96,8 @@
         "playerProviderDesc": "Configureer het embed-eindpunt dat wordt gebruikt door de film- en serie-speler",
         "whatsNew": "Wat is er nieuw:",
         "later": "Later",
-        "changes": "Wijzigingen"
+        "changes": "Wijzigingen",
+        "branch": "Branch"
     },
     "common": {
         "close": "Sluiten",

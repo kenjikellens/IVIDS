@@ -96,7 +96,8 @@
         "playerProviderDesc": "Configurer le point de terminaison d'intégration utilisé par le lecteur de films et de séries",
         "whatsNew": "Quoi de neuf:",
         "later": "Plus tard",
-        "changes": "Changements"
+        "changes": "Changements",
+        "branch": "Branch"
     },
     "common": {
         "close": "Fermer",

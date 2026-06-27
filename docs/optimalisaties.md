@@ -12,38 +12,8 @@ Dit document bevat de geïdentificeerde optimalisatiemogelijkheden in de codebas
 * **webSecurity activering (Security/Performance)**: `webSecurity: false` is momenteel ingeschakeld.
   * *Optimalisatie*: Volg de TODO om API-requests (zoals TMDB/VidSrc) te routeren via een local proxy of `session.webRequest` API. Dit maakt het mogelijk om `webSecurity: true` te zetten en verlaagt XSS-risico's.
 
-### [preload.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/preload.js)
-* Geen significante optimalisaties gevonden. De file is al erg beknopt en maakt correct gebruik van `contextBridge` en `ipcRenderer`.
 
-### [update-version.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/update-version.js)
-* Geen prestatieoptimalisaties nodig; dit is een simpel build/release script dat sequentieel draait en weinig resources verbruikt.
-
-### [run_pc.py](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/run_pc.py)
-* Geen openstaande optimalisaties. De CORS-proxy streamt direct chunks naar de cliënt voor niet-manifest/gzip bronnen en verifieert de gzip-status via magische bytes.
-
-### [scan_broken_channels.py](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/scan_broken_channels.py)
-* Geen openstaande optimalisaties. Connectie-pooling via requests.Session is geïmplementeerd en zenders worden direct via ranged GET-aanroepen geverifieerd.
-
-
-## 2. Core Logic (assets/main/logic/)
-
-### [account-helper.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/account-helper.js)
-* Geen openstaande optimalisaties. In-memory caching van het actieve account is geïmplementeerd.
-
-### [api.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/api.js)
-* Geen openstaande optimalisaties. De redundante storage queries zijn opgelost door de caching in `account-helper.js`.
-
-### [crypto.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/crypto.js)
-* Geen openstaande optimalisaties. PBKDF2-operaties zijn gereduceerd tot O(1) door gebruikers te registreren en op te zoeken onder hun gehashte e-mailadres via Firebase PUT. `bytesToHex` is micro-geoptimaliseerd met een vooraf berekende LUT.
-
-### [m3u-parser.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/m3u-parser.js)
-* Geen openstaande optimalisaties. Retry-logica met exponentiële back-off is geïmplementeerd om tijdelijke netwerkfouten op te vangen.
-
-### [migration.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/migration.js), [playlists.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/playlists.js), [recentlyWatched.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/recentlyWatched.js)
-* Geen kritieke prestatie- of redundantieproblemen. `playlists.js` en `recentlyWatched.js` maken al correct gebruik van in-memory caching (`_playlistsCache` en `_recentlyWatchedCache`).
-
-
-## 3. Front-end Library/Utility/Core JS (assets/main/gui/js/)
+## 2. Front-end Library/Utility/Core JS (assets/main/gui/js/)
 
 ### [dom-recycler.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/dom-recycler.js)
 * **CSS content-visibility Alternatief (Performance/Code-reductie)**: Gebruikt een JS `IntersectionObserver` om off-screen elementen te verbergen.
@@ -53,21 +23,12 @@ Dit document bevat de geïdentificeerde optimalisatiemogelijkheden in de codebas
 * **Architecturale Redundantie (Code-reductie)**: Er zijn twee aparte i18n-systemen aanwezig. `language-manager.js` (statishe JS imports) en `i18n.js` (dynamische fetch-requests van JSON).
   * *Optimalisatie*: Consolideer deze twee systemen tot één enkele vertaalmanager (bij voorkeur `i18n.js` vanwege de dynamische laadmogelijkheid om bundelgrootte te beperken) en verwijder de andere.
 
-### [skeleton-renderer.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/skeleton-renderer.js)
-* Geen openstaande optimalisaties. Event delegation voor error cards is geïmplementeerd op de parent container (`rowPosters`) om listener-allocatie en memory leaks te voorkomen.
-
-### [error-handler.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/error-handler.js)
-* Geen openstaande optimalisaties. De redundante DOM-vervanging van de retry-knop via klonen is vervangen door een directe `.onclick` toewijzing om layout-invalidatie te voorkomen.
-
 ### [lazy-loader.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/lazy-loader.js)
 * **Browser-Native Image Lazy Loading**: Gebruikt een handmatige IntersectionObserver voor image lazy loading.
   * *Optimalisatie*: Gebruik de native HTML5-attribuut `loading="lazy"` voor de `<img>` elementen. Dit verlaagt JS-overhead aanzienlijk.
 
-### Overige bestanden ([app.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/app.js), [hero-slider.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/hero-slider.js), [router.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/router.js), [screensaver.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/screensaver.js), [splash.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/splash.js), [toast.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/toast.js), [update-prompt.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/update-prompt.js), [updater.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/updater.js))
-* Geen significante prestatie- of redundantieoptimalisaties geïdentificeerd. Deze files zijn al geoptimaliseerd (bijv. `router.js` met prefetch- en caching-logica, en `screensaver.js` met throttled activiteitsdetectie).
 
-
-## 4. Components & Page Logic
+## 3. Components & Page Logic
 
 ### [livetv.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/livetv.js)
 * **Redundante Settings/Config-loading (Performance/Code-reductie)**: De methode `loadMergedSettings()` laadt handmatig `ivids-settings` en de user namespaced settings en voegt deze samen.
@@ -75,14 +36,8 @@ Dit document bevat de geïdentificeerde optimalisatiemogelijkheden in de codebas
 * **updateStoredChannelStatus Disk I/O (Performance)**: Deze methode voert bij elke aanroep (bijv. zappen of streamfout) een `getItem`, filter, `JSON.parse` en `setItem` uit op `localStorage`. Dit is traag.
   * *Optimalisatie*: Houd de cache in-memory (`statusCache` map) en schrijf deze debounced weg naar `localStorage` (bijv. 1-2 seconden na de laatste zapping-actie) in plaats van synchroon bij elke wijziging.
 
-### [playlist-details.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/playlist-details.js)
-* Geen openstaande optimalisaties. De confirm- en cancel-knoppen maken nu gebruik van directe `.onclick` toewijzingen in plaats van DOM-node klonen en replaceChild om reflows te voorkomen.
 
-### Overige pagina's ([sidebar.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/components/sidebar/sidebar.js), [account.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/account.js), [browse.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/browse.js), [details.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/details.js), [login.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/login.js), [player.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/player.js), [playlists.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/playlists.js), [search.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/search.js), [settings.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/settings.js), [tv-player.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/tv-player.js))
-* Geen significante prestatie- of redundantieoptimalisaties gevonden. Bestanden zoals `search.js` maken al correct gebruik van query-caching (`cachedCountryItems`) en `settings.js`/`tv-player.js` ruimen event listeners netjes op.
-
-
-## 5. CSS Stylesheets (assets/main/gui/css/)
+## 4. CSS Stylesheets (assets/main/gui/css/)
 
 ### [global.css](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/css/global.css)
 * **Hover en Focus Animatie Schaling (Performance & Stijlrichtlijnen)**: De klasse `.focusable-card:hover`, `.focusable-card:focus`, `.focusable-card.focused` maakt gebruik van `transform: scale(1.04);`. Dit veroorzaakt layout-herberekeningen en extra compositor-overhead in de browser en schendt de richtlijnen voor animaties.
@@ -97,8 +52,3 @@ Dit document bevat de geïdentificeerde optimalisatiemogelijkheden in de codebas
 ### [loader.css](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/css/loader.css)
 * **Centreren zonder Transform (Performance)**: `.poster-loader` gebruikt `transform: translate(-50%, -50%);` voor centrering.
   * *Optimalisatie*: Gebruik flexbox of grid layout (`display: grid; place-items: center;`) op de parent-container om elementen te centreren zonder extra render-instructies via transforms.
-
-
-
-
-

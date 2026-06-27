@@ -59,7 +59,7 @@ if "%BUILD_TYPE%"=="release" (
 )
 
 :wait
-timeout /t 2 >nul
+ping 127.0.0.1 -n 3 >nul
 if not exist "%WIN_STATUS%" goto wait
 if not exist "%APK_STATUS%" goto wait
 
