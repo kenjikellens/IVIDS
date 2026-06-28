@@ -129,11 +129,11 @@ function attachListeners() {
                 if (el) el.classList.add('focusable');
             });
             input.value = '';
-            activeModalClose = manageModal(modal, input);
+            activeModalClose = manageModal(modal, input, () => closeModal());
         });
-    }
+     }
 
-    const closeModal = () => {
+     function closeModal() {
         if (activeModalClose) {
             activeModalClose();
             activeModalClose = null;
@@ -143,7 +143,7 @@ function attachListeners() {
             if (el) el.classList.remove('focusable');
         });
         if (createBtn) createBtn.focus();
-    };
+     };
 
     if (cancelBtn) {
         cancelBtn.addEventListener('click', closeModal);

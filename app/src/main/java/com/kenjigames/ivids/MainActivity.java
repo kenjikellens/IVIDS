@@ -457,6 +457,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Intercept physical back button presses (gesture or remote keys) and forward the action 
+        // to the WebView's unified SpatialNav.back() handler to close active modals or navigate back.
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (mWebView != null) {
+                    mWebView.evaluateJavascript("if (window.SpatialNav && typeof window.SpatialNav.back === 'function') { window.SpatialNav.back(); }", null);
+                }
+            }
+        });
+
         mWebView.loadUrl("file:///android_asset/main/gui/index.html");
     }
 

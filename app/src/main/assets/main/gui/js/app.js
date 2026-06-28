@@ -476,7 +476,7 @@ function initNavigation() {
     try {
         SpatialNav.init(() => {
             try {
-                // 1. Check for any open modals first (Global Handler)
+                // 1. Check for any open modals first (Global Fallback Handler)
                 const openModal = document.querySelector('.modal[style*="display: flex"], .modal[style*="display: block"], .modal-overlay.active, .modal-overlay.show, .modal.active');
                 if (openModal) {
                     console.log('Global back: Closing open modal');
@@ -494,9 +494,21 @@ function initNavigation() {
                     return;
                 }
 
-
-                // Use Router's consolidated back logic (handles history + fallbacks)
-                Router.goBack();
+                // If on Home page and history is empty, handle application exit based on viewport layout.
+                if (Router.currentPage === 'home' && Router.history.length === 0) {
+                    if (SpatialNav.isPortrait()) {
+                        if (window.AndroidUpdate && typeof window.AndroidUpdate.exitApp === 'function') {
+                            window.AndroidUpdate.exitApp();
+                        } else {
+                            window.close();
+                        }
+                    } else {
+                        showExitConfirmation();
+                    }
+                } else {
+                    // Use Router's consolidated back logic (handles history + fallbacks)
+                    Router.goBack();
+                }
             } catch (backError) {
                 console.error('Error handling back navigation:', backError);
             }
@@ -558,6 +570,15 @@ function showExitConfirmation() {
             }
         }
 
+        // Native Android exit bridge
+        if (window.AndroidUpdate && typeof window.AndroidUpdate.exitApp === 'function') {
+            try {
+                window.AndroidUpdate.exitApp();
+            } catch (e) {
+                console.error('Android exit failed:', e);
+            }
+        }
+
         // Default closure (works for Electron and general browser window close)
         window.close();
     };
@@ -577,8 +598,10 @@ function initHistoryTrap() {
         // Prevent browser back
         window.history.pushState({ page: 'home' }, document.title, window.location.href);
 
-        // Delegate to our internal back logic
-        if (SpatialNav && typeof SpatialNav.onBack === 'function') {
+        // Delegate to our unified back action logic
+        if (SpatialNav && typeof SpatialNav.back === 'function') {
+            SpatialNav.back();
+        } else if (SpatialNav && typeof SpatialNav.onBack === 'function') {
             SpatialNav.onBack();
         }
     });

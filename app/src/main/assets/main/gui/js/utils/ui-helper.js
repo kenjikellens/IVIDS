@@ -179,9 +179,10 @@ export function setupLazyLoadedRows(categories, defaultType = null) {
  * applying activation transitions, and configuring spatial navigation focus traps.
  * @param {HTMLElement} modal - The modal container element to manage.
  * @param {HTMLElement} [focusTarget] - The element to focus initially when opening the modal.
+ * @param {Function} [onClose] - Custom close handler callback to invoke when back button or tap-outside occurs.
  * @returns {Function} A cleanup function to safely close the modal, fade it out, and return it to its original DOM parent.
  */
-export function manageModal(modal, focusTarget = null) {
+export function manageModal(modal, focusTarget = null, onClose = null) {
     const originalParent = modal.parentElement;
 
     // Move to body to escape parent stacking context or overflow bounds
@@ -194,7 +195,19 @@ export function manageModal(modal, focusTarget = null) {
 
     let modalBackHandler;
 
+    const handleOutsideClick = (e) => {
+        if (e.target === modal) {
+            if (onClose) {
+                onClose();
+            } else {
+                closeModal();
+            }
+        }
+    };
+    modal.addEventListener('click', handleOutsideClick);
+
     const closeModal = () => {
+        modal.removeEventListener('click', handleOutsideClick);
         if (modalBackHandler) {
             SpatialNav.popBackHandler(modalBackHandler);
             modalBackHandler = null;
@@ -214,7 +227,11 @@ export function manageModal(modal, focusTarget = null) {
     };
 
     modalBackHandler = () => {
-        closeModal();
+        if (onClose) {
+            onClose();
+        } else {
+            closeModal();
+        }
         return true; // Handled
     };
     SpatialNav.pushBackHandler(modalBackHandler);

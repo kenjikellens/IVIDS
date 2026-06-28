@@ -445,6 +445,20 @@ public class UpdateManager {
     }
 
     /**
+     * Closes/exits the Android application by finishing the main activity on the UI thread.
+     * Accessible to JavaScript running in the WebView via the AndroidUpdate interface.
+     */
+    @JavascriptInterface
+    public void exitApp() {
+        Log.d(TAG, "exitApp: exiting application");
+        mActivity.runOnUiThread(() -> {
+            if (!mActivity.isFinishing() && !mActivity.isDestroyed()) {
+                mActivity.finish();
+            }
+        });
+    }
+
+    /**
      * Shuts down the background executor service.
      * Should be called when the activity is destroyed to prevent memory leaks.
      */

@@ -39,6 +39,15 @@ if not exist "gradlew.bat" exit /b 1
 echo [PRE] OK
 echo.
 
+:: AUTO-INCREMENT BUILD NUMBER
+echo [INFO] Incrementing build number...
+node increment-version-code.js
+if errorlevel 1 (
+    echo [ERROR] Failed to increment versionCode.
+    exit /b 1
+)
+echo.
+
 :: BUILD STEP
 echo [1-2/5] Building Windows + Android...
 

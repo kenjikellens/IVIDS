@@ -788,7 +788,7 @@ class SettingsManager {
             });
         }
 
-        const innerClose = manageModal(modal);
+        const innerClose = manageModal(modal, null, () => this.closeModal());
 
         this.closeModalFn = (revert = true) => {
             if (revert) {

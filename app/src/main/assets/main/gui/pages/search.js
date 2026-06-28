@@ -119,7 +119,9 @@ export async function init(params) {
                 pendingFilters = JSON.parse(JSON.stringify(currentFilters));
                 renderAllFilters(pendingFilters);
                 const first = filterModal.querySelector('.focusable');
-                closeFilterModalFn = manageModal(filterModal, first);
+                closeFilterModalFn = manageModal(filterModal, first, () => {
+                    cancelFilters();
+                });
             };
 
             const applyFilters = () => {
@@ -154,7 +156,17 @@ export async function init(params) {
         if (genreSelectBtn && genreModal) {
             genreSelectBtn.onclick = () => {
                 const firstGenre = genreModal.querySelector('.focusable');
-                closeGenreModalFn = manageModal(genreModal, firstGenre);
+                closeGenreModalFn = manageModal(genreModal, firstGenre, () => {
+                    if (closeGenreModalFn) {
+                        closeGenreModalFn();
+                        closeGenreModalFn = null;
+                    }
+                    if (filterModal.classList.contains('active')) {
+                        SpatialNav.setFocusTrap(filterModal);
+                        SpatialNav.setFocus(genreSelectBtn);
+                    }
+                    updateGenreBadge(pendingFilters);
+                });
             };
 
             if (genreDoneBtn) {
@@ -179,7 +191,16 @@ export async function init(params) {
             sortByBtn.onclick = () => {
                 pendingSortValue = pendingFilters.sortBy;
                 const selected = sortModal.querySelector('.select-item.selected') || sortModal.querySelector('.focusable');
-                closeSortModalFn = manageModal(sortModal, selected);
+                closeSortModalFn = manageModal(sortModal, selected, () => {
+                    if (closeSortModalFn) {
+                        closeSortModalFn();
+                        closeSortModalFn = null;
+                    }
+                    if (filterModal.classList.contains('active')) {
+                        SpatialNav.setFocusTrap(filterModal);
+                        SpatialNav.setFocus(sortByBtn);
+                    }
+                });
             };
 
             document.getElementById('sort-options-list').onclick = (e) => {
@@ -224,7 +245,16 @@ export async function init(params) {
         if (countrySelectBtn && countryModal) {
             countrySelectBtn.onclick = () => {
                 const selected = countrySearchInput || countryModal.querySelector('.select-item.selected') || countryModal.querySelector('.focusable');
-                closeCountryModalFn = manageModal(countryModal, selected);
+                closeCountryModalFn = manageModal(countryModal, selected, () => {
+                    if (closeCountryModalFn) {
+                        closeCountryModalFn();
+                        closeCountryModalFn = null;
+                    }
+                    if (filterModal.classList.contains('active')) {
+                        SpatialNav.setFocusTrap(filterModal);
+                        SpatialNav.setFocus(countrySelectBtn);
+                    }
+                });
             };
 
             const closeCountryModal = () => {

@@ -123,6 +123,48 @@ export const SpatialNav = {
     },
 
     /**
+     * Executes the back action by running registered back stack handlers in LIFO order.
+     * Also handles sidebar focus navigation when sidebar has active focus.
+     * Falls back to invoking onBack when the back action is not fully consumed.
+     * @returns {boolean} True if the back action was handled, false otherwise.
+     */
+    back() {
+        // Run stack handlers in LIFO order
+        for (let i = this.backHandlers.length - 1; i >= 0; i--) {
+            try {
+                if (this.backHandlers[i]()) {
+                    return true;
+                }
+            } catch (err) {
+                console.error('Error in spatial-nav back handler:', err);
+            }
+        }
+
+        const current = document.querySelector('.focused');
+
+        // If focused on sidebar, return focus to main content and prevent page navigation
+        const sidebar = document.getElementById('sidebar-container');
+        if (sidebar && current && sidebar.contains(current)) {
+            const mainView = document.getElementById('main-view');
+            if (mainView) {
+                const firstFocusable = mainView.querySelector(this.focusableSelector);
+                if (firstFocusable && this.isVisible(firstFocusable)) {
+                    this.setFocus(firstFocusable);
+                    return true;
+                }
+            }
+            this.focusFirst();
+            return true;
+        }
+
+        if (this.onBack) {
+            this.onBack();
+            return true;
+        }
+        return false;
+    },
+
+    /**
      * Activates the active-typing mode on a text input or textarea, making it editable.
      * Also pushes a back handler to exit this mode on Escape/Back press.
      * @param {HTMLInputElement|HTMLTextAreaElement} input - The input element to activate.
@@ -502,36 +544,8 @@ export const SpatialNav = {
                 return;
             }
 
-            // Run stack handlers in LIFO order
-            for (let i = this.backHandlers.length - 1; i >= 0; i--) {
-                try {
-                    if (this.backHandlers[i]()) {
-                        e.preventDefault();
-                        return;
-                    }
-                } catch (err) {
-                    console.error('Error in spatial-nav back handler:', err);
-                }
-            }
-
-            // If focused on sidebar, return focus to main content and prevent page navigation
-            const sidebar = document.getElementById('sidebar-container');
-            if (sidebar && sidebar.contains(current)) {
-                e.preventDefault();
-                const mainView = document.getElementById('main-view');
-                if (mainView) {
-                    const firstFocusable = mainView.querySelector(this.focusableSelector);
-                    if (firstFocusable && this.isVisible(firstFocusable)) {
-                        this.setFocus(firstFocusable);
-                        return;
-                    }
-                }
-                this.focusFirst();
-                return;
-            }
-
             e.preventDefault();
-            if (this.onBack) this.onBack();
+            this.back();
             return;
         }
 
