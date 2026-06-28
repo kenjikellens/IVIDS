@@ -821,6 +821,12 @@ class SettingsManager {
                 chip.onclick = (e) => {
                     e.stopPropagation();
                     this.setPending(key, val, chip);
+                    // Explanations:
+                    // Instantly apply settings on mobile viewports for the language selection modal
+                    // to prevent users from needing to manually click the hidden apply action button.
+                    if (modalId === 'language-modal' && window.matchMedia('(max-width: 600px)').matches) {
+                        this.applyPending(key);
+                    }
                 };
             });
         }

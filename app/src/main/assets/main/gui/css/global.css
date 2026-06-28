@@ -3133,24 +3133,24 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 @media (max-width: 600px) {
-    /* Repositions the Cancel and Apply icon buttons to the bottom side-by-side on mobile devices. */
+    /* Explains: Repositions the language modal layout to be a single column stack on mobile, removing the apply button. */
     .language-modal-container {
         grid-template-areas: 
-            "content content"
-            "cancel apply";
-        grid-template-columns: 1fr 1fr;
+            "content"
+            "cancel";
+        grid-template-columns: 1fr;
         gap: 16px;
         width: 90vw;
         justify-items: center;
     }
     
-    /* Adjusts cancel button layout for mobile screen alignment. */
+    /* Explains: Center aligns the cancel button at the bottom of the language selection modal. */
     .cancel-icon-btn {
         justify-self: center;
     }
     
-    /* Adjusts apply button layout for mobile screen alignment. */
+    /* Explains: Hides the apply button entirely on mobile viewports because language changes apply instantly on select. */
     .apply-icon-btn {
-        justify-self: center;
+        display: none !important;
     }
 }
