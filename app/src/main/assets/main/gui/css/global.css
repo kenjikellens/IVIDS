@@ -1757,31 +1757,24 @@ input, textarea, select { font: inherit; }
 /* Right-hand flexbox container aligning settings controls horizontally */
 .setting-control { align-items: center; display: flex; gap: 12px; justify-content: flex-end; }
 
-/* Explains: Displays the current settings option values with a themed semi-transparent background.
-   Configured with flex alignment to center text and optionally embedded flag emoji icons properly. */
 .current-value-display {
-    align-items: center;
     background: rgba(var(--primary-rgb), 0.12);
     border: 1px solid rgba(var(--primary-rgb), 0.34);
     border-radius: var(--radius-sm);
     color: #fff;
-    display: inline-flex;
     font-size: 15px;
     font-weight: 800;
-    gap: 8px;
-    justify-content: center;
     min-width: 128px;
     padding: 10px 14px;
     text-align: center;
 }
 
-/* Styles the country flag emoji element in the main settings display, using the Twemoji polyfill font family for Windows browser compatibility. */
-.display-flag-span {
-    font-family: "Twemoji Country Flags", inherit;
-    font-size: 18px;
-    line-height: 1;
-    display: inline-flex;
+/* Explains: Flex alignment container for the language display box to align the flag emoji and text cleanly. */
+#current-language-display {
     align-items: center;
+    display: inline-flex;
+    gap: 8px;
+    justify-content: center;
 }
 
 /* Explains: Premium custom toggle switch container with border highlight focus. */
@@ -3057,7 +3050,8 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     margin: 0;
 }
 
-/* Styles the country flag emoji element inside language selection chips, using the Twemoji polyfill font family for Windows browser compatibility. */
+/* Styles the country flag emoji element, using the Twemoji polyfill font family for Windows browser compatibility. */
+.display-flag-span,
 .language-options-list .option-chip span {
     font-family: "Twemoji Country Flags", inherit;
     font-size: 18px;
@@ -3076,14 +3070,10 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     max-height: 96vh;
 }
 
-/* Styles the language selection header title, placed outside and above the scroll container card. */
-.language-modal-title {
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
-    text-align: center;
+/* Override modal title styling specifically inside the language content wrapper to align it and remove large paddings. */
+.language-modal-content-wrapper .modal-title {
+    padding: 0;
+    margin-bottom: 8px;
 }
 
 
@@ -3099,8 +3089,8 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Styles the circular action buttons for Cancel and Apply inside the language selection. */
 .modal-icon-btn {
     align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: #1c1c1c;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     color: #fff;
     cursor: pointer;
@@ -3108,14 +3098,15 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     height: 56px;
     justify-content: center;
     padding: 0;
-    transition: background 0.2s, border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
     width: 56px;
 }
 
 /* Styles the hover and active focus state for the circular action buttons. */
 .modal-icon-btn:hover, .modal-icon-btn:focus {
-    background: rgba(var(--primary-rgb), 0.15);
+    background: var(--primary-color);
     border: 3px solid #fff;
+    color: #050505;
     outline: none;
 }
 

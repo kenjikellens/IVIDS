@@ -7,8 +7,9 @@ class I18n {
         this.translations = {};
         this.translationCache = {}; // Cache for fast translation string lookups
         this.availableLanguages = [
-            'ar', 'cs', 'da', 'de', 'en', 'es', 'fr', 'hi', 'id', 'it', 'ja',
-            'ko', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'tr', 'vi', 'zh'
+            'ar', 'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi',
+            'hr', 'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nl', 'no', 'pl', 'pt',
+            'ro', 'ru', 'sk', 'sv', 'th', 'tl', 'tr', 'uk', 'vi', 'zh'
         ];
         this.initialized = false;
         this.initializedPromise = null;

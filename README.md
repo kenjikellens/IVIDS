@@ -23,7 +23,7 @@ Ensures a native TV experience:
 - **Responsive Handling**: Adapts focus logic between Landscape (TV) and Portrait (Mobile) orientations.
 
 ### i18n Support
-Global translation system (`lang/*.json`) allows for easy localization across multiple languages, updating the UI dynamically without page reloads.
+Global translation system (`lang/*.json`) with native support for **32 languages** (including Arabic, Bulgarian, Czech, Danish, German, Greek, English, Spanish, Finnish, French, Hindi, Croatian, Hungarian, Indonesian, Italian, Japanese, Korean, Malay, Dutch, Norwegian, Polish, Portuguese, Romanian, Russian, Slovak, Swedish, Thai, Tagalog, Turkish, Ukrainian, Vietnamese, and Chinese). The system resolves translations dynamically without page reloads and automatically polyfills flag emojis on Windows/desktop platforms.
 
 ### UI Feedback
 - **Toast System**: Non-intrusive notification system for user feedback (success/error/info).
