@@ -48,7 +48,14 @@ window.onunhandledrejection = function (event) {
 function loadSettings() {
     try {
         const globalSaved = PersistentStorage.getItem('ivids-settings');
-        const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
+        let globalSettings = {};
+        if (globalSaved && globalSaved !== 'null' && globalSaved !== 'undefined') {
+            try {
+                globalSettings = JSON.parse(globalSaved) || {};
+            } catch (jsonErr) {
+                console.error('Failed to parse global settings:', jsonErr);
+            }
+        }
 
         // Fallback to cookies for updateMode, language, and uiScale if not in localStorage
         if (!globalSettings.updateMode) {
@@ -72,7 +79,14 @@ function loadSettings() {
 
         const userKey = getNamespacedKey('settings');
         const userSaved = PersistentStorage.getItem(userKey);
-        const userSettings = userSaved ? JSON.parse(userSaved) : {};
+        let userSettings = {};
+        if (userSaved && userSaved !== 'null' && userSaved !== 'undefined') {
+            try {
+                userSettings = JSON.parse(userSaved) || {};
+            } catch (jsonErr) {
+                console.error('Failed to parse user settings:', jsonErr);
+            }
+        }
 
         // Merge global settings (language, updateMode) and user settings (accentColor, preferred servers/M3U)
         const settings = { ...globalSettings, ...userSettings };

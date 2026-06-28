@@ -22,10 +22,10 @@ class PersistentStorage {
         if (window.AndroidSettings && typeof window.AndroidSettings.getString === 'function') {
             try {
                 const nativeValue = window.AndroidSettings.getString(key);
-                if (nativeValue !== null && nativeValue !== undefined) {
+                if (nativeValue !== null && nativeValue !== undefined && nativeValue !== 'null' && nativeValue !== 'undefined') {
                     // Check if it's missing in localStorage and restore it if needed
                     const localValue = localStorage.getItem(key);
-                    if (localValue === null) {
+                    if (localValue === null || localValue === 'null' || localValue === 'undefined') {
                         console.log(`PersistentStorage: Restoring key "${key}" from SharedPreferences to localStorage`);
                         localStorage.setItem(key, nativeValue);
                     }
@@ -35,7 +35,11 @@ class PersistentStorage {
                 console.error(`PersistentStorage: Error reading "${key}" from AndroidSettings`, e);
             }
         }
-        return localStorage.getItem(key);
+        const localValue = localStorage.getItem(key);
+        if (localValue === 'null' || localValue === 'undefined') {
+            return null;
+        }
+        return localValue;
     }
 
     /**

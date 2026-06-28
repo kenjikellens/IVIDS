@@ -802,7 +802,14 @@ export const Api = {
 
         try {
             const globalSaved = PersistentStorage.getItem('ivids-settings');
-            const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
+            let globalSettings = {};
+            if (globalSaved && globalSaved !== 'null' && globalSaved !== 'undefined') {
+                try {
+                    globalSettings = JSON.parse(globalSaved) || {};
+                } catch (jsonErr) {
+                    console.error('Failed to parse global settings:', jsonErr);
+                }
+            }
 
             // Fallback to cookies for updateMode and language if not in localStorage
             if (!globalSettings.updateMode) {
@@ -820,7 +827,14 @@ export const Api = {
 
             const userKey = getNamespacedKey('settings');
             const userSaved = PersistentStorage.getItem(userKey);
-            const userSettings = userSaved ? JSON.parse(userSaved) : {};
+            let userSettings = {};
+            if (userSaved && userSaved !== 'null' && userSaved !== 'undefined') {
+                try {
+                    userSettings = JSON.parse(userSaved) || {};
+                } catch (jsonErr) {
+                    console.error('Failed to parse user settings:', jsonErr);
+                }
+            }
 
             const saved = { ...globalSettings, ...userSettings };
 

@@ -102,7 +102,14 @@ class SettingsManager {
         };
         try {
             const globalSaved = PersistentStorage.getItem('ivids-settings');
-            const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
+            let globalSettings = {};
+            if (globalSaved && globalSaved !== 'null' && globalSaved !== 'undefined') {
+                try {
+                    globalSettings = JSON.parse(globalSaved) || {};
+                } catch (jsonErr) {
+                    console.error('Failed to parse global settings:', jsonErr);
+                }
+            }
 
             // Fallback to cookies for updateMode, language, and uiScale if not in localStorage
             if (!globalSettings.updateMode) {
@@ -126,7 +133,14 @@ class SettingsManager {
 
             const userKey = getNamespacedKey('settings');
             const userSaved = PersistentStorage.getItem(userKey);
-            const userSettings = userSaved ? JSON.parse(userSaved) : {};
+            let userSettings = {};
+            if (userSaved && userSaved !== 'null' && userSaved !== 'undefined') {
+                try {
+                    userSettings = JSON.parse(userSaved) || {};
+                } catch (jsonErr) {
+                    console.error('Failed to parse user settings:', jsonErr);
+                }
+            }
 
             const parsed = { ...globalSettings, ...userSettings };
 
@@ -196,9 +210,13 @@ class SettingsManager {
         PersistentStorage.setItem(userKey, JSON.stringify(userSettings));
 
         // Save updateMode, language, and uiScale to cookies for native integration
-        document.cookie = `updateMode=${encodeURIComponent(this.settings.updateMode)}; path=/; max-age=31536000; SameSite=Lax`;
-        document.cookie = `language=${encodeURIComponent(this.settings.language)}; path=/; max-age=31536000; SameSite=Lax`;
-        document.cookie = `uiScale=${encodeURIComponent(this.settings.uiScale)}; path=/; max-age=31536000; SameSite=Lax`;
+        try {
+            document.cookie = `updateMode=${encodeURIComponent(this.settings.updateMode)}; path=/; max-age=31536000; SameSite=Lax`;
+            document.cookie = `language=${encodeURIComponent(this.settings.language)}; path=/; max-age=31536000; SameSite=Lax`;
+            document.cookie = `uiScale=${encodeURIComponent(this.settings.uiScale)}; path=/; max-age=31536000; SameSite=Lax`;
+        } catch (cookieError) {
+            console.warn('PersistentStorage: Failed to set cookies (ignored in this environment):', cookieError);
+        }
 
         Api.invalidatePlayerConfig();
 
