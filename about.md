@@ -452,13 +452,24 @@ if (current.tagName === 'INPUT') {
 ## 🌍 Internationalization (i18n) System
 
 ### Supported Languages
-| Code | Language | File |
-|------|----------|------|
-| `en` | English | `lang/en.json` |
-| `es` | Español | `lang/es.json` |
-| `fr` | Français | `lang/fr.json` |
-| `de` | Deutsch | `lang/de.json` |
-| `nl` | Nederlands | `lang/nl.json` |
+| Code | Language | File | Code | Language | File |
+|------|----------|------|------|----------|------|
+| `ar` | Arabic | `lang/ar.json` | `ko` | Korean | `lang/ko.json` |
+| `bg` | Bulgarian | `lang/bg.json` | `ms` | Bahasa Melayu | `lang/ms.json` |
+| `cs` | Čeština | `lang/cs.json` | `nl` | Nederlands | `lang/nl.json` |
+| `da` | Dansk | `lang/da.json` | `no` | Norsk | `lang/no.json` |
+| `de` | Deutsch | `lang/de.json` | `pl` | Polski | `lang/pl.json` |
+| `el` | Eλληνικά | `lang/el.json` | `pt` | Português | `lang/pt.json` |
+| `en` | English | `lang/en.json` | `ro` | Română | `lang/ro.json` |
+| `es` | Español | `lang/es.json` | `ru` | Russian | `lang/ru.json` |
+| `fi` | Suomi | `lang/fi.json` | `sk` | Slovenčina | `lang/sk.json` |
+| `fr` | Français | `lang/fr.json` | `sv` | Svenska | `lang/sv.json` |
+| `hi` | Hindi | `lang/hi.json` | `th` | ไทย | `lang/th.json` |
+| `hr` | Hrvatski | `lang/hr.json` | `tl` | Tagalog | `lang/tl.json` |
+| `hu` | Magyar | `lang/hu.json` | `tr` | Türkçe | `lang/tr.json` |
+| `id` | Indonesia | `lang/id.json` | `uk` | Українська | `lang/uk.json` |
+| `it` | Italiano | `lang/it.json` | `vi` | Vietnamese | `lang/vi.json` |
+| `ja` | Japanese | `lang/ja.json` | `zh` | Chinese | `lang/zh.json` |
 
 ### Translation File Structure
 ```json
@@ -1030,7 +1041,7 @@ try {
 |---------|-------------|--------|
 | **SPA Architecture** | Client-side routing with history management | ✅ Complete |
 | **Spatial Navigation** | D-pad focus navigation for TV remotes | ✅ Complete |
-| **Multi-Language** | 5 languages (EN, ES, FR, DE, NL) | ✅ Complete |
+| **Multi-Language** | 32 languages (including EN, ES, FR, DE, NL, ZH, AR, etc.) | ✅ Complete |
 | **Profile System** | Multiple user profiles with optional PIN | ✅ Complete |
 | **Playlist Management** | Create, edit, delete custom playlists | ✅ Complete |
 | **Watch History** | Recently watched with resume support | ✅ Complete |

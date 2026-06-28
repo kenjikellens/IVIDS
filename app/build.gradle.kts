@@ -11,7 +11,7 @@ android {
         applicationId = "com.kenjigames.ivids"
         minSdk = 21
         targetSdk = 36
-        versionCode = 18
+        versionCode = 19
         versionName = "v0.4.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
