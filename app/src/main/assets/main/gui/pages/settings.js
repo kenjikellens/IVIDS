@@ -11,28 +11,38 @@ import { PersistentStorage } from '../../logic/persistent-storage.js';
 let settingsManagerInstance = null;
 
 const LANGUAGE_OPTIONS = [
-    { code: 'ar', name: 'Arabic' },
-    { code: 'cs', name: 'Cestina' },
-    { code: 'da', name: 'Dansk' },
-    { code: 'de', name: 'Deutsch' },
-    { code: 'en', name: 'English' },
-    { code: 'es', name: 'Espanol' },
-    { code: 'fr', name: 'Francais' },
-    { code: 'hi', name: 'Hindi' },
-    { code: 'id', name: 'Indonesia' },
-    { code: 'it', name: 'Italiano' },
-    { code: 'ja', name: 'Japanese' },
-    { code: 'ko', name: 'Korean' },
-    { code: 'nl', name: 'Nederlands' },
-    { code: 'no', name: 'Norsk' },
-    { code: 'pl', name: 'Polski' },
-    { code: 'pt', name: 'Portugues' },
-    { code: 'ro', name: 'Romana' },
-    { code: 'ru', name: 'Russian' },
-    { code: 'sv', name: 'Svenska' },
-    { code: 'tr', name: 'Turkce' },
-    { code: 'vi', name: 'Vietnamese' },
-    { code: 'zh', name: 'Chinese' }
+    { code: 'ar', name: '🇸🇦 Arabic' },
+    { code: 'bg', name: '🇧🇬 Български' },
+    { code: 'cs', name: '🇨🇿 Čeština' },
+    { code: 'da', name: '🇩🇰 Dansk' },
+    { code: 'de', name: '🇩🇪 Deutsch' },
+    { code: 'el', name: '🇬🇷 Eλληνικά' },
+    { code: 'en', name: '🇺🇸 English' },
+    { code: 'es', name: '🇪🇸 Español' },
+    { code: 'fi', name: '🇫🇮 Suomi' },
+    { code: 'fr', name: '🇫🇷 Français' },
+    { code: 'hi', name: '🇮🇳 Hindi' },
+    { code: 'hr', name: '🇭🇷 Hrvatski' },
+    { code: 'hu', name: '🇭🇺 Magyar' },
+    { code: 'id', name: '🇮🇩 Indonesia' },
+    { code: 'it', name: '🇮🇹 Italiano' },
+    { code: 'ja', name: '🇯🇵 Japanese' },
+    { code: 'ko', name: '🇰🇷 Korean' },
+    { code: 'ms', name: '🇲🇾 Bahasa Melayu' },
+    { code: 'nl', name: '🇳🇱 Nederlands' },
+    { code: 'no', name: '🇳🇴 Norsk' },
+    { code: 'pl', name: '🇵🇱 Polski' },
+    { code: 'pt', name: '🇵🇹 Português' },
+    { code: 'ro', name: '🇷🇴 Română' },
+    { code: 'ru', name: '🇷🇺 Russian' },
+    { code: 'sk', name: '🇸🇰 Slovenčina' },
+    { code: 'sv', name: '🇸🇪 Svenska' },
+    { code: 'th', name: '🇹🇭 ไทย' },
+    { code: 'tl', name: '🇵🇭 Tagalog' },
+    { code: 'tr', name: '🇹🇷 Türkçe' },
+    { code: 'uk', name: '🇺🇦 Українська' },
+    { code: 'vi', name: '🇻🇳 Vietnamese' },
+    { code: 'zh', name: '🇨🇳 Chinese' }
 ];
 
 /**
@@ -836,7 +846,7 @@ class SettingsManager {
             }
         };
 
-        const cancelBtn = modal.querySelector('.modal-footer .btn-secondary') || modal.querySelector('.modal-footer .modal-btn.secondary') || modal.querySelector('.modal-footer .action-btn.secondary');
+        const cancelBtn = modal.querySelector('.cancel-icon-btn') || modal.querySelector('.modal-footer .btn-secondary') || modal.querySelector('.modal-footer .modal-btn.secondary') || modal.querySelector('.modal-footer .action-btn.secondary');
         if (cancelBtn) {
             cancelBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -851,8 +861,7 @@ class SettingsManager {
                 this.closeModal();
             };
         }
-
-        const applyBtn = modal.querySelector('.modal-footer .btn-primary') || modal.querySelector('.modal-footer .modal-btn.primary') || modal.querySelector('.modal-footer .action-btn.primary');
+        const applyBtn = modal.querySelector('.apply-icon-btn') || modal.querySelector('.modal-footer .btn-primary') || modal.querySelector('.modal-footer .modal-btn.primary') || modal.querySelector('.modal-footer .action-btn.primary');
         if (applyBtn) {
             applyBtn.onclick = (e) => {
                 e.stopPropagation();

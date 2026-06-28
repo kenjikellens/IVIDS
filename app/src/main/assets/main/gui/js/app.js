@@ -3,7 +3,6 @@ import { SpatialNav } from './spatial-nav.js';
 import { Sidebar } from '../components/sidebar/sidebar.js';
 import { Splash } from './splash.js';
 import { ErrorHandler } from './error-handler.js';
-import { Screensaver } from './screensaver.js';
 import { Toast, NetworkStatusOverlay } from './toast.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
@@ -131,15 +130,16 @@ function loadSettings() {
     }
 }
 
+/**
+ * Initializes key application services including error handling, settings loading, and update checking.
+ * This sets up the foundational background operations and configurations for the app lifecycle.
+ */
 function initServices() {
     // Initialize Error Handler first
     ErrorHandler.init();
 
     // Load saved settings
     loadSettings();
-
-    // Initialize Screensaver
-    Screensaver.init();
 
     // Check for updates on boot
     initUpdateCheck();
@@ -201,10 +201,9 @@ function initUpdateCheck() {
         activityEvents.forEach(evt => window.addEventListener(evt, onUserActivity, { passive: true }));
 
         const checkIdle = setInterval(() => {
-            const isScreensaverActive = Screensaver && Screensaver.isActive;
             const isIdle = Date.now() - lastActivity > 5 * 60 * 1000; // 5 minutes
 
-            if ((isIdle || isScreensaverActive) && !downloadStarted) {
+            if (isIdle && !downloadStarted) {
                 downloadStarted = true;
                 clearInterval(checkIdle);
                 activityEvents.forEach(evt => window.removeEventListener(evt, onUserActivity));

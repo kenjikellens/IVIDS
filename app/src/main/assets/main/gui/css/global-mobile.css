@@ -264,17 +264,17 @@
 }
 
 /* Single column collapsing layout for filter main sections. */
-#app .filter-main-grid {
+.filter-main-grid {
     grid-template-columns: 1fr;
     gap: 12px;
 }
 
-/* Multi-column option layout overrides for select items. */
-#app .filter-options.horizontal,
-#app .filter-chips-grid,
-#app .genre-grid,
-#app .select-options-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Single column layout for filter options, chips, and selection grids on mobile to stack them vertically. */
+.filter-options.horizontal,
+.filter-chips-grid,
+.genre-grid,
+.select-options-grid {
+    grid-template-columns: 1fr;
 }
 
 /* Stacked content layout for the movie and tv details page header. */
