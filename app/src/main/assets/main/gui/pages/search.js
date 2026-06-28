@@ -84,17 +84,12 @@ export async function init(params) {
         // Initialize UI with current filters
         await renderAllFilters(currentFilters);
 
-        // Debounce search input to avoid API spamming, waiting 600ms after typing finishes
-        const debouncedSearch = debounce((val) => {
-            performSearch(val, true);
-        }, 600);
-
-        input.oninput = (e) => debouncedSearch(e.target.value);
-
-        // Instant search for onchange (Enter key)
-        input.onchange = () => {
-            debouncedSearch.cancel();
-            performSearch(input.value, true);
+        // Search only when Enter is pressed or searchBtn is clicked
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                performSearch(input.value, true);
+            }
         };
 
         // Clear recents handler
@@ -297,7 +292,6 @@ export async function init(params) {
 
         if (searchBtn) {
             searchBtn.onclick = () => {
-                debouncedSearch.cancel();
                 performSearch(input ? input.value : '', true);
             };
         }

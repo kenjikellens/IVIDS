@@ -296,6 +296,25 @@ export const Api = {
     },
 
     /**
+     * Retrieves the include_adult user setting from localStorage.
+     * This determines whether explicit adult content is queried from the TMDb API.
+     * @returns {boolean} True if adult content is allowed.
+     */
+    getIncludeAdult() {
+        try {
+            const userKey = getNamespacedKey('settings');
+            const saved = localStorage.getItem(userKey);
+            if (saved) {
+                const settings = JSON.parse(saved);
+                return settings.includeAdult === true || settings.includeAdult === 'true';
+            }
+        } catch (e) {
+            console.error('Error reading includeAdult setting:', e);
+        }
+        return false;
+    },
+
+    /**
      * Fetches trending movies and TV shows from TMDB for the week.
      * This updates the trending category carousel on the home screen.
      * @returns {Promise<Array>} List of trending content.
@@ -307,7 +326,7 @@ export const Api = {
         if (cached) return shuffleArray([...cached]);
 
         try {
-            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=false&language=${lang}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&language=${lang}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -342,7 +361,7 @@ export const Api = {
         if (cached) return shuffleArray([...cached]);
 
         try {
-            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&include_adult=false&language=${lang}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&language=${lang}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -379,8 +398,8 @@ export const Api = {
         try {
             const today = getTodayDate();
             const urls = [
-                `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}&language=${lang}&page=1`,
-                `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=false&primary_release_date.lte=${today}&language=${lang}&page=2`
+                `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&primary_release_date.lte=${today}&language=${lang}&page=1`,
+                `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&primary_release_date.lte=${today}&language=${lang}&page=2`
             ];
             const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
             const dataResults = await Promise.all(responses.map(res => res.json()));
@@ -425,8 +444,8 @@ export const Api = {
 
             // Fetch page 1 and page 2 concurrently for 30 items
             const urls = [
-                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}&language=${lang}&page=1`,
-                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=false&${dateFilter}&${params}&language=${lang}&page=2`
+                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&${dateFilter}&${params}&language=${lang}&page=1`,
+                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&${dateFilter}&${params}&language=${lang}&page=2`
             ];
             
             const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
@@ -599,8 +618,8 @@ export const Api = {
         try {
             const today = getTodayDate();
             const urls = [
-                `${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=1`,
-                `${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=2`
+                `${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&first_air_date.lte=${today}&language=${lang}&page=1`,
+                `${BASE_URL}/tv/popular?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&first_air_date.lte=${today}&language=${lang}&page=2`
             ];
             const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
             const dataResults = await Promise.all(responses.map(res => res.json()));
@@ -637,8 +656,8 @@ export const Api = {
         try {
             const today = getTodayDate();
             const urls = [
-                `${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=1`,
-                `${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=false&first_air_date.lte=${today}&language=${lang}&page=2`
+                `${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&first_air_date.lte=${today}&language=${lang}&page=1`,
+                `${BASE_URL}/tv/top_rated?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&first_air_date.lte=${today}&language=${lang}&page=2`
             ];
             const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
             const dataResults = await Promise.all(responses.map(res => res.json()));
@@ -674,7 +693,7 @@ export const Api = {
             const lang = this.getLanguageCode();
             // Note: include_adult is NOT set to false here intentionally
             // Adult content can be found via explicit search only
-            const response = await deduplicatedFetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}&language=${lang}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}&language=${lang}&include_adult=${this.getIncludeAdult()}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -704,7 +723,7 @@ export const Api = {
         if (API_KEY.includes('TODO')) return [];
         try {
             const lang = this.getLanguageCode();
-            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=false&language=${lang}`);
+            const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}/recommendations?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&language=${lang}`);
             const data = await response.json();
             const today = getTodayDate();
 
@@ -982,7 +1001,11 @@ export const Api = {
     },
 
     getCertifications() {
-        return ["G", "PG", "PG-13", "R", "NC-17", "TV-Y", "TV-Y7", "TV-G", "TV-PG", "TV-14", "TV-MA"];
+        const certs = ["G", "PG", "PG-13", "R", "NC-17", "TV-Y", "TV-Y7", "TV-G", "TV-PG", "TV-14", "TV-MA"];
+        if (this.getIncludeAdult()) {
+            certs.push("XXX");
+        }
+        return certs;
     },
 
     /**
@@ -1033,7 +1056,7 @@ export const Api = {
             let params = new URLSearchParams({
                 api_key: API_KEY,
                 sort_by: filters.sortBy || 'popularity.desc',
-                include_adult: false,
+                include_adult: this.getIncludeAdult(),
                 include_video: false,
                 page: filters.page || 1,
                 language: lang

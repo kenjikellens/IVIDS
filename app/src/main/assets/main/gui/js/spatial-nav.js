@@ -24,12 +24,12 @@ export const SpatialNav = {
     backHandlers: [],
 
     /**
-     * Checks if the viewport is in portrait mode based on aspect ratio (less than or equal to 3:4).
+     * Checks if the viewport is in portrait mode based on viewport width (less than or equal to 600px).
      * Affects the input focus behavior and navigation layout decisions.
-     * @returns {boolean} True if the aspect ratio is within the portrait range.
+     * @returns {boolean} True if the viewport width is within the portrait mobile range.
      */
     isPortrait() {
-        return window.matchMedia('(max-aspect-ratio: 3/4)').matches;
+        return window.matchMedia('(max-width: 600px)').matches;
     },
 
     /**

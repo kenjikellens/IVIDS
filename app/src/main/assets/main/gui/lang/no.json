@@ -102,7 +102,13 @@
         "whatsNew": "Hva er nytt:",
         "later": "Seinere",
         "changes": "Endringer",
-        "branch": "Branch"
+        "branch": "Branch",
+        "contentSettings": "Content",
+        "adultContent": "Adult Content",
+        "adultContentDesc": "Show adult content in browsing and search results",
+        "adultContentOn": "On",
+        "adultContentOff": "Off",
+        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+."
     },
     "common": {
         "close": "Lukk",

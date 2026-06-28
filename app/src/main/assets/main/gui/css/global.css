@@ -629,7 +629,7 @@ input, textarea, select { font: inherit; }
     font-weight: 700;
     min-height: 0;
     width: calc(var(--app-sidebar-width) - 20px);
-    height: calc(var(--app-sidebar-width) - 34px);
+    height: 40px;
     padding: 0;
     overflow: hidden;
     position: relative;
@@ -1772,6 +1772,59 @@ input, textarea, select { font: inherit; }
     min-width: 128px;
     padding: 10px 14px;
     text-align: center;
+}
+
+/* Explains: Premium custom toggle switch container with border highlight focus. */
+.switch-container {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s, border-color 0.2s;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Explains: Hide default checkbox input inside toggle container. */
+.switch-container input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Explains: Slider circle for toggle switch moving with absolute left. */
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 3px;
+    left: 4px;
+    background-color: rgba(255, 255, 255, 0.38);
+    transition: left 0.2s, background-color 0.2s;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+}
+
+/* Explains: Active/checked state for toggle switch using theme accent color. */
+.switch-container:has(input:checked) {
+    background-color: rgba(var(--primary-rgb), 0.18);
+    border-color: var(--primary-color);
+}
+
+.switch-container:has(input:checked) .switch-slider {
+    left: 26px;
+    background-color: var(--primary-color);
+}
+
+/* Explains: Focus styling as per user rules (white thicker border, no scale). */
+.switch-container:focus,
+.switch-container.focused {
+    border-color: #ffffff;
+    border-width: 3px;
 }
 
 .edit-trigger {

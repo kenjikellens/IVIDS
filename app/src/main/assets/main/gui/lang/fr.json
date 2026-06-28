@@ -97,7 +97,13 @@
         "whatsNew": "Quoi de neuf:",
         "later": "Plus tard",
         "changes": "Changements",
-        "branch": "Branch"
+        "branch": "Branch",
+        "contentSettings": "Content",
+        "adultContent": "Adult Content",
+        "adultContentDesc": "Show adult content in browsing and search results",
+        "adultContentOn": "On",
+        "adultContentOff": "Off",
+        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+."
     },
     "common": {
         "close": "Fermer",

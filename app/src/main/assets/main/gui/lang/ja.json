@@ -102,7 +102,13 @@
         "whatsNew": "新着情報：",
         "later": "後で",
         "changes": "変更点",
-        "branch": "Branch"
+        "branch": "Branch",
+        "contentSettings": "Content",
+        "adultContent": "Adult Content",
+        "adultContentDesc": "Show adult content in browsing and search results",
+        "adultContentOn": "On",
+        "adultContentOff": "Off",
+        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+."
     },
     "common": {
         "close": "閉じる",

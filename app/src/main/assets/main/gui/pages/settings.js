@@ -96,7 +96,8 @@ class SettingsManager {
                 { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net', isCustom: false },
                 { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 4)', url: 'https://vidsrc.cc/v2/embed', isCustom: false }
             ],
-            m3uPlaylists: []
+            m3uPlaylists: [],
+            includeAdult: false
         };
         try {
             const globalSaved = localStorage.getItem('ivids-settings');
@@ -184,7 +185,8 @@ class SettingsManager {
             playerProvider: this.settings.playerProvider,
             playerBaseUrl: this.settings.playerBaseUrl,
             playerProviders: this.settings.playerProviders,
-            m3uPlaylists: this.settings.m3uPlaylists
+            m3uPlaylists: this.settings.m3uPlaylists,
+            includeAdult: this.settings.includeAdult
         };
 
         const userKey = getNamespacedKey('settings');
@@ -217,6 +219,22 @@ class SettingsManager {
         const editColorBtn = document.getElementById('edit-color-btn');
         if (editColorBtn) {
             editColorBtn.onclick = () => this.openModal('color-modal');
+        }
+
+        const toggleAdultBtn = document.getElementById('toggle-adult-btn');
+        if (toggleAdultBtn) {
+            toggleAdultBtn.onclick = (e) => {
+                e.preventDefault();
+                this.settings.includeAdult = !this.settings.includeAdult;
+                this.saveSettings();
+                this.updateDisplays();
+                if (window.i18n) {
+                    const status = this.settings.includeAdult 
+                        ? (window.i18n.t('settings.adultContentOn') || 'On')
+                        : (window.i18n.t('settings.adultContentOff') || 'Off');
+                    Toast.show(`${window.i18n.t('settings.adultContent')}: ${status}`);
+                }
+            };
         }
 
         const decBtn = document.getElementById('dec-uiscale-btn');
@@ -439,6 +457,12 @@ class SettingsManager {
         if (scaleDisplay) {
             const pct = Math.round(parseFloat(this.settings.uiScale || '1.0') * 100);
             scaleDisplay.textContent = `${pct}%`;
+        }
+        
+        const toggleAdultInput = document.getElementById('adult-toggle-input');
+        if (toggleAdultInput) {
+            const isAdult = this.settings.includeAdult === true || this.settings.includeAdult === 'true';
+            toggleAdultInput.checked = isAdult;
         }
 
         const playerDisplay = document.getElementById('current-player-display');
@@ -839,7 +863,8 @@ class SettingsManager {
 
         modal.querySelectorAll('.option-chip').forEach(chip => {
             const chipValue = chip.getAttribute('data-value');
-            if (chipValue === value) {
+            const matchValue = typeof value === 'boolean' ? String(value) : value;
+            if (chipValue === matchValue) {
                 chip.classList.add('active');
             } else {
                 chip.classList.remove('active');
@@ -911,7 +936,10 @@ class SettingsManager {
      */
     async applyPending(key) {
         console.log(`Applying pending settings for ${key}`);
-        const newValue = this.pendingSettings[key];
+        let newValue = this.pendingSettings[key];
+        if (key === 'includeAdult') {
+            newValue = newValue === 'true' || newValue === true;
+        }
         this.settings[key] = newValue;
 
         if (key === 'playerProviders') {

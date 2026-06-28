@@ -97,7 +97,13 @@
         "whatsNew": "Wat is er nieuw:",
         "later": "Later",
         "changes": "Wijzigingen",
-        "branch": "Branch"
+        "branch": "Branch",
+        "contentSettings": "Inhoud",
+        "adultContent": "Volwassen inhoud",
+        "adultContentDesc": "Toon volwassen inhoud in browse- en zoekresultaten",
+        "adultContentOn": "Aan",
+        "adultContentOff": "Uit",
+        "adultContentWarning": "Waarschuwing: Als u dit inschakelt, wordt er expliciete inhoud voor volwassenen getoond. Deze instelling wordt alleen aanbevolen voor gebruikers van 18 jaar en ouder."
     },
     "common": {
         "close": "Sluiten",

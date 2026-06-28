@@ -95,8 +95,13 @@
         "playerProviderDesc": "Configure the embed endpoint used by the movie and series player",
         "whatsNew": "What's New:",
         "later": "Later",
-        "changes": "Changes",
-        "branch": "Branch"
+        "branch": "Branch",
+        "contentSettings": "Content",
+        "adultContent": "Adult Content",
+        "adultContentDesc": "Show adult content in browsing and search results",
+        "adultContentOn": "On",
+        "adultContentOff": "Off",
+        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+."
     },
     "common": {
         "close": "Close",
