@@ -48,12 +48,7 @@ This document defines the strict, standardized protocol for launching new releas
   4. Copy and rename the compiled Android APK to the workspace root as [IVIDS.apk](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/IVIDS.apk).
   5. Clean up temporary build artifacts (the `dist` folder).
 
-### 4. Document Build Binaries in Changelog
-- **CHANGELOG HOOK**: Document the copy/creation of the binaries in [CHANGELOG.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/CHANGELOG.md) in the exact format:
-  `[HH:mm DD-MM-YYYY] IVIDS.apk - Placed compiled prerelease APK at workspace root directory for distribution.`
-  `[HH:mm DD-MM-YYYY] IVIDS.exe - Placed compiled portable Electron Windows executable at workspace root directory for distribution.`
-
-### 5. Tag and Push the Release Tag
+### 4. Tag and Push the Release Tag
 - **ACTION**: You MUST autonomously commit the release changes locally and tag the release commit, but you must push ONLY the tag to the remote GitHub repository. You are strictly FORBIDDEN from pushing the release commit directly to the `main` branch autonomously; the `main` branch push must be explicitly authorized by the developer later.
   ```powershell
   git commit -m "Release vX.Y.Z"
@@ -61,7 +56,7 @@ This document defines the strict, standardized protocol for launching new releas
   git push origin vX.Y.Z
   ```
 
-### 6. Create the GitHub Release Online (MANDATORY — DO NOT SKIP)
+### 5. Create the GitHub Release Online (MANDATORY — DO NOT SKIP)
 > **⚠️ CRITICAL: This step is NON-NEGOTIABLE. A pushed tag without a live GitHub release is INCOMPLETE. The release is NOT done until this step succeeds.**
 
 - **ACTION**: You MUST autonomously create a **live, published GitHub release** using the `gh` CLI. The release MUST include the compiled `IVIDS.apk` and `IVIDS.exe` as downloadable assets.
@@ -71,7 +66,7 @@ This document defines the strict, standardized protocol for launching new releas
   ```
 - **RELEASE NOTES**: Use the high-quality title and description formulated in Step 1. Include a "What's Changed" section summarizing the key improvements.
 
-### 7. Verify the Release is Live (MANDATORY — DO NOT SKIP)
+### 6. Verify the Release is Live (MANDATORY — DO NOT SKIP)
 - **ACTION**: After creating the release, you MUST verify it is actually live and accessible by running:
   ```powershell
   $env:GITHUB_TOKEN = ""; gh release view vX.Y.Z
