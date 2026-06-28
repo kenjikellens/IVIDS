@@ -373,10 +373,8 @@ export const SpatialNav = {
     centerElement(el) {
         if (!el) return;
 
-        // Skip centering for elements inside modal overlays to prevent parent page from scrolling/shifting
-        if (el.closest('.modal-overlay, .modal-content, .modal')) {
-            return;
-        }
+        // Check if the focused element is located inside a modal overlay window.
+        const modal = el.closest('.modal-overlay, .modal-content, .modal');
 
         // Skip centering for mouse/touch interactions to prevent page scroll shifts on clicks
         if (this.isMouseInteraction) {
@@ -430,10 +428,11 @@ export const SpatialNav = {
         }
 
         // Standard centering logic for non-carousel elements (e.g. settings, buttons, profile selectors, search grid)
-        // Find the nearest vertical scrollable parent element to perform vertical centering
+        // Find the nearest vertical scrollable parent element (constrained inside the modal boundary if present) to perform vertical centering.
         let parent = el.parentElement;
         let scrollParent = null;
-        while (parent && parent !== document.body) {
+        const boundary = modal || document.body;
+        while (parent && parent !== boundary) {
             const overflowY = window.getComputedStyle(parent).overflowY;
             if ((overflowY === 'auto' || overflowY === 'scroll') && parent.scrollHeight > parent.clientHeight) {
                 scrollParent = parent;
@@ -442,22 +441,20 @@ export const SpatialNav = {
             parent = parent.parentElement;
         }
 
+        // If the element is inside a modal but has no inner scroll container, skip scrolling to avoid shifting the main background page layout.
+        if (modal && !scrollParent) {
+            return;
+        }
+
         const mainView = document.getElementById('main-view');
         const viewContainer = scrollParent || mainView;
 
         if (viewContainer && viewContainer.contains(el)) {
             const elementRect = el.getBoundingClientRect();
             const viewRect = viewContainer.getBoundingClientRect();
-            const verticalPadding = 24;
-            const isFullyVisible =
-                elementRect.top >= viewRect.top + verticalPadding &&
-                elementRect.bottom <= viewRect.bottom - verticalPadding;
 
-            if (isFullyVisible) {
-                return;
-            }
-
-            // Scroll vertically to center the element and prevent horizontal layout shifting
+            // Scroll vertically to center the element and prevent horizontal layout shifting.
+            // Always centering the focused element provides a more consistent, premium TV-first D-pad experience.
             const elCenter = elementRect.top + elementRect.height / 2;
             const viewCenter = viewRect.top + viewRect.height / 2;
             const verticalDiff = elCenter - viewCenter;

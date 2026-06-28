@@ -183,42 +183,44 @@
             </svg>
         </button>
 
-        <div class="modal-content compact-modal">
-            <h2 class="modal-title" data-i18n="settings.language">Language</h2>
-            <div class="modal-body">
-                <div id="language-options" class="language-options-list">
-                    <div class="option-chip focusable" data-value="ar"><span>🇸🇦</span>Arabic</div>
-                    <div class="option-chip focusable" data-value="bg"><span>🇧🇬</span>Български</div>
-                    <div class="option-chip focusable" data-value="cs"><span>🇨🇿</span>Čeština</div>
-                    <div class="option-chip focusable" data-value="da"><span>🇩🇰</span>Dansk</div>
-                    <div class="option-chip focusable" data-value="de"><span>🇩🇪</span>Deutsch</div>
-                    <div class="option-chip focusable" data-value="el"><span>🇬🇷</span>Eλληνικά</div>
-                    <div class="option-chip focusable" data-value="en"><span>🇺🇸</span>English</div>
-                    <div class="option-chip focusable" data-value="es"><span>🇪🇸</span>Español</div>
-                    <div class="option-chip focusable" data-value="fi"><span>🇫🇮</span>Suomi</div>
-                    <div class="option-chip focusable" data-value="fr"><span>🇫🇷</span>Français</div>
-                    <div class="option-chip focusable" data-value="hi"><span>🇮🇳</span>Hindi</div>
-                    <div class="option-chip focusable" data-value="hr"><span>🇭🇷</span>Hrvatski</div>
-                    <div class="option-chip focusable" data-value="hu"><span>🇭🇺</span>Magyar</div>
-                    <div class="option-chip focusable" data-value="id"><span>🇮🇩</span>Indonesia</div>
-                    <div class="option-chip focusable" data-value="it"><span>🇮🇹</span>Italiano</div>
-                    <div class="option-chip focusable" data-value="ja"><span>🇯🇵</span>Japanese</div>
-                    <div class="option-chip focusable" data-value="ko"><span>🇰🇷</span>Korean</div>
-                    <div class="option-chip focusable" data-value="ms"><span>🇲🇾</span>Bahasa Melayu</div>
-                    <div class="option-chip focusable" data-value="nl"><span>🇳🇱</span>Nederlands</div>
-                    <div class="option-chip focusable" data-value="no"><span>🇳🇴</span>Norsk</div>
-                    <div class="option-chip focusable" data-value="pl"><span>🇵🇱</span>Polski</div>
-                    <div class="option-chip focusable" data-value="pt"><span>🇵🇹</span>Português</div>
-                    <div class="option-chip focusable" data-value="ro"><span>🇷🇴</span>Română</div>
-                    <div class="option-chip focusable" data-value="ru"><span>🇷🇺</span>Russian</div>
-                    <div class="option-chip focusable" data-value="sk"><span>🇸🇰</span>Slovenčina</div>
-                    <div class="option-chip focusable" data-value="sv"><span>🇸🇪</span>Svenska</div>
-                    <div class="option-chip focusable" data-value="th"><span>🇹🇭</span>ไทย</div>
-                    <div class="option-chip focusable" data-value="tl"><span>🇵🇭</span>Tagalog</div>
-                    <div class="option-chip focusable" data-value="tr"><span>🇹🇷</span>Türkçe</div>
-                    <div class="option-chip focusable" data-value="uk"><span>🇺🇦</span>Українська</div>
-                    <div class="option-chip focusable" data-value="vi"><span>🇻🇳</span>Vietnamese</div>
-                    <div class="option-chip focusable" data-value="zh"><span>🇨🇳</span>Chinese</div>
+        <div class="language-modal-content-wrapper">
+            <h2 class="language-modal-title" data-i18n="settings.language">Language</h2>
+            <div class="modal-content compact-modal">
+                <div class="modal-body">
+                    <div id="language-options" class="language-options-list">
+                        <div class="option-chip focusable" data-value="ar"><span>🇸🇦</span>Arabic</div>
+                        <div class="option-chip focusable" data-value="bg"><span>🇧🇬</span>Български</div>
+                        <div class="option-chip focusable" data-value="cs"><span>🇨🇿</span>Čeština</div>
+                        <div class="option-chip focusable" data-value="da"><span>🇩🇰</span>Dansk</div>
+                        <div class="option-chip focusable" data-value="de"><span>🇩🇪</span>Deutsch</div>
+                        <div class="option-chip focusable" data-value="el"><span>🇬🇷</span>Eλληνικά</div>
+                        <div class="option-chip focusable" data-value="en"><span>🇺🇸</span>English</div>
+                        <div class="option-chip focusable" data-value="es"><span>🇪🇸</span>Español</div>
+                        <div class="option-chip focusable" data-value="fi"><span>🇫🇮</span>Suomi</div>
+                        <div class="option-chip focusable" data-value="fr"><span>🇫🇷</span>Français</div>
+                        <div class="option-chip focusable" data-value="hi"><span>🇮🇳</span>Hindi</div>
+                        <div class="option-chip focusable" data-value="hr"><span>🇭🇷</span>Hrvatski</div>
+                        <div class="option-chip focusable" data-value="hu"><span>🇭🇺</span>Magyar</div>
+                        <div class="option-chip focusable" data-value="id"><span>🇮🇩</span>Indonesia</div>
+                        <div class="option-chip focusable" data-value="it"><span>🇮🇹</span>Italiano</div>
+                        <div class="option-chip focusable" data-value="ja"><span>🇯🇵</span>Japanese</div>
+                        <div class="option-chip focusable" data-value="ko"><span>🇰🇷</span>Korean</div>
+                        <div class="option-chip focusable" data-value="ms"><span>🇲🇾</span>Bahasa Melayu</div>
+                        <div class="option-chip focusable" data-value="nl"><span>🇳🇱</span>Nederlands</div>
+                        <div class="option-chip focusable" data-value="no"><span>🇳🇴</span>Norsk</div>
+                        <div class="option-chip focusable" data-value="pl"><span>🇵🇱</span>Polski</div>
+                        <div class="option-chip focusable" data-value="pt"><span>🇵🇹</span>Português</div>
+                        <div class="option-chip focusable" data-value="ro"><span>🇷🇴</span>Română</div>
+                        <div class="option-chip focusable" data-value="ru"><span>🇷🇺</span>Russian</div>
+                        <div class="option-chip focusable" data-value="sk"><span>🇸🇰</span>Slovenčina</div>
+                        <div class="option-chip focusable" data-value="sv"><span>🇸🇪</span>Svenska</div>
+                        <div class="option-chip focusable" data-value="th"><span>🇹🇭</span>ไทย</div>
+                        <div class="option-chip focusable" data-value="tl"><span>🇵🇭</span>Tagalog</div>
+                        <div class="option-chip focusable" data-value="tr"><span>🇹🇷</span>Türkçe</div>
+                        <div class="option-chip focusable" data-value="uk"><span>🇺🇦</span>Українська</div>
+                        <div class="option-chip focusable" data-value="vi"><span>🇻🇳</span>Vietnamese</div>
+                        <div class="option-chip focusable" data-value="zh"><span>🇨🇳</span>Chinese</div>
+                    </div>
                 </div>
             </div>
         </div>

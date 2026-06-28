@@ -9,6 +9,19 @@ import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { manageModal } from './utils/ui-helper.js';
 import './loader.js';
 import './i18n.js';
+// Polyfills flag emojis on platforms where they are not natively supported (like Windows browser/Electron).
+// We load this dynamically to prevent script blocking or load failures on offline or restricted native devices.
+import('https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1.7/+esm')
+    .then(({ polyfillCountryFlagEmojis }) => {
+        try {
+            polyfillCountryFlagEmojis();
+        } catch (e) {
+            console.warn('Failed to run flag emoji polyfill:', e);
+        }
+    })
+    .catch(err => {
+        console.warn('Failed to load country-flag-emoji-polyfill script:', err);
+    });
 
 // Global Error Handling
 window.onerror = function (message, source, lineno, colno, error) {

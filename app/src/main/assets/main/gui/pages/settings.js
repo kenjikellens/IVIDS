@@ -473,7 +473,15 @@ class SettingsManager {
         const langDisplay = document.getElementById('current-language-display');
         if (langDisplay) {
             const names = Object.fromEntries(LANGUAGE_OPTIONS.map(({ code, name }) => [code, name]));
-            langDisplay.textContent = names[this.settings.language] || this.settings.language;
+            const fullName = names[this.settings.language] || this.settings.language;
+            // Parses the language name string (e.g. "🇺🇸 English") using regional indicator surrogate pairs
+            // to extract and wrap the flag emoji in a custom span for polyfilled Windows rendering compatibility.
+            const flagMatch = fullName.match(/^([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])\s+(.*)$/);
+            if (flagMatch) {
+                langDisplay.innerHTML = `<span class="display-flag-span">${flagMatch[1]}</span><span>${flagMatch[2]}</span>`;
+            } else {
+                langDisplay.textContent = fullName;
+            }
         }
 
         const colorDisplay = document.getElementById('current-color-display');

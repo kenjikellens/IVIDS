@@ -56,7 +56,7 @@ html { background: var(--background-color); zoom: var(--ui-scale, 1.0); }
 body {
     background: #050505;
     color: var(--text-color);
-    font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Twemoji Country Flags", Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
     height: calc(100vh / var(--ui-scale, 1.0));
     line-height: 1.4;
     margin: 0;
@@ -1757,16 +1757,31 @@ input, textarea, select { font: inherit; }
 /* Right-hand flexbox container aligning settings controls horizontally */
 .setting-control { align-items: center; display: flex; gap: 12px; justify-content: flex-end; }
 
+/* Explains: Displays the current settings option values with a themed semi-transparent background.
+   Configured with flex alignment to center text and optionally embedded flag emoji icons properly. */
 .current-value-display {
+    align-items: center;
     background: rgba(var(--primary-rgb), 0.12);
     border: 1px solid rgba(var(--primary-rgb), 0.34);
     border-radius: var(--radius-sm);
     color: #fff;
+    display: inline-flex;
     font-size: 15px;
     font-weight: 800;
+    gap: 8px;
+    justify-content: center;
     min-width: 128px;
     padding: 10px 14px;
     text-align: center;
+}
+
+/* Styles the country flag emoji element in the main settings display, using the Twemoji polyfill font family for Windows browser compatibility. */
+.display-flag-span {
+    font-family: "Twemoji Country Flags", inherit;
+    font-size: 18px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 /* Explains: Premium custom toggle switch container with border highlight focus. */
@@ -3027,7 +3042,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 45vh;
+    max-height: 78vh;
     overflow-y: auto;
     padding: 4px;
 }
@@ -3042,13 +3057,35 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     margin: 0;
 }
 
-/* Styles the country flag emoji element inside language selection chips. */
+/* Styles the country flag emoji element inside language selection chips, using the Twemoji polyfill font family for Windows browser compatibility. */
 .language-options-list .option-chip span {
+    font-family: "Twemoji Country Flags", inherit;
     font-size: 18px;
     line-height: 1;
     display: inline-flex;
     align-items: center;
 }
+
+/* Explains: Wraps the language selection modal content box and its header title.
+   Uses flexbox to stack them vertically with a standard gap offset. */
+.language-modal-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    max-height: 96vh;
+}
+
+/* Styles the language selection header title, placed outside and above the scroll container card. */
+.language-modal-title {
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+
 
 /* Styles the grid container holding the language modal and its left/right action icon buttons. */
 .language-modal-container {
