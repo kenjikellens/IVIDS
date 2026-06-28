@@ -3,6 +3,7 @@ import nl from './languages/nl.js';
 import fr from './languages/fr.js';
 import de from './languages/de.js';
 import es from './languages/es.js';
+import { PersistentStorage } from './persistent-storage.js';
 
 const languages = { en, nl, fr, de, es };
 
@@ -13,11 +14,11 @@ export class LanguageManager {
         if (!languages[lang]) return;
         this.currentLang = lang;
         this.applyLanguage();
-        localStorage.setItem('preferredLanguage', lang);
+        PersistentStorage.setItem('preferredLanguage', lang);
     }
 
     static init() {
-        const savedLang = localStorage.getItem('preferredLanguage');
+        const savedLang = PersistentStorage.getItem('preferredLanguage');
         if (savedLang && languages[savedLang]) {
             this.currentLang = savedLang;
         }

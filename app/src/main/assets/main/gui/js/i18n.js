@@ -1,4 +1,6 @@
 // i18n (internationalization) system for IVIDS
+import { PersistentStorage } from '../../logic/persistent-storage.js';
+
 class I18n {
     constructor() {
         this.currentLanguage = 'en';
@@ -25,7 +27,7 @@ class I18n {
         this.initializedPromise = (async () => {
             let language = 'en';
             try {
-                const savedSettings = localStorage.getItem('ivids-settings');
+                const savedSettings = PersistentStorage.getItem('ivids-settings');
                 if (savedSettings) {
                     const settings = JSON.parse(savedSettings);
                     language = settings.language;

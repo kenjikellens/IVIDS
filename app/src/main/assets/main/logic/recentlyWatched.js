@@ -1,6 +1,7 @@
 // Utility for managing recently watched content
 import { Toast } from '../gui/js/toast.js';
 import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
+import { PersistentStorage } from './persistent-storage.js';
 
 const MAX_RECENTLY_WATCHED = 20;
 const STORAGE_KEY = 'recentlyWatched';
@@ -54,7 +55,7 @@ export function addToRecentlyWatched(item) {
         _cacheOwnerId = currentId;
 
         try {
-            localStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
+            PersistentStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
         } catch (setItemError) {
             console.error('Error saving recently watched:', setItemError);
             if (setItemError.name === 'QuotaExceededError' || (setItemError.message && setItemError.message.includes('quota'))) {
@@ -64,7 +65,7 @@ export function addToRecentlyWatched(item) {
                     _recentlyWatchedCache = recentlyWatched;
                     _cacheOwnerId = currentId;
                     try {
-                        localStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
+                        PersistentStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
                     } catch (retryError) {
                         const title = window.i18n ? window.i18n.t('toast.storageFullTitle') : 'Storage Full';
                         const msg = window.i18n ? window.i18n.t('toast.storageFull') : 'Storage limit reached. Changes cannot be saved permanently.';
@@ -94,7 +95,7 @@ export function getRecentlyWatched() {
 
     try {
         const namespacedKey = getNamespacedKey(STORAGE_KEY);
-        const stored = localStorage.getItem(namespacedKey);
+        const stored = PersistentStorage.getItem(namespacedKey);
         let items = stored ? JSON.parse(stored) : [];
 
         // Sanitize data once on load
@@ -124,7 +125,7 @@ export function clearRecentlyWatched() {
         const namespacedKey = getNamespacedKey(STORAGE_KEY);
         _recentlyWatchedCache = [];
         _cacheOwnerId = getActiveAccountId();
-        localStorage.removeItem(namespacedKey);
+        PersistentStorage.removeItem(namespacedKey);
         console.log('Recently watched cleared');
     } catch (e) {
         console.error('Error clearing recently watched:', e);
@@ -148,7 +149,7 @@ export function removeFromRecentlyWatched(id) {
         _cacheOwnerId = currentId;
 
         try {
-            localStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
+            PersistentStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
         } catch (setItemError) {
             console.error('Error removing from recently watched:', setItemError);
             if (setItemError.name === 'QuotaExceededError' || (setItemError.message && setItemError.message.includes('quota'))) {

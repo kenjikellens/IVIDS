@@ -2,6 +2,7 @@
  * Account Helper Utility for IVIDS.
  * Coordinates user-specific data isolation and namespaced storage keys.
  */
+import { PersistentStorage } from './persistent-storage.js';
 
 let _activeAccountCache = null;
 let _cacheInitialized = false;
@@ -25,7 +26,7 @@ export function getActiveAccount() {
     }
 
     try {
-        const cloudSession = localStorage.getItem('ivids-cloud-session');
+        const cloudSession = PersistentStorage.getItem('ivids-cloud-session');
         if (cloudSession) {
             const session = JSON.parse(cloudSession);
             if (session && session.pushId && session.username) {
@@ -35,7 +36,7 @@ export function getActiveAccount() {
             }
         }
 
-        const stored = localStorage.getItem('ivids-current-profile');
+        const stored = PersistentStorage.getItem('ivids-current-profile');
         if (!stored) {
             _activeAccountCache = null;
             _cacheInitialized = true;

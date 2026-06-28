@@ -1,4 +1,5 @@
 import { clearActiveAccountCache } from './account-helper.js';
+import { PersistentStorage } from './persistent-storage.js';
 
 /**
  * Data Migration Utility for IVIDS.
@@ -25,11 +26,11 @@ async function hashPin(pin) {
  */
 export async function runMigration() {
     try {
-        const hasMigrated = localStorage.getItem('ivids-migrated-v0.5.0');
+        const hasMigrated = PersistentStorage.getItem('ivids-migrated-v0.5.0');
         if (hasMigrated) return; // Already migrated
 
         console.log('Migration: Checking for legacy data...');
-        const legacyProfilesStr = localStorage.getItem('ivids-profiles');
+        const legacyProfilesStr = PersistentStorage.getItem('ivids-profiles');
         
         let legacyProfiles = null;
         if (legacyProfilesStr) {
@@ -59,44 +60,44 @@ export async function runMigration() {
         }
 
         // Fetch legacy global data
-        const legacyHistory = localStorage.getItem('recentlyWatched');
-        const legacyPlaylists = localStorage.getItem('user_playlists');
-        const legacySettings = localStorage.getItem('ivids-settings');
+        const legacyHistory = PersistentStorage.getItem('recentlyWatched');
+        const legacyPlaylists = PersistentStorage.getItem('user_playlists');
+        const legacySettings = PersistentStorage.getItem('ivids-settings');
 
         if (accounts.length > 0) {
             // Migrate legacy data to the first converted custom account
             const firstAccId = accounts[0].id;
             console.log(`Migration: Migrating legacy data to account: ${accounts[0].name} (${firstAccId})`);
 
-            if (legacyHistory) localStorage.setItem(`ivids-acc-${firstAccId}-recentlyWatched`, legacyHistory);
-            if (legacyPlaylists) localStorage.setItem(`ivids-acc-${firstAccId}-playlists`, legacyPlaylists);
-            if (legacySettings) localStorage.setItem(`ivids-acc-${firstAccId}-settings`, legacySettings);
+            if (legacyHistory) PersistentStorage.setItem(`ivids-acc-${firstAccId}-recentlyWatched`, legacyHistory);
+            if (legacyPlaylists) PersistentStorage.setItem(`ivids-acc-${firstAccId}-playlists`, legacyPlaylists);
+            if (legacySettings) PersistentStorage.setItem(`ivids-acc-${firstAccId}-settings`, legacySettings);
 
             // Save new accounts list
-            localStorage.setItem('ivids-profiles', JSON.stringify(accounts));
+            PersistentStorage.setItem('ivids-profiles', JSON.stringify(accounts));
             
             // Set first custom account as active
-            localStorage.setItem('ivids-current-profile', JSON.stringify(accounts[0]));
+            PersistentStorage.setItem('ivids-current-profile', JSON.stringify(accounts[0]));
         } else {
             // No custom profiles, migrate global legacy data to anonymous namespace
             console.log('Migration: No custom profiles found. Migrating to anonymous namespace.');
             
-            if (legacyHistory) localStorage.setItem('ivids-anon-recentlyWatched', legacyHistory);
-            if (legacyPlaylists) localStorage.setItem('ivids-anon-playlists', legacyPlaylists);
-            if (legacySettings) localStorage.setItem('ivids-anon-settings', legacySettings);
+            if (legacyHistory) PersistentStorage.setItem('ivids-anon-recentlyWatched', legacyHistory);
+            if (legacyPlaylists) PersistentStorage.setItem('ivids-anon-playlists', legacyPlaylists);
+            if (legacySettings) PersistentStorage.setItem('ivids-anon-settings', legacySettings);
 
             // Clean up profiles
-            localStorage.removeItem('ivids-profiles');
-            localStorage.removeItem('ivids-current-profile');
+            PersistentStorage.removeItem('ivids-profiles');
+            PersistentStorage.removeItem('ivids-current-profile');
         }
 
         // Clean up legacy global keys
-        localStorage.removeItem('recentlyWatched');
-        localStorage.removeItem('user_playlists');
-        localStorage.removeItem('ivids-guest-pos');
+        PersistentStorage.removeItem('recentlyWatched');
+        PersistentStorage.removeItem('user_playlists');
+        PersistentStorage.removeItem('ivids-guest-pos');
         
         // Mark migration as complete
-        localStorage.setItem('ivids-migrated-v0.5.0', 'true');
+        PersistentStorage.setItem('ivids-migrated-v0.5.0', 'true');
         clearActiveAccountCache();
         console.log('Migration: Migration completed successfully.');
     } catch (error) {

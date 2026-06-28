@@ -1,5 +1,6 @@
 import { cacheManager } from './cache-manager.js';
 import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
+import { PersistentStorage } from './persistent-storage.js';
 
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -303,7 +304,7 @@ export const Api = {
     getIncludeAdult() {
         try {
             const userKey = getNamespacedKey('settings');
-            const saved = localStorage.getItem(userKey);
+            const saved = PersistentStorage.getItem(userKey);
             if (saved) {
                 const settings = JSON.parse(saved);
                 return settings.includeAdult === true || settings.includeAdult === 'true';
@@ -800,7 +801,7 @@ export const Api = {
         };
 
         try {
-            const globalSaved = localStorage.getItem('ivids-settings');
+            const globalSaved = PersistentStorage.getItem('ivids-settings');
             const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
 
             // Fallback to cookies for updateMode and language if not in localStorage
@@ -818,7 +819,7 @@ export const Api = {
             }
 
             const userKey = getNamespacedKey('settings');
-            const userSaved = localStorage.getItem(userKey);
+            const userSaved = PersistentStorage.getItem(userKey);
             const userSettings = userSaved ? JSON.parse(userSaved) : {};
 
             const saved = { ...globalSettings, ...userSettings };
@@ -879,8 +880,8 @@ export const Api = {
                         playerProviders: saved.playerProviders,
                         m3uPlaylists: saved.m3uPlaylists
                     };
-                    localStorage.setItem('ivids-settings', JSON.stringify(globalSettingsToSave));
-                    localStorage.setItem(userKey, JSON.stringify(userSettingsToSave));
+                    PersistentStorage.setItem('ivids-settings', JSON.stringify(globalSettingsToSave));
+                    PersistentStorage.setItem(userKey, JSON.stringify(userSettingsToSave));
                 }
 
                 _cachedPlayerConfig = {

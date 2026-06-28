@@ -3,6 +3,8 @@
  * Handles update verification, storage-level throttle checks, and environment routing.
  */
 
+import { PersistentStorage } from '../../logic/persistent-storage.js';
+
 const Config = {
     isNative: !!window.AndroidUpdate,
     isElectron: !!window.ElectronAPI,
@@ -222,7 +224,7 @@ export async function checkForUpdates(force = false) {
 export function initAutoCheck() {
     try {
         let updateMode = null;
-        const savedSettings = localStorage.getItem('ivids-settings');
+        const savedSettings = PersistentStorage.getItem('ivids-settings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
             updateMode = settings.updateMode;

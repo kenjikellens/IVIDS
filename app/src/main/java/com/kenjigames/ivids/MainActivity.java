@@ -439,6 +439,7 @@ public class MainActivity extends AppCompatActivity {
 
         mUpdateManager = new UpdateManager(this, mWebView);
         mWebView.addJavascriptInterface(mUpdateManager, "AndroidUpdate");
+        mWebView.addJavascriptInterface(new SettingsBridge(this), "AndroidSettings");
 
         mWebView.setWebChromeClient(new android.webkit.WebChromeClient() {
             @Override

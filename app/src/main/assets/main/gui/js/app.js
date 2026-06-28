@@ -6,6 +6,7 @@ import { ErrorHandler } from './error-handler.js';
 import { Screensaver } from './screensaver.js';
 import { Toast, NetworkStatusOverlay } from './toast.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
+import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { manageModal } from './utils/ui-helper.js';
 import './loader.js';
 import './i18n.js';
@@ -46,7 +47,7 @@ window.onunhandledrejection = function (event) {
  */
 function loadSettings() {
     try {
-        const globalSaved = localStorage.getItem('ivids-settings');
+        const globalSaved = PersistentStorage.getItem('ivids-settings');
         const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
 
         // Fallback to cookies for updateMode, language, and uiScale if not in localStorage
@@ -70,7 +71,7 @@ function loadSettings() {
         }
 
         const userKey = getNamespacedKey('settings');
-        const userSaved = localStorage.getItem(userKey);
+        const userSaved = PersistentStorage.getItem(userKey);
         const userSettings = userSaved ? JSON.parse(userSaved) : {};
 
         // Merge global settings (language, updateMode) and user settings (accentColor, preferred servers/M3U)
@@ -152,7 +153,7 @@ function initUpdateCheck() {
      */
     const getUpdateMode = () => {
         try {
-            const saved = localStorage.getItem('ivids-settings');
+            const saved = PersistentStorage.getItem('ivids-settings');
             if (saved) {
                 const settings = JSON.parse(saved);
                 if (settings.updateMode) return settings.updateMode;

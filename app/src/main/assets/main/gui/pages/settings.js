@@ -5,6 +5,7 @@ import { manageModal } from '../js/utils/ui-helper.js';
 import { parseMarkdown } from '../js/utils/markdown-parser.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { Api } from '../../logic/api.js';
+import { PersistentStorage } from '../../logic/persistent-storage.js';
 
 
 let settingsManagerInstance = null;
@@ -100,7 +101,7 @@ class SettingsManager {
             includeAdult: false
         };
         try {
-            const globalSaved = localStorage.getItem('ivids-settings');
+            const globalSaved = PersistentStorage.getItem('ivids-settings');
             const globalSettings = globalSaved ? JSON.parse(globalSaved) : {};
 
             // Fallback to cookies for updateMode, language, and uiScale if not in localStorage
@@ -124,7 +125,7 @@ class SettingsManager {
             }
 
             const userKey = getNamespacedKey('settings');
-            const userSaved = localStorage.getItem(userKey);
+            const userSaved = PersistentStorage.getItem(userKey);
             const userSettings = userSaved ? JSON.parse(userSaved) : {};
 
             const parsed = { ...globalSettings, ...userSettings };
@@ -191,8 +192,8 @@ class SettingsManager {
 
         const userKey = getNamespacedKey('settings');
 
-        localStorage.setItem('ivids-settings', JSON.stringify(globalSettings));
-        localStorage.setItem(userKey, JSON.stringify(userSettings));
+        PersistentStorage.setItem('ivids-settings', JSON.stringify(globalSettings));
+        PersistentStorage.setItem(userKey, JSON.stringify(userSettings));
 
         // Save updateMode, language, and uiScale to cookies for native integration
         document.cookie = `updateMode=${encodeURIComponent(this.settings.updateMode)}; path=/; max-age=31536000; SameSite=Lax`;

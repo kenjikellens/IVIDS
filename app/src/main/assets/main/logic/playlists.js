@@ -2,6 +2,7 @@
 import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched } from './recentlyWatched.js';
 import { Toast } from '../gui/js/toast.js';
 import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
+import { PersistentStorage } from './persistent-storage.js';
 
 const STORAGE_KEY = 'user_playlists';
 const HISTORY_ID = 'history';
@@ -22,7 +23,7 @@ export const Playlists = {
             const namespacedKey = getNamespacedKey(STORAGE_KEY);
 
             if (!_playlistsCache || _cacheOwnerId !== currentId) {
-                const stored = localStorage.getItem(namespacedKey);
+                const stored = PersistentStorage.getItem(namespacedKey);
                 _playlistsCache = stored ? JSON.parse(stored) : [];
                 _cacheOwnerId = currentId;
 
@@ -73,7 +74,7 @@ export const Playlists = {
             // Only save user playlists (filter out system ones like history)
             _playlistsCache = (playlists || []).filter(p => !p.isSystem && p.id !== HISTORY_ID);
             _cacheOwnerId = currentId;
-            localStorage.setItem(namespacedKey, JSON.stringify(_playlistsCache));
+            PersistentStorage.setItem(namespacedKey, JSON.stringify(_playlistsCache));
         } catch (e) {
             console.error('Error saving playlists:', e);
             if (e.name === 'QuotaExceededError' || (e.message && e.message.includes('quota'))) {
