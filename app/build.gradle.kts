@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace = "com.kenjigames.ivids"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.kenjigames.ivids"
         minSdk = 21
-        targetSdk = 36
-        versionCode = 30
-        versionName = "v0.5.3"
+        targetSdk = 35
+        versionCode = 32
+        versionName = "v0.5.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

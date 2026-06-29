@@ -1,6 +1,6 @@
 {
   "name": "ivids",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "IVIDS Standalone Desktop App",
   "main": "main.js",
   "scripts": {
