@@ -100,6 +100,69 @@ export class HeroSlider {
         this.onMouseLeave = () => this.startAutoPlay();
         this.container.addEventListener('mouseenter', this.onMouseEnter);
         this.container.addEventListener('mouseleave', this.onMouseLeave);
+
+        // 7. Add swipe handlers for mobile devices
+        this.touchStartX = 0;
+        this.touchStartY = 0;
+        this.touchEndX = 0;
+        this.touchEndY = 0;
+
+        /**
+         * Event handler for the start of a touch interaction.
+         * Saves the initial horizontal and vertical touch points.
+         * @param {TouchEvent} e - The touch event object.
+         */
+        this.onTouchStart = (e) => {
+            if (e.touches && e.touches.length > 0) {
+                this.touchStartX = e.touches[0].clientX;
+                this.touchStartY = e.touches[0].clientY;
+                // Initialize touchEndX/Y with starting coordinates in case move doesn't fire
+                this.touchEndX = e.touches[0].clientX;
+                this.touchEndY = e.touches[0].clientY;
+            }
+        };
+
+        /**
+         * Event handler for touch movement.
+         * Updates the current touch coordinates during dragging.
+         * @param {TouchEvent} e - The touch event object.
+         */
+        this.onTouchMove = (e) => {
+            if (e.touches && e.touches.length > 0) {
+                this.touchEndX = e.touches[0].clientX;
+                this.touchEndY = e.touches[0].clientY;
+            }
+        };
+
+        /**
+         * Event handler for the completion of a touch interaction.
+         * Calculates swipe gesture direction and triggers page transitions.
+         */
+        this.onTouchEnd = () => {
+            const diffX = this.touchEndX - this.touchStartX;
+            const diffY = this.touchEndY - this.touchStartY;
+            const minSwipeDistance = 50; // Minimum distance in pixels to register a swipe
+
+            // Check if the horizontal swipe is dominant and exceeds threshold
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
+                if (diffX > 0) {
+                    this.prev();
+                } else {
+                    this.next();
+                }
+                // Restart auto-play timer after manual navigation
+                this.startAutoPlay();
+            }
+            // Reset gesture coordinates
+            this.touchStartX = 0;
+            this.touchStartY = 0;
+            this.touchEndX = 0;
+            this.touchEndY = 0;
+        };
+
+        this.container.addEventListener('touchstart', this.onTouchStart, { passive: true });
+        this.container.addEventListener('touchmove', this.onTouchMove, { passive: true });
+        this.container.addEventListener('touchend', this.onTouchEnd);
     }
 
     /**
@@ -222,6 +285,15 @@ export class HeroSlider {
     }
 
     /**
+     * Cycles to the previous slide in sequence and updates the DOM elements.
+     */
+    prev() {
+        if (this.isDestroyed) return;
+        this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
+        this.render(this.currentIndex);
+    }
+
+    /**
      * Manually navigates to a specific slide index.
      * @param {number} index - Target slide index.
      */
@@ -247,9 +319,12 @@ export class HeroSlider {
         this.isDestroyed = true;
         this.stopAutoPlay();
         
-        if (this.container && this.onMouseEnter && this.onMouseLeave) {
-            this.container.removeEventListener('mouseenter', this.onMouseEnter);
-            this.container.removeEventListener('mouseleave', this.onMouseLeave);
+        if (this.container) {
+            if (this.onMouseEnter) this.container.removeEventListener('mouseenter', this.onMouseEnter);
+            if (this.onMouseLeave) this.container.removeEventListener('mouseleave', this.onMouseLeave);
+            if (this.onTouchStart) this.container.removeEventListener('touchstart', this.onTouchStart);
+            if (this.onTouchMove) this.container.removeEventListener('touchmove', this.onTouchMove);
+            if (this.onTouchEnd) this.container.removeEventListener('touchend', this.onTouchEnd);
         }
         if (this.track && this.track.parentNode) {
             this.track.parentNode.removeChild(this.track);

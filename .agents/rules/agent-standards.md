@@ -37,3 +37,7 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **RULE**: The `release` build type in `app/build.gradle.kts` MUST always have a `signingConfig` pointing to `keystore.jks` in the workspace root. NEVER remove or skip this.
 - **RULE**: Without a consistent signing key, Android will reject APK updates with "package appears to be invalid". This signing config is NON-NEGOTIABLE.
 - **RULE**: The `keystore.jks` file MUST be in `.gitignore` and NEVER committed to the repository.
+
+## 10. Android Target SDK Limitations
+- **RULE**: NEVER set `compileSdk` or `targetSdk` to an unreleased or developer-preview API level (such as API 36 / Android 16 during preview).
+- **RULE**: Stable consumer devices running current Android versions will block the browser-sideload installation of APKs compiled with a preview SDK (which contains preview codenames in compileSdkVersionCodename), returning a generic "package appears to be invalid" error. Always target stable, finalized SDK versions (e.g., API 35).

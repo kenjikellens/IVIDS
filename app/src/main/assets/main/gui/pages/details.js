@@ -255,6 +255,9 @@ function render(item, type) {
             }
         }
 
+        // Enable swipe gestures on tab panels for mobile navigation
+        setupTabSwipe();
+
     } catch (error) {
         console.error('Error in render function:', error);
         ErrorHandler.show('Failed to render details. Some information may be missing.');
@@ -632,6 +635,104 @@ function switchTab(tabName) {
     } catch (e) {
         console.error('Error switching tabs:', e);
     }
+}
+
+/**
+ * Returns the list of currently visible tab names based on which tab buttons
+ * are not hidden via display:none (e.g. 'seasons' is hidden for movies).
+ * @returns {string[]} Array of visible tab name strings.
+ */
+function getVisibleTabs() {
+    const allTabs = ['seasons', 'extra', 'about'];
+    return allTabs.filter(name => {
+        const btn = document.getElementById(`tab-${name}`);
+        return btn && btn.style.display !== 'none';
+    });
+}
+
+/**
+ * Returns the name of the currently active tab by checking which tab button
+ * has the btn-primary class applied.
+ * @returns {string|null} The active tab name or null if none found.
+ */
+function getActiveTab() {
+    const activeBtn = document.querySelector('.disney-tab-btn.btn-primary');
+    if (activeBtn && activeBtn.id) {
+        return activeBtn.id.replace('tab-', '');
+    }
+    return null;
+}
+
+/**
+ * Sets up touch swipe event listeners on the details layout container
+ * to allow swiping left/right between the tab panels (Seasons, Extra, About)
+ * on mobile devices. Only considers visible tabs in the swipe order.
+ */
+function setupTabSwipe() {
+    const layout = document.querySelector('.details-layout');
+    if (!layout) return;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    /**
+     * Captures the initial touch coordinates when the user starts swiping.
+     * @param {TouchEvent} e - The touchstart event.
+     */
+    layout.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length > 0) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchEndX = e.touches[0].clientX;
+            touchEndY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+
+    /**
+     * Tracks the ongoing touch position during a swipe gesture.
+     * @param {TouchEvent} e - The touchmove event.
+     */
+    layout.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches.length > 0) {
+            touchEndX = e.touches[0].clientX;
+            touchEndY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+
+    /**
+     * Evaluates the completed swipe gesture direction and switches tabs accordingly.
+     * Swipe left goes to the next tab, swipe right goes to the previous tab.
+     */
+    layout.addEventListener('touchend', () => {
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        const minSwipeDistance = 50;
+
+        // Only trigger if horizontal swipe is dominant and exceeds threshold
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
+            const visibleTabs = getVisibleTabs();
+            const currentTab = getActiveTab();
+            const currentIdx = visibleTabs.indexOf(currentTab);
+
+            if (currentIdx === -1) return;
+
+            if (diffX < 0 && currentIdx < visibleTabs.length - 1) {
+                // Swipe left → next tab
+                switchTab(visibleTabs[currentIdx + 1]);
+            } else if (diffX > 0 && currentIdx > 0) {
+                // Swipe right → previous tab
+                switchTab(visibleTabs[currentIdx - 1]);
+            }
+        }
+
+        // Reset coordinates
+        touchStartX = 0;
+        touchStartY = 0;
+        touchEndX = 0;
+        touchEndY = 0;
+    });
 }
 
 /**
