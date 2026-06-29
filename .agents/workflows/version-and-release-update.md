@@ -26,10 +26,11 @@ This document defines the strict, standardized protocol for launching new releas
   ```
   *(Replace `vX.Y.Z` with your target version, e.g. `v0.4.4` or `0.4.4`).*
 - **Automated Actions**: This command will automatically:
-  1. Update the `version` field in [package.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package.json).
-  2. Update the version fields in [package-lock.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package-lock.json).
-  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/build.gradle.kts).
-  4. Append the modification log entry to [CHANGELOG.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/CHANGELOG.md).
+  1. Update the `version` field in [package.json](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/package.json).
+  2. Update the version fields in [package-lock.json](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/package-lock.json).
+  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/build.gradle.kts).
+  4. Update the `version` attribute in Tizen's [config.xml](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/config.xml) and [config.xml](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/config.xml) to match `X.Y.Z`.
+  5. Append the modification log entry to [CHANGELOG.md](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/CHANGELOG.md).
 
 ### 3. Compile and Package the Applications (APK and EXE)
 - **ACTION**: Run the automated build script to compile the packages:

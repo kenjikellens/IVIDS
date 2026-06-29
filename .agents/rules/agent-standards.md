@@ -28,10 +28,11 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **RULE**: ALWAYS prioritize reusing already made CSS classes (e.g. `.playlist-card`, `.playlist-cover`, `.playlist-overlay`, `.poster-wrapper`, etc.) instead of writing duplicate styles or creating new classes, most classes for buttons are already defined.
 - **RULE**: Only add new CSS rules when absolutely necessary for custom layouts that cannot be achieved using existing class declarations.
 
-## 8. Android Build & Version Code Rules
+## 8. Android & Tizen Build & Version Code Rules
 - **RULE**: The Android `versionCode` in `app/build.gradle.kts` MUST be automatically incremented by 1 every time `build.bat` runs.
 - **RULE**: The `versionName` (e.g., `v0.4.5`) MUST remain unchanged during local compilations, and only change when initiating an official version update.
 - **RULE**: Do NOT bypass the `increment-version-code.js` auto-increment script in the build chain.
+- **RULE**: The Tizen configuration files (`app/src/main/config.xml` and `app/src/main/assets/main/config.xml`) must have their `version` attribute synchronized with the project's clean version (e.g. `0.4.5`) during version updates.
 
 ## 9. APK Release Signing (CRITICAL)
 - **RULE**: The `release` build type in `app/build.gradle.kts` MUST always have a `signingConfig` pointing to `keystore.jks` in the workspace root. NEVER remove or skip this.

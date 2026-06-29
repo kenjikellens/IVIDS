@@ -24,6 +24,7 @@ function main() {
 
     updatePackageJson(cleanVersion);
     updatePackageLockJson(cleanVersion);
+    updateTizenConfig(cleanVersion);
     const newVersionCode = updateGradleConfig(displayVersion);
     writeChangelog(displayVersion, newVersionCode);
 
@@ -120,6 +121,34 @@ function writeChangelog(versionName, versionCode) {
 
     fs.appendFileSync(changelogPath, entry, 'utf8');
     console.log(`Appended change log hook to CHANGELOG.md`);
+}
+
+/**
+ * Updates the version attribute in the widget element of Tizen config.xml files.
+ * @param {string} version - The clean version string (e.g. "0.4.4").
+ */
+function updateTizenConfig(version) {
+    const configPaths = [
+        path.join(__dirname, 'app', 'src', 'main', 'config.xml'),
+        path.join(__dirname, 'app', 'src', 'main', 'assets', 'main', 'config.xml')
+    ];
+
+    configPaths.forEach(configPath => {
+        if (!fs.existsSync(configPath)) {
+            console.warn(`Warning: Tizen config not found at ${configPath}`);
+            return;
+        }
+        let content = fs.readFileSync(configPath, 'utf8');
+        
+        const widgetVersionRegex = /(<widget[^>]+version=")([^"]+)("[^>]*>)/;
+        if (content.match(widgetVersionRegex)) {
+            content = content.replace(widgetVersionRegex, `$1${version}$3`);
+            fs.writeFileSync(configPath, content, 'utf8');
+            console.log(`Updated Tizen config version to ${version} in ${path.relative(__dirname, configPath)}`);
+        } else {
+            console.error(`Error: Could not find version attribute in widget tag of ${configPath}`);
+        }
+    });
 }
 
 main();
