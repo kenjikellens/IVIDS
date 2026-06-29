@@ -14,5 +14,7 @@
 .cxx
 local.properties
 *.apk
+*.jks
+*.keystore
 node_modules/
 dist/

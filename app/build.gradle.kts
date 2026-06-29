@@ -11,15 +11,25 @@ android {
         applicationId = "com.kenjigames.ivids"
         minSdk = 21
         targetSdk = 36
-        versionCode = 27
-        versionName = "v0.5.2"
+        versionCode = 30
+        versionName = "v0.5.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("../keystore.jks")
+            storePassword = "ivids2025"
+            keyAlias = "ivids"
+            keyPassword = "ivids2025"
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

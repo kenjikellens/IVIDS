@@ -32,3 +32,8 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **RULE**: The Android `versionCode` in `app/build.gradle.kts` MUST be automatically incremented by 1 every time `build.bat` runs.
 - **RULE**: The `versionName` (e.g., `v0.4.5`) MUST remain unchanged during local compilations, and only change when initiating an official version update.
 - **RULE**: Do NOT bypass the `increment-version-code.js` auto-increment script in the build chain.
+
+## 9. APK Release Signing (CRITICAL)
+- **RULE**: The `release` build type in `app/build.gradle.kts` MUST always have a `signingConfig` pointing to `keystore.jks` in the workspace root. NEVER remove or skip this.
+- **RULE**: Without a consistent signing key, Android will reject APK updates with "package appears to be invalid". This signing config is NON-NEGOTIABLE.
+- **RULE**: The `keystore.jks` file MUST be in `.gitignore` and NEVER committed to the repository.
