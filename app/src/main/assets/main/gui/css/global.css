@@ -46,7 +46,8 @@
     --text-muted: #a7a7a7;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+*:focus { outline: none; }
 
 /* Explains: Root html element configured to support dynamic scaling zoom. */
 html { background: var(--background-color); zoom: var(--ui-scale, 1.0); }
