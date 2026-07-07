@@ -83,6 +83,7 @@ class SettingsManager {
         this.movingProviderId = null;
         this.movingM3uId = null;
         this.movingOriginalList = null;
+        this.applySettingsGlobally();
         this.initializeUI();
         this.applySettings();
     }
@@ -95,7 +96,7 @@ class SettingsManager {
     loadSettings() {
         const defaultSettings = {
             language: 'en',
-            uiScale: '1.0',
+            uiScale: '0.85',
             accentColor: '#46d369',
             updateMode: 'manual',
             m3uUrl: '',
@@ -831,7 +832,22 @@ class SettingsManager {
             });
         }
 
-        const innerClose = manageModal(modal, null, () => this.closeModal());
+        this.syncActiveChips(modalId);
+
+        let focusTarget = null;
+        if (modalId === 'language-modal' || modalId === 'color-modal' || modalId === 'update-mode-modal') {
+            focusTarget = modal.querySelector('.option-chip.active');
+        } else if (modalId === 'player-modal') {
+            focusTarget = modal.querySelector('.provider-url-input') || document.getElementById('add-provider-btn');
+        } else if (modalId === 'm3u-modal') {
+            focusTarget = modal.querySelector('.provider-url-input') || document.getElementById('add-m3u-btn');
+        } else if (modalId === 'app-info-modal') {
+            focusTarget = modal.querySelector('.modal-footer .btn-secondary');
+        } else if (modalId === 'changes-modal') {
+            focusTarget = modal.querySelector('.modal-footer .btn-secondary') || modal.querySelector('.modal-close-x');
+        }
+
+        const innerClose = manageModal(modal, focusTarget, () => this.closeModal());
 
         this.closeModalFn = (revert = true) => {
             if (revert) {
@@ -882,8 +898,6 @@ class SettingsManager {
                 this.applyPending(key);
             };
         }
-
-        this.syncActiveChips(modalId);
     }
 
     /**

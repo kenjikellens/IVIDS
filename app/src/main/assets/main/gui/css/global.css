@@ -15,7 +15,7 @@
    ========================================================================== */
 /* IVIDS TV-first design system */
 :root {
-    --ui-scale: 1.0;
+    --ui-scale: 0.85;
     --app-content-padding-x: clamp(24px, 3.5vw, 48px);
     --app-content-padding-y: clamp(24px, 3vw, 40px);
     --app-sidebar-expanded-width: clamp(242px, 16.5vw, 264px);
@@ -2893,7 +2893,19 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
       Root variables override for large displays and 1080p laptops.
       Adjusts paddings, sidebar width, and increases poster size slightly for better visibility.
     */
-    :root { --app-content-padding-x: 32px; --app-content-padding-y: 28px; --app-sidebar-expanded-width: 220px; --app-sidebar-width: 68px; --poster-width: 154px; }
+    :root {
+        --app-content-padding-x: 32px;
+        --app-content-padding-y: 28px;
+        --app-sidebar-expanded-width: 220px;
+        --app-sidebar-width: 68px;
+        --poster-width: 154px;
+        --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.30);
+        --shadow-panel: 0 12px 36px rgba(0, 0, 0, 0.40);
+    }
+
+    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
+        box-shadow: 0 0 18px rgba(var(--primary-rgb), 0.65);
+    }
 
     /* Styles the hero section with a slightly reduced height. */ .hero { height: 56vh; min-height: 460px; padding-bottom: 50px; }
 
@@ -2910,7 +2922,19 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
       Root variables override for 720p displays and mid-sized laptops.
       Sets custom margins, sidebar width, and increases poster size for better visibility.
     */
-    :root { --app-content-padding-x: 24px; --app-content-padding-y: 20px; --app-sidebar-expanded-width: 210px; --app-sidebar-width: 64px; --poster-width: 136px; }
+    :root {
+        --app-content-padding-x: 24px;
+        --app-content-padding-y: 20px;
+        --app-sidebar-expanded-width: 210px;
+        --app-sidebar-width: 64px;
+        --poster-width: 136px;
+        --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.25);
+        --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.32);
+    }
+
+    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
+        box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.60);
+    }
 
     /* Styles the hero section with a reduced height for 720p screens. */ .hero { height: 52vh; min-height: 380px; padding-bottom: 40px; }
 
@@ -2929,13 +2953,64 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     /* Reduces height for detail backdrop image. */ .details-backdrop { height: 50vh; }
 }
 
+/* Intermediate media query for small viewports to scale spacing and shadows down. */
+@media (min-aspect-ratio: 3/4) and ((max-width: 1100px) or (max-height: 650px)) {
+    :root {
+        --app-content-padding-x: 20px;
+        --app-content-padding-y: 16px;
+        --poster-width: 120px;
+        --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.22);
+        --shadow-panel: 0 6px 16px rgba(0, 0, 0, 0.28);
+    }
+
+    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
+        box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.55);
+    }
+
+    .hero { height: 50vh; min-height: 300px; padding-bottom: 30px; }
+    .hero-title { font-size: 36px; }
+    .row-title { font-size: 18px; }
+}
+
+/* Intermediate media query for common TV WebView effective viewports to scale spacing and shadows further down. */
+@media (min-aspect-ratio: 3/4) and ((max-width: 960px) or (max-height: 560px)) {
+    :root {
+        --app-content-padding-x: 18px;
+        --app-content-padding-y: 14px;
+        --app-sidebar-width: 58px;
+        --poster-width: 114px;
+        --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.18);
+        --shadow-panel: 0 4px 10px rgba(0, 0, 0, 0.22);
+    }
+
+    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
+        box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.50);
+    }
+
+    .hero { height: 48vh; min-height: 260px; padding-bottom: 25px; }
+    .hero-title { font-size: 32px; }
+    .row-title { font-size: 17px; }
+}
+
 /* Media query for very small viewports like 480p screen or small displays. */
 @media (min-aspect-ratio: 3/4) and ((max-width: 900px) or (max-height: 520px)) {
     /*
       Root variables override for small 480p displays.
       Establishes compact paddings, sidebar width, and increases poster size for better visibility.
     */
-    :root { --app-content-padding-x: 16px; --app-content-padding-y: 12px; --app-sidebar-expanded-width: 170px; --app-sidebar-width: 54px; --poster-width: 106px; }
+    :root {
+        --app-content-padding-x: 16px;
+        --app-content-padding-y: 12px;
+        --app-sidebar-expanded-width: 170px;
+        --app-sidebar-width: 54px;
+        --poster-width: 106px;
+        --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.15);
+        --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
+        box-shadow: 0 0 4px rgba(var(--primary-rgb), 0.40);
+    }
 
     /* Styles the hero section with a compact height for 480p screens. */ .hero { height: 48vh; min-height: 240px; padding-bottom: 20px; }
 

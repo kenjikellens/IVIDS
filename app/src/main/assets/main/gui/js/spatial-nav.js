@@ -384,9 +384,7 @@ export const SpatialNav = {
         // Check if the element belongs to a Netflix-style horizontal row container (.row-posters)
         const rowPosters = el.closest('.row-posters');
 
-        // Retrieve active page logic state from the Router to only apply to home, series, and movies
-        const activePage = window.Router ? window.Router.currentPage : null;
-        const isCarouselPage = activePage === 'home' || activePage === 'movies' || activePage === 'series';
+        const isCarouselPage = this.currentPageLogic?.isCarouselPage === true;
 
         if (rowPosters && isCarouselPage) {
             // Calculate and apply custom horizontal carousel scrolling (Netflix-style Column 2 lock)
