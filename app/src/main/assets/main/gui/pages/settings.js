@@ -96,7 +96,7 @@ class SettingsManager {
     loadSettings() {
         const defaultSettings = {
             language: 'en',
-            uiScale: '0.85',
+            uiScale: '1.0',
             accentColor: '#46d369',
             updateMode: 'manual',
             m3uUrl: '',

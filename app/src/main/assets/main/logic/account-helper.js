@@ -79,7 +79,7 @@ export function getNamespacedKey(baseKey) {
     if (id === 'anon') {
         // Fallback for settings or other files where global config is separate
         if (baseKey === 'settings') {
-            return 'ivids-settings';
+            return 'ivids-anon-settings';
         }
         return `ivids-anon-${baseKey}`;
     }

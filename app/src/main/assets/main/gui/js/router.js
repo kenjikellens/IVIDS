@@ -1,6 +1,7 @@
 import { SpatialNav } from './spatial-nav.js';
 import { getLoaderHtml } from './loader.js';
 import { Splash } from './splash.js';
+import { Sidebar } from '../components/sidebar/sidebar.js';
 
 /** In-memory cache of fetched page HTML templates, keyed by page name. Eliminates re-fetching on back-nav. */
 const _htmlCache = new Map();
@@ -236,6 +237,9 @@ export const Router = {
 
             // 4. Update active nav item
             this.updateActiveNavLink(pageName);
+            if (Sidebar && typeof Sidebar.updateActiveLink === 'function') {
+                Sidebar.updateActiveLink(pageName);
+            }
 
             // 5. Reset Navigation Focus
             this.resetFocus(targetFocus);
