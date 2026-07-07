@@ -34,9 +34,9 @@ Every AI agent working on IVIDS MUST follow these strict rules.
 - **RULE**: Do NOT bypass the `increment-version-code.js` auto-increment script in the build chain.
 - **RULE**: The Tizen configuration files (`app/src/main/config.xml` and `app/src/main/assets/main/config.xml`) must have their `version` attribute synchronized with the project's clean version (e.g. `0.4.5`) during version updates.
 
-## 9. APK Release Signing (CRITICAL)
-- **RULE**: The `release` build type in `app/build.gradle.kts` MUST always have a `signingConfig` pointing to `keystore.jks` in the workspace root. NEVER remove or skip this.
-- **RULE**: Without a consistent signing key, Android will reject APK updates with "package appears to be invalid". This signing config is NON-NEGOTIABLE.
+## 9. APK Signing (CRITICAL)
+- **RULE**: Both `release` and `debug` build types in `app/build.gradle.kts` MUST always have a `signingConfig` pointing to `keystore.jks` in the workspace root. NEVER remove or skip this.
+- **RULE**: Without a consistent signing key for both build types, Android will reject APK updates with "package appears to be invalid" due to signature mismatch. This signing config is NON-NEGOTIABLE.
 - **RULE**: The `keystore.jks` file MUST be in `.gitignore` and NEVER committed to the repository.
 
 ## 10. Android Target SDK Limitations
