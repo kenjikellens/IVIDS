@@ -71,7 +71,7 @@ input, textarea, select { font: inherit; }
 
 #app { background: transparent; display: flex; flex-direction: row; height: 100%; position: relative; width: 100%; }
 
-#sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.25s ease, flex-basis 0.25s ease; width: var(--app-sidebar-width); z-index: 2000; }
+#sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.25s ease, flex-basis 0.25s ease; width: var(--app-sidebar-width); z-index: 2000; will-change: width, flex-basis; }
 
 /* Styles the primary vertical scroll viewport container, with a premium fade-out effect only at the bottom border. */
 #main-view {
@@ -466,6 +466,7 @@ input, textarea, select { font: inherit; }
     pointer-events: auto;
     transform: translateX(120%);
     transition: transform 0.28s ease, opacity 0.2s ease;
+    will-change: transform, opacity;
 }
 
 /* CSS Class: Active state showing the visible slide-in entrance transition */
@@ -596,6 +597,7 @@ input, textarea, select { font: inherit; }
     letter-spacing: -0.03em;
     opacity: 0;
     transition: opacity 0.25s ease;
+    will-change: opacity;
 }
 
 .nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
@@ -2711,7 +2713,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 .focusable:hover, .focusable:focus, .focusable.focused, .focusable:focus-within, .focusable-container:hover, .focusable-container:focus-within, .focusable-container.focused { border-color: #ffffff; box-shadow: none; outline: 2px solid #ffffff; outline-offset: 0px; }
 
 /* CSS Class: Hover, focus, and focused state styles for focusable cards, applying scale, 3px white outline, and soft accent glow. */
-.focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.7); outline: 3px solid #ffffff; outline-offset: 0px; transform: scale(1.04); z-index: 100; }
+.focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.7); outline: 3px solid #ffffff; outline-offset: 0px; transform: scale(1.04); z-index: 100; will-change: transform, border-color, box-shadow; }
 
 /* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable { border: none; box-shadow: none; outline: none; }
