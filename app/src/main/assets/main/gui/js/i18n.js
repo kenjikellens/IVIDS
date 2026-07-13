@@ -129,9 +129,13 @@ class I18n {
                 if (translation) {
                     // Handle input placeholders
                     if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
-                        element.placeholder = translation;
+                        if (element.placeholder !== translation) {
+                            element.placeholder = translation;
+                        }
                     } else {
-                        element.textContent = translation;
+                        if (element.textContent !== translation) {
+                            element.textContent = translation;
+                        }
                     }
                 }
             });
