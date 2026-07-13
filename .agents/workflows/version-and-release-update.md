@@ -26,11 +26,11 @@ This document defines the strict, standardized protocol for launching new releas
   ```
   *(Replace `vX.Y.Z` with your target version, e.g. `v0.4.4` or `0.4.4`).*
 - **Automated Actions**: This command will automatically:
-  1. Update the `version` field in [package.json](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/package.json).
-  2. Update the version fields in [package-lock.json](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/package-lock.json).
-  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/build.gradle.kts).
-  4. Update the `version` attribute in Tizen's [config.xml](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/config.xml) and [config.xml](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/config.xml) to match `X.Y.Z`.
-  5. Append the modification log entry to [CHANGELOG.md](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/CHANGELOG.md).
+  1. Update the `version` field in [package.json](file:///IVIDS/package.json).
+  2. Update the version fields in [package-lock.json](file:///IVIDS/package-lock.json).
+  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///IVIDS/app/build.gradle.kts).
+  4. Update the `version` attribute in Tizen's [config.xml](file:///IVIDS/app/src/main/config.xml) and [config.xml](file:///IVIDS/app/src/main/assets/main/config.xml) to match `X.Y.Z`.
+  5. Append the modification log entry to [CHANGELOG.md](file:///IVIDS/CHANGELOG.md).
 
 ### 3. Compile and Package the Applications (APK and EXE)
 - **ACTION**: Run the automated build script to compile the packages:
@@ -45,8 +45,8 @@ This document defines the strict, standardized protocol for launching new releas
 - **Automated Actions**: This script will automatically:
   1. Compile the Windows Portable Executable using `npm run dist`.
   2. Compile the Android APK (debug or release variant).
-  3. Copy and rename the compiled Windows binary to the workspace root as [IVIDS.exe](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/IVIDS.exe).
-  4. Copy and rename the compiled Android APK to the workspace root as [IVIDS.apk](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/IVIDS.apk).
+  3. Copy and rename the compiled Windows binary to the workspace root as [IVIDS.exe](file:///IVIDS/IVIDS.exe).
+  4. Copy and rename the compiled Android APK to the workspace root as [IVIDS.apk](file:///IVIDS/IVIDS.apk).
   5. Clean up temporary build artifacts (the `dist` folder).
 
 ### 4. Tag and Push the Release Tag
@@ -58,14 +58,14 @@ This document defines the strict, standardized protocol for launching new releas
   ```
 
 ### 5. Create the GitHub Release Online (MANDATORY — DO NOT SKIP)
-> **⚠️ CRITICAL: This step is NON-NEGOTIABLE. A pushed tag without a live GitHub release is INCOMPLETE. The release is NOT done until this step succeeds.**
+> **⚠️ CRITICAL: This step is NON-NEGOTIABLE. A pushed tag without a live, published GitHub release is INCOMPLETE. The release must NOT be created as a draft; it MUST be published live online immediately. The release is NOT done until this step succeeds.**
 
-- **ACTION**: You MUST autonomously create a **live, published GitHub release** using the `gh` CLI. The release MUST include the compiled `IVIDS.apk` and `IVIDS.exe` as downloadable assets.
+- **ACTION**: You MUST autonomously create a **live, published, non-draft GitHub release** using the `gh` CLI. The release MUST include the compiled `IVIDS.apk` and `IVIDS.exe` as downloadable assets.
 - **AUTH FIX**: If `gh` fails with a `401 Unauthorized` error, it is likely caused by an invalid `GITHUB_TOKEN` environment variable overriding the valid keyring credentials. Fix this by clearing the variable before running `gh`:
   ```powershell
   $env:GITHUB_TOKEN = ""; gh release create vX.Y.Z "IVIDS.apk" "IVIDS.exe" --title "Release vX.Y.Z" --notes "<release notes>" --latest
   ```
-- **RELEASE NOTES**: Use the high-quality title and description formulated in Step 1. Include a "What's Changed" section summarizing the key improvements.
+- **RELEASE NOTES**: Use the high-quality title and description formulated in Step 1. Include a "What's Changed" section summarizing the key improvements. Ensure the release is published live immediately (do NOT use `--draft`).
 
 ### 6. Verify the Release is Live (MANDATORY — DO NOT SKIP)
 - **ACTION**: After creating the release, you MUST verify it is actually live and accessible by running:

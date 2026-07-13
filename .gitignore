@@ -18,3 +18,16 @@ local.properties
 *.keystore
 node_modules/
 dist/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDEs/Editors
+.kotlin/
+.vscode/
+
+# Executables
+*.exe

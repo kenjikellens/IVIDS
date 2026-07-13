@@ -638,3 +638,40 @@
 .version-arrow {
     transform: rotate(90deg);
 }
+
+/* Raise network status overlay above bottom navigation bar */
+.network-status-overlay {
+    bottom: calc(var(--app-sidebar-width, 64px) + 16px) !important;
+    right: 16px !important;
+}
+
+/* Bottom navigation bar active/focused item overrides */
+#app .nav-item {
+    border: 2px solid transparent !important;
+}
+#app .nav-item.active {
+    border: 2px solid var(--primary-color) !important;
+    background: rgba(var(--primary-rgb), 0.18) !important;
+}
+#app .nav-item:focus,
+#app .nav-item.focused {
+    border: 3px solid #ffffff !important;
+    outline: none !important;
+}
+
+/* Modal sizing and height constraints for mobile screens */
+#app .modal-content {
+    max-height: 82vh !important;
+    width: 90vw !important;
+    max-width: 350px !important;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+#app .modal-scroll-area {
+    flex: 1 1 auto;
+    overflow-y: auto !important;
+    max-height: 45vh !important;
+    padding-right: 4px;
+}
