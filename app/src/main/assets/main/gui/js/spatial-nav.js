@@ -317,6 +317,15 @@ export const SpatialNav = {
     setFocus(element) {
         if (!element || !this.isVisible(element)) return;
 
+        // Pre-fetch details if element contains dataset id and type
+        if (element.dataset.id && element.dataset.type) {
+            const id = element.dataset.id;
+            const type = element.dataset.type;
+            import('../../logic/api.js').then(({ Api }) => {
+                Api.getDetails(id, type).catch(err => console.warn('Pre-fetch failed:', err));
+            }).catch(err => console.error('Failed to import Api for pre-fetching:', err));
+        }
+
         // Track last focus BEFORE updating
         const current = document.querySelector('.focused');
         if (current && current !== element) {

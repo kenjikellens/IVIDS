@@ -5,7 +5,7 @@ import { getWatchedItem } from '../../logic/recentlyWatched.js';
 import { getLoaderHtml } from '../js/loader.js';
 import { lazyLoader } from '../js/lazy-loader.js';
 import { debounce } from '../js/utils/debounce.js';
-import { manageModal } from '../js/utils/ui-helper.js';
+import { manageModal, createPosterElement } from '../js/utils/ui-helper.js';
 
 
 let currentFilters = {
@@ -615,32 +615,10 @@ function renderResultItems(items, container) {
         }
         const isWatched = getWatchedItem(item.id, mediaType);
 
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'poster-wrapper focusable focusable-card';
-        const img = document.createElement('img');
-        img.className = 'poster-img';
-        img.decoding = 'async';
-        img.dataset.src = Api.getImageUrl(item.poster_path);
-        img.alt = item.name || item.title;
-        img.style.opacity = '0';
-
-        btn.appendChild(img);
-        if (isWatched) {
-            const watched = document.createElement('div');
-            watched.className = 'watched-pill';
-            watched.textContent = window.i18n.t('search.watched');
-            btn.appendChild(watched);
+        const btn = createPosterElement(item, mediaType, 0, isWatched);
+        if (btn) {
+            fragment.appendChild(btn);
         }
-
-        fragment.appendChild(btn);
-
-        // Observe for lazy loading
-        lazyLoader.observeItem(btn);
-
-        btn.onclick = () => {
-            Router.loadPage('details', { id: item.id, type: mediaType });
-        };
     });
 
     container.appendChild(fragment);

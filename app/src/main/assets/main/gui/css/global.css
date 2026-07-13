@@ -403,6 +403,11 @@ input, textarea, select { font: inherit; }
     width: 24px;
 }
 
+.toast-error .toast-icon-mask,
+.toast-warning .toast-icon-mask {
+    --icon-url: url('../images/disconnected.svg');
+}
+
 .error-title { color: #fff; font-size: 30px; font-weight: 900; margin-bottom: 14px; }
 
 .error-message-container {

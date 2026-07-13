@@ -797,12 +797,20 @@ export const Api = {
      */
     async getDetails(id, type) {
         if (API_KEY.includes('TODO')) return null;
+        const lang = this.getLanguageCode();
+        const cacheKey = `details_${type}_${id}_${lang}`;
+        const cached = cacheManager.get(cacheKey);
+        if (cached) return cached;
+
         try {
-            const lang = this.getLanguageCode();
             const baseAppend = type === 'movie' ? 'release_dates' : 'content_ratings';
             const append = `${baseAppend},videos,credits`;
             const response = await deduplicatedFetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${append}&language=${lang}`);
-            return await response.json();
+            const data = await response.json();
+            if (data && !data.status_code) {
+                cacheManager.set(cacheKey, data, 10); // Cache for 10 mins
+            }
+            return data;
         } catch (error) {
             console.error('Error fetching details:', error);
             return null;

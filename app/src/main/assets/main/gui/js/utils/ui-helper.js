@@ -72,69 +72,17 @@ export function setupRow(elementId, items, defaultType = null) {
             try {
                 if (!item.poster_path) return;
 
-                let btn;
-                if (existingButtons[index]) {
-                    btn = existingButtons[index];
-                    btn.innerHTML = '';
-                    btn.classList.remove('is-skeleton');
-                    btn.removeAttribute('aria-hidden');
-                } else {
-                    btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'poster-wrapper focusable focusable-card';
+                const existingBtn = existingButtons[index] || null;
+                const containerWidth = rowButtonWidth || 0;
+
+                const btn = createPosterElement(item, defaultType, containerWidth, false, existingBtn);
+                if (btn && !existingBtn) {
                     rowPosters.appendChild(btn);
                 }
 
-                const img = document.createElement('img');
-                img.className = 'poster';
-                img.decoding = 'async';
-                img.style.opacity = '0'; // Hide initially
-                img.onload = () => {
-                    img.style.opacity = '1';
-                    const loader = btn.querySelector('.poster-loader');
-                    if (loader) loader.remove();
-                    triggerBootImageLoaded();
-                };
-                img.onerror = () => {
-                    const loader = btn.querySelector('.poster-loader');
-                    if (loader) loader.remove();
-                    img.style.opacity = '1';
-                    triggerBootImageLoaded();
-                };
-                if (rowButtonWidth === null || rowButtonWidth === 0) {
+                if (btn && (rowButtonWidth === null || rowButtonWidth === 0)) {
                     rowButtonWidth = btn.clientWidth || 0;
                 }
-                const containerWidth = rowButtonWidth;
-                const sizeKey = Api.getRecommendedSizeForContainer(containerWidth, false);
-                img.dataset.src = Api.getImageUrl(item.poster_path, sizeKey);
-                img.alt = item.title || item.name || 'Unknown';
-
-                btn.appendChild(img);
-
-                // Determine media type
-                let type = item.media_type;
-                if (!type) {
-                    if (defaultType) {
-                        type = defaultType;
-                    } else if (item.title) {
-                        type = 'movie';
-                    } else if (item.name) {
-                        type = 'tv';
-                    } else {
-                        type = 'movie';
-                    }
-                }
-
-                btn.onclick = () => {
-                    try {
-                        Router.loadPage('details', { id: item.id, type: type });
-                    } catch (navError) {
-                        console.error('Error navigating to details:', navError);
-                    }
-                };
-
-                // Observe the container for lazy loading the image
-                lazyLoader.observeItem(btn);
             } catch (itemError) {
                 console.error('Error rendering poster item:', itemError);
             }
@@ -252,3 +200,88 @@ export function manageModal(modal, focusTarget = null, onClose = null) {
 
     return closeModal;
 }
+
+/**
+ * Creates or updates a focusable poster button element for a media item.
+ * Centralizes duplicate markup generation between rows and search grids.
+ * @param {Object} item - Media content object.
+ * @param {string} [defaultType] - Default media type ('movie' or 'tv').
+ * @param {number} [sizeContainerWidth] - Width for recommended size calculation.
+ * @param {boolean} [isWatched] - Whether to render a watched pill indicator.
+ * @param {HTMLElement} [existingBtn] - Optional existing button element to recycle.
+ * @returns {HTMLElement} The created or recycled button element.
+ */
+export function createPosterElement(item, defaultType = null, sizeContainerWidth = 0, isWatched = false, existingBtn = null) {
+    if (!item.poster_path) return null;
+
+    let btn = existingBtn;
+    if (btn) {
+        btn.innerHTML = '';
+        btn.classList.remove('is-skeleton');
+        btn.removeAttribute('aria-hidden');
+    } else {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'poster-wrapper focusable focusable-card';
+    }
+
+    const img = document.createElement('img');
+    img.className = 'poster';
+    img.decoding = 'async';
+    img.style.opacity = '0'; // Hide initially
+    img.onload = () => {
+        img.style.opacity = '1';
+        const loader = btn.querySelector('.poster-loader');
+        if (loader) loader.remove();
+        triggerBootImageLoaded();
+    };
+    img.onerror = () => {
+        const loader = btn.querySelector('.poster-loader');
+        if (loader) loader.remove();
+        img.style.opacity = '1';
+        triggerBootImageLoaded();
+    };
+
+    const sizeKey = Api.getRecommendedSizeForContainer(sizeContainerWidth, false);
+    img.dataset.src = Api.getImageUrl(item.poster_path, sizeKey);
+    img.alt = item.title || item.name || 'Unknown';
+
+    btn.appendChild(img);
+
+    // Determine media type
+    let type = item.media_type;
+    if (!type || type === 'all') {
+        if (defaultType) {
+            type = defaultType;
+        } else if (item.title) {
+            type = 'movie';
+        } else if (item.name) {
+            type = 'tv';
+        } else {
+            type = 'movie';
+        }
+    }
+
+    btn.dataset.id = item.id;
+    btn.dataset.type = type;
+
+    btn.onclick = () => {
+        try {
+            Router.loadPage('details', { id: item.id, type: type });
+        } catch (navError) {
+            console.error('Error navigating to details:', navError);
+        }
+    };
+
+    if (isWatched) {
+        const watched = document.createElement('div');
+        watched.className = 'watched-pill';
+        watched.textContent = window.i18n.t('search.watched');
+        btn.appendChild(watched);
+    }
+
+    lazyLoader.observeItem(btn);
+
+    return btn;
+}
+
