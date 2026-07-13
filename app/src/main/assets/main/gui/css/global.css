@@ -57,7 +57,7 @@ html { background: var(--background-color); zoom: var(--ui-scale, 1.0); }
 body {
     background: #050505;
     color: var(--text-color);
-    font-family: "Twemoji Country Flags", Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Twemoji Country Flags", Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif;
     height: calc(100vh / var(--ui-scale, 1.0));
     line-height: 1.4;
     margin: 0;
@@ -125,8 +125,7 @@ input, textarea, select { font: inherit; }
 
 .btn:disabled { opacity: 0.6; pointer-events: none; }
 
-/* CSS Class: Scale transformation override on hover/focus/focused for all button instances. */
-.btn:hover, .btn:focus, .btn.focused { transform: scale(1.04); }
+/* Hover/focus styles are handled per-button type via border changes. Remove general scaling transform. */
 
 /* Styles the primary action buttons like Play using a semi-transparent green accent background. */
 .btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid rgba(var(--primary-rgb), 0.4); color: #ffffff; font-weight: 800; }
@@ -186,7 +185,6 @@ input, textarea, select { font: inherit; }
 /* Styles the main hero heading title with Outfit font, larger sizing, and a premium shadow */
 .hero-title {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 60px;
     font-weight: 700;
     line-height: 1.04;
@@ -308,7 +306,6 @@ input, textarea, select { font: inherit; }
 
 .splash-logo-text {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 52px;
     font-weight: 600;
     letter-spacing: 0;
@@ -318,7 +315,6 @@ input, textarea, select { font: inherit; }
 
 .page-title {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 42px;
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -328,7 +324,6 @@ input, textarea, select { font: inherit; }
 
 .profiles-title {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: clamp(34px, 4vw, 54px);
     font-weight: 700;
     line-height: 1.1;
@@ -596,7 +591,6 @@ input, textarea, select { font: inherit; }
 
 .logo-text {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 22px;
     font-weight: 600;
     letter-spacing: -0.03em;
@@ -712,7 +706,6 @@ input, textarea, select { font: inherit; }
 /* Styles the vertical category row headings (e.g. Recently Watched, Popular, Comedy Series) */
 .row-title {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 25px;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -1461,7 +1454,6 @@ input, textarea, select { font: inherit; }
 
 .playlist-name {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 4px;
@@ -1937,7 +1929,6 @@ input, textarea, select { font: inherit; }
 
 .modal-title {
     color: #fff;
-    font-family: 'Outfit', sans-serif;
     font-size: 26px;
     font-weight: 600;
     margin-bottom: 14px;
@@ -2531,7 +2522,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 .disney-about-left, .disney-about-right { width: 50%; }
 
-.disney-about-section-title { border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-color); font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; }
+.disney-about-section-title { border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-color); font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; }
 
 .disney-about-description { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
 
