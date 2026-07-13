@@ -109,7 +109,8 @@ class SettingsManager {
                 { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 4)', url: 'https://vidsrc.cc/v2/embed', isCustom: false }
             ],
             m3uPlaylists: [],
-            includeAdult: false
+            includeAdult: false,
+            dataSaver: false
         };
         try {
             const globalSaved = PersistentStorage.getItem('ivids-settings');
@@ -212,7 +213,8 @@ class SettingsManager {
             playerBaseUrl: this.settings.playerBaseUrl,
             playerProviders: this.settings.playerProviders,
             m3uPlaylists: this.settings.m3uPlaylists,
-            includeAdult: this.settings.includeAdult
+            includeAdult: this.settings.includeAdult,
+            dataSaver: this.settings.dataSaver
         };
 
         const userKey = getNamespacedKey('settings');
@@ -264,6 +266,26 @@ class SettingsManager {
                         : (window.i18n.t('settings.adultContentOff') || 'Off');
                     Toast.show(`${window.i18n.t('settings.adultContent')}: ${status}`);
                 }
+            };
+        }
+
+        // JS Handler: Binds click action to toggle the data saver setting state
+        const toggleDataSaverBtn = document.getElementById('toggle-datasaver-btn');
+        if (toggleDataSaverBtn) {
+            toggleDataSaverBtn.onclick = (e) => {
+                e.preventDefault();
+                this.settings.dataSaver = !this.settings.dataSaver;
+                this.saveSettings();
+                this.updateDisplays();
+                if (window.i18n) {
+                    const status = this.settings.dataSaver 
+                        ? (window.i18n.t('settings.adultContentOn') || 'On')
+                        : (window.i18n.t('settings.adultContentOff') || 'Off');
+                    Toast.show(`${window.i18n.t('settings.dataSaver')}: ${status}`);
+                }
+                
+                // Dispatch a global event so that dynamic images/network helpers reload/adjust instantly
+                window.dispatchEvent(new CustomEvent('datasaverchanged', { detail: this.settings.dataSaver }));
             };
         }
 
@@ -501,6 +523,13 @@ class SettingsManager {
         if (toggleAdultInput) {
             const isAdult = this.settings.includeAdult === true || this.settings.includeAdult === 'true';
             toggleAdultInput.checked = isAdult;
+        }
+
+        // JS Update: Synchronizes the data saver toggle switch element state
+        const toggleDataSaverInput = document.getElementById('datasaver-toggle-input');
+        if (toggleDataSaverInput) {
+            const isDataSaver = this.settings.dataSaver === true || this.settings.dataSaver === 'true';
+            toggleDataSaverInput.checked = isDataSaver;
         }
 
         const playerDisplay = document.getElementById('current-player-display');
@@ -994,6 +1023,8 @@ class SettingsManager {
         console.log(`Applying pending settings for ${key}`);
         let newValue = this.pendingSettings[key];
         if (key === 'includeAdult') {
+            newValue = newValue === 'true' || newValue === true;
+        } else if (key === 'dataSaver') {
             newValue = newValue === 'true' || newValue === true;
         }
         this.settings[key] = newValue;

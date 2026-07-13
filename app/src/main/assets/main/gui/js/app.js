@@ -636,6 +636,10 @@ function initHistoryTrap() {
 
 
 
+/**
+ * Initializes listeners for online/offline events, standard navigator.connection speed changes,
+ * and custom datasaverchanged settings toggles to show/hide status overlays.
+ */
 function initNetworkListeners() {
     window.addEventListener('offline', () => {
         NetworkStatusOverlay.show('lost');
@@ -645,6 +649,34 @@ function initNetworkListeners() {
         NetworkStatusOverlay.show('connected');
         console.log('Back online');
     });
+
+    // Helper to evaluate and display the slow internet warning overlay dynamically
+    const checkSpeed = () => {
+        try {
+            import('../../logic/api.js').then(({ Api }) => {
+                if (Api.isSlowConnection()) {
+                    NetworkStatusOverlay.show('slow');
+                } else {
+                    const overlay = document.getElementById('network-status-overlay');
+                    if (overlay && (overlay.classList.contains('slow') || overlay.classList.contains('lost')) && overlay.classList.contains('visible')) {
+                        NetworkStatusOverlay.show('connected');
+                    }
+                }
+            }).catch(err => console.error('App: Failed to load Api module in checkSpeed', err));
+        } catch (e) {
+            console.error('App: Error in checkSpeed execution:', e);
+        }
+    };
+
+    if (navigator.connection) {
+        navigator.connection.addEventListener('change', checkSpeed);
+    }
+
+    // Perform check on initialization
+    setTimeout(checkSpeed, 1000);
+
+    // Listen for custom toggle events dispatched from settings
+    window.addEventListener('datasaverchanged', checkSpeed);
 
     // Track when the app goes into the background
     document.addEventListener('visibilitychange', () => {

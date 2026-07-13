@@ -101,7 +101,9 @@
         "adultContentDesc": "Εμφάνιση περιεχομένου για ενηλίκους στα αποτελέσματα περιήγησης και αναζήτησης",
         "adultContentOn": "Επί",
         "adultContentOff": "Μακριά από",
-        "adultContentWarning": "Προειδοποίηση: Η ενεργοποίηση αυτής της επιλογής θα εμφανίσει ακατάλληλο περιεχόμενο για ενηλίκους. Αυτή η ρύθμιση συνιστάται μόνο για χρήστες 18+."
+        "adultContentWarning": "Προειδοποίηση: Η ενεργοποίηση αυτής της επιλογής θα εμφανίσει ακατάλληλο περιεχόμενο για ενηλίκους. Αυτή η ρύθμιση συνιστάται μόνο για χρήστες 18+.",
+        "dataSaver": "Data Saver / Slow Internet",
+        "dataSaverDesc": "Load lower quality photos and reduce network activity"
     },
     "common": {
         "close": "Κοντά",

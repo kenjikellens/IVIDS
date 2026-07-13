@@ -121,11 +121,44 @@ export const Api = {
     },
 
     /**
+     * Checks if the app is running in slow connection or data saver mode.
+     * Checks both the manual LocalStorage Data Saver switch and navigator.connection.
+     * @returns {boolean} True if slow connection or data saver mode is active.
+     */
+    isSlowConnection: () => {
+        try {
+            const userKey = getNamespacedKey('settings');
+            const saved = PersistentStorage.getItem(userKey);
+            if (saved) {
+                const settings = JSON.parse(saved);
+                if (settings.dataSaver === true || settings.dataSaver === 'true') {
+                    return true;
+                }
+            }
+        } catch (e) {
+            console.error('Api: Failed to read dataSaver setting:', e);
+        }
+
+        if (typeof navigator !== 'undefined' && navigator.connection) {
+            const conn = navigator.connection;
+            if (conn.saveData) return true;
+            if (conn.effectiveType && ['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return true;
+            if (typeof conn.downlink === 'number' && conn.downlink < 1.5) return true;
+        }
+
+        return false;
+    },
+
+    /**
      * Determines the optimal TMDb poster size based on responsive layout breakpoints and the device pixel ratio.
      * Estimates the exact CSS poster width based on screen width/height and resolves it to a TMDb size key.
      * @returns {string} The TMDb poster size path key.
      */
     getRecommendedPosterSize: () => {
+        if (Api.isSlowConnection()) {
+            return 'w154';
+        }
+
         const vw = window.innerWidth;
         const vh = window.innerHeight;
         const dpr = window.devicePixelRatio || 1;
@@ -176,6 +209,10 @@ export const Api = {
      * @returns {string} The TMDb poster size key.
      */
     getRecommendedDetailPosterSize: () => {
+        if (Api.isSlowConnection()) {
+            return 'w185';
+        }
+
         const width = window.innerWidth;
         const dpr = window.devicePixelRatio || 1;
         const effectiveWidth = width * dpr;
@@ -192,6 +229,10 @@ export const Api = {
      * @returns {string} The TMDb backdrop size key.
      */
     getRecommendedBackdropSize: () => {
+        if (Api.isSlowConnection()) {
+            return 'w300';
+        }
+
         const width = window.innerWidth;
         const dpr = window.devicePixelRatio || 1;
         const effectiveWidth = width * dpr;
@@ -215,6 +256,10 @@ export const Api = {
      * @returns {string} The TMDb size path segment key (e.g. 'w342', 'w780', or 'original').
      */
     getRecommendedSizeForContainer: (containerWidth, isBackdrop = false) => {
+        if (Api.isSlowConnection()) {
+            return isBackdrop ? 'w300' : 'w154';
+        }
+
         const dpr = window.devicePixelRatio || 1;
         const physicalWidth = containerWidth * dpr;
 
@@ -257,7 +302,7 @@ export const Api = {
         // Prefer dynamic recommended size if none provided
         let finalSize = size;
         if (!finalSize) {
-            const screenKey = `${window.innerWidth}x${window.devicePixelRatio || 1}`;
+            const screenKey = `${window.innerWidth}x${window.devicePixelRatio || 1}_${Api.isSlowConnection() ? 'slow' : 'fast'}`;
             if (!Api._recommendedSizes[screenKey]) {
                 Api._recommendedSizes[screenKey] = Api.getRecommendedPosterSize();
             }
@@ -1185,4 +1230,11 @@ export const Api = {
         ];
     },
 };
+
+// JS Event Listener: Clear image size caches when the user toggles the Data Saver mode
+if (typeof window !== 'undefined') {
+    window.addEventListener('datasaverchanged', () => {
+        Api._recommendedSizes = {};
+    });
+}
 

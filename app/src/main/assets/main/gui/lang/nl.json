@@ -103,7 +103,9 @@
         "adultContentDesc": "Toon volwassen inhoud in browse- en zoekresultaten",
         "adultContentOn": "Aan",
         "adultContentOff": "Uit",
-        "adultContentWarning": "Waarschuwing: Als u dit inschakelt, wordt er expliciete inhoud voor volwassenen getoond. Deze instelling wordt alleen aanbevolen voor gebruikers van 18 jaar en ouder."
+        "adultContentWarning": "Waarschuwing: Als u dit inschakelt, wordt er expliciete inhoud voor volwassenen getoond. Deze instelling wordt alleen aanbevolen voor gebruikers van 18 jaar en ouder.",
+        "dataSaver": "Data Saver / Slow Internet",
+        "dataSaverDesc": "Load lower quality photos and reduce network activity"
     },
     "common": {
         "close": "Sluiten",

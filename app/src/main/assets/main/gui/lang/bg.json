@@ -101,7 +101,9 @@
         "adultContentDesc": "Показване на съдържание за възрастни в резултатите от сърфирането и търсенето",
         "adultContentOn": "включено",
         "adultContentOff": "Изкл",
-        "adultContentWarning": "Предупреждение: Активирането на това ще покаже изрично съдържание за възрастни. Тази настройка се препоръчва само за потребители над 18 години."
+        "adultContentWarning": "Предупреждение: Активирането на това ще покаже изрично съдържание за възрастни. Тази настройка се препоръчва само за потребители над 18 години.",
+        "dataSaver": "Data Saver / Slow Internet",
+        "dataSaverDesc": "Load lower quality photos and reduce network activity"
     },
     "common": {
         "close": "затвори",

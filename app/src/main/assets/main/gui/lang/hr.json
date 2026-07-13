@@ -101,7 +101,9 @@
         "adultContentDesc": "Show adult content in browsing and search results",
         "adultContentOn": "On",
         "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+."
+        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
+        "dataSaver": "Data Saver / Slow Internet",
+        "dataSaverDesc": "Load lower quality photos and reduce network activity"
     },
     "common": {
         "close": "Close",
