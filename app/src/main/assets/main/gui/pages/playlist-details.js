@@ -116,7 +116,7 @@ function render() {
                 <div class="backdrop-overlay"></div>
             `;
         } else {
-            backdropEl.innerHTML = `<div class="backdrop-overlay" style="background-color:#111;"></div>`;
+            backdropEl.innerHTML = `<div class="backdrop-overlay backdrop-overlay-empty"></div>`;
         }
     }
 
@@ -133,10 +133,10 @@ function render() {
         if (playlist.items.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-icon" style="font-size: 48px; margin-bottom: 18px;">
+                    <div class="empty-icon empty-state-icon">
                         <span>📺</span>
                     </div>
-                    <h2 data-i18n="playlists.emptyPlaylist" style="margin-bottom: 22px; color: #fff; font-size: 24px;">This playlist is empty.</h2>
+                    <h2 data-i18n="playlists.emptyPlaylist" class="empty-state-heading">This playlist is empty.</h2>
                     <button id="empty-browse-btn" class="btn btn-secondary focusable">Browse Content</button>
                 </div>
             `;

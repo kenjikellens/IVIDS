@@ -102,7 +102,7 @@ export const Router = {
         }
 
         const originalContent = mainView.innerHTML;
-        mainView.innerHTML = `<div class="page-loader" style="display: flex; justify-content: center; align-items: center; height: 100vh;">${getLoaderHtml()}</div>`;
+        mainView.innerHTML = `<div class="page-loader">${getLoaderHtml()}</div>`;
 
         try {
             console.log(`Loading page: ${pageName}`);
@@ -250,12 +250,12 @@ export const Router = {
 
             // Restore original content or show error
             mainView.innerHTML = `
-                <div class="error-page-container" style="text-align: center; padding: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+                <div class="error-page-container">
                     <h1 data-i18n="error.pageTitle">Error loading page</h1>
                     <p>${error.message || 'An unexpected error occurred.'}</p>
-                    <div style="margin-top: 20px;">
+                    <div class="mt-20">
                         <button id="retry-page-btn" class="btn btn-primary focusable" data-i18n="error.retry">Retry</button>
-                        <button id="home-page-btn" class="btn btn-secondary focusable" data-i18n="error.goHome" style="margin-left: 10px;">Go Home</button>
+                        <button id="home-page-btn" class="btn btn-secondary focusable ml-10" data-i18n="error.goHome">Go Home</button>
                     </div>
                 </div>
             `;

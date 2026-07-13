@@ -315,12 +315,12 @@ function openPlaylistModal(item, type) {
             playlists = Playlists.getPlaylists();
         } catch (playlistError) {
             console.error('Error fetching playlists:', playlistError);
-            listContainer.innerHTML = '<p style="color: #f44; text-align: center;">Error loading playlists.</p>';
+            listContainer.innerHTML = '<p class="text-error text-center">Error loading playlists.</p>';
             return;
         }
 
         if (playlists.length === 0) {
-            listContainer.innerHTML = '<p style="color: #aaa; text-align: center;">No playlists found. Create one in the Playlists page.</p>';
+            listContainer.innerHTML = '<p class="text-muted-light text-center">No playlists found. Create one in the Playlists page.</p>';
         } else {
             playlists.forEach(playlist => {
                 try {
@@ -400,7 +400,7 @@ function renderSeasons(seasons, seriesId) {
         }
 
         if (!seasons || seasons.length === 0) {
-            container.innerHTML = `<p style="color: #aaa;">${I18n.t('details.noSeasons')}</p>`;
+            container.innerHTML = `<p class="text-muted-light">${I18n.t('details.noSeasons')}</p>`;
             return;
         }
 
@@ -508,20 +508,20 @@ async function loadSeasonEpisodes(seriesId, seasonNumber) {
             seasonDetails = await Api.getSeasonDetails(seriesId, seasonNumber);
         } catch (apiError) {
             console.error('Error fetching season details:', apiError);
-            container.innerHTML = `<div style="text-align:center; color:#f44;">Failed to load episodes. Please try again.</div>`;
+            container.innerHTML = `<div class="text-error text-center">Failed to load episodes. Please try again.</div>`;
             return;
         }
 
         if (seasonDetails && seasonDetails.episodes) {
             renderEpisodes(seasonDetails.episodes, seriesId, seasonNumber);
         } else {
-            container.innerHTML = `<div style="text-align:center; color:#aaa;">${I18n.t('details.noEpisodes')}</div>`;
+            container.innerHTML = `<div class="text-muted-light text-center">${I18n.t('details.noEpisodes')}</div>`;
         }
     } catch (error) {
         console.error('Error in loadSeasonEpisodes:', error);
         const container = document.getElementById('details-episodes');
         if (container) {
-            container.innerHTML = '<div style="text-align:center; color:#f44;">An error occurred while loading episodes.</div>';
+            container.innerHTML = '<div class="text-error text-center">An error occurred while loading episodes.</div>';
         }
     }
 }
@@ -544,7 +544,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
         container.innerHTML = '';
 
         if (!episodes || episodes.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:#aaa;">${I18n.t('details.noEpisodes')}</div>`;
+            container.innerHTML = `<div class="text-muted-light text-center">${I18n.t('details.noEpisodes')}</div>`;
             return;
         }
 
@@ -601,7 +601,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
         console.error('Error in renderEpisodes:', error);
         const container = document.getElementById('details-episodes');
         if (container) {
-            container.innerHTML = '<div style="text-align:center; color:#f44;">Failed to render episodes.</div>';
+            container.innerHTML = '<div class="text-error text-center">Failed to render episodes.</div>';
         }
     }
 }
@@ -749,7 +749,7 @@ function renderExtras(videos, contentId, mediaType) {
         container.innerHTML = '';
         
         if (!videos || !videos.results || videos.results.length === 0) {
-            container.innerHTML = `<p style="color: #aaa; padding: 20px 0;">${I18n.t('details.noExtras')}</p>`;
+            container.innerHTML = `<p class="text-muted-light py-20">${I18n.t('details.noExtras')}</p>`;
             return;
         }
         
@@ -819,7 +819,7 @@ function renderAbout(overview, credits) {
         castContainer.innerHTML = '';
         
         if (!credits || !credits.cast || credits.cast.length === 0) {
-            castContainer.innerHTML = `<p style="color: #aaa; padding: 20px 0;">${I18n.t('details.noCast')}</p>`;
+            castContainer.innerHTML = `<p class="text-muted-light py-20">${I18n.t('details.noCast')}</p>`;
             return;
         }
         

@@ -606,7 +606,7 @@ class SettingsManager {
                     <div class="option-chip focusable" data-value="branch">
                         <div class="version-chip-content">
                             <div class="version-chip-header">
-                                <span class="version-tag-badge" style="background: var(--primary-color)">Branch</span>
+                                <span class="version-tag-badge">Branch</span>
                                 <span class="version-date-label">Latest</span>
                             </div>
                             <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
@@ -708,7 +708,7 @@ class SettingsManager {
             if (grid) {
                 grid.style.display = 'grid';
                 grid.innerHTML = `
-                    <div style="color: #ff3b30; text-align: center; padding: 20px; font-weight: 700; width: 100%;">
+                    <div class="version-fetch-error">
                         Failed to fetch releases. Please check your internet connection.
                     </div>
                 `;

@@ -3230,3 +3230,68 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         display: none !important;
     }
 }
+
+/* ==========================================================================
+   SECTION: INLINE STYLE REPLACEMENTS
+   ========================================================================== */
+
+/* Utility: text color for error states (red) */
+.text-error { color: #ff3b30; }
+
+/* Utility: text color for muted/empty states */
+.text-muted-light { color: #aaa; }
+
+/* Utility: text-align center */
+.text-center { text-align: center; }
+
+/* Component: full-viewport centered flex container for page-level loaders */
+.page-loader { display: flex; justify-content: center; align-items: center; height: 100vh; }
+
+/* Component: error page fallback layout */
+.error-page-container {
+    text-align: center;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* Component: critical initialization error full-screen overlay */
+.critical-init-error {
+    background: #800;
+    color: #fff;
+    padding: 30px;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+/* Component: empty playlist icon styling */
+.empty-state-icon { font-size: 48px; margin-bottom: 18px; }
+
+/* Component: empty playlist heading */
+.empty-state-heading { margin-bottom: 22px; color: #fff; font-size: 24px; }
+
+/* Component: version error message block */
+.version-fetch-error {
+    color: #ff3b30;
+    text-align: center;
+    padding: 20px;
+    font-weight: 700;
+    width: 100%;
+}
+
+/* Component: no-image backdrop fallback */
+.backdrop-overlay-empty { background-color: #111; }
+
+/* Utility: margin-top spacer for button groups */
+.mt-20 { margin-top: 20px; }
+
+/* Utility: left margin for adjacent buttons */
+.ml-10 { margin-left: 10px; }
+
+/* Utility: vertical padding helper */
+.py-20 { padding: 20px 0; }
+
+
