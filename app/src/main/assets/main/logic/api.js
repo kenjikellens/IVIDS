@@ -150,81 +150,55 @@ export const Api = {
     },
 
     /**
-     * Determines the optimal TMDb poster size based on responsive layout breakpoints and the device pixel ratio.
-     * Estimates the exact CSS poster width based on screen width/height and resolves it to a TMDb size key.
+     * Determines the optimal TMDb poster size based on connection quality and granular screen breakpoints.
+     * Bypasses DPR checks to prevent high-DPI mobile devices from downloading oversized resolutions.
      * @returns {string} The TMDb poster size path key.
      */
     getRecommendedPosterSize: () => {
         if (Api.isSlowConnection()) {
-            return 'w154';
+            return 'w92';
         }
 
         const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        const dpr = window.devicePixelRatio || 1;
         const isPortrait = window.matchMedia('(max-aspect-ratio: 3/4)').matches;
 
-        let estWidth;
         if (isPortrait) {
-            // General portrait mobile size: clamp(96px, 24vw, 112px)
-            estWidth = Math.min(Math.max(96, vw * 0.24), 112);
+            if (vw <= 360) return 'w92';
+            if (vw <= 480) return 'w154';
+            return 'w185';
         } else {
-            // Check landscape breakpoints in order of screen sizes
-            if (vw <= 900 || vh <= 520) {
-                // 480p landscape
-                estWidth = 85;
-            } else if (vw <= 1280 || vh <= 720) {
-                // 720p landscape
-                estWidth = 110;
-            } else if (vw <= 1440 || vh <= 900) {
-                // 1080p landscape
-                estWidth = 124;
-            } else {
-                // Default large screen landscape: clamp(120px, 11vw, 156px)
-                estWidth = Math.min(Math.max(120, vw * 0.11), 156);
-            }
+            if (vw <= 600) return 'w154';
+            if (vw <= 900) return 'w185';
+            if (vw <= 1440) return 'w342';
+            
+            if (Api.isTV()) return 'w342';
+            return 'w500';
         }
-
-        const physicalWidth = estWidth * dpr;
-
-        // On TV, prioritize performance by capping poster size to w342 maximum
-        if (Api.isTV()) {
-            if (physicalWidth <= 185) return 'w185';
-            return 'w342';
-        }
-
-        // Available TMDB poster sizes: w92, w154, w185, w342, w500, w780, original
-        if (physicalWidth <= 92) return 'w92';
-        if (physicalWidth <= 154) return 'w154';
-        if (physicalWidth <= 185) return 'w185';
-        if (physicalWidth <= 342) return 'w342';
-        if (physicalWidth <= 500) return 'w500';
-        if (physicalWidth <= 780) return 'w780';
-        return 'original';
     },
 
     /**
-     * Determines the optimal TMDb detail poster size based on screen width.
+     * Determines the optimal TMDb detail poster size based on connection quality and screen breakpoints.
      * Estimates larger detail image keys to prevent blurry assets on high-res detail pages.
      * @returns {string} The TMDb poster size key.
      */
     getRecommendedDetailPosterSize: () => {
         if (Api.isSlowConnection()) {
-            return 'w185';
+            return 'w92';
         }
 
-        const width = window.innerWidth;
-        const dpr = window.devicePixelRatio || 1;
-        const effectiveWidth = width * dpr;
+        const vw = window.innerWidth;
 
-        // Detail posters are larger (~300px-500px)
-        if (effectiveWidth > 1400) return 'w500';
-        if (effectiveWidth > 800) return 'w342';
-        return 'w185';
+        if (vw <= 900) {
+            if (vw <= 480) return 'w185';
+            return 'w342';
+        } else {
+            if (vw <= 1440) return 'w342';
+            return 'w500';
+        }
     },
 
     /**
-     * Determines the optimal TMDb backdrop size for hero carousel sections.
+     * Determines the optimal TMDb backdrop size for hero carousel sections based on connection quality and screen width.
      * Selects w780 on TVs for performance, and maps screen size to w1280 or original.
      * @returns {string} The TMDb backdrop size key.
      */
@@ -233,19 +207,17 @@ export const Api = {
             return 'w300';
         }
 
-        const width = window.innerWidth;
-        const dpr = window.devicePixelRatio || 1;
-        const effectiveWidth = width * dpr;
+        const vw = window.innerWidth;
+        const isPortrait = window.matchMedia('(max-aspect-ratio: 3/4)').matches;
 
-        // On TV, we strongly prefer w780 over w1280 for memory/performance
-        if (Api.isTV()) {
+        if (isPortrait) {
+            if (vw <= 480) return 'w300';
             return 'w780';
+        } else {
+            if (vw <= 900) return 'w780';
+            if (Api.isTV()) return 'w780';
+            return BACKDROP_SIZE; // w1280
         }
-
-        // Hero backdrops fill the screen
-        if (effectiveWidth > 1600) return BACKDROP_SIZE; // w1280
-        if (effectiveWidth > 600) return 'w780';
-        return 'w300';
     },
 
     /**
