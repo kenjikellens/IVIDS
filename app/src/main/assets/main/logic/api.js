@@ -122,32 +122,51 @@ export const Api = {
 
     /**
      * Checks if the app is running in slow connection or data saver mode.
-     * Checks both the manual LocalStorage Data Saver switch and navigator.connection.
+     * Automatically enables and persists the Data Saver setting if the browser's
+     * native saveData mode is active. Treats slow network effectiveTypes dynamically
+     * without setting the persistent dataSaver flag, using a 0.5 Mbps threshold.
      * @returns {boolean} True if slow connection or data saver mode is active.
      */
     isSlowConnection: () => {
+        let isSavedDataSaver = false;
+        let settings = {};
+        let userKey = '';
         try {
-            const userKey = getNamespacedKey('settings');
+            userKey = getNamespacedKey('settings');
             const saved = PersistentStorage.getItem(userKey);
             if (saved) {
-                const settings = JSON.parse(saved);
+                settings = JSON.parse(saved);
                 if (settings.dataSaver === true || settings.dataSaver === 'true') {
-                    return true;
+                    isSavedDataSaver = true;
                 }
             }
         } catch (e) {
             console.error('Api: Failed to read dataSaver setting:', e);
         }
 
+        if (isSavedDataSaver) return true;
+
         if (typeof navigator !== 'undefined' && navigator.connection) {
             const conn = navigator.connection;
-            if (conn.saveData) return true;
+            if (conn.saveData) {
+                try {
+                    if (userKey && settings.dataSaver !== true && settings.dataSaver !== 'true') {
+                        settings.dataSaver = true;
+                        PersistentStorage.setItem(userKey, JSON.stringify(settings));
+                        window.dispatchEvent(new CustomEvent('datasaverchanged', { detail: true }));
+                    }
+                } catch (e) {
+                    console.error('Api: Failed to auto-enable dataSaver setting:', e);
+                }
+                return true;
+            }
             if (conn.effectiveType && ['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return true;
-            if (typeof conn.downlink === 'number' && conn.downlink < 1.5) return true;
+            if (typeof conn.downlink === 'number' && conn.downlink < 0.5) return true;
         }
 
         return false;
     },
+
 
     /**
      * Determines the optimal TMDb poster size based on connection quality and granular screen breakpoints.
