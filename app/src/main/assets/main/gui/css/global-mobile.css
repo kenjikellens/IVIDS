@@ -17,6 +17,7 @@
 }
 
 /* Keeps the bottom navigation container at full width on mobile with v0.4.3 height. */
+/* CSS Class: Keeps the bottom navigation container at full width on mobile. Includes high-specificity selectors to override desktop rules. */
 #app #sidebar-container,
 #app.sidebar-always-expanded #sidebar-container {
     position: fixed;
@@ -37,7 +38,7 @@
     box-sizing: border-box;
 }
 
-/* Main bottom navigation bar styling matching v0.4.3 layout and height. */
+/* CSS Class: Main bottom navigation bar styling matching layout and height. Includes specificity overrides for desktop state. */
 #app .navbar,
 #app.sidebar-always-expanded .navbar,
 #app .navbar:hover,
@@ -60,7 +61,7 @@
     background: rgba(0, 0, 0, 0.98);
 }
 
-/* Unwraps nav item containers to let items space evenly across navbar. */
+/* CSS Class: Unwraps nav item containers to let items space evenly across navbar. Includes specificity overrides. */
 #app .nav-links,
 #app .nav-utilities,
 #app.sidebar-always-expanded .nav-links,
@@ -68,7 +69,7 @@
     display: contents;
 }
 
-/* Layout and spacing override for bottom nav item. */
+/* CSS Class: Layout and spacing override for bottom nav item. Includes specificity overrides. */
 #app .nav-item,
 #app.sidebar-always-expanded .nav-item {
     flex: 1 1 0;
@@ -83,7 +84,7 @@
     background: transparent;
 }
 
-/* Nav icon sizing and margins. */
+/* CSS Class: Nav icon sizing and margins. Includes specificity overrides. */
 #app .nav-icon,
 #app.sidebar-always-expanded .nav-icon {
     width: 25px;
@@ -92,7 +93,7 @@
     flex-basis: 25px;
 }
 
-/* Hides elements that should not render on mobile bottom navigation (v0.4.3 standard). */
+/* CSS Class: Hides elements that should not render on mobile bottom navigation. Includes specificity overrides. */
 #app .logo-container,
 #app .nav-item::before,
 #app .nav-item span,
@@ -106,55 +107,49 @@
     display: none;
 }
 
-/* Sets the flex order of the home navigation item to be first in the mobile layout */
+/* CSS Class: Sets the flex order of the home navigation item. Includes specificity overrides. */
 #app .nav-item[data-route="home"],
 #app.sidebar-always-expanded .nav-item[data-route="home"] {
     order: 1;
 }
 
-/* Sets the flex order of the movies navigation item to be second in the mobile layout */
+/* CSS Class: Sets the flex order of the movies navigation item. Includes specificity overrides. */
 #app .nav-item[data-route="movies"],
 #app.sidebar-always-expanded .nav-item[data-route="movies"] {
     order: 2;
 }
 
-/* Sets the flex order of the series navigation item to be third in the mobile layout */
+/* CSS Class: Sets the flex order of the series navigation item. Includes specificity overrides. */
 #app .nav-item[data-route="series"],
 #app.sidebar-always-expanded .nav-item[data-route="series"] {
     order: 3;
 }
 
-/* Sets the flex order of the search navigation item to be fourth (centered) in the mobile layout */
+/* CSS Class: Sets the flex order of the search navigation item. Includes specificity overrides. */
 #app .nav-item[data-route="search"],
 #app.sidebar-always-expanded .nav-item[data-route="search"] {
     order: 4;
 }
 
-/* Sets the flex order of the playlists navigation item to be fifth in the mobile layout */
+/* CSS Class: Sets the flex order of the playlists navigation item. Includes specificity overrides. */
 #app .nav-item[data-route="playlists"],
 #app.sidebar-always-expanded .nav-item[data-route="playlists"] {
     order: 5;
 }
 
-/* Sets the flex order of the account navigation item to be sixth in the mobile layout */
+/* CSS Class: Sets the flex order of the account navigation item. Includes specificity overrides. */
 #app .nav-item[data-route="account"],
 #app.sidebar-always-expanded .nav-item[data-route="account"] {
     order: 6;
 }
 
-/* Sets the flex order of the settings navigation item to be seventh in the mobile layout */
+/* CSS Class: Sets the flex order of the settings navigation item. Includes specificity overrides. */
 #app .nav-item[data-route="settings"],
 #app.sidebar-always-expanded .nav-item[data-route="settings"] {
     order: 7;
 }
 
-/* Styles the active navigation item background with the semi-transparent accent color on mobile */
-#app .nav-item.active,
-#app.sidebar-always-expanded .nav-item.active {
-    background: rgba(var(--primary-rgb), 0.18) !important;
-}
-
-/* Colors the active or focused navigation icon with the solid theme accent color on mobile */
+/* CSS Class: Colors the active or focused navigation icon with the solid theme accent color. Includes specificity overrides. */
 #app .nav-item.active .nav-icon,
 #app .nav-item:hover .nav-icon,
 #app .nav-item:focus .nav-icon,
@@ -319,10 +314,7 @@
     margin-top: 15px;
 }
 
-/* Width stretch styling for playback and playlist actions. */
-#app .details-actions .btn {
-    width: 100%;
-}
+/* Note: Consolidated into grouped width block at the bottom of the file */
 
 /* CSS Class: Vertical stacking layout override for seasons list and episode list on mobile viewports. */
 #app .details-bottom {
@@ -377,10 +369,7 @@
     padding: 4% var(--app-content-padding-x) 0;
 }
 
-/* Width stretch for Live TV search channel input box. */
-#app .livetv-top-bar .search-box {
-    width: 100%;
-}
+/* Note: Consolidated into grouped width block at the bottom of the file */
 
 /* Spacing and width settings for Live TV selector controls. */
 #app .livetv-top-actions {
@@ -424,8 +413,9 @@
     gap: 12px;
 }
 
-/* Vertical layout stack for playlists header details. */
-#app .page-header {
+/* CSS Class: Combined vertical layout stacking helper for headers and setting rows on mobile viewports. */
+#app .page-header,
+#app .setting-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
@@ -447,12 +437,7 @@
     font-size: clamp(24px, 6vw, 36px);
 }
 
-/* Layout stack adjustment for settings settings rows. */
-#app .setting-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-}
+/* Note: Consolidated and merged into #app .page-header rule above */
 
 /* Flex display overrides for settings controls layout. */
 #app .setting-control {
@@ -520,17 +505,7 @@
     width: 100%;
 }
 
-/* Sizing scale and stretch for action buttons on user account page. */
-#app .profile-actions .btn {
-    width: 100%;
-}
-
-/* Layout scaling and centering adjustments for modal popups. */
-.modal-content {
-    padding: 16px;
-    max-width: 96%;
-    width: 96%;
-}
+/* Note: Consolidated profile-actions width, and removed redundant modal-content layout rule block */
 
 /* Margins adjustments for modal labels on mobile. */
 .modal-title {
@@ -585,18 +560,17 @@
     padding: 10px;
 }
 
-/* Full width sizing for provider and playlist URL input fields on mobile */
-.provider-url-input {
-    width: 100%;
-}
+/* Note: Consolidated into grouped width block at the bottom of the file */
 
 /* Alignment of control actions to the right inside provider list items on mobile */
 .provider-actions {
     justify-content: flex-end;
 }
 
-/* CSS Class: Mobile layout override to center the toast notifications horizontally at the top */
-.toast-container {
+/* CSS Class: Mobile layout override to center and standardise position of toast notifications horizontally at the top. */
+.toast-container,
+.toast-container.bottom-right,
+.toast-container.top-right {
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -604,22 +578,6 @@
     max-width: 400px;
     top: 20px;
     bottom: auto;
-}
-
-/* CSS Class: Mobile override for bottom-right toast positioning, pulling to top-center */
-.toast-container.bottom-right {
-    bottom: auto;
-    left: 0;
-    right: 0;
-    top: 20px;
-}
-
-/* CSS Class: Mobile override for top-right toast positioning, pulling to top-center */
-.toast-container.top-right {
-    bottom: auto;
-    left: 0;
-    right: 0;
-    top: 20px;
 }
 
 /* CSS Class: Mobile override for the version selector modal options grid to ensure a stacked layout. */
@@ -646,21 +604,26 @@
 }
 
 /* Bottom navigation bar active/focused item overrides */
-#app .nav-item {
+#app .nav-item,
+#app.sidebar-always-expanded .nav-item {
     border: 2px solid transparent !important;
 }
-#app .nav-item.active {
+#app .nav-item.active,
+#app.sidebar-always-expanded .nav-item.active {
     border: 2px solid var(--primary-color) !important;
     background: rgba(var(--primary-rgb), 0.18) !important;
 }
 #app .nav-item:focus,
-#app .nav-item.focused {
+#app .nav-item.focused,
+#app.sidebar-always-expanded .nav-item:focus,
+#app.sidebar-always-expanded .nav-item.focused {
     border: 3px solid #ffffff !important;
     outline: none !important;
 }
 
-/* Modal sizing and height constraints for mobile screens */
+/* CSS Class: Modal sizing, padding, and height constraints for mobile screens. */
 #app .modal-content {
+    padding: 16px;
     max-height: 82vh !important;
     width: 90vw !important;
     max-width: 350px !important;
@@ -668,6 +631,14 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+}
+
+/* CSS Class: Utility grouping to scale width of forms, inputs, and buttons on mobile to avoid duplication. */
+#app .details-actions .btn,
+#app .profile-actions .btn,
+#app .livetv-top-bar .search-box,
+.provider-url-input {
+    width: 100%;
 }
 #app .modal-scroll-area {
     flex: 1 1 auto;

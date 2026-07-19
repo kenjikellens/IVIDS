@@ -2621,9 +2621,11 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 .login-footer { align-items: center; display: flex; flex-direction: column; gap: 12px; margin-top: auto; width: 100%; }
 
-#login-submit { width: 100%; }
+/* CSS Class: Reusable min-width constraint for buttons to ensure translated text fits without clipping. */
+.btn-min-w { min-width: 120px; }
 
-#login-back, #app-info-btn { margin: 0 auto; width: 120px; }
+/* CSS Class: Reusable utility class for auto-centering block/flex elements horizontally. */
+.mx-auto { margin: 0 auto; }
 
 #login-circle-back { height: 48px; left: -54px; position: absolute; top: 0; width: 48px; z-index: 10; }
 
