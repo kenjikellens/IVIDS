@@ -288,7 +288,6 @@ export async function init(params) {
             const iframe = document.createElement('iframe');
             iframe.src = url;
             iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
-            iframe.allowFullscreen = true;
 
             iframe.style.position = "absolute";
             iframe.style.top = "0";
@@ -307,6 +306,8 @@ export async function init(params) {
             const statusSettings = document.getElementById('player-status-settings');
             let iframeLoaded = false;
 
+            if (statusPanel) statusPanel.style.display = 'none';
+
             const showProviderWarning = () => {
                 if (iframeLoaded || !statusPanel) return;
                 statusPanel.style.display = 'block';
@@ -317,7 +318,10 @@ export async function init(params) {
 
             iframe.onload = () => {
                 iframeLoaded = true;
-                if (providerTimeout) clearTimeout(providerTimeout);
+                if (providerTimeout) {
+                    clearTimeout(providerTimeout);
+                    providerTimeout = null;
+                }
                 if (statusPanel) {
                     statusPanel.style.display = 'none';
                     statusPanel.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
@@ -335,7 +339,8 @@ export async function init(params) {
                 }, 1500);
             };
 
-            providerTimeout = setTimeout(showProviderWarning, 12000);
+            if (providerTimeout) clearTimeout(providerTimeout);
+            providerTimeout = setTimeout(showProviderWarning, 25000);
 
             container.appendChild(iframe);
 
@@ -481,7 +486,14 @@ function renderServerSelection(params, iframe) {
             currentServerId = server.id;
 
             const loadingOverlay = document.getElementById('player-loading-overlay');
+            const statusPanel = document.getElementById('player-status-panel');
             const videoEl = document.getElementById('native-video-player');
+
+            if (statusPanel) statusPanel.style.display = 'none';
+            if (providerTimeout) {
+                clearTimeout(providerTimeout);
+                providerTimeout = null;
+            }
 
             if (server.id === 'direct_stream') {
                 if (loadingOverlay) loadingOverlay.style.display = 'flex';

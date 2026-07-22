@@ -21,7 +21,7 @@ const DEFAULT_PLAYER_PROVIDERS = [
     { id: 'vidlink', name: 'VidLink (Server 2)', url: 'https://vidlink.pro', isCustom: false },
     { id: 'vidsrc_to', name: 'VidSrc.to (Server 3)', url: 'https://vidsrc.to/embed', isCustom: false },
     { id: 'videasy', name: 'Videasy (Server 4)', url: 'https://player.videasy.net', isCustom: false },
-    { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 5)', url: 'https://vidsrc.cc/v2/embed', isCustom: false }
+    { id: 'embed_su', name: 'Embed.su (Server 5)', url: 'https://embed.su/embed', isCustom: false }
 ];
 
 // Image Size Constants
