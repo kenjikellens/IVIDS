@@ -17,10 +17,11 @@ let _cachedTodayDate = null;
 let _cachedPlayerConfig = null;
 let _configOwnerId = null;
 const DEFAULT_PLAYER_PROVIDERS = [
-    { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro', isCustom: false },
-    { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed', isCustom: false },
-    { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net', isCustom: false },
-    { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 4)', url: 'https://vidsrc.cc/v2/embed', isCustom: false }
+    { id: 'direct_stream', name: 'IVIDS Direct Stream (Clean)', url: 'direct://resolver', isCustom: false },
+    { id: 'vidlink', name: 'VidLink (Server 2)', url: 'https://vidlink.pro', isCustom: false },
+    { id: 'vidsrc_to', name: 'VidSrc.to (Server 3)', url: 'https://vidsrc.to/embed', isCustom: false },
+    { id: 'videasy', name: 'Videasy (Server 4)', url: 'https://player.videasy.net', isCustom: false },
+    { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 5)', url: 'https://vidsrc.cc/v2/embed', isCustom: false }
 ];
 
 // Image Size Constants
@@ -73,7 +74,13 @@ async function fetchWithRetry(resource, options = {}) {
  */
 async function deduplicatedFetch(url, options = {}) {
     if (_inflightRequests.has(url)) {
-        return _inflightRequests.get(url);
+        try {
+            const res = await _inflightRequests.get(url);
+            return res.clone();
+        } catch (e) {
+            // If in-flight request failed, retry fresh call
+            _inflightRequests.delete(url);
+        }
     }
     const cleanUp = () => _inflightRequests.delete(url);
     const promise = fetchWithRetry(url, options).then(
@@ -81,7 +88,13 @@ async function deduplicatedFetch(url, options = {}) {
         err => { cleanUp(); throw err; }
     );
     _inflightRequests.set(url, promise);
-    return promise;
+    try {
+        const res = await promise;
+        return res.clone();
+    } catch (err) {
+        cleanUp();
+        throw err;
+    }
 }
 
 /**
@@ -1025,6 +1038,57 @@ export const Api = {
             return `${baseUrl}/tv/${id}/${s}/${e}?${params}`;
         }
         return `${baseUrl}/movie/${id}?${params}`;
+    },
+
+    /**
+     * Resolves a direct .m3u8 or .mp4 video stream URL for clean native playback.
+     * @param {string} id - TMDB content ID.
+     * @param {string} type - 'movie' or 'tv'.
+     * @param {number} [season] - TV show season number.
+     * @param {number} [episode] - TV show episode number.
+     * @returns {Promise<Object|null>} Object containing streamUrl if successful, null otherwise.
+     */
+    async resolveDirectStream(id, type, season = null, episode = null) {
+        return new Promise((resolve) => {
+            const embedUrl = Api.getVideoUrl(id, type, season, episode, 'vidlink');
+            
+            // Check if running inside Android container with native background stream resolver
+            if (window.AndroidResolver && typeof window.AndroidResolver.resolveEmbedStream === 'function') {
+                const timeout = setTimeout(() => {
+                    window.onBackgroundStreamCaptured = null;
+                    resolve(null);
+                }, 8000);
+
+                window.onBackgroundStreamCaptured = (capturedUrl) => {
+                    clearTimeout(timeout);
+                    window.onBackgroundStreamCaptured = null;
+                    if (capturedUrl) {
+                        resolve({ status: 'success', streamUrl: capturedUrl });
+                    } else {
+                        resolve(null);
+                    }
+                };
+
+                window.AndroidResolver.resolveEmbedStream(embedUrl);
+                return;
+            }
+
+            // Fallback to PC server / proxy resolver endpoint
+            const params = new URLSearchParams({ id: id, type: type });
+            if (season) params.append('season', season);
+            if (episode) params.append('episode', episode);
+
+            fetch(`/resolve-stream?${params.toString()}`).then(res => {
+                if (res.ok) return res.json();
+                return null;
+            }).then(data => {
+                if (data && data.status === 'success' && data.streamUrl) {
+                    resolve(data);
+                } else {
+                    resolve(null);
+                }
+            }).catch(() => resolve(null));
+        });
     },
 
     getGenres() {

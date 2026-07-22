@@ -231,12 +231,40 @@ export async function init(params) {
         const loadingOverlay = document.getElementById('player-loading-overlay');
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
+        // Try Direct Stream Resolution first for movies/series
+        if (params.type !== 'trailer' && params.type !== 'live') {
+            try {
+                const directData = await Api.resolveDirectStream(params.id, params.type, params.season, params.episode);
+                if (directData && directData.streamUrl) {
+                    const videoEl = document.getElementById('native-video-player');
+                    if (videoEl) {
+                        videoEl.style.display = 'block';
+                        if (window.Hls && Hls.isSupported()) {
+                            const hls = new Hls();
+                            hls.loadSource(directData.streamUrl);
+                            hls.attachMedia(videoEl);
+                            hls.on(Hls.Events.MANIFEST_PARSED, () => videoEl.play().catch(e => console.error(e)));
+                        } else {
+                            videoEl.src = directData.streamUrl;
+                            videoEl.play().catch(e => console.error(e));
+                        }
+                    }
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                    setupOverlayVisibility(params);
+                    renderServerSelection(params, null);
+                    return;
+                }
+            } catch (resolveErr) {
+                console.warn('[IVIDS] Initial direct stream resolution attempt failed:', resolveErr);
+            }
+        }
+
         let url = '';
         try {
             if (params.type === 'trailer') {
                 url = `https://www.youtube.com/embed/${params.ytKey}?autoplay=1&enablejsapi=1`;
             } else {
-                url = Api.getVideoUrl(params.id, params.type, params.season, params.episode);
+                url = Api.getVideoUrl(params.id, params.type, params.season, params.episode, 'vidlink');
             }
         } catch (urlError) {
             console.error('Error generating video URL:', urlError);
@@ -256,6 +284,7 @@ export async function init(params) {
         }
 
         try {
+            console.log(`[IVIDS Player] Initializing iframe fallback player for URL: ${url}`);
             const iframe = document.createElement('iframe');
             iframe.src = url;
             iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
@@ -278,10 +307,6 @@ export async function init(params) {
             const statusSettings = document.getElementById('player-status-settings');
             let iframeLoaded = false;
 
-            /**
-             * Displays the provider loading warning status panel if the iframe fails to load.
-             * Toggles status panel visibility and focuses the back action element.
-             */
             const showProviderWarning = () => {
                 if (iframeLoaded || !statusPanel) return;
                 statusPanel.style.display = 'block';
@@ -290,10 +315,6 @@ export async function init(params) {
                 if (statusBack) SpatialNav.setFocus(statusBack);
             };
 
-            /**
-             * Handles the iframe onload event to mark the player loaded, clear loading timeouts,
-             * hide the warning panel, and transfer focus to the player iframe.
-             */
             iframe.onload = () => {
                 iframeLoaded = true;
                 if (providerTimeout) clearTimeout(providerTimeout);
@@ -450,8 +471,49 @@ function renderServerSelection(params, iframe) {
             btn.classList.remove('btn-secondary');
             currentServerId = server.id;
 
-            const newUrl = Api.getVideoUrl(params.id, params.type, params.season, params.episode, server.id);
-            iframe.src = newUrl;
+            const loadingOverlay = document.getElementById('player-loading-overlay');
+            const videoEl = document.getElementById('native-video-player');
+
+            if (server.id === 'direct_stream') {
+                if (loadingOverlay) loadingOverlay.style.display = 'flex';
+                Api.resolveDirectStream(params.id, params.type, params.season, params.episode).then(directData => {
+                    if (directData && directData.streamUrl) {
+                        if (iframe) iframe.style.display = 'none';
+                        if (videoEl) {
+                            videoEl.style.display = 'block';
+                            if (window.Hls && Hls.isSupported()) {
+                                const hls = new Hls();
+                                hls.loadSource(directData.streamUrl);
+                                hls.attachMedia(videoEl);
+                                hls.on(Hls.Events.MANIFEST_PARSED, () => videoEl.play().catch(e => console.error(e)));
+                            } else {
+                                videoEl.src = directData.streamUrl;
+                                videoEl.play().catch(e => console.error(e));
+                            }
+                        }
+                    } else {
+                        // Fallback to VidLink iframe
+                        if (videoEl) {
+                            videoEl.pause();
+                            videoEl.style.display = 'none';
+                        }
+                        if (iframe) {
+                            iframe.style.display = 'block';
+                            iframe.src = Api.getVideoUrl(params.id, params.type, params.season, params.episode, 'vidlink');
+                        }
+                    }
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                });
+            } else {
+                if (videoEl) {
+                    videoEl.pause();
+                    videoEl.style.display = 'none';
+                }
+                if (iframe) {
+                    iframe.style.display = 'block';
+                    iframe.src = Api.getVideoUrl(params.id, params.type, params.season, params.episode, server.id);
+                }
+            }
         };
 
         serverList.appendChild(btn);

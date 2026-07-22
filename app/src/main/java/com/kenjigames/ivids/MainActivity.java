@@ -440,6 +440,7 @@ public class MainActivity extends AppCompatActivity {
         mUpdateManager = new UpdateManager(this, mWebView);
         mWebView.addJavascriptInterface(mUpdateManager, "AndroidUpdate");
         mWebView.addJavascriptInterface(new SettingsBridge(this), "AndroidSettings");
+        mWebView.addJavascriptInterface(new StreamResolverBridge(this), "AndroidResolver");
 
         mWebView.setWebChromeClient(new android.webkit.WebChromeClient() {
             @Override
@@ -472,12 +473,107 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("file:///android_asset/main/gui/index.html");
     }
 
+    private WebView mResolverWebView;
+
+    /**
+     * Starts an offscreen background WebView to resolve and capture the direct stream URL from embed sites.
+     * Intercepts network requests for .m3u8 files and forwards the resolved stream back to the UI.
+     * 
+     * @param embedUrl The embed provider URL to inspect.
+     */
+    public void startBackgroundStreamResolver(final String embedUrl) {
+        Log.d(TAG, "[IVIDS Resolver] Initiating background stream resolver for URL: " + embedUrl);
+        if (mResolverWebView != null) {
+            try {
+                mResolverWebView.stopLoading();
+                mResolverWebView.destroy();
+                Log.d(TAG, "[IVIDS Resolver] Destroyed previous background resolver WebView instance.");
+            } catch (Exception e) {
+                Log.e(TAG, "[IVIDS Resolver] Error cleaning up old resolver webview: " + e.getMessage(), e);
+            }
+            mResolverWebView = null;
+        }
+
+        mResolverWebView = new WebView(this);
+        WebSettings settings = mResolverWebView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setMediaPlaybackRequiresUserGesture(true);
+
+        mResolverWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (request != null && request.getUrl() != null) {
+                    String urlString = request.getUrl().toString();
+                    if (urlString.contains(".m3u8") || urlString.contains(".mp4")) {
+                        Log.d(TAG, "[IVIDS Resolver] Successfully captured stream URL: " + urlString);
+                        final String finalUrl = urlString;
+                        mWebView.post(() -> {
+                            String js = "if (window.onBackgroundStreamCaptured) { window.onBackgroundStreamCaptured('" + finalUrl + "'); }";
+                            mWebView.evaluateJavascript(js, null);
+                        });
+                        view.post(() -> {
+                            try {
+                                view.stopLoading();
+                                view.destroy();
+                                Log.d(TAG, "[IVIDS Resolver] Offscreen resolver WebView destroyed post-capture.");
+                            } catch (Exception e) {
+                                Log.e(TAG, "[IVIDS Resolver] Error stopping resolver webview: " + e.getMessage(), e);
+                            }
+                        });
+                    }
+                }
+                return super.shouldInterceptRequest(view, request);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                if (request != null && request.isForMainFrame()) {
+                    Log.e(TAG, "[IVIDS Resolver] Error loading embed page: " + error.getDescription() + " (Code: " + error.getErrorCode() + ")");
+                }
+            }
+        });
+
+        mResolverWebView.loadUrl(embedUrl);
+    }
+
+    /**
+     * JavaScript Interface Bridge exposed to Web UI as window.AndroidResolver.
+     */
+    public static class StreamResolverBridge {
+        private final MainActivity mActivity;
+
+        public StreamResolverBridge(MainActivity activity) {
+            this.mActivity = activity;
+        }
+
+        @android.webkit.JavascriptInterface
+        public void resolveEmbedStream(final String embedUrl) {
+            Log.d(TAG, "[IVIDS Resolver] AndroidResolver bridge called with URL: " + embedUrl);
+            if (mActivity != null && !mActivity.isFinishing() && !mActivity.isDestroyed()) {
+                mActivity.runOnUiThread(() -> mActivity.startBackgroundStreamResolver(embedUrl));
+            } else {
+                Log.e(TAG, "[IVIDS Resolver] Cannot resolve stream; MainActivity is null or destroyed.");
+            }
+        }
+    }
+
     /**
      * Called when the activity is being destroyed.
      * Shuts down the update manager executor threads to prevent memory leaks.
      */
     @Override
     protected void onDestroy() {
+        if (mResolverWebView != null) {
+            try {
+                mResolverWebView.stopLoading();
+                mResolverWebView.destroy();
+            } catch (Exception e) {
+                Log.e(TAG, "Error destroying resolver on activity destroy", e);
+            }
+            mResolverWebView = null;
+        }
         if (mUpdateManager != null) {
             mUpdateManager.shutdown();
         }

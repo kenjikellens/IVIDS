@@ -172,6 +172,8 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_webapis_stub()
         elif parsed_path.startswith('/proxy'):
             self._handle_proxy()
+        elif parsed_path.startswith('/resolve-stream'):
+            self._handle_resolve_stream()
         else:
             self._serve_static_with_compression()
 
@@ -237,6 +239,93 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
         except Exception as e:
             self.send_error(500, f'Failed to read version: {str(e)}')
+
+    def _handle_resolve_stream(self):
+        """
+        Scrapes and extracts direct .m3u8 or .mp4 video stream URLs from movie and TV show embed sources.
+        Returns a JSON object with status and proxied stream URL for clean playback without popups.
+        """
+        try:
+            parsed = urllib.parse.urlparse(self.path)
+            query_params = urllib.parse.parse_qs(parsed.query)
+
+            content_id = query_params.get('id', [''])[0]
+            media_type = query_params.get('type', ['movie'])[0]
+            season = query_params.get('season', ['1'])[0]
+            episode = query_params.get('episode', ['1'])[0]
+
+            if not content_id:
+                body = json.dumps({'status': 'error', 'message': 'Missing content ID'}).encode('utf-8')
+                self._send_json_response(body, 400)
+                return
+
+            target_urls = []
+            if media_type == 'tv':
+                target_urls.append(f'https://vidlink.pro/tv/{content_id}/{season}/{episode}')
+                target_urls.append(f'https://vidsrc.to/embed/tv/{content_id}/{season}/{episode}')
+                target_urls.append(f'https://player.videasy.net/tv/{content_id}/{season}/{episode}')
+            else:
+                target_urls.append(f'https://vidlink.pro/movie/{content_id}')
+                target_urls.append(f'https://vidsrc.to/embed/movie/{content_id}')
+                target_urls.append(f'https://player.videasy.net/movie/{content_id}')
+
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': '*/*',
+                'Accept-Language': 'en-US,en;q=0.9'
+            }
+
+            extracted_stream = None
+            for target_url in target_urls:
+                try:
+                    req = urllib.request.Request(target_url, headers=headers)
+                    with urllib.request.urlopen(req, timeout=5) as response:
+                        html = response.read().decode('utf-8', errors='ignore')
+
+                        m3u8_matches = re.findall(r'(https?://[^\s\'"<>]+?\.m3u8[^\s\'"<>]*?)(?:[\s\'"<>]|$)', html)
+                        mp4_matches = re.findall(r'(https?://[^\s\'"<>]+?\.mp4[^\s\'"<>]*?)(?:[\s\'"<>]|$)', html)
+
+                        matches = m3u8_matches + mp4_matches
+                        if matches:
+                            extracted_stream = matches[0]
+                            break
+
+                        json_matches = re.findall(r'"(?:file|url|stream|source)":\s*"(https?://[^"]+)"', html)
+                        if json_matches:
+                            extracted_stream = json_matches[0]
+                            break
+                except Exception as ex:
+                    sys.stderr.write(f"[IVIDS] Resolver warning for {target_url}: {str(ex)}\n")
+                    continue
+
+            if extracted_stream:
+                proxied_url = f'/proxy?url={urllib.parse.quote(extracted_stream, safe="")}'
+                body = json.dumps({
+                    'status': 'success',
+                    'streamUrl': proxied_url,
+                    'rawUrl': extracted_stream
+                }).encode('utf-8')
+                self._send_json_response(body, 200)
+            else:
+                body = json.dumps({
+                    'status': 'error',
+                    'message': 'No direct stream extracted; falling back to sandboxed iframe'
+                }).encode('utf-8')
+                self._send_json_response(body, 200)
+
+        except Exception as e:
+            body = json.dumps({'status': 'error', 'message': str(e)}).encode('utf-8')
+            self._send_json_response(body, 500)
+
+    def _send_json_response(self, body, status_code=200):
+        """Helper to send JSON response with standard CORS headers."""
+        self.send_response(status_code)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+        self.wfile.write(body)
 
     def _handle_post_broken_channels(self):
         """
