@@ -1049,12 +1049,15 @@ export const Api = {
      * @returns {Promise<Object|null>} Object containing streamUrl if successful, null otherwise.
      */
     async resolveDirectStream(id, type, season = null, episode = null) {
+        console.log(`[IVIDS Resolver] Initiating direct stream resolution for ID: ${id}, type: ${type}, season: ${season}, episode: ${episode}`);
         return new Promise((resolve) => {
             const embedUrl = Api.getVideoUrl(id, type, season, episode, 'vidlink');
             
             // Check if running inside Android container with native background stream resolver
             if (window.AndroidResolver && typeof window.AndroidResolver.resolveEmbedStream === 'function') {
+                console.log(`[IVIDS Resolver] Delegating resolution to Android native background WebView bridge for URL: ${embedUrl}`);
                 const timeout = setTimeout(() => {
+                    console.warn('[IVIDS Resolver] Android native background resolver timed out after 8000ms');
                     window.onBackgroundStreamCaptured = null;
                     resolve(null);
                 }, 8000);
@@ -1063,8 +1066,10 @@ export const Api = {
                     clearTimeout(timeout);
                     window.onBackgroundStreamCaptured = null;
                     if (capturedUrl) {
+                        console.log(`[IVIDS Resolver] Native background WebView successfully captured stream URL: ${capturedUrl}`);
                         resolve({ status: 'success', streamUrl: capturedUrl });
                     } else {
+                        console.warn('[IVIDS Resolver] Native background WebView returned empty stream URL');
                         resolve(null);
                     }
                 };
@@ -1078,16 +1083,25 @@ export const Api = {
             if (season) params.append('season', season);
             if (episode) params.append('episode', episode);
 
-            fetch(`/resolve-stream?${params.toString()}`).then(res => {
+            const proxyEndpoint = `/resolve-stream?${params.toString()}`;
+            console.log(`[IVIDS Resolver] Fetching stream resolution from local server: ${proxyEndpoint}`);
+
+            fetch(proxyEndpoint).then(res => {
                 if (res.ok) return res.json();
+                console.error(`[IVIDS Resolver] Local server resolver failed with HTTP status ${res.status}`);
                 return null;
             }).then(data => {
                 if (data && data.status === 'success' && data.streamUrl) {
+                    console.log(`[IVIDS Resolver] Server resolver successfully returned stream: ${data.streamUrl}`);
                     resolve(data);
                 } else {
+                    console.warn('[IVIDS Resolver] Server resolver returned error or no stream payload:', data);
                     resolve(null);
                 }
-            }).catch(() => resolve(null));
+            }).catch(err => {
+                console.error('[IVIDS Resolver] Error making request to local resolver endpoint:', err);
+                resolve(null);
+            });
         });
     },
 
