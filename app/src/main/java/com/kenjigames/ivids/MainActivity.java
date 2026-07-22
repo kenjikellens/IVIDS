@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if (url != null && (url.contains("vidsrc.net") || url.contains("vidsrc.xyz") || url.contains("vidlink.pro") || url.contains("embed.su"))) {
+            if (url != null && (url.contains("vidsrc") || url.contains("vidlink") || url.contains("videasy") || url.contains("embed"))) {
                 // Auto-click the center after a delay to simulate autoplay
                 view.postDelayed(() -> {
                     if (view.getContext() instanceof MainActivity) {
@@ -346,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                             activity.simulateClick(view.getWidth() / 2f, view.getHeight() / 2f);
                         }
                     }
-                }, 4000); // 4 seconds delay to allow buffer/loading
+                }, 2500); // 2.5 seconds delay to allow player initialization
             }
         }
 

@@ -324,6 +324,15 @@ export async function init(params) {
                 }
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
                 SpatialNav.setFocus(iframe);
+
+                setTimeout(() => {
+                    try {
+                        iframe.focus();
+                        iframe.contentWindow?.postMessage({ type: 'play', action: 'play' }, '*');
+                    } catch (e) {
+                        console.warn('[IVIDS Player] Auto-play trigger message notice:', e);
+                    }
+                }, 1500);
             };
 
             providerTimeout = setTimeout(showProviderWarning, 12000);
