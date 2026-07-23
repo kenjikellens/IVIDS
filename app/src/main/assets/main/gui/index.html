@@ -75,64 +75,95 @@
 
     <!-- Fetch polyfill for Android TV / file:// protocol - placed BEFORE module scripts to guarantee availability -->
     <script>
-        // FIX for Fetch on Android TV / file:// protocol for local files only
+        // FIX for Fetch on Android TV / file:// protocol
         const originalFetch = window.fetch;
+
         /**
-         * Polyfills the global fetch API for local asset loading on file:// protocol.
-         * Intercepts local relative paths when running from file:// scheme to route them through XMLHttpRequest,
-         * while ensuring remote HTTP/HTTPS requests use native browser fetch.
+         * Creates a Response-compatible mock object from a completed XMLHttpRequest.
+         * Supports clone(), json(), text(), blob(), arrayBuffer(), and headers interface.
+         * 
+         * @param {XMLHttpRequest} xhr - The completed XHR object.
+         * @returns {Object} A Response-like object.
+         */
+        function createXhrResponse(xhr) {
+            const rawHeaders = xhr.getAllResponseHeaders() || '';
+            const headersMap = new Map();
+            rawHeaders.trim().split(/[\r\n]+/).forEach(line => {
+                const parts = line.split(': ');
+                const header = parts.shift();
+                const value = parts.join(': ');
+                if (header) headersMap.set(header.toLowerCase(), value);
+            });
+
+            return {
+                ok: (xhr.status >= 200 && xhr.status < 300) || xhr.status === 0,
+                status: xhr.status === 0 ? 200 : xhr.status,
+                statusText: xhr.statusText || 'OK',
+                headers: {
+                    get: (name) => headersMap.get(String(name).toLowerCase()) || null,
+                    has: (name) => headersMap.has(String(name).toLowerCase())
+                },
+                json: () => {
+                    try {
+                        return Promise.resolve(JSON.parse(xhr.responseText));
+                    } catch (e) {
+                        return Promise.reject(e);
+                    }
+                },
+                text: () => Promise.resolve(xhr.responseText || ''),
+                blob: () => Promise.resolve(new Blob([xhr.response || xhr.responseText])),
+                arrayBuffer: () => Promise.resolve(xhr.response),
+                clone: function () {
+                    return createXhrResponse(xhr);
+                }
+            };
+        }
+
+        /**
+         * Polyfills the global fetch API on file:// protocol for Android TV & WebViews.
+         * Routes fetches through XMLHttpRequest to bypass Chromium's file:// fetch restrictions.
          * 
          * @param {string|Request} url - The URL or request object to fetch.
          * @param {object} [options] - Optional configurations including method, headers, and signal.
          * @returns {Promise<Response>} A promise resolving to a fetch-compatible response object.
          */
         window.fetch = function (url, options) {
-            const urlString = typeof url === 'string' ? url : (url && url.url ? url.url : String(url));
-            const isRemote = urlString.startsWith('http://') || urlString.startsWith('https://') || urlString.startsWith('//');
-            
-            if (!isRemote && window.location.protocol === 'file:') {
-                return new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    const method = (options && options.method) || (url && url.method) || 'GET';
-                    xhr.open(method, urlString);
-                    
-                    if (options && options.headers) {
-                        if (typeof Headers !== 'undefined' && options.headers instanceof Headers) {
-                            options.headers.forEach((val, key) => {
-                                xhr.setRequestHeader(key, val);
-                            });
-                        } else {
-                            Object.entries(options.headers).forEach(([key, val]) => {
-                                xhr.setRequestHeader(key, val);
-                            });
-                        }
-                    }
-                    
-                    xhr.onload = () => {
-                        const responseObj = {
-                            ok: (xhr.status >= 200 && xhr.status < 300) || xhr.status === 0,
-                            status: xhr.status === 0 ? 200 : xhr.status,
-                            statusText: xhr.statusText,
-                            json: () => Promise.resolve(JSON.parse(xhr.responseText)),
-                            text: () => Promise.resolve(xhr.responseText),
-                            clone: function () { return this; }
-                        };
-                        resolve(responseObj);
-                    };
-                    
-                    xhr.onerror = () => reject(new Error('Fetch failed via XHR'));
-                    if (options && options.signal) {
-                        options.signal.addEventListener('abort', () => {
-                            xhr.abort();
-                            reject(new DOMException('Aborted', 'AbortError'));
+            const isFileProtocol = window.location.protocol === 'file:';
+            if (!isFileProtocol) {
+                return originalFetch(url, options);
+            }
+
+            return new Promise((resolve, reject) => {
+                const urlString = typeof url === 'string' ? url : (url && url.url ? url.url : String(url));
+                const xhr = new XMLHttpRequest();
+                const method = (options && options.method) || (url && url.method) || 'GET';
+                xhr.open(method, urlString);
+
+                if (options && options.headers) {
+                    if (typeof Headers !== 'undefined' && options.headers instanceof Headers) {
+                        options.headers.forEach((val, key) => {
+                            xhr.setRequestHeader(key, val);
+                        });
+                    } else {
+                        Object.entries(options.headers).forEach(([key, val]) => {
+                            xhr.setRequestHeader(key, val);
                         });
                     }
-                    
-                    const body = (options && options.body) || (url && url.body) || null;
-                    xhr.send(body);
-                });
-            }
-            return originalFetch(url, options);
+                }
+
+                xhr.onload = () => resolve(createXhrResponse(xhr));
+                xhr.onerror = () => reject(new TypeError('Failed to fetch via XHR'));
+
+                if (options && options.signal) {
+                    options.signal.addEventListener('abort', () => {
+                        xhr.abort();
+                        reject(new DOMException('Aborted', 'AbortError'));
+                    });
+                }
+
+                const body = (options && options.body) || (url && url.body) || null;
+                xhr.send(body);
+            });
         };
     </script>
 

@@ -35,7 +35,7 @@ const DETAIL_POSTER_SIZE = 'w500'; // Medium size for details page
  * Handles network failures gracefully for unreliable Smart TV connections.
  */
 async function fetchWithRetry(resource, options = {}) {
-    const { timeout = 8000, retries = 2 } = options;
+    const { timeout = 15000, retries = 2 } = options;
     let lastError;
 
     for (let i = 0; i <= retries; i++) {
@@ -67,7 +67,8 @@ async function fetchWithRetry(resource, options = {}) {
 
 /**
  * Wraps fetchWithRetry with in-flight deduplication.
- * Caches and returns existing promises for identical URLs, resolving them via standard Promise chain handlers to avoid compatibility issues.
+ * Caches and returns existing promises for identical URLs, resolving them via standard Promise chain handlers.
+ * Includes defensive cloning fallback to handle custom response objects and stream states safely.
  * @param {string} url - The URL endpoint to fetch.
  * @param {Object} [options] - Configuration options for fetch.
  * @returns {Promise<Response>} The fetch response promise.
@@ -76,7 +77,11 @@ async function deduplicatedFetch(url, options = {}) {
     if (_inflightRequests.has(url)) {
         try {
             const res = await _inflightRequests.get(url);
-            return res.clone();
+            try {
+                return res.clone();
+            } catch (cloneErr) {
+                return res;
+            }
         } catch (e) {
             // If in-flight request failed, retry fresh call
             _inflightRequests.delete(url);
@@ -90,7 +95,11 @@ async function deduplicatedFetch(url, options = {}) {
     _inflightRequests.set(url, promise);
     try {
         const res = await promise;
-        return res.clone();
+        try {
+            return res.clone();
+        } catch (cloneErr) {
+            return res;
+        }
     } catch (err) {
         cleanUp();
         throw err;
