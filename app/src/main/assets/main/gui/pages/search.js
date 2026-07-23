@@ -283,11 +283,10 @@ export async function init(params) {
             };
         }
 
-        // Global Back Handler
-        const originalOnBack = SpatialNav.onBack;
-        SpatialNav.onBack = () => {
+        // Search Page Back Handler registered on SpatialNav stack
+        let searchBackHandler = () => {
             const activeModal = document.querySelector('.modal-overlay.active:not(#filter-modal)');
-            const filterModalActive = filterModal.classList.contains('active');
+            const filterModalActive = filterModal && filterModal.classList.contains('active');
 
             if (activeModal) {
                 if (activeModal === genreModal && closeGenreModalFn) {
@@ -308,16 +307,18 @@ export async function init(params) {
                 } else {
                     activeModal.classList.remove('active');
                 }
+                return true;
             } else if (filterModalActive) {
                 if (closeFilterModalFn) {
                     closeFilterModalFn();
                     closeFilterModalFn = null;
                 }
                 SpatialNav.setFocus(filterBtn);
-            } else if (originalOnBack) {
-                originalOnBack();
+                return true;
             }
+            return false;
         };
+        SpatialNav.pushBackHandler(searchBackHandler);
 
 
         if (searchBtn) {

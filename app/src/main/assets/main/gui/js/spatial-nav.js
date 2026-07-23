@@ -123,6 +123,14 @@ export const SpatialNav = {
     },
 
     /**
+     * Clears all registered back handlers from the stack.
+     * Prevents orphan handlers from persisting across page route transitions.
+     */
+    clearBackHandlers() {
+        this.backHandlers = [];
+    },
+
+    /**
      * Executes the back action by running registered back stack handlers in LIFO order.
      * Also handles sidebar focus navigation when sidebar has active focus.
      * Falls back to invoking onBack when the back action is not fully consumed.

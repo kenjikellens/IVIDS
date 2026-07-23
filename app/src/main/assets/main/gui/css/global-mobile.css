@@ -176,9 +176,9 @@
     margin: 0 auto;
 }
 
-/* Typography scaling for primary hero banner title. */
+/* Typography scaling for primary hero banner title on mobile screens. */
 #app .hero-title {
-    font-size: clamp(24px, 6vw, 36px);
+    font-size: clamp(18px, 4.5vw, 24px);
     margin-bottom: 2%;
     max-width: 100%;
     text-align: center;
@@ -207,9 +207,9 @@
     margin: 0 auto;
 }
 
-/* Typography size adjustments for media row headings. */
+/* Typography size adjustments for media row headings on mobile viewports. */
 #app .row-title {
-    font-size: clamp(16px, 4.5vw, 20px);
+    font-size: clamp(14px, 3.5vw, 16px);
     margin-bottom: 1%;
     padding: 0 4%;
 }
@@ -421,9 +421,11 @@
     gap: 12px;
 }
 
-/* Font sizing scaling for main page title. */
-#app .page-title {
-    font-size: clamp(24px, 6vw, 32px);
+/* Font sizing scaling for main page titles on mobile. */
+#app .page-title,
+#app .details-title,
+#app #details-title {
+    font-size: clamp(18px, 4.5vw, 22px);
 }
 
 /* Container margins and layout settings for settings section. */
@@ -434,7 +436,7 @@
 
 /* Typography scaling for Settings page header text. */
 #app .settings-header h1 {
-    font-size: clamp(24px, 6vw, 36px);
+    font-size: clamp(18px, 4.5vw, 22px);
 }
 
 /* Note: Consolidated and merged into #app .page-header rule above */
@@ -473,7 +475,7 @@
 
 /* Typography scaling for Account page header. */
 #app .account-header h1 {
-    font-size: clamp(24px, 6vw, 36px);
+    font-size: clamp(18px, 4.5vw, 22px);
 }
 
 /* Stacked layout flow for account user profile item container. */

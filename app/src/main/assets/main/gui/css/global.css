@@ -366,41 +366,44 @@ input, textarea, select { font: inherit; }
     width: min(680px, 94vw);
 }
 
+/* Icon container wrapper for system error modals, compact circular badge styling. */
 .error-icon-container {
     align-items: center;
     background: rgba(var(--primary-rgb), 0.14);
     border-radius: var(--radius-lg);
     display: flex;
-    height: 76px;
+    height: 50px;
     justify-content: center;
-    margin-bottom: 22px;
-    width: 76px;
+    margin-bottom: 14px;
+    width: 50px;
 }
 
+/* Masked SVG error graphic icon inside system error modals. */
 .error-icon-mask {
     -webkit-mask-image: url('../images/error.svg');
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: contain;
     background-color: var(--primary-color);
-    height: 38px;
+    height: 24px;
     mask-image: url('../images/error.svg');
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: contain;
-    width: 38px;
+    width: 24px;
 }
 
+/* Masked SVG status icon inside toast notifications. */
 .toast-icon-mask {
     -webkit-mask-image: var(--icon-url);
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: contain;
     background-color: currentColor;
-    height: 24px;
+    height: 18px;
     mask-image: var(--icon-url);
     mask-repeat: no-repeat;
     mask-size: contain;
-    width: 24px;
+    width: 18px;
 }
 
 .toast-error .toast-icon-mask,
@@ -2377,20 +2380,26 @@ input, textarea, select { font: inherit; }
 
 iframe, #native-video-player { background: #000; border: none; height: 100%; width: 100%; }
 
+/* Status and error modal panel for video player load warnings, cleanly centered on screen. */
 .player-status-panel {
+    align-items: center;
     background: rgba(18, 18, 18, 0.96);
+    backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-panel);
     box-sizing: border-box;
     color: #fff;
-    height: auto;
-    left: 10%;
-    padding: 3%;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    inset: 0;
+    justify-content: center;
+    margin: auto;
+    max-width: 500px;
+    padding: 4%;
     position: absolute;
     text-align: center;
-    top: 30%;
-    transform: translate(-50%, -50%);
     width: 80%;
     z-index: 200;
 }

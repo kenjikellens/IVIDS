@@ -11,6 +11,7 @@ let clickHandler = null;
 let keydownHandler = null;
 let globalKeydownHandler = null;
 let popstateHandler = null;
+let playerBackHandler = null;
 
 /**
  * Cleans up player resources, restores global UI layout elements, and returns to the details view.
@@ -79,6 +80,10 @@ window.playerCleanups = function() {
     if (popstateHandler) {
         window.removeEventListener('popstate', popstateHandler);
         popstateHandler = null;
+    }
+    if (playerBackHandler) {
+        SpatialNav.popBackHandler(playerBackHandler);
+        playerBackHandler = null;
     }
     
     // Stop native video player if active
@@ -149,10 +154,19 @@ export async function init(params) {
         };
         window.addEventListener('popstate', popstateHandler);
 
+        if (playerBackHandler) {
+            SpatialNav.popBackHandler(playerBackHandler);
+        }
+        playerBackHandler = () => {
+            exitPlayer(params);
+            return true;
+        };
+        SpatialNav.pushBackHandler(playerBackHandler);
+
         const backBtn = document.getElementById('player-back');
         if (backBtn) {
             backBtn.onclick = () => {
-                exitPlayer(params);
+                SpatialNav.back();
             };
         }
 

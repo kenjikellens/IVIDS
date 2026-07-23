@@ -66,6 +66,11 @@ export const Router = {
         this.isLoading = true;
         this.params = params;
 
+        // Clear orphan back handlers registered by previous page
+        if (SpatialNav && typeof SpatialNav.clearBackHandlers === 'function') {
+            SpatialNav.clearBackHandlers();
+        }
+
         const mainView = document.getElementById('main-view');
         if (!mainView) {
             console.error('Main view container not found');

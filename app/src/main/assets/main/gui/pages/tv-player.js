@@ -227,10 +227,16 @@ export async function init(params) {
         };
     }
 
+    let tvPlayerBackHandler = () => {
+        exitPlayer();
+        return true;
+    };
+    SpatialNav.pushBackHandler(tvPlayerBackHandler);
+
     // Back button clean handler
     if (backBtn) {
         backBtn.onclick = () => {
-            exitPlayer();
+            SpatialNav.back();
         };
     }
 
@@ -412,6 +418,10 @@ export async function init(params) {
         window.removeEventListener('keydown', keydownHandler);
         window.removeEventListener('keydown', zappingHandler);
         window.removeEventListener('mousemove', mousemoveHandler);
+        if (tvPlayerBackHandler) {
+            SpatialNav.popBackHandler(tvPlayerBackHandler);
+            tvPlayerBackHandler = null;
+        }
         clearTimeout(overlayTimeout);
         clearTimeout(zappingHudTimeout);
         clearTimeout(autoZapTimer);
