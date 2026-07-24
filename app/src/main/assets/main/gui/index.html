@@ -128,13 +128,19 @@
          * @returns {Promise<Response>} A promise resolving to a fetch-compatible response object.
          */
         window.fetch = function (url, options) {
+            const urlString = typeof url === 'string' ? url : (url && url.url ? url.url : String(url));
+            const isRemote = urlString.startsWith('http://') || urlString.startsWith('https://') || urlString.startsWith('//');
+
+            if (isRemote) {
+                return originalFetch(url, options);
+            }
+
             const isFileProtocol = window.location.protocol === 'file:';
             if (!isFileProtocol) {
                 return originalFetch(url, options);
             }
 
             return new Promise((resolve, reject) => {
-                const urlString = typeof url === 'string' ? url : (url && url.url ? url.url : String(url));
                 const xhr = new XMLHttpRequest();
                 const method = (options && options.method) || (url && url.method) || 'GET';
                 xhr.open(method, urlString);

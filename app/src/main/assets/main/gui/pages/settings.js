@@ -207,6 +207,7 @@ class SettingsManager {
             uiScale: this.settings.uiScale
         };
         const userSettings = {
+            uiScale: this.settings.uiScale,
             accentColor: this.settings.accentColor,
             m3uUrl: this.settings.m3uUrl,
             playerProvider: this.settings.playerProvider,

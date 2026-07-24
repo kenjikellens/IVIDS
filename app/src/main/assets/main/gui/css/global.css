@@ -16,10 +16,10 @@
 /* IVIDS TV-first design system */
 :root {
     --ui-scale: 1.0;
-    --app-content-padding-x: clamp(24px, 3.5vw, 48px);
-    --app-content-padding-y: clamp(24px, 3vw, 40px);
-    --app-sidebar-expanded-width: clamp(242px, 16.5vw, 264px);
-    --app-sidebar-width: clamp(70px, 5vw, 79px);
+    --app-content-padding-x: clamp(18px, 2.5vw, 36px);
+    --app-content-padding-y: clamp(16px, 2vw, 30px);
+    --app-sidebar-expanded-width: clamp(190px, 14vw, 220px);
+    --app-sidebar-width: clamp(58px, 4vw, 68px);
     --background-color: #050505;
     --background-elevated: #0f0f0f;
     --card-bg: var(--surface-color);
@@ -27,8 +27,8 @@
     --focus-ring: none;
     --focus-ring-strong: none;
     --poster-height: calc(var(--poster-width) * 1.5);
-    /* Specifies slightly larger poster dimensions for enhanced visibility */
-    --poster-width: clamp(150px, 13.5vw, 196px);
+    /* Compact poster dimensions for clean TV grid layout */
+    --poster-width: clamp(120px, 10.5vw, 154px);
     --primary-color: #46d369;
     --primary-rgb: 70, 211, 105;
     --radius-lg: 12px;
@@ -2903,17 +2903,13 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
    ========================================================================== */
 
 /* Media query for large laptops and 1080p displays. */
-@media (min-aspect-ratio: 3/4) and ((max-width: 1440px) or (max-height: 900px)) {
-    /*
-      Root variables override for large displays and 1080p laptops.
-      Adjusts paddings, sidebar width, and increases poster size slightly for better visibility.
-    */
+@media (min-aspect-ratio: 3/4) and (max-width: 1440px) {
     :root {
-        --app-content-padding-x: 32px;
-        --app-content-padding-y: 28px;
-        --app-sidebar-expanded-width: 220px;
-        --app-sidebar-width: 68px;
-        --poster-width: 154px;
+        --app-content-padding-x: 24px;
+        --app-content-padding-y: 20px;
+        --app-sidebar-expanded-width: 190px;
+        --app-sidebar-width: 60px;
+        --poster-width: 130px;
         --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.30);
         --shadow-panel: 0 12px 36px rgba(0, 0, 0, 0.40);
     }
@@ -2922,27 +2918,20 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         box-shadow: 0 0 18px rgba(var(--primary-rgb), 0.65);
     }
 
-    /* Styles the hero section with a slightly reduced height. */ .hero { height: 56vh; min-height: 460px; padding-bottom: 50px; }
-
-    /* Scales down the hero heading text size slightly. */ .hero-title { font-size: 50px; margin-bottom: 14px; }
-
-    /* Restricts description margins slightly. */ .hero-desc { font-size: 16px; margin-bottom: 24px; }
-
-    /* Scales down category row heading size slightly. */ .row-title { font-size: 22px; }
+    .hero { height: 50vh; min-height: 380px; padding-bottom: 40px; }
+    .hero-title { font-size: 38px; margin-bottom: 12px; }
+    .hero-desc { font-size: 15px; margin-bottom: 20px; }
+    .row-title { font-size: 19px; }
 }
 
 /* Media query for medium/small screens like 720p TV and laptops. */
-@media (min-aspect-ratio: 3/4) and ((max-width: 1280px) or (max-height: 720px)) {
-    /*
-      Root variables override for 720p displays and mid-sized laptops.
-      Sets custom margins, sidebar width, and increases poster size for better visibility.
-    */
+@media (min-aspect-ratio: 3/4) and (max-width: 1280px) {
     :root {
-        --app-content-padding-x: 24px;
-        --app-content-padding-y: 20px;
-        --app-sidebar-expanded-width: 210px;
-        --app-sidebar-width: 64px;
-        --poster-width: 136px;
+        --app-content-padding-x: 20px;
+        --app-content-padding-y: 16px;
+        --app-sidebar-expanded-width: 180px;
+        --app-sidebar-width: 56px;
+        --poster-width: 116px;
         --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.25);
         --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.32);
     }
@@ -2951,29 +2940,22 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.60);
     }
 
-    /* Styles the hero section with a reduced height for 720p screens. */ .hero { height: 52vh; min-height: 380px; padding-bottom: 40px; }
-
-    /* Scales down the hero heading text size. */ .hero-title { font-size: 42px; margin-bottom: 12px; }
-
-    /* Restricts description lines and reduces font size. */ .hero-desc { -webkit-line-clamp: 3; font-size: 15px; line-clamp: 3; margin-bottom: 20px; }
-
-    /* Scales down category row heading size. */ .row-title { font-size: 20px; margin-bottom: 4px; }
-
-    /* Reduces spacing for rows container. */ .row-container { margin-bottom: 10px; }
-
-    /* Styles primary details page top layout with smaller gaps. */ .details-top { gap: 24px; }
-
-    /* Reduces title text size on the detail page. */ .details-title { font-size: 36px; }
-
-    /* Reduces height for detail backdrop image. */ .details-backdrop { height: 50vh; }
+    .hero { height: 46vh; min-height: 320px; padding-bottom: 30px; }
+    .hero-title { font-size: 32px; margin-bottom: 10px; }
+    .hero-desc { -webkit-line-clamp: 3; font-size: 14px; line-clamp: 3; margin-bottom: 16px; }
+    .row-title { font-size: 18px; margin-bottom: 4px; }
+    .row-container { margin-bottom: 8px; }
+    .details-top { gap: 20px; }
+    .details-title { font-size: 30px; }
+    .details-backdrop { height: 46vh; }
 }
 
 /* Intermediate media query for small viewports to scale spacing and shadows down. */
-@media (min-aspect-ratio: 3/4) and ((max-width: 1100px) or (max-height: 650px)) {
+@media (min-aspect-ratio: 3/4) and (max-width: 1100px) {
     :root {
-        --app-content-padding-x: 20px;
-        --app-content-padding-y: 16px;
-        --poster-width: 120px;
+        --app-content-padding-x: 18px;
+        --app-content-padding-y: 14px;
+        --poster-width: 106px;
         --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.22);
         --shadow-panel: 0 6px 16px rgba(0, 0, 0, 0.28);
     }
@@ -2982,18 +2964,18 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.55);
     }
 
-    .hero { height: 50vh; min-height: 300px; padding-bottom: 30px; }
-    .hero-title { font-size: 36px; }
-    .row-title { font-size: 18px; }
+    .hero { height: 44vh; min-height: 280px; padding-bottom: 25px; }
+    .hero-title { font-size: 28px; }
+    .row-title { font-size: 16px; }
 }
 
 /* Intermediate media query for common TV WebView effective viewports to scale spacing and shadows further down. */
-@media (min-aspect-ratio: 3/4) and ((max-width: 960px) or (max-height: 560px)) {
+@media (min-aspect-ratio: 3/4) and (max-width: 960px) {
     :root {
-        --app-content-padding-x: 18px;
-        --app-content-padding-y: 14px;
-        --app-sidebar-width: 58px;
-        --poster-width: 114px;
+        --app-content-padding-x: 16px;
+        --app-content-padding-y: 12px;
+        --app-sidebar-width: 52px;
+        --poster-width: 98px;
         --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.18);
         --shadow-panel: 0 4px 10px rgba(0, 0, 0, 0.22);
     }
@@ -3002,23 +2984,19 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.50);
     }
 
-    .hero { height: 48vh; min-height: 260px; padding-bottom: 25px; }
-    .hero-title { font-size: 32px; }
-    .row-title { font-size: 17px; }
+    .hero { height: 42vh; min-height: 240px; padding-bottom: 20px; }
+    .hero-title { font-size: 26px; }
+    .row-title { font-size: 15px; }
 }
 
 /* Media query for very small viewports like 480p screen or small displays. */
-@media (min-aspect-ratio: 3/4) and ((max-width: 900px) or (max-height: 520px)) {
-    /*
-      Root variables override for small 480p displays.
-      Establishes compact paddings, sidebar width, and increases poster size for better visibility.
-    */
+@media (min-aspect-ratio: 3/4) and (max-width: 900px) {
     :root {
-        --app-content-padding-x: 16px;
-        --app-content-padding-y: 12px;
-        --app-sidebar-expanded-width: 170px;
-        --app-sidebar-width: 54px;
-        --poster-width: 106px;
+        --app-content-padding-x: 14px;
+        --app-content-padding-y: 10px;
+        --app-sidebar-expanded-width: 160px;
+        --app-sidebar-width: 48px;
+        --poster-width: 90px;
         --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.15);
         --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.18);
     }
@@ -3027,30 +3005,18 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         box-shadow: 0 0 4px rgba(var(--primary-rgb), 0.40);
     }
 
-    /* Styles the hero section with a compact height for 480p screens. */ .hero { height: 48vh; min-height: 240px; padding-bottom: 20px; }
-
-    /* Highly compact typography size for very small hero title. */ .hero-title { font-size: 28px; margin-bottom: 8px; }
-
-    /* Compact description text with double line clamp. */ .hero-desc { -webkit-line-clamp: 2; font-size: 13px; line-clamp: 2; margin-bottom: 12px; }
-
-    /* Reduces button padding and sizes for compact layout. */ .btn { font-size: 12px; min-height: 36px; padding: 6px 14px; }
-
-
-    /* Scales down category rail heading size. */ .row-title { font-size: 16px; margin-bottom: 2px; }
-
-    /* Highly compact row spacing. */ .row-container { margin-bottom: 8px; }
-
-    /* details page layout stack to vertical on tiny displays. */ .details-top { align-items: center; flex-direction: column; gap: 16px; text-align: center; }
-
-    /* Centers detail information block text. */ .details-info { text-align: center; }
-
-    /* detail poster sizing. */ .details-hero-poster { width: 120px; }
-
-    /* detail title sizing. */ .details-title { font-size: 24px; }
-
-    /* detail actions wrapper layout. */ .details-actions { justify-content: center; }
-
-    /* detail bottom seasons layout. */ .details-bottom { flex-direction: column; gap: 12px; }
+    .hero { height: 40vh; min-height: 220px; padding-bottom: 16px; }
+    .hero-title { font-size: 24px; margin-bottom: 6px; }
+    .hero-desc { -webkit-line-clamp: 2; font-size: 12px; line-clamp: 2; margin-bottom: 10px; }
+    .btn { font-size: 11px; min-height: 32px; padding: 4px 12px; }
+    .row-title { font-size: 14px; margin-bottom: 2px; }
+    .row-container { margin-bottom: 6px; }
+    .details-top { align-items: center; flex-direction: column; gap: 14px; text-align: center; }
+    .details-info { text-align: center; }
+    .details-hero-poster { width: 100px; }
+    .details-title { font-size: 20px; }
+    .details-actions { justify-content: center; }
+    .details-bottom { flex-direction: column; gap: 10px; }
 }
 
 /* Flexbox container for settings stepper controls, including minus/plus buttons and value label. */
