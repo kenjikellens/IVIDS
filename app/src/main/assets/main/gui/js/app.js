@@ -4,6 +4,7 @@ import { Sidebar } from '../components/sidebar/sidebar.js';
 import { Splash } from './splash.js';
 import { ErrorHandler } from './error-handler.js';
 import { Toast, NetworkStatusOverlay } from './toast.js';
+import { Api } from '../../logic/api.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { manageModal } from './utils/ui-helper.js';
@@ -249,16 +250,19 @@ function initUpdateCheck() {
 
     // Manual Mode toast trigger with Action Buttons
     const triggerManualToast = (version) => {
-        console.log('App: Manual Mode - Displaying non-blocking clickable toast');
+        console.log('App: Manual Mode - Displaying non-blocking toast');
         
         const title = window.i18n?.t('settings.updateNotification') || 'Update Available';
-        const msgHtml = `
-            <span>v${version} is available.</span>
-            <div class="toast-actions">
-                <button class="btn btn-primary focusable" id="toast-download-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
-                <button class="btn btn-secondary focusable" id="toast-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
-            </div>
-        `;
+        const isTV = typeof Api !== 'undefined' && typeof Api.isTV === 'function' ? Api.isTV() : false;
+        
+        const msgHtml = isTV
+            ? `<span>v${version} is available.</span>`
+            : `
+                <span>v${version} is available.</span>
+                <div class="toast-actions">
+                    <button class="btn btn-primary focusable" id="toast-download-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                </div>
+            `;
 
         const toastEl = Toast.show(msgHtml, {
             title: title,
@@ -267,10 +271,9 @@ function initUpdateCheck() {
             isHtml: true
         });
 
-        if (toastEl) {
+        if (toastEl && !isTV) {
             setTimeout(() => {
                 const dlBtn = toastEl.querySelector('#toast-download-btn');
-                const closeBtn = toastEl.querySelector('#toast-close-btn');
 
                 if (dlBtn) {
                     dlBtn.onclick = (e) => {
@@ -279,13 +282,6 @@ function initUpdateCheck() {
                         import('./update-prompt.js').then(({ UpdatePrompt }) => {
                             UpdatePrompt.show(version);
                         });
-                    };
-                }
-
-                if (closeBtn) {
-                    closeBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        Toast.hide(toastEl);
                     };
                 }
                 
@@ -302,14 +298,17 @@ function initUpdateCheck() {
         console.log('App: Developer Mode - Displaying dev console update prompt');
         
         const title = window.i18n?.t('settings.updateNotification') || 'Update Available';
-        const msgHtml = `
-            <span>Developer version v${version} found.</span>
-            <div class="toast-actions">
-                <button class="btn btn-primary focusable" id="toast-dev-dl-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
-                <button class="btn btn-secondary focusable" id="toast-dev-select-btn">${window.i18n?.t('settings.toast.select') || 'Select Version'}</button>
-                <button class="btn btn-secondary focusable" id="toast-dev-close-btn">${window.i18n?.t('settings.toast.close') || 'Close'}</button>
-            </div>
-        `;
+        const isTV = typeof Api !== 'undefined' && typeof Api.isTV === 'function' ? Api.isTV() : false;
+        
+        const msgHtml = isTV
+            ? `<span>Developer version v${version} found.</span>`
+            : `
+                <span>Developer version v${version} found.</span>
+                <div class="toast-actions">
+                    <button class="btn btn-primary focusable" id="toast-dev-dl-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                    <button class="btn btn-secondary focusable" id="toast-dev-select-btn">${window.i18n?.t('settings.toast.select') || 'Select Version'}</button>
+                </div>
+            `;
 
         const toastEl = Toast.show(msgHtml, {
             title: title,
@@ -318,11 +317,10 @@ function initUpdateCheck() {
             isHtml: true
         });
 
-        if (toastEl) {
+        if (toastEl && !isTV) {
             setTimeout(() => {
                 const dlBtn = toastEl.querySelector('#toast-dev-dl-btn');
                 const selectBtn = toastEl.querySelector('#toast-dev-select-btn');
-                const closeBtn = toastEl.querySelector('#toast-dev-close-btn');
 
                 if (dlBtn) {
                     dlBtn.onclick = (e) => {
@@ -347,13 +345,6 @@ function initUpdateCheck() {
                                 }
                             }, 150);
                         });
-                    };
-                }
-
-                if (closeBtn) {
-                    closeBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        Toast.hide(toastEl);
                     };
                 }
                 

@@ -582,6 +582,22 @@
     bottom: auto;
 }
 
+/* CSS Class: Mobile toast animation overrides - entrance and upward exit transition */
+.toast {
+    transform: translateY(-120%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast:not(.visible) {
+    opacity: 0;
+    transform: translateY(-120%);
+}
+
 /* CSS Class: Mobile override for the version selector modal options grid to ensure a stacked layout. */
 #app .version-option-grid {
     grid-template-columns: 1fr;

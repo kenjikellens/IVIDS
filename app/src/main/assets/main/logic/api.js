@@ -182,8 +182,7 @@ export const Api = {
                 }
                 return true;
             }
-            if (conn.effectiveType && ['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return true;
-            if (typeof conn.downlink === 'number' && conn.downlink < 0.5) return true;
+            if (typeof conn.downlink === 'number' && conn.downlink < 1.0) return true;
         }
 
         return false;

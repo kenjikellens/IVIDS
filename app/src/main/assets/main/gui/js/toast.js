@@ -81,6 +81,23 @@ export class Toast {
             }
         }
 
+        // Attach touch swipe-up listener to allow touch dismissal by swiping up
+        let startY = 0;
+        toast.addEventListener('touchstart', (e) => {
+            if (e.touches && e.touches.length === 1) {
+                startY = e.touches[0].clientY;
+            }
+        }, { passive: true });
+
+        toast.addEventListener('touchend', (e) => {
+            if (e.changedTouches && e.changedTouches.length === 1) {
+                const endY = e.changedTouches[0].clientY;
+                if (startY - endY > 25) {
+                    Toast.hide(toast);
+                }
+            }
+        }, { passive: true });
+
         // Push to display queue
         this.queue.push({
             element: toast,
