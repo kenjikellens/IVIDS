@@ -120,6 +120,11 @@ export function setupLazyLoadedRows(categories, defaultType = null) {
             }
         });
     });
+
+    // Run 3-Phase Progressive Preloading Pipeline
+    requestAnimationFrame(() => {
+        lazyLoader.runProgressivePipeline(categories);
+    });
 }
 
 /**

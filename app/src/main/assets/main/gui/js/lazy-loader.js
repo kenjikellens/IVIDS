@@ -4,32 +4,34 @@ import { createLoaderElement } from './loader.js';
  * Configuration options for visibility-based intersection observer lazy loading.
  */
 const CONFIG = {
-    ROOT_MARGIN: '400px', // Pre-load elements before they enter viewport (px or %)
+    ROOT_MARGIN: '200px', // Pre-load elements before they enter viewport (px or %)
     THRESHOLD: 0.01       // Visibility percentage required to trigger load (0.0 to 1.0)
 };
 
 /**
- * LazyLoader - Handles visibility-based fetching and rendering.
- * Supports:
- * 1. Row-based lazy loading (fetching data when row is visible)
- * 2. Item-based lazy loading (setting img.src when image is visible)
+ * LazyLoader - Handles visibility-based fetching, rendering, and 3-phase progressive preloading.
+ * 
+ * Pipeline:
+ * Phase 1: Load all poster images physically visible inside the active viewport.
+ * Phase 2: Once Phase 1 finishes, preload remaining offscreen images (to the right) in active rows.
+ * Phase 3: Once Phase 2 finishes, preload the next 2 rows vertically below the viewport, then STOP.
  */
 export class LazyLoader {
     constructor() {
         this.observer = null;
         this.registrations = new Map();
+        this.pipelineRunning = false;
         this.init();
     }
 
     /**
      * Initializes the IntersectionObserver options (root margin and threshold).
-     * Binds visibility intersections to image source lazy loading.
      */
     init() {
         const options = {
             root: null, // viewport
-            rootMargin: CONFIG.ROOT_MARGIN, // Pre-load well before it comes into view
-            threshold: CONFIG.THRESHOLD // Trigger as soon as 1% is visible
+            rootMargin: CONFIG.ROOT_MARGIN,
+            threshold: CONFIG.THRESHOLD
         };
 
         this.observer = new IntersectionObserver((entries) => {
@@ -48,7 +50,7 @@ export class LazyLoader {
         const element = document.getElementById(elementId);
         if (!element) return;
 
-        this.registrations.set(elementId, { fetcher, renderer, type: 'row' });
+        this.registrations.set(elementId, { element, fetcher, renderer, type: 'row' });
         this.observer.observe(element);
     }
 
@@ -61,12 +63,50 @@ export class LazyLoader {
     }
 
     /**
+     * Helper to load a single poster element's image dataset.src and return a Promise that resolves when loaded.
+     */
+    loadImage(element) {
+        if (!element) return Promise.resolve();
+        const img = element.tagName === 'IMG' ? element : element.querySelector('img');
+        if (!img || !img.dataset.src) return Promise.resolve();
+
+        if (this.observer) {
+            this.observer.unobserve(element);
+        }
+
+        return new Promise((resolve) => {
+            if (!img.complete && !element.querySelector('.poster-loader')) {
+                const loader = createLoaderElement();
+                loader.classList.add('poster-loader');
+                element.appendChild(loader);
+            }
+
+            let resolved = false;
+            const onComplete = () => {
+                if (resolved) return;
+                resolved = true;
+                img.style.opacity = '1';
+                const loader = element.querySelector('.poster-loader');
+                if (loader) loader.remove();
+                resolve();
+            };
+
+            img.addEventListener('load', onComplete, { once: true });
+            img.addEventListener('error', onComplete, { once: true });
+
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+
+            if (img.complete) {
+                onComplete();
+            }
+        });
+    }
+
+    /**
      * Handles intersection events for registered elements by loading row data or setting image sources.
-     * This coordinates row rendering on visibility, lazy-creates loading spinners, and manages image loaded state transitions.
-     * @param {HTMLElement} element - The intersecting DOM element.
      */
     async handleIntersection(element) {
-        // Case 1: Row registration
         const id = element.id;
         const reg = this.registrations.get(id);
 
@@ -88,40 +128,122 @@ export class LazyLoader {
             return;
         }
 
-        // Case 2: Individual Image Item
-        // Find the image in or as the element
-        const img = element.tagName === 'IMG' ? element : element.querySelector('img');
+        // Individual Image Item
+        this.loadImage(element);
+    }
 
-        if (img && img.dataset.src) {
-            this.observer.unobserve(element);
+    /**
+     * Executes the 3-Phase Progressive Preloading Pipeline.
+     * Phase 1: Load visible posters in viewport rows.
+     * Phase 2: Load offscreen posters to the right in visible rows.
+     * Phase 3: Preload next 2 rows vertically below viewport, then STOP.
+     * 
+     * @param {Array<Object>} categories - Ordered list of category objects registered on the page.
+     */
+    async runProgressivePipeline(categories) {
+        if (this.pipelineRunning || !categories || categories.length === 0) return;
+        this.pipelineRunning = true;
 
-            // Create and append spinner loader only when loading starts
-            if (!img.complete && !element.querySelector('.poster-loader')) {
-                const loader = createLoaderElement();
-                loader.classList.add('poster-loader');
-                element.appendChild(loader);
-            }
+        try {
+            const vh = window.innerHeight;
+            const vw = window.innerWidth;
 
-            // Handle fade-in using addEventListener to avoid overwriting existing onload handlers
-            img.addEventListener('load', () => {
-                img.style.opacity = '1';
-                const loader = element.querySelector('.poster-loader');
-                if (loader) loader.remove();
+            // Determine visible rows in initial viewport
+            const visibleCategoryIndices = [];
+            categories.forEach((cat, idx) => {
+                const el = document.getElementById(cat.id);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < vh + 100 && rect.bottom > -100) {
+                        visibleCategoryIndices.push(idx);
+                    }
+                }
             });
 
-            // Set source
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
-
-            // Fallback for cached images
-            if (img.complete) {
-                img.style.opacity = '1';
-                const loader = element.querySelector('.poster-loader');
-                if (loader) loader.remove();
+            // If no visible categories detected, default to first 2 categories
+            if (visibleCategoryIndices.length === 0) {
+                visibleCategoryIndices.push(0);
+                if (categories.length > 1) visibleCategoryIndices.push(1);
             }
+
+            // Fetch & render content for visible categories first
+            for (const idx of visibleCategoryIndices) {
+                const cat = categories[idx];
+                const reg = this.registrations.get(cat.id);
+                if (reg && reg.type === 'row') {
+                    await this.handleIntersection(reg.element);
+                }
+            }
+
+            // FASE 1: Collect & load images physically visible on screen
+            const phase1Promises = [];
+            visibleCategoryIndices.forEach(idx => {
+                const cat = categories[idx];
+                const rowEl = document.getElementById(cat.id);
+                if (rowEl) {
+                    const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
+                    posters.forEach(poster => {
+                        const rect = poster.getBoundingClientRect();
+                        if (rect.left < vw + 50 && rect.right > -50) {
+                            phase1Promises.push(this.loadImage(poster));
+                        }
+                    });
+                }
+            });
+
+            // Wait for Phase 1 images to complete
+            await Promise.allSettled(phase1Promises);
+            console.log('ProgressiveLoader: Phase 1 (Visible Viewport Images) Complete');
+
+            // FASE 2: Collect & load remaining horizontal offscreen images in visible rows
+            const phase2Promises = [];
+            visibleCategoryIndices.forEach(idx => {
+                const cat = categories[idx];
+                const rowEl = document.getElementById(cat.id);
+                if (rowEl) {
+                    const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
+                    posters.forEach(poster => {
+                        const img = poster.tagName === 'IMG' ? poster : poster.querySelector('img');
+                        if (img && img.dataset.src) {
+                            phase2Promises.push(this.loadImage(poster));
+                        }
+                    });
+                }
+            });
+
+            // Wait for Phase 2 images to complete
+            await Promise.allSettled(phase2Promises);
+            console.log('ProgressiveLoader: Phase 2 (Horizontal Offscreen Images) Complete');
+
+            // FASE 3: Load the next 2 rows vertically below viewport
+            const maxVisibleIdx = Math.max(...visibleCategoryIndices);
+            const extraRowsToLoad = [maxVisibleIdx + 1, maxVisibleIdx + 2];
+
+            for (const rowIdx of extraRowsToLoad) {
+                if (rowIdx < categories.length) {
+                    const cat = categories[rowIdx];
+                    const reg = this.registrations.get(cat.id);
+                    if (reg && reg.type === 'row') {
+                        await this.handleIntersection(reg.element);
+                    }
+
+                    const rowEl = document.getElementById(cat.id);
+                    if (rowEl) {
+                        const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
+                        const phase3RowPromises = posters.map(poster => this.loadImage(poster));
+                        await Promise.allSettled(phase3RowPromises);
+                    }
+                }
+            }
+
+            console.log('ProgressiveLoader: Phase 3 (Next 2 Vertical Rows) Complete - STOPPING PRELOADER');
+
+        } catch (err) {
+            console.error('ProgressiveLoader: Error executing progressive pipeline', err);
+        } finally {
+            this.pipelineRunning = false;
         }
     }
 }
 
-// Export a singleton instance for easy access
 export const lazyLoader = new LazyLoader();
