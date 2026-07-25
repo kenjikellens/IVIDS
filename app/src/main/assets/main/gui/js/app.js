@@ -464,6 +464,16 @@ function initUpdateCheck() {
             window.settingsNoUpdateHandler();
         }
     };
+
+    /**
+     * Triggered when the Android native activity resumes.
+     */
+    window.onAppResume = () => {
+        console.log('App: Native app resumed');
+        import('./update-prompt.js').then(({ UpdatePrompt }) => {
+            UpdatePrompt.checkAppResume();
+        }).catch(err => console.error('App: Failed to check app resume in UpdatePrompt', err));
+    };
     // Trigger the initial bootloader check
     import('./updater.js')
         .then(({ Updater }) => {

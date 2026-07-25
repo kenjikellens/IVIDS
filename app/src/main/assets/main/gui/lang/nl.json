@@ -418,5 +418,7 @@
         "saveToPlaylist": "Save as Playlist",
         "savedSuccess": "Collection saved as playlist!",
         "alreadySaved": "This collection is already saved"
-    }
+    },
+    "update_status_permission_required": "Machtiging vereist om updates te installeren. Schakel dit in bij instellingen en druk op Opnieuw.",
+    "update_retry": "Opnieuw"
 }

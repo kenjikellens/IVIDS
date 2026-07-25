@@ -181,6 +181,7 @@ export class UpdatePrompt {
         actionsContainer.style.display = 'flex';
         confirmBtn.style.display = 'inline-flex';
         dismissBtn.style.display = 'inline-flex';
+        if (progressText) progressText.style.color = '';
 
         // Make sure changelog and branch info elements are visible
         if (changelogTitleEl) changelogTitleEl.style.display = 'block';
@@ -226,6 +227,7 @@ export class UpdatePrompt {
         if (actionsContainer) actionsContainer.style.display = 'none';
         if (progressContainer) progressContainer.style.display = 'flex';
         if (progressBar) progressBar.style.width = '0%';
+        if (progressText) progressText.style.color = '';
         
         this.activeStatus = 'downloading';
         const initialStatus = this.translate('update_status_downloading', 'Downloading Update...');
@@ -305,8 +307,14 @@ export class UpdatePrompt {
     static handleStatus(statusKey) {
         this.activeStatus = statusKey;
         const progressText = document.getElementById('update-progress-text');
-        const titleEl = this.modalElement.querySelector('.update-title');
+        const confirmBtn = document.getElementById('update-download-btn');
+        const actionsContainer = document.getElementById('update-actions');
+        const titleEl = this.modalElement ? this.modalElement.querySelector('.update-title') : null;
         
+        if (progressText) {
+            progressText.style.color = '';
+        }
+
         let statusStr = statusKey;
         if (statusKey === 'downloading') {
             statusStr = this.translate('update_status_downloading', 'Downloading Update...');
@@ -314,13 +322,24 @@ export class UpdatePrompt {
             statusStr = this.translate('update_status_installing', 'Installing Update...');
         } else if (statusKey === 'connecting-api') {
             statusStr = this.translate('update_status_connecting', 'Connecting to Server...');
+        } else if (statusKey === 'permission_required') {
+            statusStr = this.translate('update_status_permission_required', 'Permission required to install updates. Enable in settings and tap Retry.');
+            if (actionsContainer) actionsContainer.style.display = 'flex';
+            if (confirmBtn) {
+                confirmBtn.textContent = this.translate('update_retry', 'Retry');
+                confirmBtn.style.display = 'inline-flex';
+                confirmBtn.onclick = () => this.startDownload();
+                SpatialNav.setFocus(confirmBtn);
+            }
         }
 
         if (progressText) {
             progressText.textContent = statusStr;
         }
         if (titleEl) {
-            titleEl.textContent = statusStr;
+            titleEl.textContent = statusKey === 'permission_required' 
+                ? this.translate('settings.updateFound', 'Update Available') 
+                : statusStr;
         }
     }
 
@@ -333,10 +352,13 @@ export class UpdatePrompt {
     static handleProgress(percent) {
         const progressBar = document.getElementById('update-progress-bar');
         const progressText = document.getElementById('update-progress-text');
-        const titleEl = this.modalElement.querySelector('.update-title');
+        const titleEl = this.modalElement ? this.modalElement.querySelector('.update-title') : null;
 
         if (progressBar) {
             progressBar.style.width = `${percent}%`;
+        }
+        if (progressText) {
+            progressText.style.color = '';
         }
 
         let statusStr = this.translate('update_status_downloading', 'Downloading Update...');
@@ -360,11 +382,12 @@ export class UpdatePrompt {
      * Sets the error text message and restores the close button to allow retry/dismissal.
      */
     static handleError() {
+        this.activeStatus = 'error';
         const progressText = document.getElementById('update-progress-text');
         const actionsContainer = document.getElementById('update-actions');
         const confirmBtn = document.getElementById('update-download-btn');
         const dismissBtn = document.getElementById('update-dismiss-btn');
-        const titleEl = this.modalElement.querySelector('.update-title');
+        const titleEl = this.modalElement ? this.modalElement.querySelector('.update-title') : null;
 
         const errMsg = this.translate('settings.updateError', 'Update failed. Please check connection and try again.');
 
@@ -379,10 +402,35 @@ export class UpdatePrompt {
 
         // Restore action buttons so the user can retry or dismiss
         if (actionsContainer) actionsContainer.style.display = 'flex';
-        if (confirmBtn) confirmBtn.style.display = 'none'; // Hide download/install button on error
+        if (confirmBtn) {
+            confirmBtn.textContent = this.translate('update_retry', 'Retry');
+            confirmBtn.style.display = 'inline-flex';
+            confirmBtn.onclick = () => this.startDownload();
+            SpatialNav.setFocus(confirmBtn);
+        }
         if (dismissBtn) {
             dismissBtn.style.display = 'inline-flex';
-            SpatialNav.setFocus(dismissBtn);
+        }
+    }
+
+    /**
+     * Called when the native host resumes to refresh state if permission was granted.
+     */
+    static checkAppResume() {
+        if (!this.modalElement || this.modalElement.style.display !== 'flex') return;
+        const progressText = document.getElementById('update-progress-text');
+        const confirmBtn = document.getElementById('update-download-btn');
+        const actionsContainer = document.getElementById('update-actions');
+
+        if (this.activeStatus === 'permission_required' || this.activeStatus === 'error') {
+            if (progressText) progressText.style.color = '';
+            if (actionsContainer) actionsContainer.style.display = 'flex';
+            if (confirmBtn) {
+                confirmBtn.textContent = this.translate('update_retry', 'Retry');
+                confirmBtn.style.display = 'inline-flex';
+                confirmBtn.onclick = () => this.startDownload();
+                SpatialNav.setFocus(confirmBtn);
+            }
         }
     }
 

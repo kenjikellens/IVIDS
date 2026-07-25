@@ -418,5 +418,7 @@
         "saveToPlaylist": "Save as Playlist",
         "savedSuccess": "Collection saved as playlist!",
         "alreadySaved": "This collection is already saved"
-    }
+    },
+    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
+    "update_retry": "Retry"
 }

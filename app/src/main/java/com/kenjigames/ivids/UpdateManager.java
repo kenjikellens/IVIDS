@@ -409,7 +409,7 @@ public class UpdateManager {
                     Intent settingsIntent = new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
                     settingsIntent.setData(Uri.parse("package:" + mActivity.getPackageName()));
                     mActivity.startActivity(settingsIntent);
-                    notifyWebUpdateError();
+                    notifyWebUpdateStatus("permission_required");
                     return;
                 }
             }

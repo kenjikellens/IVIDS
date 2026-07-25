@@ -384,6 +384,8 @@
     "update_status_downloading": "Downloading Update...",
     "update_status_installing": "Installing Update...",
     "update_status_connecting": "Connecting to Server...",
+    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
+    "update_retry": "Retry",
     "login": {
         "title": "Sign In to IVIDS",
         "signInTitle": "Sign In",

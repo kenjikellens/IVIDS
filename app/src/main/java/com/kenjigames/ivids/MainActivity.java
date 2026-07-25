@@ -560,6 +560,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Called when the activity resumes.
+     * Triggers JS callback to inform web application of activity resume.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mWebView != null) {
+            mWebView.evaluateJavascript(
+                "if(typeof window.onAppResume === 'function') window.onAppResume();",
+                null
+            );
+        }
+    }
+
+    /**
      * Called when the activity is being destroyed.
      * Shuts down the update manager executor threads to prevent memory leaks.
      */

@@ -416,5 +416,7 @@
         "message": "Сигурни ли сте, че искате да излезете от IVIDS?",
         "confirm": "Изход",
         "cancel": "Отказ"
-    }
+    },
+    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
+    "update_retry": "Retry"
 }

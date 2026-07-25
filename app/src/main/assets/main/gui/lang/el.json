@@ -416,5 +416,7 @@
         "message": "Είστε βέβαιοι ότι θέλετε να βγείτε από το IVIDS;",
         "confirm": "Εξοδος",
         "cancel": "Ματαίωση"
-    }
+    },
+    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
+    "update_retry": "Retry"
 }
