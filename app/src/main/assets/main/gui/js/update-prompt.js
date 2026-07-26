@@ -151,6 +151,7 @@ export class UpdatePrompt {
         const confirmBtn = document.getElementById('update-download-btn');
         const dismissBtn = document.getElementById('update-dismiss-btn');
         const progressContainer = document.getElementById('update-progress-container');
+        const progressText = document.getElementById('update-progress-text');
         const actionsContainer = document.getElementById('update-actions');
 
         if (!titleEl || !confirmBtn || !dismissBtn) {
