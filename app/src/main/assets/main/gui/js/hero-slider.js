@@ -1,6 +1,7 @@
 import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { Splash } from './splash.js';
+import { imageCache } from '../../logic/image-cache.js';
 
 /**
  * Default configuration parameters for Hero Slider rendering, transitions, and truncation.
@@ -72,8 +73,14 @@ export class HeroSlider {
             slide.style.width = `${100 / this.items.length}%`;
             const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
             if (idx === 0) {
-                slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${imageUrl})`;
+                // First slide: load immediately, use blob cache if available
+                const cachedUrl = imageCache.has(imageUrl) ? imageCache.get(imageUrl) : imageUrl;
+                slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
                 slide.dataset.loaded = 'true';
+                // Queue background cache if not already cached
+                if (!imageCache.has(imageUrl)) {
+                    imageCache.getOrFetch(imageUrl);
+                }
             } else {
                 slide.dataset.src = imageUrl;
             }
@@ -187,20 +194,28 @@ export class HeroSlider {
         const slides = this.track ? this.track.querySelectorAll('.hero-slide') : [];
         const currentSlide = slides[index];
         if (currentSlide && currentSlide.dataset.loaded !== 'true' && currentSlide.dataset.src) {
-            currentSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${currentSlide.dataset.src})`;
+            const srcUrl = currentSlide.dataset.src;
+            // Use blob cache if available, otherwise load directly and cache in background
+            const cachedUrl = imageCache.has(srcUrl) ? imageCache.get(srcUrl) : srcUrl;
+            currentSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
             currentSlide.dataset.loaded = 'true';
+            if (!imageCache.has(srcUrl)) {
+                imageCache.getOrFetch(srcUrl);
+            }
         }
 
         // Pre-fetch the next slide to keep transitions smooth
         const nextIndex = (index + 1) % this.items.length;
         const nextSlide = slides[nextIndex];
         if (nextSlide && nextSlide.dataset.loaded !== 'true' && nextSlide.dataset.src) {
-            const img = new Image();
-            img.src = nextSlide.dataset.src;
-            img.onload = () => {
-                nextSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${nextSlide.dataset.src})`;
-                nextSlide.dataset.loaded = 'true';
-            };
+            const nextSrcUrl = nextSlide.dataset.src;
+            // Pre-fetch into blob cache for seamless transition
+            imageCache.getOrFetch(nextSrcUrl).then(blobUrl => {
+                if (blobUrl) {
+                    nextSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${blobUrl})`;
+                    nextSlide.dataset.loaded = 'true';
+                }
+            });
         }
 
         // Highlight matching circular dot indicator

@@ -6,6 +6,7 @@ import { getWatchedItem } from '../../logic/recentlyWatched.js';
 import I18n from '../js/i18n.js';
 import { getLoaderHtml } from '../js/loader.js';
 import { ErrorHandler } from '../js/error-handler.js';
+import { imageCache } from '../../logic/image-cache.js';
 
 let currentSeriesId = null;
 
@@ -147,8 +148,14 @@ function render(item, type) {
             const width = bg.clientWidth;
             const sizeKey = Api.getRecommendedSizeForContainer(width, true);
             const backdropUrl = Api.getImageUrl(item.backdrop_path, sizeKey);
-            bg.style.backgroundImage = `url(${backdropUrl})`;
+            // Use blob cache for instant backdrop rendering
+            const cachedBackdrop = imageCache.has(backdropUrl) ? imageCache.get(backdropUrl) : backdropUrl;
+            bg.style.backgroundImage = `url(${cachedBackdrop})`;
             bg.style.willChange = 'background-image';
+            // Queue background caching if not already cached
+            if (!imageCache.has(backdropUrl)) {
+                imageCache.getOrFetch(backdropUrl);
+            }
         }
 
         const poster = document.getElementById('details-poster');
@@ -156,7 +163,14 @@ function render(item, type) {
             try {
                 const width = poster.parentElement ? poster.parentElement.clientWidth : 0;
                 const sizeKey = Api.getRecommendedSizeForContainer(width, false);
-                poster.src = Api.getImageUrl(item.poster_path, sizeKey);
+                const posterUrl = Api.getImageUrl(item.poster_path, sizeKey);
+                // Use blob cache for instant poster rendering
+                if (imageCache.has(posterUrl)) {
+                    poster.src = imageCache.get(posterUrl);
+                } else {
+                    poster.src = posterUrl;
+                    imageCache.getOrFetch(posterUrl);
+                }
                 poster.style.willChange = 'transform';
             } catch (pError) {
                 console.error('Error setting poster image:', pError);

@@ -1,4 +1,5 @@
 import { createLoaderElement } from './loader.js';
+import { imageCache } from '../../logic/image-cache.js';
 
 /**
  * Configuration options for visibility-based intersection observer lazy loading.
@@ -74,6 +75,18 @@ export class LazyLoader {
             this.observer.unobserve(element);
         }
 
+        const originalUrl = img.dataset.src;
+
+        // Check image blob cache for an instant hit
+        if (imageCache.has(originalUrl)) {
+            img.src = imageCache.get(originalUrl);
+            img.removeAttribute('data-src');
+            img.style.opacity = '1';
+            const loader = element.querySelector('.poster-loader');
+            if (loader) loader.remove();
+            return Promise.resolve();
+        }
+
         return new Promise((resolve) => {
             if (!img.complete && !element.querySelector('.poster-loader')) {
                 const loader = createLoaderElement();
@@ -91,15 +104,32 @@ export class LazyLoader {
                 resolve();
             };
 
-            img.addEventListener('load', onComplete, { once: true });
-            img.addEventListener('error', onComplete, { once: true });
-
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
-
-            if (img.complete) {
-                onComplete();
-            }
+            // Fetch via imageCache so the blob is stored for future navigations
+            imageCache.getOrFetch(originalUrl).then(blobUrl => {
+                if (blobUrl) {
+                    img.addEventListener('load', onComplete, { once: true });
+                    img.addEventListener('error', onComplete, { once: true });
+                    img.src = blobUrl;
+                } else {
+                    // Fallback to direct URL if cache fetch failed
+                    img.addEventListener('load', onComplete, { once: true });
+                    img.addEventListener('error', onComplete, { once: true });
+                    img.src = originalUrl;
+                }
+                img.removeAttribute('data-src');
+                if (img.complete) {
+                    onComplete();
+                }
+            }).catch(() => {
+                // Final fallback
+                img.addEventListener('load', onComplete, { once: true });
+                img.addEventListener('error', onComplete, { once: true });
+                img.src = originalUrl;
+                img.removeAttribute('data-src');
+                if (img.complete) {
+                    onComplete();
+                }
+            });
         });
     }
 

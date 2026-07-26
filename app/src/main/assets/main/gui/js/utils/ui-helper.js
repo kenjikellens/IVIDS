@@ -2,6 +2,7 @@ import { Api } from '../../../logic/api.js';
 import { Router } from '../router.js';
 import { createLoaderElement } from '../loader.js';
 import { lazyLoader } from '../lazy-loader.js';
+import { imageCache } from '../../../logic/image-cache.js';
 import { domRecycler } from '../dom-recycler.js';
 import { renderSkeletonRow, renderSkeletonErrorRow } from '../skeleton-renderer.js';
 import { SpatialNav } from '../spatial-nav.js';
@@ -248,7 +249,15 @@ export function createPosterElement(item, defaultType = null, sizeContainerWidth
     };
 
     const sizeKey = Api.getRecommendedSizeForContainer(sizeContainerWidth, false);
-    img.dataset.src = Api.getImageUrl(item.poster_path, sizeKey);
+    const imageUrl = Api.getImageUrl(item.poster_path, sizeKey);
+
+    // If the image is already in the blob cache, set src directly for instant rendering
+    if (imageCache.has(imageUrl)) {
+        img.src = imageCache.get(imageUrl);
+        img.style.opacity = '1';
+    } else {
+        img.dataset.src = imageUrl;
+    }
     img.alt = item.title || item.name || 'Unknown';
 
     btn.appendChild(img);
