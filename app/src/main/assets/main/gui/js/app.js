@@ -651,19 +651,30 @@ function initNetworkListeners() {
         console.log('Back online');
     });
 
-    // Helper to evaluate and display the slow internet warning overlay dynamically
+    // Helper to evaluate and display the slow internet warning overlay dynamically.
+    // Only shows the overlay for actual network degradation, NOT when the user
+    // has manually enabled Data Saver in settings (that's a deliberate choice).
     const checkSpeed = () => {
         try {
-            import('../../logic/api.js').then(({ Api }) => {
-                if (Api.isSlowConnection()) {
-                    NetworkStatusOverlay.show('slow');
-                } else {
-                    const overlay = document.getElementById('network-status-overlay');
-                    if (overlay && (overlay.classList.contains('slow') || overlay.classList.contains('lost')) && overlay.classList.contains('visible')) {
-                        NetworkStatusOverlay.show('connected');
-                    }
+            // Check actual network conditions (navigator.connection), not the data saver setting
+            let isActuallySlow = false;
+            if (typeof navigator !== 'undefined' && navigator.connection) {
+                const conn = navigator.connection;
+                if (conn.saveData) {
+                    isActuallySlow = true;
+                } else if (typeof conn.downlink === 'number' && conn.downlink < 1.0) {
+                    isActuallySlow = true;
                 }
-            }).catch(err => console.error('App: Failed to load Api module in checkSpeed', err));
+            }
+
+            if (isActuallySlow) {
+                NetworkStatusOverlay.show('slow');
+            } else {
+                const overlay = document.getElementById('network-status-overlay');
+                if (overlay && (overlay.classList.contains('slow') || overlay.classList.contains('lost')) && overlay.classList.contains('visible')) {
+                    NetworkStatusOverlay.show('connected');
+                }
+            }
         } catch (e) {
             console.error('App: Error in checkSpeed execution:', e);
         }
