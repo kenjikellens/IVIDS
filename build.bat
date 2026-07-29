@@ -49,45 +49,10 @@ if errorlevel 1 (
 echo.
 
 :: BUILD STEP
-echo [1-2/5] Building Windows + Android...
-
-set "WIN_STATUS=%TEMP%\win_%RANDOM%.status"
-set "APK_STATUS=%TEMP%\apk_%RANDOM%.status"
-
-del "%WIN_STATUS%" >nul 2>&1
-del "%APK_STATUS%" >nul 2>&1
-
-:: FIXED START COMMANDS (THIS WAS YOUR BUG)
-
-start "Build Windows" /b cmd /c "npm run dist & echo !errorlevel! > ""%WIN_STATUS%"""
-
-if "%BUILD_TYPE%"=="release" (
-    start "Build Android" /b cmd /c "gradlew.bat assembleRelease & echo !errorlevel! > ""%APK_STATUS%"""
-) else (
-    start "Build Android" /b cmd /c "gradlew.bat assembleDebug & echo !errorlevel! > ""%APK_STATUS%"""
-)
-
-:wait
-ping 127.0.0.1 -n 3 >nul
-if not exist "%WIN_STATUS%" goto wait
-if not exist "%APK_STATUS%" goto wait
-
-set /p WIN_ERR=<"%WIN_STATUS%"
-set /p APK_ERR=<"%APK_STATUS%"
-
-del "%WIN_STATUS%" >nul 2>&1
-del "%APK_STATUS%" >nul 2>&1
-
-set "WIN_ERR=%WIN_ERR: =%"
-set "APK_ERR=%APK_ERR: =%"
-
-if not "%WIN_ERR%"=="0" (
-    echo [ERROR] Windows build failed: %WIN_ERR%
-    exit /b 1
-)
-
-if not "%APK_ERR%"=="0" (
-    echo [ERROR] Android build failed: %APK_ERR%
+echo [1-2/5] Building Windows + Android simultaneously...
+node build-parallel.js %BUILD_TYPE%
+if errorlevel 1 (
+    echo [ERROR] Parallel build failed.
     exit /b 1
 )
 
