@@ -4,7 +4,9 @@ const buildType = process.argv[2] === 'release' ? 'release' : 'debug';
 
 console.log(`[INFO] Launching Windows EXE and Android APK builds simultaneously (${buildType} mode)...`);
 
-const winCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const winCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+const winArgs = ['electron-builder'];
+
 const gradleCmd = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
 const gradleTask = buildType === 'release' ? 'assembleRelease' : 'assembleDebug';
 
@@ -24,7 +26,7 @@ function runProcess(cmd, args, name) {
 }
 
 Promise.all([
-    runProcess(winCmd, ['run', 'dist'], 'Windows (Electron) Build'),
+    runProcess(winCmd, winArgs, 'Windows (Electron) Build'),
     runProcess(gradleCmd, [gradleTask], 'Android (APK) Build')
 ]).then(() => {
     console.log('[OK] Simultaneous builds completed successfully.');
