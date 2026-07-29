@@ -244,7 +244,7 @@ export const Api = {
      */
     getRecommendedBackdropSize: () => {
         if (Api.isSlowConnection()) {
-            return 'w300';
+            return 'w500';
         }
 
         const vw = window.innerWidth;
@@ -269,7 +269,7 @@ export const Api = {
      */
     getRecommendedSizeForContainer: (containerWidth, isBackdrop = false) => {
         if (Api.isSlowConnection()) {
-            return isBackdrop ? 'w300' : 'w154';
+            return isBackdrop ? 'w500' : 'w92';
         }
 
         const dpr = window.devicePixelRatio || 1;

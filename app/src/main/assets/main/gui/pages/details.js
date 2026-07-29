@@ -144,17 +144,21 @@ function render(item, type) {
             overview.textContent = item.overview || I18n.t('details.noDescription');
         }
 
-        if (bg && item.backdrop_path) {
-            const width = bg.clientWidth;
-            const sizeKey = Api.getRecommendedSizeForContainer(width, true);
-            const backdropUrl = Api.getImageUrl(item.backdrop_path, sizeKey);
-            // Use blob cache for instant backdrop rendering
-            const cachedBackdrop = imageCache.has(backdropUrl) ? imageCache.get(backdropUrl) : backdropUrl;
-            bg.style.backgroundImage = `url(${cachedBackdrop})`;
-            bg.style.willChange = 'background-image';
-            // Queue background caching if not already cached
-            if (!imageCache.has(backdropUrl)) {
-                imageCache.getOrFetch(backdropUrl);
+        if (bg) {
+            if (Api.isSlowConnection() || !item.backdrop_path) {
+                bg.style.backgroundImage = 'none';
+            } else {
+                const width = bg.clientWidth;
+                const sizeKey = Api.getRecommendedSizeForContainer(width, true);
+                const backdropUrl = Api.getImageUrl(item.backdrop_path, sizeKey);
+                // Use blob cache for instant backdrop rendering
+                const cachedBackdrop = imageCache.has(backdropUrl) ? imageCache.get(backdropUrl) : backdropUrl;
+                bg.style.backgroundImage = `url(${cachedBackdrop})`;
+                bg.style.willChange = 'background-image';
+                // Queue background caching if not already cached
+                if (!imageCache.has(backdropUrl)) {
+                    imageCache.getOrFetch(backdropUrl);
+                }
             }
         }
 
