@@ -138,6 +138,7 @@ export function setupLazyLoadedRows(categories, defaultType = null) {
  */
 export function manageModal(modal, focusTarget = null, onClose = null) {
     const originalParent = modal.parentElement;
+    const triggerElement = document.querySelector('.focused');
 
     // Move to body to escape parent stacking context or overflow bounds
     document.body.appendChild(modal);
@@ -177,7 +178,11 @@ export function manageModal(modal, focusTarget = null, onClose = null) {
             }
         }, 300);
         SpatialNav.clearFocusTrap();
-        SpatialNav.refocus();
+        if (triggerElement && SpatialNav.isVisible(triggerElement)) {
+            SpatialNav.setFocus(triggerElement);
+        } else {
+            SpatialNav.refocus();
+        }
     };
 
     modalBackHandler = () => {

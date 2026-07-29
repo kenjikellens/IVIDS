@@ -249,6 +249,11 @@ export const SpatialNav = {
             return false;
         }
 
+        const updateModal = el.closest('.update-modal-overlay');
+        if (updateModal && updateModal.style.display === 'none') {
+            return false;
+        }
+
         // FASTEST CHECK: offsetParent is null if display:none or parent is display:none.
         // However, position: fixed elements or their descendants also have offsetParent === null in many browsers.
         // To resolve this, we do a deeper computed style walk only when offsetParent is null.
@@ -261,7 +266,7 @@ export const SpatialNav = {
                     return false;
                 }
                 const style = window.getComputedStyle(curr);
-                if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0' || style.pointerEvents === 'none') {
+                if (style.display === 'none' || style.visibility === 'hidden' || style.pointerEvents === 'none') {
                     return false;
                 }
                 if (style.position === 'fixed') {
@@ -281,7 +286,7 @@ export const SpatialNav = {
 
         // Skip expensive computed style checks for common elements if checking visibility heavily
         // We only do the deep check if strictly necessary or for specific edge cases
-        if (el.style.opacity === '0' || el.style.visibility === 'hidden') return false;
+        if (el.style.visibility === 'hidden') return false;
 
         if (window.getComputedStyle(el).pointerEvents === 'none') return false;
 

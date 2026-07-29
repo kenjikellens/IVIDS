@@ -2369,6 +2369,47 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+/* CSS Class: SVG loader image sizing utility. */
+.ivids-loader {
+    width: clamp(32px, 4.5vw, 60px);
+    height: clamp(32px, 4.5vw, 60px);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* CSS Class: Inline loader container centered horizontally and vertically inside the version modal body. */
+#version-list-loader {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    min-height: 220px;
+    width: 100%;
+}
+
+/* CSS Class: Translucent green checkmark SVG icon positioned on the right side of the installed version card. */
+.version-applied-icon {
+    flex-shrink: 0;
+    height: 28px;
+    margin-left: auto;
+    width: 28px;
+}
+
+/* CSS Class: Enriched version card chip with clean glassmorphic backdrop. */
+.dev-version-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* CSS Class: Focus state for version cards using thick white border (no translate/scale animations). */
+.dev-version-card.focused, .dev-version-card:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border: 2px solid #ffffff !important;
+    outline: none;
+}
+
 /* ==========================================================================
    SECTION 5: PLAYER PAGE SPECIFIC STYLES
    Source File: player.css

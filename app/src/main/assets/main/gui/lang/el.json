@@ -103,7 +103,13 @@
         "adultContentOff": "Μακριά από",
         "adultContentWarning": "Προειδοποίηση: Η ενεργοποίηση αυτής της επιλογής θα εμφανίσει ακατάλληλο περιεχόμενο για ενηλίκους. Αυτή η ρύθμιση συνιστάται μόνο για χρήστες 18+.",
         "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity"
+        "dataSaverDesc": "Load lower quality photos and reduce network activity",
+        "devConsoleTitle": "Developer Console",
+        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
+        "devOfficialReleases": "Official Releases",
+        "devBleedingEdge": "Bleeding Edge",
+        "installed": "Installed",
+        "activeTag": "Active"
     },
     "common": {
         "close": "Κοντά",

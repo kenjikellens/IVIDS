@@ -103,7 +103,13 @@
         "adultContentOff": "Изкл",
         "adultContentWarning": "Предупреждение: Активирането на това ще покаже изрично съдържание за възрастни. Тази настройка се препоръчва само за потребители над 18 години.",
         "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity"
+        "dataSaverDesc": "Load lower quality photos and reduce network activity",
+        "devConsoleTitle": "Developer Console",
+        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
+        "devOfficialReleases": "Official Releases",
+        "devBleedingEdge": "Bleeding Edge",
+        "installed": "Installed",
+        "activeTag": "Active"
     },
     "common": {
         "close": "затвори",

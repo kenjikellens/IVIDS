@@ -3,6 +3,7 @@ import { SpatialNav } from '../js/spatial-nav.js';
 import { Toast } from '../js/toast.js';
 import { manageModal } from '../js/utils/ui-helper.js';
 import { parseMarkdown } from '../js/utils/markdown-parser.js';
+import { createLoaderElement } from '../js/loader.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { Api } from '../../logic/api.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
@@ -561,7 +562,7 @@ class SettingsManager {
 
             if (this.settings.updateMode === 'advanced') {
                 if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.toast.select') || 'Select Version';
-                if (checkLabel) checkLabel.textContent = 'Developer Console';
+                if (checkLabel) checkLabel.textContent = window.i18n?.t('settings.checkNow') || 'Check for Updates';
                 if (checkDesc) checkDesc.textContent = 'Choose any branch or release build to install';
             } else {
                 if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.checkButton') || 'Check Now';
@@ -599,6 +600,7 @@ class SettingsManager {
      */
     async openVersionSelector() {
         console.log('Settings: Opening version selector modal');
+        this.triggeringButton = document.getElementById('check-updates-btn');
         this.openModal('version-selector-modal');
 
         const loader = document.getElementById('version-list-loader');
@@ -606,11 +608,6 @@ class SettingsManager {
 
         if (loader) {
             loader.style.display = 'flex';
-            loader.innerHTML = '<div class="ivids-loader"></div>';
-            if (window.LoaderManager && window.LoaderManager.createLoader) {
-                const loaderEl = loader.querySelector('.ivids-loader');
-                window.LoaderManager.createLoader(loaderEl);
-            }
         }
         if (grid) {
             grid.style.display = 'none';
@@ -618,27 +615,27 @@ class SettingsManager {
         }
 
         try {
-            console.log('Settings: Fetching releases list from GitHub');
-            const res = await fetch('https://api.github.com/repos/kenjikellens/IVIDS/releases');
+            console.log('Settings: Fetching fresh releases list from GitHub');
+            const res = await fetch(`https://api.github.com/repos/kenjikellens/IVIDS/releases?t=${Date.now()}`);
             if (!res.ok) throw new Error(`HTTP error ${res.status}`);
             
             const releases = await res.json();
             console.log(`Settings: Retreived ${releases.length} releases successfully`);
 
+            // Fetch current app version display string
+            const versionDisplay = document.getElementById('app-version-display');
+            const currentInstalledVersion = versionDisplay ? versionDisplay.textContent.trim() : '';
+
             if (loader) loader.style.display = 'none';
             if (grid) {
                 grid.style.display = 'grid';
                 
-                // Add the top chip: Active Branch Build
+                // Add the top chip: Active Branch Build (Main Branch)
                 const branchRow = document.createElement('div');
                 branchRow.className = 'version-row-container';
                 branchRow.innerHTML = `
-                    <div class="option-chip focusable" data-value="branch">
+                    <div class="option-chip focusable dev-version-card" data-value="branch">
                         <div class="version-chip-content">
-                            <div class="version-chip-header">
-                                <span class="version-tag-badge">Branch</span>
-                                <span class="version-date-label">Latest</span>
-                            </div>
                             <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
                             <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK)'}</div>
                         </div>
@@ -647,6 +644,7 @@ class SettingsManager {
                 
                 const branchCard = branchRow.querySelector('.option-chip');
                 branchCard.onclick = () => {
+                    const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
                     this.closeModal();
                     console.log('Settings: Selected branch build');
                     window.latestUpdateDownloadUrl = 'https://github.com/kenjikellens/IVIDS/raw/main/IVIDS.apk';
@@ -657,7 +655,7 @@ class SettingsManager {
                         body: window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK).'
                     };
                     import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                        UpdatePrompt.show('Branch');
+                        UpdatePrompt.show('Branch', anchor);
                     }).catch(err => {
                         console.error('Settings: Failed to load update-prompt.js', err);
                         if (window.AndroidUpdate) {
@@ -671,25 +669,28 @@ class SettingsManager {
                 grid.appendChild(branchRow);
  
                 // Add each release as a focusable option chip
-                releases.forEach(rel => {
+                releases.forEach((rel) => {
                     // Find the APK asset
                     const apkAsset = rel.assets.find(asset => asset.name.endsWith('.apk'));
                     const downloadUrl = apkAsset ? apkAsset.browser_download_url : null;
                     
                     if (downloadUrl) {
                         const date = new Date(rel.published_at).toLocaleDateString();
+                        const isInstalled = currentInstalledVersion && currentInstalledVersion.includes(rel.tag_name);
+                        const appliedIconHtml = isInstalled ? '<img src="../svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
+
                         const relRow = document.createElement('div');
                         relRow.className = 'version-row-container';
                         
                         relRow.innerHTML = `
-                            <div class="option-chip focusable" data-value="${rel.tag_name}">
+                            <div class="option-chip focusable dev-version-card" data-value="${rel.tag_name}">
                                 <div class="version-chip-content">
                                     <div class="version-chip-header">
-                                        <span class="version-tag-badge">${rel.tag_name}</span>
-                                        <span class="version-date-label">${date}</span>
+                                        <span class="version-date-label">${rel.tag_name} • ${date}</span>
                                     </div>
-                                    <span class="version-chip-title">${rel.name || 'Release Build'}</span>
+                                    <span class="version-chip-title">${rel.name || rel.tag_name}</span>
                                 </div>
+                                ${appliedIconHtml}
                             </div>
                             <button class="version-info-btn focusable" title="View changes">
                                 <div class="version-info-icon"></div>
@@ -706,15 +707,16 @@ class SettingsManager {
 
                         const relCard = relRow.querySelector('.option-chip');
                         relCard.onclick = () => {
+                            const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
                             this.closeModal();
                             console.log(`Settings: Selected version ${rel.tag_name} via ${downloadUrl}`);
                             window.latestUpdateDownloadUrl = downloadUrl;
                             window.latestUpdateVersion = rel.tag_name;
                             window.latestRelease = rel;
                             import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                                UpdatePrompt.show(rel.tag_name);
+                                UpdatePrompt.show(rel.tag_name, anchor);
                             }).catch(err => {
-                                                    console.error('Settings: Failed to load update-prompt.js', err);
+                                console.error('Settings: Failed to load update-prompt.js', err);
                                 if (window.AndroidUpdate) {
                                     window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
                                 } else {
@@ -727,9 +729,15 @@ class SettingsManager {
                     }
                 });
 
-                // Trapping focus using SpatialNav refocus
-                if (typeof SpatialNav !== 'undefined' && SpatialNav.refocus) {
-                    SpatialNav.refocus();
+                // Set initial spatial focus directly on the top version card (Active Branch Build)
+                const topCard = branchRow.querySelector('.option-chip');
+                if (window.SpatialNav) {
+                    window.SpatialNav.setFocusTrap(document.getElementById('version-selector-modal'));
+                    if (topCard) {
+                        window.SpatialNav.setFocus(topCard);
+                    } else {
+                        window.SpatialNav.refocus();
+                    }
                 }
             }
         } catch (err) {
@@ -779,7 +787,10 @@ class SettingsManager {
             this.closeModalFn = prevCloseFn;
             if (prevModal) {
                 prevModal.classList.add('show');
-                if (window.SpatialNav) window.SpatialNav.refocus();
+                if (window.SpatialNav) {
+                    window.SpatialNav.setFocusTrap(prevModal);
+                    window.SpatialNav.refocus();
+                }
             }
         };
     }

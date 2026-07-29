@@ -109,14 +109,17 @@ export class UpdatePrompt {
      * Restores/focuses the SpatialNav controls and loads the release changelog body.
      * 
      * @param {string} version - The version tag found on the remote server.
+     * @param {HTMLElement} [returnFocusElement] - Explicit element to receive focus when update prompt is dismissed.
      * @returns {Promise<void>}
      */
-    static async show(version) {
+    static async show(version, returnFocusElement = null) {
         // Initialize HTML if not already mounted
         this.init();
 
         // Remember what was previously focused to allow seamless recovery upon dismissal
-        this.previousFocus = document.querySelector('.focused');
+        const currentFocused = document.querySelector('.focused');
+        const fallbackBtn = document.getElementById('check-updates-btn');
+        this.previousFocus = returnFocusElement || (currentFocused && SpatialNav.isVisible(currentFocused) ? currentFocused : fallbackBtn);
 
         // Fetch release changelog
         let release = window.latestRelease;
@@ -188,15 +191,16 @@ export class UpdatePrompt {
         if (changelogTitleEl) changelogTitleEl.style.display = 'block';
         if (changelogBodyEl) changelogBodyEl.style.display = 'block';
 
-        // Render modal with display and active transition trigger
+        // Render modal with display and active transition trigger immediately
         this.modalElement.style.display = 'flex';
-        setTimeout(() => {
-            this.modalElement.classList.add('visible');
-            
-            // Trap spatial controls and center on first action button
-            SpatialNav.setFocusTrap(this.modalElement);
-            SpatialNav.setFocus(confirmBtn);
-        }, 50);
+        this.modalElement.classList.add('visible');
+        
+        // Trap spatial controls and center directly on first action button
+        SpatialNav.setFocusTrap(this.modalElement);
+        SpatialNav.setFocus(confirmBtn);
+        if (typeof confirmBtn.focus === 'function') {
+            confirmBtn.focus();
+        }
 
         // Bind interactive event loops programmatically
         confirmBtn.onclick = () => {
@@ -458,8 +462,13 @@ export class UpdatePrompt {
 
         // Restore active focus back to the page
         SpatialNav.clearFocusTrap();
-        if (this.previousFocus && document.body.contains(this.previousFocus)) {
-            SpatialNav.setFocus(this.previousFocus);
+        const fallbackTarget = document.getElementById('check-updates-btn');
+        const targetFocus = (this.previousFocus && SpatialNav.isVisible(this.previousFocus)) 
+            ? this.previousFocus 
+            : (fallbackTarget && SpatialNav.isVisible(fallbackTarget) ? fallbackTarget : null);
+
+        if (targetFocus) {
+            SpatialNav.setFocus(targetFocus);
         } else {
             SpatialNav.refocus();
         }

@@ -71,6 +71,12 @@
             "installing": "Preparing installation..."
         },
         "selectVersion": "Select Version",
+        "devConsoleTitle": "Developer Console",
+        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
+        "devOfficialReleases": "Official Releases",
+        "devBleedingEdge": "Bleeding Edge",
+        "installed": "Installed",
+        "activeTag": "Active",
         "branchBuild": "Live Branch Build",
         "branchBuildDesc": "Direct main branch IVIDS.apk build",
         "updateNotification": "Update Available",
