@@ -118,7 +118,6 @@ class ImageCache {
             const blob = await response.blob();
             return this.put(url, blob);
         } catch (e) {
-            console.warn('ImageCache: fetch failed for', url, e);
             return null;
         }
     }
