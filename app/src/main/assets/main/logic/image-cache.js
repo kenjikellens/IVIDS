@@ -112,7 +112,7 @@ class ImageCache {
      */
     async _fetchAndCache(url) {
         try {
-            const response = await fetch(url);
+            const response = await fetch(proxyUrl(url));
             if (!response.ok) return null;
 
             const blob = await response.blob();
