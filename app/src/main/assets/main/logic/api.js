@@ -182,7 +182,7 @@ export const Api = {
                 }
                 return true;
             }
-            if (typeof conn.downlink === 'number' && conn.downlink < 1.0) return true;
+            if (typeof conn.downlink === 'number' && conn.downlink < 1.5) return true;
         }
 
         return false;
@@ -244,7 +244,7 @@ export const Api = {
      */
     getRecommendedBackdropSize: () => {
         if (Api.isSlowConnection()) {
-            return 'w500';
+            return 'w300';
         }
 
         const vw = window.innerWidth;

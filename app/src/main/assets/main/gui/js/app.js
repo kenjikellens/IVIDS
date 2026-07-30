@@ -651,25 +651,58 @@ function initNetworkListeners() {
         console.log('Back online');
     });
 
-    // Helper to evaluate and display the slow internet warning overlay dynamically.
-    // Only shows the overlay for actual network degradation, NOT when the user
-    // has manually enabled Data Saver in settings (that's a deliberate choice).
+    // Tracks slow internet alert state, auto-hide timer, and 15-second cool-down window
+    let lastSlowAlertTimestamp = 0;
+    let slowHideTimer = null;
+
+    /**
+     * Evaluates connection speed (< 1.5 Mbps threshold).
+     * Displays slow connection icon for 3 seconds max, suppresses re-display within 15 seconds,
+     * and hides immediately if connection recovers above 1.5 Mbps.
+     */
     const checkSpeed = () => {
         try {
-            // Check actual network conditions (navigator.connection), not the data saver setting
             let isActuallySlow = false;
             if (typeof navigator !== 'undefined' && navigator.connection) {
                 const conn = navigator.connection;
                 if (conn.saveData) {
                     isActuallySlow = true;
-                } else if (typeof conn.downlink === 'number' && conn.downlink < 1.0) {
+                } else if (typeof conn.downlink === 'number' && conn.downlink < 1.5) {
                     isActuallySlow = true;
                 }
             }
 
+            const now = Date.now();
+
             if (isActuallySlow) {
-                NetworkStatusOverlay.show('slow');
+                // Check 15-second cool-down window before displaying slow internet alert icon
+                if (now - lastSlowAlertTimestamp >= 15000) {
+                    lastSlowAlertTimestamp = now;
+
+                    // Clear any existing hide timer
+                    if (slowHideTimer) {
+                        clearTimeout(slowHideTimer);
+                        slowHideTimer = null;
+                    }
+
+                    // Show slow connection icon
+                    NetworkStatusOverlay.show('slow');
+
+                    // Auto-hide icon after exactly 3 seconds (3000ms)
+                    slowHideTimer = setTimeout(() => {
+                        const overlay = document.getElementById('network-status-overlay');
+                        if (overlay && overlay.classList.contains('slow')) {
+                            NetworkStatusOverlay.show('connected');
+                        }
+                        slowHideTimer = null;
+                    }, 3000);
+                }
             } else {
+                // Connection is > 1.5 Mbps: immediately hide slow icon if visible & clear timer
+                if (slowHideTimer) {
+                    clearTimeout(slowHideTimer);
+                    slowHideTimer = null;
+                }
                 const overlay = document.getElementById('network-status-overlay');
                 if (overlay && (overlay.classList.contains('slow') || overlay.classList.contains('lost')) && overlay.classList.contains('visible')) {
                     NetworkStatusOverlay.show('connected');
@@ -688,7 +721,19 @@ function initNetworkListeners() {
     setTimeout(checkSpeed, 1000);
 
     // Listen for custom toggle events dispatched from settings
-    window.addEventListener('datasaverchanged', checkSpeed);
+    window.addEventListener('datasaverchanged', () => {
+        try {
+            if (typeof imageCache !== 'undefined' && imageCache.destroy) {
+                imageCache.destroy();
+            }
+            if (typeof Api !== 'undefined' && Api._recommendedSizes) {
+                Api._recommendedSizes = {};
+            }
+        } catch (e) {
+            console.error('App: Error resetting image cache on datasaverchanged:', e);
+        }
+        checkSpeed();
+    });
 
     // Track when the app goes into the background
     document.addEventListener('visibilitychange', () => {
