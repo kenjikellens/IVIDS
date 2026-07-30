@@ -677,7 +677,7 @@ class SettingsManager {
                     if (downloadUrl) {
                         const date = new Date(rel.published_at).toLocaleDateString();
                         const isInstalled = currentInstalledVersion && currentInstalledVersion.includes(rel.tag_name);
-                        const appliedIconHtml = isInstalled ? '<img src="../svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
+                        const appliedIconHtml = isInstalled ? '<img src="svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
 
                         const relRow = document.createElement('div');
                         relRow.className = 'version-row-container';

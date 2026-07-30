@@ -8,7 +8,7 @@
  * @returns {string} HTML string
  */
 export function getLoaderHtml() {
-    return `<div class="ivids-loader"><img src="../svg/loader.svg" class="ivids-loader-svg" alt="Loading..." /></div>`;
+    return `<div class="ivids-loader"><img src="svg/loader.svg" class="ivids-loader-svg" alt="Loading..." /></div>`;
 }
 
 /**
@@ -18,7 +18,7 @@ export function getLoaderHtml() {
 export function createLoaderElement() {
     const div = document.createElement('div');
     div.className = 'ivids-loader';
-    div.innerHTML = `<img src="../svg/loader.svg" class="ivids-loader-svg" alt="Loading..." />`;
+    div.innerHTML = `<img src="svg/loader.svg" class="ivids-loader-svg" alt="Loading..." />`;
     return div;
 }
 
@@ -30,7 +30,7 @@ function injectCircle(container) {
     const isLoader = container.classList.contains('ivids-loader') || container.classList.contains('windows-loader');
     if (container && isLoader && container.children.length === 0) {
         const img = document.createElement('img');
-        img.src = '../svg/loader.svg';
+        img.src = 'svg/loader.svg';
         img.className = 'ivids-loader-svg';
         img.alt = 'Loading...';
         container.appendChild(img);
