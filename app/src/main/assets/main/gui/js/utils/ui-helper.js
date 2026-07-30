@@ -37,7 +37,6 @@ export function setupRow(elementId, items, defaultType = null) {
     try {
         const rowPosters = document.getElementById(elementId);
         if (!rowPosters) {
-            console.warn(`Row element ${elementId} not found`);
             return;
         }
 

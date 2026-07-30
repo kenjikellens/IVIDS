@@ -8,6 +8,7 @@ import { Api } from '../../logic/api.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { manageModal } from './utils/ui-helper.js';
+import { NETWORK_CONFIG } from '../../logic/constants.js';
 import './loader.js';
 import './i18n.js';
 // Polyfills flag emojis on platforms where they are not natively supported (like Windows browser/Electron).
@@ -667,7 +668,7 @@ function initNetworkListeners() {
                 const conn = navigator.connection;
                 if (conn.saveData) {
                     isActuallySlow = true;
-                } else if (typeof conn.downlink === 'number' && conn.downlink < 1.5) {
+                } else if (typeof conn.downlink === 'number' && conn.downlink < NETWORK_CONFIG.SLOW_THRESHOLD_MBPS) {
                     isActuallySlow = true;
                 }
             }
@@ -675,8 +676,8 @@ function initNetworkListeners() {
             const now = Date.now();
 
             if (isActuallySlow) {
-                // Check 15-second cool-down window before displaying slow internet alert icon
-                if (now - lastSlowAlertTimestamp >= 15000) {
+                // Check cool-down window before displaying slow internet alert icon
+                if (now - lastSlowAlertTimestamp >= NETWORK_CONFIG.ALERT_COOLDOWN_MS) {
                     lastSlowAlertTimestamp = now;
 
                     // Clear any existing hide timer
@@ -688,14 +689,14 @@ function initNetworkListeners() {
                     // Show slow connection icon
                     NetworkStatusOverlay.show('slow');
 
-                    // Auto-hide icon after exactly 3 seconds (3000ms)
+                    // Auto-hide icon after configured alert duration
                     slowHideTimer = setTimeout(() => {
                         const overlay = document.getElementById('network-status-overlay');
                         if (overlay && overlay.classList.contains('slow')) {
                             NetworkStatusOverlay.show('connected');
                         }
                         slowHideTimer = null;
-                    }, 3000);
+                    }, NETWORK_CONFIG.ALERT_DURATION_MS);
                 }
             } else {
                 // Connection is > 1.5 Mbps: immediately hide slow icon if visible & clear timer

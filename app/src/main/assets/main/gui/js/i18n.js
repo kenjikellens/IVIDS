@@ -1,16 +1,13 @@
 // i18n (internationalization) system for IVIDS
 import { PersistentStorage } from '../../logic/persistent-storage.js';
+import { I18N_CONFIG } from '../../logic/constants.js';
 
 class I18n {
     constructor() {
-        this.currentLanguage = 'en';
+        this.currentLanguage = I18N_CONFIG.DEFAULT_LANGUAGE;
         this.translations = {};
         this.translationCache = {}; // Cache for fast translation string lookups
-        this.availableLanguages = [
-            'ar', 'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi',
-            'hr', 'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nl', 'no', 'pl', 'pt',
-            'ro', 'ru', 'sk', 'sv', 'th', 'tl', 'tr', 'uk', 'vi', 'zh'
-        ];
+        this.availableLanguages = [...I18N_CONFIG.AVAILABLE_LANGUAGES];
         this.initialized = false;
         this.initializedPromise = null;
     }

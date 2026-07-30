@@ -5,6 +5,7 @@ import { HeroSlider } from '../js/hero-slider.js';
 import { ErrorHandler } from '../js/error-handler.js';
 import { setupRow, setupLazyLoadedRows } from '../js/utils/ui-helper.js';
 import { Splash } from '../js/splash.js';
+import { CategoryRenderer } from '../js/category-renderer.js';
 
 /**
  * Initializes the unified browse page based on the current active route (home, movies, or series).
@@ -17,13 +18,17 @@ export async function init(params) {
     const route = params?.route || 'home';
     try {
         if (route === 'home') {
+            CategoryRenderer.renderRows(document.getElementById('home-rows-container'), 'home');
             await initHome();
         } else if (route === 'movies') {
+            CategoryRenderer.renderRows(document.getElementById('movies-rows-container'), 'movies');
             await initMovies();
         } else if (route === 'series') {
+            CategoryRenderer.renderRows(document.getElementById('series-rows-container'), 'series');
             await initSeries();
         } else {
             console.warn(`Unknown browse route: ${route}, defaulting to Home.`);
+            CategoryRenderer.renderRows(document.getElementById('home-rows-container'), 'home');
             await initHome();
         }
     } catch (error) {
@@ -81,13 +86,19 @@ async function initHome() {
 
     // Define Lazy Load Configuration for Home
     const categories = [
+        { id: 'trending-today-row', fetcher: () => Api.fetchTrendingToday() },
         { id: 'highly-rated-row', fetcher: () => Api.fetchHighlyRated() },
         { id: 'new-this-year-row', fetcher: () => Api.fetchNewThisYear() },
+        { id: 'hbo-row', fetcher: () => Api.fetchHboMovies() },
+        { id: 'apple-tv-row', fetcher: () => Api.fetchAppleMovies() },
+        { id: 'prime-row', fetcher: () => Api.fetchPrimeOriginals() },
         { id: 'award-winners-row', fetcher: () => Api.fetchAwardWinners() },
+        { id: 'oscar-winners-row', fetcher: () => Api.fetchOscarWinners() },
         { id: 'top-rated-row', fetcher: () => Api.fetchTopRated() },
         { id: 'action-row', fetcher: () => Api.fetchActionMovies() },
-        { id: 'comedy-row', fetcher: () => Api.fetchComedyMovies() },
+        { id: 'blockbuster-movies-row', fetcher: () => Api.fetchTrending() },
         { id: 'tv-row', fetcher: () => Api.fetchPopularTV() },
+        { id: 'binge-worthy-series-row', fetcher: () => Api.fetchPopularTV() },
         { id: 'comedy-series-row', fetcher: () => Api.fetchComedySeries() },
         { id: 'anime-row', fetcher: () => Api.fetchAnimeMovies() },
         { id: 'disney-row', fetcher: () => Api.fetchDisneyMovies() },
@@ -97,7 +108,10 @@ async function initHome() {
         { id: 'netflix-row', fetcher: () => Api.fetchNetflixOriginals() },
         { id: 'korean-row', fetcher: () => Api.fetchKoreanContent() },
         { id: 'bollywood-row', fetcher: () => Api.fetchBollywood() },
+        { id: 'mind-bending-row', fetcher: () => Api.fetchMindBending() },
         { id: 'classics-row', fetcher: () => Api.fetchClassicMovies() },
+        { id: 'nostalgia-80s-90s-row', fetcher: () => Api.fetchNostalgia80s90s() },
+        { id: 'indie-gems-row', fetcher: () => Api.fetchIndieGems() },
         { id: 'horror-row', fetcher: () => Api.fetchHorrorMovies() },
         { id: 'scifi-row', fetcher: () => Api.fetchSciFiMovies() },
         { id: 'thriller-row', fetcher: () => Api.fetchThrillerMovies() },
@@ -142,6 +156,16 @@ async function initMovies() {
     // Define Categories for Movies
     const categories = [
         { id: 'top-rated-movies-row', fetcher: () => Api.fetchTopRated() },
+        { id: 'trending-movies-today-row', fetcher: () => Api.fetchTrendingToday() },
+        { id: 'hbo-movies-row', fetcher: () => Api.fetchHboMovies() },
+        { id: 'apple-movies-row', fetcher: () => Api.fetchAppleMovies() },
+        { id: 'paramount-movies-row', fetcher: () => Api.fetchParamountMovies() },
+        { id: 'universal-movies-row', fetcher: () => Api.fetchUniversalMovies() },
+        { id: 'sony-movies-row', fetcher: () => Api.fetchSonyMovies() },
+        { id: 'indie-movies-row', fetcher: () => Api.fetchIndieGems() },
+        { id: 'cult-classics-movies-row', fetcher: () => Api.fetchCultClassics() },
+        { id: 'high-octane-action-movies-row', fetcher: () => Api.fetchHighOctaneAction() },
+        { id: 'standup-comedy-movies-row', fetcher: () => Api.fetchStandupComedy() },
         { id: 'action-movies-row', fetcher: () => Api.fetchActionMovies() },
         { id: 'comedy-movies-row', fetcher: () => Api.fetchComedyMovies() },
         { id: 'adventure-movies-row', fetcher: () => Api.fetchAdventureMovies() },
@@ -160,7 +184,7 @@ async function initMovies() {
         { id: 'thriller-movies-row', fetcher: () => Api.fetchThrillerMovies() },
         { id: 'war-movies-row', fetcher: () => Api.fetchWarMovies() },
         { id: 'western-movies-row', fetcher: () => Api.fetchWesternMovies() },
-        { id: 'anime-movies-row', fetcher: () => Api.fetchAnimeMovies() },
+        { id: 'anime-movies-row', fetcher: () => Api.fetchAnimeMovies() }
     ];
 
     // Register lazy loaders
@@ -194,6 +218,18 @@ async function initSeries() {
     // Define Categories for Series
     const categories = [
         { id: 'top-rated-series-row', fetcher: () => Api.fetchTopRatedTV() },
+        { id: 'trending-series-today-row', fetcher: () => Api.fetchTrendingToday() },
+        { id: 'hbo-series-row', fetcher: () => Api.fetchHboSeries() },
+        { id: 'apple-series-row', fetcher: () => Api.fetchAppleSeries() },
+        { id: 'amazon-series-row', fetcher: () => Api.fetchAmazonSeries() },
+        { id: 'disney-series-row', fetcher: () => Api.fetchDisneySeries() },
+        { id: 'hulu-series-row', fetcher: () => Api.fetchHuluSeries() },
+        { id: 'paramount-series-row', fetcher: () => Api.fetchParamountSeries() },
+        { id: 'mini-series-row', fetcher: () => Api.fetchMiniSeries() },
+        { id: 'korean-dramas-series-row', fetcher: () => Api.fetchKoreanSeries() },
+        { id: 'docuseries-series-row', fetcher: () => Api.fetchDocuseries() },
+        { id: 'sitcoms-series-row', fetcher: () => Api.fetchSitcoms() },
+        { id: 'marvel-series-row', fetcher: () => Api.fetchMarvelSeries() },
         { id: 'action-adventure-series-row', fetcher: () => Api.fetchActionAdventureSeries() },
         { id: 'animation-series-row', fetcher: () => Api.fetchAnimationSeries() },
         { id: 'crime-series-row', fetcher: () => Api.fetchCrimeSeries() },
@@ -207,7 +243,7 @@ async function initSeries() {
         { id: 'soap-series-row', fetcher: () => Api.fetchSoapSeries() },
         { id: 'war-politics-series-row', fetcher: () => Api.fetchWarPoliticsSeries() },
         { id: 'western-series-row', fetcher: () => Api.fetchWesternSeries() },
-        { id: 'anime-series-row', fetcher: () => Api.fetchAnimeSeries() },
+        { id: 'anime-series-row', fetcher: () => Api.fetchAnimeSeries() }
     ];
 
     // Register lazy loaders

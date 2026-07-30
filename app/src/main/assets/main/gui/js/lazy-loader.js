@@ -77,16 +77,6 @@ export class LazyLoader {
 
         const originalUrl = img.dataset.src;
 
-        // Check image blob cache for an instant hit
-        if (imageCache.has(originalUrl)) {
-            img.src = imageCache.get(originalUrl);
-            img.removeAttribute('data-src');
-            img.style.opacity = '1';
-            const loader = element.querySelector('.poster-loader');
-            if (loader) loader.remove();
-            return Promise.resolve();
-        }
-
         return new Promise((resolve) => {
             if (!img.complete && !element.querySelector('.poster-loader')) {
                 const loader = createLoaderElement();
@@ -104,32 +94,13 @@ export class LazyLoader {
                 resolve();
             };
 
-            // Fetch via imageCache so the blob is stored for future navigations
-            imageCache.getOrFetch(originalUrl).then(blobUrl => {
-                if (blobUrl) {
-                    img.addEventListener('load', onComplete, { once: true });
-                    img.addEventListener('error', onComplete, { once: true });
-                    img.src = blobUrl;
-                } else {
-                    // Fallback to direct URL if cache fetch failed
-                    img.addEventListener('load', onComplete, { once: true });
-                    img.addEventListener('error', onComplete, { once: true });
-                    img.src = originalUrl;
-                }
-                img.removeAttribute('data-src');
-                if (img.complete) {
-                    onComplete();
-                }
-            }).catch(() => {
-                // Final fallback
-                img.addEventListener('load', onComplete, { once: true });
-                img.addEventListener('error', onComplete, { once: true });
-                img.src = originalUrl;
-                img.removeAttribute('data-src');
-                if (img.complete) {
-                    onComplete();
-                }
-            });
+            img.addEventListener('load', onComplete, { once: true });
+            img.addEventListener('error', onComplete, { once: true });
+            img.src = originalUrl;
+            img.removeAttribute('data-src');
+            if (img.complete) {
+                onComplete();
+            }
         });
     }
 

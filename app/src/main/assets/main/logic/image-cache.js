@@ -9,8 +9,10 @@
  * on eviction or when destroy() is called.
  */
 
+import { CACHE_CONFIG } from './constants.js';
+
 /** Maximum number of cached image blobs before LRU eviction kicks in. */
-const MAX_ITEMS = 200;
+const MAX_ITEMS = CACHE_CONFIG.MAX_IMAGE_ITEMS;
 
 class ImageCache {
     constructor() {

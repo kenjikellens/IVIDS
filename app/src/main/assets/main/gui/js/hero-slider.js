@@ -2,15 +2,12 @@ import { Api } from '../../logic/api.js';
 import { Router } from '../js/router.js';
 import { Splash } from './splash.js';
 import { imageCache } from '../../logic/image-cache.js';
+import { HERO_CONFIG } from '../../logic/constants.js';
 
 /**
  * Default configuration parameters for Hero Slider rendering, transitions, and truncation.
  */
-const CONFIG = {
-    DEFAULT_DURATION: 6000,       // Slide transition cycle time when auto-play is enabled (6 seconds)
-    FADE_TRANSITION_TIMEOUT: 500, // Duration of slide text content fade transition (ms)
-    TRUNCATE_LIMIT: 250           // Maximum character limit for overview descriptions
-};
+const CONFIG = HERO_CONFIG;
 
 /**
  * Helper class that sets up and manages the home/movies/series hero slider.
@@ -164,9 +161,8 @@ export class HeroSlider {
         const nextSlide = slides[nextIndex];
         if (nextSlide && nextSlide.dataset.src) {
             const nextSrcUrl = nextSlide.dataset.src;
-            if (!imageCache.has(nextSrcUrl)) {
-                imageCache.getOrFetch(nextSrcUrl);
-            }
+            const img = new Image();
+            img.src = nextSrcUrl;
         }
 
         // Highlight matching circular dot indicator

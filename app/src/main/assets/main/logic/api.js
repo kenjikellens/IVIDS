@@ -1,11 +1,12 @@
 import { cacheManager } from './cache-manager.js';
 import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
 import { PersistentStorage } from './persistent-storage.js';
+import { API_CONFIG, PLAYER_CONFIG } from './constants.js';
 
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
-const BASE_URL = 'https://api.themoviedb.org/3';
-const IMAGE_BASE_PATH = 'https://image.tmdb.org/t/p';
-const DEFAULT_PLAYER_BASE_URL = 'https://vidlink.pro';
+const BASE_URL = API_CONFIG.BASE_URL;
+const IMAGE_BASE_PATH = API_CONFIG.IMAGE_BASE_PATH;
+const DEFAULT_PLAYER_BASE_URL = API_CONFIG.DEFAULT_PLAYER_BASE_URL;
 
 /** Map of in-flight fetch promises keyed by URL, used to deduplicate concurrent identical requests. */
 const _inflightRequests = new Map();
@@ -16,26 +17,20 @@ let _cachedTodayDate = null;
 /** Cached player config object, invalidated when settings change. */
 let _cachedPlayerConfig = null;
 let _configOwnerId = null;
-const DEFAULT_PLAYER_PROVIDERS = [
-    { id: 'direct_stream', name: 'IVIDS Direct Stream (Clean)', url: 'direct://resolver', isCustom: false },
-    { id: 'vidlink', name: 'VidLink (Server 2)', url: 'https://vidlink.pro', isCustom: false },
-    { id: 'vidsrc_to', name: 'VidSrc.to (Server 3)', url: 'https://vidsrc.to/embed', isCustom: false },
-    { id: 'videasy', name: 'Videasy (Server 4)', url: 'https://player.videasy.net', isCustom: false },
-    { id: 'embed_su', name: 'Embed.su (Server 5)', url: 'https://embed.su/embed', isCustom: false }
-];
+const DEFAULT_PLAYER_PROVIDERS = [...PLAYER_CONFIG.DEFAULT_PROVIDERS];
 
 // Image Size Constants
-const POSTER_SIZE = 'w342';       // Standard poster size for grids
-const BACKDROP_SIZE = 'w1280';    // High res for backgrounds
-const STILL_SIZE = 'w300';        // Small stills for episode lists
-const DETAIL_POSTER_SIZE = 'w500'; // Medium size for details page
+const POSTER_SIZE = API_CONFIG.POSTER_SIZES.STANDARD;       // Standard poster size for grids
+const BACKDROP_SIZE = API_CONFIG.BACKDROP_SIZES.STANDARD;    // High res for backgrounds
+const STILL_SIZE = API_CONFIG.BACKDROP_SIZES.LOW;            // Small stills for episode lists
+const DETAIL_POSTER_SIZE = API_CONFIG.POSTER_SIZES.LARGE;    // Medium size for details page
 
 /**
  * Performs a fetch with timeout and exponential backoff retries.
  * Handles network failures gracefully for unreliable Smart TV connections.
  */
 async function fetchWithRetry(resource, options = {}) {
-    const { timeout = 15000, retries = 2 } = options;
+    const { timeout = API_CONFIG.FETCH_TIMEOUT_MS, retries = API_CONFIG.FETCH_RETRIES } = options;
     let lastError;
 
     for (let i = 0; i <= retries; i++) {
@@ -591,9 +586,32 @@ export const Api = {
 
     // Quality & Time-based
     fetchHighlyRated() { return this._fetchDiscover('movie', 'vote_average.gte=8&vote_count.gte=1000&sort_by=vote_average.desc'); },
-    fetchNewThisYear() { return this._fetchDiscover('movie', 'primary_release_date.gte=2025-01-01&sort_by=popularity.desc'); },
+    fetchNewThisYear() { return this._fetchDiscover('movie', `primary_release_date.gte=${new Date().getFullYear()}-01-01&sort_by=popularity.desc`); },
     fetchClassicMovies() { return this._fetchDiscover('movie', 'primary_release_date.gte=1970-01-01&primary_release_date.lte=1999-12-31&vote_count.gte=500&sort_by=vote_average.desc'); },
     fetchAwardWinners() { return this._fetchDiscover('movie', 'vote_average.gte=7.5&vote_count.gte=5000&sort_by=vote_count.desc'); },
+    fetchOscarWinners() { return this._fetchDiscover('movie', 'vote_average.gte=7.8&vote_count.gte=3000&sort_by=vote_average.desc'); },
+    fetchMindBending() { return this._fetchDiscover('movie', 'with_genres=9648&sort_by=vote_average.desc'); },
+    fetchNostalgia80s90s() { return this._fetchDiscover('movie', 'primary_release_date.gte=1980-01-01&primary_release_date.lte=1999-12-31&sort_by=popularity.desc'); },
+    fetchIndieGems() { return this._fetchDiscover('movie', 'with_companies=41077|7467|10256'); },
+
+    // Studios & Network Content
+    fetchHboMovies() { return this._fetchDiscover('movie', 'with_companies=3287|3268|174'); },
+    fetchHboSeries() { return this._fetchDiscover('tv', 'with_networks=49'); },
+    fetchAppleMovies() { return this._fetchDiscover('movie', 'with_companies=131018'); },
+    fetchAppleSeries() { return this._fetchDiscover('tv', 'with_networks=2552'); },
+    fetchAmazonSeries() { return this._fetchDiscover('tv', 'with_networks=1024'); },
+    fetchPrimeOriginals() { return this._fetchDiscover('movie', 'with_companies=20580'); },
+    fetchParamountMovies() { return this._fetchDiscover('movie', 'with_companies=4'); },
+    fetchUniversalMovies() { return this._fetchDiscover('movie', 'with_companies=33'); },
+    fetchSonyMovies() { return this._fetchDiscover('movie', 'with_companies=5|34'); },
+    fetchCultClassics() { return this._fetchDiscover('movie', 'primary_release_date.lte=2010-01-01&vote_count.gte=2000&sort_by=vote_average.desc'); },
+    fetchStandupComedy() { return this._fetchDiscover('movie', 'with_genres=35,99&sort_by=popularity.desc'); },
+    fetchHighOctaneAction() { return this._fetchDiscover('movie', 'with_genres=28&vote_count.gte=1000&sort_by=popularity.desc'); },
+    fetchHuluSeries() { return this._fetchDiscover('tv', 'with_networks=453'); },
+    fetchParamountSeries() { return this._fetchDiscover('tv', 'with_networks=4330'); },
+    fetchMiniSeries() { return this._fetchDiscover('tv', 'with_type=2&sort_by=popularity.desc'); },
+    fetchDocuseries() { return this._fetchDiscover('tv', 'with_genres=99,80&sort_by=popularity.desc'); },
+    fetchSitcoms() { return this._fetchDiscover('tv', 'with_genres=35&sort_by=vote_count.desc'); },
     /**
      * Fetches movies released within a specific decade range.
      * @param {string} type - 'movie' or 'tv'.

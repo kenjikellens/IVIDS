@@ -157,7 +157,8 @@ function render(item, type) {
                 bg.style.willChange = 'background-image';
                 // Queue background caching if not already cached
                 if (!imageCache.has(backdropUrl)) {
-                    imageCache.getOrFetch(backdropUrl);
+                    const img = new Image();
+                    img.src = backdropUrl;
                 }
             }
         }

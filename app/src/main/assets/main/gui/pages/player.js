@@ -14,6 +14,23 @@ let popstateHandler = null;
 let playerBackHandler = null;
 
 /**
+ * Binds detailed console log event listeners to native HTML5 video player element.
+ * @param {HTMLVideoElement} videoEl - The target video element.
+ */
+function bindNativeVideoLogs(videoEl) {
+    if (!videoEl || videoEl.dataset.logsBound) return;
+    videoEl.dataset.logsBound = 'true';
+    videoEl.addEventListener('play', () => console.log('[IVIDS Player] Native Video: Playback started'));
+    videoEl.addEventListener('pause', () => console.log('[IVIDS Player] Native Video: Playback paused'));
+    videoEl.addEventListener('seeking', () => console.log(`[IVIDS Player] Native Video: Seeking to ${videoEl.currentTime.toFixed(1)}s`));
+    videoEl.addEventListener('seeked', () => console.log(`[IVIDS Player] Native Video: Seeked to ${videoEl.currentTime.toFixed(1)}s`));
+    videoEl.addEventListener('waiting', () => console.log('[IVIDS Player] Native Video: Buffering...'));
+    videoEl.addEventListener('playing', () => console.log('[IVIDS Player] Native Video: Playing'));
+    videoEl.addEventListener('ended', () => console.log('[IVIDS Player] Native Video: Playback completed'));
+    videoEl.addEventListener('error', (e) => console.error('[IVIDS Player] Native Video Error:', videoEl.error || e));
+}
+
+/**
  * Cleans up player resources, restores global UI layout elements, and returns to the details view.
  * This removes the iframe, restores the header/sidebar layout, and navigates using the router.
  * @param {Object} params - The current player route parameters.
@@ -107,8 +124,9 @@ window.playerCleanups = function() {
  */
 export async function init(params) {
     try {
+        console.log('[IVIDS Player] Initializing Player with params:', params);
         if (!params || (!params.id && params.type !== 'live')) {
-            console.error('No parameters provided for player');
+            console.error('[IVIDS Player] Invalid or missing parameters provided for player');
             Router.loadPage('home');
             return;
         }
@@ -247,29 +265,38 @@ export async function init(params) {
 
         // Try Direct Stream Resolution first for movies/series
         if (params.type !== 'trailer' && params.type !== 'live') {
+            console.log(`[IVIDS Player] Attempting direct stream resolution for ID: ${params.id}, Type: ${params.type}, S:${params.season || 1} E:${params.episode || 1}`);
             try {
                 const directData = await Api.resolveDirectStream(params.id, params.type, params.season, params.episode);
                 if (directData && directData.streamUrl) {
+                    console.log('[IVIDS Player] Direct stream resolved successfully:', directData.streamUrl);
                     const videoEl = document.getElementById('native-video-player');
                     if (videoEl) {
                         videoEl.style.display = 'block';
+                        bindNativeVideoLogs(videoEl);
                         if (window.Hls && Hls.isSupported()) {
+                            console.log('[IVIDS Player] Initializing HLS.js player engine');
                             const hls = new Hls();
                             hls.loadSource(directData.streamUrl);
                             hls.attachMedia(videoEl);
-                            hls.on(Hls.Events.MANIFEST_PARSED, () => videoEl.play().catch(e => console.error(e)));
+                            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                                console.log('[IVIDS Player] HLS manifest parsed successfully, starting playback');
+                                videoEl.play().catch(e => console.error('[IVIDS Player] Native play error:', e));
+                            });
                         } else {
                             videoEl.src = directData.streamUrl;
-                            videoEl.play().catch(e => console.error(e));
+                            videoEl.play().catch(e => console.error('[IVIDS Player] Native play error:', e));
                         }
                     }
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
                     setupOverlayVisibility(params);
                     renderServerSelection(params, null);
                     return;
+                } else {
+                    console.log('[IVIDS Player] Direct stream resolution returned no direct stream URL. Switching to iframe provider fallback.');
                 }
             } catch (resolveErr) {
-                console.warn('[IVIDS] Initial direct stream resolution attempt failed:', resolveErr);
+                console.warn('[IVIDS Player] Initial direct stream resolution attempt failed:', resolveErr);
             }
         }
 
@@ -324,6 +351,7 @@ export async function init(params) {
 
             const showProviderWarning = () => {
                 if (iframeLoaded || !statusPanel) return;
+                console.warn('[IVIDS Player] Provider response timeout reached (25s). Displaying fallback warning panel.');
                 statusPanel.style.display = 'block';
                 if (statusBack) statusBack.onclick = () => exitPlayer(params);
                 if (statusSettings) statusSettings.onclick = () => Router.loadPage('settings', {}, true);
@@ -332,6 +360,7 @@ export async function init(params) {
 
             iframe.onload = () => {
                 iframeLoaded = true;
+                console.log(`[IVIDS Player] Provider iframe loaded successfully (src: ${iframe.src})`);
                 if (providerTimeout) {
                     clearTimeout(providerTimeout);
                     providerTimeout = null;
@@ -346,6 +375,7 @@ export async function init(params) {
                 setTimeout(() => {
                     try {
                         iframe.focus();
+                        console.log('[IVIDS Player] Sending autoplay postMessage trigger to iframe content window');
                         iframe.contentWindow?.postMessage({ type: 'play', action: 'play' }, '*');
                     } catch (e) {
                         console.warn('[IVIDS Player] Auto-play trigger message notice:', e);
@@ -490,6 +520,7 @@ function renderServerSelection(params, iframe) {
 
         btn.onclick = () => {
             if (currentServerId === server.id) return;
+            console.log(`[IVIDS Player] Switching server provider to: ${server.name} (ID: ${server.id})`);
             
             document.querySelectorAll('.server-btn').forEach(b => {
                 b.classList.remove('active', 'btn-primary');
