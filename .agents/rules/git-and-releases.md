@@ -9,6 +9,7 @@ trigger: always_on
 - **Code Push vs. Release Separation**: Instructing "push to main" authorizes ONLY pushing commit history to `main`. It does NOT authorize creating Git tags or GitHub releases.
 
 ## 2. Release Workflows
+- **DO NOT RUN BUILD.BAT AUTONOMOUSLY**: NEVER run `build.bat` on your own initiative during feature development or after standard edits. `build.bat` MUST ONLY be executed when the user explicitly commands you to run it or when executing an explicitly requested release flow.
 - **Autonomous Release Execution**: When explicitly instructed to make a release (e.g., `/version-and-release-update` or "make a release vX.Y.Z"), autonomously execute the release process: create release commit, create tag, push ONLY the tag to GitHub, and publish the GitHub release with signed `IVIDS.apk` and `IVIDS.exe` assets. Do NOT push the release commit directly to `main` autonomously.
 - **Mandatory Build Before Push/Release**: ALWAYS run `.\build.bat` (or `.\build.bat release`) before executing any `git push` or release publish.
 - **Explicit Failure Notification**: If remote push, tag creation, or GitHub Release fails, STOP immediately and notify the user.

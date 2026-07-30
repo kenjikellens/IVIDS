@@ -184,14 +184,9 @@
     text-align: center;
 }
 
-/* Line clamping and typography sizing for hero backdrop description. */
+/* Hides hero backdrop description text on mobile viewports for Home, Movies, and Series pages. */
 #app .hero-desc {
-    font-size: clamp(12px, 3.5vw, 14px);
-    margin-bottom: 4%;
-    max-width: 100%;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    text-align: center;
+    display: none !important;
 }
 
 /* Grid display and alignment for play buttons in hero area. */

@@ -64,25 +64,18 @@ export class HeroSlider {
         // 1. Create slides track
         this.track = document.createElement('div');
         this.track.className = 'hero-slides-track';
-        this.track.style.width = `${this.items.length * 100}%`;
 
         // 2. Add slide backdrop images
         this.items.forEach((item, idx) => {
             const slide = document.createElement('div');
-            slide.className = 'hero-slide';
-            slide.style.width = `${100 / this.items.length}%`;
+            slide.className = idx === 0 ? 'hero-slide active' : 'hero-slide';
             const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
-            if (idx === 0) {
-                // First slide: load immediately, use blob cache if available
-                const cachedUrl = imageCache.has(imageUrl) ? imageCache.get(imageUrl) : imageUrl;
-                slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
-                slide.dataset.loaded = 'true';
-                // Queue background cache if not already cached
-                if (!imageCache.has(imageUrl)) {
-                    imageCache.getOrFetch(imageUrl);
-                }
-            } else {
-                slide.dataset.src = imageUrl;
+            const cachedUrl = imageCache.has(imageUrl) ? imageCache.get(imageUrl) : imageUrl;
+            slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
+            slide.dataset.loaded = 'true';
+            slide.dataset.src = imageUrl;
+            if (!imageCache.has(imageUrl)) {
+                imageCache.getOrFetch(imageUrl);
             }
             this.track.appendChild(slide);
         });
@@ -110,61 +103,29 @@ export class HeroSlider {
 
         // 7. Add swipe handlers for mobile devices
         this.touchStartX = 0;
-        this.touchStartY = 0;
         this.touchEndX = 0;
-        this.touchEndY = 0;
-
-        /**
-         * Event handler for the start of a touch interaction.
-         * Saves the initial horizontal and vertical touch points.
-         * @param {TouchEvent} e - The touch event object.
-         */
         this.onTouchStart = (e) => {
-            if (e.touches && e.touches.length > 0) {
-                this.touchStartX = e.touches[0].clientX;
-                this.touchStartY = e.touches[0].clientY;
-                // Initialize touchEndX/Y with starting coordinates in case move doesn't fire
-                this.touchEndX = e.touches[0].clientX;
-                this.touchEndY = e.touches[0].clientY;
-            }
+            this.touchStartX = e.touches[0].clientX;
         };
-
-        /**
-         * Event handler for touch movement.
-         * Updates the current touch coordinates during dragging.
-         * @param {TouchEvent} e - The touch event object.
-         */
         this.onTouchMove = (e) => {
-            if (e.touches && e.touches.length > 0) {
-                this.touchEndX = e.touches[0].clientX;
-                this.touchEndY = e.touches[0].clientY;
-            }
+            this.touchEndX = e.touches[0].clientX;
         };
-
-        /**
-         * Event handler for the completion of a touch interaction.
-         * Calculates swipe gesture direction and triggers page transitions.
-         */
         this.onTouchEnd = () => {
-            const diffX = this.touchEndX - this.touchStartX;
-            const diffY = this.touchEndY - this.touchStartY;
-            const minSwipeDistance = 50; // Minimum distance in pixels to register a swipe
+            if (!this.touchStartX || !this.touchEndX) return;
+            const diffX = this.touchStartX - this.touchEndX;
+            const minSwipeDistance = 50; // Minimum px to count as swipe
 
-            // Check if the horizontal swipe is dominant and exceeds threshold
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
+            if (Math.abs(diffX) > minSwipeDistance) {
                 if (diffX > 0) {
-                    this.prev();
+                    this.next(); // Swiped left -> Next slide
                 } else {
-                    this.next();
+                    this.prev(); // Swiped right -> Previous slide
                 }
-                // Restart auto-play timer after manual navigation
-                this.startAutoPlay();
             }
-            // Reset gesture coordinates
+
+            // Reset touch coordinates
             this.touchStartX = 0;
-            this.touchStartY = 0;
             this.touchEndX = 0;
-            this.touchEndY = 0;
         };
 
         this.container.addEventListener('touchstart', this.onTouchStart, { passive: true });
@@ -185,37 +146,33 @@ export class HeroSlider {
         const item = this.items[index];
         if (!item) return;
 
-        // Shift background track horizontally
-        if (this.track) {
-            this.track.style.left = `-${index * 100}%`;
-        }
-
-        // Lazy load slide backdrop image if not loaded
         const slides = this.track ? this.track.querySelectorAll('.hero-slide') : [];
         const currentSlide = slides[index];
-        if (currentSlide && currentSlide.dataset.loaded !== 'true' && currentSlide.dataset.src) {
+
+        // Ensure current slide background image is populated before adding active opacity class
+        if (currentSlide && currentSlide.dataset.src) {
             const srcUrl = currentSlide.dataset.src;
-            // Use blob cache if available, otherwise load directly and cache in background
             const cachedUrl = imageCache.has(srcUrl) ? imageCache.get(srcUrl) : srcUrl;
             currentSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
-            currentSlide.dataset.loaded = 'true';
-            if (!imageCache.has(srcUrl)) {
-                imageCache.getOrFetch(srcUrl);
-            }
         }
+
+        // Toggle active class across slides to trigger smooth CSS opacity cross-fade
+        slides.forEach((slide, idx) => {
+            if (idx === index) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
 
         // Pre-fetch the next slide to keep transitions smooth
         const nextIndex = (index + 1) % this.items.length;
         const nextSlide = slides[nextIndex];
-        if (nextSlide && nextSlide.dataset.loaded !== 'true' && nextSlide.dataset.src) {
+        if (nextSlide && nextSlide.dataset.src) {
             const nextSrcUrl = nextSlide.dataset.src;
-            // Pre-fetch into blob cache for seamless transition
-            imageCache.getOrFetch(nextSrcUrl).then(blobUrl => {
-                if (blobUrl) {
-                    nextSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${blobUrl})`;
-                    nextSlide.dataset.loaded = 'true';
-                }
-            });
+            if (!imageCache.has(nextSrcUrl)) {
+                imageCache.getOrFetch(nextSrcUrl);
+            }
         }
 
         // Highlight matching circular dot indicator

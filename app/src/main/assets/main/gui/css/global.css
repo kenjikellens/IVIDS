@@ -2503,26 +2503,47 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     width: 100%;
 }
 
+/* CSS Class: Hero header layout container in normal document flow. */
+.hero {
+    position: relative;
+    z-index: 2;
+    background: transparent;
+}
+
+/* CSS Class: Hero slider background slides track container. Positioned absolutely inside hero header. */
 .hero-slides-track {
-    display: flex;
     height: 100%;
     left: 0;
     position: absolute;
     top: 0;
-    transition: left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    width: 100%;
     z-index: 1;
+    pointer-events: none;
 }
 
+/* CSS Class: Individual slide item within hero slides track. Cross-fades opacity between slides without horizontal sliding. */
 .hero-slide {
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    background-attachment: fixed;
     background-position: center top;
     background-size: cover;
     box-sizing: border-box;
-    flex-shrink: 0;
     height: 100%;
+    left: 0;
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
-    position: relative;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: opacity 0.8s ease-in-out;
     width: 100%;
+    will-change: opacity;
+    z-index: 0;
+}
+
+/* CSS Class: Active slide state enabling full opacity cross-fade. */
+.hero-slide.active {
+    opacity: 1;
+    z-index: 1;
 }
 
 /* === Migrated from details.html === */
