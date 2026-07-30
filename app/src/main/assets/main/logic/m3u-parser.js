@@ -103,8 +103,8 @@ export const M3UParser = {
      * @returns {Promise<Array>} Parsed list of channels.
      */
     async fetchPlaylist(url) {
-        const timeout = 4000;
-        const retries = 2;
+        const timeout = 15000;
+        const retries = 1;
         let lastError;
 
         for (let i = 0; i <= retries; i++) {
@@ -124,8 +124,8 @@ export const M3UParser = {
                 clearTimeout(timeoutId);
                 lastError = error;
                 if (i < retries) {
-                    // Wait slightly before retrying (exponential backoff)
-                    await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
+                    // Wait slightly before retrying
+                    await new Promise(resolve => setTimeout(resolve, 500));
                 }
             }
         }

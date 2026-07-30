@@ -1,116 +1,81 @@
 /**
- * SportsResolver Class
- * =====================
- * Handles resolution of live sports streams (Ligue 1, Champions League, Premier League, F1)
- * from live sports embed providers across Android APK (Java Bridge), Electron EXE, and PC Dev server.
+ * Unified Sports Stream Resolver for IVIDS
+ * Handles background stream capture across Android APK (window.AndroidResolver)
+ * and Electron EXE environments.
  */
-
 export class SportsResolver {
     /**
-     * Detects the active execution environment for stream resolving.
-     * 
-     * @returns {string} 'android' | 'electron' | 'pc_server'
+     * Resolves a sports embed URL into a direct playable HLS (.m3u8) or TS stream URL.
+     *
+     * @param {string} embedUrl - The iframe embed URL of the sports stream.
+     * @param {number} timeoutMs - Maximum wait time in ms for background capture (default 12s).
+     * @returns {Promise<string>} Direct stream URL (.m3u8/.ts).
      */
-    static getEnvironment() {
-        if (typeof window !== 'undefined' && window.AndroidResolver && typeof window.AndroidResolver.resolveEmbedStream === 'function') {
-            return 'android';
-        }
-        if (typeof window !== 'undefined' && window.electronAPI && typeof window.electronAPI.resolveSportsEmbed === 'function') {
-            return 'electron';
-        }
-        return 'pc_server';
-    }
-
-    /**
-     * Initiates stream extraction for a given sports embed URL.
-     * Registers a global handler `window.onBackgroundStreamCaptured` for asynchronous stream resolution.
-     * 
-     * @param {string} embedUrl - Target sports embed URL.
-     * @param {function} callback - Callback function receiving the resolved .m3u8/.ts stream URL.
-     * @param {function} onError - Error callback if resolution fails/times out.
-     * @returns {Promise<string>} Resolved stream URL or empty string.
-     */
-    static async resolveStream(embedUrl, callback = null, onError = null) {
-        const env = this.getEnvironment();
-        console.log(`[SportsResolver] Resolving sports stream via environment: ${env} for URL:`, embedUrl);
-
-        if (!embedUrl) {
-            if (onError) onError('Missing embed URL');
-            return '';
-        }
-
+    static resolveStream(embedUrl, timeoutMs = 12000) {
         return new Promise((resolve, reject) => {
+            if (!embedUrl) {
+                return reject(new Error('Invalid embed URL'));
+            }
+
             let timeoutId = null;
 
-            const handleSuccess = (streamUrl) => {
+            // Define window callback for captured stream
+            const cleanup = () => {
                 if (timeoutId) clearTimeout(timeoutId);
                 delete window.onBackgroundStreamCaptured;
-                console.log('[SportsResolver] Captured live sports stream:', streamUrl);
-                if (callback) callback(streamUrl);
-                resolve(streamUrl);
             };
 
-            const handleFailure = (err) => {
-                if (timeoutId) clearTimeout(timeoutId);
-                delete window.onBackgroundStreamCaptured;
-                console.warn('[SportsResolver] Resolution failed or timed out:', err);
-                if (onError) onError(err);
-                reject(new Error(err));
-            };
-
-            // Set 12s fallback timeout for embed stream resolution
-            timeoutId = setTimeout(() => {
-                handleFailure('Sports stream extraction timed out (12s)');
-            }, 12000);
-
-            window.onBackgroundStreamCaptured = (capturedUrl) => {
-                if (capturedUrl) {
-                    handleSuccess(capturedUrl);
+            window.onBackgroundStreamCaptured = (streamUrl) => {
+                cleanup();
+                if (streamUrl) {
+                    console.log('[SportsResolver] Stream captured successfully:', streamUrl);
+                    resolve(streamUrl);
                 } else {
-                    handleFailure('Empty stream URL captured');
+                    reject(new Error('Empty stream URL captured'));
                 }
             };
 
-            if (env === 'android') {
+            timeoutId = setTimeout(() => {
+                cleanup();
+                reject(new Error('Stream capture timed out after ' + (timeoutMs / 1000) + 's'));
+            }, timeoutMs);
+
+            // 1. Android APK environment
+            if (window.AndroidResolver && typeof window.AndroidResolver.resolveEmbedStream === 'function') {
+                console.log('[SportsResolver] Resolving stream via Android Native Bridge:', embedUrl);
                 try {
                     window.AndroidResolver.resolveEmbedStream(embedUrl);
                 } catch (e) {
-                    handleFailure(`Android bridge error: ${e.message}`);
+                    cleanup();
+                    reject(e);
                 }
-            } else if (env === 'electron') {
-                window.electronAPI.resolveSportsEmbed(embedUrl)
-                    .then(url => handleSuccess(url))
-                    .catch(err => handleFailure(err.message || String(err)));
-            } else {
-                // PC Dev server fallback
-                fetch(`/resolve-sports-stream?url=${encodeURIComponent(embedUrl)}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && data.status === 'success' && data.streamUrl) {
-                            handleSuccess(data.streamUrl);
-                        } else {
-                            handleFailure(data.message || 'Server failed to extract sports stream');
-                        }
-                    })
-                    .catch(err => handleFailure(err.message));
+                return;
             }
-        });
-    }
 
-    /**
-     * Curated list of popular live sports leagues and competetive event presets.
-     * 
-     * @returns {Array<object>} List of sports categories.
-     */
-    static getCuratedSportsCategories() {
-        return [
-            { id: 'ligue1', name: 'Ligue 1 McDonald\'s (France)', icon: '⚽' },
-            { id: 'champions_league', name: 'UEFA Champions League', icon: '🏆' },
-            { id: 'premier_league', name: 'Premier League (UK)', icon: '⚽' },
-            { id: 'formula1', name: 'Formule 1 (F1 GP)', icon: '🏎️' },
-            { id: 'eredivisie', name: 'Eredivisie (Nederland)', icon: '🇳🇱' },
-            { id: 'la_liga', name: 'La Liga (Spanje)', icon: '🇪🇸' },
-            { id: 'serie_a', name: 'Serie A (Italië)', icon: '🇮🇹' }
-        ];
+            // 2. Electron EXE environment
+            if (window.electronAPI && typeof window.electronAPI.resolveSportsEmbed === 'function') {
+                console.log('[SportsResolver] Resolving stream via Electron IPC:', embedUrl);
+                window.electronAPI.resolveSportsEmbed(embedUrl)
+                    .then(url => {
+                        cleanup();
+                        resolve(url);
+                    })
+                    .catch(err => {
+                        cleanup();
+                        reject(err);
+                    });
+                return;
+            }
+
+            // 3. Direct HLS stream fallback
+            if (embedUrl.includes('.m3u8') || embedUrl.includes('.ts')) {
+                cleanup();
+                return resolve(embedUrl);
+            }
+
+            // Standalone fallback: return embed URL as-is
+            cleanup();
+            resolve(embedUrl);
+        });
     }
 }
