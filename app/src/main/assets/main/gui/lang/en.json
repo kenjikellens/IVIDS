@@ -12,18 +12,7 @@
         "playlists": "Playlists",
         "account": "Account",
         "livetv": "Live TV",
-        "livesports": "Live Sports",
         "collections": "Collections"
-    },
-    "livesports": {
-        "title": "Live Sports",
-        "subtitle": "Watch live football matches, Ligue 1, Premier League, Champions League & Formula 1",
-        "allMatches": "All Matches",
-        "ligue1": "Ligue 1",
-        "premierLeague": "Premier League",
-        "championsLeague": "Champions League",
-        "f1": "Formula 1",
-        "noMatches": "No live matches scheduled right now. Check back near match kickoff!"
     },
     "account": {
         "title": "Account",

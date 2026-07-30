@@ -1,3 +1,5 @@
+import { proxyUrl } from '../gui/js/utils/proxy.js';
+
 /**
  * ImageCache - In-memory blob URL cache for TMDb images.
  *

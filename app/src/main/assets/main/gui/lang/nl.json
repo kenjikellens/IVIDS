@@ -12,8 +12,7 @@
         "playlists": "Afspeellijsten",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections",
-        "livesports": "Live Sports"
+        "collections": "Collections"
     },
     "account": {
         "title": "Account",
@@ -431,15 +430,5 @@
         "alreadySaved": "This collection is already saved"
     },
     "update_status_permission_required": "Machtiging vereist om updates te installeren. Schakel dit in bij instellingen en druk op Opnieuw.",
-    "update_retry": "Opnieuw",
-    "livesports": {
-        "title": "Live Sports",
-        "subtitle": "Watch live football matches, Ligue 1, Premier League, Champions League & Formula 1",
-        "allMatches": "All Matches",
-        "ligue1": "Ligue 1",
-        "premierLeague": "Premier League",
-        "championsLeague": "Champions League",
-        "f1": "Formula 1",
-        "noMatches": "No live matches scheduled right now. Check back near match kickoff!"
-    }
+    "update_retry": "Opnieuw"
 }

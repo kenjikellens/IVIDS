@@ -12,8 +12,7 @@
         "playlists": "Spellistor",
         "account": "Konto",
         "livetv": "Live TV",
-        "collections": "Collections",
-        "livesports": "Live Sports"
+        "collections": "Collections"
     },
     "account": {
         "title": "Konto",
@@ -436,15 +435,5 @@
         "alreadySaved": "This collection is already saved"
     },
     "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry",
-    "livesports": {
-        "title": "Live Sports",
-        "subtitle": "Watch live football matches, Ligue 1, Premier League, Champions League & Formula 1",
-        "allMatches": "All Matches",
-        "ligue1": "Ligue 1",
-        "premierLeague": "Premier League",
-        "championsLeague": "Champions League",
-        "f1": "Formula 1",
-        "noMatches": "No live matches scheduled right now. Check back near match kickoff!"
-    }
+    "update_retry": "Retry"
 }
