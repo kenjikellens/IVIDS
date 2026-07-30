@@ -7,7 +7,7 @@ import { imageCache } from '../../logic/image-cache.js';
  * Default configuration parameters for Hero Slider rendering, transitions, and truncation.
  */
 const CONFIG = {
-    DEFAULT_DURATION: 10000,      // Slide transition cycle time when auto-play is enabled (ms)
+    DEFAULT_DURATION: 6000,       // Slide transition cycle time when auto-play is enabled (6 seconds)
     FADE_TRANSITION_TIMEOUT: 500, // Duration of slide text content fade transition (ms)
     TRUNCATE_LIMIT: 250           // Maximum character limit for overview descriptions
 };
@@ -92,14 +92,8 @@ export class HeroSlider {
         // 4. Initial render to set text content
         this.render(this.currentIndex, true);
 
-        // 5. Start auto-play
+        // 5. Start auto-play (every 6 seconds)
         this.startAutoPlay();
-
-        // 6. Pause auto-play on hover
-        this.onMouseEnter = () => this.stopAutoPlay();
-        this.onMouseLeave = () => this.startAutoPlay();
-        this.container.addEventListener('mouseenter', this.onMouseEnter);
-        this.container.addEventListener('mouseleave', this.onMouseLeave);
 
         // 7. Add swipe handlers for mobile devices
         this.touchStartX = 0;
