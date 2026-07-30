@@ -5,8 +5,13 @@ import { Toast } from '../js/toast.js';
 import { proxyUrl } from '../js/utils/proxy.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
 
-/** Default remote feed URL for dynamic sports matches */
-const DEFAULT_SPORTS_FEED_URL = 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8';
+/** Live sports stream aggregator provider endpoints */
+const SPORTS_AGGREGATORS = [
+    { name: 'StreamEast', url: 'https://streameast.app/api/matches' },
+    { name: 'VIPBox', url: 'https://vipleague.im/api/matches' },
+    { name: 'LiveTV.sx', url: 'https://livetv.sx/enx/matches' },
+    { name: 'SportSurge', url: 'https://sportsurge.net/api/matches' }
+];
 
 function loadMergedSettings() {
     try {
@@ -28,6 +33,7 @@ function loadMergedSettings() {
  * Initializes the Live Sports Page.
  */
 export async function init() {
+    console.log('[LiveSports] Initializing Live Sports page...');
     renderLoadingSkeletons();
     await loadDynamicSportsMatches();
     SpatialNav.focusFirst();
@@ -53,8 +59,8 @@ function renderLoadingSkeletons() {
 }
 
 /**
- * Dynamically fetches live sports match categories from remote API / JSON feeds.
- * No hardcoded match data.
+ * Dynamically fetches live sports matches from streaming aggregators (StreamEast, VIPBox, LiveTV.sx, SportSurge).
+ * No hardcoded match data and no GitHub reliance.
  */
 async function loadDynamicSportsMatches() {
     const container = document.getElementById('livesports-rows-container');
@@ -63,17 +69,34 @@ async function loadDynamicSportsMatches() {
 
     try {
         const settings = loadMergedSettings();
-        const feedUrl = settings.sportsFeedUrl || DEFAULT_SPORTS_FEED_URL;
+        const customFeed = settings.sportsFeedUrl;
+        
+        console.log('[LiveSports] Fetching dynamic matches from sports aggregators...');
+        let categories = null;
 
-        const response = await fetch(proxyUrl(feedUrl));
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (customFeed) {
+            console.log('[LiveSports] User specified custom sports feed URL:', customFeed);
+            try {
+                const res = await fetch(proxyUrl(customFeed));
+                if (res.ok) {
+                    const text = await res.text();
+                    categories = parseDynamicSportsFeed(text);
+                }
+            } catch (e) {
+                console.warn('[LiveSports] Custom feed fetch failed, using sports streaming aggregators:', e);
+            }
+        }
 
-        const text = await response.text();
-        const categories = parseDynamicSportsFeed(text);
+        // Fetch from live sports streaming aggregators if no custom feed or if custom feed returned empty
+        if (!categories || categories.length === 0) {
+            categories = await fetchFromSportsAggregators();
+        }
 
+        console.log('[LiveSports] Parsed sports categories count:', categories ? categories.length : 0);
         container.innerHTML = '';
 
         if (!categories || categories.length === 0) {
+            console.warn('[LiveSports] No live sports matches available right now.');
             if (emptyState) emptyState.classList.remove('hidden');
             return;
         }
@@ -82,6 +105,7 @@ async function loadDynamicSportsMatches() {
 
         // Render each sports category row using native global.css classes
         categories.forEach(cat => {
+            console.log(`[LiveSports] Rendering category "${cat.title}" with ${cat.matches.length} matches`);
             const rowEl = document.createElement('div');
             rowEl.className = 'row-container';
 
@@ -171,25 +195,135 @@ function parseDynamicSportsFeed(content) {
     return result;
 }
 
+async function fetchFromSportsAggregators() {
+    for (const aggregator of SPORTS_AGGREGATORS) {
+        try {
+            console.log(`[LiveSports] Trying sports aggregator provider: ${aggregator.name} (${aggregator.url})`);
+            
+            // Generate proxy and direct fallback URLs to bypass SSL 502 / Cloudflare 403
+            const targetUrls = [
+                proxyUrl(aggregator.url),
+                aggregator.url,
+                `https://corsproxy.io/?${encodeURIComponent(aggregator.url)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(aggregator.url)}`
+            ];
+
+            for (const targetUrl of targetUrls) {
+                try {
+                    const res = await fetch(targetUrl);
+                    if (!res.ok) continue;
+
+                    const contentType = res.headers.get('content-type') || '';
+                    const text = await res.text();
+                    if (!text || text.length < 50) continue;
+
+                    if (contentType.includes('json') || (text.trim().startsWith('[') || text.trim().startsWith('{'))) {
+                        try {
+                            const data = JSON.parse(text);
+                            if (Array.isArray(data) && data.length > 0) {
+                                console.log(`[LiveSports] Successfully fetched JSON matches from ${aggregator.name}:`, data.length);
+                                return formatAggregatorMatches(data);
+                            }
+                        } catch (jsonErr) {
+                            // Proceed to HTML parsing if JSON parse failed
+                        }
+                    }
+
+                    // Parse HTML response using DOMParser
+                    const parsedMatches = parseHtmlSportsMatches(text, aggregator.name);
+                    if (parsedMatches && parsedMatches.length > 0) {
+                        console.log(`[LiveSports] Successfully parsed ${parsedMatches.length} HTML matches from ${aggregator.name}`);
+                        return formatAggregatorMatches(parsedMatches);
+                    }
+                } catch (fetchErr) {
+                    console.warn(`[LiveSports] Fetch attempt failed for ${targetUrl}:`, fetchErr.message);
+                }
+            }
+        } catch (e) {
+            console.warn(`[LiveSports] Aggregator ${aggregator.name} fetch attempt failed:`, e);
+        }
+    }
+    return [];
+}
+
+/**
+ * Parses raw HTML string from sports streaming sites to extract match titles and links.
+ *
+ * @param {string} htmlText - Raw HTML content.
+ * @param {string} providerName - Name of the aggregator.
+ * @returns {Array} List of extracted match objects.
+ */
+function parseHtmlSportsMatches(htmlText, providerName) {
+    if (!htmlText) return [];
+
+    try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+        const matches = [];
+
+        // Query links containing match terms or VS
+        const anchors = doc.querySelectorAll('a[href]');
+        anchors.forEach(a => {
+            const text = (a.textContent || '').trim();
+            const href = a.getAttribute('href');
+
+            if (href && text.length > 5 && (text.toLowerCase().includes(' vs ') || text.toLowerCase().includes(' v ') || text.toLowerCase().includes('grand prix'))) {
+                let category = 'Live Sports';
+                const lowerText = text.toLowerCase();
+                
+                if (lowerText.includes('psg') || lowerText.includes('marseille') || lowerText.includes('ligue 1') || lowerText.includes('lyon')) {
+                    category = 'Ligue 1';
+                } else if (lowerText.includes('arsenal') || lowerText.includes('chelsea') || lowerText.includes('premier league') || lowerText.includes('liverpool') || lowerText.includes('manchester')) {
+                    category = 'Premier League';
+                } else if (lowerText.includes('champions league') || lowerText.includes('real madrid') || lowerText.includes('bayern')) {
+                    category = 'Champions League';
+                } else if (lowerText.includes('formula 1') || lowerText.includes('f1') || lowerText.includes('grand prix')) {
+                    category = 'Formula 1';
+                }
+
+                let fullUrl = href;
+                if (!fullUrl.startsWith('http://') && !fullUrl.startsWith('https://')) {
+                    fullUrl = `https://${providerName.toLowerCase().replace(/[^a-z]/g, '')}.com${fullUrl.startsWith('/') ? '' : '/'}${fullUrl}`;
+                }
+
+                matches.push({
+                    title: text,
+                    category: category,
+                    url: fullUrl
+                });
+            }
+        });
+
+        return matches;
+    } catch (e) {
+        console.warn('[LiveSports] HTML parsing error:', e);
+        return [];
+    }
+}
+
 /**
  * Triggers stream resolution and launches TV Player for the match.
  *
  * @param {object} match - Selected match object.
  */
 async function playSportsMatch(match) {
+    console.log('[LiveSports] User clicked match:', match.name, '| Embed URL:', match.embedUrl);
     Toast.show(`Connecting to ${match.name}...`, { type: 'info' });
 
     try {
+        console.log('[LiveSports] Invoking SportsResolver for embedUrl:', match.embedUrl);
         const streamUrl = await SportsResolver.resolveStream(match.embedUrl, 12000);
+        console.log('[LiveSports] SportsResolver returned streamUrl:', streamUrl);
         window.activeStreamReferer = match.embedUrl;
 
+        console.log('[LiveSports] Routing to tv-player with title:', match.name);
         Router.loadPage('tv-player', {
             url: streamUrl,
             title: match.name,
             group: match.league
         });
     } catch (err) {
-        console.warn('Sports stream resolution fallback:', err);
+        console.warn('[LiveSports] Sports stream resolution fallback due to error:', err);
         Router.loadPage('tv-player', {
             url: match.embedUrl,
             title: match.name,
