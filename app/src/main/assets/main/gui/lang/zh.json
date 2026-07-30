@@ -352,7 +352,11 @@
         "settingsSubtitle": "?????????????????",
         "hideBrokenDesc": "????????????",
         "selectSubtitle": "发现并观看数百个直播频道",
-        "zapChannel": "电击频道"
+        "zapChannel": "电击频道",
+        "favorites": "收藏",
+        "sportsEvents": "体育赛事直播",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "正在切换到备用流..."
     },
     "settings_livetv": {
         "title": "电视直播配置",

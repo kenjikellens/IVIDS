@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "اكتشف وشاهد مئات القنوات الحية",
-        "zapChannel": "قناة زاب"
+        "zapChannel": "قناة زاب",
+        "favorites": "المفضلة",
+        "sportsEvents": "مباريات رياضية مباشرة",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "التبديل إلى البث الإحتياطي..."
     },
     "settings_livetv": {
         "title": "تكوين البث المباشر",

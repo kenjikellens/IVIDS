@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Descoperiți și vizionați sute de canale live",
-        "zapChannel": "Canalul Zap"
+        "zapChannel": "Canalul Zap",
+        "favorites": "Favorite",
+        "sportsEvents": "Meciuri sportive în direct",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Comutare la fluxul de rezervă..."
     },
     "settings_livetv": {
         "title": "Configurare TV în direct",

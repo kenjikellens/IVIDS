@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Temukan dan tonton ratusan saluran langsung",
-        "zapChannel": "Saluran Zap"
+        "zapChannel": "Saluran Zap",
+        "favorites": "Favorit",
+        "sportsEvents": "Pertandingan Olahraga Langsung",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Beralih ke stream cadangan..."
     },
     "settings_livetv": {
         "title": "Konfigurasi TV Langsung",

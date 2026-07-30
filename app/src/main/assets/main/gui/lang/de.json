@@ -347,7 +347,11 @@
         "settingsSubtitle": "Live-TV-Verhalten f?r Wiedergabe und Kan?le anpassen.",
         "hideBrokenDesc": "Kan?le nach fehlgeschlagener Wiedergabe automatisch ausblenden.",
         "selectSubtitle": "Entdecken und sehen Sie Hunderte von Live-Kanälen",
-        "zapChannel": "Zap-Kanal"
+        "zapChannel": "Zap-Kanal",
+        "favorites": "Favoriten",
+        "sportsEvents": "Live-Sportspiele",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Wechsel zum Backup-Stream..."
     },
     "settings_livetv": {
         "title": "Live TV Konfiguration",

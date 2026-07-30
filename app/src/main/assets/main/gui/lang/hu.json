@@ -355,7 +355,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Discover and watch hundreds of live channels",
-        "zapChannel": "Zap Channel"
+        "zapChannel": "Zap Channel",
+        "favorites": "Kedvencek",
+        "sportsEvents": "Élő meccsek",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Váltás a tartalék streamre..."
     },
     "settings_livetv": {
         "title": "Live TV Configuration",

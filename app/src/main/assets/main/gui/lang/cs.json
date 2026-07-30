@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Objevte a sledujte stovky živých kanálů",
-        "zapChannel": "Zap kanál"
+        "zapChannel": "Zap kanál",
+        "favorites": "Oblíbené",
+        "sportsEvents": "Živé sportovní zápasy",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Přepínání na záložní stream..."
     },
     "settings_livetv": {
         "title": "Konfigurace Živého TV",

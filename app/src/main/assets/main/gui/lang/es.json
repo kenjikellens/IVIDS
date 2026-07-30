@@ -347,7 +347,11 @@
         "settingsSubtitle": "Ajusta Live TV para la reproducci?n y el filtrado de canales.",
         "hideBrokenDesc": "Oculta autom?ticamente los canales cuando falla la reproducci?n.",
         "selectSubtitle": "Descubre y mira cientos de canales en vivo.",
-        "zapChannel": "Canal Zap"
+        "zapChannel": "Canal Zap",
+        "favorites": "Favoritos",
+        "sportsEvents": "Partidos deportivos en vivo",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Cambiando a transmisión de respaldo..."
     },
     "settings_livetv": {
         "title": "Configuración de Live TV",

@@ -5,6 +5,8 @@ import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { proxyUrl } from '../js/utils/proxy.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
+import { XtreamApi } from '../../logic/livetv/xtream-api.js';
+import { SportsResolver } from '../../logic/livetv/sports-resolver.js';
 
 function loadMergedSettings() {
     try {
@@ -28,6 +30,8 @@ let searchQuery = '';
 let selectedChannel = null;
 let activeGenre = '';
 let activeCountry = '';
+let onlyFavorites = false;
+let favoritesSet = new Set();
 let genres = [];
 let countries = [];
 const statusCache = new Map(); // Store channel status results: url -> {status, timestamp}
@@ -36,9 +40,58 @@ let previewTimeout = null;
 let searchDebounceTimer = null;
 let loadSourcesPromise = null;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
+const LIVE_TV_FAVORITES_KEY = 'ivids-live-tv-favorites';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
 const BROKEN_CHANNELS_API_URL = '/api/broken-channels';
 const brokenChannelsSet = new Set(); // Persistent broken channel URLs loaded from project file
+
+/**
+ * Loads saved channel favorites from localStorage into favoritesSet.
+ */
+function loadFavorites() {
+    favoritesSet.clear();
+    try {
+        const userFavKey = getNamespacedKey(LIVE_TV_FAVORITES_KEY);
+        const saved = localStorage.getItem(userFavKey) || localStorage.getItem(LIVE_TV_FAVORITES_KEY);
+        if (saved) {
+            const list = JSON.parse(saved);
+            if (Array.isArray(list)) {
+                list.forEach(id => favoritesSet.add(id));
+            }
+        }
+    } catch (e) {
+        console.warn('LiveTV: Error loading favorites:', e);
+    }
+}
+
+/**
+ * Persists the current favoritesSet to localStorage.
+ */
+function saveFavorites() {
+    try {
+        const userFavKey = getNamespacedKey(LIVE_TV_FAVORITES_KEY);
+        const data = JSON.stringify(Array.from(favoritesSet));
+        localStorage.setItem(userFavKey, data);
+        localStorage.setItem(LIVE_TV_FAVORITES_KEY, data);
+    } catch (e) {
+        console.warn('LiveTV: Error saving favorites:', e);
+    }
+}
+
+/**
+ * Toggles favorite status for a channel.
+ * @param {object} channel
+ */
+function toggleFavorite(channel) {
+    if (!channel || !channel.id) return;
+    if (favoritesSet.has(channel.id)) {
+        favoritesSet.delete(channel.id);
+    } else {
+        favoritesSet.add(channel.id);
+    }
+    saveFavorites();
+    filterAndRenderChannels(false);
+}
 
 let renderedCount = 0;
 const CHUNK_SIZE = 30;

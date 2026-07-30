@@ -347,7 +347,11 @@
         "settingsSubtitle": "Pas Live TV-gedrag aan voor afspelen en kanaalfilters.",
         "hideBrokenDesc": "Verberg kanalen automatisch nadat afspelen mislukt.",
         "selectSubtitle": "Ontdek en bekijk honderden live zenders",
-        "zapChannel": "Zender zappen"
+        "zapChannel": "Zender zappen",
+        "favorites": "Favorieten",
+        "sportsEvents": "Live Sportwedstrijden",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Overschakelen naar backup-stream..."
     },
     "settings_livetv": {
         "title": "Live TV Configuratie",

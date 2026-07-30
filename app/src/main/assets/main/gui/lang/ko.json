@@ -352,7 +352,11 @@
         "settingsSubtitle": "?? ? ?? ?? ??? ?????.",
         "hideBrokenDesc": "?? ?? ? ??? ???? ????.",
         "selectSubtitle": "수백 개의 실시간 채널을 발견하고 시청하세요",
-        "zapChannel": "잽 채널"
+        "zapChannel": "잽 채널",
+        "favorites": "즐겨찾기",
+        "sportsEvents": "라이브 스포츠 경기",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "백업 스트림으로 전환 중..."
     },
     "settings_livetv": {
         "title": "라이브 TV 설정",

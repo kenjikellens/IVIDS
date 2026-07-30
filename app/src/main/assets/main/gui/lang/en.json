@@ -355,7 +355,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Discover and watch hundreds of live channels",
-        "zapChannel": "Zap Channel"
+        "zapChannel": "Zap Channel",
+        "favorites": "Favorites",
+        "sportsEvents": "Live Sports Matches",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Switching to backup stream..."
     },
     "settings_livetv": {
         "title": "Live TV Configuration",

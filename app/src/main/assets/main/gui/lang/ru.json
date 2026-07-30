@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Откройте для себя и смотрите сотни каналов в прямом эфире",
-        "zapChannel": "Зап канал"
+        "zapChannel": "Зап канал",
+        "favorites": "Избранное",
+        "sportsEvents": "Прямые спортивные трансляции",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Переключение на резервный поток..."
     },
     "settings_livetv": {
         "title": "Настройка Live TV",

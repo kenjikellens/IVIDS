@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "सैकड़ों लाइव चैनल खोजें और देखें",
-        "zapChannel": "जैप चैनल"
+        "zapChannel": "जैप चैनल",
+        "favorites": "पसंदीदा",
+        "sportsEvents": "लाइव खेल मैच",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "बैकअप स्ट्रीम पर स्विच किया जा रहा है..."
     },
     "settings_livetv": {
         "title": "लाइव टीवी कॉन्फ़िगरेशन",

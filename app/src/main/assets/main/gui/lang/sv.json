@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Upptäck och titta på hundratals livekanaler",
-        "zapChannel": "Zap kanal"
+        "zapChannel": "Zap kanal",
+        "favorites": "Favoriter",
+        "sportsEvents": "Direktsända sportmatcher",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Växlar till reservström..."
     },
     "settings_livetv": {
         "title": "Konfiguration av Live TV",

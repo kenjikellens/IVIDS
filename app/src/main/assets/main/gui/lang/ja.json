@@ -352,7 +352,11 @@
         "settingsSubtitle": "??????????????????????",
         "hideBrokenDesc": "?????????????????????????",
         "selectSubtitle": "何百ものライブチャンネルを見つけて視聴する",
-        "zapChannel": "ザップチャンネル"
+        "zapChannel": "ザップチャンネル",
+        "favorites": "お気に入り",
+        "sportsEvents": "ライブスポーツマッチ",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "バックアップストリームに切り替えています..."
     },
     "settings_livetv": {
         "title": "ライブTV設定",

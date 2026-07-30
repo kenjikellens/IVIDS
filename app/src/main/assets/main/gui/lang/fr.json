@@ -347,7 +347,11 @@
         "settingsSubtitle": "R?glez le comportement de Live TV pour la lecture et le filtrage.",
         "hideBrokenDesc": "Masquer automatiquement les cha?nes apr?s un ?chec de lecture.",
         "selectSubtitle": "Découvrez et regardez des centaines de chaînes en direct",
-        "zapChannel": "Chaîne Zap"
+        "zapChannel": "Chaîne Zap",
+        "favorites": "Favoris",
+        "sportsEvents": "Matchs de sport en direct",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Passage au flux de secours..."
     },
     "settings_livetv": {
         "title": "Configuration Live TV",

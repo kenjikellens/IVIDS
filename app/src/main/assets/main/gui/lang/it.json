@@ -352,7 +352,11 @@
         "settingsSubtitle": "Regola Live TV per riproduzione e filtri canale.",
         "hideBrokenDesc": "Nascondi automaticamente i canali dopo un errore di riproduzione.",
         "selectSubtitle": "Scopri e guarda centinaia di canali live",
-        "zapChannel": "Zap Canale"
+        "zapChannel": "Zap Canale",
+        "favorites": "Preferiti",
+        "sportsEvents": "Partite sportive in diretta",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Passaggio allo stream di riserva..."
     },
     "settings_livetv": {
         "title": "Configurazione Live TV",

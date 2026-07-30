@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Yüzlerce canlı kanalı keşfedin ve izleyin",
-        "zapChannel": "Zap Kanalı"
+        "zapChannel": "Zap Kanalı",
+        "favorites": "Favoriler",
+        "sportsEvents": "Canlı Spor Maçları",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Yedek akışa geçiliyor..."
     },
     "settings_livetv": {
         "title": "Canlı TV Yapılandırması",

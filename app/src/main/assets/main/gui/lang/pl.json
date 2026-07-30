@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Odkryj i oglądaj setki kanałów na żywo",
-        "zapChannel": "Kanał Zapa"
+        "zapChannel": "Kanał Zapa",
+        "favorites": "Ulubione",
+        "sportsEvents": "Mecze sportowe na żywo",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Przełączanie na strumień zapasowy..."
     },
     "settings_livetv": {
         "title": "Konfiguracja TV na żywo",

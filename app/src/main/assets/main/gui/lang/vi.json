@@ -352,7 +352,11 @@
         "settingsSubtitle": "Tune Live TV behavior for playback and channel filtering.",
         "hideBrokenDesc": "Automatically hide channels after playback fails.",
         "selectSubtitle": "Khám phá và xem hàng trăm kênh trực tiếp",
-        "zapChannel": "Kênh Zap"
+        "zapChannel": "Kênh Zap",
+        "favorites": "Yêu thích",
+        "sportsEvents": "Trận đấu thể thao trực tiếp",
+        "xtream": "Xtream Codes IPTV",
+        "failover": "Đang chuyển sang luồng dự phòng..."
     },
     "settings_livetv": {
         "title": "Cấu hình Live TV",
