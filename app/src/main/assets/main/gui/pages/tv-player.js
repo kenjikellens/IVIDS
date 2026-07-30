@@ -93,16 +93,7 @@ export async function init(params) {
                 liveSyncDurationCount: 2,
                 initialLiveManifestSize: 2,
                 enableWorker: true,
-                lowLatencyMode: true,
-                xhrSetup: (xhr, reqUrl) => {
-                    if (window.activeStreamReferer) {
-                        try {
-                            xhr.setRequestHeader('Referer', window.activeStreamReferer);
-                        } catch (e) {
-                            console.warn('[TV Player] Could not set Referer header:', e);
-                        }
-                    }
-                }
+                lowLatencyMode: true
             });
             hlsInstance.loadSource(streamUrl);
             hlsInstance.attachMedia(video);

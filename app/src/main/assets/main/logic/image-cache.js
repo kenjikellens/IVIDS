@@ -1,5 +1,3 @@
-import { proxyUrl } from '../gui/js/utils/proxy.js';
-
 /**
  * ImageCache - In-memory blob URL cache for TMDb images.
  *
@@ -114,7 +112,7 @@ class ImageCache {
      */
     async _fetchAndCache(url) {
         try {
-            const response = await fetch(proxyUrl(url));
+            const response = await fetch(url);
             if (!response.ok) return null;
 
             const blob = await response.blob();

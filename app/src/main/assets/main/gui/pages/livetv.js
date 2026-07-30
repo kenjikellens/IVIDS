@@ -6,7 +6,6 @@ import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { proxyUrl } from '../js/utils/proxy.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
 import { XtreamApi } from '../../logic/livetv/xtream-api.js';
-import { SportsResolver } from '../../logic/livetv/sports-resolver.js';
 
 function loadMergedSettings() {
     try {
