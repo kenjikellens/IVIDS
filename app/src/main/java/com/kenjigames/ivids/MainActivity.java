@@ -505,11 +505,12 @@ public class MainActivity extends AppCompatActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 if (request != null && request.getUrl() != null) {
                     String urlString = request.getUrl().toString();
-                    if (urlString.contains(".m3u8") || urlString.contains(".mp4")) {
-                        Log.d(TAG, "[IVIDS Resolver] Successfully captured stream URL: " + urlString);
+                    String lowerUrl = urlString.toLowerCase();
+                    if (lowerUrl.contains(".m3u8") || lowerUrl.contains(".mp4") || lowerUrl.contains(".ts") || lowerUrl.contains("/live/")) {
+                        Log.d(TAG, "[IVIDS Resolver] Successfully captured sports stream URL: " + urlString);
                         final String finalUrl = urlString;
                         mWebView.post(() -> {
-                            String js = "if (window.onBackgroundStreamCaptured) { window.onBackgroundStreamCaptured('" + finalUrl + "'); }";
+                            String js = "if (window.onBackgroundStreamCaptured) { window.onBackgroundStreamCaptured('" + finalUrl.replace("'", "\\'") + "'); }";
                             mWebView.evaluateJavascript(js, null);
                         });
                         view.post(() -> {
