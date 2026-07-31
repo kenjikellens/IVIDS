@@ -752,9 +752,26 @@ function loadStatusCache() {
     }
 }
 
+let _saveStatusCacheTimer = null;
+
+/**
+ * Debounces writing the statusCache Map to localStorage to avoid synchronous disk I/O during rapid status checks.
+ */
+function scheduleSaveStatusCache() {
+    if (_saveStatusCacheTimer) return;
+    _saveStatusCacheTimer = setTimeout(() => {
+        _saveStatusCacheTimer = null;
+        try {
+            localStorage.setItem(LIVE_TV_STATUS_KEY, JSON.stringify(Array.from(statusCache.entries())));
+        } catch (error) {
+            console.warn('Failed to save Live TV status cache:', error);
+        }
+    }, 1500);
+}
+
 /**
  * Stores a channel playback health result and updates the status dot for that channel in the DOM.
- * Affects the statusCache map, localStorage, and active DOM list elements.
+ * Affects the statusCache map, debounces localStorage writes, and updates active DOM list elements.
  * 
  * @param {string} url - Channel stream URL.
  * @param {string} status - The current playback status (online/offline).
@@ -762,11 +779,7 @@ function loadStatusCache() {
 function updateChannelStatus(url, status) {
     if (!url) return;
     statusCache.set(url, { status, timestamp: Date.now() });
-    try {
-        localStorage.setItem(LIVE_TV_STATUS_KEY, JSON.stringify(Array.from(statusCache.entries())));
-    } catch (error) {
-        console.warn('Failed to save Live TV status cache:', error);
-    }
+    scheduleSaveStatusCache();
 
     const row = Array.from(document.querySelectorAll('.channel-list-item'))
         .find(item => item.dataset.url === url);

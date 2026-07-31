@@ -3337,4 +3337,12 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Utility: vertical padding helper */
 .py-20 { padding: 20px 0; }
 
+/* Utility: Chromium native off-screen rendering optimization for poster cards and list elements */
+.recyclable-card,
+.poster-card,
+.channel-list-item {
+    content-visibility: auto;
+    contain-intrinsic-size: 150px 225px;
+}
+
 

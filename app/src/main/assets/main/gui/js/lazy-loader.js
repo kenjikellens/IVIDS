@@ -96,6 +96,7 @@ export class LazyLoader {
 
             img.addEventListener('load', onComplete, { once: true });
             img.addEventListener('error', onComplete, { once: true });
+            img.loading = 'lazy';
             img.src = originalUrl;
             img.removeAttribute('data-src');
             if (img.complete) {

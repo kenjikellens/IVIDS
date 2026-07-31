@@ -18,10 +18,14 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 - [Pages & UI (Page Inventory)](gui/pages.md) — Complete screen inventory (Account, Profiles, Playlists, Details, etc.) and page modules.
 - [Performance & Optimization](gui/performance.md) — DOM Recycling, Hybrid Caching, and GPU acceleration.
 
+## Issues, Optimizations & Improvements
+- [Known Problems & Technical Debt](problems.md) — Inventory of identified bugs, architectural bottlenecks, and active tech debt.
+- [Optimization Report](optimalisaties.md) — Detailed code reduction, redundancy removal, and performance plan.
+- [Project File List](file_list.md) — Auto-updated inventory of all source files in the project.
+
 ## Workflow & Standards
 - [Development Guides](../.agents/workflows/guides.md) — How to add pages, translations, and components.
 - [AI Agent Standards](../.agents/rules/agent-standards.md) — Mandatory protocols for coding agents.
 
 ---
 *Single Source of Truth v0.4.5*
-

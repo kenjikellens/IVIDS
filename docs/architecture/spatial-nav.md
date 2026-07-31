@@ -1,53 +1,60 @@
 # Geometric Spatial Navigation Engine
 
-Smart TV remotes lack a pointer. IVIDS uses a **Geometric Focus Engine** (`spatial-nav.js`) to translate 4-way D-pad inputs into a fluid, intuitive experience.
+Smart TV remotes lack a touch pointer or mouse cursor. IVIDS relies on a **Geometric Focus Engine** (`spatial-nav.js`) to translate 4-way D-pad directional inputs into fluid, intuitive focus movements.
 
-## 🧠 The Geometric Algorithm (`findNext`)
+---
 
-When a user presses a direction, the engine scans the current scope for all `.focusable` elements and calculates a **Weighted Distance Score**.
+## 🧠 Geometric Focus Algorithm (`findNext`)
+
+When a directional key (Up, Down, Left, Right) is pressed, the engine scans the active scope for all elements matching `.focusable` and calculates a **Weighted Distance Score**.
 
 ### Scoring Formula
 ```javascript
-// Score is calculated based on current center and candidate center
+// Score calculation based on current focus center and target element center
 const dx = candidate.x - current.x;
 const dy = candidate.y - current.y;
 
-// Weighting prevents accidental diagonal jumps (higher cross-axis penalty)
+// Cross-axis penalty prevents accidental diagonal jumps
 const weight = (direction === 'up' || direction === 'down') ? 2.5 : 4;
-const score = (mainDist²) + (crossDist² * weight);
+const score = (mainDist * mainDist) + (crossDist * crossDist * weight);
 ```
 - **Main Distance**: Distance along the primary axis of movement.
-- **Cross Distance**: Distance along the perpendicular axis.
-- **Directional Weighting**: Horizontal movement (Left/Right) is weighted more heavily (4x) against vertical drift compared to Vertical movement (2.5x), as grids are typically wider than they are tall.
+- **Cross Distance**: Perpendicular offset.
+- **Directional Weighting**: Horizontal movements carry a 4x cross-axis penalty to keep focus within horizontal poster rows without prematurely jumping to adjacent vertical rows.
 
 ---
 
-## 🏗️ Architectural Concepts
+## 🏗️ Core Architectural Features
 
-### Focus Scoping & Isolation
-The engine prevents accidental jumps between the **Sidebar** and **Main Content** on Up/Down presses. It "scopes" the search to the container currently holding the focus unless a Left/Right press specifically breaks the boundary.
+### 1. Focus Scoping & Container Isolation
+Prevents focus from unexpectedly jumping outside active content boundaries (e.g. between sidebar navigation and poster grids) unless explicit boundary edges are reached.
 
-### Focus Traps (Modals)
-Using `setFocusTrap(container)`, all geometric calculations are restricted to children of that container. This ensures that opening a Modal (like Profile PIN entry) completely locks the user inside until the trap is cleared.
+### 2. Focus Traps (Modals & Overlays)
+Activating `SpatialNav.setFocusTrap(container)` restricts all geometric D-pad calculations exclusively to descendants of `container`. Essential for modals (Profile PIN, Update Prompts, Server Selectors).
 
-### Virtual Center Logic (`centerElement`)
-Standard `scrollIntoView()` on some TVs is jumpy or unaccelerated. IVIDS uses `el.scrollIntoView({ behavior: 'smooth', block: 'center' })` to ensure the focused element is always centered vertically and horizontally, providing a "Snap-to-Grid" feel popular on premium TV platforms (Apple TV, Netflix).
+### 3. Native Android Back Dispatcher Integration
+On Android devices, hardware back button presses (or gesture back) are intercepted in [MainActivity.java](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java#L463-L471) via `OnBackPressedDispatcher` and dispatched directly to `SpatialNav.back()`:
+```javascript
+if (window.SpatialNav && typeof window.SpatialNav.back === 'function') {
+    window.SpatialNav.back();
+}
+```
+This closes open focus traps/modals first before navigating backward in page history.
 
----
-
-## 📱 Mobile & Portrait Support
-
-The engine is **Adaptive**.
-- **Input Transformation**: In Portrait mode (or on Mobile), selecting an `INPUT` field automatically removes `readOnly` and adds the `.active-typing` class to bring up the OS virtual keyboard.
-- **Scroll Hijacking**: The engine forces `element.focus({ preventScroll: true })` and handles scrolling manually via the `centerElement` logic to prevent browser-native scrolling from interfering with the custom UI layout.
+### 4. Smooth Element Centering (`centerElement`)
+Forces elements into view using `element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })` to maintain a consistent "Snap-to-Grid" feel across Smart TV browsers.
 
 ---
 
 ## ⌨️ Key Mapping Table
 
-| Logical Key | Values (Standard / TV) | Action |
-|-------------|-------------------------|-------|
-| **Navigation**| Arrow keys, D-pad | Move focus geometrically |
-| **Action** | Enter, DpadCenter (23) | Trigger `.click()` / Activate Input |
-| **Back** | Backspace (8), Esc (27), Back (10009) | Go back in Router history |
-| **Numeric** | 0-9 (48-57, 96-105) | Direct input into PIN fields / Search |
+| Logical Key | Key Codes / Values | Action |
+|-------------|-------------------|--------|
+| **Navigation** | ArrowUp, ArrowDown, ArrowLeft, ArrowRight, D-pad | Move focus geometrically |
+| **Select / Enter** | Enter (13), DpadCenter (23) | Trigger `.click()` / activate control |
+| **Back / Escape** | Backspace (8), Esc (27), Android Back (4) | Invoke `SpatialNav.back()` / Router `goBack()` |
+| **Numeric Input** | 0-9 (48-57, 96-105) | Direct PIN entry & search query input |
+
+---
+
+*Single Source of Truth v0.4.5*

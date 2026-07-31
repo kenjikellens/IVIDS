@@ -1,27 +1,33 @@
 # Logic: Live TV & M3U Processing
 
-The Live TV module (`m3u-parser.js`) allows users to integrate their own IPTV playlists into the IVIDS interface.
-
-## 📄 M3U Parser Implementation
-
-The parser is a custom-built, lightweight string processor that converts raw `.m3u` files into structured JSON objects.
-
-### Parsing Logic
-1.  **Tag Identification**: Scans for `#EXTINF:` tags to begin a channel definition.
-2.  **Metadata Extraction**: Extracts `tvg-logo` (channel icon) and `group-title` (category) using regex.
-3.  **Name Normalization**: Sanitizes names by splitting at the last comma (the standard M3U format).
-4.  **Unique ID Generation**: Generates persistent hash-based IDs (`btoa(url)`) for every stream, ensuring that "Favorites" or "Recently Watched" links survive playlist updates.
+The Live TV module (`m3u-parser.js` and `livetv.js`) allows users to integrate custom IPTV playlists into the IVIDS interface with full D-pad TV control and channel status persistence.
 
 ---
 
-## 🏗️ Live TV Architecture
+## 📄 M3U Playlist Parsing (`m3u-parser.js`)
 
-### UI Flow
-- **Settings**: Users input a remote M3U URL.
-- **Bootloader**: On app start, the URL is fetched and parsed. Channels are categorized by `group-title`.
-- **Live TV Page**: Renders a categorized view with side-scrolling rows for each group (Sports, Movies, Local, etc.).
+The parser is a lightweight, line-by-line processor that parses raw `.m3u` / `.m3u8` files into structured JSON channel objects:
 
-### Stream Playback
-Channels are treated as a specialized `media_type: 'live'`.
-- Unlike VOD content, Live streams are played directly via the native browser HLS/Dash player without external provider redirection.
-- **Error Handling**: Standard video event listeners handle stream drops or restricted geo-locations.
+1. **Tag Scanning**: Identifies `#EXTINF:` header tags.
+2. **Metadata Extraction**: Extracts `tvg-logo` (channel logo), `group-title` (category), and `tvg-name`.
+3. **Unique ID Hashing**: Generates persistent hash-based channel IDs (`btoa(url)`) ensuring favorites and recent zaps survive playlist reloads.
+
+---
+
+## 🛠️ Live TV Architecture & Persistence
+
+### 1. Channel Grouping & Navigation
+Channels are grouped by `group-title` (e.g. Sports, News, Entertainment) and rendered as horizontal browsing rows compatible with `SpatialNav`.
+
+### 2. Broken Channel Reporting API (`/api/broken-channels`)
+When a stream fails to load or returns HTTP errors during playback:
+- The app sends a POST payload to `/api/broken-channels` (handled in [run_pc.py](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/run_pc.py#L185-L186)).
+- Appends the failed channel URL to `app/src/main/assets/main/logic/livetv/broken-channels.json` without duplicates, allowing automated channel health auditing.
+
+### 3. Adaptive HLS Playback (`tv-player.js`)
+- Integrated with `Hls.js` for adaptive bitrate streaming.
+- Implements auto-retry mechanisms for dropped network frames and geo-restricted IPTV feeds.
+
+---
+
+*Single Source of Truth v0.4.5*

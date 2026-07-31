@@ -1,56 +1,52 @@
 # Logic: Content Discovery & API Layer
 
-The API layer (`api.js`) is the primary interface for content discovery, metadata retrieval, and provider routing. It is built to minimize latency and maximize display quality across heterogeneous hardware.
+The API layer (`api.js`) coordinates content discovery via The Movie Database (TMDB), manages network deduplication, and routes media streams through external provider embed pipelines.
 
-## 📡 Resilient API Fetching (`fetchWithRetry` & `deduplicatedFetch`)
+---
 
-All TMDB and media requests route through unified helper layers to optimize network efficiency:
-- **Exponential Backoff**: `fetchWithRetry` retries failed requests up to 2 times with increasing delays (`500ms * 2^i`) to recover from transient carrier drops.
-- **Hard Timeouts**: Requests abort after 8 seconds (via `AbortController`) to prevent lockups on slow TV connections.
-- **In-flight Deduplication (`deduplicatedFetch`)**:
-  - A file-scope Map (`_inflightRequests`) tracks current, pending request promises keyed by their full URL endpoints.
-  - If a duplicate fetch call is initiated concurrently (e.g. while generating multiple movie row feeds or during fast page transitions), the API layer immediately returns the existing promise instead of spawning a new network request.
-  - Once resolved or rejected, callbacks automatically clean up the URL key from the map.
-- **WebView Compatibility Migration**:
-  - Older Android System WebView versions lack robust support for `.finally()` handler chains.
-  - To prevent uncaught Promise lockups on these platforms, `deduplicatedFetch` cleans up its cache map using explicit double handlers: `.then(val => { cleanUp(); return val; }, err => { cleanUp(); throw err; })` instead of a `.finally(cleanUp)` block.
-- **Static Idempotency**: Results are cached in the global `cacheManager` after successful fetch parsing.
+## 📡 Resilient Network Architecture (`deduplicatedFetch` & Retry)
 
+To ensure zero-latency responses and protect against network drops:
+
+1. **In-Flight Deduplication (`deduplicatedFetch`)**:
+   - Maintains an in-memory `Map` (`_inflightRequests`) tracking pending fetch Promises by endpoint URL.
+   - Concurrent requests for the same TMDB resource (e.g. initial row population + prefetching) share a single network call.
+   - Cleans up request keys using explicit double-handler promises to ensure Android WebView compatibility.
+
+2. **Exponential Backoff (`fetchWithRetry`)**:
+   - Retries failed network requests up to 2 times with exponential delays (`500ms * 2^i`).
+   - Aborts pending requests after an 8-second threshold via `AbortController` to prevent UI lockups on slow TV connections.
+
+---
+
+## ⏯️ Media Stream Providers & Resolution Pipeline
+
+### 1. Default Player Provider Hierarchy
+The application supports a pre-configured provider array managed in `DEFAULT_PLAYER_PROVIDERS`:
+
+| Rank | Provider | Base URL | ID |
+|------|----------|----------|----|
+| **1 (Default)** | VidLink | `https://vidlink.pro` | `vidlink` |
+| **2** | VidSrc.to | `https://vidsrc.to/embed` | `vidsrc_to` |
+| **3** | Videasy | `https://player.videasy.net` | `videasy` |
+| **4** | VidSrc.cc | `https://vidsrc.cc/v2/embed` | `vidsrc_cc` |
+
+### 2. Auto-Migration Engine
+If a user's stored settings contain legacy or decommissioned domains (e.g. `vidsrc.xyz`, `vidsrc.me`), `getPlayerConfig()` automatically migrates playback settings to `vidlink.pro` persistently in `localStorage`.
+
+### 3. Native & Server Stream Resolvers
+- **Python PC Server (`run_pc.py`)**: Exposes `/resolve-stream` to scrape and extract direct `.m3u8` or `.mp4` stream links directly from provider pages, bypassing external popups and ad overlays.
+- **Android Native Bridge (`StreamResolverBridge`)**: [MainActivity.java](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java#L548-L580) instantiates an offscreen background `WebView` to capture direct `.m3u8` network stream manifests for Android TV native playback.
 
 ---
 
 ## 🖼️ Intelligent Image Engine
 
-To save memory on low-end TVs while providing sharp images on 4K displays, the `Api.getImageUrl()` method uses a **Heuristic Size Selection** system.
-
-### Responsive Constants
-- **Grid Poster**: Optimized for row browsing (~342px width).
-- **Hero Backdrop**: High resolution (w1280) for hero sections.
-- **TV Heuristics**: If TV detection is active (`Api.isTV()`), the engine strictly limits backdrops to `w780` to prevent memory-related crashes on devices with limited RAM.
-
-### Pre-warming
-`Api.prefetchImage(path)` allows the app to warm up the CDN connection for the next likely navigation target (e.g., the first item in a trending row as the page loads).
+To minimize GPU memory overhead on Smart TVs while delivering crisp poster art:
+- **Grid Posters**: Defaults to `w342` for poster rows.
+- **Hero Backdrops**: Uses `w1280` for desktop/mobile, but restricts TV backdrops (`Api.isTV()`) to `w780` to prevent out-of-memory crashes.
+- **Data Saver Mode**: When Data Saver is active or downlink speed is low (< 1.5 Mbps), images scale down to `w92` posters and `w300` backdrops.
 
 ---
 
-## 🕵️ Discovery & Search Filtering
-
-The Discovery engine implements several server-side and client-side filters to ensure content quality:
-- **Release Guard**: All results are filtered by date (`release_date <= today`). This prevents "TBA" or placeholder content from cluttering the trending rows.
-- **Adult Content Separation**: Discovery (Trending, Genres) is strictly `include_adult=false`. Explicit adult content is only available via the **Search** interface if specifically queried.
-- **Regional Logic**: Specialized methods like `fetchKoreanContent()` and `fetchBollywood()` use `with_original_language` to build high-quality regional rows.
-
----
-
-## ⏯️ Provider Routing & Server Selector
-
-The `getVideoUrl()` method implements a multi-provider and multi-server routing strategy:
-- **Default Provider**: Uses VidLink.pro (`https://vidlink.pro`) as the primary default video source.
-- **Default Providers List**: Supports a pre-configured selection of servers (configured in the `DEFAULT_PLAYER_PROVIDERS` array) via the UI playback interface:
-  - **VidLink (Primary)**: `https://vidlink.pro` (ID: `vidlink`)
-  - **VidSrc.to (Server 2)**: `https://vidsrc.to/embed` (ID: `vidsrc_to`)
-  - **Videasy (Server 3)**: `https://player.videasy.net` (ID: `videasy`)
-  - **VidSrc.cc (Server 4)**: `https://vidsrc.cc/v2/embed` (ID: `vidsrc_cc`)
-- **Auto-Migration Check**: If the user has a legacy player configuration pointing to blocked `vidsrc` domains (like `vidsrc.xyz`, `vidsrc.me`, or `vidsrc.net`), the `getPlayerConfig()` loader automatically migrates their settings to `vidlink.pro` persistently in `localStorage`.
-- **Deep Linking**: Correctly constructs embed paths and parameters for TV Seasons/Episodes (`/tv/{id}/{season}/{episode}`) vs Movies (`/movie/{id}`).
-- **Uniform Playback Parameters**: Appends URL query parameters like `autoplay=true`, `autoPlay=true`, and `ds_lang=en` to ensure instant playback without manual configuration.
+*Single Source of Truth v0.4.5*
