@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
@@ -420,12 +421,16 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new WebView(this);
         setContentView(mWebView);
 
+        // Ensure system bars (3-button navigation bar & status bar) do not overlap app content
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+
         // Adjust WebView padding to respect system bars (status bar & 3-button navigation bar)
         ViewCompat.setOnApplyWindowInsetsListener(mWebView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        ViewCompat.requestApplyInsets(mWebView);
 
         // Enable hardware acceleration for the WebView to optimize core usage and rendering performance
         mWebView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
