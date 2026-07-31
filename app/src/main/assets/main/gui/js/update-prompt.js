@@ -213,6 +213,25 @@ export class UpdatePrompt {
     }
 
     /**
+     * Smart retry handler.
+     * Re-triggers native installation if the APK file is already present on disk, avoiding re-downloading.
+     */
+    static retryOrInstall() {
+        if (window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApk === 'function') {
+            try {
+                const launched = window.AndroidUpdate.installExistingApk();
+                if (launched) {
+                    this.handleStatus('installing');
+                    return;
+                }
+            } catch (err) {
+                console.warn('UpdatePrompt: Failed to install existing APK, re-downloading...', err);
+            }
+        }
+        this.startDownload();
+    }
+
+    /**
      * Programmatically initiates the update download process.
      * Hides the changelog, updates the modal title, and delegates download to native or PC bridge.
      */
@@ -222,6 +241,18 @@ export class UpdatePrompt {
         const progressBar = document.getElementById('update-progress-bar');
         const progressText = document.getElementById('update-progress-text');
         const titleEl = this.modalElement.querySelector('.update-title');
+
+        // Check if downloaded APK already exists on disk before initiating network fetch
+        if (window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApk === 'function') {
+            try {
+                if (window.AndroidUpdate.installExistingApk()) {
+                    this.handleStatus('installing');
+                    return;
+                }
+            } catch (e) {
+                console.warn('UpdatePrompt: Failed to check existing APK', e);
+            }
+        }
 
         // Hide changelog section on download for a clean layout
         const changelogTitle = this.modalElement.querySelector('.update-changelog-title');
@@ -333,7 +364,7 @@ export class UpdatePrompt {
             if (confirmBtn) {
                 confirmBtn.textContent = this.translate('update_retry', 'Retry');
                 confirmBtn.style.display = 'inline-flex';
-                confirmBtn.onclick = () => this.startDownload();
+                confirmBtn.onclick = () => this.retryOrInstall();
                 SpatialNav.setFocus(confirmBtn);
             }
         }
@@ -410,7 +441,7 @@ export class UpdatePrompt {
         if (confirmBtn) {
             confirmBtn.textContent = this.translate('update_retry', 'Retry');
             confirmBtn.style.display = 'inline-flex';
-            confirmBtn.onclick = () => this.startDownload();
+            confirmBtn.onclick = () => this.retryOrInstall();
             SpatialNav.setFocus(confirmBtn);
         }
         if (dismissBtn) {
@@ -433,7 +464,7 @@ export class UpdatePrompt {
             if (confirmBtn) {
                 confirmBtn.textContent = this.translate('update_retry', 'Retry');
                 confirmBtn.style.display = 'inline-flex';
-                confirmBtn.onclick = () => this.startDownload();
+                confirmBtn.onclick = () => this.retryOrInstall();
                 SpatialNav.setFocus(confirmBtn);
             }
         }

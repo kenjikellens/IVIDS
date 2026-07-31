@@ -251,6 +251,24 @@ public class UpdateManager {
     }
 
     /**
+     * Attempts to trigger the installation of an already downloaded APK if it exists on disk.
+     * Prevents unnecessary re-downloading if the installation failed or was interrupted by system permission prompts.
+     * 
+     * @return true if the downloaded APK exists and installation was initiated, false otherwise.
+     */
+    @JavascriptInterface
+    public boolean installExistingApk() {
+        File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+        File apkFile = new File(downloadDir, "IVIDS-update.apk");
+        if (apkFile.exists() && apkFile.length() > 0) {
+            Log.d(TAG, "Found existing downloaded APK (" + apkFile.length() + " bytes). Re-triggering installation...");
+            mActivity.runOnUiThread(() -> installApk(apkFile));
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Initiates a direct forced download of the APK from the repository's raw URL.
      * This method is exposed to JavaScript via the @JavascriptInterface annotation.
      */
