@@ -25,8 +25,9 @@
     right: 0;
     bottom: 0;
     width: 100%;
-    height: var(--app-sidebar-width);
-    flex-basis: var(--app-sidebar-width);
+    height: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    flex-basis: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
     z-index: 3000;
 }
 
@@ -34,7 +35,7 @@
 #main-view {
     height: 100vh;
     width: 100vw;
-    padding-bottom: var(--app-sidebar-width);
+    padding-bottom: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
     box-sizing: border-box;
 }
 
@@ -49,8 +50,8 @@
     bottom: 0;
     top: auto;
     width: 100%;
-    height: var(--app-sidebar-width);
-    padding: 0 8px;
+    height: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
+    padding: 0 8px env(safe-area-inset-bottom, 0px) 8px;
     flex-direction: row;
     align-items: center;
     justify-content: center;
