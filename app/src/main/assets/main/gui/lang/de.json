@@ -58,10 +58,10 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manuell",
-            "advanced": "Erweitert / Entwickler",
+            "advanced": "Entwickler",
             "none": "Aus"
         },
-        "advancedWarning": "Warnung: Der Modus Erweitert / Entwickler ermöglicht das Herunterladen von Updates direkt aus dem Repository. Dies wird nur für Entwickler empfohlen und kann instabile Builds enthalten.",
+        "advancedWarning": "Warnung: Der Modus Entwickler ermöglicht das Herunterladen von Updates direkt aus dem Repository. Dies wird nur für Entwickler empfohlen und kann instabile Builds enthalten.",
         "updateStatus": {
             "connecting-api": "Verbindung zum Server...",
             "fetching-releases": "Suche nach Releases...",

@@ -59,10 +59,10 @@
         "mode": {
             "auto": "Otomatis",
             "manual": "Manual",
-            "advanced": "Lanjutan / Pengembang",
+            "advanced": "Pengembang",
             "none": "Mati"
         },
-        "advancedWarning": "Peringatan: Mode Lanjutan / Pengembang memungkinkan Anda mengunduh pembaruan langsung dari repositori. Hanya disarankan untuk pengembang dan mungkin berisi rilis yang tidak stabil.",
+        "advancedWarning": "Peringatan: Mode Pengembang memungkinkan Anda mengunduh pembaruan langsung dari repositori. Hanya disarankan untuk pengembang dan mungkin berisi rilis yang tidak stabil.",
         "updateStatus": {
             "connecting-api": "Menghubungkan ke server...",
             "fetching-releases": "Memeriksa rilis...",

@@ -59,10 +59,10 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manuell",
-            "advanced": "Avancerat / Utvecklare",
+            "advanced": "Utvecklare",
             "none": "Av"
         },
-        "advancedWarning": "Varning: Avancerat / Utvecklarläge gör det möjligt att ladda ner uppdateringar direkt från källan. Detta rekommenderas endast för utvecklare och kan innehålla instabila versioner.",
+        "advancedWarning": "Varning: Utvecklarläge gör det möjligt att ladda ner uppdateringar direkt från källan. Detta rekommenderas endast för utvecklare och kan innehålla instabila versioner.",
         "updateStatus": {
             "connecting-api": "Ansluter till servern...",
             "fetching-releases": "Söker efter versioner...",

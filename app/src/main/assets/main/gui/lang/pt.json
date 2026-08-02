@@ -59,10 +59,10 @@
         "mode": {
             "auto": "Automático",
             "manual": "Manual",
-            "advanced": "Avançado / Programador",
+            "advanced": "Programador",
             "none": "Desligado"
         },
-        "advancedWarning": "Aviso: O modo Avançado / Programador permite o descarregamento de atualizações diretamente do repositório. Recomendado apenas para programadores; pode conter versões instáveis.",
+        "advancedWarning": "Aviso: O modo Programador permite o descarregamento de atualizações diretamente do repositório. Recomendado apenas para programadores; pode conter versões instáveis.",
         "updateStatus": {
             "connecting-api": "A ligar ao servidor...",
             "fetching-releases": "A verificar versões...",

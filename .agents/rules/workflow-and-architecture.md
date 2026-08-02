@@ -11,7 +11,8 @@ trigger: always_on
 ## 2. i18n & Translation Workflow
 - **Never Hardcode Text**: Any UI text MUST use translation keys via translation files (`lang/*.json`), never hardcode text in HTML or JS.
 - **Base Key Entry**: Always add new translation keys to `en.json` first.
-- **Automated Script Translations**: Batch update all 25+ language JSON files using a Python script located in the agent `scratch/` folder (`C:\Users\kenji\.gemini\antigravity-ide\scratch\`).
+- **Mandatory Script Translations**: ALL additions, modifications, or updates to translation files (`lang/*.json`) MUST be performed using an automated Python script located in the agent `scratch/` folder (`C:\Users\kenji\.gemini\antigravity-ide\scratch\`). NEVER edit individual `lang/*.json` files manually one-by-one.
+- **Python Execution Rule**: Always execute Python scripts on Windows using the `py` launcher command (e.g., `py ...`), NEVER `python`.
 
 ## 3. UI Mockups & Temporary Files
 - **Mockups**: Create requested UI mockups in a dedicated `/mockup/` folder as standalone, offline-capable files (`mockup_[name].html`, `.css`, `.js`). Delete mockup files once integrated into the main application.

@@ -59,10 +59,10 @@
         "mode": {
             "auto": "自动",
             "manual": "手动",
-            "advanced": "高级 / 开发者",
+            "advanced": "开发者",
             "none": "关闭"
         },
-        "advancedWarning": "警告：高级 / 开发者模式允许直接从仓库下载更新。仅建议开发者使用，可能包含不稳定版本。",
+        "advancedWarning": "警告：开发者模式允许直接从仓库下载更新。仅建议开发者使用，可能包含不稳定版本。",
         "updateStatus": {
             "connecting-api": "正在连接服务器...",
             "fetching-releases": "正在检查发布版本...",

@@ -58,10 +58,10 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manual",
-            "advanced": "Advanced / Developer",
+            "advanced": "Developer",
             "none": "Off"
         },
-        "advancedWarning": "Warning: Advanced / Developer mode allows downloading updates directly from the repository. This is recommended for developers only and may contain unstable builds.",
+        "advancedWarning": "Warning: Developer mode allows downloading updates directly from the repository. This is recommended for developers only and may contain unstable builds.",
         "updateStatus": {
             "connecting-api": "Connecting to server...",
             "fetching-releases": "Checking for releases...",

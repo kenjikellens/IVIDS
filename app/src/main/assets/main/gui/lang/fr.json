@@ -58,10 +58,10 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manuel",
-            "advanced": "Avancé / Développeur",
+            "advanced": "Développeur",
             "none": "Désactivé"
         },
-        "advancedWarning": "Avertissement : Le mode Avancé / Développeur permet de télécharger des mises à jour directement depuis le dépôt. Ceci est recommandé uniquement pour les développeurs et peut contenir des versions instables.",
+        "advancedWarning": "Avertissement : Le mode Développeur permet de télécharger des mises à jour directement depuis le dépôt. Ceci est recommandé uniquement pour les développeurs et peut contenir des versions instables.",
         "updateStatus": {
             "connecting-api": "Connexion au serveur...",
             "fetching-releases": "Recherche de versions...",

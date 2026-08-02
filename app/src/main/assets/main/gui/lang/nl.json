@@ -58,10 +58,10 @@
         "mode": {
             "auto": "Auto",
             "manual": "Handmatig",
-            "advanced": "Geavanceerd / Developer",
+            "advanced": "Developer",
             "none": "Uit"
         },
-        "advancedWarning": "Waarschuwing: Geavanceerd / Developer-modus maakt het mogelijk om updates rechtstreeks uit de repository te downloaden. Dit wordt alleen aanbevolen voor ontwikkelaars en kan onstabiele builds bevatten.",
+        "advancedWarning": "Waarschuwing: Developer-modus maakt het mogelijk om updates rechtstreeks uit de repository te downloaden. Dit wordt alleen aanbevolen voor ontwikkelaars en kan onstabiele builds bevatten.",
         "updateStatus": {
             "connecting-api": "Verbinden met server...",
             "fetching-releases": "Controleren op releases...",

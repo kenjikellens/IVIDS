@@ -59,10 +59,10 @@
         "mode": {
             "auto": "자동",
             "manual": "수동",
-            "advanced": "고급 / 개발자",
+            "advanced": "개발자",
             "none": "꺼짐"
         },
-        "advancedWarning": "주의: 고급 / 개발자 모드에서는 저장소에서 업데이트를 직접 다운로드할 수 있습니다. 개발자에게만 권장되며 불안정한 빌드가 포함될 수 있습니다.",
+        "advancedWarning": "주의: 개발자 모드에서는 저장소에서 업데이트를 직접 다운로드할 수 있습니다. 개발자에게만 권장되며 불안정한 빌드가 포함될 수 있습니다.",
         "updateStatus": {
             "connecting-api": "서버에 연결 중...",
             "fetching-releases": "릴리스 확인 중...",

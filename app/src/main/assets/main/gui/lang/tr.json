@@ -59,10 +59,10 @@
         "mode": {
             "auto": "Otomatik",
             "manual": "Manuel",
-            "advanced": "Gelişmiş / Geliştirici",
+            "advanced": "Geliştirici",
             "none": "Kapalı"
         },
-        "advancedWarning": "Uyarı: Gelişmiş / Geliştirici modu, güncellemeleri doğrudan depodan indirmenize olanak tanır. Yalnızca geliştiriciler için önerilir ve kararsız sürümler içerebilir.",
+        "advancedWarning": "Uyarı: Geliştirici modu, güncellemeleri doğrudan depodan indirmenize olanak tanır. Yalnızca geliştiriciler için önerilir ve kararsız sürümler içerebilir.",
         "updateStatus": {
             "connecting-api": "Sunucuya bağlanılıyor...",
             "fetching-releases": "Sürümler kontrol ediliyor...",

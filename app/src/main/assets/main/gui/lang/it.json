@@ -59,7 +59,7 @@
         "mode": {
             "auto": "Automatico",
             "manual": "Manuale",
-            "advanced": "Avanzato / Sviluppatore",
+            "advanced": "Sviluppatore",
             "none": "Off"
         },
         "advancedWarning": "Attenzione: La modalità Avanzata / Sviluppatore consente di scaricare gli aggiornamenti direttamente dal repository. Questo è consigliato solo per gli sviluppatori e potrebbe contenere versioni instabili.",

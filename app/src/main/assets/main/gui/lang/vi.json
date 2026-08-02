@@ -59,10 +59,10 @@
         "mode": {
             "auto": "Tự động",
             "manual": "Thủ công",
-            "advanced": "Nâng cao / Nhà phát triển",
+            "advanced": "Nhà phát triển",
             "none": "Tắt"
         },
-        "advancedWarning": "Cảnh báo: Chế độ Nâng cao / Nhà phát triển cho phép tải trực tiếp bản cập nhật từ kho lưu trữ. Chỉ khuyên dùng cho nhà phát triển và có thể chứa các bản dựng chưa ổn định.",
+        "advancedWarning": "Cảnh báo: Chế độ Nhà phát triển cho phép tải trực tiếp bản cập nhật từ kho lưu trữ. Chỉ khuyên dùng cho nhà phát triển và có thể chứa các bản dựng chưa ổn định.",
         "updateStatus": {
             "connecting-api": "Đang kết nối tới máy chủ...",
             "fetching-releases": "Đang kiểm tra các bản phát hành...",

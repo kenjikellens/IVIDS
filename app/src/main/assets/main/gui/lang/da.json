@@ -59,7 +59,7 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manuel",
-            "advanced": "Avanceret / Udvikler",
+            "advanced": "Udvikler",
             "none": "Fra"
         },
         "advancedWarning": "Advarsel: Avanceret / Udvikler-tilstand giver mulighed for at downloade opdateringer direkte fra lageret. Dette anbefales kun til udviklere og kan indeholde ustabile builds.",

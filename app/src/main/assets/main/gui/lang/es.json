@@ -58,7 +58,7 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manual",
-            "advanced": "Avanzado / Desarrollador",
+            "advanced": "Desarrollador",
             "none": "Desactivado"
         },
         "advancedWarning": "Advertencia: El modo Avanzado / Desarrollador permite descargar actualizaciones directamente del repositorio. Esto se recomienda solo para desarrolladores y puede contener versiones inestables.",

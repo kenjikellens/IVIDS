@@ -59,7 +59,7 @@
         "mode": {
             "auto": "Automatyczny",
             "manual": "Ręczny",
-            "advanced": "Zaawansowany / Deweloper",
+            "advanced": "Deweloper",
             "none": "Wyłączony"
         },
         "advancedWarning": "Ostrzeżenie: Tryb zaawansowany / deweloperski umożliwia pobieranie aktualizacji bezpośrednio z repozytorium. Zalecany tylko dla deweloperów, może zawierać niestabilne wersje.",

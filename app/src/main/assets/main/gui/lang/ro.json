@@ -59,10 +59,10 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manual",
-            "advanced": "Avansat / Dezvoltator",
+            "advanced": "Dezvoltator",
             "none": "Oprit"
         },
-        "advancedWarning": "Avertisment: Modul Avansat / Dezvoltator permite descărcarea actualizărilor direct din depozit. Acesta este recomandat doar dezvoltatorilor și poate conține versiuni instabile.",
+        "advancedWarning": "Avertisment: Modul Dezvoltator permite descărcarea actualizărilor direct din depozit. Acesta este recomandat doar dezvoltatorilor și poate conține versiuni instabile.",
         "updateStatus": {
             "connecting-api": "Se conectează la server...",
             "fetching-releases": "Se verifică lansările...",

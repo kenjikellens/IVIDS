@@ -59,10 +59,10 @@
         "mode": {
             "auto": "Auto",
             "manual": "Manuell",
-            "advanced": "Avansert / Utvikler",
+            "advanced": "Utvikler",
             "none": "Av"
         },
-        "advancedWarning": "Advarsel: Avansert / Utviler-modus lar deg laste ned oppdateringer direkte fra kilden. Dette anbefales kun for utviklere og kan inneholde ustabile versjoner.",
+        "advancedWarning": "Advarsel: Utviler-modus lar deg laste ned oppdateringer direkte fra kilden. Dette anbefales kun for utviklere og kan inneholde ustabile versjoner.",
         "updateStatus": {
             "connecting-api": "Kobler til server...",
             "fetching-releases": "Sjekker utgivelser...",

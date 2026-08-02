@@ -2381,9 +2381,11 @@ input, textarea, select { font: inherit; }
 #version-list-loader {
     align-items: center;
     display: flex;
+    inset: auto;
     justify-content: center;
     margin: 0 auto;
     min-height: 220px;
+    position: relative;
     width: 100%;
 }
 

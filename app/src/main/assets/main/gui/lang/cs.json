@@ -59,7 +59,7 @@
         "mode": {
             "auto": "Automaticky",
             "manual": "Ručně",
-            "advanced": "Pokročilé / Vývojář",
+            "advanced": "Vývojář",
             "none": "Vypnuto"
         },
         "advancedWarning": "Varování: Pokročilý / Vývojářský režim umožňuje stahovat aktualizace přímo z repozitáře. Doporučeno pouze pro vývojáře, může obsahovat nestabilní verze.",
