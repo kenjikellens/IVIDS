@@ -62,11 +62,10 @@ export const PLAYER_CONFIG = Object.freeze({
     CONTROLS_TIMEOUT_MS: 4000,
     SEEK_STEP_SECONDS: 10,
     DEFAULT_PROVIDERS: Object.freeze([
-        { id: 'direct_stream', name: 'IVIDS Direct Stream (Clean)', url: 'direct://resolver', isCustom: false },
-        { id: 'vidlink', name: 'VidLink (Server 2)', url: 'https://vidlink.pro', isCustom: false },
-        { id: 'vidsrc_to', name: 'VidSrc.to (Server 3)', url: 'https://vidsrc.to/embed', isCustom: false },
-        { id: 'videasy', name: 'Videasy (Server 4)', url: 'https://player.videasy.net', isCustom: false },
-        { id: 'embed_su', name: 'Embed.su (Server 5)', url: 'https://embed.su/embed', isCustom: false }
+        { id: 'vidlink', name: 'VidLink (Server 1)', url: 'https://vidlink.pro', isCustom: false },
+        { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed', isCustom: false },
+        { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net', isCustom: false },
+        { id: 'embed_su', name: 'Embed.su (Server 4)', url: 'https://embed.su/embed', isCustom: false }
     ])
 });
 

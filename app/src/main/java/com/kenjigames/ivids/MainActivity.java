@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -12,14 +11,10 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 import java.util.Set;
@@ -420,28 +415,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FrameLayout rootLayout = new FrameLayout(this);
         mWebView = new WebView(this);
-        rootLayout.addView(mWebView, new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
-        setContentView(rootLayout);
+        setContentView(mWebView);
 
-        // Ensure system bars (3-button navigation bar & status bar) do not overlap app content
+        // Enable edge-to-edge layout so Chromium viewport-fit=cover and CSS env(safe-area-inset-*) handle system bars natively
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-
-        // Dynamically adjust WebView layout margins to respect system bars (status bar & navigation bar)
-        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mWebView.getLayoutParams();
-            if (params != null) {
-                params.setMargins(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                mWebView.setLayoutParams(params);
-            }
-            return insets;
-        });
-        ViewCompat.requestApplyInsets(rootLayout);
 
         // Enable hardware acceleration for the WebView to optimize core usage and rendering performance
         mWebView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
@@ -466,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
         mUpdateManager = new UpdateManager(this, mWebView);
         mWebView.addJavascriptInterface(mUpdateManager, "AndroidUpdate");
         mWebView.addJavascriptInterface(new SettingsBridge(this), "AndroidSettings");
-        mWebView.addJavascriptInterface(new StreamResolverBridge(this), "AndroidResolver");
 
         mWebView.setWebChromeClient(new android.webkit.WebChromeClient() {
             @Override
@@ -499,91 +476,18 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("file:///android_asset/main/gui/index.html");
     }
 
-    private WebView mResolverWebView;
+
 
     /**
-     * Starts an offscreen background WebView to resolve and capture the direct stream URL from embed sites.
-     * Intercepts network requests for .m3u8 files and forwards the resolved stream back to the UI.
+     * Called when device configuration (e.g. orientation or screen size) changes.
+     * Prevents activity destruction/recreation and retains active WebView state.
      * 
-     * @param embedUrl The embed provider URL to inspect.
+     * @param newConfig The new device configuration.
      */
-    public void startBackgroundStreamResolver(final String embedUrl) {
-        Log.d(TAG, "[IVIDS Resolver] Initiating background stream resolver for URL: " + embedUrl);
-        if (mResolverWebView != null) {
-            try {
-                mResolverWebView.stopLoading();
-                mResolverWebView.destroy();
-                Log.d(TAG, "[IVIDS Resolver] Destroyed previous background resolver WebView instance.");
-            } catch (Exception e) {
-                Log.e(TAG, "[IVIDS Resolver] Error cleaning up old resolver webview: " + e.getMessage(), e);
-            }
-            mResolverWebView = null;
-        }
-
-        mResolverWebView = new WebView(this);
-        WebSettings settings = mResolverWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setDomStorageEnabled(true);
-        settings.setMediaPlaybackRequiresUserGesture(true);
-
-        mResolverWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                if (request != null && request.getUrl() != null) {
-                    String urlString = request.getUrl().toString();
-                    String lowerUrl = urlString.toLowerCase();
-                    if (lowerUrl.contains(".m3u8") || lowerUrl.contains(".mp4") || lowerUrl.contains(".ts") || lowerUrl.contains("/live/")) {
-                        Log.d(TAG, "[IVIDS Resolver] Successfully captured sports stream URL: " + urlString);
-                        final String finalUrl = urlString;
-                        mWebView.post(() -> {
-                            String js = "if (window.onBackgroundStreamCaptured) { window.onBackgroundStreamCaptured('" + finalUrl.replace("'", "\\'") + "'); }";
-                            mWebView.evaluateJavascript(js, null);
-                        });
-                        view.post(() -> {
-                            try {
-                                view.stopLoading();
-                                view.destroy();
-                                Log.d(TAG, "[IVIDS Resolver] Offscreen resolver WebView destroyed post-capture.");
-                            } catch (Exception e) {
-                                Log.e(TAG, "[IVIDS Resolver] Error stopping resolver webview: " + e.getMessage(), e);
-                            }
-                        });
-                    }
-                }
-                return super.shouldInterceptRequest(view, request);
-            }
-
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                if (request != null && request.isForMainFrame()) {
-                    Log.e(TAG, "[IVIDS Resolver] Error loading embed page: " + error.getDescription() + " (Code: " + error.getErrorCode() + ")");
-                }
-            }
-        });
-
-        mResolverWebView.loadUrl(embedUrl);
-    }
-
-    /**
-     * JavaScript Interface Bridge exposed to Web UI as window.AndroidResolver.
-     */
-    public static class StreamResolverBridge {
-        private final MainActivity mActivity;
-
-        public StreamResolverBridge(MainActivity activity) {
-            this.mActivity = activity;
-        }
-
-        @android.webkit.JavascriptInterface
-        public void resolveEmbedStream(final String embedUrl) {
-            Log.d(TAG, "[IVIDS Resolver] AndroidResolver bridge called with URL: " + embedUrl);
-            if (mActivity != null && !mActivity.isFinishing() && !mActivity.isDestroyed()) {
-                mActivity.runOnUiThread(() -> mActivity.startBackgroundStreamResolver(embedUrl));
-            } else {
-                Log.e(TAG, "[IVIDS Resolver] Cannot resolve stream; MainActivity is null or destroyed.");
-            }
-        }
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d("MainActivity", "Configuration changed (orientation/size update)");
     }
 
     /**
@@ -607,15 +511,6 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onDestroy() {
-        if (mResolverWebView != null) {
-            try {
-                mResolverWebView.stopLoading();
-                mResolverWebView.destroy();
-            } catch (Exception e) {
-                Log.e(TAG, "Error destroying resolver on activity destroy", e);
-            }
-            mResolverWebView = null;
-        }
         if (mUpdateManager != null) {
             mUpdateManager.shutdown();
         }

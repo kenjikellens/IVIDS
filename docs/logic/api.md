@@ -34,9 +34,9 @@ The application supports a pre-configured provider array managed in `DEFAULT_PLA
 ### 2. Auto-Migration Engine
 If a user's stored settings contain legacy or decommissioned domains (e.g. `vidsrc.xyz`, `vidsrc.me`), `getPlayerConfig()` automatically migrates playback settings to `vidlink.pro` persistently in `localStorage`.
 
-### 3. Native & Server Stream Resolvers
-- **Python PC Server (`run_pc.py`)**: Exposes `/resolve-stream` to scrape and extract direct `.m3u8` or `.mp4` stream links directly from provider pages, bypassing external popups and ad overlays.
-- **Android Native Bridge (`StreamResolverBridge`)**: [MainActivity.java](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java#L548-L580) instantiates an offscreen background `WebView` to capture direct `.m3u8` network stream manifests for Android TV native playback.
+### 3. Direct Embed & Native Live TV Playback
+- **Direct Embed Player**: Embed providers (`VidLink`, `Videasy`, `VidSrc`, etc.) load directly into an `<iframe>` container with 0ms initialization delay.
+- **Native Live TV Player**: Live TV streams render natively inside HTML5 `<video>` tags with HLS support.
 
 ---
 

@@ -263,43 +263,6 @@ export async function init(params) {
         const loadingOverlay = document.getElementById('player-loading-overlay');
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
-        // Try Direct Stream Resolution first for movies/series
-        if (params.type !== 'trailer' && params.type !== 'live') {
-            console.log(`[IVIDS Player] Attempting direct stream resolution for ID: ${params.id}, Type: ${params.type}, S:${params.season || 1} E:${params.episode || 1}`);
-            try {
-                const directData = await Api.resolveDirectStream(params.id, params.type, params.season, params.episode);
-                if (directData && directData.streamUrl) {
-                    console.log('[IVIDS Player] Direct stream resolved successfully:', directData.streamUrl);
-                    const videoEl = document.getElementById('native-video-player');
-                    if (videoEl) {
-                        videoEl.style.display = 'block';
-                        bindNativeVideoLogs(videoEl);
-                        if (window.Hls && Hls.isSupported()) {
-                            console.log('[IVIDS Player] Initializing HLS.js player engine');
-                            const hls = new Hls();
-                            hls.loadSource(directData.streamUrl);
-                            hls.attachMedia(videoEl);
-                            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                                console.log('[IVIDS Player] HLS manifest parsed successfully, starting playback');
-                                videoEl.play().catch(e => console.error('[IVIDS Player] Native play error:', e));
-                            });
-                        } else {
-                            videoEl.src = directData.streamUrl;
-                            videoEl.play().catch(e => console.error('[IVIDS Player] Native play error:', e));
-                        }
-                    }
-                    if (loadingOverlay) loadingOverlay.style.display = 'none';
-                    setupOverlayVisibility(params);
-                    renderServerSelection(params, null);
-                    return;
-                } else {
-                    console.log('[IVIDS Player] Direct stream resolution returned no direct stream URL. Switching to iframe provider fallback.');
-                }
-            } catch (resolveErr) {
-                console.warn('[IVIDS Player] Initial direct stream resolution attempt failed:', resolveErr);
-            }
-        }
-
         let url = '';
         try {
             if (params.type === 'trailer') {
@@ -325,7 +288,7 @@ export async function init(params) {
         }
 
         try {
-            console.log(`[IVIDS Player] Initializing iframe fallback player for URL: ${url}`);
+            console.log(`[IVIDS Player] Initializing direct embed player for URL: ${url}`);
             const iframe = document.createElement('iframe');
             iframe.src = url;
             iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
@@ -343,28 +306,10 @@ export async function init(params) {
             iframe.style.zIndex = "1";
 
             const statusPanel = document.getElementById('player-status-panel');
-            const statusBack = document.getElementById('player-status-back');
-            const statusSettings = document.getElementById('player-status-settings');
-            let iframeLoaded = false;
-
             if (statusPanel) statusPanel.style.display = 'none';
 
-            const showProviderWarning = () => {
-                if (iframeLoaded || !statusPanel) return;
-                console.warn('[IVIDS Player] Provider response timeout reached (25s). Displaying fallback warning panel.');
-                statusPanel.style.display = 'block';
-                if (statusBack) statusBack.onclick = () => exitPlayer(params);
-                if (statusSettings) statusSettings.onclick = () => Router.loadPage('settings', {}, true);
-                if (statusBack) SpatialNav.setFocus(statusBack);
-            };
-
             iframe.onload = () => {
-                iframeLoaded = true;
                 console.log(`[IVIDS Player] Provider iframe loaded successfully (src: ${iframe.src})`);
-                if (providerTimeout) {
-                    clearTimeout(providerTimeout);
-                    providerTimeout = null;
-                }
                 if (statusPanel) {
                     statusPanel.style.display = 'none';
                     statusPanel.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
@@ -382,9 +327,6 @@ export async function init(params) {
                     }
                 }, 1500);
             };
-
-            if (providerTimeout) clearTimeout(providerTimeout);
-            providerTimeout = setTimeout(showProviderWarning, 25000);
 
             container.appendChild(iframe);
 
@@ -540,45 +482,13 @@ function renderServerSelection(params, iframe) {
                 providerTimeout = null;
             }
 
-            if (server.id === 'direct_stream') {
-                if (loadingOverlay) loadingOverlay.style.display = 'flex';
-                Api.resolveDirectStream(params.id, params.type, params.season, params.episode).then(directData => {
-                    if (directData && directData.streamUrl) {
-                        if (iframe) iframe.style.display = 'none';
-                        if (videoEl) {
-                            videoEl.style.display = 'block';
-                            if (window.Hls && Hls.isSupported()) {
-                                const hls = new Hls();
-                                hls.loadSource(directData.streamUrl);
-                                hls.attachMedia(videoEl);
-                                hls.on(Hls.Events.MANIFEST_PARSED, () => videoEl.play().catch(e => console.error(e)));
-                            } else {
-                                videoEl.src = directData.streamUrl;
-                                videoEl.play().catch(e => console.error(e));
-                            }
-                        }
-                    } else {
-                        // Fallback to VidLink iframe
-                        if (videoEl) {
-                            videoEl.pause();
-                            videoEl.style.display = 'none';
-                        }
-                        if (iframe) {
-                            iframe.style.display = 'block';
-                            iframe.src = Api.getVideoUrl(params.id, params.type, params.season, params.episode, 'vidlink');
-                        }
-                    }
-                    if (loadingOverlay) loadingOverlay.style.display = 'none';
-                });
-            } else {
-                if (videoEl) {
-                    videoEl.pause();
-                    videoEl.style.display = 'none';
-                }
-                if (iframe) {
-                    iframe.style.display = 'block';
-                    iframe.src = Api.getVideoUrl(params.id, params.type, params.season, params.episode, server.id);
-                }
+            if (videoEl) {
+                videoEl.pause();
+                videoEl.style.display = 'none';
+            }
+            if (iframe) {
+                iframe.style.display = 'block';
+                iframe.src = Api.getVideoUrl(params.id, params.type, params.season, params.episode, server.id);
             }
         };
 
