@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -11,6 +12,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -418,19 +420,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        FrameLayout rootLayout = new FrameLayout(this);
         mWebView = new WebView(this);
-        setContentView(mWebView);
+        rootLayout.addView(mWebView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        setContentView(rootLayout);
 
         // Ensure system bars (3-button navigation bar & status bar) do not overlap app content
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
-        // Adjust WebView padding to respect system bars (status bar & 3-button navigation bar)
-        ViewCompat.setOnApplyWindowInsetsListener(mWebView, (v, insets) -> {
+        // Dynamically adjust WebView layout margins to respect system bars (status bar & navigation bar)
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mWebView.getLayoutParams();
+            if (params != null) {
+                params.setMargins(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                mWebView.setLayoutParams(params);
+            }
             return insets;
         });
-        ViewCompat.requestApplyInsets(mWebView);
+        ViewCompat.requestApplyInsets(rootLayout);
 
         // Enable hardware acceleration for the WebView to optimize core usage and rendering performance
         mWebView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);

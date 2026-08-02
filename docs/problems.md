@@ -10,7 +10,7 @@ This document tracks known issues, architectural discrepancies, performance bott
 - **Status**: FIXED
 - **Location**: [MainActivity.java](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java)
 - **Description**: On mobile devices with 3-button system navigation (Back, Home, Recents), the bottom navigation bar rendered underneath the soft buttons.
-- **Resolution**: Implemented `ViewCompat.setOnApplyWindowInsetsListener` in `MainActivity.java` to dynamically pad `mWebView` above the system bars.
+- **Resolution**: Wrapped `mWebView` inside a `FrameLayout` root container in `MainActivity.java` and attached `ViewCompat.setOnApplyWindowInsetsListener` to dynamically update `mWebView.LayoutParams` margins (`systemBars`). This forces the HTML viewport height to resize properly on Android 15+ (API 35) edge-to-edge mode.
 
 ---
 
