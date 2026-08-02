@@ -229,9 +229,9 @@
     gap: 10px;
 }
 
-/* Search main view area padding override. */
+/* Search main view area padding override with safe area inset for top status bar. */
 #app .search-main {
-    padding: 2% 4%;
+    padding: calc(16px + env(safe-area-inset-top, 24px)) 4% 2%;
     height: 100%;
     box-sizing: border-box;
 }
@@ -240,7 +240,7 @@
 #app .search-container-wrapper {
     width: 92%;
     max-width: 100%;
-    margin: 2% auto;
+    margin: 10px auto 2%;
 }
 
 /* Grid display and alignment for search chips and results container. */
@@ -283,55 +283,128 @@
 
 /* Stacked content layout for the movie and tv details page header. */
 #app .details-top {
+    display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     text-align: center;
+    padding-top: calc(10px + env(safe-area-inset-top, 16px));
 }
 
-/* Max-width reset for film metadata description details on mobile. */
+/* Poster container positioned at the very top (order: 1) above title */
+#app .details-poster-container {
+    order: 1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+/* Small, compact details view portrait image (poster). */
+#app .details-hero-poster {
+    width: 130px;
+    max-width: 35vw;
+    min-width: 100px;
+    height: auto;
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Metadata and title container positioned below poster (order: 2). */
 #app .details-info {
+    order: 2;
     max-width: 100%;
     width: 100%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Dimensional scale down for the primary details view poster. */
-#app .details-hero-poster {
-    width: 45vw;
-    min-width: 150px;
+/* Title typography scaling on mobile viewports. */
+#app .details-title,
+#app #details-title {
+    font-size: clamp(20px, 5.5vw, 26px);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+/* Hides top overview/description on mobile so it doesn't take 50% screen space (it belongs in the "Over" tab). */
+#app .details-overview {
+    display: none !important;
 }
 
 /* Height reduction for film details backdrop. */
 #app .details-backdrop {
-    height: 40vh;
+    height: 35vh;
 }
 
 /* Centering layout for metadata listings under title. */
 #app .details-meta,
-#app .details-genres,
+#app .details-genres {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Vertical stack display for action buttons below title and metadata. */
 #app .details-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-top: 6px;
+    margin-bottom: 16px;
     justify-content: center;
     align-items: center;
 }
 
-/* Vertical stack display for playback option buttons. */
-#app .details-actions {
-    flex-direction: column;
+/* Full width action buttons for touch interaction on mobile. */
+#app .details-actions .btn {
     width: 100%;
-    gap: 12px;
-    margin-top: 15px;
+    padding: 12px 16px;
+    font-size: 15px;
+    border-radius: 8px;
 }
 
-/* Note: Consolidated into grouped width block at the bottom of the file */
+/* FIX: Forces inactive tab panels to hide on mobile regardless of ID selector specificity. */
+#app .disney-tab-panel.hidden,
+#app .details-bottom.hidden {
+    display: none !important;
+}
 
-/* CSS Class: Vertical stacking layout override for seasons list and episode list on mobile viewports. */
-#app .details-bottom {
+/* Active tab panel layout rules for mobile viewports. */
+#app .disney-tab-panel:not(.hidden),
+#app .details-bottom:not(.hidden) {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Mobile override for "Over" (About) tab container layout. */
+#app .disney-about-content {
     flex-direction: column;
     gap: 20px;
+    padding-bottom: 40px;
+    width: 100%;
 }
 
-/* CSS Class: Mobile layout override for seasons container to remove borders, padding, and backdrop for dropdown display. */
+/* Full width allocation for synopsis and cast sections inside "Over" tab. */
+#app .disney-about-left,
+#app .disney-about-right {
+    width: 100%;
+}
+
+/* Cast grid scaling on mobile screens. */
+#app .disney-cast-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+/* Mobile layout override for seasons container. */
 #app .details-seasons {
     background: transparent;
     border: none;
@@ -341,12 +414,12 @@
     max-height: none;
 }
 
-/* CSS Class: Hide the desktop seasons button list on mobile viewports. */
+/* Hide the desktop seasons button list on mobile viewports. */
 #app .seasons-list-content {
     display: none;
 }
 
-/* CSS Class: Display the seasons select dropdown wrapper on mobile viewports. */
+/* Display the seasons select dropdown wrapper on mobile viewports. */
 #app .seasons-dropdown-wrapper {
     display: flex;
 }

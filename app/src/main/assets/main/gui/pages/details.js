@@ -264,13 +264,21 @@ function render(item, type) {
 
         // Toggle Seasons tab based on content type
         if (tabSeasons) {
-            if (type === 'tv' && item.seasons) {
+            if (type === 'tv' && item.seasons && item.seasons.length > 0) {
+                tabSeasons.classList.remove('hidden');
                 tabSeasons.style.display = 'inline-block';
                 renderSeasons(item.seasons, item.id);
                 switchTab('seasons');
             } else {
+                tabSeasons.classList.add('hidden');
                 tabSeasons.style.display = 'none';
-                switchTab('extra');
+                // For movies or items without seasons, default to Extra tab if trailers exist, else About tab
+                const hasExtras = item.videos && item.videos.results && item.videos.results.some(v => (v.site || '').toLowerCase() === 'youtube');
+                if (hasExtras) {
+                    switchTab('extra');
+                } else {
+                    switchTab('about');
+                }
             }
         }
 
