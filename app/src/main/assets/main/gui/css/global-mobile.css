@@ -54,8 +54,8 @@
     padding: 0 8px env(safe-area-inset-bottom, 0px) 8px;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 0;
+    justify-content: space-evenly;
+    gap: 4px;
     overflow: visible;
     border-right: none;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -73,15 +73,18 @@
 /* CSS Class: Layout and spacing override for bottom nav item. Includes specificity overrides. */
 #app .nav-item,
 #app.sidebar-always-expanded .nav-item {
-    flex: 1 1 0;
-    min-width: 0;
-    height: 56px;
-    min-height: 56px;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    aspect-ratio: 1 / 1;
     padding: 0;
     margin: 0;
+    display: flex;
+    align-items: center;
     justify-content: center;
     border-radius: var(--radius-md);
-    border-width: 2px;
+    border: 2px solid transparent;
     background: transparent;
 }
 
@@ -626,7 +629,7 @@
 #app .nav-item.active,
 #app.sidebar-always-expanded .nav-item.active {
     border: 2px solid var(--primary-color) !important;
-    background: rgba(var(--primary-rgb), 0.18) !important;
+    background: rgba(var(--primary-rgb), 0.16) !important;
 }
 #app .nav-item:focus,
 #app .nav-item.focused,
@@ -660,4 +663,36 @@
     overflow-y: auto !important;
     max-height: 45vh !important;
     padding-right: 4px;
+}
+
+/* Mobile landscape optimizations: Keep sleek bottom navigation bar on landscape phones */
+@media (orientation: landscape) and (max-height: 500px) {
+    #app #sidebar-container,
+    #app.sidebar-always-expanded #sidebar-container {
+        height: calc(46px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    #main-view {
+        padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px));
+    }
+
+    #app .navbar,
+    #app.sidebar-always-expanded .navbar {
+        height: calc(46px + env(safe-area-inset-bottom, 0px));
+        padding: 0 16px env(safe-area-inset-bottom, 0px) 16px;
+    }
+
+    #app .nav-item,
+    #app.sidebar-always-expanded .nav-item {
+        height: 40px;
+        min-height: 40px;
+    }
+
+    #app .nav-icon,
+    #app.sidebar-always-expanded .nav-icon {
+        width: 22px;
+        height: 22px;
+        flex-basis: 22px;
+    }
 }
