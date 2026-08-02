@@ -25,9 +25,9 @@
     right: 0;
     bottom: 0;
     width: 100%;
-    height: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    flex-basis: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
+    height: auto;
+    padding-bottom: 0;
+    flex-basis: auto;
     z-index: 3000;
 }
 
@@ -35,7 +35,7 @@
 #main-view {
     height: 100vh;
     width: 100vw;
-    padding-bottom: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
     box-sizing: border-box;
 }
 
@@ -50,11 +50,11 @@
     bottom: 0;
     top: auto;
     width: 100%;
-    height: calc(var(--app-sidebar-width) + env(safe-area-inset-bottom, 0px));
-    padding: 0 8px env(safe-area-inset-bottom, 0px) 8px;
+    height: auto;
+    padding: 6px calc(12px + env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
     gap: 4px;
     overflow: visible;
     border-right: none;
@@ -73,10 +73,10 @@
 /* CSS Class: Layout and spacing override for bottom nav item. Includes specificity overrides. */
 #app .nav-item,
 #app.sidebar-always-expanded .nav-item {
-    flex: 0 0 44px;
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
+    flex: 1 1 0;
+    max-width: 52px;
+    width: 100%;
+    height: auto;
     aspect-ratio: 1 / 1;
     padding: 0;
     margin: 0;
@@ -173,6 +173,13 @@
     align-items: flex-end;
 }
 
+/* Fix mobile hero backdrop image zoom issue caused by background-attachment: fixed */
+#app .hero-slide {
+    background-attachment: scroll !important;
+    background-position: center top !important;
+    background-size: cover !important;
+}
+
 /* Position and alignment wrapper for hero section text content. */
 #app .hero-content {
     width: 100%;
@@ -203,8 +210,10 @@
 
 /* Size adjustments for primary buttons inside hero action layout. */
 #app .hero-buttons .btn {
-    width: 80%;
+    width: fit-content;
+    max-width: 90%;
     margin: 0 auto;
+    padding: 10px 24px;
 }
 
 /* Typography size adjustments for media row headings on mobile viewports. */
@@ -669,24 +678,32 @@
 @media (orientation: landscape) and (max-height: 500px) {
     #app #sidebar-container,
     #app.sidebar-always-expanded #sidebar-container {
-        height: calc(46px + env(safe-area-inset-bottom, 0px));
-        padding-bottom: env(safe-area-inset-bottom, 0px);
+        height: auto;
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
     }
 
     #main-view {
-        padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px));
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
+        padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
     }
 
     #app .navbar,
     #app.sidebar-always-expanded .navbar {
-        height: calc(46px + env(safe-area-inset-bottom, 0px));
-        padding: 0 16px env(safe-area-inset-bottom, 0px) 16px;
+        height: auto;
+        padding: 4px calc(12px + env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
+        justify-content: space-between;
+        gap: 8px;
     }
 
     #app .nav-item,
     #app.sidebar-always-expanded .nav-item {
-        height: 40px;
-        min-height: 40px;
+        flex: 1 1 0;
+        max-width: 48px;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
     }
 
     #app .nav-icon,
