@@ -647,6 +647,9 @@ class SettingsManager {
                     const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
                     this.closeModal();
                     console.log('Settings: Selected branch build');
+                    if (window.AndroidUpdate && typeof window.AndroidUpdate.clearCachedApk === 'function') {
+                        window.AndroidUpdate.clearCachedApk();
+                    }
                     window.latestUpdateDownloadUrl = 'https://github.com/kenjikellens/IVIDS/raw/main/IVIDS.apk';
                     window.latestUpdateVersion = 'Branch';
                     window.latestRelease = {

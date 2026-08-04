@@ -214,7 +214,7 @@ export class UpdatePrompt {
 
     /**
      * Smart retry handler.
-     * Re-triggers native installation if the APK file is already present on disk, avoiding re-downloading.
+     * Re-triggers native installation if the APK file is already present on disk (e.g. after permission prompt), avoiding re-downloading.
      */
     static retryOrInstall() {
         if (window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApk === 'function') {
@@ -242,8 +242,13 @@ export class UpdatePrompt {
         const progressText = document.getElementById('update-progress-text');
         const titleEl = this.modalElement.querySelector('.update-title');
 
-        // Check if downloaded APK already exists on disk before initiating network fetch
-        if (window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApk === 'function') {
+        const isBranch = window.latestUpdateVersion === 'Branch';
+        if (isBranch && window.AndroidUpdate && typeof window.AndroidUpdate.clearCachedApk === 'function') {
+            window.AndroidUpdate.clearCachedApk();
+        }
+
+        // Check if downloaded APK already exists on disk before initiating network fetch (skip for Branch builds)
+        if (!isBranch && window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApk === 'function') {
             try {
                 if (window.AndroidUpdate.installExistingApk()) {
                     this.handleStatus('installing');

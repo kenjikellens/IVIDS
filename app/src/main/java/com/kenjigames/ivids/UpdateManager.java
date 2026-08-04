@@ -269,6 +269,29 @@ public class UpdateManager {
     }
 
     /**
+     * Clears any previously downloaded update APK file stored in the cache directory.
+     * Forces subsequent update requests to perform a fresh download.
+     * 
+     * @return true if an existing cached file was removed, false otherwise.
+     */
+    @JavascriptInterface
+    public boolean clearCachedApk() {
+        try {
+            File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+            File apkFile = new File(downloadDir, "IVIDS-update.apk");
+            if (apkFile.exists()) {
+                boolean deleted = apkFile.delete();
+                Log.d(TAG, "cleared cached update APK: " + deleted);
+                return deleted;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error clearing cached update APK", e);
+        }
+        return false;
+    }
+
+
+    /**
      * Initiates a direct forced download of the APK from the repository's raw URL.
      * This method is exposed to JavaScript via the @JavascriptInterface annotation.
      */
