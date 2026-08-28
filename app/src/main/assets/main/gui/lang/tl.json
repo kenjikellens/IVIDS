@@ -237,7 +237,10 @@
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
         "moveDown": "Move Item Down",
-        "removeFromPlaylist": "Remove from Playlist"
+        "removeFromPlaylist": "Remove from Playlist",
+        "clearHistory": "I-clear ang Kasaysayan",
+        "clearHistoryTitle": "I-clear ang Kamakailang Napanood",
+        "clearHistoryMessage": "Sigurado ka bang gusto mong i-clear ang iyong kamakailang napanood na kasaysayan?"
     },
     "row": {
         "trending": "Trending Now",

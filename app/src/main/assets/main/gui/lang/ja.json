@@ -244,7 +244,10 @@
         "create_new": "新しいプレイリストを作成する",
         "moveUp": "項目を上に移動",
         "moveDown": "項目を下に移動",
-        "removeFromPlaylist": "プレイリストから削除"
+        "removeFromPlaylist": "プレイリストから削除",
+        "clearHistory": "履歴を消去",
+        "clearHistoryTitle": "最近見た履歴を消去",
+        "clearHistoryMessage": "最近見た履歴を消去してもよろしいですか？"
     },
     "row": {
         "trending": "今注目の作品",

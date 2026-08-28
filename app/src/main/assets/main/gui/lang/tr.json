@@ -244,7 +244,10 @@
         "create_new": "Yeni Çalma Listesi Oluştur",
         "moveUp": "Öğeyi Yukarı Taşı",
         "moveDown": "Öğeyi Aşağı Taşı",
-        "removeFromPlaylist": "Oynatma Listesinden kaldır"
+        "removeFromPlaylist": "Oynatma Listesinden kaldır",
+        "clearHistory": "Geçmişi Temizle",
+        "clearHistoryTitle": "Son İzlenenleri Temizle",
+        "clearHistoryMessage": "Son izlenenler geçmişinizi temizlemek istediğinizden emin misiniz?"
     },
     "row": {
         "trending": "Trendler",

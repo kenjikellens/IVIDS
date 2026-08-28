@@ -244,7 +244,10 @@
         "create_new": "새 재생목록 만들기",
         "moveUp": "항목을 위로 이동",
         "moveDown": "항목을 아래로 이동",
-        "removeFromPlaylist": "재생목록에서 제거"
+        "removeFromPlaylist": "재생목록에서 제거",
+        "clearHistory": "시청 기록 삭제",
+        "clearHistoryTitle": "최근 시청 기록 삭제",
+        "clearHistoryMessage": "최근 시청 기록을 삭제하시겠습니까?"
     },
     "row": {
         "trending": "인기 급상승",

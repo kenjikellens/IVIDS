@@ -86,6 +86,7 @@ function render() {
     const countEl = document.getElementById('playlist-count');
     const backdropEl = document.getElementById('playlist-backdrop');
     const deleteBtn = document.getElementById('delete-playlist-btn');
+    const clearBtn = document.getElementById('clear-playlist-btn');
 
     if (titleEl) titleEl.textContent = playlist.name;
     if (countEl) {
@@ -120,9 +121,12 @@ function render() {
         }
     }
 
-    // Hide delete button for system playlists (like history)
+    // Hide delete button for system playlists (like history), manage clear button
     if (deleteBtn) {
         deleteBtn.style.display = playlist.isSystem ? 'none' : 'flex';
+    }
+    if (clearBtn) {
+        clearBtn.style.display = (playlist.isSystem && playlist.items.length > 0) ? 'flex' : 'none';
     }
 
     // Render Items
@@ -349,6 +353,7 @@ function openEditPlaylistModal(playlist) {
  */
 function attachListeners(playlist) {
     const deleteBtn = document.getElementById('delete-playlist-btn');
+    const clearBtn = document.getElementById('clear-playlist-btn');
     const playAllBtn = document.getElementById('play-all-btn');
     const backBtn = document.getElementById('back-btn');
     const editInfoBtn = document.getElementById('edit-info-btn');
@@ -393,12 +398,32 @@ function attachListeners(playlist) {
         editInfoBtn.addEventListener('keydown', handleLeftNav);
     }
 
+    if (clearBtn) {
+        if (playlist.isSystem) {
+            clearBtn.onclick = () => {
+                const title = window.i18n ? window.i18n.t('playlists.clearHistoryTitle') : 'Clear Recently Watched';
+                const msg = window.i18n ? window.i18n.t('playlists.clearHistoryMessage') : 'Are you sure you want to clear your recently watched history?';
+                showConfirmationModal(
+                    title,
+                    msg,
+                    () => {
+                        Playlists.clearPlaylist(currentPlaylistId);
+                        render();
+                    }
+                );
+            };
+            clearBtn.addEventListener('keydown', handleLeftNav);
+        }
+    }
+
     if (!playlist.isSystem) {
         if (deleteBtn) {
             deleteBtn.onclick = () => {
+                const title = window.i18n ? window.i18n.t('playlists.deleteConfirmTitle') : 'Delete Playlist';
+                const msg = window.i18n ? window.i18n.t('playlists.deleteConfirmMessage') : 'Are you sure you want to delete this playlist? This action cannot be undone.';
                 showConfirmationModal(
-                    'Delete Playlist',
-                    'Are you sure you want to delete this playlist? This action cannot be undone.',
+                    title,
+                    msg,
                     () => {
                         Playlists.deletePlaylist(currentPlaylistId);
                         Router.loadPage('playlists');

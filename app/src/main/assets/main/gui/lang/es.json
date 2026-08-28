@@ -239,7 +239,10 @@
         "create_new": "Crear nueva lista de reproducción",
         "moveUp": "Mover elemento hacia arriba",
         "moveDown": "Mover elemento hacia abajo",
-        "removeFromPlaylist": "Eliminar de la lista de reproducción"
+        "removeFromPlaylist": "Eliminar de la lista de reproducción",
+        "clearHistory": "Borrar historial",
+        "clearHistoryTitle": "Borrar vistos recientemente",
+        "clearHistoryMessage": "¿Está seguro de que desea borrar su historial de vistos recientemente?"
     },
     "row": {
         "trending": "Tendencias ahora",

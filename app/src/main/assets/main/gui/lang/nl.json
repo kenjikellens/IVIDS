@@ -239,7 +239,10 @@
         "create_new": "Nieuwe afspeellijst maken",
         "moveUp": "Item omhoog verplaatsen",
         "moveDown": "Item omlaag verplaatsen",
-        "removeFromPlaylist": "Verwijderen uit afspeellijst"
+        "removeFromPlaylist": "Verwijderen uit afspeellijst",
+        "clearHistory": "Geschiedenis wissen",
+        "clearHistoryTitle": "Recent bekeken wissen",
+        "clearHistoryMessage": "Weet u zeker dat u uw recent bekeken geschiedenis wilt wissen?"
     },
     "row": {
         "trending": "Nu Trending",

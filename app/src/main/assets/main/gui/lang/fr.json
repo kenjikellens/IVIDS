@@ -239,7 +239,10 @@
         "create_new": "Créer une nouvelle liste de lecture",
         "moveUp": "Déplacer l'élément vers le haut",
         "moveDown": "Déplacer l'élément vers le bas",
-        "removeFromPlaylist": "Supprimer de la liste de lecture"
+        "removeFromPlaylist": "Supprimer de la liste de lecture",
+        "clearHistory": "Effacer l'historique",
+        "clearHistoryTitle": "Effacer l'historique récent",
+        "clearHistoryMessage": "Voulez-vous vraiment effacer votre historique des contenus récents ?"
     },
     "row": {
         "trending": "Tendances actuelles",

@@ -239,7 +239,10 @@
         "create_new": "Neue Playlist erstellen",
         "moveUp": "Element nach oben verschieben",
         "moveDown": "Element nach unten verschieben",
-        "removeFromPlaylist": "Aus Playlist entfernen"
+        "removeFromPlaylist": "Aus Playlist entfernen",
+        "clearHistory": "Verlauf löschen",
+        "clearHistoryTitle": "Zuletzt gesehen löschen",
+        "clearHistoryMessage": "Möchten Sie Ihren Verlauf der zuletzt angesehenen Inhalte wirklich löschen?"
     },
     "row": {
         "trending": "Gerade angesagt",

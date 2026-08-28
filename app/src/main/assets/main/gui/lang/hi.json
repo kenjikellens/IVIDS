@@ -244,7 +244,10 @@
         "create_new": "नई प्लेलिस्ट बनाएं",
         "moveUp": "आइटम को ऊपर ले जाएं",
         "moveDown": "आइटम को नीचे ले जाएँ",
-        "removeFromPlaylist": "प्लेलिस्ट से हटाएँ"
+        "removeFromPlaylist": "प्लेलिस्ट से हटाएँ",
+        "clearHistory": "इतिहास साफ़ करें",
+        "clearHistoryTitle": "हाल ही में देखे गए साफ़ करें",
+        "clearHistoryMessage": "क्या आप वाकई अपने हाल ही में देखे गए इतिहास को साफ़ करना चाहते हैं?"
     },
     "row": {
         "trending": "ट्रेंडिंग",

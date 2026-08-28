@@ -1,5 +1,5 @@
 // logic/playlists.js
-import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched } from './recentlyWatched.js';
+import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched, clearRecentlyWatched } from './recentlyWatched.js';
 import { Toast } from '../gui/js/toast.js';
 import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
 import { PersistentStorage } from './persistent-storage.js';
@@ -122,6 +122,24 @@ export const Playlists = {
         this.getPlaylists();
         _playlistsCache = _playlistsCache.filter(p => p.id !== id);
         this.savePlaylists(_playlistsCache);
+    },
+
+    /**
+     * Clears all items from a playlist.
+     * If the playlist is the system history playlist, clears recently watched history.
+     * @param {string} id - The ID of the playlist to clear.
+     */
+    clearPlaylist(id) {
+        if (id === HISTORY_ID) {
+            clearRecentlyWatched();
+            return;
+        }
+        this.getPlaylists();
+        const playlist = _playlistsCache.find(p => p.id === id);
+        if (playlist) {
+            playlist.items = [];
+            this.savePlaylists(_playlistsCache);
+        }
     },
 
     /**

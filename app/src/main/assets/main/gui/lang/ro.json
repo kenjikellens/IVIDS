@@ -244,7 +244,10 @@
         "create_new": "Creați o listă de redare nouă",
         "moveUp": "Mutați articolul în sus",
         "moveDown": "Mutați elementul în jos",
-        "removeFromPlaylist": "Eliminați din lista de redare"
+        "removeFromPlaylist": "Eliminați din lista de redare",
+        "clearHistory": "Șterge istoricul",
+        "clearHistoryTitle": "Șterge vizionate recent",
+        "clearHistoryMessage": "Sigur doriți să ștergeți istoricul vizionărilor recente?"
     },
     "row": {
         "trending": "În tendințe",
