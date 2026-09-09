@@ -244,7 +244,10 @@
         "create_new": "إنشاء قائمة تشغيل جديدة",
         "moveUp": "نقل العنصر لأعلى",
         "moveDown": "نقل العنصر إلى الأسفل",
-        "removeFromPlaylist": "إزالة من قائمة التشغيل"
+        "removeFromPlaylist": "إزالة من قائمة التشغيل",
+        "clearHistory": "مسح السجل",
+        "clearHistoryTitle": "مسح المشاهدات الحديثة",
+        "clearHistoryMessage": "هل أنت متأكد من رغبتك في مسح سجل المشاهدات الحديثة؟"
     },
     "row": {
         "trending": "الأكثر تداولاً",

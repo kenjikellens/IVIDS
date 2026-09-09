@@ -105,57 +105,37 @@ input, textarea, select { font: inherit; }
 /* Prevents default outline borders for custom keyboard-focusable elements. */
 .focusable { outline: none; }
 
+/* Button System */
 .btn {
-    /* Adjusted padding to compensate for 3px border thickness */
-    font-size: 15px;
-    /* Prevents layout shifting on hover/focus */
-    cursor: pointer;
     align-items: center;
     border: 3px solid transparent;
     border-radius: var(--radius-md);
+    cursor: pointer;
     display: inline-flex;
+    font-size: 15px;
     font-weight: 800;
     gap: 10px;
     justify-content: center;
     min-height: 48px;
     padding: 9px 23px;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
     white-space: nowrap;
 }
 
 .btn:disabled { opacity: 0.6; pointer-events: none; }
 
-/* Hover/focus styles are handled per-button type via border changes. Remove general scaling transform. */
+.btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid rgba(var(--primary-rgb), 0.4); color: #fff; font-weight: 800; }
+.btn-primary:hover, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.4); border-color: #fff; color: #fff; outline: none; }
 
-/* Styles the primary action buttons like Play using a semi-transparent green accent background. */
-.btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid rgba(var(--primary-rgb), 0.4); color: #ffffff; font-weight: 800; }
+.btn-secondary { background: rgba(255, 255, 255, 0.15); border: 3px solid transparent; color: #fff; }
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border-color: #fff; color: #fff; outline: none; }
 
-/* Styles secondary action buttons and cancel controls with a semi-transparent backdrop. */
-.btn-secondary { background: rgba(255, 255, 255, 0.15); border: 3px solid transparent; color: #ffffff; }
+.btn-danger { background: #b92b23; border: 3px solid #b92b23; color: #fff; }
+.btn-danger:hover, .btn-danger:focus, .btn-danger.focused { background: #b92b23; border-color: #fff; color: #fff; outline: none; }
 
-.btn-danger { background: #b92b23; border: 3px solid #b92b23; color: #ffffff; }
+.btn-circle { align-items: center; border-radius: 50%; display: inline-flex; flex-shrink: 0; height: 48px; justify-content: center; min-height: 48px; padding: 0; width: 48px; }
 
-/* Explains: Circular button modifier. Sets rounded border-radius, flexbox centering, and default circle dimensions. */
-.btn-circle {
-    align-items: center;
-    border-radius: 50%;
-    display: inline-flex;
-    flex-shrink: 0;
-    height: 48px;
-    justify-content: center;
-    padding: 0;
-    width: 48px;
-}
-
-/* Explains: Small button modifier. Sets compact height, padding, and font size for back/cancel actions. Fits width to content and prevents flex stretching. */
-.btn-small {
-    align-self: center;
-    flex: none;
-    font-size: 13px;
-    min-height: 38px;
-    padding: 6px 16px;
-    width: fit-content;
-}
+.btn-small { align-self: center; flex: none; font-size: 13px; min-height: 38px; padding: 6px 16px; width: fit-content; }
 
 .hero {
     align-items: flex-end;
@@ -224,6 +204,16 @@ input, textarea, select { font: inherit; }
     scrollbar-width: none;
 }
 
+/**
+ * Abstract Base Component: .poster-wrapper, .playlist-card
+ * Standardized media card tiles for content rows, grids, and playlists.
+ * Enforces layout containment, surface background, aspect ratio, and TV focus indicator borders.
+ *
+ * Consumed by:
+ * - Content carousels and genre rails (home.html, movies.html, series.html)
+ * - Search results grids (search.html)
+ * - Playlist collections (playlists.html)
+ */
 .poster-wrapper {
     background: var(--surface-soft);
     border: 2px solid transparent;
@@ -235,8 +225,7 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transform: scale(1);
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, transform 0.16s ease;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
     width: var(--poster-width);
 }
 
@@ -252,9 +241,19 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transform: scale(1);
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, transform 0.16s ease;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
     width: 100%;
+}
+
+.poster-wrapper:hover,
+.poster-wrapper:focus,
+.poster-wrapper.focused,
+.playlist-card:hover,
+.playlist-card:focus,
+.playlist-card.focused {
+    border-color: #ffffff;
+    box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.6);
+    outline: none;
 }
 
 /* CSS Class: Styles the individual poster image, applying a default 20% dimming filter. */
@@ -438,10 +437,6 @@ input, textarea, select { font: inherit; }
 
 .error-actions .btn { min-width: 150px; }
 
-/* ==========================================================================
-   SECTION 5: GLOBAL UI COMPONENTS - TOAST NOTIFICATION ALERTS
-   Source File: toast.css
-   ========================================================================== */
 /* ==========================================================================
    SECTION 5: GLOBAL UI COMPONENTS - TOAST NOTIFICATION ALERTS
    Source File: toast.css
@@ -1746,7 +1741,14 @@ input, textarea, select { font: inherit; }
 
 .settings-header p { color: var(--text-muted); font-size: 16px; }
 
-.settings-section { background: var(--surface-color); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-lg); box-shadow: var(--shadow-panel); margin-bottom: 18px; padding: 24px; }
+.settings-section {
+    background: var(--surface-color);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-panel);
+    margin-bottom: 18px;
+    padding: 24px;
+}
 
 .section-icon { color: var(--primary-color); height: 26px; width: 26px; }
 
@@ -1943,15 +1945,19 @@ input, textarea, select { font: inherit; }
     width: min(760px, 94vw);
 }
 
+.compact-modal { max-width: 440px; padding: 20px; width: min(440px, 90vw); }
+
 .modal-title {
     color: #fff;
     font-size: 26px;
     font-weight: 600;
     margin-bottom: 14px;
     margin-top: 0;
-    padding: 24px 28px 18px;
+    padding: 0 0 14px;
     text-align: center;
 }
+
+.modal-title-truncated { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .modal-body {
     display: flex;
@@ -1960,13 +1966,31 @@ input, textarea, select { font: inherit; }
     gap: 18px;
     min-height: 0;
     overflow-y: auto;
-    padding: 0 28px 10px;
+    padding: 0 0 10px;
+    width: 100%;
 }
 
-.modal-footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding: 18px 28px 24px; }
+.modal-footer, .modal-actions {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 16px;
+    width: 100%;
+}
 
-/* Ensures modal footer buttons have a consistent minimum width. */
-.modal-footer .btn { min-width: 120px; }
+.vertical-modal-actions {
+    border-top: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 0;
+    width: 100%;
+}
+
+.modal-footer .btn, .modal-actions .btn { min-width: 120px; }
+.vertical-modal-actions .btn { width: 100%; }
 
 .option-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px 0 16px; }
 
@@ -2026,7 +2050,13 @@ input, textarea, select { font: inherit; }
 
 .account-header h1 { color: #fff; font-size: 44px; line-height: 1.1; }
 
-.account-section { background: rgba(255, 255, 255, 0.045); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: var(--shadow-panel); padding: 28px; }
+.account-section {
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-panel);
+    padding: 28px;
+}
 
 .section-title {
     align-items: center;
@@ -2291,8 +2321,7 @@ input, textarea, select { font: inherit; }
 .toast-actions { display: flex; gap: 8px; margin-top: 10px; }
 
 /* ==========================================================================
-   SECTION 5: PLAYER PAGE SPECIFIC STYLES
-   Source File: player.css
+   SECTION 27: APP UPDATE SYSTEM - VERSION MODAL
    ========================================================================== */
 /* CSS Class: Content container for the version selector modal with minimized padding and wider layout. */
 .version-modal-content { display: flex; flex-direction: column; max-height: 80vh; overflow: hidden; padding: 6px 6px 2px 6px; width: min(640px, 90vw); }
@@ -2413,7 +2442,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* ==========================================================================
-   SECTION 5: PLAYER PAGE SPECIFIC STYLES
+   SECTION 10: PAGE SPECIFIC - VIDEO PLAYER (VOD)
    Source File: player.css
    ========================================================================== */
 /* Outer wrapper container that spans the full viewport to house the player page. */
@@ -2804,74 +2833,14 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable { border: none; box-shadow: none; outline: none; }
 
-
-
-/* Styles the hover/focus active state of primary buttons, adding a white thicker border on top of transparent green. */
-.btn-primary:hover, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.4); border: 3px solid #fff; color: #ffffff; outline: none; }
-
-/* Styles the hover/focus active state of secondary buttons, adding a white thicker border. */
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border: 3px solid #fff; color: #ffffff; outline: none; }
-
-/* Styles the hover/focus active state of danger buttons, adding a white thicker border. */
-.btn-danger:hover, .btn-danger:focus, .btn-danger.focused { background: #b92b23; border: 3px solid #fff; color: #ffffff; outline: none; }
-
-/* ==========================================================================
-   SECTION 27: UTILITY & LAYOUT REFACTORING CLASSES (REMOVING INLINE STYLES)
-   ========================================================================== */
-/* Vertical spacing element for padding/margin between sections. */
-.spacer-y-50 { height: 50px; }
-
-/* Settings color theme green option dot indicator. */
+/* Color dots for theme customization */
 .color-dot.green { background-color: #46d369; }
-
-/* Settings color theme red option dot indicator. */
 .color-dot.red { background-color: #e50914; }
-
-/* Settings color theme blue option dot indicator. */
 .color-dot.blue { background-color: #00d4ff; }
-
-/* Settings color theme purple option dot indicator. */
 .color-dot.purple { background-color: #9146ff; }
-
-/* Settings color theme orange option dot indicator. */
 .color-dot.orange { background-color: #ff6b35; }
-
-/* Settings color theme yellow option dot indicator. */
 .color-dot.yellow { background-color: #ffd700; }
-
-/* Dot separator element with muted text color and horizontal spacing. */
 .meta-separator-dot { color: var(--text-dim); margin: 0 4px; }
-
-/* Recommendation block display wrapper forcing block flow and top separation margin. */
-.recommendations-section-layout { display: block; margin-top: 20px; width: 100%; }
-
-/* Custom large typography titles styled in white with bottom margins. */
-.large-title-white { color: #fff; font-size: 24px; margin-bottom: 20px; }
-
-/* Modal details body element layout containing settings fields. */
-.modal-details-body { padding: 18px 0; width: 100%; }
-
-/* Full-width settings textbox input field with border and background styling. */
-.full-width-settings-input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: var(--radius-md);
-    color: #fff;
-    font-size: 16px;
-    margin-bottom: 8px;
-    outline: none;
-    padding: 12px;
-    width: 100%;
-}
-
-/* Context drawer modal card container with specific dimensions and spacing. */
-.context-modal-card { max-width: 460px; padding: 28px; }
-
-/* Modal title text formatting with truncation, alignment, and spacing. */
-.modal-title-truncated { font-size: 24px; margin-bottom: 20px; overflow: hidden; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
-
-/* Flex action buttons container aligned vertically with spacing gaps. */
-.vertical-modal-actions { flex-direction: column; gap: 10px; width: 100%; }
 
 /* Styling for buttons indicating content is already present in a list. */
 .btn-added { color: rgba(255, 255, 255, 0.4); }
@@ -3330,16 +3299,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Component: no-image backdrop fallback */
 .backdrop-overlay-empty { background-color: #111; }
 
-/* Utility: margin-top spacer for button groups */
-.mt-20 { margin-top: 20px; }
-
-/* Utility: left margin for adjacent buttons */
-.ml-10 { margin-left: 10px; }
-
-/* Utility: vertical padding helper */
-.py-20 { padding: 20px 0; }
-
-/* Utility: Chromium native off-screen rendering optimization for poster cards and list elements */
+/* Chromium native off-screen rendering optimization for poster cards and list elements */
 .recyclable-card,
 .poster-card,
 .channel-list-item {

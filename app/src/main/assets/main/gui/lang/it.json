@@ -244,7 +244,10 @@
         "create_new": "Crea nuova playlist",
         "moveUp": "Sposta elemento in alto",
         "moveDown": "Sposta l'elemento in basso",
-        "removeFromPlaylist": "Rimuovi dalla playlist"
+        "removeFromPlaylist": "Rimuovi dalla playlist",
+        "clearHistory": "Cancella cronologia",
+        "clearHistoryTitle": "Cancella visti di recente",
+        "clearHistoryMessage": "Sei sicuro di voler cancellare la cronologia dei contenuti visti di recente?"
     },
     "row": {
         "trending": "In Tendenza",

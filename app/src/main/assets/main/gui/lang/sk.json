@@ -237,7 +237,10 @@
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
         "moveDown": "Move Item Down",
-        "removeFromPlaylist": "Remove from Playlist"
+        "removeFromPlaylist": "Remove from Playlist",
+        "clearHistory": "Vymazať históriu",
+        "clearHistoryTitle": "Vymazať nedávno sledované",
+        "clearHistoryMessage": "Naozaj chcete vymazať históriu nedávno sledovaných položiek?"
     },
     "row": {
         "trending": "Trending Now",

@@ -25,6 +25,9 @@
                         <button id="back-btn" class="btn btn-secondary focusable" data-i18n="details.back">
                             Back
                         </button>
+                        <button id="clear-playlist-btn" class="btn btn-danger focusable" data-i18n="playlists.clearHistory">
+                            Clear History
+                        </button>
                         <button id="delete-playlist-btn" class="btn btn-danger focusable" data-i18n="playlists.delete">
                             Delete Playlist
                         </button>
@@ -36,8 +39,8 @@
             </div>
 
             <div class="details-bottom">
-                <div class="recommendations-section recommendations-section-layout">
-                    <h3 class="row-title large-title-white" data-i18n="playlists.items">Playlist Items</h3>
+                <div class="recommendations-section">
+                    <h3 class="row-title" data-i18n="playlists.items">Playlist Items</h3>
                     <div id="playlist-items-container" class="episodes-list">
                         <!-- Items injected via JS -->
                     </div>
@@ -62,8 +65,8 @@
     <div id="edit-playlist-modal" class="modal-overlay">
         <div class="modal-content">
             <h2 class="modal-title" data-i18n="playlists.editInfo">Edit Info</h2>
-            <div class="modal-body modal-details-body">
-                <input id="edit-playlist-name-input" class="settings-input focusable full-width-settings-input" type="text" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder">
+            <div class="modal-body">
+                <input id="edit-playlist-name-input" class="settings-input focusable" type="text" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder">
             </div>
             <div class="modal-actions vertical-modal-actions">
                 <button id="edit-playlist-confirm-btn" class="btn btn-secondary focusable" data-i18n="common.save">Save</button>
@@ -74,15 +77,15 @@
 
     <!-- Item Context Drawer Modal -->
     <div id="item-context-modal" class="modal-overlay">
-        <div class="modal-content context-modal-card">
+        <div class="modal-content">
             <h2 id="context-item-title" class="modal-title modal-title-truncated">Movie Title</h2>
             <div class="modal-actions vertical-modal-actions">
-                <button id="context-play-btn" class="btn btn-primary focusable btn-full-center" data-i18n="player.play">Play Content</button>
-                <button id="context-details-btn" class="btn btn-secondary focusable btn-full-center" data-i18n="player.moreInfo">View Info Details</button>
-                <button id="context-move-up-btn" class="btn btn-secondary focusable btn-full-center" data-i18n="playlists.moveUp">Move Item Up</button>
-                <button id="context-move-down-btn" class="btn btn-secondary focusable btn-full-center" data-i18n="playlists.moveDown">Move Item Down</button>
-                <button id="context-remove-btn" class="btn btn-danger focusable btn-full-center" data-i18n="playlists.removeFromPlaylist">Remove from Playlist</button>
-                <button id="context-cancel-btn" class="btn btn-secondary btn-small focusable btn-full-center" data-i18n="playlists.cancel">Cancel</button>
+                <button id="context-play-btn" class="btn btn-primary focusable" data-i18n="player.play">Play Content</button>
+                <button id="context-details-btn" class="btn btn-secondary focusable" data-i18n="player.moreInfo">View Info Details</button>
+                <button id="context-move-up-btn" class="btn btn-secondary focusable" data-i18n="playlists.moveUp">Move Item Up</button>
+                <button id="context-move-down-btn" class="btn btn-secondary focusable" data-i18n="playlists.moveDown">Move Item Down</button>
+                <button id="context-remove-btn" class="btn btn-danger focusable" data-i18n="playlists.removeFromPlaylist">Remove from Playlist</button>
+                <button id="context-cancel-btn" class="btn btn-secondary btn-small focusable" data-i18n="playlists.cancel">Cancel</button>
             </div>
         </div>
     </div>

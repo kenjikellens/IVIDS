@@ -244,7 +244,10 @@
         "create_new": "创建新的播放列表",
         "moveUp": "上移项目",
         "moveDown": "下移项目",
-        "removeFromPlaylist": "从播放列表中删除"
+        "removeFromPlaylist": "从播放列表中删除",
+        "clearHistory": "清除历史记录",
+        "clearHistoryTitle": "清除最近观看",
+        "clearHistoryMessage": "您确定要清除最近观看记录吗？"
     },
     "row": {
         "trending": "当下流行",

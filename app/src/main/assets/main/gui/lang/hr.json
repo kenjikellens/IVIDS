@@ -237,7 +237,10 @@
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
         "moveDown": "Move Item Down",
-        "removeFromPlaylist": "Remove from Playlist"
+        "removeFromPlaylist": "Remove from Playlist",
+        "clearHistory": "Očisti povijest",
+        "clearHistoryTitle": "Očisti nedavno gledano",
+        "clearHistoryMessage": "Jeste li sigurni da želite očistiti povijest nedavno gledanog?"
     },
     "row": {
         "trending": "Trending Now",

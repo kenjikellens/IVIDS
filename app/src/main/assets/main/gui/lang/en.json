@@ -237,7 +237,10 @@
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
         "moveDown": "Move Item Down",
-        "removeFromPlaylist": "Remove from Playlist"
+        "removeFromPlaylist": "Remove from Playlist",
+        "clearHistory": "Clear History",
+        "clearHistoryTitle": "Clear Recently Watched",
+        "clearHistoryMessage": "Are you sure you want to clear your recently watched history?"
     },
     "row": {
         "trending": "Trending Now",

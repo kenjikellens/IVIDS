@@ -244,7 +244,10 @@
         "create_new": "Opret ny afspilningsliste",
         "moveUp": "Flyt element op",
         "moveDown": "Flyt element ned",
-        "removeFromPlaylist": "Fjern fra afspilningsliste"
+        "removeFromPlaylist": "Fjern fra afspilningsliste",
+        "clearHistory": "Ryd historik",
+        "clearHistoryTitle": "Ryd senest sete",
+        "clearHistoryMessage": "Er du sikker på, at du vil rydde din oversigt over senest sete?"
     },
     "row": {
         "trending": "Trending nu",
