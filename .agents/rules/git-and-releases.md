@@ -4,17 +4,19 @@ trigger: always_on
 
 # Git, Build, APK Signing & Release Rules
 
-## 1. Git Push & Main Branch Safety
-- **No Autonomous Pushes to Main**: Standard code or document edits MUST NOT be committed or pushed autonomously. Authorization to commit/push applies ONLY to that specific turn when explicitly instructed (e.g. "push to main").
-- **Code Push vs. Release Separation**: Instructing "push to main" authorizes ONLY pushing commit history to `main`. It does NOT authorize creating Git tags or GitHub releases.
+## 1. Git Safety & Branch Protection
+- **Strict Prohibition on Autonomous Commits & Pushes**: You are strictly FORBIDDEN from executing `git commit` or `git push` commands autonomously. Authorization to commit or push applies ONLY to that specific turn when explicitly and directly instructed by the user in the chat (e.g., "commit these changes" or "push to main").
+- **Branch Push vs. Release Distinction**: Instructing "push to main" authorizes ONLY pushing existing commit history to `main`. It does NOT authorize creating Git tags, bumping versions, or publishing GitHub releases.
+- **Allowed Diagnostic Git Commands**: Diagnostic commands such as `git status`, `git diff`, `git fetch`, `git pull`, `git stash`, `git branch`, and `git log` are fully permitted to inspect state, diagnose issues, or resolve merge conflicts.
 
-## 2. Release Workflows
-- **DO NOT RUN BUILD.BAT AUTONOMOUSLY**: NEVER run `build.bat` on your own initiative during feature development or after standard edits. `build.bat` MUST ONLY be executed when the user explicitly commands you to run it or when executing an explicitly requested release flow.
-- **Autonomous Release Execution**: When explicitly instructed to make a release (e.g., `/version-and-release-update` or "make a release vX.Y.Z"), autonomously execute the release process: create release commit, create tag, push ONLY the tag to GitHub, and publish the GitHub release with signed `IVIDS.apk` and `IVIDS.exe` assets. Do NOT push the release commit directly to `main` autonomously.
-- **Mandatory Build Before Push/Release**: ALWAYS run `.\build.bat` (or `.\build.bat release`) before executing any `git push` or release publish.
-- **Explicit Failure Notification**: If remote push, tag creation, or GitHub Release fails, STOP immediately and notify the user.
+## 2. Build Script & Execution Guardrails
+- **DO NOT RUN BUILD.BAT AUTONOMOUSLY**: NEVER run `build.bat` on your own initiative during normal feature development, debugging, or after standard file edits. `build.bat` MUST ONLY be executed when the user explicitly instructs you to build, or when executing an explicitly requested release flow.
+- **Mandatory Pre-Push/Pre-Release Build**: When authorized to push to `main` or make a release, ALWAYS execute `.\build.bat` (or `.\build.bat release`) first to ensure builds and packaging succeed before pushing.
+- **Dedicated Release Workflow**: All official releases, version bumps, and tag pushes MUST strictly follow the dedicated interactive workflow [version-and-release-update.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/version-and-release-update.md).
+- **Explicit Failure Notification**: If any build step, tag creation, remote push, or GitHub release fails, STOP immediately and notify the user.
 
 ## 3. APK Signing & SDK Target Requirements
-- **APK Signing**: Both `release` and `debug` build types in `app/build.gradle.kts` MUST reference `keystore.jks` in workspace root (`alias: ivids`, `password: ivids2025`). NEVER remove signing configs.
-- **SDK Target Limitation**: NEVER set `compileSdk` or `targetSdk` to unreleased or developer-preview API levels (e.g., API 36 / Android 16 preview). Stick to stable, finalized SDK versions (e.g., API 35).
-- **Version Code Synchronization**: `versionCode` in `app/build.gradle.kts` MUST auto-increment via `increment-version-code.js` on every `build.bat` run. Synchronize Tizen `config.xml` versions during official releases.
+- **APK Signing Configuration**: Both `release` and `debug` build types in [build.gradle.kts](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/build.gradle.kts) MUST reference `keystore.jks` located in the workspace root (`alias: ivids`, `password: ivids2025`). NEVER remove or alter signing configurations.
+- **SDK Target Limitation**: NEVER set `compileSdk` or `targetSdk` to unreleased or developer-preview API levels (e.g., API 36 / Android 16 preview). Stick strictly to stable, finalized SDK versions (API 35).
+- **Version Code Synchronization**: `versionCode` in `app/build.gradle.kts` MUST auto-increment via [increment-version-code.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/increment-version-code.js) on every `build.bat` run. Synchronize Tizen [config.xml](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/config.xml) versions during official releases.
+

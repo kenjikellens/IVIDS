@@ -1,5 +1,5 @@
 ---
-description: 
+description: Standardized step-by-step protocol to bump version numbers, compile Windows EXE and Android APK binaries, tag the release, and publish a live GitHub Release.
 ---
 
 # Version and Release Update Workflow
@@ -20,21 +20,21 @@ This document defines the strict, standardized protocol for launching new releas
 - **Title and Description Generation**: Once confirmed, formulate a high-quality, professional release title (e.g., `Release v0.4.2 (Prerelease)`) and a detailed, feature-rich release description highlighting all visual, spatial-nav, and core logic improvements.
 
 ### 2. Update Application Versions Automatically
-- **ACTION**: Run the automatic version updater via `build.bat` in the workspace root:
+- **ACTION**: Run the automatic version updater via [build.bat](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/build.bat) in the workspace root:
   ```powershell
   .\build.bat version vX.Y.Z
   ```
   *(Replace `vX.Y.Z` with your target version, e.g. `v0.4.4` or `0.4.4`).*
 - **Automated Actions**: This command will automatically:
-  1. Update the `version` field in [package.json](file:///IVIDS/package.json).
-  2. Update the version fields in [package-lock.json](file:///IVIDS/package-lock.json).
-  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///IVIDS/app/build.gradle.kts).
-  4. Update the `version` attribute in Tizen's [config.xml](file:///IVIDS/app/src/main/config.xml) and [config.xml](file:///IVIDS/app/src/main/assets/main/config.xml) to match `X.Y.Z`.
-  5. Append the modification log entry to [CHANGELOG.md](file:///IVIDS/CHANGELOG.md).
+  1. Update the `version` field in [package.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package.json).
+  2. Update the version fields in [package-lock.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package-lock.json).
+  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/build.gradle.kts).
+  4. Update the `version` attribute in Tizen's [config.xml](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/config.xml) and [config.xml](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/config.xml) to match `X.Y.Z`.
+  5. Append the modification log entry to [CHANGELOG.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/CHANGELOG.md).
 
 ### 3. Compile and Package the Applications (APK and EXE)
 - **ACTION**: Run the automated build script to compile the packages:
-  - For **Debug Build** (default):
+  - For **Debug Build**:
     ```powershell
     .\build.bat
     ```
@@ -45,30 +45,33 @@ This document defines the strict, standardized protocol for launching new releas
 - **Automated Actions**: This script will automatically:
   1. Compile the Windows Portable Executable using `npm run dist`.
   2. Compile the Android APK (debug or release variant).
-  3. Copy and rename the compiled Windows binary to the workspace root as [IVIDS.exe](file:///IVIDS/IVIDS.exe).
-  4. Copy and rename the compiled Android APK to the workspace root as [IVIDS.apk](file:///IVIDS/IVIDS.apk).
+  3. Copy and rename the compiled Windows binary to the workspace root as [IVIDS.exe](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/IVIDS.exe).
+  4. Copy and rename the compiled Android APK to the workspace root as [IVIDS.apk](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/IVIDS.apk).
   5. Clean up temporary build artifacts (the `dist` folder).
 
-### 4. Tag and Push the Release Tag
-- **ACTION**: You MUST autonomously commit the release changes locally and tag the release commit, but you must push ONLY the tag to the remote GitHub repository. You are strictly FORBIDDEN from pushing the release commit directly to the `main` branch autonomously; the `main` branch push must be explicitly authorized by the developer later.
+### 4. Stage, Commit and Push the Release Tag
+- **ACTION**: Stage the version configuration files, create the release commit, tag it, and push ONLY the tag to GitHub:
   ```powershell
+  git add package.json package-lock.json app/build.gradle.kts app/src/main/config.xml app/src/main/assets/main/config.xml CHANGELOG.md
   git commit -m "Release vX.Y.Z"
   git tag -a vX.Y.Z -m "Release vX.Y.Z"
   git push origin vX.Y.Z
   ```
+  *(Note: Binaries `IVIDS.apk` and `IVIDS.exe` are in `.gitignore` and are attached to the GitHub release in step 5, not committed).*
+- **BRANCH SAFETY**: You are strictly FORBIDDEN from pushing the release commit directly to the `main` branch autonomously; pushing to `main` must be explicitly authorized by the user separately.
 
 ### 5. Create the GitHub Release Online (MANDATORY — DO NOT SKIP)
 > **⚠️ CRITICAL: This step is NON-NEGOTIABLE. A pushed tag without a live, published GitHub release is INCOMPLETE. The release must NOT be created as a draft; it MUST be published live online immediately. The release is NOT done until this step succeeds.**
 
-- **ACTION**: You MUST autonomously create a **live, published, non-draft GitHub release** using the `gh` CLI. The release MUST include the compiled `IVIDS.apk` and `IVIDS.exe` as downloadable assets.
-- **AUTH FIX**: If `gh` fails with a `401 Unauthorized` error, it is likely caused by an invalid `GITHUB_TOKEN` environment variable overriding the valid keyring credentials. Fix this by clearing the variable before running `gh`:
+- **ACTION**: Autonomously create a **live, published, non-draft GitHub release** using the `gh` CLI. The release MUST include the compiled `IVIDS.apk` and `IVIDS.exe` as downloadable assets:
   ```powershell
   $env:GITHUB_TOKEN = ""; gh release create vX.Y.Z "IVIDS.apk" "IVIDS.exe" --title "Release vX.Y.Z" --notes "<release notes>" --latest
   ```
+- **AUTH FIX**: If `gh` fails with a `401 Unauthorized` error, it is caused by an invalid `GITHUB_TOKEN` environment variable overriding the valid keyring credentials. Clearing the variable (`$env:GITHUB_TOKEN = ""`) resolves this.
 - **RELEASE NOTES**: Use the high-quality title and description formulated in Step 1. Include a "What's Changed" section summarizing the key improvements. Ensure the release is published live immediately (do NOT use `--draft`).
 
 ### 6. Verify the Release is Live (MANDATORY — DO NOT SKIP)
-- **ACTION**: After creating the release, you MUST verify it is actually live and accessible by running:
+- **ACTION**: After creating the release, verify it is accessible by running:
   ```powershell
   $env:GITHUB_TOKEN = ""; gh release view vX.Y.Z
   ```
@@ -77,4 +80,4 @@ This document defines the strict, standardized protocol for launching new releas
   2. ✅ The release title and description are present
   3. ✅ `IVIDS.apk` is listed as an attached asset
   4. ✅ `IVIDS.exe` is listed as an attached asset
-- **FAILURE HANDLING**: If ANY of the above checks fail, you MUST retry or report the specific failure to the user. Do NOT silently proceed as if the release succeeded.
+- **FAILURE HANDLING**: If ANY of the above checks fail, STOP and notify the user immediately with the specific error.
