@@ -12,6 +12,7 @@ import json
 import mimetypes
 import socket
 import ipaddress
+import functools
 from http.server import ThreadingHTTPServer
 
 # Register the SVG MIME type to ensure Windows systems serve vector graphics correctly
@@ -70,33 +71,99 @@ def rewrite_m3u8(content, base_url, proxy_prefix):
     return '\n'.join(rewritten)
 
 
+@functools.lru_cache(maxsize=1024)
+def _is_safe_hostname(hostname_lower):
+    """
+    Validates if a hostname resolves to a public, non-loopback, non-private IP address.
+    Caches DNS lookup results in memory to eliminate repeated network DNS latency during video streaming.
+    """
+    try:
+        if hostname_lower in ('localhost', '0.0.0.0', '127.0.0.1', '::1'):
+            return False
+        ip = socket.gethostbyname(hostname_lower)
+        ip_obj = ipaddress.ip_address(ip)
+        return not (ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_unspecified)
+    except Exception:
+        return False
+
+
 def is_safe_url(url):
     """
     Validates if the target URL has a safe http/https scheme and resolves to a public, non-loopback IP address.
-    Returns True if the URL is safe and resolves to a public IP, False otherwise.
+    Uses _is_safe_hostname with LRU memory caching to accelerate proxy segment validation.
     """
     try:
         parsed = urllib.parse.urlparse(url)
         if parsed.scheme not in ('http', 'https'):
             return False
-        
         hostname = parsed.hostname
         if not hostname:
             return False
-        
-        hostname_lower = hostname.lower()
-        if hostname_lower in ('localhost', '0.0.0.0', '127.0.0.1', '::1'):
-            return False
-        
-        ip = socket.gethostbyname(hostname)
-        ip_obj = ipaddress.ip_address(ip)
-        
-        if ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_unspecified:
-            return False
-            
-        return True
+        return _is_safe_hostname(hostname.lower())
     except Exception:
         return False
+
+
+class StaticFileCache:
+    """
+    In-memory cache for gzip-compressed static assets.
+    Tracks file modification times (mtime) to invalidate entries when files change on disk during development.
+    """
+    def __init__(self):
+        self._cache = {}
+
+    def get_compressed(self, path):
+        """
+        Retrieves gzip-compressed bytes and ETag for the given file path, refreshing from disk if modified.
+        Returns a tuple of (compressed_bytes, etag) or (None, None) if reading fails.
+        """
+        try:
+            mtime = os.path.getmtime(path)
+            cached = self._cache.get(path)
+            if cached and cached[0] == mtime:
+                return cached[1], cached[2]
+
+            with open(path, 'rb') as f:
+                raw_body = f.read()
+
+            buf = io.BytesIO()
+            with gzip.GzipFile(fileobj=buf, mode='wb', compresslevel=6) as gz:
+                gz.write(raw_body)
+            compressed = buf.getvalue()
+            etag = f'"{int(mtime)}-{len(compressed)}"'
+
+            self._cache[path] = (mtime, compressed, etag)
+            return compressed, etag
+        except Exception:
+            return None, None
+
+
+STATIC_CACHE = StaticFileCache()
+
+
+_cached_version = None
+_cached_version_mtime = 0
+
+
+def get_app_version():
+    """
+    Retrieves the application version string from package.json with mtime-based memory caching.
+    Avoids reading and parsing package.json from disk on every version polling request.
+    """
+    global _cached_version, _cached_version_mtime
+    try:
+        project_root = os.path.abspath(os.path.dirname(__file__))
+        package_json_path = os.path.join(project_root, 'package.json')
+        mtime = os.path.getmtime(package_json_path)
+        if _cached_version is not None and mtime == _cached_version_mtime:
+            return _cached_version
+        with open(package_json_path, 'r', encoding='utf-8') as f:
+            pkg = json.load(f)
+        _cached_version = pkg.get('version', '0.4.1')
+        _cached_version_mtime = mtime
+        return _cached_version
+    except Exception:
+        return '0.4.1'
 
 
 class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -215,21 +282,11 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def _handle_get_version(self):
         """
-        Retrieves the version string from the workspace package.json file securely.
-        Ensures the file is within the project root and returns the version as a JSON payload.
+        Retrieves the version string using the cached get_app_version helper.
+        Returns the version as a JSON payload without redundant disk I/O on every request.
         """
         try:
-            project_root = os.path.abspath(os.path.dirname(__file__))
-            package_json_path = os.path.abspath(os.path.join(project_root, 'package.json'))
-            
-            # Prevent path traversal outside the project directory
-            if os.path.commonpath([project_root, package_json_path]) != project_root:
-                self.send_error(403, 'Forbidden path')
-                return
-
-            with open(package_json_path, 'r', encoding='utf-8') as f:
-                pkg = json.load(f)
-            version = pkg.get('version', '0.4.1')
+            version = get_app_version()
             body = json.dumps({'version': version}).encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
@@ -383,8 +440,8 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def _serve_static_with_compression(self):
         """
-        Serves static files with gzip compression for text-based content types.
-        Falls back to standard serving for binary files or if the client doesn't accept gzip.
+        Serves static files with gzip compression using an in-memory mtime cache and ETag 304 support.
+        Falls back to standard serving for binary files or if the client does not accept gzip.
         """
         # Check if client accepts gzip
         accept_encoding = self.headers.get('Accept-Encoding', '')
@@ -406,35 +463,39 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             super().do_GET()
             return
 
-        # Read, compress, and serve the file
-        try:
-            with open(path, 'rb') as f:
-                raw_body = f.read()
-
-            buf = io.BytesIO()
-            with gzip.GzipFile(fileobj=buf, mode='wb', compresslevel=6) as gz:
-                gz.write(raw_body)
-            compressed = buf.getvalue()
-
-            # Set vendor caching for known stable files (e.g. hls.min.js)
-            basename = os.path.basename(path)
-            if basename in VENDOR_PATTERNS:
-                self._cache_control_set = True
-                self.send_response(200)
-                self.send_header('Cache-Control', 'public, max-age=86400')
+        compressed, etag = STATIC_CACHE.get_compressed(path)
+        if compressed is None:
+            if not os.path.exists(path):
+                self.send_error(404, 'File not found')
             else:
-                self.send_response(200)
+                super().do_GET()
+            return
 
-            self.send_header('Content-Type', content_type)
-            self.send_header('Content-Encoding', 'gzip')
-            self.send_header('Content-Length', str(len(compressed)))
+        # Handle conditional 304 Not Modified requests
+        if_none_match = self.headers.get('If-None-Match')
+        if if_none_match and if_none_match == etag:
+            self.send_response(304)
+            self.send_header('ETag', etag)
             self.send_header('Vary', 'Accept-Encoding')
             self.end_headers()
-            self.wfile.write(compressed)
-        except FileNotFoundError:
-            self.send_error(404, 'File not found')
-        except Exception as e:
-            self.send_error(500, f'Compression error: {str(e)}')
+            return
+
+        # Set vendor caching for known stable files (e.g. hls.min.js)
+        basename = os.path.basename(path)
+        if basename in VENDOR_PATTERNS:
+            self._cache_control_set = True
+            self.send_response(200)
+            self.send_header('Cache-Control', 'public, max-age=86400')
+        else:
+            self.send_response(200)
+
+        self.send_header('Content-Type', content_type)
+        self.send_header('Content-Encoding', 'gzip')
+        self.send_header('Content-Length', str(len(compressed)))
+        self.send_header('ETag', etag)
+        self.send_header('Vary', 'Accept-Encoding')
+        self.end_headers()
+        self.wfile.write(compressed)
 
     def _handle_proxy(self):
         """

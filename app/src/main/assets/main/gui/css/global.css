@@ -214,6 +214,7 @@ input, textarea, select { font: inherit; }
  * - Search results grids (search.html)
  * - Playlist collections (playlists.html)
  */
+/* Media poster wrapper for horizontal rails and search grids with smooth hover scale */
 .poster-wrapper {
     background: var(--surface-soft);
     border: 2px solid transparent;
@@ -225,10 +226,12 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+    transform: scale(1);
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, transform 0.16s ease;
     width: var(--poster-width);
 }
 
+/* Widescreen 16:9 card tile for playlist collections with smooth hover scale */
 .playlist-card {
     aspect-ratio: 16 / 9;
     background: var(--surface-soft);
@@ -241,7 +244,8 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+    transform: scale(1);
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, transform 0.16s ease;
     width: 100%;
 }
 
