@@ -45,6 +45,19 @@ export class LazyLoader {
     }
 
     /**
+     * Resets the lazy loader state, disconnects the observer, and clears registered items.
+     * Crucial during page transitions to prevent memory leaks and zombie observer callbacks.
+     */
+    reset() {
+        if (this.observer) {
+            this.observer.disconnect();
+        }
+        this.registrations.clear();
+        this.pipelineRunning = false;
+        this.init();
+    }
+
+    /**
      * Register a row for lazy loading data.
      */
     register(elementId, fetcher, renderer) {
@@ -103,6 +116,29 @@ export class LazyLoader {
                 onComplete();
             }
         });
+    }
+
+    /**
+     * Preloads the next 2 adjacent horizontal posters within the same row during user navigation.
+     * Prevents empty poster frames when fast-scrolling horizontally with D-pad or keyboard.
+     * @param {HTMLElement} currentElement - The currently focused poster-wrapper or child element
+     */
+    preloadAdjacentRowPosters(currentElement) {
+        if (!currentElement) return;
+        const wrapper = currentElement.classList?.contains('poster-wrapper')
+            ? currentElement
+            : currentElement.closest?.('.poster-wrapper');
+        if (!wrapper) return;
+
+        let next = wrapper.nextElementSibling;
+        let count = 0;
+        while (next && count < 2) {
+            if (next.classList?.contains('poster-wrapper') || next.tagName === 'IMG') {
+                this.loadImage(next);
+                count++;
+            }
+            next = next.nextElementSibling;
+        }
     }
 
     /**
@@ -177,6 +213,10 @@ export class LazyLoader {
                 }
             }
 
+            // Calculate maximum visible columns mathematically to eliminate layout thrashing getBoundingClientRect() calls
+            // Average poster width is ~154px + 14px gap = 168px
+            const maxCols = Math.min(20, Math.ceil(vw / 168) + 1);
+
             // FASE 1: Collect & load images physically visible on screen
             const phase1Promises = [];
             visibleCategoryIndices.forEach(idx => {
@@ -184,11 +224,8 @@ export class LazyLoader {
                 const rowEl = document.getElementById(cat.id);
                 if (rowEl) {
                     const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
-                    posters.forEach(poster => {
-                        const rect = poster.getBoundingClientRect();
-                        if (rect.left < vw + 50 && rect.right > -50) {
-                            phase1Promises.push(this.loadImage(poster));
-                        }
+                    posters.slice(0, maxCols).forEach(poster => {
+                        phase1Promises.push(this.loadImage(poster));
                     });
                 }
             });
@@ -197,18 +234,15 @@ export class LazyLoader {
             await Promise.allSettled(phase1Promises);
             console.log('ProgressiveLoader: Phase 1 (Visible Viewport Images) Complete');
 
-            // FASE 2: Collect & load remaining horizontal offscreen images in visible rows
+            // FASE 2: Preload next 2 offscreen images in visible rows (lookahead buffer instead of entire row storm)
             const phase2Promises = [];
             visibleCategoryIndices.forEach(idx => {
                 const cat = categories[idx];
                 const rowEl = document.getElementById(cat.id);
                 if (rowEl) {
                     const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
-                    posters.forEach(poster => {
-                        const img = poster.tagName === 'IMG' ? poster : poster.querySelector('img');
-                        if (img && img.dataset.src) {
-                            phase2Promises.push(this.loadImage(poster));
-                        }
+                    posters.slice(maxCols, maxCols + 2).forEach(poster => {
+                        phase2Promises.push(this.loadImage(poster));
                     });
                 }
             });
@@ -217,7 +251,7 @@ export class LazyLoader {
             await Promise.allSettled(phase2Promises);
             console.log('ProgressiveLoader: Phase 2 (Horizontal Offscreen Images) Complete');
 
-            // FASE 3: Load the next 2 rows vertically below viewport
+            // FASE 3: Load the next 2 rows vertically below viewport (scoped to visible columns)
             const maxVisibleIdx = Math.max(...visibleCategoryIndices);
             const extraRowsToLoad = [maxVisibleIdx + 1, maxVisibleIdx + 2];
 
@@ -232,7 +266,7 @@ export class LazyLoader {
                     const rowEl = document.getElementById(cat.id);
                     if (rowEl) {
                         const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
-                        const phase3RowPromises = posters.map(poster => this.loadImage(poster));
+                        const phase3RowPromises = posters.slice(0, maxCols).map(poster => this.loadImage(poster));
                         await Promise.allSettled(phase3RowPromises);
                     }
                 }

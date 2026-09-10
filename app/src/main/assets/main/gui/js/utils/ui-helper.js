@@ -92,6 +92,9 @@ export function setupRow(elementId, items, defaultType = null) {
         for (let i = items.length; i < existingButtons.length; i++) {
             existingButtons[i].remove();
         }
+
+        // Ensure newly created poster elements have tabindex
+        SpatialNav.ensureTabindex(rowPosters);
     } catch (error) {
         console.error(`Error in setupRow for ${elementId}:`, error);
     }

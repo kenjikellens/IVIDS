@@ -9,6 +9,19 @@ const STORAGE_KEY = 'recentlyWatched';
 // In-memory cache to reduce localStorage access
 let _recentlyWatchedCache = null;
 let _cacheOwnerId = null;
+let _recentlyWatchedMap = new Map();
+
+/**
+ * Rebuilds the fast O(1) lookup Map from the recently watched cache array.
+ */
+function _rebuildMap() {
+    _recentlyWatchedMap.clear();
+    if (_recentlyWatchedCache) {
+        for (const item of _recentlyWatchedCache) {
+            _recentlyWatchedMap.set(`${item.id}_${item.media_type}`, item);
+        }
+    }
+}
 
 function isMusic(item) {
     const type = item.media_type;
@@ -53,6 +66,7 @@ export function addToRecentlyWatched(item) {
         // Update cache and localStorage
         _recentlyWatchedCache = recentlyWatched;
         _cacheOwnerId = currentId;
+        _rebuildMap();
 
         try {
             PersistentStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
@@ -64,6 +78,7 @@ export function addToRecentlyWatched(item) {
                     recentlyWatched = recentlyWatched.slice(0, 10);
                     _recentlyWatchedCache = recentlyWatched;
                     _cacheOwnerId = currentId;
+                    _rebuildMap();
                     try {
                         PersistentStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
                     } catch (retryError) {
@@ -101,6 +116,7 @@ export function getRecentlyWatched() {
         // Sanitize data once on load
         _recentlyWatchedCache = items.filter(i => !isMusic(i));
         _cacheOwnerId = currentId;
+        _rebuildMap();
         return [..._recentlyWatchedCache];
     } catch (e) {
         console.error('Error loading recently watched:', e);
@@ -116,8 +132,8 @@ export function getRecentlyWatched() {
  * @returns {Object|undefined} The matching media item, or undefined.
  */
 export function getWatchedItem(id, type) {
-    const recentlyWatched = getRecentlyWatched();
-    return recentlyWatched.find(i => String(i.id) === String(id) && i.media_type === type);
+    getRecentlyWatched();
+    return _recentlyWatchedMap.get(`${id}_${type}`);
 }
 
 export function clearRecentlyWatched() {
@@ -125,6 +141,7 @@ export function clearRecentlyWatched() {
         const namespacedKey = getNamespacedKey(STORAGE_KEY);
         _recentlyWatchedCache = [];
         _cacheOwnerId = getActiveAccountId();
+        _recentlyWatchedMap.clear();
         PersistentStorage.removeItem(namespacedKey);
         console.log('Recently watched cleared');
     } catch (e) {
@@ -147,6 +164,7 @@ export function removeFromRecentlyWatched(id) {
 
         _recentlyWatchedCache = recentlyWatched;
         _cacheOwnerId = currentId;
+        _rebuildMap();
 
         try {
             PersistentStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));

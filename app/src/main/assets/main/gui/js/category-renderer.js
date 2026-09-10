@@ -1,4 +1,5 @@
 import { CATEGORY_CONFIG } from '../../logic/constants.js';
+import { SpatialNav } from './spatial-nav.js';
 
 /**
  * CategoryRenderer - OOP Helper class responsible for dynamically constructing
@@ -8,17 +9,20 @@ export class CategoryRenderer {
     /**
      * Renders category rows for a specific page type into a container element.
      * @param {HTMLElement} container - The target host container element.
-     * @param {string} pageKey - The page key in CATEGORY_CONFIG ('home', 'movies', 'series').
+     * @param {string|Array<Object>} categoriesOrPageKey - Page key in CATEGORY_CONFIG or an array of category definitions.
      */
-    static renderRows(container, pageKey) {
+    static renderRows(container, categoriesOrPageKey) {
         if (!container) {
-            console.error(`CategoryRenderer: Host container not found for page key '${pageKey}'`);
+            console.error('CategoryRenderer: Host container not found');
             return;
         }
 
-        const categories = CATEGORY_CONFIG[pageKey];
+        const categories = Array.isArray(categoriesOrPageKey)
+            ? categoriesOrPageKey
+            : CATEGORY_CONFIG[categoriesOrPageKey];
+
         if (!Array.isArray(categories)) {
-            console.error(`CategoryRenderer: No category definitions found for page key '${pageKey}'`);
+            console.error(`CategoryRenderer: No category definitions found for '${categoriesOrPageKey}'`);
             return;
         }
 
@@ -54,8 +58,13 @@ export class CategoryRenderer {
 
         container.appendChild(fragment);
 
+        // Ensure newly rendered row elements have tabindex
+        SpatialNav.ensureTabindex(container);
+
         // Apply i18n translations if window.i18n is initialized
-        if (window.i18n && typeof window.i18n.translatePage === 'function') {
+        if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
+            window.i18n.applyTranslations(container);
+        } else if (window.i18n && typeof window.i18n.translatePage === 'function') {
             window.i18n.translatePage();
         }
     }

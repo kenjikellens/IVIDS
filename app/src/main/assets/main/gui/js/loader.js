@@ -38,28 +38,11 @@ function injectCircle(container) {
 }
 
 /**
- * Initializes the loader observer to handle both static and dynamic loaders.
+ * Initializes existing static loaders in the DOM.
  */
 export function initLoader() {
-    // 1. Handle existing loaders in DOM
+    // Handle existing static loaders in DOM
     document.querySelectorAll('.ivids-loader, .windows-loader').forEach(injectCircle);
-
-    // 2. Set up observer for dynamically added loaders
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
-                if (node.nodeType === 1) { // Element node
-                    const isLoader = node.classList.contains('ivids-loader') || node.classList.contains('windows-loader');
-                    if (isLoader) {
-                        injectCircle(node);
-                    }
-                    node.querySelectorAll('.ivids-loader, .windows-loader').forEach(injectCircle);
-                }
-            });
-        });
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
 }
 
 // Auto-initialize if this script is loaded (works best as a side-effect import)

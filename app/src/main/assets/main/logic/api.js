@@ -19,6 +19,19 @@ let _cachedPlayerConfig = null;
 let _configOwnerId = null;
 const DEFAULT_PLAYER_PROVIDERS = [...PLAYER_CONFIG.DEFAULT_PROVIDERS];
 
+/** Cached slow connection evaluation result to avoid bridge crossings and JSON parsing on rapid poster rendering. */
+let _slowConnectionResult = null;
+let _slowConnectionTimestamp = 0;
+const SLOW_CONNECTION_TTL = 5000;
+
+/**
+ * Invalidates the cached slow-connection state.
+ */
+function invalidateSlowConnectionCache() {
+    _slowConnectionResult = null;
+    _slowConnectionTimestamp = 0;
+}
+
 // Image Size Constants
 const POSTER_SIZE = API_CONFIG.POSTER_SIZES.STANDARD;       // Standard poster size for grids
 const BACKDROP_SIZE = API_CONFIG.BACKDROP_SIZES.STANDARD;    // High res for backgrounds
@@ -145,6 +158,11 @@ export const Api = {
      * @returns {boolean} True if slow connection or data saver mode is active.
      */
     isSlowConnection: () => {
+        const now = Date.now();
+        if (_slowConnectionResult !== null && (now - _slowConnectionTimestamp) < SLOW_CONNECTION_TTL) {
+            return _slowConnectionResult;
+        }
+
         let isSavedDataSaver = false;
         let settings = {};
         let userKey = '';
@@ -161,7 +179,11 @@ export const Api = {
             console.error('Api: Failed to read dataSaver setting:', e);
         }
 
-        if (isSavedDataSaver) return true;
+        if (isSavedDataSaver) {
+            _slowConnectionResult = true;
+            _slowConnectionTimestamp = now;
+            return true;
+        }
 
         if (typeof navigator !== 'undefined' && navigator.connection) {
             const conn = navigator.connection;
@@ -175,11 +197,19 @@ export const Api = {
                 } catch (e) {
                     console.error('Api: Failed to auto-enable dataSaver setting:', e);
                 }
+                _slowConnectionResult = true;
+                _slowConnectionTimestamp = now;
                 return true;
             }
-            if (typeof conn.downlink === 'number' && conn.downlink < 1.5) return true;
+            if (typeof conn.downlink === 'number' && conn.downlink < 1.5) {
+                _slowConnectionResult = true;
+                _slowConnectionTimestamp = now;
+                return true;
+            }
         }
 
+        _slowConnectionResult = false;
+        _slowConnectionTimestamp = now;
         return false;
     },
 
@@ -594,21 +624,45 @@ export const Api = {
     fetchNostalgia80s90s() { return this._fetchDiscover('movie', 'primary_release_date.gte=1980-01-01&primary_release_date.lte=1999-12-31&sort_by=popularity.desc'); },
     fetchIndieGems() { return this._fetchDiscover('movie', 'with_companies=41077|7467|10256'); },
 
-    // Studios & Network Content
-    fetchHboMovies() { return this._fetchDiscover('movie', 'with_companies=3287|3268|174'); },
-    fetchHboSeries() { return this._fetchDiscover('tv', 'with_networks=49'); },
-    fetchAppleMovies() { return this._fetchDiscover('movie', 'with_companies=131018'); },
-    fetchAppleSeries() { return this._fetchDiscover('tv', 'with_networks=2552'); },
-    fetchAmazonSeries() { return this._fetchDiscover('tv', 'with_networks=1024'); },
-    fetchPrimeOriginals() { return this._fetchDiscover('movie', 'with_companies=20580'); },
-    fetchParamountMovies() { return this._fetchDiscover('movie', 'with_companies=4'); },
-    fetchUniversalMovies() { return this._fetchDiscover('movie', 'with_companies=33'); },
-    fetchSonyMovies() { return this._fetchDiscover('movie', 'with_companies=5|34'); },
+    // Dynamic Regional & Language Fetchers
+    /**
+     * Fetches movies or series filtered by country of origin.
+     * @param {string} countryCode - ISO 3166-1 alpha-2 country code (or pipe-separated list).
+     * @param {string} [type='movie'] - 'movie' or 'tv'.
+     * @returns {Promise<Array>} List of discovered content.
+     */
+    fetchByCountry(countryCode, type = 'movie') {
+        return this._fetchDiscover(type, `with_origin_country=${countryCode}&sort_by=popularity.desc`);
+    },
+
+    /**
+     * Fetches movies or series filtered by original language.
+     * @param {string} langCode - ISO 639-1 language code (or pipe-separated list).
+     * @param {string} [type='movie'] - 'movie' or 'tv'.
+     * @returns {Promise<Array>} List of discovered content.
+     */
+    fetchByLanguage(langCode, type = 'movie') {
+        return this._fetchDiscover(type, `with_original_language=${langCode}&sort_by=popularity.desc`);
+    },
+
+    // Universes & Franchises
+    fetchDcMovies() { return this._fetchDiscover('movie', 'with_companies=9993|429&sort_by=popularity.desc'); },
+    fetchDcSeries() { return this._fetchDiscover('tv', 'with_companies=9993|429&sort_by=popularity.desc'); },
+
+    // Themes & Tropes
+    fetchTrueStoryMovies() { return this._fetchDiscover('movie', 'with_keywords=9672&sort_by=popularity.desc'); },
+    fetchHeistMovies() { return this._fetchDiscover('movie', 'with_keywords=10051&sort_by=popularity.desc'); },
+    fetchZombieMovies() { return this._fetchDiscover('movie', 'with_keywords=12377&sort_by=popularity.desc'); },
+    fetchSportsMovies() { return this._fetchDiscover('movie', 'with_keywords=6075&sort_by=popularity.desc'); },
+    fetchRomComMovies() { return this._fetchDiscover('movie', 'with_genres=35,10749&sort_by=popularity.desc'); },
+    fetchPsychologicalThrillers() { return this._fetchDiscover('movie', 'with_genres=53&with_keywords=9715&sort_by=popularity.desc'); },
+    fetchCyberpunkMovies() { return this._fetchDiscover('movie', 'with_keywords=4565|12190&sort_by=popularity.desc'); },
+    fetch80sMovies() { return this._fetchDiscover('movie', 'primary_release_date.gte=1980-01-01&primary_release_date.lte=1989-12-31&vote_count.gte=50&sort_by=popularity.desc'); },
+    fetch90sMovies() { return this._fetchDiscover('movie', 'primary_release_date.gte=1990-01-01&primary_release_date.lte=1999-12-31&vote_count.gte=100&sort_by=popularity.desc'); },
+
+    // Formats & Specials
     fetchCultClassics() { return this._fetchDiscover('movie', 'primary_release_date.lte=2010-01-01&vote_count.gte=2000&sort_by=vote_average.desc'); },
     fetchStandupComedy() { return this._fetchDiscover('movie', 'with_genres=35,99&sort_by=popularity.desc'); },
-    fetchHighOctaneAction() { return this._fetchDiscover('movie', 'with_genres=28&vote_count.gte=1000&sort_by=popularity.desc'); },
-    fetchHuluSeries() { return this._fetchDiscover('tv', 'with_networks=453'); },
-    fetchParamountSeries() { return this._fetchDiscover('tv', 'with_networks=4330'); },
     fetchMiniSeries() { return this._fetchDiscover('tv', 'with_type=2&sort_by=popularity.desc'); },
     fetchDocuseries() { return this._fetchDiscover('tv', 'with_genres=99,80&sort_by=popularity.desc'); },
     fetchSitcoms() { return this._fetchDiscover('tv', 'with_genres=35&sort_by=vote_count.desc'); },
@@ -1110,14 +1164,23 @@ export const Api = {
 
     /**
      * Fetches a list of countries supported by TMDB.
+     * Cached for 24 hours (1440 minutes) to eliminate redundant network queries.
      * This affects the country selection options in settings.
      * @returns {Promise<Array>} List of country configuration objects.
      */
     async fetchCountries() {
         try {
             const lang = this.getLanguageCode();
+            const cacheKey = `tmdb_countries_${lang}`;
+            const cached = cacheManager.get(cacheKey);
+            if (cached) return cached;
+
             const response = await deduplicatedFetch(`${BASE_URL}/configuration/countries?api_key=${API_KEY}&language=${lang}`);
-            return await response.json();
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+                cacheManager.set(cacheKey, data, 1440);
+            }
+            return data;
         } catch (error) {
             console.error('Error fetching countries:', error);
             return [];
@@ -1271,10 +1334,21 @@ export const Api = {
     },
 };
 
-// JS Event Listener: Clear image size caches when the user toggles the Data Saver mode
+// JS Event Listener: Clear image size and connection caches when the user toggles Data Saver or connection changes
 if (typeof window !== 'undefined') {
     window.addEventListener('datasaverchanged', () => {
         Api._recommendedSizes = {};
+        invalidateSlowConnectionCache();
     });
+
+    if (typeof navigator !== 'undefined' && navigator.connection) {
+        try {
+            navigator.connection.addEventListener('change', () => {
+                invalidateSlowConnectionCache();
+            });
+        } catch (e) {
+            // Ignore if connection event listener not supported
+        }
+    }
 }
 

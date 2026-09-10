@@ -625,15 +625,24 @@ function renderResultItems(items, container) {
     container.appendChild(fragment);
 }
 
+/**
+ * Attaches a requestAnimationFrame-throttled scroll listener to the search results container.
+ * Eliminates layout thrashing from continuous scrollTop/clientHeight reads during scrolling.
+ */
 function initInfiniteScroll() {
     const container = document.getElementById('search-results-container');
     if (!container) return;
+    let ticking = false;
     container.onscroll = () => {
-        if (isLoading || !hasMoreResults) return;
-        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 300) {
-            currentPage++;
-            fetchResults(false);
-        }
+        if (ticking || isLoading || !hasMoreResults) return;
+        ticking = true;
+        window.requestAnimationFrame(() => {
+            if (container.scrollTop + container.clientHeight >= container.scrollHeight - 300) {
+                currentPage++;
+                fetchResults(false);
+            }
+            ticking = false;
+        });
     };
 }
 

@@ -9,16 +9,24 @@
  * to localStorage.
  */
 class PersistentStorage {
+    /** Static in-memory read-through cache to avoid repeated synchronous Android bridge calls */
+    static _memCache = new Map();
+
     /**
      * Retrieves an item from storage.
-     * On Android, it checks SharedPreferences. If found in SharedPreferences but not in
-     * localStorage, it restores it to localStorage. If not found in SharedPreferences,
-     * it falls back to localStorage.
+     * Checks in-memory cache first, then on Android checks SharedPreferences. If found in SharedPreferences
+     * but not in localStorage, it restores it to localStorage. If not found, it falls back to localStorage.
      *
      * @param {string} key - The key of the item to retrieve.
      * @returns {string|null} The stored value, or null if not found.
      */
     static getItem(key) {
+        if (PersistentStorage._memCache.has(key)) {
+            return PersistentStorage._memCache.get(key);
+        }
+
+        let result = null;
+
         if (window.AndroidSettings && typeof window.AndroidSettings.getString === 'function') {
             try {
                 const nativeValue = window.AndroidSettings.getString(key);
@@ -29,17 +37,22 @@ class PersistentStorage {
                         console.log(`PersistentStorage: Restoring key "${key}" from SharedPreferences to localStorage`);
                         localStorage.setItem(key, nativeValue);
                     }
-                    return nativeValue;
+                    result = nativeValue;
                 }
             } catch (e) {
                 console.error(`PersistentStorage: Error reading "${key}" from AndroidSettings`, e);
             }
         }
-        const localValue = localStorage.getItem(key);
-        if (localValue === 'null' || localValue === 'undefined') {
-            return null;
+
+        if (result === null) {
+            const localValue = localStorage.getItem(key);
+            if (localValue !== 'null' && localValue !== 'undefined' && localValue !== null) {
+                result = localValue;
+            }
         }
-        return localValue;
+
+        PersistentStorage._memCache.set(key, result);
+        return result;
     }
 
     /**
@@ -54,6 +67,8 @@ class PersistentStorage {
         // Normalize value to a string
         const stringValue = typeof value === 'string' ? value : String(value);
         
+        PersistentStorage._memCache.set(key, stringValue);
+
         if (window.AndroidSettings && typeof window.AndroidSettings.setString === 'function') {
             try {
                 window.AndroidSettings.setString(key, stringValue);
@@ -71,6 +86,8 @@ class PersistentStorage {
      * @param {string} key - The key of the item to remove.
      */
     static removeItem(key) {
+        PersistentStorage._memCache.delete(key);
+
         if (window.AndroidSettings && typeof window.AndroidSettings.remove === 'function') {
             try {
                 window.AndroidSettings.remove(key);
@@ -79,6 +96,13 @@ class PersistentStorage {
             }
         }
         localStorage.removeItem(key);
+    }
+
+    /**
+     * Clears the in-memory read-through cache.
+     */
+    static clearMemCache() {
+        PersistentStorage._memCache.clear();
     }
 }
 

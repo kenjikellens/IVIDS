@@ -44,6 +44,8 @@ export class HeroSlider {
         this.interval = null;
         this.duration = CONFIG.DEFAULT_DURATION;
         this.isDestroyed = false;
+        this.LOOKAHEAD_COUNT = 2;
+        this._prefetchedIndices = new Set();
 
         if (!this.container || this.items.length === 0) {
             console.warn('HeroSlider: Container not found or no items with backdrops.');
@@ -51,6 +53,59 @@ export class HeroSlider {
         }
 
         this.init();
+    }
+
+    /**
+     * Loads the backdrop image for a slide element and caches it in imageCache.
+     * @param {number} slideIndex - Index of slide in this.items.
+     * @param {boolean} [applyStyle=false] - Whether to set backgroundImage directly on the slide DOM node.
+     */
+    loadSlideBackdrop(slideIndex, applyStyle = false) {
+        if (slideIndex < 0 || slideIndex >= this.items.length) return;
+        const item = this.items[slideIndex];
+        if (!item || !item.backdrop_path) return;
+
+        const slides = this.track ? this.track.querySelectorAll('.hero-slide') : [];
+        const slide = slides[slideIndex];
+        if (!slide) return;
+
+        const imageUrl = slide.dataset.src;
+        if (!imageUrl) return;
+
+        if (applyStyle) {
+            const cachedUrl = imageCache.has(imageUrl) ? imageCache.get(imageUrl) : imageUrl;
+            slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
+            slide.dataset.loaded = 'true';
+        }
+
+        if (!this._prefetchedIndices.has(slideIndex)) {
+            this._prefetchedIndices.add(slideIndex);
+            if (!imageCache.has(imageUrl)) {
+                imageCache.getOrFetch(imageUrl).then(() => {
+                    if (applyStyle && slide) {
+                        const cachedUrl = imageCache.get(imageUrl);
+                        if (cachedUrl) {
+                            slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
+                        }
+                    }
+                }).catch(err => console.warn('Hero backdrop prefetch failed:', err));
+            }
+        }
+    }
+
+    /**
+     * Preloads the upcoming LOOKAHEAD_COUNT slides ahead of the current active index.
+     * Ensures smooth transitions without downloading all slides at once.
+     * @param {number} currentIndex - Current active slide index.
+     */
+    preloadLookahead(currentIndex) {
+        const total = this.items.length;
+        if (total <= 1) return;
+
+        for (let offset = 1; offset <= this.LOOKAHEAD_COUNT; offset++) {
+            const lookaheadIndex = (currentIndex + offset) % total;
+            this.loadSlideBackdrop(lookaheadIndex, false);
+        }
     }
 
     /**
@@ -62,29 +117,27 @@ export class HeroSlider {
         this.track = document.createElement('div');
         this.track.className = 'hero-slides-track';
 
-        // 2. Add slide backdrop images
+        // 2. Add slide backdrop elements (without eager bulk download of all items)
+        const backdropSize = Api.getRecommendedBackdropSize();
         this.items.forEach((item, idx) => {
             const slide = document.createElement('div');
             slide.className = idx === 0 ? 'hero-slide active' : 'hero-slide';
-            const imageUrl = Api.getImageUrl(item.backdrop_path, Api.getRecommendedBackdropSize());
-            const cachedUrl = imageCache.has(imageUrl) ? imageCache.get(imageUrl) : imageUrl;
-            slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
-            slide.dataset.loaded = 'true';
+            const imageUrl = Api.getImageUrl(item.backdrop_path, backdropSize);
             slide.dataset.src = imageUrl;
-            if (!imageCache.has(imageUrl)) {
-                imageCache.getOrFetch(imageUrl);
-            }
+            slide.dataset.loaded = 'false';
             this.track.appendChild(slide);
         });
 
         // Prepend track behind overlay and content
         this.container.insertBefore(this.track, this.container.firstChild);
 
+        // Load slide 0 immediately and prefetch next 2 slides (lookahead window)
+        this.loadSlideBackdrop(0, true);
+        this.preloadLookahead(0);
+
         // Hide initial loader if present
         const loader = this.container.querySelector('.loader-center-container');
         if (loader) loader.style.display = 'none';
-
-
 
         // 4. Initial render to set text content
         this.render(this.currentIndex, true);
@@ -138,14 +191,9 @@ export class HeroSlider {
         if (!item) return;
 
         const slides = this.track ? this.track.querySelectorAll('.hero-slide') : [];
-        const currentSlide = slides[index];
 
-        // Ensure current slide background image is populated before adding active opacity class
-        if (currentSlide && currentSlide.dataset.src) {
-            const srcUrl = currentSlide.dataset.src;
-            const cachedUrl = imageCache.has(srcUrl) ? imageCache.get(srcUrl) : srcUrl;
-            currentSlide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
-        }
+        // Ensure current slide backdrop is populated before active transition
+        this.loadSlideBackdrop(index, true);
 
         // Toggle active class across slides to trigger smooth CSS opacity cross-fade
         slides.forEach((slide, idx) => {
@@ -156,14 +204,8 @@ export class HeroSlider {
             }
         });
 
-        // Pre-fetch the next slide to keep transitions smooth
-        const nextIndex = (index + 1) % this.items.length;
-        const nextSlide = slides[nextIndex];
-        if (nextSlide && nextSlide.dataset.src) {
-            const nextSrcUrl = nextSlide.dataset.src;
-            const img = new Image();
-            img.src = nextSrcUrl;
-        }
+        // Preload upcoming lookahead buffer (next 2 slides ahead)
+        this.preloadLookahead(index);
 
         // Highlight matching circular dot indicator
         if (this.indicatorsContainer) {

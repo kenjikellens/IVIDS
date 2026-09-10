@@ -2,6 +2,8 @@ import { SpatialNav } from './spatial-nav.js';
 import { getLoaderHtml } from './loader.js';
 import { Splash } from './splash.js';
 import { Sidebar } from '../components/sidebar/sidebar.js';
+import { lazyLoader } from './lazy-loader.js';
+import { domRecycler } from './dom-recycler.js';
 
 /** In-memory cache of fetched page HTML templates, keyed by page name. Eliminates re-fetching on back-nav. */
 const _htmlCache = new Map();
@@ -69,6 +71,14 @@ export const Router = {
         // Clear orphan back handlers registered by previous page
         if (SpatialNav && typeof SpatialNav.clearBackHandlers === 'function') {
             SpatialNav.clearBackHandlers();
+        }
+
+        // Reset lazy loader and DOM recycler observers/state to prevent memory leaks and detached node retention
+        if (lazyLoader && typeof lazyLoader.reset === 'function') {
+            lazyLoader.reset();
+        }
+        if (domRecycler && typeof domRecycler.reset === 'function') {
+            domRecycler.reset();
         }
 
         const mainView = document.getElementById('main-view');

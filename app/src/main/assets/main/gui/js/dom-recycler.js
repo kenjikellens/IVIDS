@@ -5,6 +5,7 @@ export class DomRecycler {
     constructor(options = {}) {
         this.margin = options.margin || '500px';
         this.observer = null;
+        this.supportsContentVisibility = typeof CSS !== 'undefined' && typeof CSS.supports === 'function' && CSS.supports('content-visibility', 'hidden');
         this.init();
     }
 
@@ -25,7 +26,19 @@ export class DomRecycler {
     }
 
     /**
+     * Resets the DOM recycler by disconnecting the observer and reinitializing it.
+     * Drops detached element references across page transitions to prevent memory leaks.
+     */
+    reset() {
+        if (this.observer) {
+            this.observer.disconnect();
+        }
+        this.init();
+    }
+
+    /**
      * Start watching an element (e.g. a row or a large grid item).
+     * @param {HTMLElement} element - The DOM element to observe.
      */
     observe(element) {
         if (!element) return;
@@ -33,30 +46,37 @@ export class DomRecycler {
     }
 
     /**
-     * Replaces content with a placeholder or hides it to save memory.
+     * Replaces content with a placeholder or hides it to save memory and rendering overhead.
+     * Uses content-visibility: hidden if supported, falling back to visibility: hidden.
+     * @param {HTMLElement} element - The DOM element to prune.
      */
     prune(element) {
         if (element.dataset.pruned === 'true') return;
 
-        // Strategy: Hide content but keep layout box to prevent scroll jumps
-        // We can use content-visibility: hidden for modern browsers, 
-        // or manually remove children while keeping a fixed height/width.
-
-        // For simplicity and compatibility on TV:
-        element.style.visibility = 'hidden';
-        // HTML5 optimization: contain layout/paint/style for hidden elements
-        element.style.contain = 'layout paint style';
+        if (this.supportsContentVisibility) {
+            element.style.contentVisibility = 'hidden';
+            element.style.containIntrinsicSize = 'auto 300px';
+        } else {
+            element.style.visibility = 'hidden';
+            element.style.contain = 'layout paint style';
+        }
         element.dataset.pruned = 'true';
     }
 
     /**
-     * Restores the content.
+     * Restores pruned content when scrolling back into the viewport.
+     * @param {HTMLElement} element - The DOM element to restore.
      */
     restore(element) {
         if (element.dataset.pruned !== 'true') return;
 
-        element.style.visibility = 'visible';
-        element.style.contain = ''; // Reset containment to avoid clipping (e.g. focus scales)
+        if (this.supportsContentVisibility) {
+            element.style.contentVisibility = 'visible';
+            element.style.containIntrinsicSize = '';
+        } else {
+            element.style.visibility = 'visible';
+            element.style.contain = '';
+        }
         element.dataset.pruned = 'false';
     }
 }

@@ -1,4 +1,7 @@
 
+import { Api } from '../../logic/api.js';
+import { lazyLoader } from './lazy-loader.js';
+
 /** Key code mapping for D-pad, Enter, Back, and numeric keys. Hoisted to module scope to avoid re-creation on every keypress. */
 const KEY_MAP = {
     ArrowLeft: 37, Left: 37,
@@ -22,6 +25,8 @@ export const SpatialNav = {
     _initialized: false,
     isMouseInteraction: false,
     backHandlers: [],
+    _prefetchTimer: null,
+    _cachedMainView: null,
 
     /**
      * Checks if the viewport is in portrait mode based on viewport width (less than or equal to 600px).
@@ -33,8 +38,152 @@ export const SpatialNav = {
     },
 
     /**
+     * Retrieves the cached #main-view container element or queries it from DOM if not yet cached.
+     * @returns {HTMLElement|null} The main view container element.
+     */
+    getMainView() {
+        if (!this._cachedMainView || !this._cachedMainView.isConnected) {
+            this._cachedMainView = document.getElementById('main-view');
+        }
+        return this._cachedMainView;
+    },
+
+    /**
+     * Schedules details prefetching with a 250ms debounce to prevent network request spam during rapid navigation.
+     * @param {string} id - The media item ID.
+     * @param {string} type - The media item type ('movie' or 'tv').
+     */
+    scheduleDetailsPrefetch(id, type) {
+        if (this._prefetchTimer) {
+            clearTimeout(this._prefetchTimer);
+            this._prefetchTimer = null;
+        }
+        this._prefetchTimer = setTimeout(() => {
+            this._prefetchTimer = null;
+            Api.getDetails(id, type).catch(err => console.warn('Pre-fetch failed:', err));
+        }, 250);
+    },
+
+    /**
+     * Performs a lightweight check to determine if an element has non-zero layout dimensions and is not explicitly hidden.
+     * Avoids layout thrashing by checking layout properties without computed style calls.
+     * @param {HTMLElement} el - The element to check.
+     * @returns {boolean} True if the element appears visible.
+     */
+    fastIsVisible(el) {
+        if (!el) return false;
+        if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
+        if (el.style.display === 'none' || el.style.visibility === 'hidden') return false;
+        return true;
+    },
+
+    /**
+     * Resolves the scroll parent for a focused element, utilizing known container classes to eliminate ancestor style walks.
+     * @param {HTMLElement} el - The focused element.
+     * @param {HTMLElement|null} modal - Optional active modal boundary.
+     * @returns {HTMLElement|null} The scrollable container element.
+     */
+    findScrollParent(el, modal) {
+        if (modal) {
+            const knownScrollArea = el.closest('.modal-scroll-area, .scrollable-modal-body, .select-options-list, .select-options-grid, .playlist-selection-list');
+            if (knownScrollArea) return knownScrollArea;
+
+            let parent = el.parentElement;
+            while (parent && parent !== modal) {
+                if (parent.scrollHeight > parent.clientHeight) {
+                    const overflowY = window.getComputedStyle(parent).overflowY;
+                    if (overflowY === 'auto' || overflowY === 'scroll') {
+                        return parent;
+                    }
+                }
+                parent = parent.parentElement;
+            }
+            return null;
+        }
+
+        const knownPageScrollArea = el.closest('.playlists-container, .livetv-list-column, .livetv-preview-column, .epg-card');
+        if (knownPageScrollArea) return knownPageScrollArea;
+
+        return this.getMainView();
+    },
+
+    /**
+     * Finds the next or previous focusable sibling within the same horizontal row container.
+     * Provides an O(1) fast-path for left/right navigation without scanning candidate arrays.
+     * @param {HTMLElement} current - The currently focused element.
+     * @param {string} direction - 'left' or 'right'.
+     * @returns {HTMLElement|null} Adjacent focusable sibling, or null if at row boundary.
+     */
+    findRowSibling(current, direction) {
+        let sibling = direction === 'right' ? current.nextElementSibling : current.previousElementSibling;
+        while (sibling) {
+            if (sibling.matches(this.focusableSelector) && !sibling.classList.contains('has-error') && this.fastIsVisible(sibling)) {
+                return sibling;
+            }
+            sibling = direction === 'right' ? sibling.nextElementSibling : sibling.previousElementSibling;
+        }
+        return null;
+    },
+
+    /**
+     * Finds the closest focusable item in an adjacent horizontal row (above or below).
+     * Scopes candidate searching to the adjacent row (~20 items) rather than the entire page (600+ items).
+     * @param {HTMLElement} current - The currently focused element in a row.
+     * @param {string} direction - 'up' or 'down'.
+     * @returns {HTMLElement|null} The closest element in the adjacent row, or null.
+     */
+    findAdjacentRowItem(current, direction) {
+        const currentRow = current.closest('.row') || current.closest('.row-container');
+        if (!currentRow) return null;
+
+        let adjacentRow = direction === 'down' ? currentRow.nextElementSibling : currentRow.previousElementSibling;
+        while (adjacentRow) {
+            const hasFocusable = adjacentRow.querySelector && adjacentRow.querySelector(this.focusableSelector);
+            if (hasFocusable) break;
+            adjacentRow = direction === 'down' ? adjacentRow.nextElementSibling : adjacentRow.previousElementSibling;
+        }
+
+        if (adjacentRow) {
+            const candidates = adjacentRow.querySelectorAll(this.focusableSelector);
+            if (candidates.length === 0) return null;
+
+            const currentRect = current.getBoundingClientRect();
+            const currentCenterX = currentRect.left + currentRect.width / 2;
+
+            let closest = null;
+            let minDiff = Infinity;
+
+            for (let i = 0; i < candidates.length; i++) {
+                const cand = candidates[i];
+                if (cand.classList.contains('has-error')) continue;
+                if (!this.fastIsVisible(cand)) continue;
+
+                const candRect = cand.getBoundingClientRect();
+                const candCenterX = candRect.left + candRect.width / 2;
+                const diff = Math.abs(candCenterX - currentCenterX);
+
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = cand;
+                }
+            }
+
+            if (closest && this.isVisible(closest)) {
+                return closest;
+            }
+        } else if (direction === 'up') {
+            const heroPlayBtn = document.getElementById('play-btn');
+            if (heroPlayBtn && this.isVisible(heroPlayBtn)) {
+                return heroPlayBtn;
+            }
+        }
+
+        return null;
+    },
+
+    /**
      * Initializes the spatial navigation system, binds D-pad keyboard handlers, and registers mouse/touch listeners.
-     * This coordinates focus management and sets up mutation observers to dynamically track focusable elements.
+     * This coordinates focus management and establishes entry focus.
      */
     init(onBack) {
         if (onBack) this.onBack = onBack;
@@ -82,23 +231,16 @@ export const SpatialNav = {
         // Ensure all currently focusable elements have a tabindex
         this.ensureTabindex();
 
-        // Monitor DOM changes to apply tabindex to new elements (like those in modals)
-        // Throttled to prevent excessive scans during bulk DOM updates (e.g. rendering 200+ posters)
-        let _tabindexTimer = null;
-        const observer = new MutationObserver(() => {
-            if (_tabindexTimer) return;
-            _tabindexTimer = setTimeout(() => {
-                this.ensureTabindex();
-                _tabindexTimer = null;
-            }, 100);
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
-
         this.focusFirst();
     },
 
-    ensureTabindex() {
-        document.querySelectorAll(this.focusableSelector).forEach(el => {
+    /**
+     * Ensures all focusable elements within the container scope have a tabindex attribute.
+     * @param {HTMLElement|Document} [container=document] - Optional container to scope the query.
+     */
+    ensureTabindex(container = document) {
+        const root = container || document;
+        root.querySelectorAll(this.focusableSelector).forEach(el => {
             if (!el.hasAttribute('tabindex')) {
                 el.setAttribute('tabindex', '-1');
             }
@@ -153,7 +295,7 @@ export const SpatialNav = {
         // If focused on sidebar, return focus to main content and prevent page navigation
         const sidebar = document.getElementById('sidebar-container');
         if (sidebar && current && sidebar.contains(current)) {
-            const mainView = document.getElementById('main-view');
+            const mainView = this.getMainView();
             if (mainView) {
                 const firstFocusable = mainView.querySelector(this.focusableSelector);
                 if (firstFocusable && this.isVisible(firstFocusable)) {
@@ -223,7 +365,7 @@ export const SpatialNav = {
         this.focusTrapContainer = container;
         if (container) {
             // Force tabindex update for new container elements immediately
-            this.ensureTabindex();
+            this.ensureTabindex(container);
             const first = Array.from(container.querySelectorAll(this.focusableSelector))
                 .find(el => this.isVisible(el));
             if (first) this.setFocus(first);
@@ -243,6 +385,12 @@ export const SpatialNav = {
     isVisible(el) {
         if (!el) return false;
 
+        // Size check first: non-rendered elements fail immediately without expensive computed style walks
+        if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
+
+        // Skip checking if explicit inline display or visibility is hidden
+        if (el.style.display === 'none' || el.style.visibility === 'hidden') return false;
+
         // Check if element is inside a modal-overlay that is not currently active or shown
         const modal = el.closest('.modal-overlay');
         if (modal && !modal.classList.contains('active') && !modal.classList.contains('show')) {
@@ -256,7 +404,6 @@ export const SpatialNav = {
 
         // FASTEST CHECK: offsetParent is null if display:none or parent is display:none.
         // However, position: fixed elements or their descendants also have offsetParent === null in many browsers.
-        // To resolve this, we do a deeper computed style walk only when offsetParent is null.
         if (el.offsetParent === null) {
             let curr = el;
             let depth = 0;
@@ -281,13 +428,6 @@ export const SpatialNav = {
             }
         }
 
-        // Size check
-        if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
-
-        // Skip expensive computed style checks for common elements if checking visibility heavily
-        // We only do the deep check if strictly necessary or for specific edge cases
-        if (el.style.visibility === 'hidden') return false;
-
         if (window.getComputedStyle(el).pointerEvents === 'none') return false;
 
         return true;
@@ -306,7 +446,7 @@ export const SpatialNav = {
 
         // Prioritize #main-view over sidebar/others if no trap is active
         if (!this.focusTrapContainer) {
-            const mainView = document.getElementById('main-view');
+            const mainView = this.getMainView();
             if (mainView) {
                 const elements = mainView.querySelectorAll(this.focusableSelector);
                 for (const el of elements) {
@@ -330,13 +470,17 @@ export const SpatialNav = {
     setFocus(element) {
         if (!element || !this.isVisible(element)) return;
 
-        // Pre-fetch details if element contains dataset id and type
+        // Debounced pre-fetch for media items (250ms delay to prevent network storms during rapid arrow navigation)
         if (element.dataset.id && element.dataset.type) {
-            const id = element.dataset.id;
-            const type = element.dataset.type;
-            import('../../logic/api.js').then(({ Api }) => {
-                Api.getDetails(id, type).catch(err => console.warn('Pre-fetch failed:', err));
-            }).catch(err => console.error('Failed to import Api for pre-fetching:', err));
+            this.scheduleDetailsPrefetch(element.dataset.id, element.dataset.type);
+        } else if (this._prefetchTimer) {
+            clearTimeout(this._prefetchTimer);
+            this._prefetchTimer = null;
+        }
+
+        // Preload next 2 adjacent horizontal posters within the row to ensure seamless scrolling
+        if (lazyLoader && typeof lazyLoader.preloadAdjacentRowPosters === 'function') {
+            lazyLoader.preloadAdjacentRowPosters(element);
         }
 
         // Track last focus BEFORE updating
@@ -353,21 +497,7 @@ export const SpatialNav = {
         // Optimization: Use classList directly on the known current instead of querySelectorAll
         if (current) current.classList.remove('focused');
 
-        // Clean up focused-within classes from any previous parent chain
-        document.querySelectorAll('.focused-within').forEach(el => el.classList.remove('focused-within'));
-
         element.classList.add('focused');
-
-        // We rely on CSS :focus-within for most things, 
-        // but keep a minimal class for legacy or complex container styling if absolutely needed.
-        // However, let's try to remove this manual loop for better performance.
-        /*
-        let parent = element.parentElement;
-        while (parent && parent !== document.body) {
-            parent.classList.add('focused-within');
-            parent = parent.parentElement;
-        }
-        */
 
         if (this.isPortrait() && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
             this.activateInput(element);
@@ -429,7 +559,7 @@ export const SpatialNav = {
             rowPosters.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
 
             // Next, handle smooth vertical centering of the active row container within #main-view
-            const mainView = document.getElementById('main-view');
+            const mainView = this.getMainView();
             if (mainView && mainView.contains(rowPosters)) {
                 const rowRect = rowPosters.getBoundingClientRect();
                 const viewRect = mainView.getBoundingClientRect();
@@ -448,25 +578,15 @@ export const SpatialNav = {
         }
 
         // Standard centering logic for non-carousel elements (e.g. settings, buttons, profile selectors, search grid)
-        // Find the nearest vertical scrollable parent element (constrained inside the modal boundary if present) to perform vertical centering.
-        let parent = el.parentElement;
-        let scrollParent = null;
-        const boundary = modal || document.body;
-        while (parent && parent !== boundary) {
-            const overflowY = window.getComputedStyle(parent).overflowY;
-            if ((overflowY === 'auto' || overflowY === 'scroll') && parent.scrollHeight > parent.clientHeight) {
-                scrollParent = parent;
-                break;
-            }
-            parent = parent.parentElement;
-        }
+        // Find the nearest vertical scrollable parent element via fast selector matches
+        const scrollParent = this.findScrollParent(el, modal);
 
         // If the element is inside a modal but has no inner scroll container, skip scrolling to avoid shifting the main background page layout.
         if (modal && !scrollParent) {
             return;
         }
 
-        const mainView = document.getElementById('main-view');
+        const mainView = this.getMainView();
         const viewContainer = scrollParent || mainView;
 
         if (viewContainer && viewContainer.contains(el)) {
@@ -474,7 +594,6 @@ export const SpatialNav = {
             const viewRect = viewContainer.getBoundingClientRect();
 
             // Scroll vertically to center the element and prevent horizontal layout shifting.
-            // Always centering the focused element provides a more consistent, premium TV-first D-pad experience.
             const elCenter = elementRect.top + elementRect.height / 2;
             const viewCenter = viewRect.top + viewRect.height / 2;
             const verticalDiff = elCenter - viewCenter;
@@ -610,20 +729,42 @@ export const SpatialNav = {
             if (this.isVisible(target)) return target;
         }
 
-        // Logic to prevent jumping between Sidebar and Main Content on Up/Down
+        // 2. Fast-path: Horizontal and vertical navigation within horizontal rows (.row-posters)
+        const rowPosters = current.closest('.row-posters');
+        if (rowPosters) {
+            if (direction === 'left' || direction === 'right') {
+                const sibling = this.findRowSibling(current, direction);
+                if (sibling) return sibling;
+
+                // If at left boundary of row, navigate to active/first sidebar item
+                if (direction === 'left' && !this.focusTrapContainer) {
+                    const sidebar = document.getElementById('sidebar-container');
+                    if (sidebar) {
+                        const activeNav = sidebar.querySelector('.nav-item.active.focusable') || sidebar.querySelector(this.focusableSelector);
+                        if (activeNav && this.isVisible(activeNav)) {
+                            return activeNav;
+                        }
+                    }
+                }
+                // At right boundary: nothing further right in this row
+                if (direction === 'right') return null;
+            } else if (direction === 'up' || direction === 'down') {
+                const adjacentItem = this.findAdjacentRowItem(current, direction);
+                if (adjacentItem) return adjacentItem;
+            }
+        }
+
+        // 3. Candidate search for non-row layouts or vertical fallback
         let searchScope = scope;
-        let isScoped = false;
 
         if (!this.focusTrapContainer && (direction === 'up' || direction === 'down')) {
-            const mainView = document.getElementById('main-view');
+            const mainView = this.getMainView();
             const sidebar = document.getElementById('sidebar-container');
 
             if (mainView && mainView.contains(current)) {
                 searchScope = mainView;
-                isScoped = true;
             } else if (sidebar && sidebar.contains(current)) {
                 searchScope = sidebar;
-                isScoped = true;
             }
         }
 
@@ -633,8 +774,6 @@ export const SpatialNav = {
             y: rect.top + rect.height / 2
         };
 
-        // Get Candidates - Optimization: Don't use Array.from(...).filter() which is slow
-        // Instead, loop manually and fail fast
         const allElements = searchScope.querySelectorAll(this.focusableSelector);
 
         let best = null;
@@ -650,15 +789,14 @@ export const SpatialNav = {
 
             elRect = el.getBoundingClientRect();
 
-            // Optimization: Direction pre-check using rects before expensive logic
-            // This filters out 50%+ of candidates instantly without math
+            // Skip zero-dimension or detached elements immediately without layout thrashing
+            if (elRect.width === 0 || elRect.height === 0) continue;
+
+            // Direction pre-check using rects before math
             if (direction === 'left' && elRect.left >= rect.left) continue;
             if (direction === 'right' && elRect.right <= rect.right) continue;
             if (direction === 'up' && elRect.top >= rect.top) continue;
             if (direction === 'down' && elRect.bottom <= rect.bottom) continue;
-
-            // Validate that the element is active, laid out, and visible (expensive walk)
-            if (!this.isVisible(el)) continue;
 
             const elCenter = {
                 x: elRect.left + elRect.width / 2,
@@ -669,7 +807,6 @@ export const SpatialNav = {
             dy = elCenter.y - center.y;
 
             let isPossible = false;
-            // Strict direction check
             if (direction === 'left' && dx < -1) isPossible = true;
             else if (direction === 'right' && dx > 1) isPossible = true;
             else if (direction === 'up' && dy < -1) isPossible = true;
@@ -686,9 +823,12 @@ export const SpatialNav = {
 
                 score = (mainDist * mainDist) + (crossDist * crossDist * weight);
 
+                // Only check expensive isVisible when candidate beats current best score
                 if (score < minScore) {
-                    minScore = score;
-                    best = el;
+                    if (this.isVisible(el)) {
+                        minScore = score;
+                        best = el;
+                    }
                 }
             }
         }
