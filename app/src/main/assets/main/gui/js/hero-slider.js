@@ -142,7 +142,18 @@ export class HeroSlider {
         // 4. Initial render to set text content
         this.render(this.currentIndex, true);
 
-        // 5. Start auto-play (every 6 seconds)
+        // 5. Setup visibility observer to pause auto-play when hero is scrolled offscreen
+        this.isPausedOffscreen = false;
+        if ('IntersectionObserver' in window && this.container) {
+            this.visibilityObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    this.isPausedOffscreen = !entry.isIntersecting;
+                });
+            }, { threshold: 0.05 });
+            this.visibilityObserver.observe(this.container);
+        }
+
+        // 6. Start auto-play (every 6 seconds)
         this.startAutoPlay();
 
         // 7. Add swipe handlers for mobile devices
@@ -280,10 +291,11 @@ export class HeroSlider {
     }
 
     /**
-     * Cycles to the next slide in sequence.
+     * Cycles to the next slide in sequence if slider is active and visible in the viewport.
+     * Skips DOM updates and image transitions when scrolled off-screen.
      */
     next() {
-        if (this.isDestroyed) return;
+        if (this.isDestroyed || this.isPausedOffscreen) return;
         this.currentIndex = (this.currentIndex + 1) % this.items.length;
         this.render(this.currentIndex);
     }
@@ -317,12 +329,17 @@ export class HeroSlider {
     }
 
     /**
-     * Releases timers, cleans up event listeners, and marks slider as destroyed.
+     * Releases timers, disconnects visibility observers, cleans up event listeners, and marks slider as destroyed.
      */
     destroy() {
         this.isDestroyed = true;
         this.stopAutoPlay();
         
+        if (this.visibilityObserver) {
+            this.visibilityObserver.disconnect();
+            this.visibilityObserver = null;
+        }
+
         if (this.container) {
             if (this.onMouseEnter) this.container.removeEventListener('mouseenter', this.onMouseEnter);
             if (this.onMouseLeave) this.container.removeEventListener('mouseleave', this.onMouseLeave);

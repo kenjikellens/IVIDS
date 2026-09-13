@@ -27,6 +27,7 @@ export const SpatialNav = {
     backHandlers: [],
     _prefetchTimer: null,
     _cachedMainView: null,
+    _activeCenteredRow: null,
 
     /**
      * Checks if the viewport is in portrait mode based on viewport width (less than or equal to 600px).
@@ -378,7 +379,7 @@ export const SpatialNav = {
 
     /**
      * Determines if a DOM element is visible and eligible for receiving focus.
-     * Evaluates display, visibility, opacity, dimensions, and performs ancestor visibility walks (especially for fixed elements).
+     * Evaluates display, visibility, dimensions, and performs lightweight fixed-container checks without computed style walks.
      * @param {HTMLElement} el - The target element to evaluate for visibility status.
      * @returns {boolean} True if the element is visible and focusable, false otherwise.
      */
@@ -388,8 +389,8 @@ export const SpatialNav = {
         // Size check first: non-rendered elements fail immediately without expensive computed style walks
         if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
 
-        // Skip checking if explicit inline display or visibility is hidden
-        if (el.style.display === 'none' || el.style.visibility === 'hidden') return false;
+        // Skip checking if explicit inline display, visibility, or pointerEvents is disabled
+        if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.pointerEvents === 'none') return false;
 
         // Check if element is inside a modal-overlay that is not currently active or shown
         const modal = el.closest('.modal-overlay');
@@ -403,32 +404,16 @@ export const SpatialNav = {
         }
 
         // FASTEST CHECK: offsetParent is null if display:none or parent is display:none.
-        // However, position: fixed elements or their descendants also have offsetParent === null in many browsers.
+        // For fixed elements (sidebar or modals), check container directly instead of walking 12 DOM levels
         if (el.offsetParent === null) {
-            let curr = el;
-            let depth = 0;
-            let hasFixedAncestor = false;
-            while (curr && curr !== document.body && depth < 12) {
-                if (curr.style.display === 'none') {
-                    return false;
-                }
-                const style = window.getComputedStyle(curr);
-                if (style.display === 'none' || style.visibility === 'hidden' || style.pointerEvents === 'none') {
-                    return false;
-                }
-                if (style.position === 'fixed') {
-                    hasFixedAncestor = true;
-                }
-                curr = curr.parentElement;
-                depth++;
+            const fixedContainer = el.closest('#sidebar-container, .modal-overlay, .update-modal-overlay');
+            if (!fixedContainer) {
+                return false;
             }
-            // If it has no fixed ancestor and offsetParent is null, it is hidden or detached.
-            if (!hasFixedAncestor) {
+            if (fixedContainer.style.display === 'none' || fixedContainer.style.visibility === 'hidden') {
                 return false;
             }
         }
-
-        if (window.getComputedStyle(el).pointerEvents === 'none') return false;
 
         return true;
     },
@@ -519,7 +504,7 @@ export const SpatialNav = {
      * Centers the focused element in the scroll viewport, bypassing modal overlays to prevent layout shifts.
      * For elements in horizontal movie/series poster rows (.row-posters), this executes a custom Netflix-style
      * horizontal scrolling behavior where focus stays locked at Column 2 and posters scroll underneath.
-     * For all other layouts, standard scrollIntoView rules apply.
+     * Prevents dual smooth-scrolling jitter and layout thrashing by caching row metrics.
      * @param {HTMLElement} el - The DOM node to center in the viewport.
      */
     centerElement(el) {
@@ -540,9 +525,13 @@ export const SpatialNav = {
 
         if (rowPosters && isCarouselPage) {
             // Calculate and apply custom horizontal carousel scrolling (Netflix-style Column 2 lock)
-            const style = window.getComputedStyle(rowPosters);
-            const paddingLeft = parseFloat(style.paddingLeft) || 0;
-            const posterWidth = el.offsetWidth;
+            // Cache paddingLeft on rowPosters element to eliminate getComputedStyle reflows on each keypress
+            if (rowPosters._cachedPaddingLeft === undefined) {
+                const style = window.getComputedStyle(rowPosters);
+                rowPosters._cachedPaddingLeft = parseFloat(style.paddingLeft) || 0;
+            }
+            const paddingLeft = rowPosters._cachedPaddingLeft;
+            const posterWidth = el.offsetWidth || 154;
             const gap = 14; // Standard gap defined in CSS between poster wrappers
             
             // Align focused item to Column 2 (one poster width + gap offset from the left padding)
@@ -559,19 +548,23 @@ export const SpatialNav = {
             rowPosters.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
 
             // Next, handle smooth vertical centering of the active row container within #main-view
-            const mainView = this.getMainView();
-            if (mainView && mainView.contains(rowPosters)) {
-                const rowRect = rowPosters.getBoundingClientRect();
-                const viewRect = mainView.getBoundingClientRect();
-                
-                // Keep the row centered vertically in the viewport
-                const rowCenter = rowRect.top + rowRect.height / 2;
-                const viewCenter = viewRect.top + viewRect.height / 2;
-                const verticalDiff = rowCenter - viewCenter;
-                
-                // Scroll vertically only if the row is shifted beyond a minor tolerance threshold (e.g. 5px)
-                if (Math.abs(verticalDiff) > 5) {
-                    mainView.scrollBy({ top: verticalDiff, behavior: 'smooth' });
+            // ONLY execute when moving to a DIFFERENT row to avoid concurrent dual smooth-scroll jitter
+            if (this._activeCenteredRow !== rowPosters) {
+                this._activeCenteredRow = rowPosters;
+                const mainView = this.getMainView();
+                if (mainView && mainView.contains(rowPosters)) {
+                    const rowRect = rowPosters.getBoundingClientRect();
+                    const viewRect = mainView.getBoundingClientRect();
+                    
+                    // Keep the row centered vertically in the viewport
+                    const rowCenter = rowRect.top + rowRect.height / 2;
+                    const viewCenter = viewRect.top + viewRect.height / 2;
+                    const verticalDiff = rowCenter - viewCenter;
+                    
+                    // Scroll vertically only if the row is shifted beyond a minor tolerance threshold (e.g. 5px)
+                    if (Math.abs(verticalDiff) > 5) {
+                        mainView.scrollBy({ top: verticalDiff, behavior: 'smooth' });
+                    }
                 }
             }
             return;
@@ -751,6 +744,41 @@ export const SpatialNav = {
             } else if (direction === 'up' || direction === 'down') {
                 const adjacentItem = this.findAdjacentRowItem(current, direction);
                 if (adjacentItem) return adjacentItem;
+            }
+        }
+
+        // 2b. Fast-path: Hero section navigation (Home/Movies/Series hero slider and buttons)
+        const heroContainer = current.closest('#hero-slider, .hero-container, .hero-content');
+        if (heroContainer && !this.focusTrapContainer) {
+            if (direction === 'down') {
+                const mainView = this.getMainView();
+                const firstRowPoster = mainView?.querySelector('.row-posters .poster-wrapper.focusable') || document.querySelector('.row-posters .poster-wrapper.focusable');
+                if (firstRowPoster && this.isVisible(firstRowPoster)) {
+                    return firstRowPoster;
+                }
+            } else if (direction === 'left' && current.id === 'play-btn') {
+                const sidebar = document.getElementById('sidebar-container');
+                if (sidebar) {
+                    const activeNav = sidebar.querySelector('.nav-item.active.focusable') || sidebar.querySelector(this.focusableSelector);
+                    if (activeNav && this.isVisible(activeNav)) return activeNav;
+                }
+            } else if (direction === 'right') {
+                const nextHeroBtn = current.id === 'play-btn' ? document.getElementById('details-btn') : null;
+                if (nextHeroBtn && this.isVisible(nextHeroBtn)) return nextHeroBtn;
+            }
+        }
+
+        // 2c. Fast-path: Returning from sidebar to main content
+        const sidebarContainer = document.getElementById('sidebar-container');
+        if (sidebarContainer && sidebarContainer.contains(current) && !this.focusTrapContainer) {
+            if (direction === 'right') {
+                if (this.lastFocusedElement && this.getMainView()?.contains(this.lastFocusedElement) && this.isVisible(this.lastFocusedElement)) {
+                    return this.lastFocusedElement;
+                }
+                const heroPlayBtn = document.getElementById('play-btn');
+                if (heroPlayBtn && this.isVisible(heroPlayBtn)) return heroPlayBtn;
+                const firstPoster = document.querySelector('.row-posters .poster-wrapper.focusable');
+                if (firstPoster && this.isVisible(firstPoster)) return firstPoster;
             }
         }
 
