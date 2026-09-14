@@ -1,6 +1,9 @@
 package com.kenjigames.ivids;
 
+import android.app.UiModeManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -15,6 +18,7 @@ import java.util.Map;
 public class SettingsBridge {
     private static final String TAG = "SettingsBridge";
     private static final String PREFS_NAME = "ivids_settings";
+    private final Context mContext;
     private final SharedPreferences mPrefs;
 
     /**
@@ -23,6 +27,7 @@ public class SettingsBridge {
      * @param context The application context used to obtain SharedPreferences.
      */
     public SettingsBridge(Context context) {
+        this.mContext = context;
         this.mPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
@@ -88,6 +93,28 @@ public class SettingsBridge {
         } catch (Exception e) {
             Log.e(TAG, "Error retrieving all entries from SharedPreferences", e);
             return "{}";
+        }
+    }
+
+    /**
+     * Checks if the device is running Android TV or Leanback mode.
+     * Queries UiModeManager and PackageManager for TV system features.
+     *
+     * @return true if the active device is an Android TV / Google TV device.
+     */
+    @JavascriptInterface
+    public boolean isTV() {
+        try {
+            UiModeManager uiModeManager = (UiModeManager) mContext.getSystemService(Context.UI_MODE_SERVICE);
+            if (uiModeManager != null && uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+                return true;
+            }
+            PackageManager pm = mContext.getPackageManager();
+            return pm != null && (pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+                    || pm.hasSystemFeature(PackageManager.FEATURE_TELEVISION));
+        } catch (Exception e) {
+            Log.e(TAG, "Error querying TV device mode", e);
+            return false;
         }
     }
 }

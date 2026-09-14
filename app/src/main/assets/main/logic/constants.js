@@ -27,9 +27,9 @@ export const CACHE_CONFIG = Object.freeze({
 export const I18N_CONFIG = Object.freeze({
     DEFAULT_LANGUAGE: 'en',
     AVAILABLE_LANGUAGES: Object.freeze([
-        'ar', 'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi',
+        'ar', 'bg', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'fa', 'fi', 'fr', 'he', 'hi',
         'hr', 'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nl', 'no', 'pl', 'pt',
-        'ro', 'ru', 'sk', 'sv', 'th', 'tl', 'tr', 'uk', 'vi', 'zh'
+        'ro', 'ru', 'sk', 'sr', 'sv', 'th', 'tl', 'tr', 'uk', 'vi', 'zh'
     ])
 });
 

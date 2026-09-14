@@ -145,9 +145,23 @@ export const Api = {
     STILL_SIZE,
     DETAIL_POSTER_SIZE,
 
+    /**
+     * Determines whether the active client is a TV device (Android TV, Tizen, webOS, Google TV).
+     * Checks native AndroidSettings bridge first, followed by UA substring analysis.
+     * @returns {boolean} True if running on a TV platform.
+     */
     isTV: () => {
-        const ua = navigator.userAgent.toLowerCase();
-        return ua.includes('tizen') || ua.includes('webos') || ua.includes('android tv') || ua.includes('smarttv') || !!window.tizen;
+        if (typeof window !== 'undefined' && window.AndroidSettings && typeof window.AndroidSettings.isTV === 'function') {
+            try {
+                if (window.AndroidSettings.isTV()) {
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Error reading AndroidSettings.isTV:', e);
+            }
+        }
+        const ua = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent.toLowerCase() : '';
+        return ua.includes('tizen') || ua.includes('webos') || ua.includes('android tv') || ua.includes('smarttv') || ua.includes('googletv') || ua.includes('aft') || !!(typeof window !== 'undefined' && window.tizen);
     },
 
     /**

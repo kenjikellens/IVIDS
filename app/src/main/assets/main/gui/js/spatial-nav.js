@@ -28,6 +28,20 @@ export const SpatialNav = {
     _prefetchTimer: null,
     _cachedMainView: null,
     _activeCenteredRow: null,
+    _lastNavTimestamp: 0,
+
+    /**
+     * Determines whether the current navigation step should use smooth or instant (auto) scrolling.
+     * If key repeats or rapid navigation happens in quick succession (< 180ms), returns 'auto'
+     * to eliminate animation frame queue buildup and prevent D-pad stutter on Android TV.
+     * @returns {'smooth'|'auto'} The preferred scroll behavior.
+     */
+    getScrollBehavior() {
+        const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        const interval = now - (this._lastNavTimestamp || 0);
+        this._lastNavTimestamp = now;
+        return interval < 180 ? 'auto' : 'smooth';
+    },
 
     /**
      * Checks if the viewport is in portrait mode based on viewport width (less than or equal to 600px).
@@ -518,6 +532,9 @@ export const SpatialNav = {
             return;
         }
 
+        // Dynamically choose smooth vs instant (auto) scroll based on D-pad navigation speed
+        const behavior = this.getScrollBehavior();
+
         // Check if the element belongs to a Netflix-style horizontal row container (.row-posters)
         const rowPosters = el.closest('.row-posters');
 
@@ -544,8 +561,8 @@ export const SpatialNav = {
             const maxScrollLeft = rowPosters.scrollWidth - rowPosters.clientWidth;
             targetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScrollLeft));
             
-            // Perform smooth horizontal scrolling to the calculated index target
-            rowPosters.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+            // Perform horizontal scrolling to the calculated index target (instant if rapid burst, smooth otherwise)
+            rowPosters.scrollTo({ left: targetScrollLeft, behavior });
 
             // Next, handle smooth vertical centering of the active row container within #main-view
             // ONLY execute when moving to a DIFFERENT row to avoid concurrent dual smooth-scroll jitter
@@ -563,7 +580,7 @@ export const SpatialNav = {
                     
                     // Scroll vertically only if the row is shifted beyond a minor tolerance threshold (e.g. 5px)
                     if (Math.abs(verticalDiff) > 5) {
-                        mainView.scrollBy({ top: verticalDiff, behavior: 'smooth' });
+                        mainView.scrollBy({ top: verticalDiff, behavior });
                     }
                 }
             }
@@ -592,13 +609,13 @@ export const SpatialNav = {
             const verticalDiff = elCenter - viewCenter;
 
             try {
-                viewContainer.scrollBy({ top: verticalDiff, behavior: 'smooth' });
+                viewContainer.scrollBy({ top: verticalDiff, behavior });
             } catch (e) {
                 viewContainer.scrollTop += verticalDiff;
             }
         } else {
             try {
-                el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                el.scrollIntoView({ behavior, block: 'nearest', inline: 'nearest' });
             } catch (e) {
                 el.scrollIntoView(false);
             }

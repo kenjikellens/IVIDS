@@ -241,6 +241,7 @@ export function createPosterElement(item, defaultType = null, sizeContainerWidth
     const img = document.createElement('img');
     img.className = 'poster';
     img.decoding = 'async';
+    img.loading = 'lazy';
     img.style.opacity = '0'; // Hide initially
     img.onload = () => {
         img.style.opacity = '1';
