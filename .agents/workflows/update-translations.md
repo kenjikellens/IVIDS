@@ -1,10 +1,10 @@
 ---
-description: Batch translation protocol to update translation keys across all 37 language files in gui/lang/ using an automated Python script.
+description: Batch translation protocol to update translation keys across all language files in gui/lang/ using an automated Python script.
 ---
 
 # Update Translations Workflow
 
-This workflow defines the standardized protocol for adding, modifying, or batch-updating translation keys across all 37 supported languages in the IVIDS application.
+This workflow defines the standardized protocol for adding, modifying, or batch-updating translation keys across all supported language files in the IVIDS application.
 
 ---
 
@@ -31,7 +31,7 @@ This workflow defines the standardized protocol for adding, modifying, or batch-
   with open(EN_PATH, "r", encoding="utf-8") as f:
       en_data = json.load(f)
 
-  # Target language files (all 36 non-English files)
+  # Target language files (all non-English files)
   lang_files = [f for f in os.listdir(LANG_DIR) if f.endswith(".json") and f != "en.json"]
 
   # Translation dictionary directly authored by the agent
@@ -68,7 +68,7 @@ This workflow defines the standardized protocol for adding, modifying, or batch-
 ### 4. Validate Language Files
 - **ACTION**: Validate JSON syntax across all files to ensure no invalid characters or malformed brackets:
   ```powershell
-  py -c "import os, json; dir='app/src/main/assets/main/gui/lang'; [json.load(open(os.path.join(dir, f), encoding='utf-8')) for f in os.listdir(dir) if f.endswith('.json')]; print('All 37 JSON files valid!')"
+  py -c "import os, json; dir='app/src/main/assets/main/gui/lang'; files=[f for f in os.listdir(dir) if f.endswith('.json')]; [json.load(open(os.path.join(dir, f), encoding='utf-8')) for f in files]; print(f'All {len(files)} JSON files valid!')"
   ```
 
 ### 5. Clean Up Scratch Files

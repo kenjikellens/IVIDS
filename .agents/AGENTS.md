@@ -14,5 +14,5 @@ Step-by-step procedural runbooks invoked via slash commands or recommended when 
 
 1. **[/version-and-release-update](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/version-and-release-update.md)**: Protocol for bumping semantic versions, running parallel builds (`IVIDS.exe` and `IVIDS.apk`), tagging the commit, pushing tags, and publishing a verified GitHub Release.
 2. **[/add-page](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/add-page.md)**: End-to-end walkthrough for creating new views (HTML template, JS controller, `global.css`, `sidebar.html`, `router.js`, and i18n keys).
-3. **[/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/update-translations.md)**: Batch translation workflow to sync translation keys across all 37 language files in `gui/lang/` using Python scripts in `scratch/`.
+3. **[/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/update-translations.md)**: Batch translation workflow to sync translation keys across all language files in `gui/lang/` using Python scripts in `scratch/`.
 
