@@ -1,10 +1,10 @@
 ---
-description: Batch translation protocol to update translation keys across all 32 language files in gui/lang/ using an automated Python script.
+description: Batch translation protocol to update translation keys across all 37 language files in gui/lang/ using an automated Python script.
 ---
 
 # Update Translations Workflow
 
-This workflow defines the standardized protocol for adding, modifying, or batch-updating translation keys across all 32 supported languages in the IVIDS application.
+This workflow defines the standardized protocol for adding, modifying, or batch-updating translation keys across all 37 supported languages in the IVIDS application.
 
 ---
 
@@ -18,6 +18,7 @@ This workflow defines the standardized protocol for adding, modifying, or batch-
 
 ### 2. Create the Batch Translation Script
 - **STRICT RULE**: You are strictly FORBIDDEN from editing individual `lang/*.json` files manually one by one.
+- **DIRECT AUTHORING RULE (NO ONLINE APIS)**: The agent MUST write/author all translation strings directly inside the Python script's `new_translations` dictionary. NEVER make external HTTP calls or use online translation APIs (e.g. Google Translate / DeepL endpoints). All translations must be 100% self-contained in the script code so it executes offline in under a second.
 - **Location**: Place the translation script in the workspace or agent scratch folder (e.g., `scratch/sync_translations.py`).
 - **Python Script Structure**:
   ```python
@@ -30,12 +31,12 @@ This workflow defines the standardized protocol for adding, modifying, or batch-
   with open(EN_PATH, "r", encoding="utf-8") as f:
       en_data = json.load(f)
 
-  # Target language files
+  # Target language files (all 36 non-English files)
   lang_files = [f for f in os.listdir(LANG_DIR) if f.endswith(".json") and f != "en.json"]
 
-  # Translation dictionary or automated translation logic for new keys
+  # Translation dictionary directly authored by the agent
   new_translations = {
-      # "key.name": {"nl": "...", "de": "...", "fr": "...", ...}
+      # "key.name": {"nl": "...", "de": "...", "fr": "...", "es": "...", ...}
   }
 
   for lang_file in lang_files:
@@ -67,7 +68,7 @@ This workflow defines the standardized protocol for adding, modifying, or batch-
 ### 4. Validate Language Files
 - **ACTION**: Validate JSON syntax across all files to ensure no invalid characters or malformed brackets:
   ```powershell
-  py -c "import os, json; dir='app/src/main/assets/main/gui/lang'; [json.load(open(os.path.join(dir, f), encoding='utf-8')) for f in os.listdir(dir) if f.endswith('.json')]; print('All 32 JSON files valid!')"
+  py -c "import os, json; dir='app/src/main/assets/main/gui/lang'; [json.load(open(os.path.join(dir, f), encoding='utf-8')) for f in os.listdir(dir) if f.endswith('.json')]; print('All 37 JSON files valid!')"
   ```
 
 ### 5. Clean Up Scratch Files

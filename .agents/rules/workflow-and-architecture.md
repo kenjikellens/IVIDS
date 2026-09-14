@@ -11,7 +11,8 @@ trigger: always_on
 ## 2. i18n & Translation Standards
 - **Never Hardcode Text**: UI text MUST NEVER be hardcoded directly in HTML or JavaScript. Always use `data-i18n` attributes in HTML templates or `window.i18n.t('key')` in JavaScript.
 - **Base Key Entry**: Always add new translation keys to [en.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/lang/en.json) first.
-- **Automated Script Translations**: Updates to translation files (`app/src/main/assets/main/gui/lang/*.json`) across all 32 languages MUST be performed using an automated Python script. Follow the dedicated workflow [/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/update-translations.md). NEVER manually edit individual language JSON files one by one.
+- **Automated Script Translations**: Updates to translation files (`app/src/main/assets/main/gui/lang/*.json`) across all 37 languages MUST be performed using an automated Python script. Follow the dedicated workflow [/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/update-translations.md). NEVER manually edit individual language JSON files one by one.
+- **Direct Authoring in Script (No Online APIs/Web Scraping)**: The agent MUST write/author all translation strings directly in the Python script's dictionary (`new_translations = { ... }`). NEVER make external HTTP requests or scrape online translation services (e.g. Google Translate / DeepL endpoints), which introduce rate limits, slow execution, and fragile dependencies. The script must be completely self-contained and run instantly offline.
 
 ## 3. Windows Python Execution Guardrail
 - **Launcher Rule**: Always execute Python scripts on Windows using the `py` launcher command (e.g., `py ...`), NEVER `python`.
