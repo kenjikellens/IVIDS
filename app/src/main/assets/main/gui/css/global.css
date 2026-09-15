@@ -1935,17 +1935,28 @@ input, textarea, select { font: inherit; }
     outline: none;
 }
 
-/* Explains: Elevated floating state for active reordering - flies above neighboring items. */
+/* Explains: Elevated floating state for active reordering - distinctly lighter background and crisp white border. */
 .provider-item.moving,
 .provider-item.moving:hover,
 .provider-item.moving:focus,
 .provider-item.moving.focused {
-    background: rgba(22, 22, 22, 0.96);
-    border-color: var(--primary-color);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 16px rgba(var(--primary-rgb), 0.45);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffffff;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88);
     outline: none;
-    transform: scale(1.02);
-    z-index: 10;
+    z-index: 20;
+}
+
+/* Explains: Active drag state when moving an item with the mouse cursor. */
+.provider-item.dragging {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: #ffffff;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95);
+    cursor: grabbing !important;
+    opacity: 0.98;
+    outline: none;
+    user-select: none;
+    z-index: 50 !important;
 }
 
 .provider-url-input {
@@ -1973,11 +1984,14 @@ input, textarea, select { font: inherit; }
     width: 44px;
 }
 
-/* Explains: Active state indicator when reordering a provider or playlist item. */
+/* Explains: Grab cursor to indicate draggable handle for cursor/mouse reordering. */
+.provider-move-btn { cursor: grab; }
+.provider-move-btn:active, .provider-item.dragging .provider-move-btn { cursor: grabbing; }
+
+/* Explains: Active state indicator when reordering a provider or playlist item - clean neutral secondary styling. */
 .provider-move-btn.active-moving {
-    animation: pulse-border 1.5s infinite alternate;
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.16);
+    border-color: #ffffff;
 }
 
 /* Utility class for stretching elements to fill 100% width and height. */

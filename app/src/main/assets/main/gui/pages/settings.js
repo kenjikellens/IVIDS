@@ -1089,17 +1089,15 @@ class SettingsManager {
 
             const moveBtn = document.createElement('button');
             moveBtn.className = 'btn btn-secondary edit-trigger provider-move-btn focusable';
+            moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+            moveBtn.title = 'Move';
             if (this.movingProviderId === provider.id) {
                 moveBtn.classList.add('active-moving');
-                moveBtn.innerHTML = '<img src="svg/check-circle.svg" class="setting-edit-icon" alt="Done" />';
-                moveBtn.title = 'Done';
-            } else {
-                moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
-                moveBtn.title = 'Move';
             }
 
             moveBtn.onclick = (e) => {
                 e.stopPropagation();
+                if (moveBtn._justDragged) return;
                 if (this.movingProviderId === null) {
                     this.movingProviderId = provider.id;
                     this.movingOriginalList = this.pendingSettings.playerProviders.map(p => ({ ...p }));
@@ -1116,6 +1114,7 @@ class SettingsManager {
             };
 
             actions.appendChild(moveBtn);
+            this.attachDragHandlers(item, moveBtn, 'playerProviders', provider.id);
 
             if (provider.isCustom) {
                 const deleteBtn = document.createElement('button');
@@ -1178,17 +1177,15 @@ class SettingsManager {
 
             const moveBtn = document.createElement('button');
             moveBtn.className = 'btn btn-secondary edit-trigger provider-move-btn focusable';
+            moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+            moveBtn.title = 'Move';
             if (this.movingM3uId === playlist.id) {
                 moveBtn.classList.add('active-moving');
-                moveBtn.innerHTML = '<img src="svg/check-circle.svg" class="setting-edit-icon" alt="Done" />';
-                moveBtn.title = 'Done';
-            } else {
-                moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
-                moveBtn.title = 'Move';
             }
 
             moveBtn.onclick = (e) => {
                 e.stopPropagation();
+                if (moveBtn._justDragged) return;
                 if (this.movingM3uId === null) {
                     this.movingM3uId = playlist.id;
                     this.movingOriginalList = this.pendingSettings.m3uPlaylists.map(p => ({ ...p }));
@@ -1205,6 +1202,7 @@ class SettingsManager {
             };
 
             actions.appendChild(moveBtn);
+            this.attachDragHandlers(item, moveBtn, 'm3uPlaylists', playlist.id);
 
             if (playlist.isCustom) {
                 const deleteBtn = document.createElement('button');
@@ -1235,13 +1233,117 @@ class SettingsManager {
     }
 
     /**
+     * Attaches mouse/touch pointer drag handlers to reorder provider or playlist items with the cursor.
+     * Allows seamless click-and-drag reordering with mouse while preserving click/Enter for TV remote navigation.
+     * @param {HTMLElement} item - The item container DOM element.
+     * @param {HTMLElement} moveBtn - The move button handle.
+     * @param {string} key - 'playerProviders' or 'm3uPlaylists'.
+     * @param {string} id - The unique ID of the provider or playlist.
+     */
+    attachDragHandlers(item, moveBtn, key, id) {
+        let isDragging = false;
+        let startClientY = 0;
+        let dragOffset = 0;
+        let listContainer = item.parentElement;
+
+        const onPointerMove = (e) => {
+            const deltaY = e.clientY - startClientY;
+            if (!isDragging) {
+                if (Math.abs(deltaY) > 4) {
+                    isDragging = true;
+                    item.classList.add('moving', 'dragging');
+                    item.style.pointerEvents = 'none';
+                }
+            }
+
+            if (isDragging) {
+                item.style.transform = `translateY(${deltaY + dragOffset}px)`;
+
+                const targetEl = document.elementFromPoint(e.clientX, e.clientY);
+                const sibling = targetEl ? targetEl.closest('.provider-item') : null;
+
+                if (sibling && sibling !== item && sibling.parentElement === listContainer) {
+                    const list = this.pendingSettings[key];
+                    const fromIdx = list.findIndex(p => p.id === id);
+                    const toIdx = list.findIndex(p => p.id === sibling.dataset.id);
+
+                    if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
+                        const oldRect = item.getBoundingClientRect();
+                        const temp = list[fromIdx];
+                        list[fromIdx] = list[toIdx];
+                        list[toIdx] = temp;
+
+                        if (fromIdx < toIdx) {
+                            sibling.after(item);
+                        } else {
+                            sibling.before(item);
+                        }
+
+                        const newRect = item.getBoundingClientRect();
+                        dragOffset += (oldRect.top - newRect.top);
+                        item.style.transform = `translateY(${deltaY + dragOffset}px)`;
+                    }
+                }
+            }
+        };
+
+        const onPointerUp = () => {
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerup', onPointerUp);
+            window.removeEventListener('pointercancel', onPointerUp);
+
+            if (isDragging) {
+                isDragging = false;
+                item.classList.remove('dragging');
+                item.style.transform = '';
+                item.style.pointerEvents = '';
+
+                moveBtn._justDragged = true;
+                setTimeout(() => {
+                    delete moveBtn._justDragged;
+                }, 120);
+
+                if (key === 'playerProviders') {
+                    this.renderPlayerProviders();
+                } else {
+                    this.renderM3uPlaylists();
+                }
+
+                const newBtn = document.querySelector(`.provider-item[data-id="${id}"] .provider-move-btn`);
+                if (newBtn) {
+                    newBtn.focus();
+                    if (window.SpatialNav) window.SpatialNav.setFocus(newBtn);
+                }
+            }
+        };
+
+        const onPointerDown = (e) => {
+            if (e.button !== 0) return;
+            if (e.target.closest('input, .provider-delete-btn')) return;
+
+            startClientY = e.clientY;
+            dragOffset = 0;
+            listContainer = item.parentElement;
+
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
+            window.addEventListener('pointercancel', onPointerUp);
+        };
+
+        moveBtn.addEventListener('pointerdown', onPointerDown);
+        item.addEventListener('pointerdown', onPointerDown);
+    }
+
+    /**
      * Swaps the position of an item in the pending settings array with its neighbor to adjust its priority.
-     * Uses FLIP (First, Last, Invert, Play) animation to smoothly glide the elevated item above the list while sliding the neighbor.
+     * Smoothly animates the two swapping elements in the DOM before updating data and focus.
      * @param {string} key - The settings key (playerProviders or m3uPlaylists).
      * @param {string} id - The ID of the item to move.
      * @param {number} direction - The index delta (-1 for up, 1 for down).
      */
     moveItem(key, id, direction) {
+        if (this._isAnimatingMove) return;
+
         const list = this.pendingSettings[key];
         const index = list.findIndex(p => p.id === id);
         if (index === -1) return;
@@ -1251,71 +1353,51 @@ class SettingsManager {
 
         const containerId = key === 'playerProviders' ? 'player-providers-list' : 'm3u-playlists-list';
         const container = document.getElementById(containerId);
-        const prevTops = new Map();
+        if (!container) return;
 
-        if (container) {
-            container.querySelectorAll('.provider-item').forEach(el => {
-                if (el.dataset.id) {
-                    prevTops.set(el.dataset.id, el.getBoundingClientRect().top);
-                }
-            });
-        }
+        const items = Array.from(container.querySelectorAll('.provider-item'));
+        const currentItem = items[index];
+        const targetItem = items[targetIndex];
 
+        if (!currentItem || !targetItem) return;
+
+        this._isAnimatingMove = true;
+
+        // Calculate exact distance to slide based on element heights and gaps
+        const currentRect = currentItem.getBoundingClientRect();
+        const targetRect = targetItem.getBoundingClientRect();
+        const deltaCurrent = targetRect.top - currentRect.top;
+        const deltaTarget = currentRect.top - targetRect.top;
+
+        // Animate both elements simultaneously with smooth bezier transition
+        currentItem.style.transition = 'transform 200ms cubic-bezier(0.2, 0, 0, 1)';
+        targetItem.style.transition = 'transform 200ms cubic-bezier(0.2, 0, 0, 1)';
+        currentItem.style.zIndex = '30';
+        targetItem.style.zIndex = '10';
+
+        currentItem.style.transform = `translateY(${deltaCurrent}px)`;
+        targetItem.style.transform = `translateY(${deltaTarget}px)`;
+
+        // Swap the data in pendingSettings
         const temp = list[index];
         list[index] = list[targetIndex];
         list[targetIndex] = temp;
 
-        if (key === 'playerProviders') {
-            this.renderPlayerProviders();
-        } else {
-            this.renderM3uPlaylists();
-        }
-
-        const newContainer = document.getElementById(containerId);
-        if (newContainer && prevTops.size > 0) {
-            const animatedItems = [];
-            newContainer.querySelectorAll('.provider-item').forEach(el => {
-                const itemId = el.dataset.id;
-                if (itemId && prevTops.has(itemId)) {
-                    const oldTop = prevTops.get(itemId);
-                    const newTop = el.getBoundingClientRect().top;
-                    const deltaY = oldTop - newTop;
-                    if (deltaY !== 0) {
-                        const isMoving = el.classList.contains('moving');
-                        el.style.transition = 'none';
-                        el.style.transform = isMoving 
-                            ? `translateY(${deltaY}px) scale(1.02)` 
-                            : `translateY(${deltaY}px)`;
-                        animatedItems.push({ el, isMoving });
-                    }
-                }
-            });
-
-            if (animatedItems.length > 0) {
-                // Force layout reflow before triggering smooth play transition
-                void newContainer.offsetHeight;
-
-                requestAnimationFrame(() => {
-                    animatedItems.forEach(({ el, isMoving }) => {
-                        el.style.transition = 'transform 240ms cubic-bezier(0.2, 0, 0, 1)';
-                        el.style.transform = isMoving ? 'translateY(0) scale(1.02)' : 'translateY(0)';
-                    });
-
-                    setTimeout(() => {
-                        animatedItems.forEach(({ el }) => {
-                            el.style.transition = '';
-                            el.style.transform = '';
-                        });
-                    }, 260);
-                });
+        setTimeout(() => {
+            if (key === 'playerProviders') {
+                this.renderPlayerProviders();
+            } else {
+                this.renderM3uPlaylists();
             }
-        }
 
-        const btn = document.querySelector(`.provider-item[data-id="${id}"] .provider-move-btn`);
-        if (btn) {
-            btn.focus();
-            if (window.SpatialNav) window.SpatialNav.setFocus(btn);
-        }
+            this._isAnimatingMove = false;
+
+            const btn = document.querySelector(`.provider-item[data-id="${id}"] .provider-move-btn`);
+            if (btn) {
+                btn.focus();
+                if (window.SpatialNav) window.SpatialNav.setFocus(btn);
+            }
+        }, 205);
     }
 
     /**
