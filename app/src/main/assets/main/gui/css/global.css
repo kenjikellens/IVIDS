@@ -31,10 +31,10 @@
     --poster-width: clamp(120px, 10.5vw, 154px);
     --primary-color: #46d369;
     --primary-rgb: 70, 211, 105;
-    --radius-lg: 12px;
-    --radius-md: 8px;
-    --radius-sm: 6px;
-    --radius-xs: 4px;
+    --radius-lg: 5px;
+    --radius-md: 5px;
+    --radius-sm: 5px;
+    --radius-xs: 5px;
     --row-min-height: calc(var(--poster-height) + 40px);
     --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.36);
     --shadow-panel: 0 18px 48px rgba(0, 0, 0, 0.48);
@@ -118,20 +118,23 @@ input, textarea, select { font: inherit; }
     justify-content: center;
     min-height: 48px;
     padding: 9px 23px;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease;
     white-space: nowrap;
 }
 
-.btn:disabled { opacity: 0.6; pointer-events: none; }
+.btn:disabled { background: rgba(255, 255, 255, 0.06); cursor: not-allowed; opacity: 0.4; pointer-events: none; }
 
-.btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid rgba(var(--primary-rgb), 0.4); color: #fff; font-weight: 800; }
-.btn-primary:hover, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.4); border-color: #fff; color: #fff; outline: none; }
+.btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid transparent; color: #fff; font-weight: 800; }
+.btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #fff; outline: none; }
+.btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #fff; color: #fff; outline: none; }
 
 .btn-secondary { background: rgba(255, 255, 255, 0.15); border: 3px solid transparent; color: #fff; }
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border-color: #fff; color: #fff; outline: none; }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.22); border-color: transparent; color: #fff; outline: none; }
+.btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.22); border-color: #fff; color: #fff; outline: none; }
 
-.btn-danger { background: #b92b23; border: 3px solid #b92b23; color: #fff; }
-.btn-danger:hover, .btn-danger:focus, .btn-danger.focused { background: #b92b23; border-color: #fff; color: #fff; outline: none; }
+.btn-danger { background: #b92b23; border: 3px solid transparent; color: #fff; }
+.btn-danger:hover { background: #d43830; border-color: transparent; color: #fff; outline: none; }
+.btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #fff; color: #fff; outline: none; }
 
 .btn-circle { align-items: center; border-radius: 50%; display: inline-flex; flex-shrink: 0; height: 48px; justify-content: center; min-height: 48px; padding: 0; width: 48px; }
 
@@ -217,7 +220,7 @@ input, textarea, select { font: inherit; }
 /* Media poster wrapper for horizontal rails and search grids with smooth hover scale */
 .poster-wrapper {
     background: var(--surface-soft);
-    border: 2px solid transparent;
+    border: 3px solid transparent;
     border-radius: var(--radius-sm);
     contain: layout;
     cursor: pointer;
@@ -226,8 +229,7 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transform: scale(1);
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, transform 0.16s ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
     width: var(--poster-width);
 }
 
@@ -235,7 +237,7 @@ input, textarea, select { font: inherit; }
 .playlist-card {
     aspect-ratio: 16 / 9;
     background: var(--surface-soft);
-    border: 2px solid transparent;
+    border: 3px solid transparent;
     border-radius: var(--radius-sm);
     contain: layout;
     cursor: pointer;
@@ -244,8 +246,7 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transform: scale(1);
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, transform 0.16s ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
     width: 100%;
 }
 
@@ -256,15 +257,16 @@ input, textarea, select { font: inherit; }
 .playlist-card:focus,
 .playlist-card.focused {
     border-color: #ffffff;
-    box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.6);
+    box-shadow: none;
     outline: none;
+    z-index: 10;
 }
 
 /* CSS Class: Styles the individual poster image, applying a default 20% dimming filter. */
 .poster, .poster-img { display: block; height: 100%; object-fit: cover; transition: opacity 0.25s ease, filter 0.16s ease; width: 100%; filter: brightness(0.8); }
 
 /* CSS Class: Restores full brightness to poster images when their wrapper is hovered, focused, or has focused state. */
-.poster-wrapper:hover .poster, .poster-wrapper:focus .poster, .poster-wrapper.focused .poster, .poster-wrapper:hover .poster-img, .poster-wrapper:focus .poster-img, .poster-wrapper.focused .poster-img { filter: brightness(1); }
+.poster-wrapper:hover .poster, .poster-wrapper:focus .poster, .poster-wrapper.focused .poster, .poster-wrapper:hover .poster-img, .poster-wrapper:focus .poster-img, .poster-wrapper.focused .poster-img, .playlist-card:hover .poster, .playlist-card:hover img { filter: brightness(1.1); }
 
 
 
@@ -633,7 +635,8 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover, focus and active states for navigation menu link buttons. */
-.nav-item:hover, .nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: #ffffff; }
+.nav-item:hover { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: transparent; }
+.nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: #ffffff; }
 
 /* Active navigation item background color highlight styling. */
 .nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #fff; }
@@ -754,7 +757,7 @@ input, textarea, select { font: inherit; }
     z-index: 50;
 }
 
-.handle:hover { background: rgba(255, 255, 255, 0.14); border-color: #fff; outline: none; }
+.handle:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; outline: none; }
 
 
 .row:nth-child(2) { animation-delay: 0.08s; }
@@ -800,7 +803,7 @@ input, textarea, select { font: inherit; }
 
 .details-info { flex: 1; max-width: 50%; }
 
-.details-hero-poster { border: 0.1875rem solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
+.details-hero-poster { border: 0.1875rem solid rgba(255, 255, 255, 0.1); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
 
 .details-title { font-size: 3.125rem; font-weight: bold; margin-bottom: 1.25rem; text-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5); }
 
@@ -808,14 +811,14 @@ input, textarea, select { font: inherit; }
 
 /* Styling for metadata tags in the details view (date box and rating chip). */
 /* Specific styling for the release date tag */
-.date-box { background: var(--primary-color); border-radius: 4px; color: #000; font-size: 16px; font-weight: bold; padding: 4px 10px; }
+.date-box { background: var(--primary-color); border-radius: 5px; color: #000; font-size: 16px; font-weight: bold; padding: 4px 10px; }
 
 /* Styling for metadata tags in the details view (date box and rating chip). */
 /* Specific styling for age rating indicator tags */
 .rating-chip {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    border-radius: 5px;
     color: #fff;
     font-size: 16px;
     font-weight: bold;
@@ -831,7 +834,7 @@ input, textarea, select { font: inherit; }
     backdrop-filter: blur(5px);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    border-radius: 5px;
     color: #fff;
     font-family: inherit;
     font-size: 14px;
@@ -839,7 +842,8 @@ input, textarea, select { font: inherit; }
     transition: border-color 0.16s ease, background-color 0.16s ease;
 }
 
-.genre-chip.focused, .genre-chip:hover { background: rgba(255, 255, 255, 0.2); border-color: #ffffff; cursor: pointer; outline: none; }
+.genre-chip:hover { background: rgba(255, 255, 255, 0.2); border-color: transparent; cursor: pointer; outline: none; }
+.genre-chip.focused, .genre-chip:focus { background: rgba(255, 255, 255, 0.2); border-color: #ffffff; cursor: pointer; outline: none; }
 
 .details-overview { color: #ddd; font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
 
@@ -861,7 +865,7 @@ input, textarea, select { font: inherit; }
     backdrop-filter: blur(10px);
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 5px;
     flex-shrink: 0;
     max-height: 600px;
     overflow-y: auto;
@@ -875,7 +879,7 @@ input, textarea, select { font: inherit; }
 .episode-item {
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid transparent;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
     display: flex;
     gap: 20px;
@@ -884,13 +888,14 @@ input, textarea, select { font: inherit; }
     transition: all 0.2s ease;
 }
 
-.episode-item:hover, .episode-item.focused { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
+.episode-item:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; }
+.episode-item:focus, .episode-item.focused { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
 
 .episode-image {
     background-color: #000;
     background-position: center;
     background-size: cover;
-    border-radius: 4px;
+    border-radius: 5px;
     flex-shrink: 0;
     height: 112px;
     width: 200px;
@@ -979,7 +984,8 @@ input, textarea, select { font: inherit; }
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.filter-select-wrapper:focus-within, .filter-select-wrapper.focused, .filter-select-wrapper:hover, .input-wrapper:focus-within, .input-wrapper.focused, .input-wrapper:hover { background: rgba(255, 255, 255, 0.08); border-color: #fff; }
+.filter-select-wrapper:hover, .input-wrapper:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
+.filter-select-wrapper:focus-within, .filter-select-wrapper.focused, .input-wrapper:focus-within, .input-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #fff; }
 
 .filter-select {
     -moz-appearance: none;
@@ -1030,7 +1036,8 @@ input, textarea, select { font: inherit; }
 }
 
 /* Explains: Focus and hover styles for search clear button. */
-.search-clear-btn:hover, .search-clear-btn:focus, .search-clear-btn.focused { border: 2px solid #fff; border-radius: 50%; color: #fff; outline: none; }
+.search-clear-btn:hover { border: 2px solid transparent; color: #fff; outline: none; }
+.search-clear-btn:focus, .search-clear-btn.focused { border: 2px solid #fff; border-radius: 50%; color: #fff; outline: none; }
 
 .category-chip {
     align-items: center;
@@ -1048,11 +1055,13 @@ input, textarea, select { font: inherit; }
     transition: background 0.16s, border-color 0.16s, color 0.16s;
 }
 
-.category-chip:hover, .category-chip:focus, .category-chip.focused { background: rgba(255, 255, 255, 0.12); border-color: #fff; color: #fff; outline: none; }
+.category-chip:hover { background: rgba(255, 255, 255, 0.12); border-color: transparent; color: #fff; outline: none; }
+.category-chip:focus, .category-chip.focused { background: rgba(255, 255, 255, 0.12); border-color: #fff; color: #fff; outline: none; }
 
-.category-chip.active { background: rgba(var(--primary-rgb), 0.15); border-color: var(--primary-color); color: var(--primary-color); }
+.category-chip.active { background: var(--primary-color); border-color: transparent; color: #050505; }
 
-.category-chip.active:hover, .category-chip.active:focus, .category-chip.active.focused { border-color: #fff; color: #fff; }
+.category-chip.active:hover { border-color: transparent; color: #050505; }
+.category-chip.active:focus, .category-chip.active.focused { border-color: #fff; color: #050505; }
 
 
 .livetv-two-column-layout { box-sizing: border-box; display: flex; flex: 1; gap: 2%; min-height: 0; padding: 1.5rem var(--app-content-padding-x) var(--app-content-padding-x); }
@@ -1180,7 +1189,7 @@ input, textarea, select { font: inherit; }
 
 .epg-show-title { color: #fff; font-size: 24px; font-weight: 800; text-align: left; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
 
-.epg-progress-bar-container { background: rgba(255, 255, 255, 0.1); border-radius: 4px; flex: 1; height: 8px; overflow: hidden; }
+.epg-progress-bar-container { background: rgba(255, 255, 255, 0.1); border-radius: 5px; flex: 1; height: 8px; overflow: hidden; }
 
 /* Explains: Progress bar fill indicating program duration in the Live TV EPG details card. */
 .epg-progress-bar-fill { background: var(--primary-color); height: 100%; transition: width 0.3s ease; width: 0%; }
@@ -1306,7 +1315,8 @@ input, textarea, select { font: inherit; }
 
 .play-pause-btn { background: var(--primary-color); color: #fff; height: 68px; width: 68px; }
 
-.play-pause-btn:hover, .play-pause-btn:focus, .play-pause-btn.focused { background: var(--primary-color); border-color: #fff; }
+.play-pause-btn:hover { background: var(--primary-color); border-color: transparent; }
+.play-pause-btn:focus, .play-pause-btn.focused { background: var(--primary-color); border-color: #fff; }
 
 .tv-info { display: flex; flex-direction: column; justify-content: center; max-width: 50vw; }
 
@@ -1357,7 +1367,7 @@ input, textarea, select { font: inherit; }
     align-items: center;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
+    border-radius: 5px;
     display: flex;
     gap: 8px;
     padding: 6px 14px;
@@ -1578,8 +1588,8 @@ input, textarea, select { font: inherit; }
 .recent-item {
     align-items: center;
     background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
+    border: 3px solid transparent;
+    border-radius: 5px;
     color: #fff;
     cursor: pointer;
     display: inline-flex;
@@ -1593,8 +1603,8 @@ input, textarea, select { font: inherit; }
 .clear-recents-btn {
     align-items: center;
     background: rgba(255, 255, 255, 0.04);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
+    border: 3px solid transparent;
+    border-radius: 5px;
     color: var(--text-muted);
     cursor: pointer;
     display: inline-flex;
@@ -1610,7 +1620,8 @@ input, textarea, select { font: inherit; }
 }
 
 /* Handles hover and focus states for the clear recent searches button with a thicker white border. */
-.clear-recents-btn:hover, .clear-recents-btn:focus, .clear-recents-btn.focused { background: rgba(255, 255, 255, 0.1); border: 2px solid #fff; color: #fff; outline: none; }
+.clear-recents-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; color: #fff; outline: none; }
+.clear-recents-btn:focus, .clear-recents-btn.focused { background: rgba(255, 255, 255, 0.1); border-color: #fff; color: #fff; outline: none; }
 
 .trash-icon { color: currentColor; height: 14px; width: 14px; }
 
@@ -1704,10 +1715,10 @@ input, textarea, select { font: inherit; }
 }
 
 /* Styles active and selected states of filter chips, selection options, and settings items with theme highlight. */
-.filter-chip.active, .filter-chip.selected, .select-item.selected, .select-item.active, .option-chip.active { background: rgba(var(--primary-rgb), 0.18); border-color: var(--primary-color); }
+.filter-chip.active, .filter-chip.selected, .select-item.selected, .select-item.active, .option-chip.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
 
 /* Styles the checkmark indicator in front of selected filter chips. */
-.filter-chip.selected::before { content: "✓"; display: inline-block; margin-right: 6px; color: var(--primary-color); font-weight: 900; font-size: 16px; }
+.filter-chip.selected::before { content: "✓"; display: inline-block; margin-right: 6px; color: #050505; font-weight: 900; font-size: 16px; }
 
 .filter-input, .filter-select-btn, .modal-search-input {
     align-items: center;
@@ -1792,17 +1803,17 @@ input, textarea, select { font: inherit; }
     justify-content: center;
 }
 
-/* Explains: Premium custom toggle switch container with border highlight focus. */
+/* Explains: Custom toggle switch container with white border on focus and smooth background hover. */
 .switch-container {
     position: relative;
     display: inline-block;
     width: 52px;
     height: 28px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.2);
     border-radius: 999px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.05);
-    transition: background-color 0.2s, border-color 0.2s;
+    background: rgba(255, 255, 255, 0.08);
+    transition: background-color 150ms ease, border-color 150ms ease;
     outline: none;
     box-sizing: border-box;
 }
@@ -1818,48 +1829,72 @@ input, textarea, select { font: inherit; }
 .switch-slider {
     position: absolute;
     cursor: pointer;
-    top: 3px;
-    left: 4px;
-    background-color: rgba(255, 255, 255, 0.38);
-    transition: left 0.2s, background-color 0.2s;
+    top: 2px;
+    left: 3px;
+    background-color: rgba(255, 255, 255, 0.45);
+    transition: left 0.2s ease, background-color 0.2s ease, filter 0.2s ease;
     border-radius: 50%;
     width: 18px;
     height: 18px;
 }
 
+/* Explains: Hover state for switch container and its slider thumb. */
+.switch-container:hover {
+    background-color: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.switch-container:hover .switch-slider {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
 /* Explains: Active/checked state for toggle switch using theme accent color. */
 .switch-container:has(input:checked) {
-    background-color: rgba(var(--primary-rgb), 0.18);
+    background-color: rgba(var(--primary-rgb), 0.25);
     border-color: var(--primary-color);
 }
 
 .switch-container:has(input:checked) .switch-slider {
-    left: 26px;
+    left: 25px;
     background-color: var(--primary-color);
 }
 
-/* Explains: Focus styling as per user rules (white thicker border, no scale). */
+/* Explains: Hover state for checked/turned on switch container. */
+.switch-container:has(input:checked):hover {
+    background-color: rgba(var(--primary-rgb), 0.38);
+    border-color: var(--primary-color);
+}
+
+.switch-container:has(input:checked):hover .switch-slider {
+    filter: brightness(1.2);
+}
+
+/* Explains: Focus styling with solid white border whether checked or unchecked. */
 .switch-container:focus,
-.switch-container.focused {
+.switch-container.focused,
+.switch-container:has(input:checked):focus,
+.switch-container:has(input:checked).focused,
+.switch-container:focus-visible {
     border-color: #ffffff;
-    border-width: 3px;
+    outline: none;
 }
 
 .edit-trigger {
     align-items: center;
     background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid transparent;
     border-radius: var(--radius-md);
     cursor: pointer;
     display: flex;
     height: 48px;
     justify-content: center;
     padding: 0;
-    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
     width: 48px;
 }
 
-.edit-trigger:hover, .edit-trigger:focus, .edit-trigger.focused { background: rgba(255, 255, 255, 0.14); }
+.edit-trigger:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; }
+.edit-trigger:focus, .edit-trigger.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; }
 
 .setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
 
@@ -1867,7 +1902,7 @@ input, textarea, select { font: inherit; }
 
 .loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
 
-.edit-trigger:active, .option-chip:active { background: rgba(255, 255, 255, 0.2); transform: scale(0.95); }
+.edit-trigger:active, .option-chip:active { background: rgba(255, 255, 255, 0.2); }
 
 .providers-list { display: flex; flex-direction: column; gap: 1.5%; margin-bottom: 2%; width: 100%; }
 
@@ -1899,7 +1934,7 @@ input, textarea, select { font: inherit; }
     padding: 0 14px;
 }
 
-.provider-url-input:focus, .provider-url-input.focused { border-color: #fff; box-shadow: none; outline: 2px solid #fff; outline-offset: 0px; }
+.provider-url-input:focus, .provider-url-input.focused { border-color: #fff; box-shadow: none; outline: none; }
 
 .provider-actions { align-items: center; display: flex; gap: 8px; }
 
@@ -2001,7 +2036,7 @@ input, textarea, select { font: inherit; }
 .option-chip {
     align-items: center;
     background: rgba(255, 255, 255, 0.07);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid transparent;
     border-radius: var(--radius-md);
     color: #fff;
     cursor: pointer;
@@ -2013,11 +2048,14 @@ input, textarea, select { font: inherit; }
     padding: 14px 16px;
     position: relative;
     text-align: center;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
 }
 
+.option-chip:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; }
+.option-chip:focus, .option-chip.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; }
+
 .option-chip.active::after {
-    background: var(--primary-color);
+    background: #050505;
     border-radius: 999px;
     content: "";
     height: 8px;
@@ -2108,9 +2146,10 @@ input, textarea, select { font: inherit; }
 
 .hero-buttons, .color-picker, .profile-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
-#account-switch-profile-btn { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.14); color: #fff; }
+#account-switch-profile-btn { background: rgba(255, 255, 255, 0.1); border: 3px solid transparent; color: #fff; }
 
-#account-switch-profile-btn:hover, #account-switch-profile-btn:focus, #account-switch-profile-btn.focused { background: #fff; border-color: #fff; color: #050505; }
+#account-switch-profile-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: transparent; color: #fff; }
+#account-switch-profile-btn:focus, #account-switch-profile-btn.focused { background: #fff; border-color: #fff; color: #050505; }
 
 /* Custom Modal Overrides for perfect visibility and rendering */
 .modal-overlay {
@@ -2205,7 +2244,7 @@ input, textarea, select { font: inherit; }
 .version-badge-container { align-items: center; display: flex; flex-direction: row; justify-content: center; gap: 14px; margin-bottom: 8px; }
 
 /* CSS Class: Typography styling for the individual version identifier tags. */
-.version-badge { border-radius: 12px; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; }
+.version-badge { border-radius: 5px; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; }
 
 /* CSS Class: Version badge highlighting the currently installed release. */
 .version-badge.current { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.65); }
@@ -2256,7 +2295,7 @@ input, textarea, select { font: inherit; }
 .update-changelog-body {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    border-radius: 5px;
     box-sizing: border-box;
     color: rgba(255, 255, 255, 0.75);
     font-size: 0.88rem;
@@ -2274,7 +2313,7 @@ input, textarea, select { font: inherit; }
 /* CSS Class: Button overrides inside the update modal to ensure TV focus compatibility. */
 .update-footer-actions .btn {
     align-items: center;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     display: inline-flex;
     font-family: inherit;
@@ -2299,7 +2338,7 @@ input, textarea, select { font: inherit; }
 .update-progress-bar-bg {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
+    border-radius: 5px;
     height: 10px;
     overflow: hidden;
     position: relative;
@@ -2309,7 +2348,7 @@ input, textarea, select { font: inherit; }
 /* CSS Class: Colored bar indicating percentage completed in downloading sequence. */
 .update-progress-bar {
     background: var(--primary-color);
-    border-radius: 6px;
+    border-radius: 5px;
     bottom: 0;
     box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6);
     left: 0;
@@ -2328,17 +2367,39 @@ input, textarea, select { font: inherit; }
    SECTION 27: APP UPDATE SYSTEM - VERSION MODAL
    ========================================================================== */
 /* CSS Class: Content container for the version selector modal with minimized padding and wider layout. */
-.version-modal-content { display: flex; flex-direction: column; max-height: 80vh; overflow: hidden; padding: 6px 6px 2px 6px; width: min(640px, 90vw); }
+/* CSS Class: Modal dialog container sizing for the version selection list. */
+.version-modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 82vh;
+    overflow: hidden;
+    padding: 24px 20px 16px;
+    width: min(640px, 92vw);
+}
 
 /* CSS Class: Title override specifically for version modal to minimize top space. */
-.version-modal-content .modal-title { padding: 12px 16px 6px; margin-bottom: 6px; }
+.version-modal-content .modal-title {
+    padding: 0 0 16px;
+    margin-bottom: 0;
+}
 
 /* Scrollable body inside version modal. Uses flex-shrink so it yields
    space to the footer, preventing buttons from clipping out of view. */
-.scrollable-modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 4px 16px; scrollbar-color: rgba(255, 255, 255, 0.35) transparent; scrollbar-width: thin; }
+.scrollable-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 4px 6px;
+    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+    scrollbar-width: thin;
+}
 
 /* CSS Class: Footer inside the version modal with extra button padding and reduced margin. */
-.version-modal-content .modal-footer { flex-shrink: 0; margin-top: 4px; padding: 12px 8px 8px; }
+.version-modal-content .modal-footer {
+    flex-shrink: 0;
+    margin-top: 12px;
+    padding: 12px 0 0;
+}
 
 .livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar, .scrollable-modal-body::-webkit-scrollbar { width: 6px; }
 
@@ -2348,38 +2409,51 @@ input, textarea, select { font: inherit; }
 
 .scrollable-modal-body::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
 
-/* CSS Class: Version selector option grid with single column display and tight vertical gaps. */
-.option-grid.version-option-grid { gap: 6px; grid-template-columns: 1fr; overflow: hidden; width: 100%; }
-
-/* CSS Class: Row wrapper containing a version chip and its corresponding info button side by side. */
-.version-row-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: calc(100% - 16px);
-    margin: 0 auto;
+/* CSS Class: Version selector vertical list keeping items strictly stacked one below each other. */
+.version-option-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px;
+    overflow: hidden;
+    padding: 4px 0 8px;
+    width: 100%;
 }
 
-/* CSS Class: Individual option chip card within the version selector, stretching to fill the row width. */
-.version-option-grid .option-chip {
+/* CSS Class: Individual option chip card within the version selector with transparent background and thin border. */
+.version-option-list .option-chip {
     align-items: center;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
     box-sizing: border-box;
+    cursor: pointer;
     display: flex;
     flex-direction: row;
-    flex: 1;
+    min-height: 60px;
     overflow: hidden;
+    padding: 12px 18px;
+    text-align: left;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 100%;
 }
 
-/* CSS Class: Version details info button with margin reset. */
-.version-option-grid .version-info-btn {
-    margin: 0;
+.version-option-list .option-chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
-.hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 10px; width: 100%; }
+.version-option-list .option-chip:focus,
+.version-option-list .option-chip.focused {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid #ffffff;
+    outline: none;
+}
+
+.hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 8px; width: 100%; }
 
 .version-tag-badge {
     background: var(--primary-color, #46d369);
-    border-radius: 4px;
+    border-radius: 5px;
     color: #050505;
     font-size: 9px;
     font-weight: 900;
@@ -2388,12 +2462,23 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Date label positioned next to the version badge without taking up extra margins. */
-.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; }
+.version-date-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
 
-.version-chip-title { color: #ffffff; font-size: 14px; font-weight: 700; margin-top: 4px; text-align: left; }
+.version-chip-title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 2px;
+    text-align: left;
+}
 
 .version-chip-desc {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.65);
     font-size: 12px;
     overflow: hidden;
     text-align: left;
@@ -2434,7 +2519,7 @@ input, textarea, select { font: inherit; }
 .dev-version-card {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 5px;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -2604,7 +2689,8 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* Thicker white focus outline for episodes list */
-.disney-extra-item:hover, .disney-extra-item.focused, .disney-episode-item:hover, .disney-episode-item.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+.disney-extra-item:hover, .disney-episode-item:hover { background: rgba(255, 255, 255, 0.08); border-color: transparent; outline: none; }
+.disney-extra-item.focused, .disney-extra-item:focus, .disney-episode-item.focused, .disney-episode-item:focus { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
 
 .disney-extra-thumb-left { aspect-ratio: 16 / 9; background-color: var(--surface-soft); background-position: center; background-size: cover; position: relative; width: 25%; }
 
@@ -2816,7 +2902,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 .markdown-body li, .update-changelog-body li { line-height: 1.5; margin-bottom: 4px; }
 
 /* Styles inline code elements inside markdown content. */
-.markdown-body code, .update-changelog-body code { background: rgba(255, 255, 255, 0.08); border-radius: 4px; font-family: monospace; font-size: 0.85rem; padding: 2px 6px; word-break: break-all; }
+.markdown-body code, .update-changelog-body code { background: rgba(255, 255, 255, 0.08); border-radius: 5px; font-family: monospace; font-size: 0.85rem; padding: 2px 6px; word-break: break-all; }
 
 /* Styles anchor links in markdown blocks with theme accent color. */
 .markdown-body a, .update-changelog-body a { color: var(--primary-color); text-decoration: underline; }
@@ -2824,15 +2910,16 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Styles focused or hovered anchor links in markdown blocks. */
 .markdown-body a:hover, .markdown-body a:focus, .update-changelog-body a:hover, .update-changelog-body a:focus { color: #fff; text-decoration: underline; }
 
-/* ==========================================================================
-   FOCUS AND HOVER SPECIFICITY RESOLUTION BLOCK
-   ========================================================================== */
 /* 1. Mega Focus/Hover Outline for standard focusable elements */
-/* Applies a high-visibility focus outline to any focused or hovered interactive element, including custom wrapper containers. */
-.focusable:hover, .focusable:focus, .focusable.focused, .focusable:focus-within, .focusable-container:hover, .focusable-container:focus-within, .focusable-container.focused { border-color: #ffffff; box-shadow: none; outline: 2px solid #ffffff; outline-offset: 0px; }
+/* Applies a high-visibility focus outline to any focused TV/keyboard element (no white border on hover). */
+.focusable:focus, .focusable.focused, .focusable:focus-within, .focusable-container:focus-within, .focusable-container.focused { border-color: #ffffff; box-shadow: none; outline: none; }
 
-/* CSS Class: Hover, focus, and focused state styles for focusable cards, applying scale, 3px white outline, and soft accent glow. */
-.focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused { border-color: #ffffff; box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.7); outline: 3px solid #ffffff; outline-offset: 0px; transform: scale(1.04); z-index: 100; will-change: transform, border-color, box-shadow; }
+.focusable:hover, .focusable-container:hover { outline: none; }
+
+/* CSS Class: Focused state styles for focusable cards. */
+.focusable.focusable-card:focus, .focusable.focusable-card.focused { border-color: #ffffff; box-shadow: none; outline: none; z-index: 100; will-change: border-color; }
+
+.focusable.focusable-card:hover { outline: none; }
 
 /* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable { border: none; box-shadow: none; outline: none; }
@@ -3063,16 +3150,12 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     gap: 12px;
 }
 
-/* Compact adjustment button style for decrementing and incrementing UI scale. */
+/* Explains: Typography adjustments for UI scale increment and decrement buttons that use the edit-trigger base. */
 .scale-adjust-btn {
-    min-width: 48px;
-    width: 48px;
-    height: 48px;
-    padding: 0;
+    color: #ffffff;
     font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 700;
+    line-height: 1;
 }
 
 /* Centered label element displaying the current UI scale percentage value with fixed width. */
@@ -3184,7 +3267,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 .modal-icon-btn {
     align-items: center;
     background: #1c1c1c;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 3px solid transparent;
     border-radius: 50%;
     color: #fff;
     cursor: pointer;
@@ -3192,12 +3275,18 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     height: 56px;
     justify-content: center;
     padding: 0;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
     width: 56px;
 }
 
 /* Styles the hover and active focus state for the circular action buttons. */
-.modal-icon-btn:hover, .modal-icon-btn:focus {
+.modal-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: transparent;
+    color: #fff;
+    outline: none;
+}
+.modal-icon-btn:focus, .modal-icon-btn.focused {
     background: var(--primary-color);
     border: 3px solid #fff;
     color: #050505;

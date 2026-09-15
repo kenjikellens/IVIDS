@@ -633,21 +633,19 @@ class SettingsManager {
 
             if (loader) loader.style.display = 'none';
             if (grid) {
-                grid.style.display = 'grid';
+                grid.style.display = 'flex';
                 
                 // Add the top chip: Active Branch Build (Main Branch)
-                const branchRow = document.createElement('div');
-                branchRow.className = 'version-row-container';
-                branchRow.innerHTML = `
-                    <div class="option-chip focusable dev-version-card" data-value="branch">
-                        <div class="version-chip-content">
-                            <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Active Branch Build'}</span>
-                            <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK)'}</div>
-                        </div>
+                const branchCard = document.createElement('div');
+                branchCard.className = 'option-chip focusable dev-version-card';
+                branchCard.dataset.value = 'branch';
+                branchCard.innerHTML = `
+                    <div class="version-chip-content">
+                        <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Live Branch Build'}</span>
+                        <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build'}</div>
                     </div>
                 `;
                 
-                const branchCard = branchRow.querySelector('.option-chip');
                 branchCard.onclick = () => {
                     const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
                     this.closeModal();
@@ -659,8 +657,8 @@ class SettingsManager {
                     window.latestUpdateVersion = 'Branch';
                     window.latestRelease = {
                         tag_name: 'Branch',
-                        name: window.i18n?.t('settings.branchBuild') || 'Active Branch Build',
-                        body: window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch build (raw APK).'
+                        name: window.i18n?.t('settings.branchBuild') || 'Live Branch Build',
+                        body: window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build.'
                     };
                     import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
                         UpdatePrompt.show('Branch', anchor);
@@ -674,7 +672,7 @@ class SettingsManager {
                     });
                 };
                 
-                grid.appendChild(branchRow);
+                grid.appendChild(branchCard);
  
                 // Add each release as a focusable option chip
                 releases.forEach((rel) => {
@@ -687,33 +685,20 @@ class SettingsManager {
                         const isInstalled = currentInstalledVersion && currentInstalledVersion.includes(rel.tag_name);
                         const appliedIconHtml = isInstalled ? '<img src="svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
 
-                        const relRow = document.createElement('div');
-                        relRow.className = 'version-row-container';
+                        const relCard = document.createElement('div');
+                        relCard.className = 'option-chip focusable dev-version-card';
+                        relCard.dataset.value = rel.tag_name;
                         
-                        relRow.innerHTML = `
-                            <div class="option-chip focusable dev-version-card" data-value="${rel.tag_name}">
-                                <div class="version-chip-content">
-                                    <div class="version-chip-header">
-                                        <span class="version-date-label">${rel.tag_name} • ${date}</span>
-                                    </div>
-                                    <span class="version-chip-title">${rel.name || rel.tag_name}</span>
+                        relCard.innerHTML = `
+                            <div class="version-chip-content">
+                                <div class="version-chip-header">
+                                    <span class="version-date-label">${rel.tag_name} • ${date}</span>
                                 </div>
-                                ${appliedIconHtml}
+                                <span class="version-chip-title">${rel.name || rel.tag_name}</span>
                             </div>
-                            <button class="version-info-btn focusable" title="View changes">
-                                <div class="version-info-icon"></div>
-                            </button>
+                            ${appliedIconHtml}
                         `;
 
-                        const infoBtn = relRow.querySelector('.version-info-btn');
-                        if (infoBtn) {
-                            infoBtn.onclick = (e) => {
-                                e.stopPropagation();
-                                this.openChangesPopup(rel.name || rel.tag_name, rel.body || 'No release notes available.');
-                            };
-                        }
-
-                        const relCard = relRow.querySelector('.option-chip');
                         relCard.onclick = () => {
                             const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
                             this.closeModal();
@@ -733,16 +718,15 @@ class SettingsManager {
                             });
                         };
 
-                        grid.appendChild(relRow);
+                        grid.appendChild(relCard);
                     }
                 });
 
                 // Set initial spatial focus directly on the top version card (Active Branch Build)
-                const topCard = branchRow.querySelector('.option-chip');
                 if (window.SpatialNav) {
                     window.SpatialNav.setFocusTrap(document.getElementById('version-selector-modal'));
-                    if (topCard) {
-                        window.SpatialNav.setFocus(topCard);
+                    if (branchCard) {
+                        window.SpatialNav.setFocus(branchCard);
                     } else {
                         window.SpatialNav.refocus();
                     }
@@ -752,7 +736,7 @@ class SettingsManager {
             console.error('Settings: Failed to load versions', err);
             if (loader) loader.style.display = 'none';
             if (grid) {
-                grid.style.display = 'grid';
+                grid.style.display = 'flex';
                 grid.innerHTML = `
                     <div class="version-fetch-error">
                         Failed to fetch releases. Please check your internet connection.
