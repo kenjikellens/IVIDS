@@ -128,7 +128,7 @@ input, textarea, select { font: inherit; }
 .btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #fff; outline: none; }
 .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #fff; color: #fff; outline: none; }
 
-.btn-secondary { background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; }
+.btn-secondary { background: transparent; border: 2px solid rgba(255, 255, 255, 0.15); color: #fff; }
 .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); color: #fff; outline: none; }
 .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.08); border: 2px solid #fff; color: #fff; outline: none; }
 
@@ -1703,7 +1703,7 @@ input, textarea, select { font: inherit; }
 .filter-chip, .select-item {
     align-items: center;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--radius-md);
     color: #fff;
     cursor: pointer;
@@ -2041,7 +2041,7 @@ input, textarea, select { font: inherit; }
 .option-chip {
     align-items: center;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--radius-md);
     color: #fff;
     cursor: pointer;
@@ -2428,7 +2428,7 @@ input, textarea, select { font: inherit; }
 .version-option-list .option-chip {
     align-items: center;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--radius-md);
     box-sizing: border-box;
     cursor: pointer;
