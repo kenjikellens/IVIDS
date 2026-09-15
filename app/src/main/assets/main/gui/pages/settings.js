@@ -112,7 +112,10 @@ class SettingsManager {
                 { id: 'vidlink', name: 'VidLink (Primary)', url: 'https://vidlink.pro', isCustom: false },
                 { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed', isCustom: false },
                 { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net', isCustom: false },
-                { id: 'vidsrc_cc', name: 'VidSrc.cc (Server 4)', url: 'https://vidsrc.cc/v2/embed', isCustom: false }
+                { id: 'vidsrc_me', name: 'VidSrc.me (Server 4)', url: 'https://vidsrc.me/embed', isCustom: false },
+                { id: 'vidsrc_pm', name: 'VidSrc.pm (Server 5)', url: 'https://vidsrc.pm/embed', isCustom: false },
+                { id: '2embed', name: '2Embed (Server 6)', url: 'https://www.2embed.cc/embed', isCustom: false },
+                { id: 'vidjoy', name: 'VidJoy (Server 7)', url: 'https://vidjoy.pro/embed', isCustom: false }
             ],
             m3uPlaylists: [],
             includeAdult: false,
@@ -166,27 +169,21 @@ class SettingsManager {
                 parsed.playerBaseUrl = 'https://vidlink.pro';
             }
 
-            // Migrate playerProviders if missing
-            if (!parsed.playerProviders) {
-                const defaultProviders = JSON.parse(JSON.stringify(defaultSettings.playerProviders));
-                if (parsed.playerBaseUrl) {
-                    const matched = defaultProviders.find(p => p.url === parsed.playerBaseUrl);
-                    if (!matched) {
-                        defaultProviders.unshift({
-                            id: 'custom_migrated',
-                            name: 'Custom Server',
-                            url: parsed.playerBaseUrl,
-                            isCustom: true
-                        });
-                    } else {
-                        const idx = defaultProviders.indexOf(matched);
-                        if (idx > -1) {
-                            defaultProviders.splice(idx, 1);
-                            defaultProviders.unshift(matched);
-                        }
-                    }
-                }
+            // Sync playerProviders: ensure all new default providers are present, replace broken legacy defaults, and keep custom ones
+            const defaultProviders = JSON.parse(JSON.stringify(defaultSettings.playerProviders));
+            if (!parsed.playerProviders || !Array.isArray(parsed.playerProviders)) {
                 parsed.playerProviders = defaultProviders;
+            } else {
+                // Filter out obsolete non-custom providers (e.g. broken vidsrc_cc or embed_su)
+                parsed.playerProviders = parsed.playerProviders.filter(p => p.isCustom || !['vidsrc_cc', 'embed_su'].includes(p.id));
+                
+                // Add any missing default providers
+                defaultProviders.forEach(def => {
+                    const exists = parsed.playerProviders.some(p => p.id === def.id || p.url === def.url);
+                    if (!exists) {
+                        parsed.playerProviders.push(def);
+                    }
+                });
             }
 
             // Migrate m3uPlaylists if missing
@@ -1091,12 +1088,14 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'provider-move-btn focusable';
+            moveBtn.className = 'btn btn-secondary edit-trigger provider-move-btn focusable';
             if (this.movingProviderId === provider.id) {
                 moveBtn.classList.add('active-moving');
-                moveBtn.textContent = 'OK';
+                moveBtn.innerHTML = '<img src="svg/check-circle.svg" class="setting-edit-icon" alt="Done" />';
+                moveBtn.title = 'Done';
             } else {
-                moveBtn.textContent = 'Move';
+                moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+                moveBtn.title = 'Move';
             }
 
             moveBtn.onclick = (e) => {
@@ -1120,8 +1119,9 @@ class SettingsManager {
 
             if (provider.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'provider-delete-btn focusable';
-                deleteBtn.textContent = '🗑';
+                deleteBtn.className = 'btn btn-secondary edit-trigger provider-delete-btn focusable';
+                deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
+                deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {
                     e.stopPropagation();
                     this.pendingSettings.playerProviders.splice(idx, 1);
@@ -1177,12 +1177,14 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'provider-move-btn focusable';
+            moveBtn.className = 'btn btn-secondary edit-trigger provider-move-btn focusable';
             if (this.movingM3uId === playlist.id) {
                 moveBtn.classList.add('active-moving');
-                moveBtn.textContent = 'OK';
+                moveBtn.innerHTML = '<img src="svg/check-circle.svg" class="setting-edit-icon" alt="Done" />';
+                moveBtn.title = 'Done';
             } else {
-                moveBtn.textContent = 'Move';
+                moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+                moveBtn.title = 'Move';
             }
 
             moveBtn.onclick = (e) => {
@@ -1206,8 +1208,9 @@ class SettingsManager {
 
             if (playlist.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'provider-delete-btn focusable';
-                deleteBtn.textContent = '🗑';
+                deleteBtn.className = 'btn btn-secondary edit-trigger provider-delete-btn focusable';
+                deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
+                deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {
                     e.stopPropagation();
                     this.pendingSettings.m3uPlaylists.splice(idx, 1);

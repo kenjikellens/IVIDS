@@ -1941,34 +1941,23 @@ input, textarea, select { font: inherit; }
 
 .provider-url-input:focus, .provider-url-input.focused { border-color: #fff; box-shadow: none; outline: none; }
 
+/* Explains: Action buttons container in player provider and M3U playlist items. */
 .provider-actions { align-items: center; display: flex; gap: 8px; }
 
-.provider-move-btn {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    display: flex;
+/* Explains: Compact icon button sizing for provider list action items. */
+.provider-actions .edit-trigger {
     height: 44px;
-    justify-content: center;
+    min-height: 44px;
     min-width: 44px;
+    width: 44px;
 }
 
-.provider-delete-btn {
-    align-items: center;
-    background: rgba(255, 59, 48, 0.1);
-    border: 2px solid rgba(255, 59, 48, 0.2);
-    border-radius: var(--radius-md);
-    color: #ff3b30;
-    cursor: pointer;
-    display: flex;
-    height: 44px;
-    justify-content: center;
-    min-width: 44px;
+/* Explains: Active state indicator when reordering a provider or playlist item. */
+.provider-move-btn.active-moving {
+    animation: pulse-border 1.5s infinite alternate;
+    background: var(--primary-color);
+    border-color: var(--primary-color);
 }
-
-.provider-move-btn.active-moving { animation: pulse-border 1.5s infinite alternate; background: var(--primary-color); border-color: var(--primary-color); color: #050505; }
 
 /* Utility class for stretching elements to fill 100% width and height. */
 .loader-inline-container .ivids-loader, .full-size { height: 100%; width: 100%; }

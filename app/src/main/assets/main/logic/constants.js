@@ -65,7 +65,10 @@ export const PLAYER_CONFIG = Object.freeze({
         { id: 'vidlink', name: 'VidLink (Server 1)', url: 'https://vidlink.pro', isCustom: false },
         { id: 'vidsrc_to', name: 'VidSrc.to (Server 2)', url: 'https://vidsrc.to/embed', isCustom: false },
         { id: 'videasy', name: 'Videasy (Server 3)', url: 'https://player.videasy.net', isCustom: false },
-        { id: 'embed_su', name: 'Embed.su (Server 4)', url: 'https://embed.su/embed', isCustom: false }
+        { id: 'vidsrc_me', name: 'VidSrc.me (Server 4)', url: 'https://vidsrc.me/embed', isCustom: false },
+        { id: 'vidsrc_pm', name: 'VidSrc.pm (Server 5)', url: 'https://vidsrc.pm/embed', isCustom: false },
+        { id: '2embed', name: '2Embed (Server 6)', url: 'https://www.2embed.cc/embed', isCustom: false },
+        { id: 'vidjoy', name: 'VidJoy (Server 7)', url: 'https://vidjoy.pro/embed', isCustom: false }
     ])
 });
 

@@ -997,28 +997,24 @@ export const Api = {
                     needsWriteBack = true;
                 }
 
-                // If saved has no playerProviders, migrate playerBaseUrl to playerProviders
-                if (!saved.playerProviders) {
-                    const defaultProviders = JSON.parse(JSON.stringify(DEFAULT_PLAYER_PROVIDERS));
-                    if (saved.playerBaseUrl) {
-                        const matched = defaultProviders.find(p => p.url === saved.playerBaseUrl);
-                        if (!matched) {
-                            defaultProviders.unshift({
-                                id: 'custom_migrated',
-                                name: 'Custom Server',
-                                url: saved.playerBaseUrl,
-                                isCustom: true
-                            });
-                        } else {
-                            const idx = defaultProviders.indexOf(matched);
-                            if (idx > -1) {
-                                defaultProviders.splice(idx, 1);
-                                defaultProviders.unshift(matched);
-                            }
-                        }
-                    }
+                // Sync playerProviders: ensure all new default providers are present and remove broken legacy ones
+                const defaultProviders = JSON.parse(JSON.stringify(DEFAULT_PLAYER_PROVIDERS));
+                if (!saved.playerProviders || !Array.isArray(saved.playerProviders)) {
                     saved.playerProviders = defaultProviders;
                     needsWriteBack = true;
+                } else {
+                    const initialLen = saved.playerProviders.length;
+                    saved.playerProviders = saved.playerProviders.filter(p => p.isCustom || !['vidsrc_cc', 'embed_su'].includes(p.id));
+                    
+                    defaultProviders.forEach(def => {
+                        const exists = saved.playerProviders.some(p => p.id === def.id || p.url === def.url);
+                        if (!exists) {
+                            saved.playerProviders.push(def);
+                        }
+                    });
+                    if (saved.playerProviders.length !== initialLen) {
+                        needsWriteBack = true;
+                    }
                 }
 
                 // If saved has legacy single m3uUrl and no m3uPlaylists, migrate it
