@@ -1069,7 +1069,7 @@ class SettingsManager {
 
         providers.forEach((provider, idx) => {
             const item = document.createElement('div');
-            item.className = 'provider-item focusable';
+            item.className = 'provider-item';
             if (this.movingProviderId === provider.id) {
                 item.classList.add('moving');
             }
@@ -1158,7 +1158,7 @@ class SettingsManager {
 
         playlists.forEach((playlist, idx) => {
             const item = document.createElement('div');
-            item.className = 'provider-item focusable';
+            item.className = 'provider-item';
             if (this.movingM3uId === playlist.id) {
                 item.classList.add('moving');
             }
@@ -1236,7 +1236,7 @@ class SettingsManager {
 
     /**
      * Swaps the position of an item in the pending settings array with its neighbor to adjust its priority.
-     * This triggers list re-rendering and preserves navigation focus.
+     * Uses FLIP (First, Last, Invert, Play) animation to smoothly glide the elevated item above the list while sliding the neighbor.
      * @param {string} key - The settings key (playerProviders or m3uPlaylists).
      * @param {string} id - The ID of the item to move.
      * @param {number} direction - The index delta (-1 for up, 1 for down).
@@ -1249,6 +1249,18 @@ class SettingsManager {
         const targetIndex = index + direction;
         if (targetIndex < 0 || targetIndex >= list.length) return;
 
+        const containerId = key === 'playerProviders' ? 'player-providers-list' : 'm3u-playlists-list';
+        const container = document.getElementById(containerId);
+        const prevTops = new Map();
+
+        if (container) {
+            container.querySelectorAll('.provider-item').forEach(el => {
+                if (el.dataset.id) {
+                    prevTops.set(el.dataset.id, el.getBoundingClientRect().top);
+                }
+            });
+        }
+
         const temp = list[index];
         list[index] = list[targetIndex];
         list[targetIndex] = temp;
@@ -1257,6 +1269,46 @@ class SettingsManager {
             this.renderPlayerProviders();
         } else {
             this.renderM3uPlaylists();
+        }
+
+        const newContainer = document.getElementById(containerId);
+        if (newContainer && prevTops.size > 0) {
+            const animatedItems = [];
+            newContainer.querySelectorAll('.provider-item').forEach(el => {
+                const itemId = el.dataset.id;
+                if (itemId && prevTops.has(itemId)) {
+                    const oldTop = prevTops.get(itemId);
+                    const newTop = el.getBoundingClientRect().top;
+                    const deltaY = oldTop - newTop;
+                    if (deltaY !== 0) {
+                        const isMoving = el.classList.contains('moving');
+                        el.style.transition = 'none';
+                        el.style.transform = isMoving 
+                            ? `translateY(${deltaY}px) scale(1.02)` 
+                            : `translateY(${deltaY}px)`;
+                        animatedItems.push({ el, isMoving });
+                    }
+                }
+            });
+
+            if (animatedItems.length > 0) {
+                // Force layout reflow before triggering smooth play transition
+                void newContainer.offsetHeight;
+
+                requestAnimationFrame(() => {
+                    animatedItems.forEach(({ el, isMoving }) => {
+                        el.style.transition = 'transform 240ms cubic-bezier(0.2, 0, 0, 1)';
+                        el.style.transform = isMoving ? 'translateY(0) scale(1.02)' : 'translateY(0)';
+                    });
+
+                    setTimeout(() => {
+                        animatedItems.forEach(({ el }) => {
+                            el.style.transition = '';
+                            el.style.transform = '';
+                        });
+                    }, 260);
+                });
+            }
         }
 
         const btn = document.querySelector(`.provider-item[data-id="${id}"] .provider-move-btn`);

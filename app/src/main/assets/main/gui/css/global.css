@@ -1911,6 +1911,7 @@ input, textarea, select { font: inherit; }
 
 .providers-list { display: flex; flex-direction: column; gap: 1.5%; margin-bottom: 2%; width: 100%; }
 
+/* Explains: Row container for a streaming provider or Live TV M3U playlist entry. */
 .provider-item {
     align-items: center;
     background: rgba(255, 255, 255, 0.03);
@@ -1921,11 +1922,31 @@ input, textarea, select { font: inherit; }
     gap: 2%;
     margin-bottom: 8px;
     padding: 8px 12px;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     width: 100%;
 }
 
-.provider-item.moving { background: rgba(var(--primary-rgb), 0.08); border-color: var(--primary-color); box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.3); }
+/* Explains: Prevents accidental hover or focus indicators on non-interactive row container. */
+.provider-item:hover, .provider-item:focus, .provider-item.focused {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+    outline: none;
+}
+
+/* Explains: Elevated floating state for active reordering - flies above neighboring items. */
+.provider-item.moving,
+.provider-item.moving:hover,
+.provider-item.moving:focus,
+.provider-item.moving.focused {
+    background: rgba(22, 22, 22, 0.96);
+    border-color: var(--primary-color);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 16px rgba(var(--primary-rgb), 0.45);
+    outline: none;
+    transform: scale(1.02);
+    z-index: 10;
+}
 
 .provider-url-input {
     background: rgba(0, 0, 0, 0.36);
