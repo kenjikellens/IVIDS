@@ -84,6 +84,14 @@ input, textarea, select { font: inherit; }
     position: relative;
     scroll-behavior: smooth;
     scrollbar-width: none;
+    transition: filter 0.25s ease;
+}
+
+/* Dims the main view by 45% when the sidebar navigation rail is hovered, focused, or active. */
+#sidebar-container:hover ~ #main-view,
+#sidebar-container:focus-within ~ #main-view,
+#sidebar-container:has(.focused) ~ #main-view {
+    filter: brightness(0.55);
 }
 
 /* Utility class to completely hide any UI elements from rendering and layout. */
@@ -128,9 +136,9 @@ input, textarea, select { font: inherit; }
 .btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #fff; outline: none; }
 .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #fff; color: #fff; outline: none; }
 
-.btn-secondary { background: transparent; border: 2px solid rgba(255, 255, 255, 0.15); color: #fff; }
-.btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); color: #fff; outline: none; }
-.btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.08); border: 2px solid #fff; color: #fff; outline: none; }
+.btn-secondary { background: rgba(255, 255, 255, 0.08); border: 2px solid transparent; color: #fff; }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; color: #fff; outline: none; }
+.btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border: 2px solid #fff; color: #fff; outline: none; }
 
 .btn-danger { background: #b92b23; border: 3px solid transparent; color: #fff; }
 .btn-danger:hover { background: #d43830; border-color: transparent; color: #fff; outline: none; }
@@ -568,8 +576,8 @@ input, textarea, select { font: inherit; }
 /* Netflix-style IVIDS navigation rail */
 .navbar {
     align-items: stretch;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.98), rgba(7, 7, 7, 0.94));
-    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 80%, rgba(0, 0, 0, 0) 100%);
+    border-right: none;
     display: flex;
     flex-direction: column;
     gap: 22px;
@@ -635,8 +643,8 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover, focus and active states for navigation menu link buttons. */
-.nav-item:hover { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: transparent; }
-.nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: #ffffff; }
+.nav-item:hover { background: rgba(255, 255, 255, 0.22); color: #fff; border-color: transparent; }
+.nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.22); color: #fff; border-color: #ffffff; }
 
 /* Active navigation item background color highlight styling. */
 .nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #fff; }
@@ -1702,8 +1710,8 @@ input, textarea, select { font: inherit; }
 
 .filter-chip, .select-item {
     align-items: center;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid transparent;
     border-radius: var(--radius-md);
     color: #fff;
     cursor: pointer;
@@ -1716,12 +1724,12 @@ input, textarea, select { font: inherit; }
 }
 
 .filter-chip:hover, .select-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.16);
+    border-color: transparent;
 }
 
 .filter-chip:focus, .filter-chip.focused, .select-item:focus, .select-item.focused {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.16);
     border: 2px solid #ffffff;
     outline: none;
 }
@@ -1796,15 +1804,14 @@ input, textarea, select { font: inherit; }
 .setting-control { align-items: center; display: flex; gap: 12px; justify-content: flex-end; }
 
 .current-value-display {
-    background: rgba(var(--primary-rgb), 0.12);
-    border: 1px solid rgba(var(--primary-rgb), 0.34);
-    border-radius: var(--radius-sm);
-    color: #fff;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.72);
     font-size: 15px;
-    font-weight: 800;
-    min-width: 128px;
-    padding: 10px 14px;
-    text-align: center;
+    font-weight: 700;
+    min-width: 0;
+    padding: 0 4px;
+    text-align: right;
 }
 
 /* Explains: Flex alignment container for the language display box to align the flag emoji and text cleanly. */
@@ -2064,8 +2071,8 @@ input, textarea, select { font: inherit; }
 
 .option-chip {
     align-items: center;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid transparent;
     border-radius: var(--radius-md);
     color: #fff;
     cursor: pointer;
@@ -2080,8 +2087,8 @@ input, textarea, select { font: inherit; }
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
 }
 
-.option-chip:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); }
-.option-chip:focus, .option-chip.focused { background: rgba(255, 255, 255, 0.08); border: 2px solid #ffffff; outline: none; }
+.option-chip:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
+.option-chip:focus, .option-chip.focused { background: rgba(255, 255, 255, 0.16); border: 2px solid #ffffff; outline: none; }
 
 .option-chip.active::after {
     background: #050505;

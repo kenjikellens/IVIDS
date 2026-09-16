@@ -77,7 +77,10 @@ export class LazyLoader {
     }
 
     /**
-     * Helper to load a single poster element's image dataset.src and return a Promise that resolves when loaded.
+     * Loads a single poster element's image using ImageCache blob URLs where possible.
+     * Prevents network re-fetching on subsequent navigation and eliminates loader flicker.
+     * @param {HTMLElement} element - The poster wrapper or image element.
+     * @returns {Promise<void>} Resolves when the image has finished loading.
      */
     loadImage(element) {
         if (!element) return Promise.resolve();
@@ -89,6 +92,16 @@ export class LazyLoader {
         }
 
         const originalUrl = img.dataset.src;
+
+        // 1. If already in imageCache, render instantaneously with 0ms delay
+        if (imageCache.has(originalUrl)) {
+            img.src = imageCache.get(originalUrl);
+            img.removeAttribute('data-src');
+            img.style.opacity = '1';
+            const loader = element.querySelector('.poster-loader');
+            if (loader) loader.remove();
+            return Promise.resolve();
+        }
 
         return new Promise((resolve) => {
             if (!img.complete && !element.querySelector('.poster-loader')) {
@@ -109,12 +122,26 @@ export class LazyLoader {
 
             img.addEventListener('load', onComplete, { once: true });
             img.addEventListener('error', onComplete, { once: true });
-            img.loading = 'lazy';
-            img.src = originalUrl;
             img.removeAttribute('data-src');
-            if (img.complete) {
-                onComplete();
-            }
+
+            // 2. Fetch blob into ImageCache with fallback to original network URL
+            imageCache.getOrFetch(originalUrl).then(blobUrl => {
+                if (blobUrl) {
+                    img.src = blobUrl;
+                } else {
+                    img.loading = 'lazy';
+                    img.src = originalUrl;
+                }
+                if (img.complete) {
+                    onComplete();
+                }
+            }).catch(() => {
+                img.loading = 'lazy';
+                img.src = originalUrl;
+                if (img.complete) {
+                    onComplete();
+                }
+            });
         });
     }
 

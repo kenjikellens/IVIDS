@@ -20,6 +20,12 @@ class ImageCache {
         this.cache = new Map();
         /** @type {Map<string, Promise<string>>} In-flight fetch promises to deduplicate concurrent requests. */
         this.inflight = new Map();
+        /** @type {Array<Function>} Concurrency task queue for blob downloads. */
+        this.queue = [];
+        /** @type {number} Current active fetch request count. */
+        this.activeRequests = 0;
+        /** @type {number} Maximum concurrent network blob fetch requests. */
+        this.MAX_CONCURRENT = 6;
     }
 
     /**
@@ -108,24 +114,52 @@ class ImageCache {
     }
 
     /**
-     * Internal: fetches an image URL and stores the blob in the cache.
-     * @param {string} url - The image URL to fetch.
-     * @returns {Promise<string|null>} The blob URL on success, null on failure.
+     * Enqueues a blob download task into the concurrency-limited worker queue.
+     * @param {Function} task - Async function to run.
+     * @returns {Promise<any>}
      */
-    async _fetchAndCache(url) {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) return null;
+    _enqueue(task) {
+        return new Promise((resolve, reject) => {
+            this.queue.push(() => task().then(resolve, reject));
+            this._processQueue();
+        });
+    }
 
-            const blob = await response.blob();
-            return this.put(url, blob);
-        } catch (e) {
-            return null;
+    /**
+     * Drains the queue up to MAX_CONCURRENT active requests.
+     */
+    _processQueue() {
+        while (this.activeRequests < this.MAX_CONCURRENT && this.queue.length > 0) {
+            this.activeRequests++;
+            const nextTask = this.queue.shift();
+            nextTask().finally(() => {
+                this.activeRequests--;
+                this._processQueue();
+            });
         }
     }
 
     /**
-     * Revokes all stored Object URLs and clears the cache.
+     * Internal: fetches an image URL through the concurrency queue and stores the blob in cache.
+     * @param {string} url - The image URL to fetch.
+     * @returns {Promise<string|null>} The blob URL on success, null on failure.
+     */
+    async _fetchAndCache(url) {
+        return this._enqueue(async () => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) return null;
+
+                const blob = await response.blob();
+                return this.put(url, blob);
+            } catch (e) {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Revokes all stored Object URLs, clears pending queues, and clears the cache.
      * Call during app teardown or account switches.
      */
     destroy() {
@@ -134,6 +168,8 @@ class ImageCache {
         }
         this.cache.clear();
         this.inflight.clear();
+        this.queue = [];
+        this.activeRequests = 0;
     }
 }
 
