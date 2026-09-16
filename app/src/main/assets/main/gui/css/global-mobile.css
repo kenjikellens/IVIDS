@@ -552,7 +552,23 @@
 
 /* Width fitment for settings current value boxes. */
 #app .current-value-display {
-    width: 100%;
+    width: auto;
+}
+
+/* Ensure scale stepper remains a unified horizontal row on mobile */
+#app .scale-control-container {
+    align-items: center;
+    display: inline-flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    gap: 8px;
+    width: auto;
+}
+
+#app .scale-control-container .centered-value {
+    flex: none;
+    min-width: 50px;
+    width: auto;
 }
 
 /* Prevents the edit button from being squished in flex layouts on mobile */

@@ -84,14 +84,6 @@ input, textarea, select { font: inherit; }
     position: relative;
     scroll-behavior: smooth;
     scrollbar-width: none;
-    transition: filter 0.25s ease;
-}
-
-/* Dims the main view by 45% when the sidebar navigation rail is hovered, focused, or active. */
-#sidebar-container:hover ~ #main-view,
-#sidebar-container:focus-within ~ #main-view,
-#sidebar-container:has(.focused) ~ #main-view {
-    filter: brightness(0.55);
 }
 
 /* Utility class to completely hide any UI elements from rendering and layout. */
@@ -121,11 +113,11 @@ input, textarea, select { font: inherit; }
     cursor: pointer;
     display: inline-flex;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 700;
     gap: 10px;
     justify-content: center;
-    min-height: 48px;
-    padding: 9px 23px;
+    min-height: 44px;
+    padding: 8px 22px;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease;
     white-space: nowrap;
 }
@@ -144,9 +136,21 @@ input, textarea, select { font: inherit; }
 .btn-danger:hover { background: #d43830; border-color: transparent; color: #fff; outline: none; }
 .btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #fff; color: #fff; outline: none; }
 
-.btn-circle { align-items: center; border-radius: 50%; display: inline-flex; flex-shrink: 0; height: 48px; justify-content: center; min-height: 48px; padding: 0; width: 48px; }
+/* Circular icon button base with centered flex alignment and unified touch/focus geometry */
+.btn-circle {
+    align-items: center;
+    border-radius: 50%;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 36px;
+    justify-content: center;
+    min-height: 36px;
+    min-width: 36px;
+    padding: 0;
+    width: 36px;
+}
 
-.btn-small { align-self: center; flex: none; font-size: 13px; min-height: 38px; padding: 6px 16px; width: fit-content; }
+.btn-small { align-self: center; flex: none; font-size: 13px; min-height: 36px; padding: 6px 16px; width: fit-content; }
 
 .hero {
     align-items: flex-end;
@@ -576,7 +580,7 @@ input, textarea, select { font: inherit; }
 /* Netflix-style IVIDS navigation rail */
 .navbar {
     align-items: stretch;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 80%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 95%, rgba(0, 0, 0, 0) 100%);
     border-right: none;
     display: flex;
     flex-direction: column;
@@ -1734,8 +1738,23 @@ input, textarea, select { font: inherit; }
     outline: none;
 }
 
-/* Styles active and selected states of filter chips, selection options, and settings items with theme highlight. */
-.filter-chip.active, .filter-chip.selected, .select-item.selected, .select-item.active, .option-chip.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
+/* Styles active and selected states of filter chips and selection options */
+.filter-chip.active, .filter-chip.selected, .select-item.selected, .select-item.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
+
+.option-chip.active {
+    background: rgba(var(--primary-rgb), 0.22);
+    border-color: var(--primary-color);
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.option-chip.active:hover,
+.option-chip.active:focus,
+.option-chip.active.focused {
+    background: rgba(var(--primary-rgb), 0.32);
+    border-color: #ffffff;
+    color: #ffffff;
+}
 
 /* Styles the checkmark indicator in front of selected filter chips. */
 .filter-chip.selected::before { content: "✓"; display: inline-block; margin-right: 6px; color: #050505; font-weight: 900; font-size: 16px; }
@@ -1801,16 +1820,19 @@ input, textarea, select { font: inherit; }
 .setting-description { color: var(--text-muted); font-size: 14px; }
 
 /* Right-hand flexbox container aligning settings controls horizontally */
-.setting-control { align-items: center; display: flex; gap: 12px; justify-content: flex-end; }
+.setting-control { align-items: center; display: flex; gap: 8px; justify-content: flex-end; }
 
+/* Readout text for current setting value aligned with the circular action trigger */
 .current-value-display {
+    align-items: center;
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.72);
+    display: inline-flex;
     font-size: 15px;
     font-weight: 700;
     min-width: 0;
-    padding: 0 4px;
+    padding: 0 2px;
     text-align: right;
 }
 
@@ -1898,17 +1920,18 @@ input, textarea, select { font: inherit; }
     outline: none;
 }
 
-/* Explains: Square icon button modifier for settings rows (consumes .btn and .btn-secondary base styles). */
+/* Explains: Circular/square icon button modifier for settings rows (consumes .btn and .btn-secondary base styles). */
 .edit-trigger {
     flex-shrink: 0;
-    height: 48px;
-    min-height: 48px;
-    min-width: 48px;
+    height: 36px;
+    min-height: 36px;
+    min-width: 36px;
     padding: 0;
-    width: 48px;
+    width: 36px;
 }
 
-.setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
+/* Explains: SVG icon inside settings row buttons scaled cleanly for 36px circular frames. */
+.setting-edit-icon { display: block; height: 17px; pointer-events: none; width: 17px; }
 
 .update-status-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
 
@@ -1981,14 +2004,14 @@ input, textarea, select { font: inherit; }
 .provider-url-input:focus, .provider-url-input.focused { border-color: #fff; box-shadow: none; outline: none; }
 
 /* Explains: Action buttons container in player provider and M3U playlist items. */
-.provider-actions { align-items: center; display: flex; gap: 8px; }
+.provider-actions { align-items: center; display: flex; gap: 6px; }
 
-/* Explains: Compact icon button sizing for provider list action items. */
+/* Explains: Compact circular icon button sizing for provider list action items. */
 .provider-actions .edit-trigger {
-    height: 44px;
-    min-height: 44px;
-    min-width: 44px;
-    width: 44px;
+    height: 36px;
+    min-height: 36px;
+    min-width: 36px;
+    width: 36px;
 }
 
 /* Explains: Grab cursor to indicate draggable handle for cursor/mouse reordering. */
@@ -2064,8 +2087,19 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+.horizontal-modal-actions {
+    border-top: none;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 0;
+    width: 100%;
+}
+
 .modal-footer .btn, .modal-actions .btn { min-width: 120px; }
 .vertical-modal-actions .btn { width: 100%; }
+.horizontal-modal-actions .btn { flex: 1; min-width: 0; }
 
 .option-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px 0 16px; }
 
@@ -2091,13 +2125,13 @@ input, textarea, select { font: inherit; }
 .option-chip:focus, .option-chip.focused { background: rgba(255, 255, 255, 0.16); border: 2px solid #ffffff; outline: none; }
 
 .option-chip.active::after {
-    background: #050505;
+    background: var(--primary-color);
     border-radius: 999px;
     content: "";
     height: 8px;
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: 14px;
+    top: calc(50% - 4px);
     width: 8px;
 }
 
@@ -3181,24 +3215,38 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 /* Flexbox container for settings stepper controls, including minus/plus buttons and value label. */
 .scale-control-container {
-    display: flex;
     align-items: center;
-    gap: 12px;
+    display: inline-flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    gap: 8px;
+    width: auto;
 }
 
 /* Explains: Typography adjustments for UI scale increment and decrement buttons that use the edit-trigger base. */
 .scale-adjust-btn {
+    align-items: center;
     color: #ffffff;
-    font-size: 20px;
+    display: inline-flex;
+    font-size: 18px;
     font-weight: 700;
+    justify-content: center;
     line-height: 1;
+    margin: 0;
+    padding: 0;
 }
 
 /* Centered label element displaying the current UI scale percentage value with fixed width. */
 .centered-value {
-    text-align: center;
-    min-width: 80px;
+    align-items: center;
+    color: #ffffff;
+    display: inline-flex;
+    font-size: 15px;
     font-weight: 700;
+    justify-content: center;
+    min-width: 50px;
+    text-align: center;
+    width: auto;
 }
 
 /* Media query for screens larger than 1080p (like 1440p and 4K displays) to scale down posters. */
