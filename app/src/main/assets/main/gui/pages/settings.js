@@ -846,18 +846,52 @@ class SettingsManager {
                     }
                 };
             }
+        } else if (modalId === 'language-modal') {
+            const flagEl = document.getElementById('lang-stepper-flag');
+            const nameEl = document.getElementById('lang-stepper-name');
+            const updateLangStepper = () => {
+                const currentCode = this.pendingSettings.language || 'en';
+                const opt = LANGUAGE_OPTIONS.find(l => l.code === currentCode) || LANGUAGE_OPTIONS.find(l => l.code === 'en') || { code: 'en', name: '🇺🇸 English' };
+                const flagMatch = opt.name.match(/^([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])\s+(.*)$/);
+                if (flagMatch) {
+                    if (flagEl) flagEl.textContent = flagMatch[1];
+                    if (nameEl) nameEl.textContent = flagMatch[2];
+                } else {
+                    if (flagEl) flagEl.textContent = '';
+                    if (nameEl) nameEl.textContent = opt.name;
+                }
+            };
+            updateLangStepper();
+
+            const prevBtn = document.getElementById('lang-prev-btn');
+            if (prevBtn) {
+                prevBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    let idx = LANGUAGE_OPTIONS.findIndex(l => l.code === (this.pendingSettings.language || 'en'));
+                    if (idx === -1) idx = 0;
+                    idx = (idx - 1 + LANGUAGE_OPTIONS.length) % LANGUAGE_OPTIONS.length;
+                    this.pendingSettings.language = LANGUAGE_OPTIONS[idx].code;
+                    updateLangStepper();
+                };
+            }
+
+            const nextBtn = document.getElementById('lang-next-btn');
+            if (nextBtn) {
+                nextBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    let idx = LANGUAGE_OPTIONS.findIndex(l => l.code === (this.pendingSettings.language || 'en'));
+                    if (idx === -1) idx = 0;
+                    idx = (idx + 1) % LANGUAGE_OPTIONS.length;
+                    this.pendingSettings.language = LANGUAGE_OPTIONS[idx].code;
+                    updateLangStepper();
+                };
+            }
         } else {
             modal.querySelectorAll('.option-chip').forEach(chip => {
                 const val = chip.getAttribute('data-value');
                 chip.onclick = (e) => {
                     e.stopPropagation();
                     this.setPending(key, val, chip);
-                    // Explanations:
-                    // Instantly apply settings on mobile viewports for the language selection modal
-                    // to prevent users from needing to manually click the hidden apply action button.
-                    if (modalId === 'language-modal' && window.matchMedia('(max-width: 600px)').matches) {
-                        this.applyPending(key);
-                    }
                 };
             });
         }
@@ -865,7 +899,9 @@ class SettingsManager {
         this.syncActiveChips(modalId);
 
         let focusTarget = null;
-        if (modalId === 'language-modal' || modalId === 'color-modal' || modalId === 'update-mode-modal') {
+        if (modalId === 'language-modal') {
+            focusTarget = document.getElementById('lang-next-btn') || document.getElementById('lang-prev-btn');
+        } else if (modalId === 'color-modal' || modalId === 'update-mode-modal') {
             focusTarget = modal.querySelector('.option-chip.active');
         } else if (modalId === 'player-modal') {
             focusTarget = modal.querySelector('.provider-url-input') || document.getElementById('add-provider-btn');

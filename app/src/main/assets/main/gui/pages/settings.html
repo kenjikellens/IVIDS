@@ -188,63 +188,30 @@
 
 <!-- Language Modal -->
 <div id="language-modal" class="modal-overlay">
-    <div class="language-modal-container">
-        <!-- Cancel button (left in landscape, bottom left in mobile) -->
-        <button id="language-cancel-btn" class="modal-icon-btn cancel-icon-btn focusable" aria-label="Cancel">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
-
-        <div class="language-modal-content-wrapper">
-            <h2 class="modal-title" data-i18n="settings.language">Language</h2>
-            <div class="modal-content compact-modal">
-                <div class="modal-body">
-                    <div id="language-options" class="language-options-list">
-                        <div class="option-chip focusable" data-value="ar"><span>🇸🇦</span>Arabic</div>
-                        <div class="option-chip focusable" data-value="bg"><span>🇧🇬</span>Български</div>
-                        <div class="option-chip focusable" data-value="cs"><span>🇨🇿</span>Čeština</div>
-                        <div class="option-chip focusable" data-value="da"><span>🇩🇰</span>Dansk</div>
-                        <div class="option-chip focusable" data-value="de"><span>🇩🇪</span>Deutsch</div>
-                        <div class="option-chip focusable" data-value="el"><span>🇬🇷</span>Eλληνικά</div>
-                        <div class="option-chip focusable" data-value="en"><span>🇺🇸</span>English</div>
-                        <div class="option-chip focusable" data-value="es"><span>🇪🇸</span>Español</div>
-                        <div class="option-chip focusable" data-value="fi"><span>🇫🇮</span>Suomi</div>
-                        <div class="option-chip focusable" data-value="fr"><span>🇫🇷</span>Français</div>
-                        <div class="option-chip focusable" data-value="hi"><span>🇮🇳</span>Hindi</div>
-                        <div class="option-chip focusable" data-value="hr"><span>🇭🇷</span>Hrvatski</div>
-                        <div class="option-chip focusable" data-value="hu"><span>🇭🇺</span>Magyar</div>
-                        <div class="option-chip focusable" data-value="id"><span>🇮🇩</span>Indonesia</div>
-                        <div class="option-chip focusable" data-value="it"><span>🇮🇹</span>Italiano</div>
-                        <div class="option-chip focusable" data-value="ja"><span>🇯🇵</span>Japanese</div>
-                        <div class="option-chip focusable" data-value="ko"><span>🇰🇷</span>Korean</div>
-                        <div class="option-chip focusable" data-value="ms"><span>🇲🇾</span>Bahasa Melayu</div>
-                        <div class="option-chip focusable" data-value="nl"><span>🇳🇱</span>Nederlands</div>
-                        <div class="option-chip focusable" data-value="no"><span>🇳🇴</span>Norsk</div>
-                        <div class="option-chip focusable" data-value="pl"><span>🇵🇱</span>Polski</div>
-                        <div class="option-chip focusable" data-value="pt"><span>🇵🇹</span>Português</div>
-                        <div class="option-chip focusable" data-value="ro"><span>🇷🇴</span>Română</div>
-                        <div class="option-chip focusable" data-value="ru"><span>🇷🇺</span>Russian</div>
-                        <div class="option-chip focusable" data-value="sk"><span>🇸🇰</span>Slovenčina</div>
-                        <div class="option-chip focusable" data-value="sv"><span>🇸🇪</span>Svenska</div>
-                        <div class="option-chip focusable" data-value="th"><span>🇹🇭</span>ไทย</div>
-                        <div class="option-chip focusable" data-value="tl"><span>🇵🇭</span>Tagalog</div>
-                        <div class="option-chip focusable" data-value="tr"><span>🇹🇷</span>Türkçe</div>
-                        <div class="option-chip focusable" data-value="uk"><span>🇺🇦</span>Українська</div>
-                        <div class="option-chip focusable" data-value="vi"><span>🇻🇳</span>Vietnamese</div>
-                        <div class="option-chip focusable" data-value="zh"><span>🇨🇳</span>Chinese</div>
-                    </div>
+    <div class="modal-content">
+        <h2 class="modal-title" data-i18n="settings.language">Language</h2>
+        <div class="modal-body">
+            <div class="language-stepper-container">
+                <button id="lang-prev-btn" class="btn btn-secondary btn-circle edit-trigger focusable stepper-arrow-btn" aria-label="Previous Language">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <div id="lang-stepper-display" class="current-value-display language-stepper-value">
+                    <span id="lang-stepper-flag" class="display-flag-span">🇺🇸</span>
+                    <span id="lang-stepper-name">English</span>
                 </div>
+                <button id="lang-next-btn" class="btn btn-secondary btn-circle edit-trigger focusable stepper-arrow-btn" aria-label="Next Language">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
             </div>
         </div>
-
-        <!-- Apply button (right in landscape, bottom right in mobile) -->
-        <button id="language-apply-btn" class="modal-icon-btn apply-icon-btn focusable" aria-label="Apply">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-        </button>
+        <div class="modal-footer vertical-modal-actions">
+            <button class="btn btn-primary focusable" data-i18n="common.apply">Apply</button>
+            <button class="btn btn-secondary btn-small focusable" data-i18n="common.cancel">Cancel</button>
+        </div>
     </div>
 </div>
 
