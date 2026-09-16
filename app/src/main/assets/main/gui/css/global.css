@@ -35,7 +35,7 @@
     --radius-md: 5px;
     --radius-sm: 5px;
     --radius-xs: 5px;
-    --row-min-height: calc(var(--poster-height) + 40px);
+    --row-min-height: calc(var(--poster-height) + 44px);
     --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.36);
     --shadow-panel: 0 18px 48px rgba(0, 0, 0, 0.48);
     --surface-color: #171717;
@@ -207,6 +207,7 @@ input, textarea, select { font: inherit; }
 
 #hero-loader-container { background: rgba(0, 0, 0, 0.22); z-index: 5; }
 
+/* Horizontal scrollable carousel rail holding media poster items. */
 .row-posters {
     -webkit-overflow-scrolling: touch;
     contain: layout;
@@ -214,7 +215,7 @@ input, textarea, select { font: inherit; }
     gap: 14px;
     min-height: var(--row-min-height);
     overflow: auto hidden;
-    padding: 10px var(--app-content-padding-x) 26px;
+    padding: 14px var(--app-content-padding-x) 26px;
     scroll-behavior: smooth;
     scrollbar-width: none;
 }
@@ -229,7 +230,7 @@ input, textarea, select { font: inherit; }
  * - Search results grids (search.html)
  * - Playlist collections (playlists.html)
  */
-/* Media poster wrapper for horizontal rails and search grids with smooth hover scale */
+/* Media poster wrapper for horizontal rails and search grids with smooth hover scale. */
 .poster-wrapper {
     background: var(--surface-soft);
     border: 3px solid transparent;
@@ -241,11 +242,13 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transition: border-color 150ms ease, background-color 150ms ease;
+    transform: scale(1);
+    transition: border-color 150ms ease, background-color 150ms ease, transform 200ms cubic-bezier(0.2, 0, 0.2, 1), box-shadow 200ms ease;
     width: var(--poster-width);
+    will-change: transform;
 }
 
-/* Widescreen 16:9 card tile for playlist collections with smooth hover scale */
+/* Widescreen 16:9 card tile for playlist collections with smooth hover scale. */
 .playlist-card {
     aspect-ratio: 16 / 9;
     background: var(--surface-soft);
@@ -262,9 +265,18 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+/* Media poster wrapper hover and focus states applying highlight border, scale zoom, and drop shadow. */
 .poster-wrapper:hover,
 .poster-wrapper:focus,
-.poster-wrapper.focused,
+.poster-wrapper.focused {
+    border-color: #ffffff;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+    outline: none;
+    transform: scale(1.08);
+    z-index: 10;
+}
+
+/* Widescreen playlist card hover and focus states applying white highlight border and elevated stacking. */
 .playlist-card:hover,
 .playlist-card:focus,
 .playlist-card.focused {
