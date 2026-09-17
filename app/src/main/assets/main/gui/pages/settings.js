@@ -513,8 +513,8 @@ class SettingsManager {
 
         const colorDisplay = document.getElementById('current-color-display');
         if (colorDisplay) {
-            colorDisplay.style.borderBottomColor = this.settings.accentColor;
-            colorDisplay.textContent = 'Accent';
+            colorDisplay.style.backgroundColor = this.settings.accentColor || 'var(--primary-color)';
+            colorDisplay.textContent = '';
         }
 
         const scaleDisplay = document.getElementById('current-uiscale-display');
