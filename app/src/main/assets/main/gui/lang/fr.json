@@ -24,7 +24,17 @@
         "createAccount": "Créer un compte",
         "signOut": "Se déconnecter",
         "anonymousMode": "Mode invité",
-        "notLoggedIn": "Non connecté"
+        "notLoggedIn": "Non connecté",
+        "libraryOverview": "Aperçu de la bibliothèque",
+        "statsPlaylists": "Playlists",
+        "statsHistory": "Visionnés",
+        "statsTheme": "Thème d'accent",
+        "cloudSynced": "Synchronisé au Cloud",
+        "guestTitle": "Débloquez l'expérience complète",
+        "guestDesc": "Connectez-vous ou créez un compte pour synchroniser vos playlists et votre historique.",
+        "guestBenefitCloud": "Sauvegarde Cloud",
+        "guestBenefitPlaylists": "Playlists personnalisées",
+        "guestBenefitProgress": "Reprise multi-appareils"
     },
     "settings": {
         "title": "Paramètres",

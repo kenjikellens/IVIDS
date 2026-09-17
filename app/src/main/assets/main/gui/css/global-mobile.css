@@ -582,7 +582,8 @@
 }
 
 /* Stacked layout flow for account user profile item container. */
-#app .profile-display {
+#app .profile-display,
+#app .account-profile-hero {
     flex-direction: column;
     align-items: center;
     gap: 20px;
@@ -604,10 +605,21 @@
     text-align: center;
 }
 
-/* Centered positioning wrapper for profile control buttons. */
-#app .profile-actions {
+/* Centered positioning wrapper for profile control buttons and meta tags on mobile. */
+#app .profile-actions,
+#app .profile-meta-row {
     justify-content: center;
     width: 100%;
+}
+
+/* Single-column stacked grid for account library stats on mobile viewports. */
+#app .account-stats-grid {
+    grid-template-columns: 1fr;
+}
+
+/* Padding and width adjustments for login modal card on mobile viewports. */
+#app .login-card {
+    padding: 24px 20px;
 }
 
 /* Note: Consolidated profile-actions width, and removed redundant modal-content layout rule block */

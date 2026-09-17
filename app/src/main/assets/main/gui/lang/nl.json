@@ -24,7 +24,17 @@
         "createAccount": "Account aanmaken",
         "signOut": "Uitloggen",
         "anonymousMode": "Gastmodus",
-        "notLoggedIn": "Niet ingelogd"
+        "notLoggedIn": "Niet ingelogd",
+        "libraryOverview": "Bibliotheek Overzicht",
+        "statsPlaylists": "Afspeellijsten",
+        "statsHistory": "Bekeken",
+        "statsTheme": "Accentkleur",
+        "cloudSynced": "Gesynchroniseerd met Cloud",
+        "guestTitle": "Ontgrendel de Volledige Ervaring",
+        "guestDesc": "Meld je aan of maak een account aan om je afspeellijsten, favorieten en kijkvoortgang te synchroniseren.",
+        "guestBenefitCloud": "Cloud Back-up",
+        "guestBenefitPlaylists": "Eigen Afspeellijsten",
+        "guestBenefitProgress": "Verder Kijken op Elk Apparaat"
     },
     "settings": {
         "title": "Instellingen",

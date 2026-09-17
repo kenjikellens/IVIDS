@@ -24,7 +24,17 @@
         "createAccount": "Buat Akun",
         "signOut": "Keluar",
         "anonymousMode": "Mode Tamu",
-        "notLoggedIn": "Belum Masuk"
+        "notLoggedIn": "Belum Masuk",
+        "libraryOverview": "Library Overview",
+        "statsPlaylists": "Playlists",
+        "statsHistory": "Watched",
+        "statsTheme": "Accent Theme",
+        "cloudSynced": "Cloud Synced",
+        "guestTitle": "Unlock Full Experience",
+        "guestDesc": "Sign in or create an account to sync your playlists, favorites, and watch progress across all your devices.",
+        "guestBenefitCloud": "Cloud Backup",
+        "guestBenefitPlaylists": "Custom Playlists",
+        "guestBenefitProgress": "Cross-device Resume"
     },
     "settings": {
         "title": "Pengaturan",

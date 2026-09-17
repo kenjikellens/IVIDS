@@ -24,7 +24,17 @@
         "createAccount": "Konto erstellen",
         "signOut": "Abmelden",
         "anonymousMode": "Gastmodus",
-        "notLoggedIn": "Nicht angemeldet"
+        "notLoggedIn": "Nicht angemeldet",
+        "libraryOverview": "Bibliotheksübersicht",
+        "statsPlaylists": "Wiedergabelisten",
+        "statsHistory": "Gesehen",
+        "statsTheme": "Akzentfarbe",
+        "cloudSynced": "Cloud-synchronisiert",
+        "guestTitle": "Volles Erlebnis freischalten",
+        "guestDesc": "Melden Sie sich an oder erstellen Sie ein Konto, um Wiedergabelisten und Fortschritte zu synchronisieren.",
+        "guestBenefitCloud": "Cloud-Sicherung",
+        "guestBenefitPlaylists": "Eigene Playlists",
+        "guestBenefitProgress": "Geräteübergreifend fortsetzen"
     },
     "settings": {
         "title": "Einstellungen",

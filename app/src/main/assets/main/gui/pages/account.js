@@ -27,18 +27,22 @@ export async function init() {
 
     if (account) {
         // Logged In state
-        if (sectionTitle) sectionTitle.textContent = window.i18n.t('account.currentProfile') || 'Current Account';
-        nameEl.textContent = account.name;
-        avatarEl.style.backgroundColor = account.color || '#E50914';
-        avatarEl.textContent = account.name.charAt(0).toUpperCase();
+        if (sectionTitle) sectionTitle.textContent = window.i18n?.t('account.currentProfile') || 'Current Account';
+        if (nameEl) nameEl.textContent = account.name;
+        if (avatarEl) {
+            avatarEl.style.backgroundColor = account.color || '#E50914';
+            avatarEl.textContent = account.name.charAt(0).toUpperCase();
+        }
 
         if (signOutBtn) signOutBtn.style.display = 'inline-block';
     } else {
         // Anonymous (Logged Out) state
-        if (sectionTitle) sectionTitle.textContent = window.i18n.t('account.anonymousMode') || 'Guest Mode';
-        nameEl.textContent = window.i18n.t('account.notLoggedIn') || 'Not Signed In';
-        avatarEl.style.backgroundColor = '#555';
-        avatarEl.textContent = '?';
+        if (sectionTitle) sectionTitle.textContent = window.i18n?.t('account.anonymousMode') || 'Guest Mode';
+        if (nameEl) nameEl.textContent = window.i18n?.t('account.notLoggedIn') || 'Not Signed In';
+        if (avatarEl) {
+            avatarEl.style.backgroundColor = '#2a2a2a';
+            avatarEl.textContent = '?';
+        }
 
         if (signInBtn) signInBtn.style.display = 'inline-block';
         if (createAccBtn) createAccBtn.style.display = 'inline-block';
