@@ -592,7 +592,7 @@ input, textarea, select { font: inherit; }
 /* Netflix-style IVIDS navigation rail */
 .navbar {
     align-items: stretch;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 95%, rgba(0, 0, 0, 0) 100%);
+    background: #000000eb;
     border-right: none;
     display: flex;
     flex-direction: column;
