@@ -1801,9 +1801,15 @@ input, textarea, select { font: inherit; }
    SECTION 16: PAGE SPECIFIC - SYSTEM SETTINGS PANEL
    Source File: settings.css
    ========================================================================== */
-/* Container for settings page with smooth fade-in and responsive horizontal bounds */
-/* Container for settings page with smooth fade-in and centered reading bounds */
-.settings-container { animation: fadeIn 0.35s ease-out; margin: 0 auto; padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px; width: min(960px, 94%); }
+/* Container for settings page with smooth fade-in and centered bounds */
+.settings-container {
+    animation: fadeIn 0.35s ease-out;
+    box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 1060px;
+    padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px;
+    width: 100%;
+}
 
 /* Main settings page title typography */
 .settings-header h1 { color: #fff; font-size: 40px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 8px; }
@@ -1811,14 +1817,14 @@ input, textarea, select { font: inherit; }
 /* Subtitle description for settings overview */
 .settings-header p { color: var(--text-muted); font-size: 17px; margin-bottom: 30px; }
 
-/* Grouped settings section card styled with dark surface matching Home and Search */
+/* Grouped settings section card styled with borderless dark surface matching Home and Search */
 .settings-section {
-    background: #141414;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-panel);
-    margin-bottom: 26px;
-    padding: 26px 32px;
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: none;
+    margin-bottom: 28px;
+    padding: 24px 28px;
 }
 
 /* Category header icon for settings section titles */
@@ -1831,23 +1837,23 @@ input, textarea, select { font: inherit; }
     width: 20px;
 }
 
-/* Section title with icon alignment and subtle divider */
+/* Section title with icon alignment and no harsh border line */
 .settings-section .section-title {
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: none;
     color: #fff;
     display: flex;
     font-size: 17px;
     font-weight: 700;
     gap: 12px;
     letter-spacing: 0.07em;
-    margin-bottom: 6px;
-    padding-bottom: 14px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
     text-transform: uppercase;
 }
 
-/* Styling for a single settings item row layout */
-.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.07); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
+/* Styling for a single settings item row layout without harsh borders */
+.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.04); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
 
 /* Center-aligns settings elements inside a centered settings row */
 .setting-item.centered-setting { justify-content: center; padding: 16px 0; }
@@ -1868,7 +1874,7 @@ input, textarea, select { font: inherit; }
 .current-value-display {
     align-items: center;
     background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.12);
+    border: none;
     border-radius: var(--radius-sm);
     color: #fff;
     display: inline-flex;
@@ -1885,9 +1891,9 @@ input, textarea, select { font: inherit; }
 .color-preview-circle,
 #current-color-display {
     background: var(--primary-color);
-    border: 3px solid rgba(255, 255, 255, 0.35);
+    border: none;
     border-radius: 50%;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     display: inline-block;
     flex-shrink: 0;
     font-size: 0;
@@ -1931,7 +1937,7 @@ input, textarea, select { font: inherit; }
 .scale-control-container {
     align-items: center;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border: none;
     border-radius: var(--radius-sm);
     display: inline-flex;
     gap: 6px;
@@ -2057,26 +2063,26 @@ input, textarea, select { font: inherit; }
 
 .providers-list { display: flex; flex-direction: column; gap: 1.5%; margin-bottom: 2%; width: 100%; }
 
-/* Explains: Row container for a streaming provider or Live TV M3U playlist entry. */
+/* Explains: Row container for a streaming provider or Live TV M3U playlist entry with solid opaque surface. */
 .provider-item {
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #202020;
+    border: none;
     border-radius: var(--radius-md);
     box-sizing: border-box;
     display: flex;
-    gap: 2%;
-    margin-bottom: 8px;
-    padding: 8px 12px;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
     position: relative;
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
     width: 100%;
 }
 
 /* Explains: Prevents accidental hover or focus indicators on non-interactive row container. */
 .provider-item:hover, .provider-item:focus, .provider-item.focused {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.05);
+    background: #202020;
+    border: none;
     box-shadow: none;
     outline: none;
 }
@@ -2086,8 +2092,8 @@ input, textarea, select { font: inherit; }
 .provider-item.moving:hover,
 .provider-item.moving:focus,
 .provider-item.moving.focused {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: #ffffff;
+    background: #2c2c2c;
+    border: 2px solid #ffffff;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88);
     outline: none;
     z-index: 20;
@@ -2095,8 +2101,8 @@ input, textarea, select { font: inherit; }
 
 /* Explains: Active drag state when moving an item with the mouse cursor. */
 .provider-item.dragging {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: #ffffff;
+    background: #333333;
+    border: 2px solid #ffffff;
     box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95);
     cursor: grabbing !important;
     opacity: 0.98;
@@ -2106,28 +2112,35 @@ input, textarea, select { font: inherit; }
 }
 
 .provider-url-input {
-    background: rgba(0, 0, 0, 0.36);
-    border: 2px solid rgba(255, 255, 255, 0.12);
+    background: #111111;
+    border: 2px solid transparent;
     border-radius: var(--radius-md);
     color: #fff;
     flex: 1;
-    height: 44px;
+    font-size: 15px;
+    font-weight: 600;
+    height: 48px;
     min-width: 0;
     outline: none;
-    padding: 0 14px;
+    padding: 0 16px;
 }
 
-.provider-url-input:focus, .provider-url-input.focused { border-color: #fff; box-shadow: none; outline: none; }
+.provider-url-input:focus, .provider-url-input.focused {
+    background: #111111;
+    border-color: #fff;
+    box-shadow: none;
+    outline: none;
+}
 
 /* Explains: Action buttons container in player provider and M3U playlist items. */
-.provider-actions { align-items: center; display: flex; gap: 6px; }
+.provider-actions { align-items: center; display: flex; gap: 8px; }
 
 /* Explains: Compact circular icon button sizing for provider list action items. */
 .provider-actions .edit-trigger {
-    height: 36px;
-    min-height: 36px;
-    min-width: 36px;
-    width: 36px;
+    height: 42px;
+    min-height: 42px;
+    min-width: 42px;
+    width: 42px;
 }
 
 /* Explains: Grab cursor to indicate draggable handle for cursor/mouse reordering. */
@@ -2136,7 +2149,7 @@ input, textarea, select { font: inherit; }
 
 /* Explains: Active state indicator when reordering a provider or playlist item - clean neutral secondary styling. */
 .provider-move-btn.active-moving {
-    background: rgba(255, 255, 255, 0.16);
+    background: #333333;
     border-color: #ffffff;
 }
 
@@ -2144,30 +2157,30 @@ input, textarea, select { font: inherit; }
 .loader-inline-container .ivids-loader, .full-size { height: 100%; width: 100%; }
 
 .modal-content {
-    background: #161616;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #161616 !important;
+    border: none !important;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-panel);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95);
     display: flex;
     flex-direction: column;
     max-height: 86vh;
     max-width: 90%;
     overflow: hidden;
-    padding: 28px;
+    padding: 32px 36px;
     position: relative;
     text-align: center;
-    width: min(760px, 94vw);
+    width: min(800px, 94vw);
 }
 
-.compact-modal { max-width: 440px; padding: 20px; width: min(440px, 90vw); }
+.compact-modal { max-width: 460px; padding: 24px; width: min(460px, 90vw); }
 
 .modal-title {
     color: #fff;
     font-size: 26px;
-    font-weight: 600;
-    margin-bottom: 14px;
+    font-weight: 700;
+    margin-bottom: 16px;
     margin-top: 0;
-    padding: 0 0 14px;
+    padding: 0 0 10px;
     text-align: center;
 }
 
@@ -2185,12 +2198,12 @@ input, textarea, select { font: inherit; }
 }
 
 .modal-footer, .modal-actions {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: none;
     display: flex;
     gap: 12px;
     justify-content: flex-end;
     margin-top: 20px;
-    padding-top: 16px;
+    padding-top: 6px;
     width: 100%;
 }
 
@@ -2198,7 +2211,7 @@ input, textarea, select { font: inherit; }
     border-top: none;
     flex-direction: column;
     gap: 10px;
-    margin-top: 12px;
+    margin-top: 14px;
     padding-top: 0;
     width: 100%;
 }
@@ -2213,7 +2226,7 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-.modal-footer .btn, .modal-actions .btn { min-width: 120px; }
+.modal-footer .btn, .modal-actions .btn { min-width: 130px; }
 .vertical-modal-actions .btn { width: 100%; }
 .horizontal-modal-actions .btn { flex: 1; min-width: 0; }
 
@@ -2221,24 +2234,24 @@ input, textarea, select { font: inherit; }
 
 .option-chip {
     align-items: center;
-    background: rgba(255, 255, 255, 0.06);
+    background: #222222;
     border: 2px solid transparent;
     border-radius: var(--radius-md);
     color: #fff;
     cursor: pointer;
     display: flex;
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 16px;
+    font-weight: 700;
     justify-content: center;
     min-height: 58px;
-    padding: 14px 16px;
+    padding: 14px 18px;
     position: relative;
     text-align: center;
-    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
-.option-chip:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
-.option-chip:focus, .option-chip.focused { background: rgba(255, 255, 255, 0.16); border: 2px solid #ffffff; outline: none; }
+.option-chip:hover { background: #2c2c2c; border-color: transparent; }
+.option-chip:focus, .option-chip.focused { background: #2c2c2c; border: 2px solid #ffffff; outline: none; }
 
 .option-chip.active::after {
     background: var(--primary-color);
@@ -2273,33 +2286,40 @@ input, textarea, select { font: inherit; }
    Source File: account.css
    ========================================================================== */
 /* Main scroll container for account view with smooth fade in */
-.account-container { animation: fadeIn 0.35s ease; margin: 0 auto; padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px; width: min(960px, 94%); }
+.account-container {
+    animation: fadeIn 0.35s ease;
+    box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 1060px;
+    padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px;
+    width: 100%;
+}
 
 /* Sizing and typography for account page header */
 .account-header h1 { color: #fff; font-size: 40px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 28px; }
 
 /* Dark card container for account section matching Home/Search card aesthetics */
 .account-section {
-    background: #141414;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-panel);
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: none;
     margin-bottom: 28px;
     padding: 32px 36px;
 }
 
-/* Section title with subtle bottom divider */
+/* Section title without harsh divider */
 .account-section .section-title {
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--text-muted);
+    border-bottom: none;
+    color: #fff;
     display: flex;
     font-size: 17px;
     font-weight: 700;
     gap: 12px;
     letter-spacing: 0.07em;
     margin: 0 0 24px;
-    padding-bottom: 14px;
+    padding-bottom: 0;
     text-align: left;
     text-transform: uppercase;
 }
@@ -3013,9 +3033,9 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Authentication modal card matching Search modal styling */
 .login-card {
     background: #141414;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-panel);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
     box-sizing: border-box;
     margin: 0 auto;
     max-height: 94vh;
@@ -3620,18 +3640,18 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Styles the center display card for the currently selected language. */
 .language-stepper-value {
     align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 2px solid rgba(255, 255, 255, 0.12);
+    background: #222222;
+    border: none;
     border-radius: var(--radius-md);
     color: #ffffff;
     display: flex;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 800;
     gap: 12px;
     justify-content: center;
-    min-height: 52px;
-    min-width: 220px;
-    padding: 0 20px;
+    min-height: 56px;
+    min-width: 240px;
+    padding: 0 24px;
     text-align: center;
 }
 
@@ -3643,6 +3663,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     font-family: "Twemoji Country Flags", inherit;
     font-size: 22px;
     line-height: 1;
+    margin-right: 12px;
 }
 
 /* Styles the circular stepper arrow buttons for next/prev language navigation. */

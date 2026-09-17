@@ -505,7 +505,7 @@ class SettingsManager {
             // to extract and wrap the flag emoji in a custom span for polyfilled Windows rendering compatibility.
             const flagMatch = fullName.match(/^([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])\s+(.*)$/);
             if (flagMatch) {
-                langDisplay.innerHTML = `<span class="display-flag-span">${flagMatch[1]}</span><span>${flagMatch[2]}</span>`;
+                langDisplay.innerHTML = `<span class="display-flag-span">${flagMatch[1]}</span><span class="display-lang-name">${flagMatch[2]}</span>`;
             } else {
                 langDisplay.textContent = fullName;
             }
