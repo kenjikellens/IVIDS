@@ -1802,7 +1802,8 @@ input, textarea, select { font: inherit; }
    Source File: settings.css
    ========================================================================== */
 /* Container for settings page with smooth fade-in and responsive horizontal bounds */
-.settings-container { animation: fadeIn 0.35s ease-out; margin: 0 auto; padding: var(--app-content-padding-y) var(--app-content-padding-x) 72px; width: min(1180px, 100%); }
+/* Container for settings page with smooth fade-in and centered reading bounds */
+.settings-container { animation: fadeIn 0.35s ease-out; margin: 0 auto; padding: var(--app-content-padding-y) var(--app-content-padding-x) 72px; width: min(880px, 100%); }
 
 /* Main settings page title typography */
 .settings-header h1 { color: #fff; font-size: 44px; line-height: 1.1; margin-bottom: 8px; }
@@ -1810,14 +1811,14 @@ input, textarea, select { font: inherit; }
 /* Subtitle description for settings overview */
 .settings-header p { color: var(--text-muted); font-size: 16px; }
 
-/* Grouped settings section card styled with streaming-first translucent glassmorphism */
+/* Grouped settings section card styled with dark surface matching Home and Search */
 .settings-section {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-panel);
-    margin-bottom: 20px;
-    padding: 24px;
+    margin-bottom: 24px;
+    padding: 24px 28px;
 }
 
 /* Category header icon for settings section titles */
@@ -1829,23 +1830,23 @@ input, textarea, select { font: inherit; }
     width: 20px;
 }
 
-/* Section title with icon alignment and subtle glowing bottom divider */
+/* Section title with icon alignment and subtle divider */
 .settings-section .section-title {
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     color: #fff;
     display: flex;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     gap: 12px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     margin-bottom: 18px;
     padding-bottom: 12px;
     text-transform: uppercase;
 }
 
 /* Styling for a single settings item row layout */
-.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; gap: 24px; justify-content: space-between; padding: 18px 0; }
+.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; gap: 24px; justify-content: space-between; padding: 18px 0; }
 
 /* Center-aligns settings elements inside a centered settings row */
 .setting-item.centered-setting { justify-content: center; padding: 16px 0; }
@@ -1854,38 +1855,81 @@ input, textarea, select { font: inherit; }
 .setting-item:first-of-type { border-top: 0; }
 
 /* Title label for individual setting items */
-.setting-label { color: #fff; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.setting-label { color: #fff; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
 
 /* Subtext description explaining the setting item */
-.setting-description { color: var(--text-muted); font-size: 14px; }
+.setting-description { color: var(--text-muted); font-size: 13px; line-height: 1.4; }
 
 /* Right-hand flexbox container aligning settings controls horizontally */
-.setting-control { align-items: center; display: flex; gap: 10px; justify-content: flex-end; }
+.setting-control { align-items: center; display: flex; flex-shrink: 0; gap: 10px; justify-content: flex-end; }
 
 /* Readout chip badge for current setting value */
 .current-value-display {
     align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: var(--radius-sm);
-    color: rgba(255, 255, 255, 0.9);
+    color: #fff;
     display: inline-flex;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
+    height: 40px;
     min-width: 0;
-    padding: 6px 14px;
-    text-align: right;
+    padding: 0 16px;
+    text-align: center;
     transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+/* Trigger button modifier for editing setting values */
+.edit-trigger {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 40px;
+    justify-content: center;
+    min-height: 40px;
+    min-width: 40px;
+    padding: 0;
+    transition: background 0.18s ease, border-color 0.18s ease;
+    width: 40px;
+}
+
+.edit-trigger:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: transparent;
+}
+
+.edit-trigger:focus,
+.edit-trigger.focused {
+    background: #fff;
+    border-color: #fff;
+    outline: none;
+}
+
+.edit-trigger:focus .setting-edit-icon,
+.edit-trigger.focused .setting-edit-icon {
+    filter: invert(1);
+}
+
+.edit-trigger:focus .setting-stepper-icon,
+.edit-trigger.focused .setting-stepper-icon {
+    filter: invert(1);
 }
 
 /* Stepper button container for UI scale adjustments */
 .scale-control-container {
     align-items: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
     display: inline-flex;
     gap: 4px;
+    height: 40px;
     padding: 2px 4px;
 }
 
@@ -1893,24 +1937,45 @@ input, textarea, select { font: inherit; }
 .scale-control-container .centered-value {
     background: transparent;
     border: none;
+    color: #fff;
     font-size: 14px;
     font-weight: 700;
-    min-width: 54px;
+    min-width: 50px;
     padding: 0 4px;
     text-align: center;
 }
 
-/* Circular stepper button inside scale adjust container */
+/* Stepper button inside scale adjust container */
 .scale-adjust-btn {
-    border-radius: 50%;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
     font-size: 18px;
     font-weight: 700;
     height: 32px;
+    justify-content: center;
     line-height: 1;
     min-height: 32px;
     min-width: 32px;
     padding: 0;
     width: 32px;
+}
+
+.scale-adjust-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: transparent;
+}
+
+.scale-adjust-btn:focus,
+.scale-adjust-btn.focused {
+    background: #fff;
+    border-color: #fff;
+    color: #050505;
+    outline: none;
 }
 
 /* Stepper navigation icon for modal steppers */
@@ -1925,12 +1990,12 @@ input, textarea, select { font: inherit; }
 .switch-container {
     position: relative;
     display: inline-block;
-    width: 52px;
-    height: 28px;
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    width: 56px;
+    height: 30px;
+    border: 3px solid transparent;
     border-radius: 999px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.12);
     transition: background-color 150ms ease, border-color 150ms ease;
     outline: none;
     box-sizing: border-box;
@@ -1948,68 +2013,37 @@ input, textarea, select { font: inherit; }
     position: absolute;
     cursor: pointer;
     top: 2px;
-    left: 3px;
-    background-color: rgba(255, 255, 255, 0.45);
-    transition: left 0.2s ease, background-color 0.2s ease, filter 0.2s ease;
+    left: 2px;
+    background-color: #fff;
+    transition: left 0.2s ease, background-color 0.2s ease;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
 }
 
-/* Explains: Hover state for switch container and its slider thumb. */
 .switch-container:hover {
-    background-color: rgba(255, 255, 255, 0.16);
-    border-color: rgba(255, 255, 255, 0.35);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-.switch-container:hover .switch-slider {
-    background-color: rgba(255, 255, 255, 0.75);
-}
-
-/* Explains: Active/checked state for toggle switch using theme accent color. */
 .switch-container:has(input:checked) {
-    background-color: rgba(var(--primary-rgb), 0.25);
-    border-color: var(--primary-color);
-}
-
-.switch-container:has(input:checked) .switch-slider {
-    left: 25px;
     background-color: var(--primary-color);
 }
 
-/* Explains: Hover state for checked/turned on switch container. */
-.switch-container:has(input:checked):hover {
-    background-color: rgba(var(--primary-rgb), 0.38);
-    border-color: var(--primary-color);
+.switch-container:has(input:checked) .switch-slider {
+    left: 28px;
+    background-color: #050505;
 }
 
-.switch-container:has(input:checked):hover .switch-slider {
-    filter: brightness(1.2);
-}
-
-/* Explains: Focus styling with solid white border whether checked or unchecked. */
 .switch-container:focus,
-.switch-container.focused,
-.switch-container:has(input:checked):focus,
-.switch-container:has(input:checked).focused,
-.switch-container:focus-visible {
+.switch-container.focused {
     border-color: #ffffff;
     outline: none;
 }
 
-/* Explains: Circular/square icon button modifier for settings rows (consumes .btn and .btn-secondary base styles). */
-.edit-trigger {
-    flex-shrink: 0;
-    height: 36px;
-    min-height: 36px;
-    min-width: 36px;
-    padding: 0;
-    width: 36px;
-}
+/* Explains: SVG icon inside settings row buttons */
+.setting-edit-icon { display: block; height: 16px; pointer-events: none; width: 16px; }
 
-/* Explains: SVG icon inside settings row buttons scaled cleanly for 36px circular frames. */
-.setting-edit-icon { display: block; height: 17px; pointer-events: none; width: 17px; }
-
+/* Status label for update checker */
 .update-status-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
 
 .loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
@@ -2234,78 +2268,75 @@ input, textarea, select { font: inherit; }
    Source File: account.css
    ========================================================================== */
 /* Main scroll container for account view with smooth fade in */
-.account-container { animation: fadeIn 0.35s ease; margin: 0 auto; padding: var(--app-content-padding-y) var(--app-content-padding-x) 72px; width: min(1040px, 100%); }
+.account-container { animation: fadeIn 0.35s ease; margin: 0 auto; padding: var(--app-content-padding-y) var(--app-content-padding-x) 72px; width: min(840px, 100%); }
 
 /* Sizing and typography for account page header */
 .account-header h1 { color: #fff; font-size: 44px; line-height: 1.1; margin-bottom: 8px; }
 
-/* Translucent glass card container for account sections */
+/* Dark card container for account section matching Home/Search card aesthetics */
 .account-section {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-panel);
     margin-bottom: 24px;
-    padding: 28px;
+    padding: 32px 36px;
 }
 
-/* Flex layout aligning the profile avatar and user account details */
-.account-profile-hero { align-items: center; display: flex; gap: 32px; }
-
-/* Wrapper maintaining relative positioning and halo effect for user avatar */
-.profile-avatar-wrapper { flex-shrink: 0; position: relative; }
-
-/* Large circular user profile avatar with glowing outline */
-.profile-avatar.large {
+/* Section title with subtle bottom divider */
+.account-section .section-title {
     align-items: center;
-    border: 3px solid rgba(255, 255, 255, 0.25);
-    border-radius: 50%;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
     display: flex;
-    flex: 0 0 110px;
-    font-size: 48px;
-    font-weight: 900;
-    height: 110px;
-    justify-content: center;
-    width: 110px;
-}
-
-/* User profile details flex container */
-.profile-details { display: flex; flex: 1; flex-direction: column; min-width: 0; }
-
-/* Meta row for profile status badges and linked email */
-.profile-meta-row { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
-
-/* Status pill badge for account type */
-.account-status-badge {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 999px;
-    color: #fff;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    padding: 3px 12px;
+    gap: 12px;
+    letter-spacing: 0.08em;
+    margin: 0 0 24px;
+    padding-bottom: 12px;
+    text-align: left;
     text-transform: uppercase;
 }
 
-/* Active cloud sync status badge with primary theme highlight */
-.account-status-badge.badge-cloud {
-    background: rgba(var(--primary-rgb), 0.15);
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+/* Flex layout aligning the profile avatar and user account details */
+.profile-display {
+    align-items: center;
+    display: flex;
+    gap: 32px;
 }
 
-/* Linked email address readout */
-.profile-email-text { color: var(--text-muted); font-size: 14px; font-weight: 600; }
+/* Profile avatar squircle with clean letter centering */
+.profile-avatar.large {
+    align-items: center;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    display: flex;
+    flex: 0 0 96px;
+    font-size: 42px;
+    font-weight: 800;
+    height: 96px;
+    justify-content: center;
+    width: 96px;
+}
+
+/* User profile details flex container */
+.profile-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
 
 /* Main display name text for current user profile */
 .profile-name-text {
     color: #fff;
-    font-size: 32px;
-    font-weight: 800;
-    margin: 4px 0 16px;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2313,77 +2344,19 @@ input, textarea, select { font: inherit; }
 }
 
 /* Action button row for sign in, register, and sign out */
-.profile-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-
-/* Grid container for user library statistics */
-.account-stats-grid {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    margin-top: 14px;
-}
-
-/* Individual statistic card inside library overview */
-.account-stat-card {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
+.profile-actions {
     display: flex;
-    gap: 16px;
-    padding: 18px 20px;
-    transition: background 0.18s ease;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
 }
 
-/* Icon container inside stat card */
-.stat-icon-wrapper {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius-sm);
-    display: flex;
-    flex-shrink: 0;
-    height: 44px;
-    justify-content: center;
-    width: 44px;
+/* Base button sizing in profile actions */
+.profile-actions .btn {
+    height: 42px;
+    min-width: 120px;
+    padding: 0 22px;
 }
-
-/* Icon element inside stat card */
-.stat-icon { height: 22px; object-fit: contain; opacity: 0.85; width: 22px; }
-
-/* Content wrapper holding stat number and label */
-.stat-content { display: flex; flex-direction: column; gap: 2px; }
-
-/* Large numeric display inside stat card */
-.stat-number { color: #fff; font-size: 24px; font-weight: 800; line-height: 1.1; }
-
-/* Label describing statistic metric */
-.stat-label { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-
-/* Wrapper aligning color dot with stat label */
-.color-dot-wrapper { align-items: center; display: flex; height: 26px; }
-
-/* Explanatory description paragraph for guest users */
-.guest-section-desc { color: var(--text-muted); font-size: 15px; line-height: 1.5; margin-bottom: 20px; max-width: 640px; }
-
-/* Flex row holding benefit chips for guest users */
-.guest-benefits-grid { display: flex; flex-wrap: wrap; gap: 12px; }
-
-/* Feature benefit chip badge for guest onboarding */
-.guest-benefit-chip {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    color: #fff;
-    display: inline-flex;
-    gap: 10px;
-    padding: 8px 18px;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-/* Feature benefit SVG icon */
-.benefit-icon { height: 18px; object-fit: contain; opacity: 0.85; width: 18px; }
 
 /* Custom Modal Overrides for perfect visibility and rendering */
 .modal-overlay {
@@ -3023,38 +2996,54 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* Card bounding container for login view */
-.login-card-container { box-sizing: border-box; position: relative; width: min(480px, 100%); }
+.login-card-container {
+    box-sizing: border-box;
+    margin: 0 auto;
+    position: relative;
+    width: min(460px, 92vw);
+}
 
-/* Authentication modal card with translucent glass backdrop and subtle border */
+/* Authentication modal card matching Search modal styling */
 .login-card {
-    background: rgba(23, 23, 23, 0.88);
+    background: #141414;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-panel);
     box-sizing: border-box;
     margin: 0 auto;
-    padding: 28px 32px 32px;
+    min-height: auto;
+    padding: 36px 32px 32px;
     position: relative;
     width: 100%;
 }
 
-/* Top navigation bar in login card with back button and brand title */
-.login-card-topbar {
+/* Back button positioned inside login container */
+#login-circle-back {
     align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 3px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    width: 100%;
+    height: 40px;
+    justify-content: center;
+    left: -54px;
+    position: absolute;
+    top: 0;
+    width: 40px;
+    z-index: 10;
 }
 
-/* Circular back button inside login topbar */
-.login-back-btn {
-    border-radius: 50%;
-    height: 38px;
-    min-height: 38px;
-    min-width: 38px;
-    padding: 0;
-    width: 38px;
+#login-circle-back:focus,
+#login-circle-back.focused {
+    background: #fff;
+    border-color: #fff;
+    outline: none;
+}
+
+#login-circle-back:focus .login-back-icon,
+#login-circle-back.focused .login-back-icon {
+    filter: invert(1);
 }
 
 /* External SVG icon inside back button */
@@ -3065,103 +3054,148 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     width: 18px;
 }
 
-/* Branding container with IVIDS logo and wordmark */
-.login-brand {
+/* Header containing title and subtitle inside login card */
+.login-header {
     align-items: center;
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 24px;
+    text-align: center;
 }
-
-/* Brand logo image inside login topbar */
-.login-logo-img {
-    height: 26px;
-    object-fit: contain;
-    width: 26px;
-}
-
-/* Brand wordmark typography */
-.login-logo-title {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-}
-
-/* Header containing title and subtitle inside login card */
-.login-header { align-items: center; display: flex; flex-direction: column; justify-content: center; margin-bottom: 16px; text-align: center; }
 
 /* Sets margins and adjusts typography sizes for the branding header */
-.login-title-text { font-size: 28px; margin: 0 0 6px; }
-
-/* Subtext description below title */
-.login-subtitle-text { color: var(--text-muted); font-size: 14px; margin: 0; }
-
-/* Row container for login mode tabs */
-.login-tabs-row { display: flex; gap: 10px; margin-bottom: 8px; }
-
-/* Mode tab button modifier */
-.login-tab-btn { box-sizing: border-box; flex: 1; height: 42px; justify-content: center; }
-
-/* Form wrapper holding all input groups */
-.login-form-container { display: flex; flex: 1; flex-direction: column; gap: 18px; margin: 0; padding: 0; }
-
-/* Group container for single input field */
-.login-input-group { margin-bottom: 0; text-align: left; }
-
-/* Focusable container wrapping inputs and leading icons inside login form */
-.login-input-group .input-wrapper {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-sm);
-    display: flex;
-    gap: 12px;
-    height: 48px;
-    padding: 0 14px;
-    transition: border-color 0.18s ease, background 0.18s ease;
-    width: 100%;
+.login-title-text {
+    color: #fff;
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 6px;
 }
 
-/* Active focus state with high-visibility white border */
-.login-input-group .input-wrapper:focus-within,
-.login-input-group .input-wrapper.focused {
-    background: rgba(255, 255, 255, 0.08);
+/* Subtext description below title */
+.login-subtitle-text {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Row container for login mode tabs */
+.login-tabs-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+/* Mode tab button modifier */
+.login-tab-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    color: var(--text-muted);
+    cursor: pointer;
+    flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    height: 42px;
+    justify-content: center;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.login-tab-btn.active {
+    background: var(--primary-color);
+    color: #050505;
+}
+
+.login-tab-btn:focus,
+.login-tab-btn.focused {
     border-color: #ffffff;
     outline: none;
 }
 
-/* Leading icon inside login input wrapper */
-.input-leading-icon {
-    flex-shrink: 0;
-    height: 18px;
-    object-fit: contain;
-    opacity: 0.6;
-    pointer-events: none;
-    width: 18px;
+/* Form wrapper holding all input groups */
+.login-form-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Group container for single input field */
+.login-input-group {
+    margin-bottom: 0;
+    text-align: left;
+}
+
+/* Label for login input fields */
+.login-input-group label {
+    color: rgba(255, 255, 255, 0.85);
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
 /* Clean text input inside focusable container */
-.login-input-group .input-wrapper input {
-    background: transparent;
-    border: none;
+.login-input-group input {
+    background: rgba(255, 255, 255, 0.07);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
     color: #fff;
-    flex: 1;
     font-size: 15px;
-    font-weight: 500;
-    height: 100%;
+    font-weight: 600;
+    height: 48px;
     outline: none;
-    padding: 0;
+    padding: 0 16px;
+    transition: border-color 0.18s ease, background 0.18s ease;
     width: 100%;
 }
 
+/* Focus highlight with white border */
+.login-input-group input:focus,
+.login-input-group input.focused {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffffff;
+}
+
 /* Row aligning PIN label and digit count helper text */
-.login-pin-row { align-items: baseline; display: flex; justify-content: space-between; margin-bottom: 6px; width: 100%; }
+.login-pin-row {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.login-pin-row label {
+    margin-bottom: 0;
+}
 
 /* Helper text showing allowed digit range for PIN */
-.login-pin-hint { color: var(--text-dim); font-size: 12px; font-weight: 600; }
+.login-pin-hint {
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 600;
+}
 
 /* Action buttons footer for form submission and cancel */
-.login-footer { align-items: center; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%; }
+.login-footer {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+    width: 100%;
+}
+
+.login-footer .btn {
+    height: 46px;
+    width: 100%;
+}
 
 /* CSS Class: Reusable min-width constraint for buttons to ensure translated text fits without clipping. */
 .btn-min-w { min-width: 120px; }
