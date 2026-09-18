@@ -7,6 +7,7 @@ import { createLoaderElement } from '../js/loader.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
 import { Api } from '../../logic/api.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
+import { VersionManager } from '../js/version-manager.js';
 
 
 let settingsManagerInstance = null;
@@ -573,27 +574,7 @@ class SettingsManager {
             }
         }
 
-        const versionDisplay = document.getElementById('app-version-display');
-        if (versionDisplay) {
-            if (window.AndroidUpdate && typeof window.AndroidUpdate.getCurrentVersion === 'function') {
-                versionDisplay.textContent = window.AndroidUpdate.getCurrentVersion();
-            } else if (window.ElectronAPI && typeof window.ElectronAPI.getAppVersion === 'function') {
-                window.ElectronAPI.getAppVersion().then(version => {
-                    versionDisplay.textContent = version ? `v${version}` : 'v0.4.1';
-                }).catch(() => {
-                    versionDisplay.textContent = 'v0.4.1';
-                });
-            } else {
-                fetch('/api/version')
-                    .then(response => response.json())
-                    .then(data => {
-                        versionDisplay.textContent = data.version ? `v${data.version}` : 'v0.4.1';
-                    })
-                    .catch(() => {
-                        versionDisplay.textContent = 'v0.4.1';
-                    });
-            }
-        }
+        VersionManager.getInstance().bindDisplayElement('app-version-display');
     }
 
     /**
@@ -624,9 +605,8 @@ class SettingsManager {
             const releases = await res.json();
             console.log(`Settings: Retreived ${releases.length} releases successfully`);
 
-            // Fetch current app version display string
-            const versionDisplay = document.getElementById('app-version-display');
-            const currentInstalledVersion = versionDisplay ? versionDisplay.textContent.trim() : '';
+            // Fetch current app version dynamically via VersionManager
+            const currentInstalledVersion = await VersionManager.getInstance().getVersion();
 
             if (loader) loader.style.display = 'none';
             if (grid) {

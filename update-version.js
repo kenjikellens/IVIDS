@@ -29,6 +29,10 @@ function main() {
     writeChangelog(displayVersion, newVersionCode);
 
     console.log(`Successfully updated project to version ${displayVersion} (versionCode: ${newVersionCode})`);
+    
+    // Automatically execute the integrity validator to guarantee 100% parity
+    const { execSync } = require('child_process');
+    execSync('node validate-build-integrity.js', { stdio: 'inherit' });
 }
 
 /**

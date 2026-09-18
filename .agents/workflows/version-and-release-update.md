@@ -24,13 +24,13 @@ This document defines the strict, standardized protocol for launching new releas
   ```powershell
   .\build.bat version vX.Y.Z
   ```
-  *(Replace `vX.Y.Z` with your target version, e.g. `v0.4.4` or `0.4.4`).*
-- **Automated Actions**: This command will automatically:
-  1. Update the `version` field in [package.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package.json).
-  2. Update the version fields in [package-lock.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package-lock.json).
-  3. Bump `versionName` to `vX.Y.Z` and increment `versionCode` by 1 in [build.gradle.kts](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/build.gradle.kts).
-  4. Update the `version` attribute in Tizen's [config.xml](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/config.xml) and [config.xml](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/config.xml) to match `X.Y.Z`.
-  5. Append the modification log entry to [CHANGELOG.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/CHANGELOG.md).
+  *(Replace `vX.Y.Z` with your target version, e.g. `v0.6.2` or `0.6.2`).*
+- **Automated Actions & Propagation**: This command automatically synchronizes the version across all platform layers:
+  1. **[package.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package.json)** & **[package-lock.json](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/package-lock.json)**: Updates `version` string (consumed directly by Electron, the PC updater, and the Settings version display on Windows).
+  2. **[app/build.gradle.kts](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/build.gradle.kts)**: Bumps `versionName` to `vX.Y.Z` and auto-increments `versionCode` (consumed by the Android OS `PackageManager`, the Android `UpdateManager.java`, and the Settings version display on Android).
+  3. **[config.xml](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/config.xml)** & **[assets/main/config.xml](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/config.xml)**: Updates `version` attribute for Tizen TV applications.
+  4. **[CHANGELOG.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/CHANGELOG.md)**: Appends the version bump and build timestamp entry.
+  5. **Settings UI & Updater Verification**: Because [settings.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/pages/settings.js) dynamically queries `AndroidUpdate.getCurrentVersion()` and `ElectronAPI.getAppVersion()` at runtime, updating `build.gradle.kts` and `package.json` automatically guarantees that the Settings App Info modal displays the exact active version without manual code edits.
 
 ### 3. Compile and Package the Applications (APK and EXE)
 - **ACTION**: Run the automated build script to compile the packages:

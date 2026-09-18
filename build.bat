@@ -36,6 +36,13 @@ if errorlevel 1 exit /b 1
 
 if not exist "gradlew.bat" exit /b 1
 
+:: INTEGRITY VALIDATION GATEKEEPER
+node validate-build-integrity.js
+if errorlevel 1 (
+    echo [ERROR] Build aborted due to version integrity check failure.
+    exit /b 1
+)
+
 echo [PRE] OK
 echo.
 

@@ -4,6 +4,7 @@
  */
 
 import { PersistentStorage } from '../../logic/persistent-storage.js';
+import { VersionManager } from './version-manager.js';
 
 const Config = {
     isNative: !!window.AndroidUpdate,
@@ -13,33 +14,11 @@ const Config = {
 
 /**
  * Retrieves the current installed version of the application asynchronously.
- * Checks the native Android interface, then the Electron bridge, attempts local server API, and falls back to v0.4.1.
- * @returns {Promise<string>} A promise resolving to the version string (e.g., 'v0.4.1').
+ * Delegates to centralized VersionManager service.
+ * @returns {Promise<string>} A promise resolving to the version string (e.g., 'v0.6.2').
  */
 async function getLocalVersion() {
-    if (window.AndroidUpdate && typeof window.AndroidUpdate.getCurrentVersion === 'function') {
-        return window.AndroidUpdate.getCurrentVersion();
-    }
-    if (window.ElectronAPI && typeof window.ElectronAPI.getAppVersion === 'function') {
-        try {
-            const version = await window.ElectronAPI.getAppVersion();
-            return version ? `v${version}` : 'v0.4.1';
-        } catch (err) {
-            console.error('Updater: Failed to fetch Electron app version', err);
-        }
-    }
-    try {
-        const response = await fetch('/api/version');
-        if (response.ok) {
-            const data = await response.json();
-            if (data && data.version) {
-                return `v${data.version}`;
-            }
-        }
-    } catch (err) {
-        // Silent fallback for production web hosting environments
-    }
-    return 'v0.4.1';
+    return VersionManager.getInstance().getVersion();
 }
 
 /**

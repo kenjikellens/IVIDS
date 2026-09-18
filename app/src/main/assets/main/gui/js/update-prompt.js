@@ -1,5 +1,6 @@
 import { SpatialNav } from './spatial-nav.js';
 import { parseMarkdown } from './utils/markdown-parser.js';
+import { VersionManager } from './version-manager.js';
 
 /**
  * UpdatePrompt Class
@@ -76,32 +77,12 @@ export class UpdatePrompt {
 
     /**
      * Retrieves the current installed version of the application.
-     * Checks native Android, Electron, and fallback endpoints.
+     * Delegates to centralized VersionManager service.
      * 
-     * @returns {Promise<string>} The version string (e.g. 'v0.4.1').
+     * @returns {Promise<string>} The version string (e.g. 'v0.6.2').
      */
     static async getLocalVersion() {
-        if (window.AndroidUpdate && typeof window.AndroidUpdate.getCurrentVersion === 'function') {
-            return window.AndroidUpdate.getCurrentVersion();
-        }
-        if (window.ElectronAPI && typeof window.ElectronAPI.getAppVersion === 'function') {
-            try {
-                const version = await window.ElectronAPI.getAppVersion();
-                return version ? `v${version}` : 'v0.4.1';
-            } catch (err) {
-                console.error('UpdatePrompt: Failed to fetch Electron app version', err);
-            }
-        }
-        try {
-            const response = await fetch('/api/version');
-            if (response.ok) {
-                const data = await response.json();
-                if (data && data.version) {
-                    return `v${data.version}`;
-                }
-            }
-        } catch (err) {}
-        return 'v0.4.1';
+        return VersionManager.getInstance().getVersion();
     }
 
     /**

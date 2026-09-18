@@ -248,7 +248,7 @@ public class UpdateManager {
                     .getPackageInfo(mActivity.getPackageName(), 0).versionName;
         } catch (Exception e) {
             Log.e(TAG, "Error getting package version name", e);
-            return "v0.4.1";
+            return "v0.0.0";
         }
     }
 
