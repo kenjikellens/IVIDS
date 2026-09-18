@@ -511,19 +511,11 @@
     box-sizing: border-box;
 }
 
-/* CSS Class: Combined vertical layout stacking helper for headers and setting rows on mobile viewports. */
-#app .page-header,
-#app .setting-item {
+/* Mobile page header vertical stacking */
+#app .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-}
-
-/* Font sizing scaling for main page titles on mobile. */
-#app .page-title,
-#app .details-title,
-#app #details-title {
-    font-size: clamp(26px, 6.5vw, 31px);
 }
 
 /* Typography scaling for Settings page header text. */
@@ -531,12 +523,70 @@
     font-size: clamp(26px, 6.5vw, 31px);
 }
 
-/* Note: Consolidated and merged into #app .page-header rule above */
+/* Mobile Settings section card styling */
+#app .settings-section {
+    padding: 18px 16px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-md);
+}
 
-/* Flex display overrides for settings controls layout. */
+/* Mobile Settings section title styling */
+#app .settings-section .section-title {
+    font-size: 15px;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+/* Mobile Settings row: clean responsive horizontal flex layout */
+#app .setting-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Remove top border from first setting item */
+#app .setting-item:first-of-type {
+    border-top: none;
+}
+
+/* Centered setting item alignment on mobile */
+#app .setting-item.centered-setting {
+    justify-content: center;
+    padding: 16px 0;
+}
+
+/* Setting info text container */
+#app .setting-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Setting label typography on mobile */
+#app .setting-label {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+/* Setting description typography on mobile */
+#app .setting-description {
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--text-muted);
+}
+
+/* Mobile Settings control container: right-aligned inline controls */
 #app .setting-control {
-    width: 100%;
-    justify-content: flex-start;
+    display: flex;
+    flex: 0 0 auto;
+    width: auto;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
 }
 
 /* CSS Class: Centered layout override for update check row container on mobile viewports. */
@@ -550,30 +600,92 @@
     justify-content: center;
 }
 
-/* Width fitment for settings current value boxes. */
+/* Mobile current value readout chip */
 #app .current-value-display {
-    width: auto;
+    font-size: 14px;
+    font-weight: 700;
+    height: 40px;
+    padding: 0 12px;
+    max-width: 150px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* Ensure scale stepper remains a unified horizontal row on mobile */
+/* Mobile circular edit trigger button */
+#app .edit-trigger {
+    height: 40px;
+    width: 40px;
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+/* Setting edit SVG icon sizing on mobile */
+#app .setting-edit-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Mobile UI scale stepper control */
 #app .scale-control-container {
     align-items: center;
     display: inline-flex;
     flex-direction: row;
     flex-shrink: 0;
-    gap: 8px;
+    gap: 4px;
+    height: 40px;
+    padding: 3px 4px;
     width: auto;
+    border-radius: var(--radius-sm);
 }
 
+/* UI scale adjust minus and plus button sizing */
+#app .scale-adjust-btn {
+    height: 32px;
+    min-height: 32px;
+    min-width: 32px;
+    width: 32px;
+    font-size: 17px;
+    border-radius: var(--radius-sm);
+}
+
+/* Value display inside scale stepper */
 #app .scale-control-container .centered-value {
     flex: none;
-    min-width: 50px;
+    min-width: 44px;
+    font-size: 14px;
     width: auto;
 }
 
-/* Prevents the edit button from being squished in flex layouts on mobile */
-#app .edit-trigger {
+/* Mobile toggle switch container */
+#app .switch-container {
+    height: 32px;
+    width: 58px;
     flex-shrink: 0;
+    border-radius: 999px;
+}
+
+/* Mobile toggle switch slider circle */
+#app .switch-slider {
+    height: 22px;
+    width: 22px;
+    top: 2px;
+    left: 2px;
+}
+
+/* Checked position for mobile toggle slider circle */
+#app .switch-container:has(input:checked) .switch-slider {
+    left: 28px;
+}
+
+/* Mobile color preview swatch */
+#app .color-preview-circle,
+#app #current-color-display {
+    height: 32px;
+    width: 32px;
 }
 
 /* Typography scaling for Account page header. */
@@ -764,6 +876,120 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+}
+
+/* Mobile button touch targets and geometry */
+#app .btn {
+    min-height: 44px;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: var(--radius-md);
+    gap: 8px;
+}
+
+/* Small button modifier for mobile */
+#app .btn-small {
+    min-height: 36px;
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
+/* Circular button modifier for mobile */
+#app .btn-circle {
+    height: 38px;
+    width: 38px;
+    min-height: 38px;
+    min-width: 38px;
+}
+
+/* Mobile Language Stepper sizing and overflow prevention */
+#app .language-stepper-container {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 12px 0 20px;
+    width: 100%;
+}
+
+/* Language stepper display chip for mobile */
+#app .language-stepper-value {
+    align-items: center;
+    display: flex;
+    font-size: 15px;
+    font-weight: 700;
+    gap: 8px;
+    justify-content: center;
+    min-height: 46px;
+    min-width: 0 !important;
+    max-width: 200px;
+    padding: 0 12px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Flag emoji sizing on mobile */
+#app .display-flag-span,
+#app .language-stepper-value .display-flag-span {
+    font-size: 18px;
+    margin-right: 6px;
+}
+
+/* Stepper arrow navigation button on mobile */
+#app .stepper-arrow-btn {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    height: 42px;
+    justify-content: center;
+    min-height: 42px;
+    min-width: 42px;
+    width: 42px;
+}
+
+/* Stepper arrow SVG icon on mobile */
+#app .stepper-arrow-btn svg,
+#app .stepper-arrow-btn img {
+    height: 18px;
+    width: 18px;
+}
+
+/* Modal action buttons vertical layout for mobile */
+#app .modal-footer,
+#app .modal-actions,
+#app .vertical-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 0;
+    width: 100%;
+}
+
+/* Full width buttons inside modal footers on mobile */
+#app .modal-footer .btn,
+#app .modal-actions .btn,
+#app .vertical-modal-actions .btn {
+    flex: none;
+    min-height: 44px;
+    min-width: 0 !important;
+    width: 100% !important;
+}
+
+/* Horizontal modal button grouping for mobile */
+#app .horizontal-modal-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin-top: 14px;
+    width: 100%;
+}
+
+/* Flexible horizontal buttons inside modal footer */
+#app .horizontal-modal-actions .btn {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
 }
 
 /* CSS Class: Utility grouping to scale width of forms, inputs, and buttons on mobile to avoid duplication. */
