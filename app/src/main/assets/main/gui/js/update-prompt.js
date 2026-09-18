@@ -262,8 +262,13 @@ export class UpdatePrompt {
                 progressText.textContent = `${initialStatus} (0%)`;
             }
             try {
+                const targetVersion = window.latestUpdateVersion || '';
                 if (window.latestUpdateDownloadUrl) {
-                    window.AndroidUpdate.downloadAndInstallForUrl(window.latestUpdateDownloadUrl);
+                    if (typeof window.AndroidUpdate.downloadAndInstallForUrlAndVersion === 'function') {
+                        window.AndroidUpdate.downloadAndInstallForUrlAndVersion(window.latestUpdateDownloadUrl, targetVersion);
+                    } else {
+                        window.AndroidUpdate.downloadAndInstallForUrl(window.latestUpdateDownloadUrl);
+                    }
                 } else {
                     window.AndroidUpdate.downloadAndInstall();
                 }

@@ -391,6 +391,21 @@ public class UpdateManager {
     }
 
     /**
+     * Directs the native downloader to download and install a package from a custom URL with explicit version tagging.
+     * Guarantees that the saved cache version marker matches the exact target release.
+     * 
+     * @param url The custom HTTP/HTTPS download link to the APK file.
+     * @param version The target version string (e.g. "v0.6.4").
+     */
+    @JavascriptInterface
+    public void downloadAndInstallForUrlAndVersion(String url, String version) {
+        Log.d(TAG, "Requesting custom download URL: " + url + " for version: " + version);
+        mDownloadUrl = url;
+        mLatestVersion = version;
+        downloadAndInstall();
+    }
+
+    /**
      * Begins the background download of the latest APK file.
      * Automatically handles HTTP redirects, writes the stream to the device's external cache directory,
      * and publishes progress updates back to the WebView interface.

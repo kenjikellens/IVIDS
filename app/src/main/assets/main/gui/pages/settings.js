@@ -688,7 +688,11 @@ class SettingsManager {
                             }).catch(err => {
                                 console.error('Settings: Failed to load update-prompt.js', err);
                                 if (window.AndroidUpdate) {
-                                    window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
+                                    if (typeof window.AndroidUpdate.downloadAndInstallForUrlAndVersion === 'function') {
+                                        window.AndroidUpdate.downloadAndInstallForUrlAndVersion(downloadUrl, rel.tag_name);
+                                    } else {
+                                        window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
+                                    }
                                 } else {
                                     window.open(downloadUrl, '_blank');
                                 }

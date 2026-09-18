@@ -2601,11 +2601,12 @@ input, textarea, select { font: inherit; }
    SECTION 27: APP UPDATE SYSTEM - VERSION MODAL
    ========================================================================== */
 /* CSS Class: Content container for the version selector modal with minimized padding and wider layout. */
+/* CSS Class: Content container for the version selector modal with minimized padding and wider layout. */
 /* CSS Class: Modal dialog container sizing for the version selection list. */
 .version-modal-content {
     display: flex;
     flex-direction: column;
-    max-height: 82vh;
+    max-height: 85vh;
     overflow: hidden;
     padding: 24px 20px 16px;
     width: min(640px, 92vw);
@@ -2615,6 +2616,7 @@ input, textarea, select { font: inherit; }
 .version-modal-content .modal-title {
     padding: 0 0 16px;
     margin-bottom: 0;
+    flex-shrink: 0;
 }
 
 /* Scrollable body inside version modal. Uses flex-shrink so it yields
@@ -2622,7 +2624,11 @@ input, textarea, select { font: inherit; }
 .scrollable-modal-body {
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
     padding: 4px 6px;
     scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
     scrollbar-width: thin;
@@ -2648,7 +2654,7 @@ input, textarea, select { font: inherit; }
     display: flex !important;
     flex-direction: column !important;
     gap: 8px;
-    overflow: hidden;
+    overflow: visible !important;
     padding: 4px 0 8px;
     width: 100%;
 }

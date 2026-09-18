@@ -5,3 +5,4 @@
 [09:01 18-09-2026] app/build.gradle.kts - Bumped versionName to v0.6.1 and incremented versionCode to 89.
 [12:11 18-09-2026] app/build.gradle.kts - Bumped versionName to v0.6.2 and incremented versionCode to 92.
 [12:28 18-09-2026] app/build.gradle.kts - Bumped versionName to v0.6.3 and incremented versionCode to 95.
+[13:55 18-09-2026] app/build.gradle.kts - Bumped versionName to v0.6.4 and incremented versionCode to 97.

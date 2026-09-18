@@ -999,11 +999,22 @@
 .provider-url-input {
     width: 100%;
 }
-#app .modal-scroll-area {
+#app .modal-scroll-area,
+#app .scrollable-modal-body {
     flex: 1 1 auto;
     overflow-y: auto !important;
-    max-height: 45vh !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+    max-height: 55vh !important;
     padding-right: 4px;
+}
+
+#app .version-modal-content {
+    width: 92vw !important;
+    max-height: 80vh !important;
+    padding: 16px 14px 12px !important;
 }
 
 /* Mobile landscape optimizations: Keep sleek bottom navigation bar on landscape phones */
