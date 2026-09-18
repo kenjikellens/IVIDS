@@ -534,15 +534,16 @@ export const Api = {
 
         try {
             const today = getTodayDate();
-            // Add release date filter based on type to ensure only released/aired content
-            const dateFilter = type === 'movie'
-                ? `primary_release_date.lte=${today}`
-                : `first_air_date.lte=${today}`;
+            // Add release date filter based on type only if params does not already specify date bounds
+            const hasDateFilter = params.includes('primary_release_date') || params.includes('first_air_date');
+            const dateFilter = hasDateFilter ? '' : (type === 'movie'
+                ? `&primary_release_date.lte=${today}`
+                : `&first_air_date.lte=${today}`);
 
             // Fetch page 1 and page 2 concurrently for 30 items
             const urls = [
-                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&${dateFilter}&${params}&language=${lang}&page=1`,
-                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}&${dateFilter}&${params}&language=${lang}&page=2`
+                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}${dateFilter}&${params}&language=${lang}&page=1`,
+                `${BASE_URL}/discover/${type}?api_key=${API_KEY}&include_adult=${this.getIncludeAdult()}${dateFilter}&${params}&language=${lang}&page=2`
             ];
             
             const responses = await Promise.all(urls.map(url => deduplicatedFetch(url)));
@@ -671,11 +672,8 @@ export const Api = {
     fetchRomComMovies() { return this._fetchDiscover('movie', 'with_genres=35,10749&sort_by=popularity.desc'); },
     fetchPsychologicalThrillers() { return this._fetchDiscover('movie', 'with_genres=53&with_keywords=9715&sort_by=popularity.desc'); },
     fetchCyberpunkMovies() { return this._fetchDiscover('movie', 'with_keywords=4565|12190&sort_by=popularity.desc'); },
-    fetch80sMovies() { return this._fetchDiscover('movie', 'primary_release_date.gte=1980-01-01&primary_release_date.lte=1989-12-31&vote_count.gte=50&sort_by=popularity.desc'); },
-    fetch90sMovies() { return this._fetchDiscover('movie', 'primary_release_date.gte=1990-01-01&primary_release_date.lte=1999-12-31&vote_count.gte=100&sort_by=popularity.desc'); },
 
     // Formats & Specials
-    fetchCultClassics() { return this._fetchDiscover('movie', 'primary_release_date.lte=2010-01-01&vote_count.gte=2000&sort_by=vote_average.desc'); },
     fetchStandupComedy() { return this._fetchDiscover('movie', 'with_genres=35,99&sort_by=popularity.desc'); },
     fetchMiniSeries() { return this._fetchDiscover('tv', 'with_type=2&sort_by=popularity.desc'); },
     fetchDocuseries() { return this._fetchDiscover('tv', 'with_genres=99,80&sort_by=popularity.desc'); },
