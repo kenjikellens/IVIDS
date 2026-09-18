@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +42,7 @@ public class UpdateManager {
     private static final String TAG = "UpdateManager";
     private static final String GITHUB_API_URL = "https://api.github.com/repos/kenjikellens/IVIDS/releases";
     private static final String REPO_APK_URL = "https://github.com/kenjikellens/IVIDS/raw/main/IVIDS.apk";
+    private static final String VERSION_MARKER_FILE = "update-version.txt";
 
     private final Activity mActivity;
     private final WebView mWebView;
@@ -279,13 +281,86 @@ public class UpdateManager {
         try {
             File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
             File apkFile = new File(downloadDir, "IVIDS-update.apk");
+            File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
+            boolean deleted = false;
             if (apkFile.exists()) {
-                boolean deleted = apkFile.delete();
+                deleted = apkFile.delete();
                 Log.d(TAG, "cleared cached update APK: " + deleted);
-                return deleted;
             }
+            if (markerFile.exists()) {
+                markerFile.delete();
+            }
+            return deleted;
         } catch (Exception e) {
             Log.e(TAG, "Error clearing cached update APK", e);
+        }
+        return false;
+    }
+
+    /**
+     * Saves a version marker file alongside the downloaded APK.
+     * Used to verify that a cached APK matches the intended update target version.
+     * 
+     * @param version The version string to store (e.g., "v0.6.1").
+     */
+    private void saveVersionMarker(String version) {
+        try {
+            File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+            File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
+            FileOutputStream fos = new FileOutputStream(markerFile);
+            fos.write(version.getBytes("UTF-8"));
+            fos.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving version marker", e);
+        }
+    }
+
+    /**
+     * Reads the stored version marker to identify which version the cached APK belongs to.
+     * 
+     * @return The version string of the cached APK, or null if no marker exists.
+     */
+    private String getVersionMarker() {
+        try {
+            File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+            File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
+            if (markerFile.exists()) {
+                FileInputStream fis = new FileInputStream(markerFile);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
+                String version = reader.readLine();
+                reader.close();
+                return version != null ? version.trim() : null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error reading version marker", e);
+        }
+        return null;
+    }
+
+    /**
+     * Attempts to install a cached APK only if its version marker matches the specified target version.
+     * Prevents stale cached APKs from being installed when updating to a newer version.
+     * 
+     * @param targetVersion The expected version string (e.g., "v0.6.1").
+     * @return true if the cached APK matched and installation was initiated, false otherwise.
+     */
+    @JavascriptInterface
+    public boolean installExistingApkForVersion(String targetVersion) {
+        File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+        File apkFile = new File(downloadDir, "IVIDS-update.apk");
+        if (apkFile.exists() && apkFile.length() > 0) {
+            String cachedVersion = getVersionMarker();
+            if (cachedVersion != null && cachedVersion.equals(targetVersion)) {
+                Log.d(TAG, "Cached APK matches target version " + targetVersion + ". Re-triggering installation...");
+                mActivity.runOnUiThread(() -> installApk(apkFile));
+                return true;
+            } else {
+                Log.d(TAG, "Cached APK version (" + cachedVersion + ") does not match target (" + targetVersion + "). Will re-download.");
+                apkFile.delete();
+                File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
+                if (markerFile.exists()) markerFile.delete();
+                return false;
+            }
         }
         return false;
     }
@@ -414,6 +489,7 @@ public class UpdateManager {
                 }
 
                 Log.d(TAG, "Download complete: " + apkFile.getAbsolutePath());
+                saveVersionMarker(mLatestVersion != null ? mLatestVersion : "branch");
                 installApk(apkFile);
             } catch (IOException e) {
                 Log.e(TAG, "Error downloading update", e);

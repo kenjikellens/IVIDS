@@ -217,9 +217,10 @@ export class UpdatePrompt {
      * Re-triggers native installation if the APK file is already present on disk (e.g. after permission prompt), avoiding re-downloading.
      */
     static retryOrInstall() {
-        if (window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApk === 'function') {
+        if (window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApkForVersion === 'function') {
             try {
-                const launched = window.AndroidUpdate.installExistingApk();
+                const targetVersion = window.latestUpdateVersion || '';
+                const launched = window.AndroidUpdate.installExistingApkForVersion(targetVersion);
                 if (launched) {
                     this.handleStatus('installing');
                     return;
@@ -248,9 +249,10 @@ export class UpdatePrompt {
         }
 
         // Check if downloaded APK already exists on disk before initiating network fetch (skip for Branch builds)
-        if (!isBranch && window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApk === 'function') {
+        if (!isBranch && window.AndroidUpdate && typeof window.AndroidUpdate.installExistingApkForVersion === 'function') {
             try {
-                if (window.AndroidUpdate.installExistingApk()) {
+                const targetVersion = window.latestUpdateVersion || '';
+                if (window.AndroidUpdate.installExistingApkForVersion(targetVersion)) {
                     this.handleStatus('installing');
                     return;
                 }
