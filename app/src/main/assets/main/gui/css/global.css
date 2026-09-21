@@ -105,39 +105,58 @@ input, textarea, select { font: inherit; }
 /* Prevents default outline borders for custom keyboard-focusable elements. */
 .focusable { outline: none; }
 
-/* Button System */
+/* Button System - OOCSS Architecture */
+
+/* Base button structural superclass defining display geometry, alignment, typography reset, and transition timings. */
 .btn {
     align-items: center;
     border: 3px solid transparent;
     border-radius: var(--radius-md);
+    box-sizing: border-box;
     cursor: pointer;
     display: inline-flex;
+    font-family: inherit;
     font-size: 15px;
     font-weight: 700;
     gap: 10px;
     justify-content: center;
+    line-height: 1;
     min-height: 44px;
+    outline: none;
     padding: 8px 22px;
-    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+    user-select: none;
     white-space: nowrap;
 }
 
-.btn:disabled { background: rgba(255, 255, 255, 0.06); cursor: not-allowed; opacity: 0.4; pointer-events: none; }
+/* Compact button sizing subclass with reduced padding, lower min-height, and smaller typography. */
+.btn--sm, .btn-small {
+    align-self: center;
+    flex: none;
+    font-size: 13px;
+    min-height: 34px;
+    padding: 6px 14px;
+    width: fit-content;
+}
 
-.btn-primary { background: rgba(var(--primary-rgb), 0.25); border: 3px solid transparent; color: #fff; font-weight: 800; }
-.btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #fff; outline: none; }
-.btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #fff; color: #fff; outline: none; }
+/* Default standard button sizing subclass. */
+.btn--md {
+    font-size: 15px;
+    min-height: 44px;
+    padding: 8px 22px;
+}
 
-.btn-secondary { background: rgba(255, 255, 255, 0.08); border: 2px solid transparent; color: #fff; }
-.btn-secondary:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; color: #fff; outline: none; }
-.btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border: 2px solid #fff; color: #fff; outline: none; }
+/* Large button sizing subclass for prominent hero and full-screen confirmation actions. */
+.btn--lg {
+    font-size: 17px;
+    min-height: 52px;
+    padding: 12px 28px;
+}
 
-.btn-danger { background: #b92b23; border: 3px solid transparent; color: #fff; }
-.btn-danger:hover { background: #d43830; border-color: transparent; color: #fff; outline: none; }
-.btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #fff; color: #fff; outline: none; }
-
-/* Circular icon button base with centered flex alignment and unified touch/focus geometry */
-.btn-circle {
+/* Circular icon button subclass with unified 36px touch and focus indicator dimensions. */
+.btn--circle, .btn-circle {
     align-items: center;
     border-radius: 50%;
     display: inline-flex;
@@ -150,7 +169,170 @@ input, textarea, select { font: inherit; }
     width: 36px;
 }
 
-.btn-small { align-self: center; flex: none; font-size: 13px; min-height: 36px; padding: 6px 16px; width: fit-content; }
+/* Compact circular icon button subclass for dense lists and inline action rows. */
+.btn--circle-sm {
+    border-radius: 50%;
+    height: 28px;
+    min-height: 28px;
+    min-width: 28px;
+    padding: 0;
+    width: 28px;
+}
+
+/* Large circular icon button subclass for media playback transport controls. */
+.btn--circle-lg {
+    border-radius: 50%;
+    height: 48px;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0;
+    width: 48px;
+}
+
+/* Full-width block button subclass stretching across its parent container width. */
+.btn--block, .btn-full-center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Fixed minimum-width button subclass ensuring internationalized button labels fit consistently. */
+.btn--fixed-min, .btn-min-w {
+    min-width: 130px;
+}
+
+/* Primary skin variant styling buttons with semi-transparent brand theme fill. */
+.btn--primary, .btn-primary {
+    background: rgba(var(--primary-rgb), 0.25);
+    border-color: transparent;
+    color: #ffffff;
+    font-weight: 800;
+}
+/* Hover state for primary button skin variant. */
+.btn--primary:hover, .btn-primary:hover {
+    background: rgba(var(--primary-rgb), 0.35);
+    border-color: transparent;
+    color: #ffffff;
+    outline: none;
+}
+/* Focus state for primary button skin variant rendering standardized thick white outline. */
+.btn--primary:focus, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused {
+    background: rgba(var(--primary-rgb), 0.35);
+    border-color: #ffffff;
+    color: #ffffff;
+    outline: none;
+}
+
+/* Secondary skin variant styling buttons with soft neutral translucent fill. */
+.btn--secondary, .btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: transparent;
+    color: #ffffff;
+}
+/* Hover state for secondary button skin variant. */
+.btn--secondary:hover, .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: transparent;
+    color: #ffffff;
+    outline: none;
+}
+/* Focus state for secondary button skin variant rendering standardized thick white outline. */
+.btn--secondary:focus, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: #ffffff;
+    color: #ffffff;
+    outline: none;
+}
+
+/* Danger skin variant styling destructive action buttons with red highlight. */
+.btn--danger, .btn-danger {
+    background: #b92b23;
+    border-color: transparent;
+    color: #ffffff;
+}
+/* Hover state for danger button skin variant. */
+.btn--danger:hover, .btn-danger:hover {
+    background: #d43830;
+    border-color: transparent;
+    color: #ffffff;
+    outline: none;
+}
+/* Focus state for danger button skin variant rendering standardized thick white outline. */
+.btn--danger:focus, .btn--danger.focused, .btn-danger:focus, .btn-danger.focused {
+    background: #d43830;
+    border-color: #ffffff;
+    color: #ffffff;
+    outline: none;
+}
+
+/* Ghost skin variant styling transparent background buttons with subtle highlight on hover and focus. */
+.btn--ghost {
+    background: transparent;
+    border-color: transparent;
+    color: rgba(255, 255, 255, 0.8);
+}
+/* Hover state for ghost button skin variant. */
+.btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: transparent;
+    color: #ffffff;
+    outline: none;
+}
+/* Focus state for ghost button skin variant rendering standardized thick white outline. */
+.btn--ghost:focus, .btn--ghost.focused {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
+    color: #ffffff;
+    outline: none;
+}
+
+/* Disabled state modifier applied to inactive or pending action buttons. */
+.btn:disabled, .btn.is-disabled {
+    background: rgba(255, 255, 255, 0.06);
+    cursor: not-allowed;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* Active state modifier applied to toggled or currently selected action buttons. */
+.btn.is-active {
+    background: rgba(var(--primary-rgb), 0.35);
+    border-color: var(--primary-color);
+    color: #ffffff;
+}
+
+/* Visual state modifier for buttons indicating item has already been added to collection. */
+.btn.is-added, .btn-added {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Composite container grouping related action buttons with standard gap spacing. */
+.btn-group {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+}
+
+/* Button group modifier distributing child buttons equally across full container width. */
+.btn-group--fill .btn {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Button group modifier aligning action buttons to the trailing edge. */
+.btn-group--end {
+    justify-content: flex-end;
+}
+
+/* Button group modifier stacking buttons vertically. */
+.btn-group--vertical {
+    flex-direction: column;
+    width: 100%;
+}
+/* Child buttons inside vertical group stretch across full container width. */
+.btn-group--vertical .btn {
+    width: 100%;
+}
 
 .hero {
     align-items: flex-end;
@@ -272,7 +454,7 @@ input, textarea, select { font: inherit; }
     border-color: #ffffff;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
     outline: none;
-    transform: scale(1.08);
+    transform: scale(1.03);
     z-index: 10;
 }
 
@@ -463,9 +645,8 @@ input, textarea, select { font: inherit; }
     word-break: break-word;
 }
 
+/* CSS Class: Container for interactive error recovery action buttons. */
 .error-actions { display: flex; gap: 12px; justify-content: center; width: 100%; }
-
-.error-actions .btn { min-width: 150px; }
 
 /* ==========================================================================
    SECTION 5: GLOBAL UI COMPONENTS - TOAST NOTIFICATION ALERTS
@@ -1527,8 +1708,6 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-.modal-actions .btn { flex: 1; justify-content: center; margin: 0; }
-
 /* ==========================================================================
    SECTION 14: PAGE SPECIFIC - PLAYLIST DETAILS
    Source File: playlist-details.css
@@ -2197,6 +2376,7 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+/* CSS Class: Action footer container providing spacing and layout for modal dialogs. */
 .modal-footer, .modal-actions {
     border-top: none;
     display: flex;
@@ -2207,6 +2387,7 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+/* CSS Class: Vertical layout container for stacked modal action options. */
 .vertical-modal-actions {
     border-top: none;
     flex-direction: column;
@@ -2216,6 +2397,7 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+/* CSS Class: Horizontal layout container for evenly distributed modal action buttons. */
 .horizontal-modal-actions {
     border-top: none;
     display: flex;
@@ -2225,10 +2407,6 @@ input, textarea, select { font: inherit; }
     padding-top: 0;
     width: 100%;
 }
-
-.modal-footer .btn, .modal-actions .btn { min-width: 130px; }
-.vertical-modal-actions .btn { width: 100%; }
-.horizontal-modal-actions .btn { flex: 1; min-width: 0; }
 
 .option-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px 0 16px; }
 
@@ -2368,21 +2546,12 @@ input, textarea, select { font: inherit; }
     white-space: nowrap;
 }
 
-/* Action button row for sign in, register, and sign out */
+/* CSS Class: Action button row for user profile authentication and registration. */
 .profile-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
     margin-top: 8px;
-}
-
-/* Base button sizing in profile actions */
-.profile-actions .btn {
-    font-size: 16px;
-    font-weight: 700;
-    height: 48px;
-    min-width: 140px;
-    padding: 0 24px;
 }
 
 /* Custom Modal Overrides for perfect visibility and rendering */
@@ -2543,20 +2712,6 @@ input, textarea, select { font: inherit; }
 
 /* CSS Class: Horizontal footer area wrapping dismissal and confirmation buttons. */
 .update-footer-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; width: 100%; }
-
-/* CSS Class: Button overrides inside the update modal to ensure TV focus compatibility. */
-.update-footer-actions .btn {
-    align-items: center;
-    border-radius: 5px;
-    cursor: pointer;
-    display: inline-flex;
-    font-family: inherit;
-    font-size: 0.9rem;
-    font-weight: 600;
-    justify-content: center;
-    padding: 10px 20px;
-    text-decoration: none;
-}
 
 /* CSS Class: Container wrapping downloading elements cleanly stacked on top of each other. */
 .update-progress-container {
@@ -2846,8 +3001,8 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 .hud-slot-left { justify-content: flex-start; }
 
-/* Full width utility styling for buttons forcing centered alignment. */
-.hud-slot-middle, .btn-full-center { justify-content: center; width: 100%; }
+/* CSS Class: Centered container alignment utility for the middle player HUD control slot. */
+.hud-slot-middle { justify-content: center; width: 100%; }
 
 .hud-slot-right { justify-content: flex-end; }
 
@@ -3218,7 +3373,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     font-weight: 600;
 }
 
-/* Action buttons footer for form submission and cancel */
+/* CSS Class: Action buttons footer for login form submission and cancellation. */
 .login-footer {
     align-items: center;
     display: flex;
@@ -3227,14 +3382,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     margin-top: 14px;
     width: 100%;
 }
-
-.login-footer .btn {
-    height: 42px;
-    width: 100%;
-}
-
-/* CSS Class: Reusable min-width constraint for buttons to ensure translated text fits without clipping. */
-.btn-min-w { min-width: 120px; }
 
 /* CSS Class: Reusable utility class for auto-centering block/flex elements horizontally. */
 .mx-auto { margin: 0 auto; }
@@ -3350,9 +3497,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 .color-dot.orange { background-color: #ff6b35; }
 .color-dot.yellow { background-color: #ffd700; }
 .meta-separator-dot { color: var(--text-dim); margin: 0 4px; }
-
-/* Styling for buttons indicating content is already present in a list. */
-.btn-added { color: rgba(255, 255, 255, 0.4); }
 
 /* Sidebar search icon masking source. */
 .nav-icon.search { -webkit-mask-image: url('../images/search.svg'); mask-image: url('../images/search.svg'); }

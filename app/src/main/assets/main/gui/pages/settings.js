@@ -892,9 +892,9 @@ class SettingsManager {
         } else if (modalId === 'm3u-modal') {
             focusTarget = modal.querySelector('.provider-url-input') || document.getElementById('add-m3u-btn');
         } else if (modalId === 'app-info-modal') {
-            focusTarget = modal.querySelector('.modal-footer .btn-secondary');
+            focusTarget = modal.querySelector('.modal-footer .btn--secondary, .modal-footer .btn-secondary');
         } else if (modalId === 'changes-modal') {
-            focusTarget = modal.querySelector('.modal-footer .btn-secondary') || modal.querySelector('.modal-close-x');
+            focusTarget = modal.querySelector('.modal-footer .btn--secondary, .modal-footer .btn-secondary') || modal.querySelector('.modal-close-x');
         }
 
         const innerClose = manageModal(modal, focusTarget, () => this.closeModal());
@@ -926,7 +926,7 @@ class SettingsManager {
             }
         };
 
-        const cancelBtn = modal.querySelector('.cancel-icon-btn') || modal.querySelector('.modal-footer .btn-secondary') || modal.querySelector('.modal-footer .modal-btn.secondary') || modal.querySelector('.modal-footer .action-btn.secondary');
+        const cancelBtn = modal.querySelector('.cancel-icon-btn') || modal.querySelector('.modal-footer .btn--secondary, .modal-footer .btn-secondary') || modal.querySelector('.modal-footer .modal-btn.secondary') || modal.querySelector('.modal-footer .action-btn.secondary');
         if (cancelBtn) {
             cancelBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -941,7 +941,7 @@ class SettingsManager {
                 this.closeModal();
             };
         }
-        const applyBtn = modal.querySelector('.apply-icon-btn') || modal.querySelector('.modal-footer .btn-primary') || modal.querySelector('.modal-footer .modal-btn.primary') || modal.querySelector('.modal-footer .action-btn.primary');
+        const applyBtn = modal.querySelector('.apply-icon-btn') || modal.querySelector('.modal-footer .btn--primary, .modal-footer .btn-primary') || modal.querySelector('.modal-footer .modal-btn.primary') || modal.querySelector('.modal-footer .action-btn.primary');
         if (applyBtn) {
             applyBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -1108,7 +1108,7 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn-secondary btn-circle edit-trigger provider-move-btn focusable';
+            moveBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-move-btn focusable';
             moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
             moveBtn.title = 'Move';
             if (this.movingProviderId === provider.id) {
@@ -1138,7 +1138,7 @@ class SettingsManager {
 
             if (provider.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn-secondary btn-circle edit-trigger provider-delete-btn focusable';
+                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
                 deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
                 deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {
@@ -1196,7 +1196,7 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn-secondary btn-circle edit-trigger provider-move-btn focusable';
+            moveBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-move-btn focusable';
             moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
             moveBtn.title = 'Move';
             if (this.movingM3uId === playlist.id) {
@@ -1226,7 +1226,7 @@ class SettingsManager {
 
             if (playlist.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn-secondary btn-circle edit-trigger provider-delete-btn focusable';
+                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
                 deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
                 deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {

@@ -420,12 +420,6 @@ function showNextButton(seriesId, nextSeason, nextEpisode) {
  * @param {Object} params - Route parameters containing content ID and type details.
  * @param {HTMLIFrameElement} iframe - The player iframe element.
  */
-/**
- * Renders the available streaming server source buttons and configures their click behavior.
- * This modifies the player server list container and updates the player iframe source URL upon selection.
- * @param {Object} params - Route parameters containing content ID and type details.
- * @param {HTMLIFrameElement} iframe - The player iframe element.
- */
 function renderServerSelection(params, iframe) {
     const overlay = document.getElementById('server-selection-overlay');
     const serverList = document.getElementById('player-server-list');
@@ -453,9 +447,9 @@ function renderServerSelection(params, iframe) {
         const btn = document.createElement('button');
         btn.className = 'btn server-btn focusable';
         if (server.id === currentServerId) {
-            btn.classList.add('active', 'btn-primary');
+            btn.classList.add('active', 'is-active', 'btn--primary');
         } else {
-            btn.classList.add('btn-secondary');
+            btn.classList.add('btn--secondary');
         }
         btn.textContent = server.name;
         btn.dataset.serverId = server.id;
@@ -465,11 +459,11 @@ function renderServerSelection(params, iframe) {
             console.log(`[IVIDS Player] Switching server provider to: ${server.name} (ID: ${server.id})`);
             
             document.querySelectorAll('.server-btn').forEach(b => {
-                b.classList.remove('active', 'btn-primary');
-                b.classList.add('btn-secondary');
+                b.classList.remove('active', 'is-active', 'btn--primary', 'btn-primary');
+                b.classList.add('btn--secondary');
             });
-            btn.classList.add('active', 'btn-primary');
-            btn.classList.remove('btn-secondary');
+            btn.classList.add('active', 'is-active', 'btn--primary');
+            btn.classList.remove('btn--secondary', 'btn-secondary');
             currentServerId = server.id;
 
             const loadingOverlay = document.getElementById('player-loading-overlay');

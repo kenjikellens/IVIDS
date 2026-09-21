@@ -22,9 +22,9 @@ export class ErrorHandler {
                         <div class="error-message-container">
                             <p id="error-message" class="error-message"></p>
                         </div>
-                        <div class="error-actions">
-                            <button id="error-retry-btn" class="btn btn-primary focusable">Retry</button>
-                            <button id="error-close-btn" class="btn btn-secondary focusable">Close</button>
+                        <div class="error-actions btn-group">
+                            <button id="error-retry-btn" class="btn btn--primary btn--fixed-min focusable">Retry</button>
+                            <button id="error-close-btn" class="btn btn--secondary btn--fixed-min focusable">Close</button>
                         </div>
                     </div>
                 `;

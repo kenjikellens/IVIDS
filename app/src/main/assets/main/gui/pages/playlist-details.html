@@ -15,20 +15,20 @@
                         <span data-i18n="playlists.type_label">Playlist</span>
                     </div>
                     <p class="details-overview" id="playlist-desc" data-i18n="playlists.description_default">Your personal collection of favorite movies and shows.</p>
-                    <div class="details-actions">
-                        <button id="play-all-btn" class="btn btn-primary focusable" data-i18n="playlists.playAll">
+                    <div class="details-actions btn-group">
+                        <button id="play-all-btn" class="btn btn--primary focusable" data-i18n="playlists.playAll">
                             Play All
                         </button>
-                        <button id="edit-info-btn" class="btn btn-secondary focusable" data-i18n="playlists.editInfo">
+                        <button id="edit-info-btn" class="btn btn--secondary focusable" data-i18n="playlists.editInfo">
                             Edit Info
                         </button>
-                        <button id="back-btn" class="btn btn-secondary focusable" data-i18n="details.back">
+                        <button id="back-btn" class="btn btn--secondary focusable" data-i18n="details.back">
                             Back
                         </button>
-                        <button id="clear-playlist-btn" class="btn btn-danger focusable" data-i18n="playlists.clearHistory">
+                        <button id="clear-playlist-btn" class="btn btn--danger focusable" data-i18n="playlists.clearHistory">
                             Clear History
                         </button>
-                        <button id="delete-playlist-btn" class="btn btn-danger focusable" data-i18n="playlists.delete">
+                        <button id="delete-playlist-btn" class="btn btn--danger focusable" data-i18n="playlists.delete">
                             Delete Playlist
                         </button>
                     </div>
@@ -54,9 +54,9 @@
         <div class="modal-content">
             <h2 class="modal-title" data-i18n="playlists.removeItemTitle">Remove Item</h2>
             <p class="modal-message" data-i18n="playlists.removeItemMessage">Are you sure you want to remove this item from the playlist?</p>
-            <div class="modal-actions vertical-modal-actions">
-                <button id="modal-confirm-btn" class="btn btn-danger focusable" data-i18n="playlists.deleteItem">Remove</button>
-                <button id="modal-cancel-btn" class="btn btn-secondary btn-small focusable" data-i18n="playlists.cancel">Cancel</button>
+            <div class="modal-actions vertical-modal-actions btn-group btn-group--vertical">
+                <button id="modal-confirm-btn" class="btn btn--danger focusable" data-i18n="playlists.deleteItem">Remove</button>
+                <button id="modal-cancel-btn" class="btn btn--secondary btn--sm focusable" data-i18n="playlists.cancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -68,9 +68,9 @@
             <div class="modal-body">
                 <input id="edit-playlist-name-input" class="settings-input focusable" type="text" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder">
             </div>
-            <div class="modal-actions vertical-modal-actions">
-                <button id="edit-playlist-confirm-btn" class="btn btn-secondary focusable" data-i18n="common.save">Save</button>
-                <button id="edit-playlist-cancel-btn" class="btn btn-secondary btn-small focusable" data-i18n="playlists.cancel">Cancel</button>
+            <div class="modal-actions vertical-modal-actions btn-group btn-group--vertical">
+                <button id="edit-playlist-confirm-btn" class="btn btn--secondary focusable" data-i18n="common.save">Save</button>
+                <button id="edit-playlist-cancel-btn" class="btn btn--secondary btn--sm focusable" data-i18n="playlists.cancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -79,13 +79,13 @@
     <div id="item-context-modal" class="modal-overlay">
         <div class="modal-content">
             <h2 id="context-item-title" class="modal-title modal-title-truncated">Movie Title</h2>
-            <div class="modal-actions vertical-modal-actions">
-                <button id="context-play-btn" class="btn btn-primary focusable" data-i18n="player.play">Play Content</button>
-                <button id="context-details-btn" class="btn btn-secondary focusable" data-i18n="player.moreInfo">View Info Details</button>
-                <button id="context-move-up-btn" class="btn btn-secondary focusable" data-i18n="playlists.moveUp">Move Item Up</button>
-                <button id="context-move-down-btn" class="btn btn-secondary focusable" data-i18n="playlists.moveDown">Move Item Down</button>
-                <button id="context-remove-btn" class="btn btn-danger focusable" data-i18n="playlists.removeFromPlaylist">Remove from Playlist</button>
-                <button id="context-cancel-btn" class="btn btn-secondary btn-small focusable" data-i18n="playlists.cancel">Cancel</button>
+            <div class="modal-actions vertical-modal-actions btn-group btn-group--vertical">
+                <button id="context-play-btn" class="btn btn--primary focusable" data-i18n="player.play">Play Content</button>
+                <button id="context-details-btn" class="btn btn--secondary focusable" data-i18n="player.moreInfo">View Info Details</button>
+                <button id="context-move-up-btn" class="btn btn--secondary focusable" data-i18n="playlists.moveUp">Move Item Up</button>
+                <button id="context-move-down-btn" class="btn btn--secondary focusable" data-i18n="playlists.moveDown">Move Item Down</button>
+                <button id="context-remove-btn" class="btn btn--danger focusable" data-i18n="playlists.removeFromPlaylist">Remove from Playlist</button>
+                <button id="context-cancel-btn" class="btn btn--secondary btn--sm focusable" data-i18n="playlists.cancel">Cancel</button>
             </div>
         </div>
     </div>

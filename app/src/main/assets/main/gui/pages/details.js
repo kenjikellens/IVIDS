@@ -353,13 +353,13 @@ function openPlaylistModal(item, type) {
                 try {
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'btn btn-secondary focusable';
+                    btn.className = 'btn btn--secondary focusable';
                     btn.textContent = playlist.name || I18n.t('details.unnamedPlaylist');
 
                     const exists = playlist.items && playlist.items.some(i => i.id === item.id && i.media_type === type);
                     if (exists) {
                         btn.textContent += ` (${I18n.t('details.added', 'Added')})`;
-                        btn.classList.add('btn-added');
+                        btn.classList.add('is-added');
                     }
 
                     btn.onclick = () => {
@@ -441,18 +441,18 @@ function renderSeasons(seasons, seriesId) {
         seasons.forEach(season => {
             try {
                 const btn = document.createElement('button');
-                btn.className = 'btn btn-secondary season-btn focusable';
+                btn.className = 'btn btn--secondary season-btn focusable';
                 btn.textContent = season.name || `${I18n.t('details.season')} ${season.season_number || '?'}`; // e.g. "Season 1"
                 btn.dataset.seasonNumber = season.season_number || 0;
 
                 btn.onclick = () => {
                     try {
                         container.querySelectorAll('.season-btn').forEach(b => {
-                            b.classList.remove('btn-primary');
-                            b.classList.add('btn-secondary');
+                            b.classList.remove('btn--primary', 'btn-primary');
+                            b.classList.add('btn--secondary');
                         });
-                        btn.classList.remove('btn-secondary');
-                        btn.classList.add('btn-primary');
+                        btn.classList.remove('btn--secondary', 'btn-secondary');
+                        btn.classList.add('btn--primary');
 
                         if (dropdown) {
                             dropdown.value = season.season_number || 0;
@@ -482,11 +482,11 @@ function renderSeasons(seasons, seriesId) {
                 const selectedVal = parseInt(e.target.value);
                 container.querySelectorAll('.season-btn').forEach(b => {
                     if (parseInt(b.dataset.seasonNumber) === selectedVal) {
-                        b.classList.remove('btn-secondary');
-                        b.classList.add('btn-primary');
+                        b.classList.remove('btn--secondary', 'btn-secondary');
+                        b.classList.add('btn--primary');
                     } else {
-                        b.classList.remove('btn-primary');
-                        b.classList.add('btn-secondary');
+                        b.classList.remove('btn--primary', 'btn-primary');
+                        b.classList.add('btn--secondary');
                     }
                 });
                 loadSeasonEpisodes(seriesId, selectedVal);
@@ -497,8 +497,8 @@ function renderSeasons(seasons, seriesId) {
         try {
             const firstBtn = container.querySelector('.season-btn[data-season-number="1"]') || container.querySelector('.season-btn');
             if (firstBtn) {
-                firstBtn.classList.remove('btn-secondary');
-                firstBtn.classList.add('btn-primary');
+                firstBtn.classList.remove('btn--secondary', 'btn-secondary');
+                firstBtn.classList.add('btn--primary');
 
                 const selectedVal = parseInt(firstBtn.dataset.seasonNumber);
                 if (dropdown) {
@@ -645,8 +645,8 @@ function switchTab(tabName) {
         });
         
         document.querySelectorAll('.disney-tab-btn').forEach(btn => {
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-secondary');
+            btn.classList.remove('btn--primary', 'btn-primary');
+            btn.classList.add('btn--secondary');
         });
         
         const activePanel = document.getElementById(`panel-${tabName}`);
@@ -656,8 +656,8 @@ function switchTab(tabName) {
         
         const activeBtn = document.getElementById(`tab-${tabName}`);
         if (activeBtn) {
-            activeBtn.classList.remove('btn-secondary');
-            activeBtn.classList.add('btn-primary');
+            activeBtn.classList.remove('btn--secondary', 'btn-secondary');
+            activeBtn.classList.add('btn--primary');
         }
     } catch (e) {
         console.error('Error switching tabs:', e);
@@ -683,7 +683,7 @@ function getVisibleTabs() {
  * @returns {string|null} The active tab name or null if none found.
  */
 function getActiveTab() {
-    const activeBtn = document.querySelector('.disney-tab-btn.btn-primary');
+    const activeBtn = document.querySelector('.disney-tab-btn.btn--primary, .disney-tab-btn.btn-primary');
     if (activeBtn && activeBtn.id) {
         return activeBtn.id.replace('tab-', '');
     }

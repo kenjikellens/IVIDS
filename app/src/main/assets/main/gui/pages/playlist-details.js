@@ -141,7 +141,7 @@ function render() {
                         <span>📺</span>
                     </div>
                     <h2 data-i18n="playlists.emptyPlaylist" class="empty-state-heading">This playlist is empty.</h2>
-                    <button id="empty-browse-btn" class="btn btn-secondary focusable">Browse Content</button>
+                    <button id="empty-browse-btn" class="btn btn--secondary focusable">Browse Content</button>
                 </div>
             `;
 
@@ -185,7 +185,7 @@ function toggleMoveMode(index) {
         render();
         // Shift focus back to the move button of the item
         setTimeout(() => {
-            const btn = document.querySelector(`.btn-circle[data-index="${index}"]`);
+            const btn = document.querySelector(`.btn--circle[data-index="${index}"], .btn-circle[data-index="${index}"]`);
             if (btn) btn.focus();
         }, 10);
     } else {
@@ -205,7 +205,7 @@ function toggleMoveMode(index) {
 
         // Shift focus back to the move button of the item
         setTimeout(() => {
-            const btn = document.querySelector(`.btn-circle[data-index="${index}"]`);
+            const btn = document.querySelector(`.btn--circle[data-index="${index}"], .btn-circle[data-index="${index}"]`);
             if (btn) btn.focus();
         }, 10);
     }
@@ -260,9 +260,9 @@ function createItemElement(item, index, total) {
 
     // Circular Move button
     const moveBtn = document.createElement('button');
-    moveBtn.className = 'btn btn-secondary btn-circle focusable';
+    moveBtn.className = 'btn btn--secondary btn--circle focusable';
     if (activeMoveIndex === index) {
-        moveBtn.classList.add('active');
+        moveBtn.classList.add('is-active', 'active');
     }
     moveBtn.dataset.index = index;
     moveBtn.title = window.i18n ? window.i18n.t('playlists.moveItem') : "Move Item";
@@ -279,7 +279,7 @@ function createItemElement(item, index, total) {
 
     // Circular Delete button
     const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'btn btn-secondary btn-circle focusable';
+    deleteBtn.className = 'btn btn--secondary btn--circle focusable';
     deleteBtn.dataset.index = index;
     deleteBtn.title = window.i18n ? window.i18n.t('playlists.deleteItem') : "Remove Item";
     deleteBtn.innerHTML = `

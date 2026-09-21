@@ -257,7 +257,11 @@ function initUpdateCheck() {
         }, 10000); // Check every 10 seconds
     };
 
-    // Manual Mode toast trigger with Action Buttons
+    /**
+     * Triggers non-blocking toast notification for available manual updates.
+     * Displays a toast notification with an interactive action button to launch the update prompt.
+     * @param {string} version - Available release version string.
+     */
     const triggerManualToast = (version) => {
         console.log('App: Manual Mode - Displaying non-blocking toast');
         
@@ -268,8 +272,8 @@ function initUpdateCheck() {
             ? `<span>v${version} is available.</span>`
             : `
                 <span>v${version} is available.</span>
-                <div class="toast-actions">
-                    <button class="btn btn-primary focusable" id="toast-download-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                <div class="toast-actions btn-group">
+                    <button class="btn btn--primary focusable" id="toast-download-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
                 </div>
             `;
 
@@ -302,7 +306,11 @@ function initUpdateCheck() {
         }
     };
 
-    // Developer Mode toast trigger with actions
+    /**
+     * Triggers interactive toast prompt for developer mode update selection.
+     * Displays options to directly download latest build or select custom version.
+     * @param {string} version - Available developer build version string.
+     */
     const triggerDevToast = (version) => {
         console.log('App: Developer Mode - Displaying dev console update prompt');
         
@@ -313,9 +321,9 @@ function initUpdateCheck() {
             ? `<span>Developer version v${version} found.</span>`
             : `
                 <span>Developer version v${version} found.</span>
-                <div class="toast-actions">
-                    <button class="btn btn-primary focusable" id="toast-dev-dl-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
-                    <button class="btn btn-secondary focusable" id="toast-dev-select-btn">${window.i18n?.t('settings.toast.select') || 'Select Version'}</button>
+                <div class="toast-actions btn-group">
+                    <button class="btn btn--primary focusable" id="toast-dev-dl-btn">${window.i18n?.t('settings.toast.download') || 'Download'}</button>
+                    <button class="btn btn--secondary focusable" id="toast-dev-select-btn">${window.i18n?.t('settings.toast.select') || 'Select Version'}</button>
                 </div>
             `;
 

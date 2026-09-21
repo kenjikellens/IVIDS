@@ -18,7 +18,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-language-display" class="current-value-display">English</div>
-                <button id="edit-language-btn" class="btn btn-secondary btn-circle edit-trigger focusable" title="Edit Language">
+                <button id="edit-language-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Language">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -30,9 +30,9 @@
                 <div class="setting-description" data-i18n="settings.uiScaleDesc">Adjust the size of the user interface</div>
             </div>
             <div class="setting-control scale-control-container">
-                <button id="dec-uiscale-btn" class="btn btn-secondary btn-circle edit-trigger focusable scale-adjust-btn">-</button>
+                <button id="dec-uiscale-btn" class="btn btn--secondary btn--circle edit-trigger focusable scale-adjust-btn">-</button>
                 <div id="current-uiscale-display" class="current-value-display centered-value">100%</div>
-                <button id="inc-uiscale-btn" class="btn btn-secondary btn-circle edit-trigger focusable scale-adjust-btn">+</button>
+                <button id="inc-uiscale-btn" class="btn btn--secondary btn--circle edit-trigger focusable scale-adjust-btn">+</button>
             </div>
         </div>
 
@@ -44,7 +44,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-color-display" class="color-preview-circle"></div>
-                <button id="edit-color-btn" class="btn btn-secondary btn-circle edit-trigger focusable" title="Edit Color">
+                <button id="edit-color-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Color">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -100,7 +100,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-player-display" class="current-value-display">—</div>
-                <button id="edit-player-btn" class="btn btn-secondary btn-circle edit-trigger focusable" title="Edit Provider">
+                <button id="edit-player-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Provider">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -121,7 +121,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-m3u-display" class="current-value-display">0 Playlists</div>
-                <button id="edit-m3u-btn" class="btn btn-secondary btn-circle edit-trigger focusable" title="Edit Playlists">
+                <button id="edit-m3u-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Playlists">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -143,7 +143,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-update-mode-display" class="current-value-display">Manual</div>
-                <button id="edit-update-mode-btn" class="btn btn-secondary btn-circle edit-trigger focusable" title="Edit Update Mode">
+                <button id="edit-update-mode-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Update Mode">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -157,9 +157,9 @@
             <div class="setting-control update-control">
                 <div id="update-loader-container" class="loader-inline-container"></div>
                 <span id="update-status-text" class="update-status-label"></span>
-                <button id="check-updates-btn" class="btn btn-secondary focusable" data-i18n="settings.checkButton">Check
+                <button id="check-updates-btn" class="btn btn--secondary focusable" data-i18n="settings.checkButton">Check
                     Now</button>
-                <button id="cancel-update-btn" class="btn btn-secondary btn-small focusable hidden" data-i18n="common.cancel">Cancel</button>
+                <button id="cancel-update-btn" class="btn btn--secondary btn--sm focusable hidden" data-i18n="common.cancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -172,7 +172,7 @@
         </h2>
 
         <div class="setting-item centered-setting">
-            <button id="app-info-btn" class="btn btn-secondary btn-min-w mx-auto focusable" data-i18n="settings.appInfo">App Info</button>
+            <button id="app-info-btn" class="btn btn--secondary btn--fixed-min mx-auto focusable" data-i18n="settings.appInfo">App Info</button>
         </div>
     </div>
 </div>
@@ -183,21 +183,21 @@
         <h2 class="modal-title" data-i18n="settings.language">Language</h2>
         <div class="modal-body">
             <div class="language-stepper-container">
-                <button id="lang-prev-btn" class="btn btn-secondary btn-circle edit-trigger focusable stepper-arrow-btn" aria-label="Previous Language">
+                <button id="lang-prev-btn" class="btn btn--secondary btn--circle edit-trigger focusable stepper-arrow-btn" aria-label="Previous Language">
                     <img src="images/back.svg" class="setting-stepper-icon" alt="Previous">
                 </button>
                 <div id="lang-stepper-display" class="current-value-display language-stepper-value">
                     <span id="lang-stepper-flag" class="display-flag-span">🇺🇸</span>
                     <span id="lang-stepper-name">English</span>
                 </div>
-                <button id="lang-next-btn" class="btn btn-secondary btn-circle edit-trigger focusable stepper-arrow-btn" aria-label="Next Language">
+                <button id="lang-next-btn" class="btn btn--secondary btn--circle edit-trigger focusable stepper-arrow-btn" aria-label="Next Language">
                     <img src="images/arrow.svg" class="setting-stepper-icon" alt="Next">
                 </button>
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions">
-            <button class="btn btn-primary focusable" data-i18n="common.apply">Apply</button>
-            <button class="btn btn-secondary btn-small focusable" data-i18n="common.cancel">Cancel</button>
+        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+            <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
+            <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -228,9 +228,9 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions">
-            <button class="btn btn-primary focusable" data-i18n="common.apply">Apply</button>
-            <button class="btn btn-secondary btn-small focusable" data-i18n="common.cancel">Cancel</button>
+        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+            <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
+            <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -253,9 +253,9 @@
                 recommended for developers only and may contain unstable builds.
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions">
-            <button class="btn btn-primary focusable" data-i18n="common.apply">Apply</button>
-            <button class="btn btn-secondary btn-small focusable" data-i18n="common.cancel">Cancel</button>
+        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+            <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
+            <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -272,8 +272,8 @@
                 <!-- Dynamically populated version chips -->
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions">
-            <button class="btn btn-secondary btn-small focusable" data-i18n="common.cancel">Cancel</button>
+        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+            <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -286,11 +286,11 @@
             <div id="player-providers-list" class="providers-list">
                 <!-- Dynamically populated provider items -->
             </div>
-            <button id="add-provider-btn" class="btn btn-secondary focusable" data-i18n="settings.addProvider">Add Provider</button>
+            <button id="add-provider-btn" class="btn btn--secondary focusable" data-i18n="settings.addProvider">Add Provider</button>
         </div>
-        <div class="modal-footer vertical-modal-actions">
-            <button class="btn btn-primary focusable" data-i18n="common.apply">Apply</button>
-            <button class="btn btn-secondary btn-small focusable" data-i18n="common.cancel">Cancel</button>
+        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+            <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
+            <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -303,11 +303,11 @@
             <div id="m3u-playlists-list" class="providers-list">
                 <!-- Dynamically populated playlist items -->
             </div>
-            <button id="add-m3u-btn" class="btn btn-secondary focusable" data-i18n="settings.addM3uPlaylist">Add Playlist</button>
+            <button id="add-m3u-btn" class="btn btn--secondary focusable" data-i18n="settings.addM3uPlaylist">Add Playlist</button>
         </div>
-        <div class="modal-footer vertical-modal-actions">
-            <button class="btn btn-primary focusable" data-i18n="common.apply">Apply</button>
-            <button class="btn btn-secondary btn-small focusable" data-i18n="common.cancel">Cancel</button>
+        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+            <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
+            <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -337,7 +337,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary focusable" data-i18n="common.close">Close</button>
+            <button class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>
@@ -353,7 +353,7 @@
             </div>
         </div>
         <div class="modal-footer centered-footer">
-            <button class="btn btn-secondary focusable" data-i18n="common.close">Close</button>
+            <button class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>

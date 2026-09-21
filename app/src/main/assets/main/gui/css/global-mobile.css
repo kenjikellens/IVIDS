@@ -742,17 +742,11 @@
     padding: 12px 16px 8px;
 }
 
-/* Layout scaling and spacing adjustments for modal footers. */
+/* CSS Class: Layout scaling and spacing adjustments for modal footers. */
 .modal-footer {
     padding: 12px 16px 16px;
     gap: 8px;
     width: 100%;
-}
-
-/* Button layout width allocation inside modal footers on mobile. */
-.modal-footer .btn {
-    flex: 1;
-    min-width: unset;
 }
 
 /* Scrollable modal body with max height constraint to prevent overflow on mobile */
@@ -887,14 +881,16 @@
     gap: 8px;
 }
 
-/* Small button modifier for mobile */
+/* CSS Class: Small button modifier for mobile */
+#app .btn--sm,
 #app .btn-small {
     min-height: 36px;
     padding: 6px 14px;
     font-size: 13px;
 }
 
-/* Circular button modifier for mobile */
+/* CSS Class: Circular button modifier for mobile */
+#app .btn--circle,
 #app .btn-circle {
     height: 38px;
     width: 38px;
@@ -954,7 +950,7 @@
     width: 18px;
 }
 
-/* Modal action buttons vertical layout for mobile */
+/* CSS Class: Modal action buttons vertical layout for mobile */
 #app .modal-footer,
 #app .modal-actions,
 #app .vertical-modal-actions {
@@ -966,17 +962,17 @@
     width: 100%;
 }
 
-/* Full width buttons inside modal footers on mobile */
+/* CSS Class: Full width buttons inside modal footers on mobile */
 #app .modal-footer .btn,
 #app .modal-actions .btn,
 #app .vertical-modal-actions .btn {
     flex: none;
     min-height: 44px;
-    min-width: 0 !important;
-    width: 100% !important;
+    min-width: 0;
+    width: 100%;
 }
 
-/* Horizontal modal button grouping for mobile */
+/* CSS Class: Horizontal modal button grouping for mobile */
 #app .horizontal-modal-actions {
     display: flex;
     flex-direction: row;
@@ -985,7 +981,7 @@
     width: 100%;
 }
 
-/* Flexible horizontal buttons inside modal footer */
+/* CSS Class: Flexible horizontal buttons inside modal footer */
 #app .horizontal-modal-actions .btn {
     flex: 1;
     min-width: 0;

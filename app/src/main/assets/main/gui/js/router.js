@@ -268,9 +268,9 @@ export const Router = {
                 <div class="error-page-container">
                     <h1 data-i18n="error.pageTitle">Error loading page</h1>
                     <p>${error.message || 'An unexpected error occurred.'}</p>
-                    <div class="mt-20">
-                        <button id="retry-page-btn" class="btn btn-primary focusable" data-i18n="error.retry">Retry</button>
-                        <button id="home-page-btn" class="btn btn-secondary focusable ml-10" data-i18n="error.goHome">Go Home</button>
+                    <div class="mt-20 btn-group">
+                        <button id="retry-page-btn" class="btn btn--primary focusable" data-i18n="error.retry">Retry</button>
+                        <button id="home-page-btn" class="btn btn--secondary focusable ml-10" data-i18n="error.goHome">Go Home</button>
                     </div>
                 </div>
             `;

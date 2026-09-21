@@ -52,9 +52,9 @@ export class UpdatePrompt {
                     </div>
                     <span class="update-progress-text" id="update-progress-text"></span>
                 </div>
-                <div class="update-footer-actions" id="update-actions">
-                    <button class="btn btn-secondary focusable" id="update-dismiss-btn"></button>
-                    <button class="btn btn-primary focusable" id="update-download-btn"></button>
+                <div class="update-footer-actions btn-group btn-group--fill" id="update-actions">
+                    <button class="btn btn--secondary focusable" id="update-dismiss-btn"></button>
+                    <button class="btn btn--primary focusable" id="update-download-btn"></button>
                 </div>
             </div>
         `;
