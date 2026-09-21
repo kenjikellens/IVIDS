@@ -614,7 +614,7 @@ class SettingsManager {
                 
                 // Add the top chip: Active Branch Build (Main Branch)
                 const branchCard = document.createElement('div');
-                branchCard.className = 'option-chip focusable dev-version-card';
+                branchCard.className = 'card card--panel option-chip focusable dev-version-card';
                 branchCard.dataset.value = 'branch';
                 branchCard.innerHTML = `
                     <div class="version-chip-content">
@@ -663,7 +663,7 @@ class SettingsManager {
                         const appliedIconHtml = isInstalled ? '<img src="svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
 
                         const relCard = document.createElement('div');
-                        relCard.className = 'option-chip focusable dev-version-card';
+                        relCard.className = 'card card--panel option-chip focusable dev-version-card';
                         relCard.dataset.value = rel.tag_name;
                         
                         relCard.innerHTML = `

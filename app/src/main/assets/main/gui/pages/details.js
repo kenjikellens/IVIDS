@@ -589,7 +589,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
         episodes.forEach(episode => {
             try {
                 const el = document.createElement('div');
-                el.className = 'disney-episode-item focusable';
+                el.className = 'card card--row card--interactive disney-episode-item focusable';
                 el.tabIndex = 0; // Make focusable
 
                 // Check if this episode was watched
@@ -798,7 +798,7 @@ function renderExtras(videos, contentId, mediaType) {
             if (video.site.toLowerCase() !== 'youtube') return;
             
             const card = document.createElement('div');
-            card.className = 'disney-extra-item focusable';
+            card.className = 'card card--row card--interactive disney-extra-item focusable';
             card.tabIndex = 0;
             card.onclick = () => Router.loadPage('player', { id: contentId, type: 'trailer', ytKey: video.key, mediaType: mediaType });
             
@@ -856,7 +856,7 @@ function renderAbout(overview, credits) {
         const topCast = credits.cast.slice(0, 12);
         topCast.forEach(actor => {
             const card = document.createElement('div');
-            card.className = 'disney-cast-card';
+            card.className = 'card card--compact disney-cast-card';
             
             const profileImgStyle = actor.profile_path 
                 ? `style="background-image: url('https://image.tmdb.org/t/p/w185${actor.profile_path}');"` 

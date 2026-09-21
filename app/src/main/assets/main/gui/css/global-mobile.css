@@ -227,6 +227,7 @@
 }
 
 /* Scrolling and gap adjustments for row lists. */
+#app .media-rail,
 #app .row-posters {
     padding: 2% 4% 4%;
     gap: 10px;
@@ -264,6 +265,7 @@
 }
 
 /* Dynamic columns grid layout for search result posters. */
+#app .media-grid--posters,
 #app .search-results-grid {
     --poster-width: clamp(86px, 26vw, 108px);
     gap: 10px;
@@ -401,6 +403,7 @@
 }
 
 /* Cast grid scaling on mobile screens. */
+#app .media-grid--cast,
 #app .disney-cast-grid {
     grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     gap: 10px;
@@ -428,6 +431,7 @@
 }
 
 /* Stacked column flow layout for episode description items. */
+#app .card--row,
 #app .episode-item {
     flex-direction: column;
     gap: 10px;
@@ -488,11 +492,13 @@
 }
 
 /* Scale down for Live TV preview video container. */
+#app .card--panel.preview-card-video,
 #app .preview-card-video {
     height: 30vh;
 }
 
 /* Single column grid flow for custom playlists grid. */
+#app .media-grid--widescreen,
 #app .playlists-grid {
     grid-template-columns: 1fr;
     gap: 12px;

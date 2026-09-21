@@ -16,7 +16,7 @@ export const init = async () => {
         id: 'playlists',
         findNext: (current, direction) => {
             if (current.id === 'create-playlist-btn' && direction === 'down') {
-                const firstCard = document.querySelector('.playlist-card.focusable');
+                const firstCard = document.querySelector('.card--widescreen.focusable, .playlist-card.focusable');
                 if (firstCard) return firstCard;
             }
             return null;
@@ -62,7 +62,7 @@ function render() {
  */
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
-    card.className = 'playlist-card focusable focusable-card';
+    card.className = 'card card--widescreen card--interactive playlist-card focusable focusable-card';
     card.dataset.id = playlist.id;
 
     // Get cover image from first item or use placeholder

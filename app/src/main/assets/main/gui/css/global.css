@@ -389,7 +389,8 @@ input, textarea, select { font: inherit; }
 
 #hero-loader-container { background: rgba(0, 0, 0, 0.22); z-index: 5; }
 
-/* Horizontal scrollable carousel rail holding media poster items. */
+/* Horizontal scrolling carousel rail container for media poster rows. */
+.media-rail,
 .row-posters {
     -webkit-overflow-scrolling: touch;
     contain: layout;
@@ -402,17 +403,76 @@ input, textarea, select { font: inherit; }
     scrollbar-width: none;
 }
 
-/**
- * Abstract Base Component: .poster-wrapper, .playlist-card
- * Standardized media card tiles for content rows, grids, and playlists.
- * Enforces layout containment, surface background, aspect ratio, and TV focus indicator borders.
- *
- * Consumed by:
- * - Content carousels and genre rails (home.html, movies.html, series.html)
- * - Search results grids (search.html)
- * - Playlist collections (playlists.html)
- */
-/* Media poster wrapper for horizontal rails and search grids with smooth hover scale. */
+/* Base responsive CSS grid container for media card layouts. */
+.media-grid {
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    width: 100%;
+}
+
+/* Responsive poster card grid with auto-fill columns. */
+.media-grid--posters,
+.search-results-grid,
+.playlist-items-grid {
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
+}
+
+/* Responsive widescreen 16:9 card grid for playlists with auto-fill columns. */
+.media-grid--widescreen,
+.playlists-grid {
+    animation: fadeInUp 0.32s ease-out;
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr));
+}
+
+/* Responsive compact cast and mini-card grid layout. */
+.media-grid--cast,
+.disney-cast-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    width: 100%;
+}
+
+/* Abstract base card structure enforcing containment, rounded corners, and smooth transitions. */
+.card {
+    background: var(--surface-soft);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    contain: layout;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 200ms ease;
+}
+
+/* Interactive card state modifier adding cursor pointer and outline suppression. */
+.card--interactive,
+.focusable-card {
+    cursor: pointer;
+}
+
+/* Standard high-visibility TV white focus border for focused interactive cards. */
+.card--interactive:focus,
+.card--interactive.focused,
+.focusable.focusable-card:focus,
+.focusable.focusable-card.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    outline: none;
+    z-index: 10;
+}
+
+/* Suppresses browser outline on hover for interactive cards. */
+.card--interactive:hover,
+.focusable.focusable-card:hover {
+    outline: none;
+}
+
+/* Vertical 2:3 poster card component for horizontal rails and search grids. */
+.card--poster,
 .poster-wrapper {
     background: var(--surface-soft);
     border: 3px solid transparent;
@@ -430,7 +490,22 @@ input, textarea, select { font: inherit; }
     will-change: transform;
 }
 
-/* Widescreen 16:9 card tile for playlist collections with smooth hover scale. */
+/* Poster card hover and focus states applying highlight border, scale zoom, and drop shadow. */
+.card--poster:hover,
+.card--poster:focus,
+.card--poster.focused,
+.poster-wrapper:hover,
+.poster-wrapper:focus,
+.poster-wrapper.focused {
+    border-color: #ffffff;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+    outline: none;
+    transform: scale(1.03);
+    z-index: 10;
+}
+
+/* Widescreen 16:9 card tile for playlist collections. */
+.card--widescreen,
 .playlist-card {
     aspect-ratio: 16 / 9;
     background: var(--surface-soft);
@@ -447,18 +522,10 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-/* Media poster wrapper hover and focus states applying highlight border, scale zoom, and drop shadow. */
-.poster-wrapper:hover,
-.poster-wrapper:focus,
-.poster-wrapper.focused {
-    border-color: #ffffff;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
-    outline: none;
-    transform: scale(1.03);
-    z-index: 10;
-}
-
-/* Widescreen playlist card hover and focus states applying white highlight border and elevated stacking. */
+/* Widescreen playlist card hover and focus states applying white highlight border. */
+.card--widescreen:hover,
+.card--widescreen:focus,
+.card--widescreen.focused,
 .playlist-card:hover,
 .playlist-card:focus,
 .playlist-card.focused {
@@ -468,17 +535,209 @@ input, textarea, select { font: inherit; }
     z-index: 10;
 }
 
-/* CSS Class: Styles the individual poster image, applying a default 20% dimming filter. */
-.poster, .poster-img { display: block; height: 100%; object-fit: cover; transition: opacity 0.25s ease, filter 0.16s ease; width: 100%; filter: brightness(0.8); }
+/* Horizontal media item row card layout for episodes and playlist items. */
+.card--row,
+.episode-item,
+.disney-extra-item,
+.disney-episode-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    margin-bottom: 12px;
+    overflow: hidden;
+    padding: 12px 16px;
+    transition: border-color 0.16s ease, background-color 0.16s ease;
+    width: 100%;
+}
 
-/* CSS Class: Restores full brightness to poster images when their wrapper is hovered, focused, or has focused state. */
-.poster-wrapper:hover .poster, .poster-wrapper:focus .poster, .poster-wrapper.focused .poster, .poster-wrapper:hover .poster-img, .poster-wrapper:focus .poster-img, .poster-wrapper.focused .poster-img, .playlist-card:hover .poster, .playlist-card:hover img { filter: brightness(1.1); }
+/* Hover state for horizontal row cards with soft background highlight. */
+.card--row:hover,
+.episode-item:hover,
+.disney-extra-item:hover,
+.disney-episode-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: transparent;
+    outline: none;
+}
 
+/* Focus state for horizontal row cards with solid white highlight border. */
+.card--row:focus,
+.card--row.focused,
+.episode-item:focus,
+.episode-item.focused,
+.disney-extra-item.focused,
+.disney-extra-item:focus,
+.disney-episode-item.focused,
+.disney-episode-item:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff;
+    outline: none;
+}
 
+/* Compact mini-card for cast members and actors. */
+.card--compact,
+.disney-cast-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+    text-align: center;
+    transition: border-color 0.16s ease;
+}
 
+/* Solid panel surface card for preview videos, EPG details, and version cards. */
+.card--panel,
+.dev-version-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
 
-/* Tab visual header selection state indicator in settings view. */
-.episode-item.watched, .settings-tab-accent { border-bottom: 3px solid var(--primary-color); }
+/* Focus state for panel surface cards with white border. */
+.card--panel:focus,
+.card--panel.focused,
+.dev-version-card.focused,
+.dev-version-card:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffffff;
+    outline: none;
+}
+
+/* Card image element with object-fit cover and default dimming filter. */
+.card__media,
+.poster,
+.poster-img {
+    display: block;
+    filter: brightness(0.8);
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.25s ease, filter 0.16s ease;
+    width: 100%;
+}
+
+/* Restores full brightness to media images when parent card is hovered or focused. */
+.card--poster:hover .card__media,
+.card--poster:focus .card__media,
+.card--poster.focused .card__media,
+.card--widescreen:hover .card__media,
+.card--widescreen:focus .card__media,
+.card--widescreen.focused .card__media,
+.poster-wrapper:hover .poster,
+.poster-wrapper:focus .poster,
+.poster-wrapper.focused .poster,
+.poster-wrapper:hover .poster-img,
+.poster-wrapper:focus .poster-img,
+.poster-wrapper.focused .poster-img,
+.playlist-card:hover .poster,
+.playlist-card:hover img {
+    filter: brightness(1.1);
+}
+
+/* Card thumbnail container for widescreen and row cards. */
+.card__thumb,
+.playlist-cover,
+.episode-image,
+.disney-extra-thumb-left,
+.disney-episode-thumb {
+    aspect-ratio: 16 / 9;
+    background-color: var(--surface-soft);
+    background-position: center;
+    background-size: cover;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Card gradient overlay providing dark readability backing for card titles. */
+.card__overlay,
+.playlist-overlay {
+    align-items: flex-start;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    left: 0;
+    opacity: 1;
+    padding: 24px 14px 12px 14px;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}
+
+/* Card badge icon indicator for playlists and media status. */
+.card__badge,
+.playlist-badge {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    height: 32px;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 32px;
+    z-index: 5;
+}
+
+/* Card text content body for titles and metadata. */
+.card__body,
+.episode-info,
+.disney-extra-info,
+.disney-episode-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 0 16px;
+}
+
+/* Card title typography with text ellipsis truncation. */
+.card__title,
+.playlist-name,
+.episode-name,
+.disney-extra-title,
+.disney-episode-title {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+    width: 100%;
+}
+
+/* Card description and overview text with line clamping. */
+.card__desc,
+.playlist-meta,
+.episode-overview,
+.disney-extra-description,
+.disney-episode-overview {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--text-muted);
+    display: -webkit-box;
+    font-size: 13px;
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+/* Accent indicator for watched media items and active tabs. */
+.card--row.is-watched,
+.episode-item.watched,
+.settings-tab-accent {
+    border-bottom: 3px solid var(--primary-color);
+}
 
 
 
@@ -1274,20 +1533,6 @@ input, textarea, select { font: inherit; }
 /* Explains: Alignment style for season select buttons in details view sidebar. */
 .season-btn { justify-content: flex-start; text-align: left; width: 100%; }
 
-.episode-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid transparent;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    gap: 20px;
-    margin-bottom: 15px;
-    padding: 15px;
-    transition: all 0.2s ease;
-}
-
-.episode-item:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; }
-.episode-item:focus, .episode-item.focused { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
 
 .episode-image {
     background-color: #000;
@@ -1840,36 +2085,8 @@ input, textarea, select { font: inherit; }
 
 .playlist-badge-icon { color: #fff; height: 16px; width: 16px; }
 
-.playlist-overlay {
-    align-items: flex-start;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    left: 0;
-    opacity: 1;
-    padding: 24px 14px 12px 14px;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-}
-
-.playlist-name {
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-    white-space: nowrap;
-    width: 100%;
-}
 /* Explains: Typography styling for time labels within EPG show lists. */
 .epg-time { color: var(--text-muted); font-size: 13px; font-weight: 700; }
-
-.playlist-meta { color: var(--text-muted); font-size: 13px; font-weight: 500; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); }
 
 .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
 
@@ -2049,9 +2266,6 @@ input, textarea, select { font: inherit; }
     grid-column: 1 / -1;
 }
 
-
-/* Card wrapper inside the search results grid. Uses content-visibility to bypass layout/painting for off-screen items. */
-.search-results-grid .poster-wrapper { aspect-ratio: 2 / 3; contain-intrinsic-size: auto var(--poster-height); content-visibility: auto; height: auto; width: 100%; }
 
 .filter-main-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
@@ -2932,21 +3146,6 @@ input, textarea, select { font: inherit; }
     width: 28px;
 }
 
-/* CSS Class: Enriched version card chip with clean glassmorphic backdrop. */
-.dev-version-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-/* CSS Class: Focus state for version cards using thick white border (no translate/scale animations). */
-.dev-version-card.focused, .dev-version-card:focus {
-    background: rgba(255, 255, 255, 0.12);
-    border: 2px solid #ffffff !important;
-    outline: none;
-}
-
 /* ==========================================================================
    SECTION 10: PAGE SPECIFIC - VIDEO PLAYER (VOD)
    Source File: player.css
@@ -3093,21 +3292,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 /* Explains: List container for Disney extra bonus video items in the details page. */
 .disney-extras-list { display: flex; flex-direction: column; gap: 1rem; padding-bottom: 3.75rem; width: 100%; }
 
-/* Explains: Individual card item layout for Disney extra bonus and episode details. */
-.disney-extra-item, .disney-episode-item {
-    background: rgba(255, 255, 255, 0.03);
-    border: 2px solid transparent;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    display: flex;
-    overflow: hidden;
-    transition: border-color 0.16s ease, background-color 0.16s ease;
-    width: 100%;
-}
-
-/* Thicker white focus outline for episodes list */
-.disney-extra-item:hover, .disney-episode-item:hover { background: rgba(255, 255, 255, 0.08); border-color: transparent; outline: none; }
-.disney-extra-item.focused, .disney-extra-item:focus, .disney-episode-item.focused, .disney-episode-item:focus { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
 
 .disney-extra-thumb-left { aspect-ratio: 16 / 9; background-color: var(--surface-soft); background-position: center; background-size: cover; position: relative; width: 25%; }
 
@@ -3484,10 +3668,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 
 .focusable:hover, .focusable-container:hover { outline: none; }
 
-/* CSS Class: Focused state styles for focusable cards. */
-.focusable.focusable-card:focus, .focusable.focusable-card.focused { border-color: #ffffff; box-shadow: none; outline: none; z-index: 100; will-change: border-color; }
-
-.focusable.focusable-card:hover { outline: none; }
 
 /* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable { border: none; box-shadow: none; outline: none; }
@@ -3603,10 +3783,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         --shadow-panel: 0 12px 36px rgba(0, 0, 0, 0.40);
     }
 
-    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
-        box-shadow: 0 0 18px rgba(var(--primary-rgb), 0.65);
-    }
-
     .hero { height: 50vh; min-height: 380px; padding-bottom: 40px; }
     .hero-title { font-size: 38px; margin-bottom: 12px; }
     .hero-desc { font-size: 15px; margin-bottom: 20px; }
@@ -3623,10 +3799,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         --poster-width: 116px;
         --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.25);
         --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.32);
-    }
-
-    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
-        box-shadow: 0 0 14px rgba(var(--primary-rgb), 0.60);
     }
 
     .hero { height: 46vh; min-height: 320px; padding-bottom: 30px; }
@@ -3649,10 +3821,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         --shadow-panel: 0 6px 16px rgba(0, 0, 0, 0.28);
     }
 
-    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
-        box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.55);
-    }
-
     .hero { height: 44vh; min-height: 280px; padding-bottom: 25px; }
     .hero-title { font-size: 28px; }
     .row-title { font-size: 16px; }
@@ -3667,10 +3835,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         --poster-width: 98px;
         --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.18);
         --shadow-panel: 0 4px 10px rgba(0, 0, 0, 0.22);
-    }
-
-    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
-        box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.50);
     }
 
     .hero { height: 42vh; min-height: 240px; padding-bottom: 20px; }
@@ -3688,10 +3852,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
         --poster-width: 90px;
         --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.15);
         --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.18);
-    }
-
-    .focusable.focusable-card:hover, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
-        box-shadow: 0 0 4px rgba(var(--primary-rgb), 0.40);
     }
 
     .hero { height: 40vh; min-height: 220px; padding-bottom: 16px; }

@@ -43,7 +43,7 @@ export class CategoryRenderer {
             titleH2.textContent = cat.defaultTitle || '';
 
             const postersDiv = document.createElement('div');
-            postersDiv.className = 'row-posters';
+            postersDiv.className = 'media-rail row-posters';
             postersDiv.id = cat.id;
 
             rowDiv.appendChild(titleH2);

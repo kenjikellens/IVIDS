@@ -116,7 +116,7 @@ export const SpatialNav = {
             return null;
         }
 
-        const knownPageScrollArea = el.closest('.playlists-container, .livetv-list-column, .livetv-preview-column, .epg-card');
+        const knownPageScrollArea = el.closest('.playlists-container, .livetv-list-column, .livetv-preview-column, .card--panel.epg-card, .epg-card');
         if (knownPageScrollArea) return knownPageScrollArea;
 
         return this.getMainView();
@@ -535,8 +535,8 @@ export const SpatialNav = {
         // Dynamically choose smooth vs instant (auto) scroll based on D-pad navigation speed
         const behavior = this.getScrollBehavior();
 
-        // Check if the element belongs to a Netflix-style horizontal row container (.row-posters)
-        const rowPosters = el.closest('.row-posters');
+        // Check if the element belongs to a Netflix-style horizontal row container (.media-rail / .row-posters)
+        const rowPosters = el.closest('.media-rail, .row-posters');
 
         const isCarouselPage = this.currentPageLogic?.isCarouselPage === true;
 
@@ -739,8 +739,8 @@ export const SpatialNav = {
             if (this.isVisible(target)) return target;
         }
 
-        // 2. Fast-path: Horizontal and vertical navigation within horizontal rows (.row-posters)
-        const rowPosters = current.closest('.row-posters');
+        // 2. Fast-path: Horizontal and vertical navigation within horizontal rows (.media-rail / .row-posters)
+        const rowPosters = current.closest('.media-rail, .row-posters');
         if (rowPosters) {
             if (direction === 'left' || direction === 'right') {
                 const sibling = this.findRowSibling(current, direction);
@@ -769,7 +769,7 @@ export const SpatialNav = {
         if (heroContainer && !this.focusTrapContainer) {
             if (direction === 'down') {
                 const mainView = this.getMainView();
-                const firstRowPoster = mainView?.querySelector('.row-posters .poster-wrapper.focusable') || document.querySelector('.row-posters .poster-wrapper.focusable');
+                const firstRowPoster = mainView?.querySelector('.media-rail .card--poster.focusable, .media-rail .poster-wrapper.focusable, .row-posters .poster-wrapper.focusable') || document.querySelector('.media-rail .card--poster.focusable, .row-posters .poster-wrapper.focusable');
                 if (firstRowPoster && this.isVisible(firstRowPoster)) {
                     return firstRowPoster;
                 }
@@ -794,7 +794,7 @@ export const SpatialNav = {
                 }
                 const heroPlayBtn = document.getElementById('play-btn');
                 if (heroPlayBtn && this.isVisible(heroPlayBtn)) return heroPlayBtn;
-                const firstPoster = document.querySelector('.row-posters .poster-wrapper.focusable');
+                const firstPoster = document.querySelector('.media-rail .card--poster.focusable, .media-rail .poster-wrapper.focusable, .row-posters .poster-wrapper.focusable');
                 if (firstPoster && this.isVisible(firstPoster)) return firstPoster;
             }
         }

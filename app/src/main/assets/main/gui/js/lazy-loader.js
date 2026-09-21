@@ -152,15 +152,15 @@ export class LazyLoader {
      */
     preloadAdjacentRowPosters(currentElement) {
         if (!currentElement) return;
-        const wrapper = currentElement.classList?.contains('poster-wrapper')
+        const wrapper = (currentElement.classList?.contains('card--poster') || currentElement.classList?.contains('poster-wrapper'))
             ? currentElement
-            : currentElement.closest?.('.poster-wrapper');
+            : currentElement.closest?.('.card--poster, .poster-wrapper');
         if (!wrapper) return;
 
         let next = wrapper.nextElementSibling;
         let count = 0;
         while (next && count < 2) {
-            if (next.classList?.contains('poster-wrapper') || next.tagName === 'IMG') {
+            if (next.classList?.contains('card--poster') || next.classList?.contains('poster-wrapper') || next.tagName === 'IMG') {
                 this.loadImage(next);
                 count++;
             }
@@ -250,7 +250,7 @@ export class LazyLoader {
                 const cat = categories[idx];
                 const rowEl = document.getElementById(cat.id);
                 if (rowEl) {
-                    const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
+                    const posters = Array.from(rowEl.querySelectorAll('.card--poster, .poster-wrapper, img[data-src]'));
                     posters.slice(0, maxCols).forEach(poster => {
                         phase1Promises.push(this.loadImage(poster));
                     });
@@ -267,7 +267,7 @@ export class LazyLoader {
                 const cat = categories[idx];
                 const rowEl = document.getElementById(cat.id);
                 if (rowEl) {
-                    const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
+                    const posters = Array.from(rowEl.querySelectorAll('.card--poster, .poster-wrapper, img[data-src]'));
                     posters.slice(maxCols, maxCols + 2).forEach(poster => {
                         phase2Promises.push(this.loadImage(poster));
                     });
@@ -292,7 +292,7 @@ export class LazyLoader {
 
                     const rowEl = document.getElementById(cat.id);
                     if (rowEl) {
-                        const posters = Array.from(rowEl.querySelectorAll('.poster-wrapper, img[data-src]'));
+                        const posters = Array.from(rowEl.querySelectorAll('.card--poster, .poster-wrapper, img[data-src]'));
                         const phase3RowPromises = posters.slice(0, maxCols).map(poster => this.loadImage(poster));
                         await Promise.allSettled(phase3RowPromises);
                     }

@@ -41,7 +41,7 @@ export function setupRow(elementId, items, defaultType = null) {
         }
 
         // Get existing skeleton or poster buttons
-        const existingButtons = Array.from(rowPosters.querySelectorAll('.poster-wrapper'));
+        const existingButtons = Array.from(rowPosters.querySelectorAll('.card--poster, .poster-wrapper'));
 
         if (!items || items.length === 0) {
             console.log(`No items for row ${elementId}`);
@@ -235,11 +235,11 @@ export function createPosterElement(item, defaultType = null, sizeContainerWidth
     } else {
         btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'poster-wrapper focusable focusable-card';
+        btn.className = 'card card--poster card--interactive poster-wrapper focusable focusable-card';
     }
 
     const img = document.createElement('img');
-    img.className = 'poster';
+    img.className = 'card__media poster';
     img.decoding = 'async';
     img.loading = 'lazy';
     img.style.opacity = '0'; // Hide initially
