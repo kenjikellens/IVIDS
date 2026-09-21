@@ -41,11 +41,9 @@
     box-sizing: border-box;
 }
 
-/* CSS Class: Main bottom navigation bar styling matching layout and height. Includes specificity overrides for desktop state. */
-#app .navbar,
-#app.sidebar-always-expanded .navbar,
-#app .navbar:hover,
-#app .navbar:focus-within {
+/* CSS Class: Mobile bottom navigation bar surface */
+#app .nav-rail,
+#app .navbar {
     position: fixed;
     left: 0;
     right: 0;
@@ -65,17 +63,15 @@
     pointer-events: auto;
 }
 
-/* CSS Class: Unwraps nav item containers to let items space evenly across navbar. Includes specificity overrides. */
+/* CSS Class: Unwraps nav item containers to let items space evenly across navbar */
+#app .nav-rail__group,
 #app .nav-links,
-#app .nav-utilities,
-#app.sidebar-always-expanded .nav-links,
-#app.sidebar-always-expanded .nav-utilities {
+#app .nav-utilities {
     display: contents;
 }
 
-/* CSS Class: Layout and spacing override for bottom nav item. Includes specificity overrides. */
-#app .nav-item,
-#app.sidebar-always-expanded .nav-item {
+/* CSS Class: Layout and spacing override for bottom nav item */
+#app .nav-item {
     flex: 1 1 0;
     max-width: 52px;
     width: 100%;
@@ -91,70 +87,34 @@
     background: transparent;
 }
 
-/* CSS Class: Nav icon sizing and margins. Includes specificity overrides. */
-#app .nav-icon,
-#app.sidebar-always-expanded .nav-icon {
+/* CSS Class: Nav icon sizing and margins */
+#app .nav-item__icon,
+#app .nav-icon {
     width: 25px;
     height: 25px;
     margin: 0;
     flex-basis: 25px;
 }
 
-/* CSS Class: Hides elements that should not render on mobile bottom navigation. Includes specificity overrides. */
+/* CSS Class: Hides elements that should not render on mobile bottom navigation */
+#app .nav-rail__header,
 #app .logo-container,
-#app .nav-item::before,
+#app .nav-item__label,
 #app .nav-item span,
+#app .nav-item::before,
 #app .nav-item[data-route="livetv"],
-#app .nav-item[data-route="music"],
-#app.sidebar-always-expanded .logo-container,
-#app.sidebar-always-expanded .nav-item::before,
-#app.sidebar-always-expanded .nav-item span,
-#app.sidebar-always-expanded .nav-item[data-route="livetv"],
-#app.sidebar-always-expanded .nav-item[data-route="music"] {
+#app .nav-item[data-route="music"] {
     display: none;
 }
 
-/* CSS Class: Sets the flex order of the home navigation item. Includes specificity overrides. */
-#app .nav-item[data-route="home"],
-#app.sidebar-always-expanded .nav-item[data-route="home"] {
-    order: 1;
-}
-
-/* CSS Class: Sets the flex order of the movies navigation item. Includes specificity overrides. */
-#app .nav-item[data-route="movies"],
-#app.sidebar-always-expanded .nav-item[data-route="movies"] {
-    order: 2;
-}
-
-/* CSS Class: Sets the flex order of the series navigation item. Includes specificity overrides. */
-#app .nav-item[data-route="series"],
-#app.sidebar-always-expanded .nav-item[data-route="series"] {
-    order: 3;
-}
-
-/* CSS Class: Sets the flex order of the search navigation item. Includes specificity overrides. */
-#app .nav-item[data-route="search"],
-#app.sidebar-always-expanded .nav-item[data-route="search"] {
-    order: 4;
-}
-
-/* CSS Class: Sets the flex order of the playlists navigation item. Includes specificity overrides. */
-#app .nav-item[data-route="playlists"],
-#app.sidebar-always-expanded .nav-item[data-route="playlists"] {
-    order: 5;
-}
-
-/* CSS Class: Sets the flex order of the account navigation item. Includes specificity overrides. */
-#app .nav-item[data-route="account"],
-#app.sidebar-always-expanded .nav-item[data-route="account"] {
-    order: 6;
-}
-
-/* CSS Class: Sets the flex order of the settings navigation item. Includes specificity overrides. */
-#app .nav-item[data-route="settings"],
-#app.sidebar-always-expanded .nav-item[data-route="settings"] {
-    order: 7;
-}
+/* Ordering for mobile navigation items */
+#app .nav-item[data-route="home"] { order: 1; }
+#app .nav-item[data-route="movies"] { order: 2; }
+#app .nav-item[data-route="series"] { order: 3; }
+#app .nav-item[data-route="search"] { order: 4; }
+#app .nav-item[data-route="playlists"] { order: 5; }
+#app .nav-item[data-route="account"] { order: 6; }
+#app .nav-item[data-route="settings"] { order: 7; }
 
 /* CSS Class: Colors the active or focused navigation icon with the solid theme accent color. Includes specificity overrides. */
 #app .nav-item.active .nav-icon,
@@ -191,17 +151,7 @@
 }
 
 /* Typography scaling for primary hero banner title on mobile screens. */
-#app .hero-title {
-    font-size: clamp(26px, 6.6vw, 35px);
-    margin-bottom: 16px;
-    max-width: 100%;
-    text-align: center;
-}
-
-/* Hides hero backdrop description text on mobile viewports for Home, Movies, and Series pages. */
-#app .hero-desc {
-    display: none !important;
-}
+/* Mobile hero title adjustment handled via fluid clamp */
 
 /* Grid display and alignment for play buttons in hero area. */
 #app .hero-buttons {
@@ -220,11 +170,7 @@
 }
 
 /* Typography size adjustments for media row headings on mobile viewports. */
-#app .row-title {
-    font-size: clamp(20px, 5.2vw, 24px);
-    margin-bottom: 1%;
-    padding: 0 4%;
-}
+/* Mobile row title adjustment handled via fluid clamp */
 
 /* Scrolling and gap adjustments for row lists. */
 #app .media-rail,
@@ -329,11 +275,7 @@
 
 /* Title typography scaling on mobile viewports. */
 #app .details-title,
-#app #details-title {
-    font-size: clamp(20px, 5.5vw, 26px);
-    margin-bottom: 8px;
-    text-align: center;
-}
+/* Mobile details title adjustment handled via fluid clamp */
 
 /* Hides top overview/description on mobile so it doesn't take 50% screen space (it belongs in the "Over" tab). */
 #app .details-overview {

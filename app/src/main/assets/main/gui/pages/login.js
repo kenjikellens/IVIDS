@@ -24,7 +24,7 @@ export function init(params = {}) {
     const submitBtn = document.getElementById('login-submit');
     const backBtn = document.getElementById('login-back');
     const circleBackBtn = document.getElementById('login-circle-back');
-    const tabs = Array.from(document.querySelectorAll('.login-tab'));
+    const tabs = Array.from(document.querySelectorAll('.tab-btn, .login-tab'));
 
     tabs.forEach(tab => {
         tab.onclick = () => setMode(tab.dataset.mode || 'signin');
@@ -80,8 +80,10 @@ function t(key, fallback, replacements = {}) {
  */
 function setMode(nextMode) {
     mode = nextMode === 'register' ? 'register' : 'signin';
-    document.querySelectorAll('.login-tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.mode === mode);
+    document.querySelectorAll('.tab-btn, .login-tab').forEach(tab => {
+        const isMatch = tab.dataset.mode === mode;
+        tab.classList.toggle('is-active', isMatch);
+        tab.classList.toggle('active', isMatch);
     });
 
     const usernameField = document.getElementById('username-field');

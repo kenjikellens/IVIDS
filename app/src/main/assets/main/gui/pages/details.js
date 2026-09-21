@@ -643,12 +643,12 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
  */
 function switchTab(tabName) {
     try {
-        document.querySelectorAll('.disney-tab-panel').forEach(panel => {
+        document.querySelectorAll('.tab-panel, .disney-tab-panel').forEach(panel => {
             panel.classList.add('hidden');
         });
         
-        document.querySelectorAll('.disney-tab-btn').forEach(btn => {
-            btn.classList.remove('btn--primary', 'btn-primary');
+        document.querySelectorAll('.tab-btn, .disney-tab-btn').forEach(btn => {
+            btn.classList.remove('is-active', 'active', 'btn--primary', 'btn-primary');
             btn.classList.add('btn--secondary');
         });
         
@@ -660,7 +660,7 @@ function switchTab(tabName) {
         const activeBtn = document.getElementById(`tab-${tabName}`);
         if (activeBtn) {
             activeBtn.classList.remove('btn--secondary', 'btn-secondary');
-            activeBtn.classList.add('btn--primary');
+            activeBtn.classList.add('is-active', 'active', 'btn--primary');
         }
     } catch (e) {
         console.error('Error switching tabs:', e);
@@ -686,7 +686,7 @@ function getVisibleTabs() {
  * @returns {string|null} The active tab name or null if none found.
  */
 function getActiveTab() {
-    const activeBtn = document.querySelector('.disney-tab-btn.btn--primary, .disney-tab-btn.btn-primary');
+    const activeBtn = document.querySelector('.tab-btn.is-active, .tab-btn.btn--primary, .disney-tab-btn.btn--primary, .disney-tab-btn.btn-primary');
     if (activeBtn && activeBtn.id) {
         return activeBtn.id.replace('tab-', '');
     }

@@ -41,7 +41,7 @@ export const Sidebar = {
                 html = await response.text();
                 _cachedHtml = html;
             }
-            container.innerHTML = `<nav class="navbar" id="header">${html}</nav>`;
+            container.innerHTML = `<nav class="nav-rail navbar" id="header">${html}</nav>`;
 
             // Initialize event listeners
             Sidebar.attachListeners();
@@ -75,10 +75,9 @@ export const Sidebar = {
     updateActiveLink: (pageName) => {
         if (!pageName) return;
         document.querySelectorAll('.nav-item').forEach(link => {
-            link.classList.remove('active');
-            if (link.dataset.route === pageName) {
-                link.classList.add('active');
-            }
+            const isTarget = link.dataset.route === pageName;
+            link.classList.toggle('is-active', isTarget);
+            link.classList.toggle('active', isTarget);
         });
     }
 };

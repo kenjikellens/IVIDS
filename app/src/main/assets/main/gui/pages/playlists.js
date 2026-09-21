@@ -80,7 +80,7 @@ function createPlaylistCard(playlist) {
     card.innerHTML = `
         <div class="playlist-cover">
             <img src="${imageUrl}" alt="${playlist.name}" loading="lazy">
-            <div class="playlist-badge">
+            <div class="badge badge--primary playlist-badge">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <line x1="8" y1="6" x2="21" y2="6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <line x1="8" y1="12" x2="21" y2="12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>

@@ -750,7 +750,7 @@ export const SpatialNav = {
                 if (direction === 'left' && !this.focusTrapContainer) {
                     const sidebar = document.getElementById('sidebar-container');
                     if (sidebar) {
-                        const activeNav = sidebar.querySelector('.nav-item.active.focusable') || sidebar.querySelector(this.focusableSelector);
+                        const activeNav = sidebar.querySelector('.nav-item.is-active.focusable, .nav-item.active.focusable') || sidebar.querySelector(this.focusableSelector);
                         if (activeNav && this.isVisible(activeNav)) {
                             return activeNav;
                         }
@@ -776,7 +776,7 @@ export const SpatialNav = {
             } else if (direction === 'left' && current.id === 'play-btn') {
                 const sidebar = document.getElementById('sidebar-container');
                 if (sidebar) {
-                    const activeNav = sidebar.querySelector('.nav-item.active.focusable') || sidebar.querySelector(this.focusableSelector);
+                    const activeNav = sidebar.querySelector('.nav-item.is-active.focusable, .nav-item.active.focusable') || sidebar.querySelector(this.focusableSelector);
                     if (activeNav && this.isVisible(activeNav)) return activeNav;
                 }
             } else if (direction === 'right') {

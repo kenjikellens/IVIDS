@@ -36,7 +36,7 @@ export class CategoryRenderer {
             rowDiv.className = 'row';
 
             const titleH2 = document.createElement('h2');
-            titleH2.className = 'row-title';
+            titleH2.className = 'section-title row-title';
             if (cat.i18nKey) {
                 titleH2.setAttribute('data-i18n', cat.i18nKey);
             }

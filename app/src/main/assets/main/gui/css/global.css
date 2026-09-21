@@ -142,18 +142,10 @@ input, textarea, select { font: inherit; }
 }
 
 /* Default standard button sizing subclass. */
-.btn--md {
-    font-size: 15px;
-    min-height: 44px;
-    padding: 8px 22px;
-}
+.btn--md { font-size: 15px; min-height: 44px; padding: 8px 22px; }
 
 /* Large button sizing subclass for prominent hero and full-screen confirmation actions. */
-.btn--lg {
-    font-size: 17px;
-    min-height: 52px;
-    padding: 12px 28px;
-}
+.btn--lg { font-size: 17px; min-height: 52px; padding: 12px 28px; }
 
 /* Circular icon button subclass with unified 36px touch and focus indicator dimensions. */
 .btn--circle, .btn-circle {
@@ -190,149 +182,61 @@ input, textarea, select { font: inherit; }
 }
 
 /* Full-width block button subclass stretching across its parent container width. */
-.btn--block, .btn-full-center {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
+.btn--block, .btn-full-center { display: flex; justify-content: center; width: 100%; }
 
 /* Fixed minimum-width button subclass ensuring internationalized button labels fit consistently. */
-.btn--fixed-min, .btn-min-w {
-    min-width: 130px;
-}
+.btn--fixed-min, .btn-min-w { min-width: 130px; }
 
 /* Primary skin variant styling buttons with semi-transparent brand theme fill. */
-.btn--primary, .btn-primary {
-    background: rgba(var(--primary-rgb), 0.25);
-    border-color: transparent;
-    color: #ffffff;
-    font-weight: 800;
-}
+.btn--primary, .btn-primary { background: rgba(var(--primary-rgb), 0.25); border-color: transparent; color: #ffffff; font-weight: 800; }
 /* Hover state for primary button skin variant. */
-.btn--primary:hover, .btn-primary:hover {
-    background: rgba(var(--primary-rgb), 0.35);
-    border-color: transparent;
-    color: #ffffff;
-    outline: none;
-}
+.btn--primary:hover, .btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #ffffff; outline: none; }
 /* Focus state for primary button skin variant rendering standardized thick white outline. */
-.btn--primary:focus, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused {
-    background: rgba(var(--primary-rgb), 0.35);
-    border-color: #ffffff;
-    color: #ffffff;
-    outline: none;
-}
+.btn--primary:focus, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Secondary skin variant styling buttons with soft neutral translucent fill. */
-.btn--secondary, .btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: transparent;
-    color: #ffffff;
-}
+.btn--secondary, .btn-secondary { background: rgba(255, 255, 255, 0.08); border-color: transparent; color: #ffffff; }
 /* Hover state for secondary button skin variant. */
-.btn--secondary:hover, .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: transparent;
-    color: #ffffff;
-    outline: none;
-}
+.btn--secondary:hover, .btn-secondary:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; color: #ffffff; outline: none; }
 /* Focus state for secondary button skin variant rendering standardized thick white outline. */
-.btn--secondary:focus, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: #ffffff;
-    color: #ffffff;
-    outline: none;
-}
+.btn--secondary:focus, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Danger skin variant styling destructive action buttons with red highlight. */
-.btn--danger, .btn-danger {
-    background: #b92b23;
-    border-color: transparent;
-    color: #ffffff;
-}
+.btn--danger, .btn-danger { background: #b92b23; border-color: transparent; color: #ffffff; }
 /* Hover state for danger button skin variant. */
-.btn--danger:hover, .btn-danger:hover {
-    background: #d43830;
-    border-color: transparent;
-    color: #ffffff;
-    outline: none;
-}
+.btn--danger:hover, .btn-danger:hover { background: #d43830; border-color: transparent; color: #ffffff; outline: none; }
 /* Focus state for danger button skin variant rendering standardized thick white outline. */
-.btn--danger:focus, .btn--danger.focused, .btn-danger:focus, .btn-danger.focused {
-    background: #d43830;
-    border-color: #ffffff;
-    color: #ffffff;
-    outline: none;
-}
+.btn--danger:focus, .btn--danger.focused, .btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Ghost skin variant styling transparent background buttons with subtle highlight on hover and focus. */
-.btn--ghost {
-    background: transparent;
-    border-color: transparent;
-    color: rgba(255, 255, 255, 0.8);
-}
+.btn--ghost { background: transparent; border-color: transparent; color: rgba(255, 255, 255, 0.8); }
 /* Hover state for ghost button skin variant. */
-.btn--ghost:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: transparent;
-    color: #ffffff;
-    outline: none;
-}
+.btn--ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; color: #ffffff; outline: none; }
 /* Focus state for ghost button skin variant rendering standardized thick white outline. */
-.btn--ghost:focus, .btn--ghost.focused {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: #ffffff;
-    color: #ffffff;
-    outline: none;
-}
+.btn--ghost:focus, .btn--ghost.focused { background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Disabled state modifier applied to inactive or pending action buttons. */
-.btn:disabled, .btn.is-disabled {
-    background: rgba(255, 255, 255, 0.06);
-    cursor: not-allowed;
-    opacity: 0.4;
-    pointer-events: none;
-}
+.btn:disabled, .btn.is-disabled { background: rgba(255, 255, 255, 0.06); cursor: not-allowed; opacity: 0.4; pointer-events: none; }
 
 /* Active state modifier applied to toggled or currently selected action buttons. */
-.btn.is-active {
-    background: rgba(var(--primary-rgb), 0.35);
-    border-color: var(--primary-color);
-    color: #ffffff;
-}
+.btn.is-active { background: rgba(var(--primary-rgb), 0.35); border-color: var(--primary-color); color: #ffffff; }
 
 /* Visual state modifier for buttons indicating item has already been added to collection. */
-.btn.is-added, .btn-added {
-    color: rgba(255, 255, 255, 0.4);
-}
+.btn.is-added, .btn-added { color: rgba(255, 255, 255, 0.4); }
 
 /* Composite container grouping related action buttons with standard gap spacing. */
-.btn-group {
-    align-items: center;
-    display: flex;
-    gap: 12px;
-}
+.btn-group { align-items: center; display: flex; gap: 12px; }
 
 /* Button group modifier distributing child buttons equally across full container width. */
-.btn-group--fill .btn {
-    flex: 1;
-    min-width: 0;
-}
+.btn-group--fill .btn { flex: 1; min-width: 0; }
 
 /* Button group modifier aligning action buttons to the trailing edge. */
-.btn-group--end {
-    justify-content: flex-end;
-}
+.btn-group--end { justify-content: flex-end; }
 
 /* Button group modifier stacking buttons vertically. */
-.btn-group--vertical {
-    flex-direction: column;
-    width: 100%;
-}
+.btn-group--vertical { flex-direction: column; width: 100%; }
 /* Child buttons inside vertical group stretch across full container width. */
-.btn-group--vertical .btn {
-    width: 100%;
-}
+.btn-group--vertical .btn { width: 100%; }
 
 .hero {
     align-items: flex-end;
@@ -358,32 +262,6 @@ input, textarea, select { font: inherit; }
 
 .hero-content { padding-top: 24px; position: relative; transition: opacity 0.35s ease; width: min(1100px, 90%); z-index: 2; }
 
-/* Styles the main hero heading title with Outfit font, larger sizing, and a premium shadow */
-.hero-title {
-    color: #fff;
-    font-size: 60px;
-    font-weight: 700;
-    line-height: 1.04;
-    margin-bottom: 18px;
-    max-width: 12ch;
-    text-shadow: 0 4px 22px rgba(0, 0, 0, 0.66);
-}
-
-/* Styles the hero content description block with multi-line clamping and a readable line height */
-.hero-desc {
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    color: rgba(255, 255, 255, 0.78);
-    display: -webkit-box;
-    font-size: 17px;
-    line-clamp: 4;
-    line-height: 1.55;
-    margin-bottom: 28px;
-    max-width: 1000px;
-    overflow: hidden;
-    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.68);
-}
-
 .loader-center-container { align-items: center; display: flex; inset: 0; justify-content: center; position: absolute; }
 
 #hero-loader-container { background: rgba(0, 0, 0, 0.22); z-index: 5; }
@@ -403,38 +281,20 @@ input, textarea, select { font: inherit; }
 }
 
 /* Base responsive CSS grid container for media card layouts. */
-.media-grid {
-    display: grid;
-    gap: clamp(12px, 1.5vw, 18px);
-    width: 100%;
-}
+.media-grid { display: grid; gap: clamp(12px, 1.5vw, 18px); width: 100%; }
 
 /* Responsive poster card grid with auto-fill columns. */
 .media-grid--posters,
 .search-results-grid,
-.playlist-items-grid {
-    display: grid;
-    gap: clamp(12px, 1.5vw, 18px);
-    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
-}
+.playlist-items-grid { display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr)); }
 
 /* Responsive widescreen 16:9 card grid for playlists with auto-fill columns. */
 .media-grid--widescreen,
-.playlists-grid {
-    animation: fadeInUp 0.32s ease-out;
-    display: grid;
-    gap: clamp(12px, 1.5vw, 18px);
-    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr));
-}
+.playlists-grid { animation: fadeInUp 0.32s ease-out; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr)); }
 
 /* Responsive compact cast and mini-card grid layout. */
 .media-grid--cast,
-.disney-cast-grid {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    width: 100%;
-}
+.disney-cast-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); width: 100%; }
 
 /* Abstract base card structure enforcing containment, rounded corners, and smooth transitions. */
 .card {
@@ -449,26 +309,17 @@ input, textarea, select { font: inherit; }
 
 /* Interactive card state modifier adding cursor pointer and outline suppression. */
 .card--interactive,
-.focusable-card {
-    cursor: pointer;
-}
+.focusable-card { cursor: pointer; }
 
 /* Standard high-visibility TV white focus border for focused interactive cards. */
 .card--interactive:focus,
 .card--interactive.focused,
 .focusable.focusable-card:focus,
-.focusable.focusable-card.focused {
-    border-color: #ffffff;
-    box-shadow: none;
-    outline: none;
-    z-index: 10;
-}
+.focusable.focusable-card.focused { border-color: #ffffff; box-shadow: none; outline: none; z-index: 10; }
 
 /* Suppresses browser outline on hover for interactive cards. */
 .card--interactive:hover,
-.focusable.focusable-card:hover {
-    outline: none;
-}
+.focusable.focusable-card:hover { outline: none; }
 
 /* Vertical 2:3 poster card component for horizontal rails and search grids. */
 .card--poster,
@@ -523,12 +374,7 @@ input, textarea, select { font: inherit; }
 /* Widescreen playlist card hover and focus states applying white highlight border. */
 .card--widescreen:hover,
 .card--widescreen:focus,
-.card--widescreen.focused {
-    border-color: #ffffff;
-    box-shadow: none;
-    outline: none;
-    z-index: 10;
-}
+.card--widescreen.focused { border-color: #ffffff; box-shadow: none; outline: none; z-index: 10; }
 
 /* Horizontal media item row card layout for episodes and playlist items. */
 .card--row {
@@ -545,19 +391,11 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover state for horizontal row cards with soft background highlight. */
-.card--row:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: transparent;
-    outline: none;
-}
+.card--row:hover { background: rgba(255, 255, 255, 0.08); border-color: transparent; outline: none; }
 
 /* Focus state for horizontal row cards with solid white highlight border. */
 .card--row:focus,
-.card--row.focused {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: #ffffff;
-    outline: none;
-}
+.card--row.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
 
 /* Compact mini-card for cast members and actors. */
 .card--compact {
@@ -571,20 +409,11 @@ input, textarea, select { font: inherit; }
 }
 
 /* Solid panel surface card for preview videos, EPG details, and version cards. */
-.card--panel {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
+.card--panel { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); transition: border-color 0.2s ease, background-color 0.2s ease; }
 
 /* Focus state for panel surface cards with white border. */
 .card--panel:focus,
-.card--panel.focused {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: #ffffff;
-    outline: none;
-}
+.card--panel.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
 
 /* Card image element with object-fit cover and default dimming filter. */
 .card__media,
@@ -657,10 +486,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Card text content body for titles and metadata. */
-.card__body,
-.episode-info,
-.disney-extra-info,
-.disney-episode-info {
+.card__body {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -694,10 +520,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Accent indicator for watched media items and active tabs. */
-.card--row.is-watched,
-.settings-tab-accent {
-    border-bottom: 3px solid var(--primary-color);
-}
+.card--row.is-watched { border-bottom: 3px solid var(--primary-color); }
 
 /* ==========================================================================
    SECTION 1.4: OOCSS FORM CONTROLS, INPUTS & CHIP SELECTION SYSTEM
@@ -741,18 +564,11 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover state for input wrapper containers. */
-.form-control-wrapper:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-}
+.form-control-wrapper:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
 
 /* Focus state for input wrapper containers with white border outline. */
 .form-control-wrapper:focus-within,
-.form-control-wrapper.focused {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: #ffffff;
-    outline: none;
-}
+.form-control-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
 
 /* Base text, password, number, and search input styling. */
 .form-input {
@@ -781,31 +597,17 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover state for standalone form inputs. */
-.form-input:not(.form-control-wrapper *):hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-}
+.form-input:not(.form-control-wrapper *):hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
 
 /* Focus state for standalone form inputs with white highlight border. */
 .form-input:not(.form-control-wrapper *):focus,
-.form-input:not(.form-control-wrapper *).focused {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: #ffffff;
-    box-shadow: none;
-    outline: none;
-}
+.form-input:not(.form-control-wrapper *).focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; box-shadow: none; outline: none; }
 
 /* Placeholder styling for form inputs. */
-.form-input::placeholder {
-    color: rgba(255, 255, 255, 0.38);
-}
+.form-input::placeholder { color: rgba(255, 255, 255, 0.38); }
 
 /* Compact form input modifier for modal dialogs and inline table rows. */
-.form-input--compact {
-    font-size: 14px;
-    height: 42px;
-    padding: 0 12px;
-}
+.form-input--compact { font-size: 14px; height: 42px; padding: 0 12px; }
 
 /* Glassmorphic custom dropdown selector wrapper with chevron indicator. */
 .form-select-wrapper {
@@ -823,18 +625,11 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover state for form select dropdown wrapper. */
-.form-select-wrapper:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-}
+.form-select-wrapper:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
 
 /* Focus state for form select dropdown wrapper with white border. */
 .form-select-wrapper:focus-within,
-.form-select-wrapper.focused {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: #ffffff;
-    outline: none;
-}
+.form-select-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
 
 /* Chevron arrow pseudo-element for select dropdown wrapper. */
 .form-select-wrapper::after {
@@ -869,11 +664,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Dropdown option menu styling for native select element. */
-.form-select option {
-    background: #111111;
-    color: #ffffff;
-    padding: 10px;
-}
+.form-select option { background: #111111; color: #ffffff; padding: 10px; }
 
 /* Modal select menu trigger button with flex alignment and chevron. */
 .form-select-trigger {
@@ -896,18 +687,11 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover state for modal select trigger button. */
-.form-select-trigger:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-}
+.form-select-trigger:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
 
 /* Focus state for modal select trigger button with white highlight border. */
 .form-select-trigger:focus,
-.form-select-trigger.focused {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: #ffffff;
-    outline: none;
-}
+.form-select-trigger.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
 
 /* Toggle switch pill container for boolean settings and preferences. */
 .form-toggle {
@@ -925,11 +709,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hidden native checkbox input inside custom toggle container. */
-.form-toggle input {
-    height: 0;
-    opacity: 0;
-    width: 0;
-}
+.form-toggle input { height: 0; opacity: 0; width: 0; }
 
 /* Sliding circle indicator handle inside toggle container. */
 .form-toggle__slider {
@@ -945,27 +725,17 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover state for toggle switch container. */
-.form-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.22);
-}
+.form-toggle:hover { background-color: rgba(255, 255, 255, 0.22); }
 
 /* Active checked state for toggle switch container with primary theme background. */
-.form-toggle:has(input:checked) {
-    background-color: var(--primary-color);
-}
+.form-toggle:has(input:checked) { background-color: var(--primary-color); }
 
 /* Sliding circle position when toggle input is checked. */
-.form-toggle:has(input:checked) .form-toggle__slider {
-    background-color: #050505;
-    left: 31px;
-}
+.form-toggle:has(input:checked) .form-toggle__slider { background-color: #050505; left: 31px; }
 
 /* Focus state for toggle switch container with white border outline. */
 .form-toggle:focus,
-.form-toggle.focused {
-    border-color: #ffffff;
-    outline: none;
-}
+.form-toggle.focused { border-color: #ffffff; outline: none; }
 
 /* Base interactive selection chip component for filters, options, and tags. */
 .chip {
@@ -988,29 +758,17 @@ input, textarea, select { font: inherit; }
 }
 
 /* Hover state for interactive selection chips. */
-.chip:hover {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: transparent;
-}
+.chip:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
 
 /* Focus state for interactive selection chips with standard white border. */
 .chip:focus,
-.chip.focused {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: #ffffff;
-    outline: none;
-}
+.chip.focused { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; outline: none; }
 
 /* Selected and active state highlight for chips with primary brand color. */
 .chip.is-selected,
 .chip.is-active,
 .chip.selected,
-.chip.active {
-    background: var(--primary-color);
-    border-color: transparent;
-    color: #050505;
-    font-weight: 800;
-}
+.chip.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
 
 /* Focus state on selected active chip with white border. */
 .chip.is-selected:focus,
@@ -1020,10 +778,7 @@ input, textarea, select { font: inherit; }
 .chip.selected:focus,
 .chip.selected.focused,
 .chip.active:focus,
-.chip.active.focused {
-    border-color: #ffffff;
-    outline: none;
-}
+.chip.active.focused { border-color: #ffffff; outline: none; }
 
 /* Filter chip modifier with checkmark indicator when selected. */
 .chip--filter.is-selected::before,
@@ -1050,12 +805,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Recent search chip modifier styled as compact pill with remove trigger. */
-.chip--recent {
-    font-size: 14px;
-    gap: 8px;
-    min-height: 34px;
-    padding: 6px 14px;
-}
+.chip--recent { font-size: 14px; gap: 8px; min-height: 34px; padding: 6px 14px; }
 
 /* Genre chip modifier for media details tags. */
 .chip--genre {
@@ -1077,33 +827,220 @@ input, textarea, select { font: inherit; }
 
 /* Mature adult rating chip badge modifier with bold alert background. */
 .chip--rating.rating-R,
-.chip--rating.rating-TV-MA {
-    background-color: #ff4500;
-    border-color: #ff4500;
-    color: #ffffff;
-}
+.chip--rating.rating-TV-MA { background-color: #ff4500; border-color: #ff4500; color: #ffffff; }
 
 /* Color picker option chip modifier with square proportions. */
-.chip--color {
-    min-height: 88px;
-}
+.chip--color { min-height: 88px; }
 
 /* Responsive grid layout container for arranging chips in discovery modals and settings. */
-.chip-grid {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.chip-grid { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+
+/* 2-column modifier for chip grid layouts. */
+.chip-grid--2col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Color selector modifier for chip grid layouts with 6 columns. */
+.chip-grid--color { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+/* ==========================================================================
+   SECTION 1.5: OOCSS TABS & TOP-BAR SYSTEM
+   ========================================================================== */
+
+/* Unified horizontal tab bar container. */
+.tab-bar {
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
     width: 100%;
 }
 
-/* 2-column modifier for chip grid layouts. */
-.chip-grid--2col {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Modifier stretching tab buttons equally across tab bar width. */
+.tab-bar--fill { border-bottom: none; padding-bottom: 0; }
+
+/* Modifier stretching tab buttons equally inside fill tab bars. */
+.tab-bar--fill .tab-btn { flex: 1; }
+
+/* Focusable tab button component for switching view panels. */
+.tab-btn {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 700;
+    height: 42px;
+    justify-content: center;
+    padding: 0 18px;
+    position: relative;
+    text-align: center;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
-/* Color selector modifier for chip grid layouts with 6 columns. */
-.chip-grid--color {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+/* Hover state for tab button. */
+.tab-btn:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; color: #ffffff; }
+
+/* Focus state for tab button with standard white border. */
+.tab-btn:focus,
+.tab-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
+
+/* Active tab button highlight with primary theme accent color. */
+.tab-btn.is-active,
+.tab-btn.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
+
+/* Focus state on active tab button with white border. */
+.tab-btn.is-active:focus,
+.tab-btn.is-active.focused,
+.tab-btn.active:focus,
+.tab-btn.active.focused { border-color: #ffffff; outline: none; }
+
+/* Tab content panel component displayed conditionally. */
+.tab-panel { display: block; width: 100%; }
+
+/* Standardized view top bar layout container for search inputs and action buttons. */
+.top-bar {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Top bar actions cluster aligning secondary buttons and dropdown triggers. */
+.top-bar__actions { align-items: center; display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ==========================================================================
+   SECTION 1.6: OOCSS TYPOGRAPHY, BADGES & MEDIA OVERLAYS
+   ========================================================================== */
+
+/* High-impact fluid typography for hero banners and detail headlines. */
+.title-hero,
+.hero-title {
+    color: #ffffff;
+    font-family: inherit;
+    font-size: clamp(24px, 3.5vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    width: 100%;
+}
+
+/* Fluid responsive category and card section heading. */
+.section-title,
+.row-title {
+    align-items: center;
+    box-sizing: border-box;
+    color: #ffffff;
+    display: flex;
+    font-family: inherit;
+    font-size: clamp(16px, 1.8vw, 22px);
+    font-weight: 800;
+    gap: 10px;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
+}
+
+/* Aligned category icon inside section titles. */
+.section-title__icon,
+.section-title-icon {
+    display: block;
+    flex-shrink: 0;
+    height: 22px;
+    object-fit: contain;
+    width: 22px;
+}
+
+/* Fluid secondary explanatory subtitle text below titles. */
+.section-subtitle,
+.hero-desc {
+    color: var(--text-muted);
+    font-size: clamp(13px, 1.2vw, 15px);
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Small uppercase metadata typography for genre, duration, and year. */
+.text-meta {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Universal status pill badge component. */
+.badge {
+    align-items: center;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 800;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    min-height: 20px;
+    padding: 3px 8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* Filled badge with primary brand highlight color. */
+.badge--primary { background-color: var(--primary-color); color: #050505; }
+
+/* Outline badge with transparent background and subtle border. */
+.badge--outline,
+.version-badge { background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; }
+
+/* Success status indicator badge with emerald background. */
+.badge--success { background-color: #2ec4b6; color: #050505; }
+
+/* Warning status indicator badge with amber background. */
+.badge--warning { background-color: #ff9f1c; color: #050505; }
+
+/* Destructive or mature rating alert badge with crimson background. */
+.badge--danger { background-color: #e71d36; color: #ffffff; }
+
+/* Fullscreen background poster wrapper with absolute positioning. */
+.media-backdrop,
+.details-backdrop,
+.playlist-backdrop { inset: 0; overflow: hidden; position: absolute; z-index: 0; }
+
+/* Image element filling media backdrop. */
+.media-backdrop img,
+.details-backdrop img,
+.playlist-backdrop img { height: 100%; object-fit: cover; opacity: 0.22; width: 100%; }
+
+/* Linear and radial gradient mask darkening background for high text contrast. */
+.media-backdrop__overlay,
+.backdrop-overlay { background: linear-gradient(90deg, rgba(5, 5, 5, 0.98), rgba(5, 5, 5, 0.82) 48%, rgba(5, 5, 5, 0.58)), linear-gradient(0deg, var(--background-color), transparent 54%); inset: 0; position: absolute; }
+
+/* Centered circular media action play indicator on trailers and cards. */
+.media-play-icon {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.65);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-sizing: border-box;
+    color: #ffffff;
+    display: flex;
+    height: 48px;
+    justify-content: center;
+    position: absolute;
+    transition: background-color 0.16s ease, border-color 0.16s ease;
+    width: 48px;
 }
 
 /* ==========================================================================
@@ -1198,11 +1135,7 @@ input, textarea, select { font: inherit; }
 .modal.is-active,
 .modal.active,
 .modal.show,
-.modal.visible {
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-}
+.modal.visible { opacity: 1; pointer-events: auto; visibility: visible; }
 
 /* CSS Class: Core modal dialog card panel encapsulating header, body, and action footer. */
 .modal__dialog {
@@ -1222,35 +1155,19 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Small structural modifier for simple confirmation and single-choice prompt modals. */
-.modal__dialog--sm {
-    max-width: 480px;
-    padding: 24px 28px;
-    width: min(480px, 92vw);
-}
+.modal__dialog--sm { max-width: 480px; padding: 24px 28px; width: min(480px, 92vw); }
 
 /* CSS Class: Medium structural modifier for standard multi-option settings and playlist management modals. */
-.modal__dialog--md {
-    max-width: 600px;
-    width: min(600px, 92vw);
-}
+.modal__dialog--md { max-width: 600px; width: min(600px, 92vw); }
 
 /* CSS Class: Large structural modifier for version selectors, update announcements, and changelogs. */
-.modal__dialog--lg {
-    max-width: 880px;
-    width: min(880px, 94vw);
-}
+.modal__dialog--lg { max-width: 880px; width: min(880px, 94vw); }
 
 /* CSS Class: Extra-large structural modifier for complex discovery filter grids and country selection. */
-.modal__dialog--xl {
-    max-width: 1200px;
-    width: min(1200px, 94vw);
-}
+.modal__dialog--xl { max-width: 1200px; width: min(1200px, 94vw); }
 
 /* CSS Class: Skin variant applying red alert ambient styling for destructive action modals. */
-.modal--danger .modal__dialog {
-    border: 1px solid rgba(230, 57, 70, 0.45);
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 24px rgba(230, 57, 70, 0.15);
-}
+.modal--danger .modal__dialog { border: 1px solid rgba(230, 57, 70, 0.45); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 24px rgba(230, 57, 70, 0.15); }
 
 /* CSS Class: Header container row aligning title and optional top-right dismiss action. */
 .modal__header {
@@ -1274,11 +1191,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Text truncation modifier for modal titles containing dynamic content names. */
-.modal__title--truncate, .modal-title-truncated {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+.modal__title--truncate, .modal-title-truncated { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* CSS Class: Top-right circular close button for dismissing non-blocking modal dialogs. */
 .modal__close, .modal-close-x {
@@ -1301,11 +1214,7 @@ input, textarea, select { font: inherit; }
     z-index: 10;
 }
 /* Focus and hover states for modal close button with standard white outline. */
-.modal__close:hover, .modal__close:focus, .modal-close-x:hover, .modal-close-x:focus {
-    border-color: #ffffff;
-    color: #ffffff;
-    outline: none;
-}
+.modal__close:hover, .modal__close:focus, .modal-close-x:hover, .modal-close-x:focus { border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* CSS Class: Flexible content body container for modal options and forms. */
 .modal__body, .modal-body, .error-message-container, .update-body {
@@ -1320,40 +1229,25 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Scrollable viewport modifier with branded track and thumb scrollbars. */
-.modal__body--scroll, .modal-scroll-area, .scrollable-modal-body, .update-changelog {
-    max-height: 56vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 0 12px 12px;
-}
+.modal__body--scroll, .modal-scroll-area, .scrollable-modal-body, .update-changelog { max-height: 56vh; overflow-x: hidden; overflow-y: auto; padding: 0 12px 12px; }
 
 /* Scrollbar track and thumb styling for scrollable modal bodies */
 .modal__body--scroll::-webkit-scrollbar,
 .modal-scroll-area::-webkit-scrollbar,
 .scrollable-modal-body::-webkit-scrollbar,
-.update-changelog::-webkit-scrollbar {
-    width: 6px;
-}
+.update-changelog::-webkit-scrollbar { width: 6px; }
 .modal__body--scroll::-webkit-scrollbar-track,
 .modal-scroll-area::-webkit-scrollbar-track,
 .scrollable-modal-body::-webkit-scrollbar-track,
-.update-changelog::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 4px;
-}
+.update-changelog::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
 .modal__body--scroll::-webkit-scrollbar-thumb,
 .modal-scroll-area::-webkit-scrollbar-thumb,
 .scrollable-modal-body::-webkit-scrollbar-thumb,
-.update-changelog::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.35);
-    border-radius: 4px;
-}
+.update-changelog::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
 .modal__body--scroll::-webkit-scrollbar-thumb:hover,
 .modal-scroll-area::-webkit-scrollbar-thumb:hover,
 .scrollable-modal-body::-webkit-scrollbar-thumb:hover,
-.update-changelog::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.6);
-}
+.update-changelog::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
 
 /* CSS Class: Explanatory descriptive text inside modal dialogs. */
 .modal__desc, .modal-message, .error-message {
@@ -1365,10 +1259,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Search input container header inside selection modals. */
-.modal__search, .modal-search-wrapper {
-    padding: 0 0 16px;
-    width: 100%;
-}
+.modal__search, .modal-search-wrapper { padding: 0 0 16px; width: 100%; }
 
 /* CSS Class: Action footer container providing spacing and layout for modal dialogs. */
 .modal__footer {
@@ -1382,9 +1273,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Centered footer modifier for informational modals. */
-.modal__footer--center, .centered-footer {
-    justify-content: center;
-}
+.modal__footer--center, .centered-footer { justify-content: center; }
 
 /* Icon container wrapper for system error modals, compact circular badge styling. */
 .error-icon-container {
@@ -1427,9 +1316,7 @@ input, textarea, select { font: inherit; }
 }
 
 .toast-error .toast-icon-mask,
-.toast-warning .toast-icon-mask {
-    --icon-url: url('../images/disconnected.svg');
-}
+.toast-warning .toast-icon-mask { --icon-url: url('../images/disconnected.svg'); }
 
 .error-title { color: #fff; font-size: 30px; font-weight: 900; margin-bottom: 14px; }
 
@@ -1544,29 +1431,19 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Active state showing the visible network overlay status icon */
-.network-status-overlay.visible {
-    opacity: 1;
-}
+.network-status-overlay.visible { opacity: 1; }
 
 /* CSS Class: Lost connection state coloring the network overlay red */
-.network-status-overlay.lost {
-    color: #ff7770;
-}
+.network-status-overlay.lost { color: #ff7770; }
 
 /* CSS Class: Slow connection state coloring the network overlay yellow */
-.network-status-overlay.slow {
-    color: #f1c84c;
-}
+.network-status-overlay.slow { color: #f1c84c; }
 
 /* CSS Class: Restored connection state coloring the network overlay green */
-.network-status-overlay.connected {
-    color: var(--primary-color);
-}
+.network-status-overlay.connected { color: var(--primary-color); }
 
 /* CSS Class: Blinking utility class for connection overlay icons */
-.toast-blink-icon {
-    animation: toast-pulse-opacity 1.5s infinite ease-in-out;
-}
+.toast-blink-icon { animation: toast-pulse-opacity 1.5s infinite ease-in-out; }
 
 /* CSS Class: Keyframes animation for connection status icon pulsing */
 @keyframes toast-pulse-opacity {
@@ -1576,14 +1453,17 @@ input, textarea, select { font: inherit; }
 }
 
 /* ==========================================================================
-   SECTION 6: GLOBAL UI COMPONENTS - SIDEBAR NAVIGATION RAIL
+   SECTION 6: GLOBAL UI COMPONENTS - NAVIGATION RAIL (OOCSS)
    Source File: sidebar.css
    ========================================================================== */
-/* Netflix-style IVIDS navigation rail */
+
+/* Main vertical navigation rail container with smooth width expansion on TV and hover. */
+.nav-rail,
 .navbar {
     align-items: stretch;
     background: #000000eb;
     border-right: none;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 22px;
@@ -1596,9 +1476,16 @@ input, textarea, select { font: inherit; }
     z-index: 1000;
 }
 
-/* Sets expanded width for the navbar when the sidebar is always expanded. */
-#app.sidebar-always-expanded .navbar, .navbar:hover, .navbar:focus-within { width: var(--app-sidebar-expanded-width); }
+/* Expanded state for navigation rail container. */
+#app.sidebar-always-expanded .nav-rail,
+#app.sidebar-always-expanded .navbar,
+.nav-rail:hover,
+.nav-rail:focus-within,
+.navbar:hover,
+.navbar:focus-within { width: var(--app-sidebar-expanded-width); }
 
+/* Branding header inside navigation rail containing logo and title. */
+.nav-rail__header,
 .logo-container {
     align-items: center;
     box-sizing: border-box;
@@ -1611,10 +1498,20 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-.logo-img { display: block; flex: 0 0 24px; height: 24px; object-fit: contain; width: 24px; }
+/* Scaled SVG logo icon inside rail header. */
+.nav-rail__logo,
+.logo-img {
+    display: block;
+    flex: 0 0 24px;
+    height: 24px;
+    object-fit: contain;
+    width: 24px;
+}
 
+/* Application brand text label fading in when navigation rail expands. */
+.nav-rail__brand,
 .logo-text {
-    color: #fff;
+    color: #ffffff;
     font-size: 22px;
     font-weight: 600;
     letter-spacing: -0.03em;
@@ -1623,39 +1520,55 @@ input, textarea, select { font: inherit; }
     will-change: opacity;
 }
 
+/* Navigation links group container. */
+.nav-rail__group,
 .nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
 
-.nav-utilities { display: flex; flex-direction: column; gap: 5px; margin-top: auto; width: 100%; }
+/* Bottom utilities group container pinned to lower edge of navigation rail. */
+.nav-rail__group--bottom,
+.nav-utilities {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: auto;
+    width: 100%;
+}
 
-/* CSS Class: Sidebar navigation item container button with adjusted height. */
+/* Navigation button item for sidebar routes. */
 .nav-item {
     align-items: center;
-    justify-content: flex-start;
     border: 3px solid transparent;
     border-radius: var(--radius-sm);
+    box-sizing: border-box;
     color: rgba(255, 255, 255, 0.72);
     display: flex;
     font-size: 16px;
     font-weight: 700;
-    min-height: 0;
-    width: calc(var(--app-sidebar-width) - 20px);
     height: 40px;
-    padding: 0;
+    justify-content: flex-start;
+    min-height: 0;
     overflow: hidden;
+    padding: 0;
     position: relative;
     text-decoration: none;
-    transition: width 0.25s ease, background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    transition: width 0.25s ease, background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
     white-space: nowrap;
+    width: calc(var(--app-sidebar-width) - 20px);
 }
 
-/* Hover, focus and active states for navigation menu link buttons. */
-.nav-item:hover { background: rgba(255, 255, 255, 0.22); color: #fff; border-color: transparent; }
-.nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.22); color: #fff; border-color: #ffffff; }
+/* Hover state for navigation link buttons. */
+.nav-item:hover { background: rgba(255, 255, 255, 0.22); border-color: transparent; color: #ffffff; }
 
-/* Active navigation item background color highlight styling. */
-.nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #fff; }
+/* Focus state for navigation link buttons with standard white border. */
+.nav-item:focus,
+.nav-item.focused { background: rgba(255, 255, 255, 0.22); border-color: #ffffff; color: #ffffff; outline: none; }
 
-/* Navigation icon mask style. Margins are 0 when collapsed to keep the icon centered. */
+/* Active route state highlight for navigation items. */
+.nav-item.is-active,
+.nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #ffffff; }
+
+/* Masked icon container inside navigation item. */
+.nav-item__icon,
 .nav-icon {
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -1671,29 +1584,28 @@ input, textarea, select { font: inherit; }
     width: 24px;
 }
 
-/* Active navigation icon color style using primary theme accent color. */
+/* Active route state highlight for navigation icon with primary theme color. */
+.nav-item.is-active .nav-item__icon,
 .nav-item.active .nav-icon { background-color: var(--primary-color); }
 
-/* Navigation item text label. Positioned absolutely to prevent it from pushing the icon when collapsed. */
-.nav-item span {
-    opacity: 0;
-    transition: opacity 0.25s ease;
-}
+/* Route text label inside navigation item fading in when rail expands. */
+.nav-item__label,
+.nav-item span { opacity: 0; transition: opacity 0.25s ease; }
 
-/* Expanded state overrides for navigation items when sidebar is expanded. */
+/* Expanded state for navigation item button. */
 #app.sidebar-always-expanded .nav-item,
+.nav-rail:hover .nav-item,
+.nav-rail:focus-within .nav-item,
 .navbar:hover .nav-item,
-.navbar:focus-within .nav-item {
-    width: 100%;
-}
+.navbar:focus-within .nav-item { width: 100%; }
 
-/* Expanded state overrides for navigation item text labels. Returns to static layout flow. */
+/* Expanded state for navigation item text label. */
+#app.sidebar-always-expanded .nav-item__label,
+.nav-rail:hover .nav-item__label,
+.nav-rail:focus-within .nav-item__label,
 #app.sidebar-always-expanded .nav-item span,
 .navbar:hover .nav-item span,
-.navbar:focus-within .nav-item span {
-    opacity: 1;
-    pointer-events: auto;
-}
+.navbar:focus-within .nav-item span { opacity: 1; pointer-events: auto; }
 
 /* ==========================================================================
    SECTION 7: PAGE SPECIFIC - USER PROFILES OVERVIEW
@@ -1723,16 +1635,6 @@ input, textarea, select { font: inherit; }
    Source File: home.css
    ========================================================================== */
 .row { animation: fadeIn 0.35s ease-out forwards; opacity: 0; padding: 0; position: relative; z-index: 20; }
-
-/* Styles the vertical category row headings (e.g. Recently Watched, Popular, Comedy Series) */
-.row-title {
-    color: #fff;
-    font-size: 25px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin: 0 0 6px;
-    padding: 0 var(--app-content-padding-x);
-}
 
 /* Layout wrapper container for movie and series content rails. */
 .row-container {
@@ -1781,21 +1683,6 @@ input, textarea, select { font: inherit; }
 /* Details Page Styles */
 .details-page { background-color: var(--background-color); height: auto; min-height: 100vh; padding-bottom: 3rem; padding-top: 4rem; position: relative; }
 
-.details-backdrop {
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
-    background-position: center top;
-    background-size: cover;
-    height: 70vh;
-    inset: 0;
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
-    opacity: 0.6;
-    pointer-events: none;
-    position: absolute;
-    z-index: 1;
-}
-
-.details-backdrop-overlay { -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%); background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%); inset: 0; mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%); position: absolute; }
-
 .details-layout {
     display: flex;
     flex-direction: column;
@@ -1812,8 +1699,6 @@ input, textarea, select { font: inherit; }
 .details-info { flex: 1; max-width: 50%; }
 
 .details-hero-poster { border: 0.1875rem solid rgba(255, 255, 255, 0.1); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
-
-.details-title { font-size: 3.125rem; font-weight: bold; margin-bottom: 1.25rem; text-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5); }
 
 .details-meta { align-items: center; color: #aaa; display: flex; font-size: 18px; gap: 15px; margin-bottom: 20px; }
 
@@ -1918,24 +1803,14 @@ input, textarea, select { font: inherit; }
 .playlist-option { border-bottom: 2px solid rgba(255, 255, 255, 0.15); padding: 10px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
 
 /* ==========================================================================
-   SECTION 10: PAGE SPECIFIC - VIDEO PLAYER (VOD)
-   Source File: player.css
-   ========================================================================== */
-.player-status-panel h2 { font-size: 26px; font-weight: 900; margin-bottom: 10px; }
-
-.player-status-panel p { color: var(--text-muted); font-size: 15px; line-height: 1.5; margin-bottom: 22px; }
-
-/* ==========================================================================
    SECTION 11: PAGE SPECIFIC - LIVE TV GUIDE LAYOUT
    Source File: livetv.css
    ========================================================================== */
 .livetv-page-layout { box-sizing: border-box; color: #fff; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
-.livetv-top-bar { align-items: center; box-sizing: border-box; display: flex; justify-content: space-between; padding: 2% var(--app-content-padding-x) 0; width: 100%; }
-
-.livetv-top-bar .search-box { width: 30%; }
-
-.livetv-top-actions { align-items: center; display: flex; gap: 8px; justify-content: flex-end; width: 68%; }
+.top-bar.livetv-top-bar { padding: 2% var(--app-content-padding-x) 0; }
+.top-bar.livetv-top-bar .form-control-wrapper { width: 30%; }
+.top-bar__actions.livetv-top-actions { width: 68%; }
 
 /* Explains: Close/Clear button nested inside Live TV search box wrapper. */
 .search-clear-btn {
@@ -2352,23 +2227,6 @@ input, textarea, select { font: inherit; }
 
 .playlist-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
 
-.playlist-badge {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    display: flex;
-    height: 32px;
-    justify-content: center;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    width: 32px;
-    z-index: 5;
-}
-
-.playlist-badge-icon { color: #fff; height: 16px; width: 16px; }
-
 /* Explains: Typography styling for time labels within EPG show lists. */
 .epg-time { color: var(--text-muted); font-size: 13px; font-weight: 700; }
 
@@ -2379,10 +2237,6 @@ input, textarea, select { font: inherit; }
 .page-container { height: 100%; }
 
 .playlist-hero-cover { aspect-ratio: 16 / 9; height: auto; object-fit: cover; }
-
-.playlist-backdrop { inset: 0; position: absolute; z-index: 0; }
-
-.playlist-backdrop img { height: 100%; object-fit: cover; opacity: 0.22; width: 100%; }
 
 .backdrop-overlay { background: linear-gradient(90deg, rgba(5, 5, 5, 0.98), rgba(5, 5, 5, 0.82) 48%, rgba(5, 5, 5, 0.58)),
         linear-gradient(0deg, var(--background-color), transparent 54%); inset: 0; position: absolute; }
@@ -2458,9 +2312,7 @@ input, textarea, select { font: inherit; }
 .search-results-grid { --poster-width: clamp(105px, 9.5vw, 136px); align-items: start; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr)); }
 
 /* Spans the loader container across all grid columns to center it horizontally in the search results area. */
-.search-results-grid .loading-center {
-    grid-column: 1 / -1;
-}
+.search-results-grid .loading-center { grid-column: 1 / -1; }
 
 .select-options-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 0 28px 16px; }
 
@@ -2496,31 +2348,6 @@ input, textarea, select { font: inherit; }
     box-shadow: none;
     margin-bottom: 28px;
     padding: 24px 28px;
-}
-
-/* Category header icon for settings section titles */
-.section-title-icon {
-    filter: brightness(0) invert(1);
-    flex-shrink: 0;
-    height: 20px;
-    object-fit: contain;
-    opacity: 0.8;
-    width: 20px;
-}
-
-/* Section title with icon alignment and no harsh border line */
-.settings-section .section-title {
-    align-items: center;
-    border-bottom: none;
-    color: #fff;
-    display: flex;
-    font-size: 17px;
-    font-weight: 700;
-    gap: 12px;
-    letter-spacing: 0.07em;
-    margin-bottom: 8px;
-    padding-bottom: 4px;
-    text-transform: uppercase;
 }
 
 /* Styling for a single settings item row layout without harsh borders */
@@ -2592,17 +2419,10 @@ input, textarea, select { font: inherit; }
     width: 46px;
 }
 
-.edit-trigger:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: transparent;
-}
+.edit-trigger:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; }
 
 .edit-trigger:focus-visible,
-.edit-trigger.focused {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: #ffffff;
-    outline: none;
-}
+.edit-trigger.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: none; }
 
 /* Stepper button container for UI scale adjustments */
 .scale-control-container {
@@ -2648,25 +2468,13 @@ input, textarea, select { font: inherit; }
     width: 36px;
 }
 
-.scale-adjust-btn:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: transparent;
-}
+.scale-adjust-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; }
 
 .scale-adjust-btn:focus-visible,
-.scale-adjust-btn.focused {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: #ffffff;
-    outline: none;
-}
+.scale-adjust-btn.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: none; }
 
 /* Stepper navigation icon for modal steppers */
-.setting-stepper-icon {
-    display: block;
-    height: 18px;
-    pointer-events: none;
-    width: 18px;
-}
+.setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
 
 /* Explains: SVG icon inside settings row buttons */
 .setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
@@ -2697,12 +2505,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Explains: Prevents accidental hover or focus indicators on non-interactive row container. */
-.provider-item:hover, .provider-item:focus, .provider-item.focused {
-    background: #202020;
-    border: none;
-    box-shadow: none;
-    outline: none;
-}
+.provider-item:hover, .provider-item:focus, .provider-item.focused { background: #202020; border: none; box-shadow: none; outline: none; }
 
 /* Explains: Elevated floating state for active reordering - distinctly lighter background and crisp white border. */
 .provider-item.moving,
@@ -2732,22 +2535,14 @@ input, textarea, select { font: inherit; }
 .provider-actions { align-items: center; display: flex; gap: 8px; }
 
 /* Explains: Compact circular icon button sizing for provider list action items. */
-.provider-actions .edit-trigger {
-    height: 42px;
-    min-height: 42px;
-    min-width: 42px;
-    width: 42px;
-}
+.provider-actions .edit-trigger { height: 42px; min-height: 42px; min-width: 42px; width: 42px; }
 
 /* Explains: Grab cursor to indicate draggable handle for cursor/mouse reordering. */
 .provider-move-btn { cursor: grab; }
 .provider-move-btn:active, .provider-item.dragging .provider-move-btn { cursor: grabbing; }
 
 /* Explains: Active state indicator when reordering a provider or playlist item - clean neutral secondary styling. */
-.provider-move-btn.active-moving {
-    background: #333333;
-    border-color: #ffffff;
-}
+.provider-move-btn.active-moving { background: #333333; border-color: #ffffff; }
 
 /* Utility class for stretching elements to fill 100% width and height. */
 .loader-inline-container .ivids-loader, .full-size { height: 100%; width: 100%; }
@@ -2813,28 +2608,8 @@ input, textarea, select { font: inherit; }
     padding: 32px 36px;
 }
 
-/* Section title without harsh divider */
-.account-section .section-title {
-    align-items: center;
-    border-bottom: none;
-    color: #fff;
-    display: flex;
-    font-size: 17px;
-    font-weight: 700;
-    gap: 12px;
-    letter-spacing: 0.07em;
-    margin: 0 0 24px;
-    padding-bottom: 0;
-    text-align: left;
-    text-transform: uppercase;
-}
-
 /* Flex layout aligning the profile avatar and user account details */
-.profile-display {
-    align-items: center;
-    display: flex;
-    gap: 36px;
-}
+.profile-display { align-items: center; display: flex; gap: 36px; }
 
 /* Profile avatar squircle with clean letter centering */
 .profile-avatar.large {
@@ -2874,12 +2649,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Action button row for user profile authentication and registration. */
-.profile-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 8px;
-}
+.profile-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
 
 .tv-overlay.show { opacity: 1; pointer-events: auto; }
 
@@ -2919,7 +2689,6 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Title typography displaying the update availability heading. */
-.update-title { color: #fff; font-size: 1.5rem; font-weight: 700; margin: 0; }
 
 /* CSS Class: Horizontal container for displaying current and remote version badges side-by-side. */
 .version-badge-container { align-items: center; display: flex; flex-direction: row; justify-content: center; gap: 14px; margin-bottom: 8px; }
@@ -3036,12 +2805,6 @@ input, textarea, select { font: inherit; }
 /* Custom scrollbar widths for Live TV columns and modal scroll bodies */
 .livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar, .scrollable-modal-body::-webkit-scrollbar, .modal__body--scroll::-webkit-scrollbar { width: 6px; }
 
-.scrollable-modal-body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
-
-.scrollable-modal-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
-
-.scrollable-modal-body::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
-
 /* CSS Class: Version selector vertical list keeping items strictly stacked one below each other. */
 .version-option-list {
     display: flex !important;
@@ -3070,17 +2833,10 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-.version-option-list .chip--option:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.25);
-}
+.version-option-list .chip--option:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); }
 
 .version-option-list .chip--option:focus,
-.version-option-list .chip--option.focused {
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid #ffffff;
-    outline: none;
-}
+.version-option-list .chip--option.focused { background: rgba(255, 255, 255, 0.08); border: 2px solid #ffffff; outline: none; }
 
 .hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 8px; width: 100%; }
 
@@ -3095,12 +2851,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Date label positioned next to the version badge without taking up extra margins. */
-.version-date-label {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-}
+.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
 
 .version-chip-title {
     color: #ffffff;
@@ -3121,12 +2872,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: SVG loader image sizing utility. */
-.ivids-loader {
-    width: clamp(32px, 4.5vw, 60px);
-    height: clamp(32px, 4.5vw, 60px);
-    display: inline-block;
-    vertical-align: middle;
-}
+.ivids-loader { width: clamp(32px, 4.5vw, 60px); height: clamp(32px, 4.5vw, 60px); display: inline-block; vertical-align: middle; }
 
 /* CSS Class: Inline loader container centered horizontally and vertically inside the version modal body. */
 #version-list-loader {
@@ -3141,12 +2887,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* CSS Class: Translucent green checkmark SVG icon positioned on the right side of the installed version card. */
-.version-applied-icon {
-    flex-shrink: 0;
-    height: 28px;
-    margin-left: auto;
-    width: 28px;
-}
+.version-applied-icon { flex-shrink: 0; height: 28px; margin-left: auto; width: 28px; }
 
 /* ==========================================================================
    SECTION 10: PAGE SPECIFIC - VIDEO PLAYER (VOD)
@@ -3242,11 +2983,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* CSS Class: Hero header layout container in normal document flow. */
-.hero {
-    position: relative;
-    z-index: 2;
-    background: transparent;
-}
+.hero { position: relative; z-index: 2; background: transparent; }
 
 /* CSS Class: Hero slider background slides track container. Positioned absolutely inside hero header. */
 .hero-slides-track {
@@ -3279,61 +3016,11 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* CSS Class: Active slide state enabling full opacity cross-fade. */
-.hero-slide.active {
-    opacity: 1;
-    z-index: 1;
-}
+.hero-slide.active { opacity: 1; z-index: 1; }
 
 /* === Migrated from details.html === */
 /* CSS Class: Dropdown select wrapper container for seasons in details page, hidden by default on desktop/TV. */
 .seasons-dropdown-wrapper { display: none; width: 100%; }
-
-/* Explains: Tab bar navigation container for Disney layout panels in the details view. */
-.disney-tabs { border-bottom: 2px solid rgba(255, 255, 255, 0.1); display: flex; gap: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; }
-
-/* Explains: List container for Disney extra bonus video items in the details page. */
-.disney-extras-list { display: flex; flex-direction: column; gap: 1rem; padding-bottom: 3.75rem; width: 100%; }
-
-.disney-extra-thumb-left { aspect-ratio: 16 / 9; background-color: var(--surface-soft); background-position: center; background-size: cover; position: relative; width: 25%; }
-
-.disney-extra-play-icon {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid #fff;
-    border-radius: 50%;
-    color: #fff;
-    display: flex;
-    font-size: 1.5rem;
-    height: 3rem;
-    justify-content: center;
-    left: 50%;
-    opacity: 0.8;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.16s ease, background-color 0.16s ease;
-    width: 3rem;
-}
-
-.card--row:hover .card__play-icon, .card--row.focused .card__play-icon { background-color: var(--primary-color); opacity: 1; }
-
-.disney-extra-info, .disney-episode-info { display: flex; flex-direction: column; justify-content: center; padding: 1.25rem 1.85rem; width: 75%; }
-
-.disney-extra-type { color: var(--primary-color); font-size: 0.8rem; font-weight: 600; margin-bottom: 0.25rem; text-transform: uppercase; }
-
-.disney-extra-title, .disney-episode-title { color: var(--text-color); font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-
-.disney-extra-description { color: var(--text-muted); font-size: 1rem; line-height: 1.5; white-space: normal; }
-
-.disney-about-content { display: flex; gap: 2.5rem; padding-bottom: 3.75rem; width: 100%; }
-
-.disney-about-left, .disney-about-right { width: 50%; }
-
-.disney-about-section-title { border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-color); font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; }
-
-.disney-about-description { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
-
-.disney-cast-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); width: 100%; }
 
 /* Focus highlight thicker border for actor profiles */
 .disney-cast-img { aspect-ratio: 2 / 3; background-color: var(--surface-soft); background-position: center; background-size: cover; width: 100%; }
@@ -3381,12 +3068,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* Card bounding container for login view */
-.login-card-container {
-    box-sizing: border-box;
-    margin: 0 auto;
-    position: relative;
-    width: min(460px, 92vw);
-}
+.login-card-container { box-sizing: border-box; margin: 0 auto; position: relative; width: min(460px, 92vw); }
 
 /* Authentication modal card matching Search modal styling */
 .login-card {
@@ -3422,25 +3104,13 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     z-index: 10;
 }
 
-#login-circle-back:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: transparent;
-}
+#login-circle-back:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; }
 
 #login-circle-back:focus-visible,
-#login-circle-back.focused {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: #ffffff;
-    outline: none;
-}
+#login-circle-back.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: none; }
 
 /* External SVG icon inside back button */
-.login-back-icon {
-    height: 18px;
-    object-fit: contain;
-    pointer-events: none;
-    width: 18px;
-}
+.login-back-icon { height: 18px; object-fit: contain; pointer-events: none; width: 18px; }
 
 /* Header containing title and subtitle inside login card */
 .login-header {
@@ -3453,53 +3123,10 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* Sets margins and adjusts typography sizes for the branding header */
-.login-title-text {
-    color: #fff;
-    font-size: 26px;
-    font-weight: 800;
-    margin: 0 0 6px;
-}
+.login-title-text { color: #fff; font-size: 26px; font-weight: 800; margin: 0 0 6px; }
 
 /* Subtext description below title */
-.login-subtitle-text {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin: 0;
-}
-
-/* Row container for login mode tabs */
-.login-tabs-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 24px;
-}
-
-/* Mode tab button modifier */
-.login-tab-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 3px solid transparent;
-    border-radius: var(--radius-sm);
-    box-sizing: border-box;
-    color: var(--text-muted);
-    cursor: pointer;
-    flex: 1;
-    font-size: 14px;
-    font-weight: 700;
-    height: 42px;
-    justify-content: center;
-    transition: background 0.18s ease, color 0.18s ease;
-}
-
-.login-tab-btn.active {
-    background: var(--primary-color);
-    color: #050505;
-}
-
-.login-tab-btn:focus,
-.login-tab-btn.focused {
-    border-color: #ffffff;
-    outline: none;
-}
+.login-subtitle-text { color: var(--text-muted); font-size: 14px; margin: 0; }
 
 /* Row aligning PIN label and digit count helper text */
 .login-pin-row {
@@ -3510,16 +3137,10 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     width: 100%;
 }
 
-.login-pin-row label {
-    margin-bottom: 0;
-}
+.login-pin-row label { margin-bottom: 0; }
 
 /* Helper text showing allowed digit range for PIN */
-.login-pin-hint {
-    color: var(--text-dim);
-    font-size: 12px;
-    font-weight: 600;
-}
+.login-pin-hint { color: var(--text-dim); font-size: 12px; font-weight: 600; }
 
 /* CSS Class: Action buttons footer for login form submission and cancellation. */
 .login-footer {
@@ -3651,59 +3272,35 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
    ========================================================================== */
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
+from { opacity: 0; }
 
-    to {
-        opacity: 1;
-    }
+to { opacity: 1; }
 }
 
 @keyframes fadeInDown {
-    from {
-        opacity: 0;
-        margin-top: -8px;
-    }
+from { opacity: 0; margin-top: -8px; }
 
-    to {
-        opacity: 1;
-        margin-top: 0;
-    }
+to { opacity: 1; margin-top: 0; }
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        margin-top: 8px;
-    }
+from { opacity: 0; margin-top: 8px; }
 
-    to {
-        opacity: 1;
-        margin-top: 0;
-    }
+to { opacity: 1; margin-top: 0; }
 }
 
 @keyframes hudFadeIn {
 
     /* Explains: Fade controls for temporary indicators. */
-    from {
-        opacity: 0;
-    }
+from { opacity: 0; }
 
-    to {
-        opacity: 1;
-    }
+to { opacity: 1; }
 }
 
 @keyframes pulse-border {
-    0% {
-        box-shadow: 0 0 2px rgba(var(--primary-rgb), 0.2);
-    }
+0% { box-shadow: 0 0 2px rgba(var(--primary-rgb), 0.2); }
 
-    100% {
-        box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.6);
-    }
+100% { box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.6); }
 }
 
 /* ==========================================================================
@@ -3723,9 +3320,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     }
 
     .hero { height: 50vh; min-height: 380px; padding-bottom: 40px; }
-    .hero-title { font-size: 38px; margin-bottom: 12px; }
-    .hero-desc { font-size: 15px; margin-bottom: 20px; }
-    .row-title { font-size: 19px; }
+
 }
 
 /* Media query for medium/small screens like 720p TV and laptops. */
@@ -3741,12 +3336,8 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     }
 
     .hero { height: 46vh; min-height: 320px; padding-bottom: 30px; }
-    .hero-title { font-size: 32px; margin-bottom: 10px; }
-    .hero-desc { -webkit-line-clamp: 3; font-size: 14px; line-clamp: 3; margin-bottom: 16px; }
-    .row-title { font-size: 18px; margin-bottom: 4px; }
     .row-container { margin-bottom: 8px; }
     .details-top { gap: 20px; }
-    .details-title { font-size: 30px; }
     .details-backdrop { height: 46vh; }
 }
 
@@ -3761,8 +3352,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     }
 
     .hero { height: 44vh; min-height: 280px; padding-bottom: 25px; }
-    .hero-title { font-size: 28px; }
-    .row-title { font-size: 16px; }
+
 }
 
 /* Intermediate media query for common TV WebView effective viewports to scale spacing and shadows further down. */
@@ -3777,8 +3367,7 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     }
 
     .hero { height: 42vh; min-height: 240px; padding-bottom: 20px; }
-    .hero-title { font-size: 26px; }
-    .row-title { font-size: 15px; }
+
 }
 
 /* Media query for very small viewports like 480p screen or small displays. */
@@ -3794,69 +3383,24 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     }
 
     .hero { height: 40vh; min-height: 220px; padding-bottom: 16px; }
-    .hero-title { font-size: 24px; margin-bottom: 6px; }
-    .hero-desc { -webkit-line-clamp: 2; font-size: 12px; line-clamp: 2; margin-bottom: 10px; }
     .btn { font-size: 11px; min-height: 32px; padding: 4px 12px; }
-    .row-title { font-size: 14px; margin-bottom: 2px; }
     .row-container { margin-bottom: 6px; }
     .details-top { align-items: center; flex-direction: column; gap: 14px; text-align: center; }
     .details-info { text-align: center; }
     .details-hero-poster { width: 100px; }
-    .details-title { font-size: 20px; }
     .details-actions { justify-content: center; }
     .details-bottom { flex-direction: column; gap: 10px; }
 }
 
-/* Flexbox container for settings stepper controls, including minus/plus buttons and value label. */
-.scale-control-container {
-    align-items: center;
-    display: inline-flex;
-    flex-direction: row;
-    flex-shrink: 0;
-    gap: 8px;
-    width: auto;
-}
-
-/* Explains: Typography adjustments for UI scale increment and decrement buttons that use the edit-trigger base. */
-.scale-adjust-btn {
-    align-items: center;
-    color: #ffffff;
-    display: inline-flex;
-    font-size: 18px;
-    font-weight: 700;
-    justify-content: center;
-    line-height: 1;
-    margin: 0;
-    padding: 0;
-}
-
-/* Centered label element displaying the current UI scale percentage value with fixed width. */
-.centered-value {
-    align-items: center;
-    color: #ffffff;
-    display: inline-flex;
-    font-size: 15px;
-    font-weight: 700;
-    justify-content: center;
-    min-width: 50px;
-    text-align: center;
-    width: auto;
-}
-
 /* Media query for screens larger than 1080p (like 1440p and 4K displays) to scale down posters. */
 @media (min-width: 1921px) {
-    :root {
-        --poster-width: 154px;
-    }
+:root { --poster-width: 154px; }
 }
 
 /* Media query to stack chip grids into a single column on compact viewports. */
 @media (max-width: 1024px) {
     .chip-grid,
-    .chip-grid--2col {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
+.chip-grid--2col { grid-template-columns: 1fr; gap: 12px; }
 }
 
 /* Styles the container for the horizontal language stepper in the settings modal. */
@@ -3909,70 +3453,9 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
 }
 
 /* Styles the SVG icons nested inside the stepper arrow buttons. */
-.stepper-arrow-btn svg {
-    height: 22px;
-    width: 22px;
-}
-
-/* ==========================================================================
-   SECTION: INLINE STYLE REPLACEMENTS
-   ========================================================================== */
-
-/* Utility: text color for error states (red) */
-.text-error { color: #ff3b30; }
-
-/* Utility: text color for muted/empty states */
-.text-muted-light { color: #aaa; }
-
-/* Utility: text-align center */
-.text-center { text-align: center; }
-
-/* Component: full-viewport centered flex container for page-level loaders */
-.page-loader { display: flex; justify-content: center; align-items: center; height: 100vh; }
-
-/* Component: error page fallback layout */
-.error-page-container {
-    text-align: center;
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-/* Component: critical initialization error full-screen overlay */
-.critical-init-error {
-    background: #800;
-    color: #fff;
-    padding: 30px;
-    font-family: sans-serif;
-    text-align: center;
-}
-
-/* Component: empty playlist icon styling */
-.empty-state-icon { font-size: 48px; margin-bottom: 18px; }
-
-/* Component: empty playlist heading */
-.empty-state-heading { margin-bottom: 22px; color: #fff; font-size: 24px; }
-
-/* Component: version error message block */
-.version-fetch-error {
-    color: #ff3b30;
-    text-align: center;
-    padding: 20px;
-    font-weight: 700;
-    width: 100%;
-}
-
-/* Component: no-image backdrop fallback */
-.backdrop-overlay-empty { background-color: #111; }
+.stepper-arrow-btn svg { height: 22px; width: 22px; }
 
 /* Chromium native off-screen rendering optimization for poster cards and list elements */
 .recyclable-card,
 .poster-card,
-.channel-list-item {
-    content-visibility: auto;
-    contain-intrinsic-size: 150px 225px;
-}
-
+.channel-list-item { content-visibility: auto; contain-intrinsic-size: 150px 225px; }

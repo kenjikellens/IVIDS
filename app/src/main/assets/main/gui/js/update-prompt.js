@@ -35,9 +35,9 @@ export class UpdatePrompt {
                 </div>
                 <div class="modal__body modal__body--scroll update-info-block">
                     <div class="version-badge-container">
-                        <span class="version-badge current"></span>
+                        <span class="badge badge--outline version-badge current"></span>
                         <span class="version-arrow">→</span>
-                        <span class="version-badge remote"></span>
+                        <span class="badge badge--outline version-badge remote"></span>
                     </div>
                     <div class="update-branch-section">
                         <div class="update-branch-title"></div>
