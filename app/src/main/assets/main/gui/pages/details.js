@@ -334,6 +334,7 @@ function openPlaylistModal(item, type) {
             return;
         }
 
+        modal.classList.add('is-open');
         modal.style.display = 'flex';
         listContainer.innerHTML = '';
 
@@ -377,6 +378,7 @@ function openPlaylistModal(item, type) {
 
                                 Playlists.addToPlaylist(playlist.id, itemToAdd);
                                 ErrorHandler.show(`${I18n.t('details.addedToPlaylist')} ${playlist.name}`, null, 'Success');
+                                modal.classList.remove('is-open');
                                 modal.style.display = 'none';
                             } else {
                                 ErrorHandler.show(I18n.t('details.alreadyInPlaylist'));
@@ -396,6 +398,7 @@ function openPlaylistModal(item, type) {
 
         if (cancelBtn) {
             cancelBtn.onclick = () => {
+                modal.classList.remove('is-open');
                 modal.style.display = 'none';
             };
         }

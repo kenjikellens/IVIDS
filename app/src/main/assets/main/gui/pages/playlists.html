@@ -12,13 +12,13 @@
 </div>
 
 <!-- Create Playlist Modal -->
-<div id="create-playlist-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 data-i18n="playlists.create_new">Create New Playlist</h2>
-        <div class="input-group">
+<div id="create-playlist-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="playlists.create_new">Create New Playlist</h2>
+        <div class="modal__body input-group">
             <input type="text" id="new-playlist-name" class="focusable" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder" maxlength="30">
         </div>
-        <div class="modal-actions vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-actions vertical-modal-actions btn-group btn-group--vertical">
             <button id="confirm-create-btn" class="btn btn--primary focusable" data-i18n="common.create">Create</button>
             <button id="cancel-create-btn" class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>

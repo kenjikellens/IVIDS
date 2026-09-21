@@ -12,17 +12,17 @@ export class ErrorHandler {
             if (!document.getElementById('error-modal')) {
                 const modal = document.createElement('div');
                 modal.id = 'error-modal';
-                modal.className = 'error-modal';
+                modal.className = 'modal modal-overlay modal--danger error-modal';
                 modal.innerHTML = `
-                    <div class="error-content">
+                    <div class="modal__dialog modal__dialog--sm error-content">
                         <div class="error-icon-container">
                             <div class="error-icon-mask"></div>
                         </div>
-                        <h2 id="error-title" class="error-title">Error</h2>
-                        <div class="error-message-container">
-                            <p id="error-message" class="error-message"></p>
+                        <h2 id="error-title" class="modal__title error-title">Error</h2>
+                        <div class="modal__body error-message-container">
+                            <p id="error-message" class="modal__desc error-message"></p>
                         </div>
-                        <div class="error-actions btn-group">
+                        <div class="modal__footer error-actions btn-group">
                             <button id="error-retry-btn" class="btn btn--primary btn--fixed-min focusable">Retry</button>
                             <button id="error-close-btn" class="btn btn--secondary btn--fixed-min focusable">Close</button>
                         </div>
@@ -131,7 +131,7 @@ export class ErrorHandler {
             // Show with animation class
             modal.style.display = 'flex';
             requestAnimationFrame(() => {
-                modal.classList.add('visible');
+                modal.classList.add('visible', 'is-open');
             });
 
         } catch (e) {
@@ -149,11 +149,15 @@ export class ErrorHandler {
         }
     }
 
+    /**
+     * Hides the system error modal with transition and restores spatial focus.
+     * Clears visibility and is-open classes from the error modal element.
+     */
     static hide() {
         try {
             const modal = document.getElementById('error-modal');
             if (modal) {
-                modal.classList.remove('visible');
+                modal.classList.remove('visible', 'is-open');
 
                 // Wait for transition to finish
                 setTimeout(() => {

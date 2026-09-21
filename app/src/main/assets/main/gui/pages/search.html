@@ -41,11 +41,11 @@
     </div>
 
     <!-- Filter Modal (Replaces Sidebar) -->
-    <div id="filter-modal" class="modal-overlay">
-        <div class="modal-content large-modal">
-            <h2 class="modal-title" data-i18n="search.filters">Filters</h2>
+    <div id="filter-modal" class="modal modal-overlay">
+        <div class="modal__dialog modal__dialog--xl modal-content large-modal">
+            <h2 class="modal__title modal-title" data-i18n="search.filters">Filters</h2>
 
-            <div class="modal-scroll-area">
+            <div class="modal__body modal__body--scroll modal-scroll-area">
                 <div class="filter-main-grid">
                     <!-- Row 1: Content Type & Year -->
                     <!-- Content Type -->
@@ -109,7 +109,7 @@
                 </div>
             </div>
 
-            <div class="modal-actions vertical-modal-actions btn-group btn-group--vertical">
+            <div class="modal__footer modal-actions vertical-modal-actions btn-group btn-group--vertical">
                 <button id="close-filters-btn" class="btn btn--primary focusable" data-i18n="search.apply">Apply</button>
                 <button id="clear-filters-btn" class="btn btn--danger focusable" data-i18n="search.clearFilters">Clear All</button>
                 <button id="cancel-filters-btn" class="btn btn--secondary btn--sm focusable" data-i18n="search.cancel">Cancel</button>
@@ -118,23 +118,23 @@
     </div>
 
     <!-- Genre Selection Modal -->
-    <div id="genre-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 class="modal-title" data-i18n="search.genres">Select Genres</h2>
-            <div id="genre-filters" class="genre-grid">
+    <div id="genre-modal" class="modal modal-overlay">
+        <div class="modal__dialog modal__dialog--md modal-content">
+            <h2 class="modal__title modal-title" data-i18n="search.genres">Select Genres</h2>
+            <div id="genre-filters" class="modal__body genre-grid">
                 <!-- Genres injected here -->
             </div>
-            <div class="modal-actions btn-group btn-group--fill">
+            <div class="modal__footer modal-actions btn-group btn-group--fill">
                 <button id="genre-done-btn" class="btn btn--secondary focusable" data-i18n="search.done">Done</button>
             </div>
         </div>
     </div>
 
     <!-- Custom Select Modals -->
-    <div id="sort-modal" class="modal-overlay">
-        <div class="modal-content small-modal">
-            <h2 class="modal-title" data-i18n="search.sortBy">Sort By</h2>
-            <div class="select-options-list" id="sort-options-list">
+    <div id="sort-modal" class="modal modal-overlay">
+        <div class="modal__dialog modal__dialog--sm modal-content small-modal">
+            <h2 class="modal__title modal-title" data-i18n="search.sortBy">Sort By</h2>
+            <div class="modal__body select-options-list" id="sort-options-list">
                 <div class="select-item focusable" data-value="popularity.desc" data-i18n="search.popularity">Popularity
                 </div>
                 <div class="select-item focusable" data-value="vote_average.desc" data-i18n="search.topRated">Top Rated
@@ -144,21 +144,21 @@
                 <div class="select-item focusable" data-value="vote_count.desc" data-i18n="search.mostVoted">Most Voted
                 </div>
             </div>
-            <div class="modal-actions vertical-modal-actions btn-group btn-group--vertical">
+            <div class="modal__footer modal-actions vertical-modal-actions btn-group btn-group--vertical">
                 <button id="sort-confirm-btn" class="btn btn--secondary focusable" data-i18n="search.confirm">Confirm</button>
                 <button id="sort-cancel-btn" class="btn btn--secondary btn--sm focusable" data-i18n="search.cancel">Cancel</button>
             </div>
         </div>
     </div>
 
-    <div id="country-modal" class="modal-overlay">
-        <div class="modal-content large-modal">
-            <h2 class="modal-title" data-i18n="search.country">Production Country</h2>
-            <div class="modal-search-wrapper">
+    <div id="country-modal" class="modal modal-overlay">
+        <div class="modal__dialog modal__dialog--xl modal-content large-modal">
+            <h2 class="modal__title modal-title" data-i18n="search.country">Production Country</h2>
+            <div class="modal__search modal-search-wrapper">
                 <input type="text" id="country-search-input" class="focusable modal-search-input"
                     placeholder="Search countries..." data-i18n="search.searchCountries" readonly>
             </div>
-            <div id="country-options-list" class="select-options-grid scrollable">
+            <div id="country-options-list" class="modal__body modal__body--scroll select-options-grid scrollable">
                 <!-- Countries injected here -->
             </div>
         </div>

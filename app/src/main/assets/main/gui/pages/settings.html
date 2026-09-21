@@ -178,10 +178,10 @@
 </div>
 
 <!-- Language Modal -->
-<div id="language-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="settings.language">Language</h2>
-        <div class="modal-body">
+<div id="language-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="settings.language">Language</h2>
+        <div class="modal__body modal-body">
             <div class="language-stepper-container">
                 <button id="lang-prev-btn" class="btn btn--secondary btn--circle edit-trigger focusable stepper-arrow-btn" aria-label="Previous Language">
                     <img src="images/back.svg" class="setting-stepper-icon" alt="Previous">
@@ -195,7 +195,7 @@
                 </button>
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -203,10 +203,10 @@
 </div>
 
 <!-- Color Modal -->
-<div id="color-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="settings.accentColor">Accent Color</h2>
-        <div class="modal-body">
+<div id="color-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="settings.accentColor">Accent Color</h2>
+        <div class="modal__body modal-body">
             <div id="color-options" class="option-grid color-option-grid">
                 <div class="option-chip focusable color-only" data-value="#46d369">
                     <div class="color-dot green"></div>
@@ -228,7 +228,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -237,10 +237,10 @@
 
 
 <!-- Update Mode Modal -->
-<div id="update-mode-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="settings.updateMode">Update Mode</h2>
-        <div class="modal-body">
+<div id="update-mode-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="settings.updateMode">Update Mode</h2>
+        <div class="modal__body modal-body">
             <div id="update-mode-options" class="option-grid">
                 <div class="option-chip focusable" data-value="auto" data-i18n="settings.mode.auto">Auto</div>
                 <div class="option-chip focusable" data-value="manual" data-i18n="settings.mode.manual">Manual</div>
@@ -253,7 +253,7 @@
                 recommended for developers only and may contain unstable builds.
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -261,10 +261,10 @@
 </div>
 
 <!-- Version Selector Modal -->
-<div id="version-selector-modal" class="modal-overlay">
-    <div class="modal-content version-modal-content">
-        <h2 class="modal-title" data-i18n="settings.selectVersion">Select Version</h2>
-        <div class="modal-body scrollable-modal-body">
+<div id="version-selector-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--lg modal-content version-modal-content">
+        <h2 class="modal__title modal-title" data-i18n="settings.selectVersion">Select Version</h2>
+        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
             <div id="version-list-loader" class="loader-center-container hidden">
                 <div class="ivids-loader"></div>
             </div>
@@ -272,23 +272,23 @@
                 <!-- Dynamically populated version chips -->
             </div>
         </div>
-        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
 
 <!-- Player Providers Modal -->
-<div id="player-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="settings.playerProviders">Player Providers</h2>
-        <div class="modal-body scrollable-modal-body">
+<div id="player-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="settings.playerProviders">Player Providers</h2>
+        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
             <div id="player-providers-list" class="providers-list">
                 <!-- Dynamically populated provider items -->
             </div>
             <button id="add-provider-btn" class="btn btn--secondary focusable" data-i18n="settings.addProvider">Add Provider</button>
         </div>
-        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -296,16 +296,16 @@
 </div>
 
 <!-- M3U Playlists Modal -->
-<div id="m3u-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
-        <div class="modal-body scrollable-modal-body">
+<div id="m3u-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
+        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
             <div id="m3u-playlists-list" class="providers-list">
                 <!-- Dynamically populated playlist items -->
             </div>
             <button id="add-m3u-btn" class="btn btn--secondary focusable" data-i18n="settings.addM3uPlaylist">Add Playlist</button>
         </div>
-        <div class="modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -313,10 +313,10 @@
 </div>
 
 <!-- App Info Modal -->
-<div id="app-info-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="settings.appInfo">App Info</h2>
-        <div class="modal-body">
+<div id="app-info-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="settings.appInfo">App Info</h2>
+        <div class="modal__body modal-body">
             <div class="setting-item">
                 <div class="setting-info">
                     <div class="setting-label" data-i18n="settings.appVersion">App Version</div>
@@ -336,23 +336,23 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal__footer modal-footer">
             <button class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>
 
 <!-- Changes Modal -->
-<div id="changes-modal" class="modal-overlay">
-    <div class="modal-content">
-        <button class="modal-close-x focusable" aria-label="Close modal">&times;</button>
-        <h2 id="changes-modal-title" class="modal-title" data-i18n="settings.changes">Changes</h2>
-        <div class="modal-body scrollable-modal-body">
+<div id="changes-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--lg modal-content">
+        <button class="modal__close modal-close-x focusable" aria-label="Close modal">&times;</button>
+        <h2 id="changes-modal-title" class="modal__title modal-title" data-i18n="settings.changes">Changes</h2>
+        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
             <div id="changes-modal-content" class="markdown-body">
                 <!-- Dynamically populated release notes -->
             </div>
         </div>
-        <div class="modal-footer centered-footer">
+        <div class="modal__footer modal__footer--center modal-footer centered-footer">
             <button class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
         </div>
     </div>

@@ -522,14 +522,12 @@ function initNavigation() {
         SpatialNav.init(() => {
             try {
                 // 1. Check for any open modals first (Global Fallback Handler)
-                const openModal = document.querySelector('.modal[style*="display: flex"], .modal[style*="display: block"], .modal-overlay.active, .modal-overlay.show, .modal.active');
+                const openModal = document.querySelector('.modal.is-open, .modal.active, .modal.show, .modal-overlay.active, .modal-overlay.show, .modal[style*="display: flex"], .modal[style*="display: block"]');
                 if (openModal) {
                     console.log('Global back: Closing open modal');
                     // Try standard hide methods
                     openModal.style.display = 'none';
-                    openModal.classList.remove('active');
-                    openModal.classList.remove('show');
-                    openModal.classList.remove('visible');
+                    openModal.classList.remove('is-open', 'active', 'show', 'visible');
 
                     if (SpatialNav) {
                         SpatialNav.clearFocusTrap();

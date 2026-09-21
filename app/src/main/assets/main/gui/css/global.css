@@ -547,34 +547,227 @@ input, textarea, select { font: inherit; }
 .hero-content.transitioning, .splash-loader-container.hidden { opacity: 0; }
 
 /* ==========================================================================
-   SECTION 4: GLOBAL UI COMPONENTS - SYSTEM ERROR MODAL OVERLAY
-   Source File: error.css
+   SECTION 4: GLOBAL UI COMPONENTS - MODAL & DIALOG OVERLAY SYSTEM (OOCSS)
    ========================================================================== */
-.error-modal {
+/* CSS Class: Canonical modal backdrop and window manager providing glassmorphic background blur and flex centering. */
+.modal, .modal-overlay, .error-modal, .update-modal-overlay {
     align-items: center;
-    background: rgba(0, 0, 0, 0.88);
-    display: none;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
     inset: 0;
     justify-content: center;
     opacity: 0;
     padding: 32px;
     pointer-events: none;
     position: fixed;
-    transition: opacity 0.18s ease;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
     z-index: 10000;
 }
 
-.error-content {
-    align-items: center;
+/* CSS Class: Active state modifier displaying modal overlay and enabling pointer interaction. */
+.modal.is-open,
+.modal.is-active,
+.modal.active,
+.modal.show,
+.modal-overlay.active,
+.modal-overlay.show,
+.modal.visible,
+.modal-overlay.visible,
+.error-modal.visible,
+.update-modal-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+}
+
+/* CSS Class: Core modal dialog card panel encapsulating header, body, and action footer. */
+.modal__dialog, .modal-content, .error-content, .update-modal {
     background: #161616;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-panel);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95);
     display: flex;
     flex-direction: column;
-    padding: 36px;
+    max-height: 86vh;
+    max-width: 90%;
+    overflow: hidden;
+    padding: 32px 36px;
+    position: relative;
     text-align: center;
-    width: min(680px, 94vw);
+    width: min(600px, 92vw);
+}
+
+/* CSS Class: Small structural modifier for simple confirmation and single-choice prompt modals. */
+.modal__dialog--sm, .small-modal, .compact-modal, .exit-modal-content, .error-modal-content {
+    max-width: 480px;
+    padding: 24px 28px;
+    width: min(480px, 92vw);
+}
+
+/* CSS Class: Medium structural modifier for standard multi-option settings and playlist management modals. */
+.modal__dialog--md {
+    max-width: 600px;
+    width: min(600px, 92vw);
+}
+
+/* CSS Class: Large structural modifier for version selectors, update announcements, and changelogs. */
+.modal__dialog--lg, .version-modal-content {
+    max-width: 880px;
+    width: min(880px, 94vw);
+}
+
+/* CSS Class: Extra-large structural modifier for complex discovery filter grids and country selection. */
+.modal__dialog--xl, .large-modal {
+    max-width: 1200px;
+    width: min(1200px, 94vw);
+}
+
+/* CSS Class: Skin variant applying red alert ambient styling for destructive action modals. */
+.modal--danger .modal__dialog,
+.modal--danger .modal-content,
+.error-modal .modal-content,
+.error-modal .error-content {
+    border: 1px solid rgba(230, 57, 70, 0.45);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 24px rgba(230, 57, 70, 0.15);
+}
+
+/* CSS Class: Header container row aligning title and optional top-right dismiss action. */
+.modal__header, .update-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+/* CSS Class: Primary heading typography standard for modal dialogs. */
+.modal__title, .modal-title, .update-title, .error-title {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    margin-top: 0;
+    padding: 0 0 4px;
+    text-align: center;
+    width: 100%;
+}
+
+/* CSS Class: Text truncation modifier for modal titles containing dynamic content names. */
+.modal__title--truncate, .modal-title-truncated {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* CSS Class: Top-right circular close button for dismissing non-blocking modal dialogs. */
+.modal__close, .modal-close-x {
+    align-items: center;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    font-size: 24px;
+    height: 36px;
+    justify-content: center;
+    line-height: 1;
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    width: 36px;
+    z-index: 10;
+}
+/* Focus and hover states for modal close button with standard white outline. */
+.modal__close:hover, .modal__close:focus, .modal-close-x:hover, .modal-close-x:focus {
+    border-color: #ffffff;
+    color: #ffffff;
+    outline: none;
+}
+
+/* CSS Class: Flexible content body container for modal options and forms. */
+.modal__body, .modal-body, .error-message-container, .update-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 0 10px;
+    width: 100%;
+}
+
+/* CSS Class: Scrollable viewport modifier with branded track and thumb scrollbars. */
+.modal__body--scroll, .modal-scroll-area, .scrollable-modal-body, .update-changelog {
+    max-height: 56vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0 12px 12px;
+}
+
+/* Scrollbar track and thumb styling for scrollable modal bodies */
+.modal__body--scroll::-webkit-scrollbar,
+.modal-scroll-area::-webkit-scrollbar,
+.scrollable-modal-body::-webkit-scrollbar,
+.update-changelog::-webkit-scrollbar {
+    width: 6px;
+}
+.modal__body--scroll::-webkit-scrollbar-track,
+.modal-scroll-area::-webkit-scrollbar-track,
+.scrollable-modal-body::-webkit-scrollbar-track,
+.update-changelog::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+}
+.modal__body--scroll::-webkit-scrollbar-thumb,
+.modal-scroll-area::-webkit-scrollbar-thumb,
+.scrollable-modal-body::-webkit-scrollbar-thumb,
+.update-changelog::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 4px;
+}
+.modal__body--scroll::-webkit-scrollbar-thumb:hover,
+.modal-scroll-area::-webkit-scrollbar-thumb:hover,
+.scrollable-modal-body::-webkit-scrollbar-thumb:hover,
+.update-changelog::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* CSS Class: Explanatory descriptive text inside modal dialogs. */
+.modal__desc, .modal-message, .error-message {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* CSS Class: Search input container header inside selection modals. */
+.modal__search, .modal-search-wrapper {
+    padding: 0 0 16px;
+    width: 100%;
+}
+
+/* CSS Class: Action footer container providing spacing and layout for modal dialogs. */
+.modal__footer, .modal-footer, .modal-actions {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 18px;
+    padding-top: 16px;
+    width: 100%;
+}
+
+/* CSS Class: Centered footer modifier for informational modals. */
+.modal__footer--center, .centered-footer {
+    justify-content: center;
 }
 
 /* Icon container wrapper for system error modals, compact circular badge styling. */
@@ -1123,20 +1316,6 @@ input, textarea, select { font: inherit; }
     line-clamp: 3;
     line-height: 1.4;
     overflow: hidden;
-}
-
-/* Add to Playlist Modal */
-.modal {
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: none;
-    height: 100%;
-    justify-content: center;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 2000;
 }
 
 .playlist-selection-list { margin-bottom: 20px; max-height: 300px; overflow-y: auto; text-align: left; }
@@ -1692,8 +1871,6 @@ input, textarea, select { font: inherit; }
 
 .playlist-meta { color: var(--text-muted); font-size: 13px; font-weight: 500; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); }
 
-.modal-content h2 { color: #fff; font-size: 24px; margin-bottom: 22px; }
-
 .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
 
 .input-group input {
@@ -1739,8 +1916,6 @@ input, textarea, select { font: inherit; }
 
 /* Glowing border styling for the entire row to indicate it is currently being moved. */
 .playlist-item-row.moving-active .episode-item { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5); }
-
-.modal-message { color: var(--text-muted); font-size: 15px; line-height: 1.5; margin-bottom: 24px; }
 
 /* ==========================================================================
    SECTION 15: PAGE SPECIFIC - SEARCH SYSTEM & FILTERS
@@ -1878,15 +2053,6 @@ input, textarea, select { font: inherit; }
 /* Card wrapper inside the search results grid. Uses content-visibility to bypass layout/painting for off-screen items. */
 .search-results-grid .poster-wrapper { aspect-ratio: 2 / 3; contain-intrinsic-size: auto var(--poster-height); content-visibility: auto; height: auto; width: 100%; }
 
-.modal-overlay.active, .modal-overlay.show { display: flex; opacity: 1; pointer-events: auto; visibility: visible; }
-
-/* Styles large modal content windows to be wider on desktop viewports. */
-.large-modal { width: min(1200px, 94vw); max-width: 94vw; }
-
-.small-modal { width: min(520px, 92vw); }
-
-.modal-scroll-area { overflow-y: auto; padding: 0 28px 12px; }
-
 .filter-main-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 .filter-group { margin-bottom: 20px; }
@@ -1950,6 +2116,7 @@ input, textarea, select { font: inherit; }
 /* Styles the checkmark indicator in front of selected filter chips. */
 .filter-chip.selected::before { content: "✓"; display: inline-block; margin-right: 6px; color: #050505; font-weight: 900; font-size: 16px; }
 
+/* Styles search filter inputs, trigger dropdown buttons, and modal search text fields. */
 .filter-input, .filter-select-btn, .modal-search-input {
     align-items: center;
     background: rgba(255, 255, 255, 0.07);
@@ -1965,10 +2132,6 @@ input, textarea, select { font: inherit; }
     padding: 0 14px;
     width: 100%;
 }
-
-.modal-actions { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 12px; justify-content: flex-end; padding: 18px 28px 24px; }
-
-.modal-search-wrapper { padding: 0 28px 16px; }
 
 .select-options-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 0 28px 16px; }
 
@@ -2335,58 +2498,6 @@ input, textarea, select { font: inherit; }
 /* Utility class for stretching elements to fill 100% width and height. */
 .loader-inline-container .ivids-loader, .full-size { height: 100%; width: 100%; }
 
-.modal-content {
-    background: #161616 !important;
-    border: none !important;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95);
-    display: flex;
-    flex-direction: column;
-    max-height: 86vh;
-    max-width: 90%;
-    overflow: hidden;
-    padding: 32px 36px;
-    position: relative;
-    text-align: center;
-    width: min(800px, 94vw);
-}
-
-.compact-modal { max-width: 460px; padding: 24px; width: min(460px, 90vw); }
-
-.modal-title {
-    color: #fff;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    margin-top: 0;
-    padding: 0 0 10px;
-    text-align: center;
-}
-
-.modal-title-truncated { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-.modal-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 18px;
-    min-height: 0;
-    overflow-y: auto;
-    padding: 0 0 10px;
-    width: 100%;
-}
-
-/* CSS Class: Action footer container providing spacing and layout for modal dialogs. */
-.modal-footer, .modal-actions {
-    border-top: none;
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-    margin-top: 20px;
-    padding-top: 6px;
-    width: 100%;
-}
-
 /* CSS Class: Vertical layout container for stacked modal action options. */
 .vertical-modal-actions {
     border-top: none;
@@ -2554,60 +2665,11 @@ input, textarea, select { font: inherit; }
     margin-top: 8px;
 }
 
-/* Custom Modal Overrides for perfect visibility and rendering */
-.modal-overlay {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.82);
-    display: flex;
-    height: 100%;
-    inset: 0;
-    justify-content: center;
-    opacity: 0;
-    padding: 32px;
-    pointer-events: none;
-    position: fixed;
-    transition: opacity 0.28s ease, visibility 0.28s ease;
-    visibility: hidden;
-    width: 100%;
-    z-index: 99999;
-}
+.tv-overlay.show { opacity: 1; pointer-events: auto; }
 
 /* ==========================================================================
    SECTION 26: PREMIUM TV-FIRST & MOBILE-RESPONSIVE APP UPDATE SYSTEM MODAL
    ========================================================================== */
-/* CSS Class: Fullscreen overlay container with dark backdrop for the update modal. */
-.update-modal-overlay {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.88);
-    display: none;
-    height: 100%;
-    justify-content: center;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    position: fixed;
-    top: 0;
-    transition: opacity 0.3s ease-in-out;
-    width: 100%;
-    z-index: 10000;
-}
-
-.error-modal.visible, .tv-overlay.show, .update-modal-overlay.visible { opacity: 1; pointer-events: auto; }
-
-/* CSS Class: Main update dialog card container styled with premium solid dark background. */
-.update-modal {
-    background: #161616;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-panel);
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    max-width: 90%;
-    padding: 36px;
-    text-align: center;
-    width: min(520px, 92vw);
-}
 
 /* CSS Class: Header block centering title and icon within the update modal. */
 .update-header { align-items: center; display: flex; flex-direction: column; gap: 8px; }
@@ -2755,48 +2817,8 @@ input, textarea, select { font: inherit; }
 /* ==========================================================================
    SECTION 27: APP UPDATE SYSTEM - VERSION MODAL
    ========================================================================== */
-/* CSS Class: Content container for the version selector modal with minimized padding and wider layout. */
-/* CSS Class: Content container for the version selector modal with minimized padding and wider layout. */
-/* CSS Class: Modal dialog container sizing for the version selection list. */
-.version-modal-content {
-    display: flex;
-    flex-direction: column;
-    max-height: 85vh;
-    overflow: hidden;
-    padding: 24px 20px 16px;
-    width: min(640px, 92vw);
-}
-
-/* CSS Class: Title override specifically for version modal to minimize top space. */
-.version-modal-content .modal-title {
-    padding: 0 0 16px;
-    margin-bottom: 0;
-    flex-shrink: 0;
-}
-
-/* Scrollable body inside version modal. Uses flex-shrink so it yields
-   space to the footer, preventing buttons from clipping out of view. */
-.scrollable-modal-body {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto !important;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    overscroll-behavior: contain;
-    padding: 4px 6px;
-    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
-    scrollbar-width: thin;
-}
-
-/* CSS Class: Footer inside the version modal with extra button padding and reduced margin. */
-.version-modal-content .modal-footer {
-    flex-shrink: 0;
-    margin-top: 12px;
-    padding: 12px 0 0;
-}
-
-.livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar, .scrollable-modal-body::-webkit-scrollbar { width: 6px; }
+/* Custom scrollbar widths for Live TV columns and modal scroll bodies */
+.livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar, .scrollable-modal-body::-webkit-scrollbar, .modal__body--scroll::-webkit-scrollbar { width: 6px; }
 
 .scrollable-modal-body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
 
@@ -3419,25 +3441,6 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     width: 20px;
     pointer-events: none;
 }
-
-.modal-close-x {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 24px;
-    line-height: 1;
-    padding: 4px;
-    position: absolute;
-    right: 18px;
-    top: 16px;
-    transition: color 0.16s ease;
-    z-index: 10;
-}
-
-.modal-close-x:hover, .modal-close-x:focus { color: #fff; outline: none; }
-
-.centered-footer { justify-content: center; }
 
 /* Styles the container for parsed markdown content with clean text formatting. */
 .markdown-body { color: var(--text-color); font-size: 0.9rem; line-height: 1.6; padding: 0 2%; text-align: left; word-break: break-word; }

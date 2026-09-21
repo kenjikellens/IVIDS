@@ -23,17 +23,17 @@ export class UpdatePrompt {
 
         this.modalElement = document.createElement('div');
         this.modalElement.id = 'update-overlay';
-        this.modalElement.className = 'update-modal-overlay';
+        this.modalElement.className = 'modal modal-overlay update-modal-overlay';
         
         this.modalElement.innerHTML = `
-            <div class="update-modal">
-                <div class="update-header">
+            <div class="modal__dialog modal__dialog--lg update-modal">
+                <div class="modal__header update-header">
                     <div class="update-icon-container">
                         <div class="update-icon-mask"></div>
                     </div>
-                    <h2 class="update-title"></h2>
+                    <h2 class="modal__title update-title"></h2>
                 </div>
-                <div class="update-info-block">
+                <div class="modal__body modal__body--scroll update-info-block">
                     <div class="version-badge-container">
                         <span class="version-badge current"></span>
                         <span class="version-arrow">→</span>
@@ -52,7 +52,7 @@ export class UpdatePrompt {
                     </div>
                     <span class="update-progress-text" id="update-progress-text"></span>
                 </div>
-                <div class="update-footer-actions btn-group btn-group--fill" id="update-actions">
+                <div class="modal__footer update-footer-actions btn-group btn-group--fill" id="update-actions">
                     <button class="btn btn--secondary focusable" id="update-dismiss-btn"></button>
                     <button class="btn btn--primary focusable" id="update-download-btn"></button>
                 </div>
@@ -174,7 +174,7 @@ export class UpdatePrompt {
 
         // Render modal with display and active transition trigger immediately
         this.modalElement.style.display = 'flex';
-        this.modalElement.classList.add('visible');
+        this.modalElement.classList.add('visible', 'is-open');
         
         // Trap spatial controls and center directly on first action button
         SpatialNav.setFocusTrap(this.modalElement);
@@ -470,7 +470,7 @@ export class UpdatePrompt {
     static dismiss() {
         if (!this.modalElement) return;
 
-        this.modalElement.classList.remove('visible');
+        this.modalElement.classList.remove('visible', 'is-open');
 
         // Allow smooth fade-out CSS transition before hiding the element
         const cleanup = () => {

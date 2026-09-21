@@ -73,13 +73,13 @@
 </div>
 
 <!-- Add to Playlist Modal -->
-<div id="add-to-playlist-modal" class="modal">
-    <div class="modal-content">
-        <h2 class="modal-title" data-i18n="details.addToPlaylist">Add to Playlist</h2>
-        <div id="playlist-selection-list" class="playlist-selection-list">
+<div id="add-to-playlist-modal" class="modal modal-overlay">
+    <div class="modal__dialog modal__dialog--md modal-content">
+        <h2 class="modal__title modal-title" data-i18n="details.addToPlaylist">Add to Playlist</h2>
+        <div id="playlist-selection-list" class="modal__body playlist-selection-list">
             <!-- Playlists to select will be injected here -->
         </div>
-        <div class="modal-actions vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal-actions vertical-modal-actions btn-group btn-group--vertical">
             <button id="add-to-playlist-cancel" class="btn btn--secondary btn--sm focusable" data-i18n="details.cancel">Cancel</button>
         </div>
     </div>

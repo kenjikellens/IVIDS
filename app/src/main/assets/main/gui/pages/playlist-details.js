@@ -444,8 +444,8 @@ function attachListeners(playlist) {
  */
 function showConfirmationModal(title, message, onConfirm) {
     const modal = document.getElementById('confirmation-modal');
-    const titleEl = modal.querySelector('.modal-title');
-    const messageEl = modal.querySelector('.modal-message');
+    const titleEl = modal.querySelector('.modal__title, .modal-title');
+    const messageEl = modal.querySelector('.modal__desc, .modal-message');
     const confirmBtn = document.getElementById('modal-confirm-btn');
     const cancelBtn = document.getElementById('modal-cancel-btn');
 

@@ -169,10 +169,10 @@ export function manageModal(modal, focusTarget = null, onClose = null) {
             SpatialNav.popBackHandler(modalBackHandler);
             modalBackHandler = null;
         }
-        modal.classList.remove('show');
+        modal.classList.remove('show', 'is-open');
         modal.style.setProperty('opacity', '0', 'important');
         setTimeout(() => {
-            modal.classList.remove('active');
+            modal.classList.remove('active', 'is-open');
             modal.style.setProperty('display', 'none', 'important');
             modal.style.setProperty('visibility', 'hidden', 'important');
             if (originalParent && originalParent.appendChild) {
@@ -199,7 +199,7 @@ export function manageModal(modal, focusTarget = null, onClose = null) {
 
     setTimeout(() => {
         modal.style.setProperty('opacity', '1', 'important');
-        modal.classList.add('active', 'show');
+        modal.classList.add('is-open', 'active', 'show');
     }, 10);
     SpatialNav.setFocusTrap(modal);
     if (focusTarget) {

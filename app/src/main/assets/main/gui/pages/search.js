@@ -283,10 +283,13 @@ export async function init(params) {
             };
         }
 
-        // Search Page Back Handler registered on SpatialNav stack
+        /**
+         * Intercepts spatial back navigation to close open search modals hierarchically.
+         * Affects modal visibility states and restores focus trap on filter dialog or page.
+         */
         let searchBackHandler = () => {
-            const activeModal = document.querySelector('.modal-overlay.active:not(#filter-modal)');
-            const filterModalActive = filterModal && filterModal.classList.contains('active');
+            const activeModal = document.querySelector('.modal.is-open:not(#filter-modal), .modal-overlay.active:not(#filter-modal)');
+            const filterModalActive = filterModal && (filterModal.classList.contains('is-open') || filterModal.classList.contains('active'));
 
             if (activeModal) {
                 if (activeModal === genreModal && closeGenreModalFn) {
@@ -305,7 +308,7 @@ export async function init(params) {
                     SpatialNav.setFocusTrap(filterModal);
                     SpatialNav.setFocus(countrySelectBtn);
                 } else {
-                    activeModal.classList.remove('active');
+                    activeModal.classList.remove('active', 'is-open');
                 }
                 return true;
             } else if (filterModalActive) {

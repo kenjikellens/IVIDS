@@ -100,7 +100,7 @@ export const SpatialNav = {
      */
     findScrollParent(el, modal) {
         if (modal) {
-            const knownScrollArea = el.closest('.language-options-horizontal, .language-grid, .language-options-list, .modal-scroll-area, .scrollable-modal-body, .modal-body, .select-options-list, .select-options-grid, .playlist-selection-list');
+            const knownScrollArea = el.closest('.language-options-horizontal, .language-grid, .language-options-list, .modal__body--scroll, .modal-scroll-area, .scrollable-modal-body, .modal__body, .modal-body, .select-options-list, .select-options-grid, .playlist-selection-list');
             if (knownScrollArea) return knownScrollArea;
 
             let parent = el.parentElement;
@@ -407,8 +407,8 @@ export const SpatialNav = {
         if (el.style.display === 'none' || el.style.visibility === 'hidden' || el.style.pointerEvents === 'none') return false;
 
         // Check if element is inside a modal-overlay that is not currently active or shown
-        const modal = el.closest('.modal-overlay');
-        if (modal && !modal.classList.contains('active') && !modal.classList.contains('show')) {
+        const modal = el.closest('.modal, .modal-overlay');
+        if (modal && !modal.classList.contains('is-open') && !modal.classList.contains('active') && !modal.classList.contains('show')) {
             return false;
         }
 
@@ -420,7 +420,7 @@ export const SpatialNav = {
         // FASTEST CHECK: offsetParent is null if display:none or parent is display:none.
         // For fixed elements (sidebar or modals), check container directly instead of walking 12 DOM levels
         if (el.offsetParent === null) {
-            const fixedContainer = el.closest('#sidebar-container, .modal-overlay, .update-modal-overlay');
+            const fixedContainer = el.closest('#sidebar-container, .modal, .modal-overlay, .update-modal-overlay');
             if (!fixedContainer) {
                 return false;
             }
@@ -525,7 +525,7 @@ export const SpatialNav = {
         if (!el) return;
 
         // Check if the focused element is located inside a modal overlay window.
-        const modal = el.closest('.modal-overlay, .modal-content, .modal');
+        const modal = el.closest('.modal, .modal-overlay, .modal__dialog, .modal-content');
 
         // Skip centering for mouse/touch interactions to prevent page scroll shifts on clicks
         if (this.isMouseInteraction) {
