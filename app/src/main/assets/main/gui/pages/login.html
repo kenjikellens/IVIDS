@@ -1,6 +1,6 @@
 <div class="login-page-wrapper">
     <div class="login-card-container">
-        <div class="card card--panel modal-content login-card">
+        <div class="card card--panel">
             <button id="login-circle-back" class="btn btn--secondary btn--circle focusable" title="Back">
                 <img src="images/back.svg" class="login-back-icon" alt="Back">
             </button>
@@ -11,7 +11,7 @@
                 </div>
             </header>
 
-            <div class="login-form-container">
+            <div class="form-container">
                 <div class="login-tabs-row">
                     <button id="login-signin-tab" class="category-chip focusable login-tab login-tab-btn active" type="button" data-mode="signin"
                         data-i18n="login.signInTab">Sign In</button>
@@ -19,26 +19,26 @@
                         data-i18n="login.registerTab">Register</button>
                 </div>
 
-                <form id="login-form" class="login-form-container">
-                    <div class="input-group login-input-group">
-                        <label for="login-email" data-i18n="login.emailLabel">Email</label>
-                        <input id="login-email" class="focusable" type="email" autocomplete="email"
+                <form id="login-form" class="form-container">
+                    <div class="form-group">
+                        <label class="form-label" for="login-email" data-i18n="login.emailLabel">Email</label>
+                        <input id="login-email" class="form-input focusable" type="email" autocomplete="email"
                             data-i18n="login.emailPlaceholder" placeholder="Enter your email" readonly inputmode="none">
                     </div>
 
-                    <div class="input-group login-input-group" id="username-field">
-                        <label for="login-username" data-i18n="login.usernameLabel">Username</label>
-                        <input id="login-username" class="focusable" type="text" autocomplete="username"
+                    <div class="form-group" id="username-field">
+                        <label class="form-label" for="login-username" data-i18n="login.usernameLabel">Username</label>
+                        <input id="login-username" class="form-input focusable" type="text" autocomplete="username"
                             data-i18n="login.usernamePlaceholder" placeholder="Enter your username" readonly
                             inputmode="none">
                     </div>
 
-                    <div class="input-group login-input-group">
+                    <div class="form-group">
                         <div class="login-pin-row">
-                            <label for="login-pin" data-i18n="login.pinLabel">PIN Code</label>
+                            <label class="form-label" for="login-pin" data-i18n="login.pinLabel">PIN Code</label>
                             <small class="login-pin-hint" data-i18n="login.pinHint">4 to 8 digits</small>
                         </div>
-                        <input id="login-pin" class="focusable" type="password"
+                        <input id="login-pin" class="form-input focusable" type="password"
                             maxlength="8" inputmode="none" readonly placeholder="Enter PIN">
                     </div>
 

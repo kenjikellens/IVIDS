@@ -614,7 +614,7 @@ class SettingsManager {
                 
                 // Add the top chip: Active Branch Build (Main Branch)
                 const branchCard = document.createElement('div');
-                branchCard.className = 'card card--panel option-chip focusable dev-version-card';
+                branchCard.className = 'card card--panel chip chip--option focusable';
                 branchCard.dataset.value = 'branch';
                 branchCard.innerHTML = `
                     <div class="version-chip-content">
@@ -663,7 +663,7 @@ class SettingsManager {
                         const appliedIconHtml = isInstalled ? '<img src="svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
 
                         const relCard = document.createElement('div');
-                        relCard.className = 'card card--panel option-chip focusable dev-version-card';
+                        relCard.className = 'card card--panel chip chip--option focusable';
                         relCard.dataset.value = rel.tag_name;
                         
                         relCard.innerHTML = `
@@ -806,7 +806,7 @@ class SettingsManager {
                     const newItem = { id: 'custom_' + Date.now(), name: 'Custom Server', url: '', isCustom: true };
                     this.pendingSettings.playerProviders.push(newItem);
                     this.renderPlayerProviders();
-                    const input = document.querySelector(`.provider-item[data-id="${newItem.id}"] .provider-url-input`);
+                    const input = document.querySelector(`.provider-item[data-id="${newItem.id}"] .form-input`);
                     if (input) {
                         input.focus();
                         if (window.SpatialNav) window.SpatialNav.setFocus(input);
@@ -823,7 +823,7 @@ class SettingsManager {
                     const newItem = { id: 'custom_' + Date.now(), name: 'Custom Playlist', url: '', isCustom: true };
                     this.pendingSettings.m3uPlaylists.push(newItem);
                     this.renderM3uPlaylists();
-                    const input = document.querySelector(`.provider-item[data-id="${newItem.id}"] .provider-url-input`);
+                    const input = document.querySelector(`.provider-item[data-id="${newItem.id}"] .form-input`);
                     if (input) {
                         input.focus();
                         if (window.SpatialNav) window.SpatialNav.setFocus(input);
@@ -871,7 +871,7 @@ class SettingsManager {
                 };
             }
         } else {
-            modal.querySelectorAll('.option-chip').forEach(chip => {
+            modal.querySelectorAll('.chip--option, .option-chip').forEach(chip => {
                 const val = chip.getAttribute('data-value');
                 chip.onclick = (e) => {
                     e.stopPropagation();
@@ -886,11 +886,11 @@ class SettingsManager {
         if (modalId === 'language-modal') {
             focusTarget = document.getElementById('lang-next-btn') || document.getElementById('lang-prev-btn');
         } else if (modalId === 'color-modal' || modalId === 'update-mode-modal') {
-            focusTarget = modal.querySelector('.option-chip.active');
+            focusTarget = modal.querySelector('.chip--option.is-active, .chip--option.active, .option-chip.active');
         } else if (modalId === 'player-modal') {
-            focusTarget = modal.querySelector('.provider-url-input') || document.getElementById('add-provider-btn');
+            focusTarget = modal.querySelector('.form-input, .provider-url-input') || document.getElementById('add-provider-btn');
         } else if (modalId === 'm3u-modal') {
-            focusTarget = modal.querySelector('.provider-url-input') || document.getElementById('add-m3u-btn');
+            focusTarget = modal.querySelector('.form-input, .provider-url-input') || document.getElementById('add-m3u-btn');
         } else if (modalId === 'app-info-modal') {
             focusTarget = modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary, .modal-footer .btn-secondary');
         } else if (modalId === 'changes-modal') {
@@ -967,13 +967,13 @@ class SettingsManager {
         const key = keyMap[modalId] || modalId.replace('-modal', '');
         const value = this.pendingSettings[key];
 
-        modal.querySelectorAll('.option-chip').forEach(chip => {
+        modal.querySelectorAll('.chip--option, .option-chip').forEach(chip => {
             const chipValue = chip.getAttribute('data-value');
             const matchValue = typeof value === 'boolean' ? String(value) : value;
             if (chipValue === matchValue) {
-                chip.classList.add('active');
+                chip.classList.add('is-active', 'active');
             } else {
-                chip.classList.remove('active');
+                chip.classList.remove('is-active', 'active');
             }
         });
 
@@ -1009,8 +1009,8 @@ class SettingsManager {
         this.pendingSettings[key] = value;
 
         if (el && el.parentElement) {
-            el.parentElement.querySelectorAll('.option-chip').forEach(chip => chip.classList.remove('active'));
-            el.classList.add('active');
+            el.parentElement.querySelectorAll('.chip--option, .option-chip').forEach(chip => chip.classList.remove('is-active', 'active'));
+            el.classList.add('is-active', 'active');
         }
 
         if (key === 'updateMode') {
@@ -1097,7 +1097,7 @@ class SettingsManager {
 
             const input = document.createElement('input');
             input.type = 'url';
-            input.className = 'provider-url-input focusable';
+            input.className = 'form-input focusable';
             input.value = provider.url || '';
             input.placeholder = 'https://example.com/embed';
             input.oninput = (e) => {
@@ -1185,7 +1185,7 @@ class SettingsManager {
 
             const input = document.createElement('input');
             input.type = 'url';
-            input.className = 'provider-url-input focusable';
+            input.className = 'form-input focusable';
             input.value = playlist.url || '';
             input.placeholder = 'https://example.com/playlist.m3u';
             input.oninput = (e) => {

@@ -467,7 +467,7 @@
 }
 
 /* Flex sizing adjustments for Live TV guide filter select tags. */
-#app .filter-select-wrapper {
+#app .form-select-wrapper {
     flex: 1;
     height: 48px;
 }
@@ -667,7 +667,7 @@
 }
 
 /* Mobile toggle switch container */
-#app .switch-container {
+#app .form-toggle {
     height: 32px;
     width: 58px;
     flex-shrink: 0;
@@ -675,7 +675,7 @@
 }
 
 /* Mobile toggle switch slider circle */
-#app .switch-slider {
+#app .form-toggle__slider {
     height: 22px;
     width: 22px;
     top: 2px;
@@ -683,7 +683,7 @@
 }
 
 /* Checked position for mobile toggle slider circle */
-#app .switch-container:has(input:checked) .switch-slider {
+#app .form-toggle:has(input:checked) .form-toggle__slider {
     left: 28px;
 }
 
@@ -779,7 +779,7 @@
 }
 
 /* Sizing adjustments for color selector chips on mobile */
-.option-chip.color-only {
+.chip--color {
     min-height: 68px;
     padding: 8px;
 }
@@ -1004,7 +1004,7 @@
 #app .details-actions .btn,
 #app .profile-actions .btn,
 #app .livetv-top-bar .search-box,
-.provider-url-input {
+.form-input {
     width: 100%;
 }
 #app .modal__body--scroll,

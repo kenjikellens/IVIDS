@@ -190,7 +190,7 @@ export async function init(params) {
 
             sortByBtn.onclick = () => {
                 pendingSortValue = pendingFilters.sortBy;
-                const selected = sortModal.querySelector('.select-item.selected') || sortModal.querySelector('.focusable');
+                const selected = sortModal.querySelector('.chip--option.is-selected, .select-item.selected') || sortModal.querySelector('.focusable');
                 closeSortModalFn = manageModal(sortModal, selected, () => {
                     if (closeSortModalFn) {
                         closeSortModalFn();
@@ -204,18 +204,18 @@ export async function init(params) {
             };
 
             document.getElementById('sort-options-list').onclick = (e) => {
-                const item = e.target.closest('.select-item');
+                const item = e.target.closest('.chip--option, .select-item');
                 if (item) {
                     pendingSortValue = item.dataset.value;
-                    document.querySelectorAll('#sort-modal .select-item').forEach(el => {
-                        el.classList.toggle('selected', el.dataset.value === pendingSortValue);
+                    document.querySelectorAll('#sort-modal .chip--option, #sort-modal .select-item').forEach(el => {
+                        el.classList.toggle('is-selected', el.dataset.value === pendingSortValue); el.classList.toggle('selected', el.dataset.value === pendingSortValue);
                     });
                 }
             };
 
             sortConfirmBtn.onclick = () => {
                 pendingFilters.sortBy = pendingSortValue;
-                const selectedItem = document.querySelector(`#sort-modal .select-item[data-value="${pendingSortValue}"]`);
+                const selectedItem = document.querySelector(`#sort-modal .chip--option[data-value="${pendingSortValue}"], #sort-modal .select-item[data-value="${pendingSortValue}"]`);
                 if (selectedItem) {
                     document.getElementById('sort-by-label').textContent = selectedItem.textContent;
                 }
@@ -244,7 +244,7 @@ export async function init(params) {
         // Initialize Country Modal
         if (countrySelectBtn && countryModal) {
             countrySelectBtn.onclick = () => {
-                const selected = countrySearchInput || countryModal.querySelector('.select-item.selected') || countryModal.querySelector('.focusable');
+                const selected = countrySearchInput || countryModal.querySelector('.chip--option.is-selected, .select-item.selected') || countryModal.querySelector('.focusable');
                 closeCountryModalFn = manageModal(countryModal, selected, () => {
                     if (closeCountryModalFn) {
                         closeCountryModalFn();
@@ -269,12 +269,12 @@ export async function init(params) {
             };
 
             countryModal.onclick = (e) => {
-                const item = e.target.closest('.select-item');
+                const item = e.target.closest('.chip--option, .select-item');
                 if (item) {
                     pendingFilters.originCountry = item.dataset.value;
                     document.getElementById('country-label').textContent = item.textContent;
-                    document.querySelectorAll('#country-modal .select-item').forEach(el => {
-                        el.classList.toggle('selected', el.dataset.value === pendingFilters.originCountry);
+                    document.querySelectorAll('#country-modal .chip--option, #country-modal .select-item').forEach(el => {
+                        el.classList.toggle('is-selected', el.dataset.value === pendingFilters.originCountry); el.classList.toggle('selected', el.dataset.value === pendingFilters.originCountry);
                     });
                     closeCountryModal();
                 } else if (e.target === countryModal) {
@@ -350,7 +350,7 @@ async function renderAllFilters(filtersObj) {
         document.querySelectorAll('input[name="media-type"]').forEach(cb => {
             const isChecked = filtersObj.types.includes(cb.value);
             cb.checked = isChecked;
-            const chip = cb.closest('.filter-chip');
+            const chip = cb.closest('.chip--filter, .filter-chip');
             if (chip) chip.classList.toggle('selected', isChecked);
 
             cb.onchange = () => {
@@ -372,7 +372,7 @@ async function renderAllFilters(filtersObj) {
             genreContainer.innerHTML = genres.map(genre => {
                 const isSelected = filtersObj.genres.includes(genre.id);
                 return `
-                    <label class="filter-chip focusable ${isSelected ? 'selected' : ''}" tabindex="0">
+                    <label class="chip chip--filter focusable ${isSelected ? 'is-selected selected' : ''}" tabindex="0">
                         <input type="checkbox" value="${genre.id}" ${isSelected ? 'checked' : ''}>
                         <span>${genre.name}</span>
                     </label>
@@ -384,10 +384,10 @@ async function renderAllFilters(filtersObj) {
                     const id = parseInt(cb.value);
                     if (cb.checked) {
                         filtersObj.genres.push(id);
-                        cb.closest('.filter-chip').classList.add('selected');
+                        cb.closest('.chip--filter, .filter-chip').classList.add('selected');
                     } else {
                         filtersObj.genres = filtersObj.genres.filter(g => g !== id);
-                        cb.closest('.filter-chip').classList.remove('selected');
+                        cb.closest('.chip--filter, .filter-chip').classList.remove('selected');
                     }
                 };
             });
@@ -395,13 +395,13 @@ async function renderAllFilters(filtersObj) {
 
         // 3. Countries
         const countryList = document.getElementById('country-options-list');
-        if (countryList && (countryList.children.length === 0 || countryList.querySelector('.select-item') === null)) {
+        if (countryList && (countryList.children.length === 0 || countryList.querySelector('.chip--option, .select-item') === null)) {
             const countries = await Api.fetchCountries();
             countries.sort((a, b) => a.english_name.localeCompare(b.english_name));
             countryList.innerHTML = '';
 
             const allOpt = document.createElement('div');
-            allOpt.className = 'select-item focusable ' + (!filtersObj.originCountry ? 'selected' : '');
+            allOpt.className = 'chip chip--option focusable ' + (!filtersObj.originCountry ? 'is-selected selected' : '');
             allOpt.dataset.value = '';
             allOpt.dataset.i18n = 'search.allCountries';
             allOpt.textContent = window.i18n.t('search.allCountries');
@@ -409,7 +409,7 @@ async function renderAllFilters(filtersObj) {
 
             countries.forEach(c => {
                 const opt = document.createElement('div');
-                opt.className = 'select-item focusable ' + (filtersObj.originCountry === c.iso_3166_1 ? 'selected' : '');
+                opt.className = 'chip chip--option focusable ' + (filtersObj.originCountry === c.iso_3166_1 ? 'is-selected selected' : '');
                 opt.dataset.value = c.iso_3166_1;
                 opt.textContent = c.english_name;
                 countryList.appendChild(opt);
@@ -424,7 +424,7 @@ async function renderAllFilters(filtersObj) {
             certContainer.innerHTML = certs.map(cert => {
                 const isSelected = filtersObj.certification === cert;
                 return `
-                    <label class="filter-chip focusable ${isSelected ? 'selected' : ''}" tabindex="0">
+                    <label class="chip chip--filter focusable ${isSelected ? 'is-selected selected' : ''}" tabindex="0">
                         <input type="radio" name="certification" value="${cert}" ${isSelected ? 'checked' : ''}>
                         <span>${cert}</span>
                     </label>
@@ -435,7 +435,7 @@ async function renderAllFilters(filtersObj) {
                 radio.onchange = () => {
                     filtersObj.certification = radio.value;
                     document.querySelectorAll('#cert-filters .filter-chip').forEach(l => l.classList.remove('selected'));
-                    radio.closest('.filter-chip').classList.add('selected');
+                    radio.closest('.chip--filter, .filter-chip').classList.add('selected');
                 };
             });
         }
@@ -443,13 +443,13 @@ async function renderAllFilters(filtersObj) {
         // 5. Update Labels
         const sortLabel = document.getElementById('sort-by-label');
         if (sortLabel) {
-            const selectedItem = document.querySelector(`#sort-modal .select-item[data-value="${filtersObj.sortBy}"]`);
+            const selectedItem = document.querySelector(`#sort-modal .chip--option[data-value="${filtersObj.sortBy}"], #sort-modal .select-item[data-value="${filtersObj.sortBy}"]`);
             sortLabel.textContent = selectedItem ? selectedItem.textContent : filtersObj.sortBy;
         }
 
         const countryLabelValue = document.getElementById('country-label');
         if (countryLabelValue) {
-            const selectedItem = document.querySelector(`#country-modal .select-item[data-value="${filtersObj.originCountry}"]`);
+            const selectedItem = document.querySelector(`#country-modal .chip--option[data-value="${filtersObj.originCountry}"], #country-modal .select-item[data-value="${filtersObj.originCountry}"]`);
             countryLabelValue.textContent = selectedItem ? selectedItem.textContent : filtersObj.originCountry;
         }
 
@@ -486,10 +486,10 @@ function resetFilters(filtersObj) {
     filtersObj.year = null;
 
     document.querySelectorAll('input[name="media-type"]').forEach(cb => cb.checked = true);
-    document.querySelectorAll('#sort-modal .select-item').forEach(el => {
+    document.querySelectorAll('#sort-modal .chip--option, #sort-modal .select-item').forEach(el => {
         el.classList.toggle('selected', el.dataset.value === 'popularity.desc');
     });
-    document.querySelectorAll('#country-modal .select-item').forEach(el => {
+    document.querySelectorAll('#country-modal .chip--option, #country-modal .select-item').forEach(el => {
         el.classList.toggle('selected', el.dataset.value === '');
     });
 }
@@ -742,7 +742,7 @@ function removeRecentSearch(q) {
  */
 function filterCountries(query) {
     if (!cachedCountryItems) {
-        cachedCountryItems = document.querySelectorAll('#country-options-list .select-item');
+        cachedCountryItems = document.querySelectorAll('#country-options-list .chip--option, #country-options-list .select-item');
     }
     const lowerQuery = query.toLowerCase();
     cachedCountryItems.forEach(item => {

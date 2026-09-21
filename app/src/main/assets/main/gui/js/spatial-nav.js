@@ -100,7 +100,7 @@ export const SpatialNav = {
      */
     findScrollParent(el, modal) {
         if (modal) {
-            const knownScrollArea = el.closest('.language-options-horizontal, .language-grid, .language-options-list, .modal__body--scroll, .modal-scroll-area, .scrollable-modal-body, .modal__body, .modal-body, .select-options-list, .select-options-grid, .playlist-selection-list');
+            const knownScrollArea = el.closest('.language-options-horizontal, .language-grid, .language-options-list, .modal__body--scroll, .modal-scroll-area, .scrollable-modal-body, .modal__body, .modal-body, .select-options-list, .select-options-grid, .chip-grid, .playlist-selection-list');
             if (knownScrollArea) return knownScrollArea;
 
             let parent = el.parentElement;

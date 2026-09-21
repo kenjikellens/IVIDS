@@ -100,7 +100,7 @@ function render(item, type) {
                     item.genres.forEach(genre => {
                         const btn = document.createElement('button');
                         btn.type = 'button';
-                        btn.className = 'genre-chip focusable';
+                        btn.className = 'chip chip--genre focusable';
                         btn.textContent = genre.name || '';
                         btn.onclick = () => {
                             Router.loadPage('search', { genreId: genre.id, type: type });
@@ -130,7 +130,7 @@ function render(item, type) {
                 const rating = getRating(item, type);
                 if (rating) {
                     const isAdult = rating === 'R' || rating === 'TV-MA' || rating === 'NC-17';
-                    const ratingClass = isAdult ? 'rating-chip rating-R' : 'rating-chip';
+                    const ratingClass = isAdult ? 'chip chip--rating rating-R' : 'chip chip--rating';
                     ratingEl.innerHTML = `<span class="${ratingClass}">${rating}</span>`;
                 } else {
                     ratingEl.innerHTML = '';

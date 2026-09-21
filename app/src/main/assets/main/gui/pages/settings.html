@@ -64,9 +64,9 @@
                 <div class="setting-description" data-i18n="settings.adultContentDesc">Show adult content in browsing and search results</div>
             </div>
             <div class="setting-control">
-                <label class="switch-container focusable" id="toggle-adult-btn">
+                <label class="form-toggle focusable" id="toggle-adult-btn">
                     <input type="checkbox" id="adult-toggle-input">
-                    <span class="switch-slider"></span>
+                    <span class="form-toggle__slider"></span>
                 </label>
             </div>
         </div>
@@ -78,9 +78,9 @@
                 <div class="setting-description" data-i18n="settings.dataSaverDesc">Load lower quality photos and reduce network activity</div>
             </div>
             <div class="setting-control">
-                <label class="switch-container focusable" id="toggle-datasaver-btn">
+                <label class="form-toggle focusable" id="toggle-datasaver-btn">
                     <input type="checkbox" id="datasaver-toggle-input">
-                    <span class="switch-slider"></span>
+                    <span class="form-toggle__slider"></span>
                 </label>
             </div>
         </div>
@@ -178,8 +178,8 @@
 </div>
 
 <!-- Language Modal -->
-<div id="language-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--md modal-content">
+<div id="language-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
         <h2 class="modal__title modal-title" data-i18n="settings.language">Language</h2>
         <div class="modal__body modal-body">
             <div class="language-stepper-container">
@@ -203,27 +203,27 @@
 </div>
 
 <!-- Color Modal -->
-<div id="color-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--md modal-content">
+<div id="color-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
         <h2 class="modal__title modal-title" data-i18n="settings.accentColor">Accent Color</h2>
         <div class="modal__body modal-body">
-            <div id="color-options" class="option-grid color-option-grid">
-                <div class="option-chip focusable color-only" data-value="#46d369">
+            <div id="color-options" class="chip-grid chip-grid--color">
+                <div class="chip chip--option chip--color focusable" data-value="#46d369">
                     <div class="color-dot green"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#e50914">
+                <div class="chip chip--option chip--color focusable" data-value="#e50914">
                     <div class="color-dot red"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#00d4ff">
+                <div class="chip chip--option chip--color focusable" data-value="#00d4ff">
                     <div class="color-dot blue"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#9146ff">
+                <div class="chip chip--option chip--color focusable" data-value="#9146ff">
                     <div class="color-dot purple"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#ff6b35">
+                <div class="chip chip--option chip--color focusable" data-value="#ff6b35">
                     <div class="color-dot orange"></div>
                 </div>
-                <div class="option-chip focusable color-only" data-value="#ffd700">
+                <div class="chip chip--option chip--color focusable" data-value="#ffd700">
                     <div class="color-dot yellow"></div>
                 </div>
             </div>
@@ -237,15 +237,15 @@
 
 
 <!-- Update Mode Modal -->
-<div id="update-mode-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--md modal-content">
+<div id="update-mode-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
         <h2 class="modal__title modal-title" data-i18n="settings.updateMode">Update Mode</h2>
         <div class="modal__body modal-body">
-            <div id="update-mode-options" class="option-grid">
-                <div class="option-chip focusable" data-value="auto" data-i18n="settings.mode.auto">Auto</div>
-                <div class="option-chip focusable" data-value="manual" data-i18n="settings.mode.manual">Manual</div>
-                <div class="option-chip focusable" data-value="advanced" data-i18n="settings.mode.advanced">Developer</div>
-                <div class="option-chip focusable" data-value="none" data-i18n="settings.mode.none">Off</div>
+            <div id="update-mode-options" class="chip-grid chip-grid--2col">
+                <div class="chip chip--option focusable" data-value="auto" data-i18n="settings.mode.auto">Auto</div>
+                <div class="chip chip--option focusable" data-value="manual" data-i18n="settings.mode.manual">Manual</div>
+                <div class="chip chip--option focusable" data-value="advanced" data-i18n="settings.mode.advanced">Developer</div>
+                <div class="chip chip--option focusable" data-value="none" data-i18n="settings.mode.none">Off</div>
             </div>
             <div id="advanced-warning" class="warning-container hidden"
                 data-i18n="settings.advancedWarning">
@@ -261,8 +261,8 @@
 </div>
 
 <!-- Version Selector Modal -->
-<div id="version-selector-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--lg modal-content version-modal-content">
+<div id="version-selector-modal" class="modal">
+    <div class="modal__dialog modal__dialog--lg">
         <h2 class="modal__title modal-title" data-i18n="settings.selectVersion">Select Version</h2>
         <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
             <div id="version-list-loader" class="loader-center-container hidden">
@@ -279,8 +279,8 @@
 </div>
 
 <!-- Player Providers Modal -->
-<div id="player-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--md modal-content">
+<div id="player-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
         <h2 class="modal__title modal-title" data-i18n="settings.playerProviders">Player Providers</h2>
         <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
             <div id="player-providers-list" class="providers-list">
@@ -296,8 +296,8 @@
 </div>
 
 <!-- M3U Playlists Modal -->
-<div id="m3u-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--md modal-content">
+<div id="m3u-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
         <h2 class="modal__title modal-title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
         <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
             <div id="m3u-playlists-list" class="providers-list">
@@ -313,8 +313,8 @@
 </div>
 
 <!-- App Info Modal -->
-<div id="app-info-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--md modal-content">
+<div id="app-info-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
         <h2 class="modal__title modal-title" data-i18n="settings.appInfo">App Info</h2>
         <div class="modal__body modal-body">
             <div class="setting-item">
@@ -343,8 +343,8 @@
 </div>
 
 <!-- Changes Modal -->
-<div id="changes-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--lg modal-content">
+<div id="changes-modal" class="modal">
+    <div class="modal__dialog modal__dialog--lg">
         <button class="modal__close modal-close-x focusable" aria-label="Close modal">&times;</button>
         <h2 id="changes-modal-title" class="modal__title modal-title" data-i18n="settings.changes">Changes</h2>
         <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">

@@ -13,9 +13,9 @@
             </div>
 
             <div class="search-box">
-                <div class="input-wrapper focusable-container">
+                <div class="form-control-wrapper focusable-container">
                     <img src="images/search.svg" class="search-icon" alt="Search">
-                    <input type="text" id="search-input" class="focusable" placeholder="Search for movies or series..."
+                    <input type="text" id="search-input" class="form-input focusable" placeholder="Search for movies or series..."
                         data-i18n="search.placeholder" readonly>
                 </div>
             </div>
@@ -41,22 +41,22 @@
     </div>
 
     <!-- Filter Modal (Replaces Sidebar) -->
-    <div id="filter-modal" class="modal modal-overlay">
-        <div class="modal__dialog modal__dialog--xl modal-content large-modal">
+    <div id="filter-modal" class="modal">
+        <div class="modal__dialog modal__dialog--xl">
             <h2 class="modal__title modal-title" data-i18n="search.filters">Filters</h2>
 
             <div class="modal__body modal__body--scroll modal-scroll-area">
                 <div class="filter-main-grid">
                     <!-- Row 1: Content Type & Year -->
                     <!-- Content Type -->
-                    <div class="filter-group">
+                    <div class="form-group">
                         <h3 data-i18n="search.type">Content Type</h3>
-                        <div class="filter-options horizontal">
-                            <label class="filter-chip focusable" tabindex="0">
+                        <div class="chip-grid chip-grid--2col">
+                            <label class="chip chip--filter focusable" tabindex="0">
                                 <input type="checkbox" name="media-type" value="movie" checked>
                                 <span data-i18n="search.movies">Movies</span>
                             </label>
-                            <label class="filter-chip focusable" tabindex="0">
+                            <label class="chip chip--filter focusable" tabindex="0">
                                 <input type="checkbox" name="media-type" value="tv" checked>
                                 <span data-i18n="search.series">Series</span>
                             </label>
@@ -64,24 +64,24 @@
                     </div>
 
                     <!-- Year -->
-                    <div class="filter-group">
+                    <div class="form-group">
                         <h3 data-i18n="search.year">Year</h3>
-                        <input type="number" id="year-filter" class="focusable filter-input" placeholder="e.g. 2024"
+                        <input type="number" id="year-filter" class="form-input focusable" placeholder="e.g. 2024"
                             data-i18n="search.year" min="1900" max="2100" readonly>
                     </div>
 
                     <!-- Row 2: Sort & Country -->
-                    <div class="filter-group">
+                    <div class="form-group">
                         <h3 data-i18n="search.sortBy">Sort By</h3>
-                        <button id="sort-by-btn" class="focusable filter-select-btn">
+                        <button id="sort-by-btn" class="form-select-trigger focusable">
                             <span id="sort-by-label" data-i18n="search.popularity">Popularity</span>
                             <span class="icon">❯</span>
                         </button>
                     </div>
 
-                    <div class="filter-group">
+                    <div class="form-group">
                         <h3 data-i18n="search.country">Production Country</h3>
-                        <button id="country-select-btn" class="focusable filter-select-btn">
+                        <button id="country-select-btn" class="form-select-trigger focusable">
                             <span id="country-label" data-i18n="search.allCountries">All Countries</span>
                             <span class="icon">❯</span>
                         </button>
@@ -89,27 +89,27 @@
                 </div>
 
                 <!-- Full Width Sections -->
-                <div class="filter-group">
+                <div class="form-group">
                     <div class="group-header">
                         <h3 data-i18n="search.genres">Genres</h3>
                         <span id="genre-count" class="badge"></span>
                     </div>
-                    <button id="genre-select-btn" class="focusable filter-select-btn">
+                    <button id="genre-select-btn" class="form-select-trigger focusable">
                         <span data-i18n="search.selectGenres">Select Genres</span>
                         <span class="icon">❯</span>
                     </button>
                 </div>
 
                 <!-- Age Rating -->
-                <div class="filter-group">
+                <div class="form-group">
                     <h3 data-i18n="search.rating">Age Rating</h3>
-                    <div id="cert-filters" class="filter-chips-grid">
+                    <div id="cert-filters" class="chip-grid chip-grid--3col">
                         <!-- Certs injected here -->
                     </div>
                 </div>
             </div>
 
-            <div class="modal__footer modal-actions vertical-modal-actions btn-group btn-group--vertical">
+            <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
                 <button id="close-filters-btn" class="btn btn--primary focusable" data-i18n="search.apply">Apply</button>
                 <button id="clear-filters-btn" class="btn btn--danger focusable" data-i18n="search.clearFilters">Clear All</button>
                 <button id="cancel-filters-btn" class="btn btn--secondary btn--sm focusable" data-i18n="search.cancel">Cancel</button>
@@ -118,10 +118,10 @@
     </div>
 
     <!-- Genre Selection Modal -->
-    <div id="genre-modal" class="modal modal-overlay">
-        <div class="modal__dialog modal__dialog--md modal-content">
+    <div id="genre-modal" class="modal">
+        <div class="modal__dialog modal__dialog--md">
             <h2 class="modal__title modal-title" data-i18n="search.genres">Select Genres</h2>
-            <div id="genre-filters" class="modal__body genre-grid">
+            <div id="genre-filters" class="modal__body chip-grid chip-grid--3col">
                 <!-- Genres injected here -->
             </div>
             <div class="modal__footer modal-actions btn-group btn-group--fill">
@@ -131,34 +131,34 @@
     </div>
 
     <!-- Custom Select Modals -->
-    <div id="sort-modal" class="modal modal-overlay">
-        <div class="modal__dialog modal__dialog--sm modal-content small-modal">
+    <div id="sort-modal" class="modal">
+        <div class="modal__dialog modal__dialog--sm">
             <h2 class="modal__title modal-title" data-i18n="search.sortBy">Sort By</h2>
             <div class="modal__body select-options-list" id="sort-options-list">
-                <div class="select-item focusable" data-value="popularity.desc" data-i18n="search.popularity">Popularity
+                <div class="chip chip--option focusable" data-value="popularity.desc" data-i18n="search.popularity">Popularity
                 </div>
-                <div class="select-item focusable" data-value="vote_average.desc" data-i18n="search.topRated">Top Rated
+                <div class="chip chip--option focusable" data-value="vote_average.desc" data-i18n="search.topRated">Top Rated
                 </div>
-                <div class="select-item focusable" data-value="primary_release_date.desc" data-i18n="search.newest">
+                <div class="chip chip--option focusable" data-value="primary_release_date.desc" data-i18n="search.newest">
                     Newest</div>
-                <div class="select-item focusable" data-value="vote_count.desc" data-i18n="search.mostVoted">Most Voted
+                <div class="chip chip--option focusable" data-value="vote_count.desc" data-i18n="search.mostVoted">Most Voted
                 </div>
             </div>
-            <div class="modal__footer modal-actions vertical-modal-actions btn-group btn-group--vertical">
+            <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
                 <button id="sort-confirm-btn" class="btn btn--secondary focusable" data-i18n="search.confirm">Confirm</button>
                 <button id="sort-cancel-btn" class="btn btn--secondary btn--sm focusable" data-i18n="search.cancel">Cancel</button>
             </div>
         </div>
     </div>
 
-    <div id="country-modal" class="modal modal-overlay">
-        <div class="modal__dialog modal__dialog--xl modal-content large-modal">
+    <div id="country-modal" class="modal">
+        <div class="modal__dialog modal__dialog--xl">
             <h2 class="modal__title modal-title" data-i18n="search.country">Production Country</h2>
             <div class="modal__search modal-search-wrapper">
-                <input type="text" id="country-search-input" class="focusable modal-search-input"
+                <input type="text" id="country-search-input" class="form-input form-input--compact focusable"
                     placeholder="Search countries..." data-i18n="search.searchCountries" readonly>
             </div>
-            <div id="country-options-list" class="modal__body modal__body--scroll select-options-grid scrollable">
+            <div id="country-options-list" class="modal__body modal__body--scroll chip-grid chip-grid--3col scrollable">
                 <!-- Countries injected here -->
             </div>
         </div>
