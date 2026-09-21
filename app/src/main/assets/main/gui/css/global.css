@@ -15,6 +15,7 @@
    ========================================================================== */
 /* IVIDS TV-first design system */
 :root {
+    color-scheme: dark;
     --ui-scale: 1.0;
     --app-content-padding-x: clamp(18px, 2.5vw, 36px);
     --app-content-padding-y: clamp(16px, 2vw, 30px);

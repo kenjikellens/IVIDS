@@ -5,7 +5,7 @@ All project-specific development standards, invariants, and procedural workflows
 ## 1. Core Development Rules (`.agents/rules/`)
 These rules are active on every turn (`trigger: always_on`) to enforce quality, consistency, and safety guardrails:
 
-1. **[UI, CSS & Animation Standards](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/rules/ui-and-styling.md)**: Unified stylesheet architecture (`global.css`, `global-mobile.css`), color tokens, hover/focus white border standards, spatial navigation focus (`.focusable`), and CSS comment annotations.
+1. **[UI, CSS & Animation Standards](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/rules/ui-and-styling.md)**: Unified stylesheet architecture (`global.css`, `global-mobile.css`), OOCSS component architecture (`.btn`, `.card`, `.media-grid`, `.nav-rail`, `.modal`), spatial navigation focus (`.focusable`), CSS comment annotations, critical splash FOUC prevention, and Dark Mode engine protection.
 2. **[Git, Build, APK Signing & Release Rules](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/rules/git-and-releases.md)**: Main branch push prohibition, build autonomy restrictions (`build.bat`), mandatory pre-release builds, APK keystore signing (`keystore.jks`), and SDK target limits (API 35).
 3. **[Development Workflow & Architecture Standards](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/rules/workflow-and-architecture.md)**: OOP architectural plans with mandatory Mermaid diagrams (Class/Sequence), strict i18n policy (no raw text), Windows `py` launcher requirement, method JSDoc documentation, and scratch cleanup.
 

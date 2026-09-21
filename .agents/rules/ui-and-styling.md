@@ -27,5 +27,24 @@ trigger: always_on
 - **Class Annotations**: Every CSS class definition MUST be preceded by a single-line comment describing what UI element it styles and its visual responsibility.
 - **No `!important`**: NEVER use `!important` in CSS unless strictly unavoidable (e.g. overriding external player elements).
 - **Responsive Sizing**: Prefer responsive sizing units (`%`, `rem`, `vh`, `vw`) over rigid pixel bounds for layout containers.
-- **Style Reuse**: Prioritize reusing existing component classes (e.g., `.playlist-card`, `.poster-wrapper`, `.playlist-overlay`) over writing duplicate styles.
+- **Style Reuse**: Prioritize reusing existing component classes (e.g., `.card--poster`, `.media-rail`, `.btn--primary`) over writing duplicate styles.
 
+## 6. OOCSS Component Architecture & Design System Tokens
+The project follows Object-Oriented CSS (OOCSS) and BEM-like modular composition. Always compose elements using standard base classes and modifier classes:
+- **Buttons**: Base `.btn` with sizes (`.btn--sm`, `.btn--md`, `.btn--lg`, `.btn--block`, `.btn--fixed-min`) and variants (`.btn--primary`, `.btn--secondary`, `.btn--danger`, `.btn--ghost`).
+- **Button Groups**: `.btn-group` (horizontal row), `.btn-group--vertical` (vertical stack), `.btn-group--fill` (stretch buttons), `.btn-group--end` (right alignment).
+- **Cards**: Abstract `.card`, with modifiers `.card--interactive`, `.card--poster` (2:3 aspect ratio), `.card--widescreen` (16:9 aspect ratio), `.card--row` (horizontal media card), `.card--panel` (solid dark surface), `.card--compact`.
+- **Media Grids & Rails**:
+  - Horizontal scrolling carousels: `.media-rail` (legacy alias: `.row-posters`).
+  - Fluid card grids: `.media-grid`, `.media-grid--posters` (search/playlist grids), `.media-grid--cast` (actor profile grid).
+- **Modals**: `.modal` overlay with dialog `.modal__dialog` (sizes: `.modal__dialog--sm`, `.modal__dialog--md`, `.modal__dialog--lg`, `.modal__dialog--xl`), `.modal__title`, `.modal__desc`, `.modal__body`, `.modal__footer`.
+- **Form Controls**: `.form-control-wrapper` (glassmorphic input container), `.form-input`, `.form-select-wrapper`, `.form-select`, `.form-toggle` / `.form-toggle__slider` (toggle switch).
+- **Chips & Badges**: Selection chips `.chip` (modifiers: `.chip--option`, `.chip--recent`, `.chip--rating`, `.chip--color`), `.badge` (variants: `.badge--primary`, `.badge--glass`), `.chip-grid`.
+- **Navigation Rail**: `.nav-rail` (alias: `.navbar`), `.nav-rail__header`, `.nav-rail__logo`, `.nav-rail__brand`, `.nav-rail__group`, `.nav-rail__group--bottom`, `.nav-item`, `.nav-item__icon`, `.nav-item__label`.
+- **Typography Tokens**: `.title-hero` (large fluid display title), `.section-title` (category/row header).
+- **Legacy Alias Invariant**: When refactoring or updating templates, NEVER delete legacy alias selectors (e.g. `.poster-wrapper`, `.btn-primary`, `.row-title`) from `global.css` while dynamic JavaScript string templates across the application still reference them.
+
+## 7. FOUC Prevention & Dark Mode Engine Safety
+- **Critical Inline Splash CSS**: `index.html` MUST ALWAYS retain the critical inline `<style>` block for `#splash-screen` to eliminate Flash of Unstyled Content (FOUC). `#splash-screen` must be fixed full-screen with `#050505` background and `z-index: 9999` so that raw DOM containers never flash before `global.css` parses.
+- **Dark Mode Meta Tags**: `index.html` MUST declare `<meta name="color-scheme" content="dark">` and `<meta name="darkreader-lock">` in `<head>` to prevent third-party dark mode extensions (such as Dark Reader) and browser auto-darkening engines from injecting unwanted container backgrounds (`#181a1b`) or outline borders (`rgb(119, 110, 98)`).
+- **Native Color-Scheme Declaration**: `:root` in `global.css` MUST always retain `color-scheme: dark;`.
