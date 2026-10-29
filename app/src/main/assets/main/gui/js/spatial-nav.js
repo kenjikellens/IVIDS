@@ -116,7 +116,7 @@ export const SpatialNav = {
             return null;
         }
 
-        const knownPageScrollArea = el.closest('.playlists-container, .livetv-list-column, .livetv-preview-column, .card--panel.epg-card, .epg-card');
+        const knownPageScrollArea = el.closest('.playlists-container, .livetv-list-column, .livetv-preview-column, .card--panel.epg-card, .epg-card, .details-seasons');
         if (knownPageScrollArea) return knownPageScrollArea;
 
         return this.getMainView();
@@ -794,6 +794,8 @@ export const SpatialNav = {
                 }
                 const heroPlayBtn = document.getElementById('play-btn');
                 if (heroPlayBtn && this.isVisible(heroPlayBtn)) return heroPlayBtn;
+                const detailsPlayBtn = document.getElementById('details-play');
+                if (detailsPlayBtn && this.isVisible(detailsPlayBtn)) return detailsPlayBtn;
                 const firstPoster = document.querySelector('.media-rail .card--poster.focusable, .media-rail .poster-wrapper.focusable, .row-posters .poster-wrapper.focusable');
                 if (firstPoster && this.isVisible(firstPoster)) return firstPoster;
             }

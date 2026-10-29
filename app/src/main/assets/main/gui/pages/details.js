@@ -7,9 +7,10 @@ import I18n from '../js/i18n.js';
 import { getLoaderHtml } from '../js/loader.js';
 import { ErrorHandler } from '../js/error-handler.js';
 import { imageCache } from '../../logic/image-cache.js';
-import { attachImageWithLoader, loadBackgroundWithLoader } from '../js/utils/ui-helper.js';
+import { attachImageWithLoader, loadBackgroundWithLoader, manageModal } from '../js/utils/ui-helper.js';
 
 let currentSeriesId = null;
+let closePlaylistModalFn = null;
 
 /**
  * Initializes the details page by fetching content metadata.
@@ -78,7 +79,10 @@ function render(item, type) {
     try {
         const bg = document.getElementById('details-backdrop');
         const pageLoader = document.getElementById('details-page-loader');
-        if (pageLoader) pageLoader.classList.add('hidden');
+        if (pageLoader) {
+            pageLoader.classList.add('hidden');
+            pageLoader.style.display = 'none';
+        }
         const detailsLayout = document.querySelector('.details-layout');
         if (detailsLayout) detailsLayout.classList.remove('is-loading');
         const title = document.getElementById('details-title');
@@ -287,15 +291,30 @@ function render(item, type) {
         const tabSeasons = document.getElementById('tab-seasons');
         const tabExtra = document.getElementById('tab-extra');
         const tabAbout = document.getElementById('tab-about');
-        if (tabSeasons) tabSeasons.onclick = () => switchTab('seasons');
-        if (tabExtra) tabExtra.onclick = () => switchTab('extra');
-        if (tabAbout) tabAbout.onclick = () => switchTab('about');
+        if (tabSeasons) {
+            tabSeasons.onclick = (e) => {
+                if (e) e.preventDefault();
+                switchTab('seasons');
+            };
+        }
+        if (tabExtra) {
+            tabExtra.onclick = (e) => {
+                if (e) e.preventDefault();
+                switchTab('extra');
+            };
+        }
+        if (tabAbout) {
+            tabAbout.onclick = (e) => {
+                if (e) e.preventDefault();
+                switchTab('about');
+            };
+        }
 
         // Toggle Seasons tab based on content type
         if (tabSeasons) {
             if (type === 'tv' && item.seasons && item.seasons.length > 0) {
                 tabSeasons.classList.remove('hidden');
-                tabSeasons.style.display = 'inline-block';
+                tabSeasons.style.display = 'inline-flex';
                 renderSeasons(item.seasons, item.id);
                 switchTab('seasons');
             } else {
@@ -347,7 +366,7 @@ function getRating(item, type) {
 
 /**
  * Handles opening and populating the Playlist selection modal list.
- * Updates the modal layout and binds item addition click events.
+ * Updates the modal layout, sets up focus trap, and binds item addition click events.
  * @param {Object} item - Media details metadata.
  * @param {string} type - Media type ('movie' or 'tv').
  */
@@ -363,8 +382,16 @@ function openPlaylistModal(item, type) {
             return;
         }
 
-        modal.classList.add('is-open');
-        modal.style.display = 'flex';
+        const closeModal = () => {
+            if (closePlaylistModalFn) {
+                closePlaylistModalFn();
+                closePlaylistModalFn = null;
+            } else {
+                modal.classList.remove('is-open');
+                modal.style.display = 'none';
+            }
+        };
+
         listContainer.innerHTML = '';
 
         let playlists = [];
@@ -407,8 +434,7 @@ function openPlaylistModal(item, type) {
 
                                 Playlists.addToPlaylist(playlist.id, itemToAdd);
                                 ErrorHandler.show(`${I18n.t('details.addedToPlaylist')} ${playlist.name}`, null, 'Success');
-                                modal.classList.remove('is-open');
-                                modal.style.display = 'none';
+                                closeModal();
                             } else {
                                 ErrorHandler.show(I18n.t('details.alreadyInPlaylist'));
                             }
@@ -426,11 +452,13 @@ function openPlaylistModal(item, type) {
         }
 
         if (cancelBtn) {
-            cancelBtn.onclick = () => {
-                modal.classList.remove('is-open');
-                modal.style.display = 'none';
-            };
+            cancelBtn.onclick = () => closeModal();
         }
+
+        const firstFocus = listContainer.querySelector('.btn.focusable') || cancelBtn;
+        closePlaylistModalFn = manageModal(modal, firstFocus, () => {
+            closePlaylistModalFn = null;
+        });
     } catch (error) {
         console.error('Error in openPlaylistModal:', error);
         ErrorHandler.show('Failed to open playlist modal.');
@@ -541,6 +569,8 @@ function renderSeasons(seasons, seriesId) {
         } catch (activateError) {
             console.error('Error activating first season:', activateError);
         }
+
+        SpatialNav.ensureTabindex(container);
     } catch (error) {
         console.error('Error in renderSeasons:', error);
     }
@@ -657,6 +687,8 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 console.error('Error rendering episode:', episodeError);
             }
         });
+
+        SpatialNav.ensureTabindex(container);
     } catch (error) {
         console.error('Error in renderEpisodes:', error);
         const container = document.getElementById('details-episodes');
@@ -675,6 +707,7 @@ function switchTab(tabName) {
     try {
         document.querySelectorAll('.tab-panel, .disney-tab-panel').forEach(panel => {
             panel.classList.add('hidden');
+            panel.style.display = 'none';
         });
         
         document.querySelectorAll('.tab-btn, .disney-tab-btn').forEach(btn => {
@@ -685,6 +718,8 @@ function switchTab(tabName) {
         const activePanel = document.getElementById(`panel-${tabName}`);
         if (activePanel) {
             activePanel.classList.remove('hidden');
+            activePanel.style.display = tabName === 'seasons' ? 'flex' : 'block';
+            SpatialNav.ensureTabindex(activePanel);
         }
         
         const activeBtn = document.getElementById(`tab-${tabName}`);
@@ -857,6 +892,8 @@ function renderExtras(videos, contentId, mediaType) {
             loadBackgroundWithLoader(card.querySelector('.card__thumb'), thumbUrl);
             container.appendChild(card);
         });
+
+        SpatialNav.ensureTabindex(container);
     } catch (error) {
         console.error('Error rendering extras:', error);
     }
@@ -887,11 +924,8 @@ function renderAbout(overview, credits) {
         const topCast = credits.cast.slice(0, 12);
         topCast.forEach(actor => {
             const card = document.createElement('div');
-            card.className = 'card card--compact disney-cast-card';
-            
-            const profileImgStyle = actor.profile_path 
-                ? `style="background-image: url('https://image.tmdb.org/t/p/w185${actor.profile_path}');"` 
-                : '';
+            card.className = 'card card--compact disney-cast-card focusable';
+            card.tabIndex = 0;
             
             card.innerHTML = `
                 <div class="disney-cast-img"></div>
@@ -904,6 +938,8 @@ function renderAbout(overview, credits) {
             }
             castContainer.appendChild(card);
         });
+
+        SpatialNav.ensureTabindex(castContainer);
     } catch (error) {
         console.error('Error rendering about info:', error);
     }

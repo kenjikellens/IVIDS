@@ -15,13 +15,13 @@ import { CACHE_CONFIG, NETWORK_CONFIG } from './constants.js';
 const MAX_ITEMS = CACHE_CONFIG.MAX_IMAGE_ITEMS;
 
 /** Maximum time in milliseconds to wait for a high-res image before falling back to low-res. */
-const HIGH_RES_TIMEOUT_MS = 3000;
+const HIGH_RES_TIMEOUT_MS = 8000;
 
 /** Maximum time in milliseconds to wait for a downgraded/low-res fallback image. */
-const FALLBACK_TIMEOUT_MS = 5000;
+const FALLBACK_TIMEOUT_MS = 10000;
 
 /** Maximum time in milliseconds to wait for an image when already in slow-network mode. */
-const SLOW_MODE_TIMEOUT_MS = 6000;
+const SLOW_MODE_TIMEOUT_MS = 10000;
 
 class ImageCache {
     constructor() {
@@ -34,7 +34,7 @@ class ImageCache {
         /** @type {number} Current active fetch request count. */
         this.activeRequests = 0;
         /** @type {number} Maximum concurrent network blob fetch requests. */
-        this.MAX_CONCURRENT = 6;
+        this.MAX_CONCURRENT = 8;
         /** @type {number} Generation counter to isolate active tasks across cache purges and reloads. */
         this._generation = 0;
         /** @type {boolean} When true, bypasses browser HTTP disk cache via { cache: 'reload' } for one refresh wave. */
@@ -278,7 +278,7 @@ class ImageCache {
                 const elapsedMs = Date.now() - startTime;
                 const mbps = elapsedMs > 0 ? (blob.size * 8) / (elapsedMs * 1000) : 999;
 
-                if (elapsedMs > 2500 || (blob.size > 20480 && mbps < NETWORK_CONFIG.SLOW_THRESHOLD_MBPS)) {
+                if (elapsedMs > 5000 || (blob.size > 20480 && mbps < NETWORK_CONFIG.SLOW_THRESHOLD_MBPS)) {
                     this._triggerSlowNetworkMode();
                 }
 

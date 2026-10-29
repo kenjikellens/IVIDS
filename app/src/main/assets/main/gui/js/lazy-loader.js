@@ -77,26 +77,36 @@ export class LazyLoader {
     }
 
     /**
-     * Loads a single poster element's image using ImageCache blob URLs where possible.
-     * Prevents network re-fetching on subsequent navigation and eliminates loader flicker.
+     * Loads a single poster element's image via native browser HTTP streaming.
+     * Directly assigns img.src to leverage browser HTTP cache, multi-threading, and hardware decoding.
+     * Supports Ctrl+F5 cache bypass and dynamic low-res fallback on slow connections.
      * @param {HTMLElement} element - The poster wrapper or image element.
      * @returns {Promise<void>} Resolves when the image has finished loading.
      */
     loadImage(element) {
         if (!element) return Promise.resolve();
         const img = element.tagName === 'IMG' ? element : element.querySelector('img');
-        if (!img || !img.dataset.src) return Promise.resolve();
+        if (!img) return Promise.resolve();
+
+        const originalUrl = img.dataset?.src;
+        if (!originalUrl) {
+            if (img.complete && img.naturalWidth > 0) {
+                img.style.opacity = '1';
+                const loader = element.querySelector('.poster-loader');
+                if (loader) loader.remove();
+            }
+            return Promise.resolve();
+        }
 
         if (this.observer) {
             this.observer.unobserve(element);
         }
 
-        const originalUrl = img.dataset.src;
+        img.removeAttribute('data-src');
 
-        // 1. If already in imageCache, render instantaneously with 0ms delay
-        if (imageCache.has(originalUrl)) {
+        // If already cached in memory, display instantly
+        if (typeof imageCache !== 'undefined' && imageCache.has(originalUrl)) {
             img.src = imageCache.get(originalUrl);
-            img.removeAttribute('data-src');
             img.style.opacity = '1';
             const loader = element.querySelector('.poster-loader');
             if (loader) loader.remove();
@@ -104,16 +114,13 @@ export class LazyLoader {
         }
 
         return new Promise((resolve) => {
-            if (!img.complete && !element.querySelector('.poster-loader')) {
-                const loader = createLoaderElement();
-                loader.classList.add('poster-loader');
-                element.appendChild(loader);
-            }
-
             let resolved = false;
+            let safetyTimer = null;
+
             const onComplete = () => {
                 if (resolved) return;
                 resolved = true;
+                if (safetyTimer) clearTimeout(safetyTimer);
                 img.style.opacity = '1';
                 const loader = element.querySelector('.poster-loader');
                 if (loader) loader.remove();
@@ -122,32 +129,24 @@ export class LazyLoader {
 
             img.addEventListener('load', onComplete, { once: true });
             img.addEventListener('error', onComplete, { once: true });
-            img.removeAttribute('data-src');
+            safetyTimer = setTimeout(onComplete, 10000);
 
-            const applyFallbackSrc = () => {
-                img.loading = 'lazy';
-                img.src = (typeof imageCache.isBypassActive === 'function' && imageCache.isBypassActive())
-                    ? `${originalUrl}${originalUrl.includes('?') ? '&' : '?'}ivids_reload=${Date.now()}`
-                    : originalUrl;
-            };
-            // 2. Fetch blob into ImageCache with fallback to original network URL
-            imageCache.getOrFetch(originalUrl).then(blobUrl => {
-                if (blobUrl) {
-                    img.src = blobUrl;
-                } else {
-                    img.loading = 'lazy';
-                    applyFallbackSrc();
+            // Determine target URL (handling cache-reload bypass and slow-network rewrite)
+            let targetUrl = originalUrl;
+            if (typeof imageCache !== 'undefined' && typeof imageCache.isBypassActive === 'function' && imageCache.isBypassActive()) {
+                targetUrl = `${originalUrl}${originalUrl.includes('?') ? '&' : '?'}ivids_reload=${Date.now()}`;
+            } else if (typeof window !== 'undefined' && window.__ividsSlowUntil && Date.now() < window.__ividsSlowUntil) {
+                if (typeof imageCache !== 'undefined' && typeof imageCache._rewriteUrlForSlowNetwork === 'function') {
+                    targetUrl = imageCache._rewriteUrlForSlowNetwork(originalUrl);
                 }
-                if (img.complete) {
-                    onComplete();
-                }
-            }).catch(() => {
-                img.loading = 'lazy';
-                applyFallbackSrc();
-                if (img.complete) {
-                    onComplete();
-                }
-            });
+            }
+
+            img.src = targetUrl;
+
+            // Handle instantaneous cache hit from browser memory cache
+            if (img.complete && img.naturalWidth > 0) {
+                onComplete();
+            }
         });
     }
 

@@ -368,6 +368,13 @@ input, textarea, select { font: inherit; }
     transition: border-color 150ms ease;
 }
 
+/* Focus state for compact cast cards with standard white border. */
+.card--compact:focus, .card--compact.focused {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+    outline: none;
+}
+
 /* Solid panel surface card for preview videos, EPG details, login, and version cards. */
 .card--panel {
     background: rgba(255, 255, 255, 0.04);
@@ -789,32 +796,59 @@ input, textarea, select { font: inherit; }
 .tab-bar--fill { border-bottom: none; padding-bottom: 0; }
 .tab-bar--fill .tab-btn { flex: 1; }
 
-/* Focusable tab button component for switching view panels. */
+/* Focusable tab button component for switching view panels, matching standard button geometry and tokens. */
 .tab-btn {
     align-items: center;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
     border: 3px solid transparent;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     box-sizing: border-box;
-    color: var(--text-muted);
+    color: #ffffff;
     cursor: pointer;
     display: inline-flex;
-    font-size: 14px;
+    font-family: inherit;
+    font-size: 15px;
     font-weight: 700;
-    height: 42px;
     justify-content: center;
-    padding: 0 18px;
+    line-height: 1;
+    min-height: 44px;
+    padding: 8px 22px;
     position: relative;
     text-align: center;
-    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+    user-select: none;
+    white-space: nowrap;
 }
-.tab-btn:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; color: #ffffff; }
-.tab-btn:focus, .tab-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
-.tab-btn.is-active, .tab-btn.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
-.tab-btn.is-active:focus, .tab-btn.is-active.focused, .tab-btn.active:focus, .tab-btn.active.focused { border-color: #ffffff; outline: none; }
+/* Hover state for tab button matching secondary button hover fill. */
+.tab-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; color: #ffffff; outline: none; }
+/* Focus state for tab button with standardized crisp white highlight border. */
+.tab-btn:focus, .tab-btn.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; color: #ffffff; outline: none; }
+/* Active tab button styled synchronously with brand theme primary action buttons. */
+.tab-btn.is-active, .tab-btn.active, .tab-btn.btn--primary {
+    background: rgba(var(--primary-rgb), 0.25);
+    border-color: transparent;
+    color: #ffffff;
+    font-weight: 800;
+}
+/* Hover state for active tab button matching primary button hover fill. */
+.tab-btn.is-active:hover, .tab-btn.active:hover, .tab-btn.btn--primary:hover {
+    background: rgba(var(--primary-rgb), 0.35);
+    border-color: transparent;
+    color: #ffffff;
+    outline: none;
+}
+/* Focus state for active tab button with standardized crisp white highlight border. */
+.tab-btn.is-active:focus, .tab-btn.is-active.focused, .tab-btn.active:focus, .tab-btn.active.focused, .tab-btn.btn--primary:focus, .tab-btn.btn--primary.focused {
+    background: rgba(var(--primary-rgb), 0.35);
+    border-color: #ffffff;
+    color: #ffffff;
+    outline: none;
+}
 
 /* Tab content panel component displayed conditionally. */
 .tab-panel { display: block; width: 100%; }
+/* Ensures hidden tab panels and full-page loader overlays remain hidden. */
+.tab-panel.hidden, .loader-center-container.hidden, #details-page-loader.hidden { display: none; pointer-events: none; }
 
 /* Standardized view top bar layout container for search inputs and action buttons. */
 .top-bar { align-items: center; box-sizing: border-box; display: flex; gap: 16px; justify-content: space-between; margin-bottom: 20px; width: 100%; }
@@ -858,6 +892,12 @@ input, textarea, select { font: inherit; }
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
 }
 
+/* Horizontal alignment for category row headings matching carousel poster rail padding. */
+.row-title, .row > .section-title {
+    padding-left: var(--app-content-padding-x);
+    padding-right: var(--app-content-padding-x);
+}
+
 /* Aligned category icon inside section titles. */
 .section-title__icon, .section-title-icon { display: block; flex-shrink: 0; height: 22px; object-fit: contain; width: 22px; }
 
@@ -884,29 +924,31 @@ input, textarea, select { font: inherit; }
 
 /* Fullscreen background poster wrapper with absolute positioning. */
 .media-backdrop, .details-backdrop, .playlist-backdrop {
-    background-color: #16181d;
-    background-image: radial-gradient(ellipse at 76% 24%, rgba(var(--primary-rgb), 0.34) 0%, rgba(var(--primary-rgb), 0.12) 42%, transparent 72%), linear-gradient(135deg, #252830 0%, #16181d 55%, #0c0d10 100%);
+    background-color: var(--background-color);
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 68vh;
+    height: 75vh;
+    min-height: 520px;
     inset: 0 0 auto 0;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
     overflow: hidden;
     position: absolute;
     z-index: 0;
 }
 .media-backdrop img, .details-backdrop img, .playlist-backdrop img { height: 100%; object-fit: cover; opacity: 0.22; width: 100%; }
 
-/* Linear gradient mask darkening background for high text contrast. */
+/* Linear gradient mask darkening background for high text contrast and seamless bottom fade. */
 .media-backdrop__overlay, .backdrop-overlay {
-    background: linear-gradient(90deg, rgba(16, 18, 22, 0.9) 0%, rgba(16, 18, 22, 0.65) 48%, rgba(16, 18, 22, 0.32) 100%), linear-gradient(0deg, #111318 0%, rgba(17, 19, 24, 0.55) 38%, transparent 100%);
+    background: linear-gradient(90deg, rgba(5, 5, 5, 0.94) 0%, rgba(5, 5, 5, 0.76) 45%, rgba(5, 5, 5, 0.3) 100%), linear-gradient(0deg, var(--background-color) 0%, rgba(5, 5, 5, 0.6) 40%, transparent 100%);
     inset: 0;
     position: absolute;
 }
 
 /* Ambient dark-grey and theme-accent overlay when no backdrop image is available. */
 .media-backdrop--empty .media-backdrop__overlay, .backdrop-overlay-empty {
-    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.32) 0%, rgba(var(--primary-rgb), 0.1) 46%, transparent 76%), linear-gradient(180deg, rgba(30, 33, 40, 0.25) 0%, #111318 100%);
+    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.22) 0%, rgba(var(--primary-rgb), 0.06) 46%, transparent 76%), linear-gradient(180deg, rgba(20, 22, 28, 0.4) 0%, var(--background-color) 100%);
 }
 
 /* Centered circular media action play indicator on trailers and cards. */
@@ -1332,8 +1374,8 @@ input, textarea, select { font: inherit; }
 
 /* Details page layout and hero metadata columns. */
 .details-page {
-    background: radial-gradient(circle at 80% 16%, rgba(var(--primary-rgb), 0.24) 0%, rgba(var(--primary-rgb), 0.07) 40%, transparent 70%), radial-gradient(circle at 14% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 52%), linear-gradient(165deg, #1f2229 0%, #13151a 48%, #0b0c0f 100%);
-    background-color: #13151a;
+    background-color: var(--background-color);
+    background: radial-gradient(circle at 80% 16%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 35%, transparent 65%), var(--background-color);
     height: auto;
     min-height: 100vh;
     padding-bottom: 3rem;
