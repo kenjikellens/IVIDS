@@ -1,7 +1,8 @@
-/*
-  Custom root variables defining design system tokens for portrait mobile viewports.
-  Specifies slightly larger poster sizes and margins for readability.
-*/
+/* ==========================================================================
+   IVIDS UNIFIED MOBILE & COMPACT VIEWPORT OVERRIDES (OOCSS)
+   ========================================================================== */
+
+/* Custom root variables defining design system tokens for portrait mobile viewports. */
 :root {
     --poster-width: clamp(110px, 27vw, 128px);
     --app-content-padding-x: 4%;
@@ -9,105 +10,92 @@
 }
 
 /* Block layout reset for mobile viewport. */
-#app {
-    display: block;
-    position: relative;
-    height: 100%;
-    width: 100%;
-}
+#app { display: block; height: 100%; position: relative; width: 100%; }
 
-/* Keeps the bottom navigation container at full width on mobile with v0.4.3 height. */
-/* CSS Class: Keeps the bottom navigation container at full width on mobile. Includes high-specificity selectors to override desktop rules. */
-#app #sidebar-container,
-#app.sidebar-always-expanded #sidebar-container {
-    position: fixed;
-    left: 0;
-    right: 0;
+/* Keeps the bottom navigation container at full width on mobile. */
+#app #sidebar-container, #app.sidebar-always-expanded #sidebar-container {
     bottom: 0;
+    flex-basis: auto;
+    height: auto;
+    left: 0;
+    padding-bottom: 0;
+    pointer-events: none;
+    position: fixed;
+    right: 0;
     top: auto;
     width: 100%;
-    height: auto;
-    padding-bottom: 0;
-    flex-basis: auto;
     z-index: 3000;
-    pointer-events: none;
 }
 
 /* Sizing, margin, and scrolling adjustments for main view area. */
 #main-view {
-    height: 100vh;
-    width: 100vw;
-    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
     box-sizing: border-box;
+    height: 100vh;
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    width: 100vw;
 }
 
-/* CSS Class: Mobile bottom navigation bar surface */
-#app .nav-rail,
-#app .navbar {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: auto;
-    width: 100%;
-    height: auto;
-    padding: 6px calc(12px + env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
-    flex-direction: row;
+/* Mobile bottom navigation bar surface. */
+#app .nav-rail, #app .navbar {
     align-items: center;
-    justify-content: space-between;
-    gap: 4px;
-    overflow: visible;
+    background: rgba(0, 0, 0, 0.98);
     border-right: none;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.98);
-    pointer-events: auto;
-}
-
-/* CSS Class: Unwraps nav item containers to let items space evenly across navbar */
-#app .nav-rail__group,
-#app .nav-links,
-#app .nav-utilities {
-    display: contents;
-}
-
-/* CSS Class: Layout and spacing override for bottom nav item */
-#app .nav-item {
-    flex: 1 1 0;
-    max-width: 52px;
-    width: 100%;
+    bottom: 0;
+    flex-direction: row;
+    gap: 4px;
     height: auto;
-    aspect-ratio: 1 / 1;
-    padding: 0;
-    margin: 0;
-    display: flex;
+    justify-content: space-between;
+    left: 0;
+    overflow: visible;
+    padding: 6px calc(12px + env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
+    pointer-events: auto;
+    position: fixed;
+    right: 0;
+    top: auto;
+    width: 100%;
+}
+
+/* Unwraps nav item containers to let items space evenly across navbar. */
+#app .nav-rail__group, #app .nav-links, #app .nav-utilities { display: contents; }
+
+/* Layout and spacing override for bottom nav item. */
+#app .nav-item, #app.sidebar-always-expanded .nav-item {
     align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    border: 2px solid transparent;
+    aspect-ratio: 1 / 1;
     background: transparent;
-}
-
-/* CSS Class: Nav icon sizing and margins */
-#app .nav-item__icon,
-#app .nav-icon {
-    width: 25px;
-    height: 25px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    display: flex;
+    flex: 1 1 0;
+    height: auto;
+    justify-content: center;
     margin: 0;
-    flex-basis: 25px;
+    max-width: 52px;
+    padding: 0;
+    width: 100%;
 }
 
-/* CSS Class: Hides elements that should not render on mobile bottom navigation */
-#app .nav-rail__header,
-#app .logo-container,
-#app .nav-item__label,
-#app .nav-item span,
-#app .nav-item::before,
-#app .nav-item[data-route="livetv"],
-#app .nav-item[data-route="music"] {
+/* Active and focused states for mobile bottom navigation items. */
+#app .nav-item.active, #app.sidebar-always-expanded .nav-item.active {
+    background: rgba(var(--primary-rgb), 0.16);
+    border-color: var(--primary-color);
+}
+#app .nav-item:focus, #app .nav-item.focused, #app.sidebar-always-expanded .nav-item:focus, #app.sidebar-always-expanded .nav-item.focused {
+    border: 3px solid #ffffff;
+    outline: none;
+}
+
+/* Nav icon sizing and margins on mobile. */
+#app .nav-item__icon, #app .nav-icon { flex-basis: 25px; height: 25px; margin: 0; width: 25px; }
+
+/* Hides elements that should not render on mobile bottom navigation. */
+#app .nav-rail__header, #app .logo-container, #app .nav-item__label, #app .nav-item span,
+#app .nav-item::before, #app .nav-item[data-route="livetv"], #app .nav-item[data-route="music"] {
     display: none;
 }
 
-/* Ordering for mobile navigation items */
+/* Ordering for mobile navigation items. */
 #app .nav-item[data-route="home"] { order: 1; }
 #app .nav-item[data-route="movies"] { order: 2; }
 #app .nav-item[data-route="series"] { order: 3; }
@@ -116,888 +104,177 @@
 #app .nav-item[data-route="account"] { order: 6; }
 #app .nav-item[data-route="settings"] { order: 7; }
 
-/* CSS Class: Colors the active or focused navigation icon with the solid theme accent color. Includes specificity overrides. */
-#app .nav-item.active .nav-icon,
-#app .nav-item:hover .nav-icon,
-#app .nav-item:focus .nav-icon,
-#app .nav-item.focused .nav-icon,
-#app.sidebar-always-expanded .nav-item.active .nav-icon,
-#app.sidebar-always-expanded .nav-item:hover .nav-icon,
-#app.sidebar-always-expanded .nav-item:focus .nav-icon,
-#app.sidebar-always-expanded .nav-item.focused .nav-icon {
-    background-color: var(--primary-color) !important;
+/* Colors the active or focused navigation icon with the solid theme accent color. */
+#app .nav-item.active .nav-icon, #app .nav-item:hover .nav-icon, #app .nav-item:focus .nav-icon, #app .nav-item.focused .nav-icon,
+#app.sidebar-always-expanded .nav-item.active .nav-icon, #app.sidebar-always-expanded .nav-item:hover .nav-icon,
+#app.sidebar-always-expanded .nav-item:focus .nav-icon, #app.sidebar-always-expanded .nav-item.focused .nav-icon {
+    background-color: var(--primary-color);
 }
 
-/* Height and layout adjustments for the hero banner. */
-#app .hero {
-    height: 45vh;
-    min-height: 320px;
-    padding: 0 4% 5%;
-    align-items: flex-end;
-}
+/* Height and layout adjustments for the hero banner on mobile. */
+#app .hero { align-items: flex-end; height: 45vh; min-height: 320px; padding: 0 4% 5%; }
+#app .hero-slide { background-attachment: scroll; background-position: center top; background-size: cover; }
+#app .hero-content { margin: 0 auto; text-align: center; width: 100%; }
+#app .hero-buttons { display: flex; justify-content: center; margin-top: 4px; width: 100%; }
+#app .hero-buttons .btn { margin: 0 auto; max-width: 90%; padding: 10px 24px; width: fit-content; }
 
-/* Fix mobile hero backdrop image zoom issue caused by background-attachment: fixed */
-#app .hero-slide {
-    background-attachment: scroll !important;
-    background-position: center top !important;
-    background-size: cover !important;
-}
-
-/* Position and alignment wrapper for hero section text content. */
-#app .hero-content {
-    width: 100%;
-    text-align: center;
-    margin: 0 auto;
-}
-
-/* Typography scaling for primary hero banner title on mobile screens. */
-/* Mobile hero title adjustment handled via fluid clamp */
-
-/* Grid display and alignment for play buttons in hero area. */
-#app .hero-buttons {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 4px;
-}
-
-/* Size adjustments for primary buttons inside hero action layout. */
-#app .hero-buttons .btn {
-    width: fit-content;
-    max-width: 90%;
-    margin: 0 auto;
-    padding: 10px 24px;
-}
-
-/* Typography size adjustments for media row headings on mobile viewports. */
-/* Mobile row title adjustment handled via fluid clamp */
-
-/* Scrolling and gap adjustments for row lists. */
-#app .media-rail,
-#app .row-posters {
-    padding: 2% 4% 4%;
-    gap: 10px;
-}
+/* Scrolling and gap adjustments for media rails. */
+#app .media-rail, #app .row-posters { gap: 10px; padding: 2% 4% 4%; }
 
 /* Search main view area padding override with safe area inset for top status bar. */
-#app .search-main {
-    padding: calc(16px + env(safe-area-inset-top, 24px)) 4% 2%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-/* Main search layout wrapper padding and dimensions. */
-#app .search-container-wrapper {
-    width: 92%;
-    max-width: 100%;
-    margin: 10px auto 2%;
-}
-
-/* Grid display and alignment for search chips and results container. */
-#app .recent-searches-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-}
-
-/* Spacing and mask properties for search page results wrapper. */
-#app .results-container {
-    -webkit-mask-image: none;
-    mask-image: none;
-    padding-left: 2%;
-    padding-right: 2%;
-    padding-top: 2%;
-    padding-bottom: 8%;
-}
-
-/* Dynamic columns grid layout for search result posters. */
-#app .media-grid--posters,
-#app .search-results-grid {
+#app .search-main { box-sizing: border-box; height: 100%; padding: calc(16px + env(safe-area-inset-top, 24px)) 4% 2%; }
+#app .search-container-wrapper { margin: 10px auto 2%; max-width: 100%; width: 92%; }
+#app .recent-searches-row { align-items: flex-start; flex-direction: column; gap: 8px; }
+#app .results-container { -webkit-mask-image: none; mask-image: none; padding: 2% 2% 8%; }
+#app .media-grid--posters, #app .search-results-grid {
     --poster-width: clamp(86px, 26vw, 108px);
     gap: 10px;
     grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
 }
+.filter-main-grid { gap: 12px; grid-template-columns: 1fr; }
 
-/* Single column collapsing layout for filter main sections. */
-.filter-main-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-}
+/* Stacked content layout for the movie and TV details page header on mobile. */
+#app .details-top { align-items: center; display: flex; flex-direction: column; gap: 12px; padding-top: calc(10px + env(safe-area-inset-top, 16px)); text-align: center; }
+#app .details-poster-container { display: flex; justify-content: center; margin-bottom: 4px; order: 1; width: 100%; }
+#app .details-hero-poster { border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 5px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7); height: auto; max-width: 35vw; min-width: 100px; width: 130px; }
+#app .details-info { align-items: center; display: flex; flex-direction: column; max-width: 100%; order: 2; text-align: center; width: 100%; }
+#app .details-overview { display: none; }
+#app .details-backdrop { height: 35vh; }
+#app .details-meta, #app .details-genres { align-items: center; justify-content: center; margin-bottom: 10px; }
+#app .details-actions { align-items: center; display: flex; flex-direction: column; gap: 10px; justify-content: center; margin: 6px 0 16px; width: 100%; }
+#app .details-actions .btn { border-radius: 5px; font-size: 15px; padding: 12px 16px; width: 100%; }
 
-/* Single column layout for filter options, chips, and selection grids on mobile to stack them vertically. */
-.filter-options.horizontal,
-.filter-chips-grid,
-.genre-grid,
-.select-options-grid {
-    grid-template-columns: 1fr;
-}
+/* Tab panels and About section on mobile details view. */
+#app .tab-panel.hidden, #app .details-bottom.hidden { display: none; }
+#app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+#app .disney-about-content { flex-direction: column; gap: 20px; padding-bottom: 40px; width: 100%; }
+#app .disney-about-left, #app .disney-about-right { width: 100%; }
+#app .media-grid--cast, #app .disney-cast-grid { gap: 10px; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); width: 100%; }
+#app .details-seasons { backdrop-filter: none; background: transparent; border: none; max-height: none; padding: 0; width: 100%; }
+#app .seasons-list-content { display: none; }
+#app .seasons-dropdown-wrapper { display: flex; }
 
-/* Stacked content layout for the movie and tv details page header. */
-#app .details-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    text-align: center;
-    padding-top: calc(10px + env(safe-area-inset-top, 16px));
-}
+/* Stacked column flow layout for horizontal row cards on mobile. */
+#app .card--row { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
+#app .card__thumb, #app .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
+#app .card__body { width: 100%; }
 
-/* Poster container positioned at the very top (order: 1) above title */
-#app .details-poster-container {
-    order: 1;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 4px;
-}
+/* Live TV mobile layout overrides. */
+#app .livetv-top-bar { align-items: stretch; flex-direction: column; gap: 10px; padding: 4% var(--app-content-padding-x) 0; }
+#app .livetv-top-actions { justify-content: space-between; width: 100%; }
+#app .form-select-wrapper { flex: 1; height: 48px; }
+#app .livetv-two-column-layout { flex-direction: column-reverse; gap: 15px; padding: 4% var(--app-content-padding-x); }
+#app .livetv-list-column { height: 40vh; width: 100%; }
+#app .livetv-preview-column { height: auto; width: 100%; }
+#app .preview-card-video { height: 30vh; }
 
-/* Small, compact details view portrait image (poster). */
-#app .details-hero-poster {
-    width: 130px;
-    max-width: 35vw;
-    min-width: 100px;
-    height: auto;
-    border-radius: 5px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-}
-
-/* Metadata and title container positioned below poster (order: 2). */
-#app .details-info {
-    order: 2;
-    max-width: 100%;
-    width: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Title typography scaling on mobile viewports. */
-#app .details-title,
-/* Mobile details title adjustment handled via fluid clamp */
-
-/* Hides top overview/description on mobile so it doesn't take 50% screen space (it belongs in the "Over" tab). */
-#app .details-overview {
-    display: none !important;
-}
-
-/* Height reduction for film details backdrop. */
-#app .details-backdrop {
-    height: 35vh;
-}
-
-/* Centering layout for metadata listings under title. */
-#app .details-meta,
-#app .details-genres {
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-/* Vertical stack display for action buttons below title and metadata. */
-#app .details-actions {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
-    margin-top: 6px;
-    margin-bottom: 16px;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Full width action buttons for touch interaction on mobile. */
-#app .details-actions .btn {
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 15px;
-    border-radius: 5px;
-}
-
-/* FIX: Forces inactive tab panels to hide on mobile regardless of ID selector specificity. */
-#app .disney-tab-panel.hidden,
-#app .details-bottom.hidden {
-    display: none !important;
-}
-
-/* Active tab panel layout rules for mobile viewports. */
-#app .disney-tab-panel:not(.hidden),
-#app .details-bottom:not(.hidden) {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-}
-
-/* Mobile override for "Over" (About) tab container layout. */
-#app .disney-about-content {
-    flex-direction: column;
-    gap: 20px;
-    padding-bottom: 40px;
-    width: 100%;
-}
-
-/* Full width allocation for synopsis and cast sections inside "Over" tab. */
-#app .disney-about-left,
-#app .disney-about-right {
-    width: 100%;
-}
-
-/* Cast grid scaling on mobile screens. */
-#app .media-grid--cast,
-#app .disney-cast-grid {
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 10px;
-    width: 100%;
-}
-
-/* Mobile layout override for seasons container. */
-#app .details-seasons {
-    background: transparent;
-    border: none;
-    backdrop-filter: none;
-    padding: 0;
-    width: 100%;
-    max-height: none;
-}
-
-/* Hide the desktop seasons button list on mobile viewports. */
-#app .seasons-list-content {
-    display: none;
-}
-
-/* Display the seasons select dropdown wrapper on mobile viewports. */
-#app .seasons-dropdown-wrapper {
-    display: flex;
-}
-
-/* Stacked column flow layout for episode description items. */
-#app .card--row,
-#app .episode-item {
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-}
-
-/* Dimension scale and aspect ratio fit for episode thumbnail. */
-#app .episode-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-}
-
-/* Width allocation for details info container of an episode. */
-#app .episode-info {
-    width: 100%;
-}
-
-/* Stacked columns for Live TV top bar. */
-#app .livetv-top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 4% var(--app-content-padding-x) 0;
-}
-
-/* Note: Consolidated into grouped width block at the bottom of the file */
-
-/* Spacing and width settings for Live TV selector controls. */
-#app .livetv-top-actions {
-    width: 100%;
-    justify-content: space-between;
-}
-
-/* Flex sizing adjustments for Live TV guide filter select tags. */
-#app .form-select-wrapper {
-    flex: 1;
-    height: 48px;
-}
-
-/* Stacked column reverse flow for live TV viewport columns. */
-#app .livetv-two-column-layout {
-    flex-direction: column-reverse;
-    gap: 15px;
-    padding: 4% var(--app-content-padding-x);
-}
-
-/* Sizing overrides for Live TV channel sidebar list column. */
-#app .livetv-list-column {
-    width: 100%;
-    height: 40vh;
-}
-
-/* Sizing overrides for Live TV channel active player column. */
-#app .livetv-preview-column {
-    width: 100%;
-    height: auto;
-}
-
-/* Scale down for Live TV preview video container. */
-#app .card--panel.preview-card-video,
-#app .preview-card-video {
-    height: 30vh;
-}
-
-/* Single column grid flow for custom playlists grid. */
-#app .media-grid--widescreen,
-#app .playlists-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-}
+/* Single column grid flow for custom playlists grid on mobile. */
+#app .media-grid--widescreen, #app .playlists-grid { gap: 12px; grid-template-columns: 1fr; }
 
 /* Mobile container top padding overrides to accommodate phone top status bar and notch areas. */
-#app .playlists-container,
-#app .settings-container,
-#app .account-container,
-#app .page-container {
-    padding-top: calc(16px + env(safe-area-inset-top, 24px)) !important;
-    padding-left: var(--app-content-padding-x);
-    padding-right: var(--app-content-padding-x);
-    padding-bottom: 72px;
-    width: 100%;
+#app .playlists-container, #app .settings-container, #app .account-container, #app .page-container {
     box-sizing: border-box;
-}
-
-/* Mobile page header vertical stacking */
-#app .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-}
-
-/* Typography scaling for Settings page header text. */
-#app .settings-header h1 {
-    font-size: clamp(26px, 6.5vw, 31px);
-}
-
-/* Mobile Settings section card styling */
-#app .settings-section {
-    padding: 18px 16px;
-    margin-bottom: 20px;
-    border-radius: var(--radius-md);
-}
-
-/* Mobile Settings section title styling */
-#app .settings-section .section-title {
-    font-size: 15px;
-    gap: 10px;
-    margin-bottom: 4px;
-}
-
-/* Mobile Settings row: clean responsive horizontal flex layout */
-#app .setting-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Remove top border from first setting item */
-#app .setting-item:first-of-type {
-    border-top: none;
-}
-
-/* Centered setting item alignment on mobile */
-#app .setting-item.centered-setting {
-    justify-content: center;
-    padding: 16px 0;
-}
-
-/* Setting info text container */
-#app .setting-info {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-/* Setting label typography on mobile */
-#app .setting-label {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 2px;
-}
-
-/* Setting description typography on mobile */
-#app .setting-description {
-    font-size: 13px;
-    line-height: 1.35;
-    color: var(--text-muted);
-}
-
-/* Mobile Settings control container: right-aligned inline controls */
-#app .setting-control {
-    display: flex;
-    flex: 0 0 auto;
-    width: auto;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-}
-
-/* CSS Class: Centered layout override for update check row container on mobile viewports. */
-#app #manual-check-container {
-    align-items: center;
-    text-align: center;
-}
-
-/* CSS Class: Center-aligned update control buttons and status labels on mobile viewports. */
-#app #manual-check-container .setting-control {
-    justify-content: center;
-}
-
-/* Mobile current value readout chip */
-#app .current-value-display {
-    font-size: 14px;
-    font-weight: 700;
-    height: 40px;
-    padding: 0 12px;
-    max-width: 150px;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Mobile circular edit trigger button */
-#app .edit-trigger {
-    height: 40px;
-    width: 40px;
-    min-height: 40px;
-    min-width: 40px;
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
-}
-
-/* Setting edit SVG icon sizing on mobile */
-#app .setting-edit-icon {
-    width: 18px;
-    height: 18px;
-}
-
-/* Mobile UI scale stepper control */
-#app .scale-control-container {
-    align-items: center;
-    display: inline-flex;
-    flex-direction: row;
-    flex-shrink: 0;
-    gap: 4px;
-    height: 40px;
-    padding: 3px 4px;
-    width: auto;
-    border-radius: var(--radius-sm);
-}
-
-/* UI scale adjust minus and plus button sizing */
-#app .scale-adjust-btn {
-    height: 32px;
-    min-height: 32px;
-    min-width: 32px;
-    width: 32px;
-    font-size: 17px;
-    border-radius: var(--radius-sm);
-}
-
-/* Value display inside scale stepper */
-#app .scale-control-container .centered-value {
-    flex: none;
-    min-width: 44px;
-    font-size: 14px;
-    width: auto;
-}
-
-/* Mobile toggle switch container */
-#app .form-toggle {
-    height: 32px;
-    width: 58px;
-    flex-shrink: 0;
-    border-radius: 999px;
-}
-
-/* Mobile toggle switch slider circle */
-#app .form-toggle__slider {
-    height: 22px;
-    width: 22px;
-    top: 2px;
-    left: 2px;
-}
-
-/* Checked position for mobile toggle slider circle */
-#app .form-toggle:has(input:checked) .form-toggle__slider {
-    left: 28px;
-}
-
-/* Mobile color preview swatch */
-#app .color-preview-circle,
-#app #current-color-display {
-    height: 32px;
-    width: 32px;
-}
-
-/* Typography scaling for Account page header. */
-#app .account-header h1 {
-    font-size: clamp(18px, 4.5vw, 22px);
-}
-
-/* Stacked layout flow for account user profile item container. */
-#app .profile-display,
-#app .account-profile-hero {
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    text-align: center;
-}
-
-/* Sizing overrides for profile avatar box on mobile. */
-#app .profile-avatar.large {
-    flex: 0 0 100px;
-    height: 100px;
-    width: 100px;
-    font-size: 40px;
-}
-
-/* Sizing overrides for profile username label. */
-#app .profile-name-text {
-    font-size: 24px;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-/* Centered positioning wrapper for profile control buttons and meta tags on mobile. */
-#app .profile-actions,
-#app .profile-meta-row {
-    justify-content: center;
+    padding: calc(16px + env(safe-area-inset-top, 24px)) var(--app-content-padding-x) 72px;
     width: 100%;
 }
+#app .page-header { align-items: flex-start; flex-direction: column; gap: 12px; }
 
-/* Single-column stacked grid for account library stats on mobile viewports. */
-#app .account-stats-grid {
-    grid-template-columns: 1fr;
-}
+/* Mobile Settings and Account typography and section card overrides. */
+#app .page-title, #app .settings-header h1, #app .account-header h1 { font-size: clamp(24px, 6vw, 30px); }
+#app .settings-section, #app .account-section { border-radius: var(--radius-md); margin-bottom: 20px; padding: 18px 16px; }
+#app .settings-section .section-title { font-size: 15px; gap: 10px; margin-bottom: 4px; }
+#app .setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: row; gap: 12px; justify-content: space-between; padding: 14px 0; }
+#app .setting-item:first-of-type { border-top: none; }
+#app .setting-item.centered-setting { justify-content: center; padding: 16px 0; }
+#app .setting-info { flex: 1 1 auto; min-width: 0; }
+#app .setting-label { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+#app .setting-description { color: var(--text-muted); font-size: 13px; line-height: 1.35; }
+#app .setting-control { align-items: center; display: flex; flex: 0 0 auto; gap: 8px; justify-content: flex-end; width: auto; }
+#app #manual-check-container { align-items: center; text-align: center; }
+#app #manual-check-container .setting-control { justify-content: center; }
+#app .current-value-display { border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; height: 40px; max-width: 150px; overflow: hidden; padding: 0 12px; text-overflow: ellipsis; white-space: nowrap; }
+#app .btn--square, #app .edit-trigger { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
+#app .setting-edit-icon { height: 18px; width: 18px; }
+#app .scale-control-container { align-items: center; border-radius: var(--radius-sm); display: inline-flex; flex-direction: row; flex-shrink: 0; gap: 4px; height: 40px; padding: 3px 4px; width: auto; }
+#app .btn--square-sm, #app .scale-adjust-btn { border-radius: var(--radius-sm); font-size: 17px; height: 32px; min-height: 32px; min-width: 32px; width: 32px; }
+#app .scale-control-container .centered-value { flex: none; font-size: 14px; min-width: 44px; width: auto; }
+#app .form-toggle { border-radius: 999px; flex-shrink: 0; height: 32px; width: 58px; }
+#app .form-toggle__slider { height: 22px; left: 2px; top: 2px; width: 22px; }
+#app .form-toggle:has(input:checked) .form-toggle__slider { left: 28px; }
+#app .color-preview-circle, #app #current-color-display { height: 32px; width: 32px; }
 
-/* Padding and width adjustments for login modal card on mobile viewports. */
-#app .login-card {
-    padding: 24px 20px;
-}
+/* Account profile layout on mobile. */
+#app .profile-display { align-items: center; flex-direction: column; gap: 20px; text-align: center; }
+#app .profile-avatar.large { flex: 0 0 100px; font-size: 40px; height: 100px; width: 100px; }
+#app .profile-name-text { font-size: 24px; margin-bottom: 12px; text-align: center; }
+#app .profile-actions { justify-content: center; width: 100%; }
+#app .login-panel { padding: 24px 20px; }
 
-/* Note: Consolidated profile-actions width, and removed redundant modal-content layout rule block */
+/* Modal sizing, padding, and height constraints for mobile screens. */
+#app .modal__dialog { box-sizing: border-box; display: flex; flex-direction: column; margin: 0 auto; max-height: 82vh; max-width: 350px; padding: 16px; width: 90vw; }
+.modal__title { font-size: 20px; padding: 12px 16px 8px; }
+.modal__body { max-height: 55vh; overflow-y: auto; padding: 4px; }
+#app .modal__body--scroll { -webkit-overflow-scrolling: touch; flex: 1 1 auto; max-height: 55vh; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; touch-action: pan-y; }
+#app .modal__footer { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; padding: 0; width: 100%; }
+#app .modal__footer .btn { flex: none; min-height: 44px; min-width: 0; width: 100%; }
 
-/* CSS Class: Margins adjustments for modal labels on mobile. */
-.modal__title,
-.modal-title {
-    font-size: 20px;
-    padding: 12px 16px 8px;
-}
+/* Chip grids, provider items, and language stepper on mobile. */
+.chip-grid--color { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.chip--color { min-height: 68px; padding: 8px; }
+.provider-item { align-items: stretch; flex-direction: column; gap: 8px; padding: 10px; }
+.provider-actions { justify-content: flex-end; }
+#app .language-stepper-container { align-items: center; display: flex; gap: 8px; justify-content: center; margin: 12px 0 20px; width: 100%; }
+#app .language-stepper-value { align-items: center; display: flex; font-size: 15px; font-weight: 700; gap: 8px; justify-content: center; max-width: 200px; min-height: 46px; min-width: 0; padding: 0 12px; text-align: center; width: 100%; }
+#app .display-flag-span, #app .language-stepper-value .display-flag-span { font-size: 18px; margin-right: 6px; }
+#app .stepper-arrow-btn { align-items: center; border-radius: 50%; display: flex; flex-shrink: 0; height: 42px; justify-content: center; min-height: 42px; min-width: 42px; width: 42px; }
+#app .stepper-arrow-btn svg, #app .stepper-arrow-btn img { height: 18px; width: 18px; }
 
-/* CSS Class: Layout scaling and spacing adjustments for modal footers. */
-.modal__footer,
-.modal-footer {
-    padding: 12px 16px 16px;
-    gap: 8px;
-    width: 100%;
-}
+/* Mobile button touch targets and geometry. */
+#app .btn { border-radius: var(--radius-md); font-size: 14px; gap: 8px; min-height: 44px; padding: 10px 20px; }
+#app .btn--sm, #app .btn-small { font-size: 13px; min-height: 36px; padding: 6px 14px; }
+#app .btn--circle, #app .btn-circle { border-radius: 50%; height: 38px; min-height: 38px; min-width: 38px; padding: 0; width: 38px; }
+#app .btn--circle-lg { border-radius: 50%; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
+#app .btn--circle-xl { border-radius: 50%; height: 56px; min-height: 56px; min-width: 56px; padding: 0; width: 56px; }
 
-/* CSS Class: Scrollable modal body with max height constraint to prevent overflow on mobile */
-.modal__body,
-.modal-body {
-    max-height: 55vh;
-    overflow-y: auto;
-    padding: 4px;
-}
+/* Toast notifications and version badges on mobile. */
+.toast-container, .toast-container.bottom-right, .toast-container.top-right { bottom: auto; left: 0; margin: 0 auto; max-width: 400px; right: 0; top: 20px; width: 90%; }
+.toast { transform: translateY(-120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease; }
+.toast.visible { opacity: 1; transform: translateY(0); }
+.toast:not(.visible) { opacity: 0; transform: translateY(-120%); }
+#app .version-option-list { flex-direction: column; }
+.version-badge-container { align-items: center; flex-direction: column; gap: 6px; }
+.version-arrow { transform: rotate(90deg); }
+.network-status-overlay { bottom: calc(var(--app-sidebar-width, 64px) + 16px); right: 16px; }
+#app .details-actions .btn, #app .profile-actions .btn, #app .livetv-top-bar .search-box, .form-input { width: 100%; }
 
-/* Option grid styled with 2 columns to prevent text clipping of option chips on mobile */
-.option-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    padding: 4px 0 12px;
-}
-
-/* Color option grid styled with 3 columns for larger touch targets on mobile */
-.color-option-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-}
-
-/* Sizing adjustments for color selector chips on mobile */
-.chip--color {
-    min-height: 68px;
-    padding: 8px;
-}
-
-/* Flex layout stack for provider and playlist items on mobile */
-.provider-item {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 10px;
-}
-
-/* Note: Consolidated into grouped width block at the bottom of the file */
-
-/* Alignment of control actions to the right inside provider list items on mobile */
-.provider-actions {
-    justify-content: flex-end;
-}
-
-/* CSS Class: Mobile layout override to center and standardise position of toast notifications horizontally at the top. */
-.toast-container,
-.toast-container.bottom-right,
-.toast-container.top-right {
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    width: 90%;
-    max-width: 400px;
-    top: 20px;
-    bottom: auto;
-}
-
-/* CSS Class: Mobile toast animation overrides - entrance and upward exit transition */
-.toast {
-    transform: translateY(-120%);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
-}
-
-.toast.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.toast:not(.visible) {
-    opacity: 0;
-    transform: translateY(-120%);
-}
-
-/* CSS Class: Mobile override for the version selector modal options list to ensure a stacked layout. */
-#app .version-option-list {
-    flex-direction: column;
-}
-
-/* CSS Class: Mobile override for version badge container to stack version badges vertically. */
-.version-badge-container {
-    flex-direction: column;
-    gap: 6px;
-    align-items: center;
-}
-
-/* CSS Class: Mobile override for version badge arrow to point downwards in vertical layout. */
-.version-arrow {
-    transform: rotate(90deg);
-}
-
-/* Raise network status overlay above bottom navigation bar */
-.network-status-overlay {
-    bottom: calc(var(--app-sidebar-width, 64px) + 16px) !important;
-    right: 16px !important;
-}
-
-/* Bottom navigation bar active/focused item overrides */
-#app .nav-item,
-#app.sidebar-always-expanded .nav-item {
-    border: 2px solid transparent !important;
-}
-#app .nav-item.active,
-#app.sidebar-always-expanded .nav-item.active {
-    border: 2px solid var(--primary-color) !important;
-    background: rgba(var(--primary-rgb), 0.16) !important;
-}
-#app .nav-item:focus,
-#app .nav-item.focused,
-#app.sidebar-always-expanded .nav-item:focus,
-#app.sidebar-always-expanded .nav-item.focused {
-    border: 3px solid #ffffff !important;
-    outline: none !important;
-}
-
-/* CSS Class: Modal sizing, padding, and height constraints for mobile screens. */
-#app .modal__dialog,
-#app .modal-content {
-    padding: 16px;
-    max-height: 82vh !important;
-    width: 90vw !important;
-    max-width: 350px !important;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-/* Mobile button touch targets and geometry */
-#app .btn {
-    min-height: 44px;
-    padding: 10px 20px;
-    font-size: 14px;
-    border-radius: var(--radius-md);
-    gap: 8px;
-}
-
-/* CSS Class: Small button modifier for mobile */
-#app .btn--sm,
-#app .btn-small {
-    min-height: 36px;
-    padding: 6px 14px;
-    font-size: 13px;
-}
-
-/* CSS Class: Circular button modifier for mobile */
-#app .btn--circle,
-#app .btn-circle {
-    height: 38px;
-    width: 38px;
-    min-height: 38px;
-    min-width: 38px;
-}
-
-/* Mobile Language Stepper sizing and overflow prevention */
-#app .language-stepper-container {
-    align-items: center;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin: 12px 0 20px;
-    width: 100%;
-}
-
-/* Language stepper display chip for mobile */
-#app .language-stepper-value {
-    align-items: center;
-    display: flex;
-    font-size: 15px;
-    font-weight: 700;
-    gap: 8px;
-    justify-content: center;
-    min-height: 46px;
-    min-width: 0 !important;
-    max-width: 200px;
-    padding: 0 12px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Flag emoji sizing on mobile */
-#app .display-flag-span,
-#app .language-stepper-value .display-flag-span {
-    font-size: 18px;
-    margin-right: 6px;
-}
-
-/* Stepper arrow navigation button on mobile */
-#app .stepper-arrow-btn {
-    align-items: center;
-    display: flex;
-    flex-shrink: 0;
-    height: 42px;
-    justify-content: center;
-    min-height: 42px;
-    min-width: 42px;
-    width: 42px;
-}
-
-/* Stepper arrow SVG icon on mobile */
-#app .stepper-arrow-btn svg,
-#app .stepper-arrow-btn img {
-    height: 18px;
-    width: 18px;
-}
-
-/* CSS Class: Modal action buttons vertical layout for mobile */
-#app .modal__footer,
-#app .modal-footer,
-#app .modal-actions,
-#app .vertical-modal-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 14px;
-    padding: 0;
-    width: 100%;
-}
-
-/* CSS Class: Full width buttons inside modal footers on mobile */
-#app .modal__footer .btn,
-#app .modal-footer .btn,
-#app .modal-actions .btn,
-#app .vertical-modal-actions .btn {
-    flex: none;
-    min-height: 44px;
-    min-width: 0;
-    width: 100%;
-}
-
-/* CSS Class: Horizontal modal button grouping for mobile */
-#app .horizontal-modal-actions {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    margin-top: 14px;
-    width: 100%;
-}
-
-/* CSS Class: Flexible horizontal buttons inside modal footer */
-#app .horizontal-modal-actions .btn {
-    flex: 1;
-    min-width: 0;
-    min-height: 44px;
-}
-
-/* CSS Class: Utility grouping to scale width of forms, inputs, and buttons on mobile to avoid duplication. */
-#app .details-actions .btn,
-#app .profile-actions .btn,
-#app .livetv-top-bar .search-box,
-.form-input {
-    width: 100%;
-}
-#app .modal__body--scroll,
-#app .modal-scroll-area,
-#app .scrollable-modal-body {
-    flex: 1 1 auto;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    overscroll-behavior: contain;
-    max-height: 55vh !important;
-    padding-right: 4px;
-}
-
-/* Mobile landscape optimizations: Keep sleek bottom navigation bar on landscape phones */
+/* Mobile landscape optimizations: keep sleek bottom navigation bar on landscape phones. */
 @media (orientation: landscape) and (max-height: 500px) {
-    #app #sidebar-container,
-    #app.sidebar-always-expanded #sidebar-container {
+    #app #sidebar-container, #app.sidebar-always-expanded #sidebar-container {
         height: auto;
         padding-left: env(safe-area-inset-left, 0px);
         padding-right: env(safe-area-inset-right, 0px);
     }
-
     #main-view {
+        padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
         padding-left: env(safe-area-inset-left, 0px);
         padding-right: env(safe-area-inset-right, 0px);
-        padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
     }
-
-    #app .navbar,
-    #app.sidebar-always-expanded .navbar {
-        height: auto;
-        padding: 4px calc(12px + env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
-        justify-content: space-between;
+    #app .nav-rail, #app .navbar, #app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar {
         gap: 8px;
+        height: auto;
+        justify-content: space-between;
+        padding: 4px calc(12px + env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
     }
-
-    #app .nav-item,
-    #app.sidebar-always-expanded .nav-item {
+    #app .nav-item, #app.sidebar-always-expanded .nav-item {
+        aspect-ratio: 1 / 1;
         flex: 1 1 0;
+        height: auto;
         max-width: 48px;
         width: 100%;
-        height: auto;
-        aspect-ratio: 1 / 1;
     }
-
-    #app .nav-icon,
-    #app.sidebar-always-expanded .nav-icon {
-        width: 22px;
-        height: 22px;
+    #app .nav-item__icon, #app .nav-icon, #app.sidebar-always-expanded .nav-item__icon, #app.sidebar-always-expanded .nav-icon {
         flex-basis: 22px;
+        height: 22px;
+        width: 22px;
     }
 }

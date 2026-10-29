@@ -124,20 +124,26 @@ export class LazyLoader {
             img.addEventListener('error', onComplete, { once: true });
             img.removeAttribute('data-src');
 
+            const applyFallbackSrc = () => {
+                img.loading = 'lazy';
+                img.src = (typeof imageCache.isBypassActive === 'function' && imageCache.isBypassActive())
+                    ? `${originalUrl}${originalUrl.includes('?') ? '&' : '?'}ivids_reload=${Date.now()}`
+                    : originalUrl;
+            };
             // 2. Fetch blob into ImageCache with fallback to original network URL
             imageCache.getOrFetch(originalUrl).then(blobUrl => {
                 if (blobUrl) {
                     img.src = blobUrl;
                 } else {
                     img.loading = 'lazy';
-                    img.src = originalUrl;
+                    applyFallbackSrc();
                 }
                 if (img.complete) {
                     onComplete();
                 }
             }).catch(() => {
                 img.loading = 'lazy';
-                img.src = originalUrl;
+                applyFallbackSrc();
                 if (img.complete) {
                     onComplete();
                 }
@@ -250,7 +256,7 @@ export class LazyLoader {
                 const cat = categories[idx];
                 const rowEl = document.getElementById(cat.id);
                 if (rowEl) {
-                    const posters = Array.from(rowEl.querySelectorAll('.card--poster, .poster-wrapper, img[data-src]'));
+                    const posters = Array.from(rowEl.querySelectorAll('.card--poster, .collection-card'));
                     posters.slice(0, maxCols).forEach(poster => {
                         phase1Promises.push(this.loadImage(poster));
                     });
@@ -267,8 +273,8 @@ export class LazyLoader {
                 const cat = categories[idx];
                 const rowEl = document.getElementById(cat.id);
                 if (rowEl) {
-                    const posters = Array.from(rowEl.querySelectorAll('.card--poster, .poster-wrapper, img[data-src]'));
-                    posters.slice(maxCols, maxCols + 2).forEach(poster => {
+                    const posters = Array.from(rowEl.querySelectorAll('.card--poster, .collection-card'));
+                    posters.slice(maxCols).forEach(poster => {
                         phase2Promises.push(this.loadImage(poster));
                     });
                 }
@@ -292,8 +298,8 @@ export class LazyLoader {
 
                     const rowEl = document.getElementById(cat.id);
                     if (rowEl) {
-                        const posters = Array.from(rowEl.querySelectorAll('.card--poster, .poster-wrapper, img[data-src]'));
-                        const phase3RowPromises = posters.slice(0, maxCols).map(poster => this.loadImage(poster));
+                        const posters = Array.from(rowEl.querySelectorAll('.card--poster, .collection-card'));
+                        const phase3RowPromises = posters.map(poster => this.loadImage(poster));
                         await Promise.allSettled(phase3RowPromises);
                     }
                 }

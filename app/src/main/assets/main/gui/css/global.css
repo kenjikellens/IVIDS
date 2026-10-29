@@ -1,19 +1,12 @@
 /* ==========================================================================
-   IVIDS OPTIMIZED GLOBAL DESIGN SYSTEM STYLESHEET
+   IVIDS UNIFIED OOCSS DESIGN SYSTEM STYLESHEET
    ========================================================================== */
 
 /* ==========================================================================
-   IVIDS UNIFIED STYLESHEET (OPTIMIZED & CONSOLIDATED)
-   ========================================================================== */
-/* ==========================================================================
-   IVIDS STANDARD UNIFIED DESIGN SYSTEM STYLESHEET
-   Consolidated into a single file to eliminate redundancy and enhance load times.
-   ========================================================================== */
-/* ==========================================================================
    SECTION 1: DESIGN TOKENS, CORE UTILITIES & BASE RESET
-   Source File: global.css
    ========================================================================== */
-/* IVIDS TV-first design system */
+
+/* Root design system tokens for TV, desktop, and responsive scaling. */
 :root {
     color-scheme: dark;
     --ui-scale: 1.0;
@@ -28,7 +21,6 @@
     --focus-ring: none;
     --focus-ring-strong: none;
     --poster-height: calc(var(--poster-width) * 1.5);
-    /* Compact poster dimensions for clean TV grid layout */
     --poster-width: clamp(120px, 10.5vw, 154px);
     --primary-color: #46d369;
     --primary-rgb: 70, 211, 105;
@@ -47,14 +39,16 @@
     --text-muted: #a7a7a7;
 }
 
+/* Universal box-sizing reset and tap highlight removal. */
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+
+/* Suppresses default browser focus outlines in favor of standardized white focus borders. */
 *:focus { outline: none; }
 
-/* Explains: Root html element configured to support dynamic scaling zoom. */
+/* Root html element configured to support dynamic UI scaling zoom. */
 html { background: var(--background-color); zoom: var(--ui-scale, 1.0); }
 
-/* Explains: Viewport container constrained to fit the physical screen dimensions exactly.
-   Scales width and height inversely relative to the root zoom to prevent boundary overflow/clipping. */
+/* Viewport container constrained to fit physical screen dimensions inversely relative to root zoom. */
 body {
     background: #050505;
     color: var(--text-color);
@@ -66,15 +60,17 @@ body {
     width: calc(100vw / var(--ui-scale, 1.0));
 }
 
+/* Form element typography inheritance resets. */
 button { color: inherit; font: inherit; }
-
 input, textarea, select { font: inherit; }
 
+/* Primary flex application shell hosting sidebar rail and main viewport. */
 #app { background: transparent; display: flex; flex-direction: row; height: 100%; position: relative; width: 100%; }
 
+/* Sidebar host container with smooth width transition. */
 #sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.25s ease, flex-basis 0.25s ease; width: var(--app-sidebar-width); z-index: 2000; will-change: width, flex-basis; }
 
-/* Styles the primary vertical scroll viewport container, with a premium fade-out effect only at the bottom border. */
+/* Primary vertical scroll viewport container with bottom edge fade mask. */
 #main-view {
     -webkit-mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
     flex: 1;
@@ -87,28 +83,37 @@ input, textarea, select { font: inherit; }
     scrollbar-width: none;
 }
 
-/* Utility class to completely hide any UI elements from rendering and layout. */
+/* Utility rule hiding hidden elements, scrollbars, and inactive fullscreen chrome. */
 #app.fullscreen-layout #sidebar-container, .btn.hidden, .hidden, #main-view::-webkit-scrollbar, *::-webkit-scrollbar, .hero::after, .details-page::after, .details-page::before, .episodes-list:empty, .recent-searches-row.hidden, .server-list::-webkit-scrollbar { display: none; }
 
-/* Styles the fullscreen content viewport to occupy the full screen width and disable fade-out masks. */
+/* Fullscreen content viewport occupying full screen width without fade masks. */
 #app.fullscreen-layout #main-view { -webkit-mask-image: none; margin-left: 0; mask-image: none; padding: 0; width: 100%; }
 
+/* Expanded sidebar container width override when pinned open. */
 #app.sidebar-always-expanded #sidebar-container { flex: 0 0 var(--app-sidebar-expanded-width); width: var(--app-sidebar-expanded-width); }
 
+/* Reveals navigation labels, brand text, and carousel handles on hover or focus. */
 #app.sidebar-always-expanded .nav-item span, #app.sidebar-always-expanded .logo-text, .navbar:hover .nav-item span, .navbar:focus-within .nav-item span, .navbar:hover .logo-text, .navbar:focus-within .logo-text, .row-container:hover .handle { opacity: 1; }
 
-.handle:focus, .handle.focused { background: rgba(255, 255, 255, 0.14); border-color: #fff; opacity: 1; outline: none; }
-
+/* Active typing highlight for input wrappers and standalone text inputs. */
 .input-wrapper:has(> .active-typing), input.active-typing:not(.input-wrapper *), textarea.active-typing:not(.input-wrapper *) { background: rgba(var(--primary-rgb), 0.12); border-color: var(--primary-color); }
 
-.input-wrapper>input.active-typing, .input-wrapper>textarea.active-typing { background: transparent; border-color: transparent; }
+/* Suppresses inner input border when parent wrapper displays active typing highlight. */
+.input-wrapper > input.active-typing, .input-wrapper > textarea.active-typing { background: transparent; border-color: transparent; }
 
-/* Prevents default outline borders for custom keyboard-focusable elements. */
+/* Suppresses default outline for D-pad and keyboard spatial navigation elements. */
 .focusable { outline: none; }
 
-/* Button System - OOCSS Architecture */
+/* Reusable utility classes for horizontal centering, full-size stretching, and inline dot separators. */
+.mx-auto { margin: 0 auto; }
+.loader-inline-container .ivids-loader, .full-size { height: 100%; width: 100%; }
+.meta-separator-dot { color: var(--text-dim); margin: 0 4px; }
 
-/* Base button structural superclass defining display geometry, alignment, typography reset, and transition timings. */
+/* ==========================================================================
+   SECTION 2: OOCSS BUTTON SYSTEM (.btn & .btn-group)
+   ========================================================================== */
+
+/* Base button structural superclass defining geometry, 3px transparent border, alignment, and transitions. */
 .btn {
     align-items: center;
     border: 3px solid transparent;
@@ -132,144 +137,94 @@ input, textarea, select { font: inherit; }
     white-space: nowrap;
 }
 
-/* Compact button sizing subclass with reduced padding, lower min-height, and smaller typography. */
-.btn--sm, .btn-small {
-    align-self: center;
-    flex: none;
-    font-size: 13px;
-    min-height: 34px;
-    padding: 6px 14px;
-    width: fit-content;
-}
+/* Compact button sizing modifier with reduced padding and smaller typography. */
+.btn--sm, .btn-small { align-self: center; flex: none; font-size: 13px; min-height: 34px; padding: 6px 14px; width: fit-content; }
 
-/* Default standard button sizing subclass. */
+/* Default standard button sizing modifier. */
 .btn--md { font-size: 15px; min-height: 44px; padding: 8px 22px; }
 
-/* Large button sizing subclass for prominent hero and full-screen confirmation actions. */
+/* Large button sizing modifier for prominent hero and confirmation actions. */
 .btn--lg { font-size: 17px; min-height: 52px; padding: 12px 28px; }
 
-/* Circular icon button subclass with unified 36px touch and focus indicator dimensions. */
-.btn--circle, .btn-circle {
-    align-items: center;
-    border-radius: 50%;
-    display: inline-flex;
-    flex-shrink: 0;
-    height: 36px;
-    justify-content: center;
-    min-height: 36px;
-    min-width: 36px;
-    padding: 0;
-    width: 36px;
-}
+/* Circular icon button modifier with unified 36px dimensions. */
+.btn--circle, .btn-circle { border-radius: 50%; flex-shrink: 0; height: 36px; min-height: 36px; min-width: 36px; padding: 0; width: 36px; }
 
-/* Compact circular icon button subclass for dense lists and inline action rows. */
-.btn--circle-sm {
-    border-radius: 50%;
-    height: 28px;
-    min-height: 28px;
-    min-width: 28px;
-    padding: 0;
-    width: 28px;
-}
+/* Compact circular icon button modifier (28px) for dense inline controls. */
+.btn--circle-sm { border-radius: 50%; flex-shrink: 0; height: 28px; min-height: 28px; min-width: 28px; padding: 0; width: 28px; }
 
-/* Large circular icon button subclass for media playback transport controls. */
-.btn--circle-lg {
-    border-radius: 50%;
-    height: 48px;
-    min-height: 48px;
-    min-width: 48px;
-    padding: 0;
-    width: 48px;
-}
+/* Large circular icon button modifier (48px) for modal steppers and transport controls. */
+.btn--circle-lg { border-radius: 50%; flex-shrink: 0; height: 48px; min-height: 48px; min-width: 48px; padding: 0; width: 48px; }
 
-/* Full-width block button subclass stretching across its parent container width. */
+/* Extra-large circular icon button modifier (64px) for TV and fullscreen player overlays. */
+.btn--circle-xl { border-radius: 50%; flex-shrink: 0; height: 64px; min-height: 64px; min-width: 64px; padding: 0; width: 64px; }
+
+/* Square icon action button modifier (46px) for settings triggers and list item actions. */
+.btn--square { border-radius: var(--radius-sm); flex-shrink: 0; height: 46px; min-height: 46px; min-width: 46px; padding: 0; width: 46px; }
+
+/* Compact square icon/stepper button modifier (36px) for inline scale adjustments. */
+.btn--square-sm { border-radius: var(--radius-sm); flex-shrink: 0; font-size: 20px; font-weight: 800; height: 36px; min-height: 36px; min-width: 36px; padding: 0; width: 36px; }
+
+/* Full-width block button modifier stretching across parent container width. */
 .btn--block, .btn-full-center { display: flex; justify-content: center; width: 100%; }
 
-/* Fixed minimum-width button subclass ensuring internationalized button labels fit consistently. */
+/* Fixed minimum-width button modifier ensuring localized labels fit consistently. */
 .btn--fixed-min, .btn-min-w { min-width: 130px; }
 
-/* Primary skin variant styling buttons with semi-transparent brand theme fill. */
+/* Primary skin variant styling buttons with brand theme translucent fill. */
 .btn--primary, .btn-primary { background: rgba(var(--primary-rgb), 0.25); border-color: transparent; color: #ffffff; font-weight: 800; }
 /* Hover state for primary button skin variant. */
 .btn--primary:hover, .btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for primary button skin variant rendering standardized thick white outline. */
-.btn--primary:focus, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; color: #ffffff; outline: none; }
+/* Focus state for primary button skin variant with standardized thick white border. */
+.btn--primary:focus, .btn--primary:focus-visible, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Secondary skin variant styling buttons with soft neutral translucent fill. */
 .btn--secondary, .btn-secondary { background: rgba(255, 255, 255, 0.08); border-color: transparent; color: #ffffff; }
 /* Hover state for secondary button skin variant. */
 .btn--secondary:hover, .btn-secondary:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for secondary button skin variant rendering standardized thick white outline. */
-.btn--secondary:focus, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; color: #ffffff; outline: none; }
+/* Focus state for secondary button skin variant with standardized thick white border. */
+.btn--secondary:focus, .btn--secondary:focus-visible, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; color: #ffffff; outline: none; }
 
-/* Danger skin variant styling destructive action buttons with red highlight. */
+/* Danger skin variant styling destructive action buttons with red fill. */
 .btn--danger, .btn-danger { background: #b92b23; border-color: transparent; color: #ffffff; }
 /* Hover state for danger button skin variant. */
 .btn--danger:hover, .btn-danger:hover { background: #d43830; border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for danger button skin variant rendering standardized thick white outline. */
-.btn--danger:focus, .btn--danger.focused, .btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #ffffff; color: #ffffff; outline: none; }
+/* Focus state for danger button skin variant with standardized thick white border. */
+.btn--danger:focus, .btn--danger:focus-visible, .btn--danger.focused, .btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #ffffff; color: #ffffff; outline: none; }
 
-/* Ghost skin variant styling transparent background buttons with subtle highlight on hover and focus. */
+/* Ghost skin variant styling transparent background buttons with subtle highlight. */
 .btn--ghost { background: transparent; border-color: transparent; color: rgba(255, 255, 255, 0.8); }
 /* Hover state for ghost button skin variant. */
 .btn--ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for ghost button skin variant rendering standardized thick white outline. */
-.btn--ghost:focus, .btn--ghost.focused { background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff; outline: none; }
+/* Focus state for ghost button skin variant with standardized thick white border. */
+.btn--ghost:focus, .btn--ghost:focus-visible, .btn--ghost.focused { background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Disabled state modifier applied to inactive or pending action buttons. */
 .btn:disabled, .btn.is-disabled { background: rgba(255, 255, 255, 0.06); cursor: not-allowed; opacity: 0.4; pointer-events: none; }
 
 /* Active state modifier applied to toggled or currently selected action buttons. */
-.btn.is-active { background: rgba(var(--primary-rgb), 0.35); border-color: var(--primary-color); color: #ffffff; }
+.btn.is-active, .btn.active { background: rgba(var(--primary-rgb), 0.35); border-color: var(--primary-color); color: #ffffff; }
+/* Preserves white focus border on active buttons when focused. */
+.btn.is-active:focus, .btn.is-active.focused, .btn.active:focus, .btn.active.focused { border-color: #ffffff; }
 
 /* Visual state modifier for buttons indicating item has already been added to collection. */
 .btn.is-added, .btn-added { color: rgba(255, 255, 255, 0.4); }
 
 /* Composite container grouping related action buttons with standard gap spacing. */
 .btn-group { align-items: center; display: flex; gap: 12px; }
-
 /* Button group modifier distributing child buttons equally across full container width. */
 .btn-group--fill .btn { flex: 1; min-width: 0; }
-
 /* Button group modifier aligning action buttons to the trailing edge. */
 .btn-group--end { justify-content: flex-end; }
-
-/* Button group modifier stacking buttons vertically. */
+/* Button group modifier stacking buttons vertically across full container width. */
 .btn-group--vertical { flex-direction: column; width: 100%; }
-/* Child buttons inside vertical group stretch across full container width. */
 .btn-group--vertical .btn { width: 100%; }
 
-.hero {
-    align-items: flex-end;
-    background: none;
-    display: flex;
-    height: 60vh;
-    min-height: 560px;
-    overflow: hidden;
-    padding: 0 var(--app-content-padding-x) 72px;
-    position: relative;
-}
-
-.hero::before {
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
-    background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%);
-    content: "";
-    inset: 0;
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
-    pointer-events: none;
-    position: absolute;
-    z-index: 2;
-}
-
-.hero-content { padding-top: 24px; position: relative; transition: opacity 0.35s ease; width: min(1100px, 90%); z-index: 2; }
-
-.loader-center-container { align-items: center; display: flex; inset: 0; justify-content: center; position: absolute; }
-
-#hero-loader-container { background: rgba(0, 0, 0, 0.22); z-index: 5; }
+/* ==========================================================================
+   SECTION 3: OOCSS MEDIA GRIDS, RAILS & CARD SYSTEM (.media-*, .card)
+   ========================================================================== */
 
 /* Horizontal scrolling carousel rail container for media poster rows. */
-.media-rail,
-.row-posters {
+.media-rail, .row-posters {
     -webkit-overflow-scrolling: touch;
     contain: layout;
     display: flex;
@@ -285,17 +240,27 @@ input, textarea, select { font: inherit; }
 .media-grid { display: grid; gap: clamp(12px, 1.5vw, 18px); width: 100%; }
 
 /* Responsive poster card grid with auto-fill columns. */
-.media-grid--posters,
-.search-results-grid,
-.playlist-items-grid { display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr)); }
+.media-grid--posters, .search-results-grid, .playlist-items-grid {
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
+}
 
 /* Responsive widescreen 16:9 card grid for playlists with auto-fill columns. */
-.media-grid--widescreen,
-.playlists-grid { animation: fadeInUp 0.32s ease-out; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr)); }
+.media-grid--widescreen, .playlists-grid {
+    animation: fadeInUp 0.32s ease-out;
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr));
+}
 
 /* Responsive compact cast and mini-card grid layout. */
-.media-grid--cast,
-.disney-cast-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); width: 100%; }
+.media-grid--cast, .disney-cast-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    width: 100%;
+}
 
 /* Abstract base card structure enforcing containment, rounded corners, and smooth transitions. */
 .card {
@@ -309,22 +274,17 @@ input, textarea, select { font: inherit; }
 }
 
 /* Interactive card state modifier adding cursor pointer and outline suppression. */
-.card--interactive,
-.focusable-card { cursor: pointer; }
+.card--interactive, .focusable-card { cursor: pointer; }
+.card--interactive:hover, .focusable.focusable-card:hover { outline: none; }
+.card--interactive:focus, .card--interactive.focused, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    outline: none;
+    z-index: 10;
+}
 
-/* Standard high-visibility TV white focus border for focused interactive cards. */
-.card--interactive:focus,
-.card--interactive.focused,
-.focusable.focusable-card:focus,
-.focusable.focusable-card.focused { border-color: #ffffff; box-shadow: none; outline: none; z-index: 10; }
-
-/* Suppresses browser outline on hover for interactive cards. */
-.card--interactive:hover,
-.focusable.focusable-card:hover { outline: none; }
-
-/* Vertical 2:3 poster card component for horizontal rails and search grids. */
-.card--poster,
-.poster-wrapper {
+/* Vertical 2:3 poster card component for horizontal rails and search grids (zero scale transform). */
+.card--poster, .poster-wrapper {
     background: var(--surface-soft);
     border: 3px solid transparent;
     border-radius: var(--radius-sm);
@@ -335,23 +295,15 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transform: scale(1);
-    transition: border-color 150ms ease, background-color 150ms ease, transform 200ms cubic-bezier(0.2, 0, 0.2, 1), box-shadow 200ms ease;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 200ms ease;
     width: var(--poster-width);
-    will-change: transform;
 }
 
-/* Poster card hover and focus states applying highlight border, scale zoom, and drop shadow. */
-.card--poster:hover,
-.card--poster:focus,
-.card--poster.focused,
-.poster-wrapper:hover,
-.poster-wrapper:focus,
-.poster-wrapper.focused {
+/* Poster card hover and focus states applying crisp white highlight border without displacement. */
+.card--poster:hover, .card--poster:focus, .card--poster.focused, .poster-wrapper:hover, .poster-wrapper:focus, .poster-wrapper.focused {
     border-color: #ffffff;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
     outline: none;
-    transform: scale(1.03);
     z-index: 10;
 }
 
@@ -373,21 +325,26 @@ input, textarea, select { font: inherit; }
 }
 
 /* Widescreen playlist card hover and focus states applying white highlight border. */
-.card--widescreen:hover,
-.card--widescreen:focus,
-.card--widescreen.focused { border-color: #ffffff; box-shadow: none; outline: none; z-index: 10; }
+.card--widescreen:hover, .card--widescreen:focus, .card--widescreen.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    outline: none;
+    z-index: 10;
+}
 
-/* Horizontal media item row card layout for episodes and playlist items. */
+/* Horizontal media item row card layout for episodes, trailers, and playlist items. */
 .card--row {
+    align-items: center;
     background: rgba(255, 255, 255, 0.04);
     border: 2px solid transparent;
     border-radius: var(--radius-md);
     cursor: pointer;
     display: flex;
+    gap: 16px;
     margin-bottom: 12px;
     overflow: hidden;
     padding: 12px 16px;
-    transition: border-color 0.16s ease, background-color 0.16s ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
     width: 100%;
 }
 
@@ -395,8 +352,10 @@ input, textarea, select { font: inherit; }
 .card--row:hover { background: rgba(255, 255, 255, 0.08); border-color: transparent; outline: none; }
 
 /* Focus state for horizontal row cards with solid white highlight border. */
-.card--row:focus,
-.card--row.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+.card--row:focus, .card--row.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+
+/* Accent bottom indicator for watched media items. */
+.card--row.is-watched, .card--row.watched { border-bottom: 3px solid var(--primary-color); }
 
 /* Compact mini-card for cast members and actors. */
 .card--compact {
@@ -406,20 +365,22 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding-bottom: 0.5rem;
     text-align: center;
-    transition: border-color 0.16s ease;
+    transition: border-color 150ms ease;
 }
 
-/* Solid panel surface card for preview videos, EPG details, and version cards. */
-.card--panel { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); transition: border-color 0.2s ease, background-color 0.2s ease; }
+/* Solid panel surface card for preview videos, EPG details, login, and version cards. */
+.card--panel {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
 
-/* Focus state for panel surface cards with white border. */
-.card--panel:focus,
-.card--panel.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+/* Focus state for interactive panel surface cards with white border. */
+.card--panel:focus, .card--panel.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
 
 /* Card image element with object-fit cover and default dimming filter. */
-.card__media,
-.poster,
-.poster-img {
+.card__media, .poster, .poster-img {
     display: block;
     filter: brightness(0.8);
     height: 100%;
@@ -429,32 +390,49 @@ input, textarea, select { font: inherit; }
 }
 
 /* Restores full brightness to media images when parent card is hovered or focused. */
-.card--poster:hover .card__media,
-.card--poster:focus .card__media,
-.card--poster.focused .card__media,
-.card--widescreen:hover .card__media,
-.card--widescreen:focus .card__media,
-.card--widescreen.focused .card__media,
-.poster-wrapper:hover .poster,
-.poster-wrapper:focus .poster,
-.poster-wrapper.focused .poster,
-.poster-wrapper:hover .poster-img, .poster-wrapper:focus .poster-img, .poster-wrapper.focused .poster-img { filter: brightness(1.1); }
+.card--poster:hover .card__media, .card--poster:focus .card__media, .card--poster.focused .card__media,
+.card--widescreen:hover .card__media, .card--widescreen:focus .card__media, .card--widescreen.focused .card__media,
+.poster-wrapper:hover .poster, .poster-wrapper:focus .poster, .poster-wrapper.focused .poster,
+.poster-wrapper:hover .poster-img, .poster-wrapper:focus .poster-img, .poster-wrapper.focused .poster-img {
+    filter: brightness(1.1);
+}
 
-/* Card thumbnail container for widescreen and row cards. */
+/* Card 16:9 thumbnail container for episodes, extras, and playlist row cards. */
 .card__thumb {
     aspect-ratio: 16 / 9;
-    background-color: var(--surface-soft);
+    background-color: #1a1c22;
+    background-image: radial-gradient(circle at 80% 25%, rgba(var(--primary-rgb), 0.26) 0%, transparent 65%), linear-gradient(135deg, #262932 0%, #17191f 100%);
     background-position: center;
     background-size: cover;
     border-radius: var(--radius-sm);
     flex-shrink: 0;
     overflow: hidden;
     position: relative;
+    width: 200px;
 }
 
-/* Card gradient overlay providing dark readability backing for card titles. */
-.card__overlay,
-.playlist-overlay {
+/* Compact 16:9 card thumbnail modifier for playlist item rows. */
+.card__thumb--sm { width: 160px; }
+
+/* Centered play indicator icon overlay inside video/trailer thumbnails. */
+.disney-extra-play-icon {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.65);
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
+    color: #ffffff;
+    display: flex;
+    font-size: 16px;
+    height: 42px;
+    justify-content: center;
+    left: calc(50% - 21px);
+    position: absolute;
+    top: calc(50% - 21px);
+    width: 42px;
+}
+
+/* Card gradient overlay providing dark readability backing for widescreen card titles. */
+.card__overlay, .playlist-overlay {
     align-items: flex-start;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
     bottom: 0;
@@ -470,8 +448,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Card badge icon indicator for playlists and media status. */
-.card__badge,
-.playlist-badge {
+.card__badge, .playlist-badge {
     align-items: center;
     background: rgba(0, 0, 0, 0.72);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -486,20 +463,29 @@ input, textarea, select { font: inherit; }
     z-index: 5;
 }
 
-/* Card text content body for titles and metadata. */
+/* Card text content body for titles, metadata, and descriptions. */
 .card__body {
     display: flex;
     flex: 1;
     flex-direction: column;
     justify-content: center;
     min-width: 0;
-    padding: 0 16px;
+}
+
+/* Uppercase metadata label inside card bodies (e.g. Trailer / Teaser type). */
+.card__meta {
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+    text-transform: uppercase;
 }
 
 /* Card title typography with text ellipsis truncation. */
 .card__title {
     color: #ffffff;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     margin-bottom: 4px;
     overflow: hidden;
@@ -509,44 +495,33 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-/* Card description and overview text with line clamping. */
+/* Card description and overview text with 2-line clamping. */
 .card__desc {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     color: var(--text-muted);
     display: -webkit-box;
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 14px;
+    line-clamp: 2;
+    line-height: 1.45;
     overflow: hidden;
 }
 
-/* Accent indicator for watched media items and active tabs. */
-.card--row.is-watched { border-bottom: 3px solid var(--primary-color); }
+/* Action buttons cluster aligned alongside row cards. */
+.card__actions, .playlist-item-actions { align-items: center; display: flex; flex-shrink: 0; gap: 10px; }
 
 /* ==========================================================================
-   SECTION 1.4: OOCSS FORM CONTROLS, INPUTS & CHIP SELECTION SYSTEM
+   SECTION 4: OOCSS FORM CONTROLS, INPUTS, CHIPS & BADGES
    ========================================================================== */
 
 /* Vertical form group container for aligning labels, inputs, and validation hints. */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
-    text-align: left;
-    width: 100%;
-}
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; text-align: left; width: 100%; }
 
 /* Uppercase muted typography for form input labels. */
-.form-label {
-    color: rgba(255, 255, 255, 0.85);
-    display: block;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-}
+.form-label { color: rgba(255, 255, 255, 0.85); display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 4px; text-transform: uppercase; }
+
+/* Validation message text wrapper inside forms. */
+.form-message { font-size: 13px; font-weight: 700; min-height: 18px; text-align: center; }
 
 /* Glassmorphic input wrapper container for text fields with leading or trailing icons. */
 .form-control-wrapper {
@@ -560,16 +535,11 @@ input, textarea, select { font: inherit; }
     height: 58px;
     padding: 0 16px;
     position: relative;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
     width: 100%;
 }
-
-/* Hover state for input wrapper containers. */
 .form-control-wrapper:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
-
-/* Focus state for input wrapper containers with white border outline. */
-.form-control-wrapper:focus-within,
-.form-control-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+.form-control-wrapper:focus-within, .form-control-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
 
 /* Base text, password, number, and search input styling. */
 .form-input {
@@ -594,17 +564,10 @@ input, textarea, select { font: inherit; }
     font-weight: 600;
     height: 48px;
     padding: 0 16px;
-    transition: border-color 0.18s ease, background-color 0.18s ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
 }
-
-/* Hover state for standalone form inputs. */
 .form-input:not(.form-control-wrapper *):hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
-
-/* Focus state for standalone form inputs with white highlight border. */
-.form-input:not(.form-control-wrapper *):focus,
-.form-input:not(.form-control-wrapper *).focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; box-shadow: none; outline: none; }
-
-/* Placeholder styling for form inputs. */
+.form-input:not(.form-control-wrapper *):focus, .form-input:not(.form-control-wrapper *).focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; box-shadow: none; outline: none; }
 .form-input::placeholder { color: rgba(255, 255, 255, 0.38); }
 
 /* Compact form input modifier for modal dialogs and inline table rows. */
@@ -621,18 +584,11 @@ input, textarea, select { font: inherit; }
     display: flex;
     height: 54px;
     position: relative;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
     width: 100%;
 }
-
-/* Hover state for form select dropdown wrapper. */
 .form-select-wrapper:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
-
-/* Focus state for form select dropdown wrapper with white border. */
-.form-select-wrapper:focus-within,
-.form-select-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
-
-/* Chevron arrow pseudo-element for select dropdown wrapper. */
+.form-select-wrapper:focus-within, .form-select-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
 .form-select-wrapper::after {
     border-bottom: 2px solid rgba(255, 255, 255, 0.6);
     border-right: 2px solid rgba(255, 255, 255, 0.6);
@@ -647,7 +603,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Native select element inside custom select wrapper stripped of browser defaults. */
-.form-select {
+.form-select, .filter-select {
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
@@ -663,9 +619,7 @@ input, textarea, select { font: inherit; }
     padding: 0 36px 0 18px;
     width: 100%;
 }
-
-/* Dropdown option menu styling for native select element. */
-.form-select option { background: #111111; color: #ffffff; padding: 10px; }
+.form-select option, .filter-select option { background: #111111; color: #ffffff; padding: 10px; }
 
 /* Modal select menu trigger button with flex alignment and chevron. */
 .form-select-trigger {
@@ -683,16 +637,11 @@ input, textarea, select { font: inherit; }
     justify-content: space-between;
     outline: none;
     padding: 0 16px;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
     width: 100%;
 }
-
-/* Hover state for modal select trigger button. */
 .form-select-trigger:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
-
-/* Focus state for modal select trigger button with white highlight border. */
-.form-select-trigger:focus,
-.form-select-trigger.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+.form-select-trigger:focus, .form-select-trigger.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
 
 /* Toggle switch pill container for boolean settings and preferences. */
 .form-toggle {
@@ -708,11 +657,7 @@ input, textarea, select { font: inherit; }
     transition: background-color 150ms ease, border-color 150ms ease;
     width: 64px;
 }
-
-/* Hidden native checkbox input inside custom toggle container. */
 .form-toggle input { height: 0; opacity: 0; width: 0; }
-
-/* Sliding circle indicator handle inside toggle container. */
 .form-toggle__slider {
     background-color: #ffffff;
     border-radius: 50%;
@@ -724,21 +669,12 @@ input, textarea, select { font: inherit; }
     transition: left 0.2s ease, background-color 0.2s ease;
     width: 24px;
 }
-
-/* Hover state for toggle switch container. */
 .form-toggle:hover { background-color: rgba(255, 255, 255, 0.22); }
-
-/* Active checked state for toggle switch container with primary theme background. */
 .form-toggle:has(input:checked) { background-color: var(--primary-color); }
-
-/* Sliding circle position when toggle input is checked. */
 .form-toggle:has(input:checked) .form-toggle__slider { background-color: #050505; left: 31px; }
+.form-toggle:focus, .form-toggle.focused { border-color: #ffffff; outline: none; }
 
-/* Focus state for toggle switch container with white border outline. */
-.form-toggle:focus,
-.form-toggle.focused { border-color: #ffffff; outline: none; }
-
-/* Base interactive selection chip component for filters, options, and tags. */
+/* Base interactive selection chip component for filters, options, recent searches, and tags. */
 .chip {
     align-items: center;
     background: rgba(255, 255, 255, 0.06);
@@ -757,33 +693,24 @@ input, textarea, select { font: inherit; }
     text-align: center;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
-
-/* Hover state for interactive selection chips. */
 .chip:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
-
-/* Focus state for interactive selection chips with standard white border. */
-.chip:focus,
-.chip.focused { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; outline: none; }
+.chip:focus, .chip.focused { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; outline: none; }
 
 /* Selected and active state highlight for chips with primary brand color. */
-.chip.is-selected,
-.chip.is-active,
-.chip.selected,
-.chip.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
-
-/* Focus state on selected active chip with white border. */
-.chip.is-selected:focus,
-.chip.is-selected.focused,
-.chip.is-active:focus,
-.chip.is-active.focused,
-.chip.selected:focus,
-.chip.selected.focused,
-.chip.active:focus,
-.chip.active.focused { border-color: #ffffff; outline: none; }
+.chip.is-selected, .chip.is-active, .chip.selected, .chip.active {
+    background: var(--primary-color);
+    border-color: transparent;
+    color: #050505;
+    font-weight: 800;
+}
+.chip.is-selected:focus, .chip.is-selected.focused, .chip.is-active:focus, .chip.is-active.focused,
+.chip.selected:focus, .chip.selected.focused, .chip.active:focus, .chip.active.focused {
+    border-color: #ffffff;
+    outline: none;
+}
 
 /* Filter chip modifier with checkmark indicator when selected. */
-.chip--filter.is-selected::before,
-.chip--filter.selected::before {
+.chip--filter.is-selected::before, .chip--filter.selected::before {
     color: #050505;
     content: '\2713';
     display: inline-block;
@@ -793,8 +720,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Option chip modifier with radio dot indicator for settings modal options. */
-.chip--option.is-active::after,
-.chip--option.active::after {
+.chip--option.is-active::after, .chip--option.active::after {
     background: var(--primary-color);
     border-radius: 999px;
     content: '';
@@ -809,41 +735,44 @@ input, textarea, select { font: inherit; }
 .chip--recent { font-size: 14px; gap: 8px; min-height: 34px; padding: 6px 14px; }
 
 /* Genre chip modifier for media details tags. */
-.chip--genre {
-    backdrop-filter: blur(5px);
-    font-size: 13px;
-    font-weight: 600;
-    min-height: 32px;
-    padding: 6px 12px;
-}
+.chip--genre { backdrop-filter: blur(5px); font-size: 13px; font-weight: 600; min-height: 32px; padding: 6px 12px; }
 
 /* Rating badge chip modifier for content advisory ratings. */
-.chip--rating {
-    font-size: 12px;
-    font-weight: 800;
-    min-height: 28px;
-    padding: 4px 10px;
-    text-transform: uppercase;
-}
-
-/* Mature adult rating chip badge modifier with bold alert background. */
-.chip--rating.rating-R,
-.chip--rating.rating-TV-MA { background-color: #ff4500; border-color: #ff4500; color: #ffffff; }
+.chip--rating { font-size: 12px; font-weight: 800; min-height: 28px; padding: 4px 10px; text-transform: uppercase; }
+.chip--rating.rating-R, .chip--rating.rating-TV-MA { background-color: #ff4500; border-color: #ff4500; color: #ffffff; }
 
 /* Color picker option chip modifier with square proportions. */
 .chip--color { min-height: 88px; }
 
 /* Responsive grid layout container for arranging chips in discovery modals and settings. */
 .chip-grid { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
-
-/* 2-column modifier for chip grid layouts. */
 .chip-grid--2col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-/* Color selector modifier for chip grid layouts with 6 columns. */
 .chip-grid--color { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 
+/* Universal status pill badge component. */
+.badge {
+    align-items: center;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 800;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    min-height: 24px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.badge--primary { background-color: var(--primary-color); color: #050505; }
+.badge--outline, .version-badge { background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; }
+.badge--success { background-color: #2ec4b6; color: #050505; }
+.badge--warning { background-color: #ff9f1c; color: #050505; }
+.badge--danger { background-color: #e71d36; color: #ffffff; }
+
 /* ==========================================================================
-   SECTION 1.5: OOCSS TABS & TOP-BAR SYSTEM
+   SECTION 5: OOCSS TABS, TOP-BAR & TYPOGRAPHY SYSTEM
    ========================================================================== */
 
 /* Unified horizontal tab bar container. */
@@ -857,11 +786,7 @@ input, textarea, select { font: inherit; }
     padding-bottom: 8px;
     width: 100%;
 }
-
-/* Modifier stretching tab buttons equally across tab bar width. */
 .tab-bar--fill { border-bottom: none; padding-bottom: 0; }
-
-/* Modifier stretching tab buttons equally inside fill tab bars. */
 .tab-bar--fill .tab-btn { flex: 1; }
 
 /* Focusable tab button component for switching view panels. */
@@ -881,50 +806,22 @@ input, textarea, select { font: inherit; }
     padding: 0 18px;
     position: relative;
     text-align: center;
-    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
-
-/* Hover state for tab button. */
 .tab-btn:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; color: #ffffff; }
-
-/* Focus state for tab button with standard white border. */
-.tab-btn:focus,
-.tab-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
-
-/* Active tab button highlight with primary theme accent color. */
-.tab-btn.is-active,
-.tab-btn.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
-
-/* Focus state on active tab button with white border. */
-.tab-btn.is-active:focus,
-.tab-btn.is-active.focused,
-.tab-btn.active:focus,
-.tab-btn.active.focused { border-color: #ffffff; outline: none; }
+.tab-btn:focus, .tab-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
+.tab-btn.is-active, .tab-btn.active { background: var(--primary-color); border-color: transparent; color: #050505; font-weight: 800; }
+.tab-btn.is-active:focus, .tab-btn.is-active.focused, .tab-btn.active:focus, .tab-btn.active.focused { border-color: #ffffff; outline: none; }
 
 /* Tab content panel component displayed conditionally. */
 .tab-panel { display: block; width: 100%; }
 
 /* Standardized view top bar layout container for search inputs and action buttons. */
-.top-bar {
-    align-items: center;
-    box-sizing: border-box;
-    display: flex;
-    gap: 16px;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-/* Top bar actions cluster aligning secondary buttons and dropdown triggers. */
+.top-bar { align-items: center; box-sizing: border-box; display: flex; gap: 16px; justify-content: space-between; margin-bottom: 20px; width: 100%; }
 .top-bar__actions { align-items: center; display: flex; gap: 8px; justify-content: flex-end; }
 
-/* ==========================================================================
-   SECTION 1.6: OOCSS TYPOGRAPHY, BADGES & MEDIA OVERLAYS
-   ========================================================================== */
-
 /* High-impact fluid typography for hero banners and detail headlines. */
-.title-hero,
-.hero-title {
+.title-hero, .hero-title {
     color: #ffffff;
     font-family: inherit;
     font-size: clamp(24px, 3.5vw, 42px);
@@ -935,9 +832,18 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
+/* Unified primary page title heading across Playlists, Settings, and Account views. */
+.page-title, .settings-header h1, .account-header h1 {
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0;
+}
+
 /* Fluid responsive category and card section heading. */
-.section-title,
-.row-title {
+.section-title, .row-title {
     align-items: center;
     box-sizing: border-box;
     color: #ffffff;
@@ -953,80 +859,55 @@ input, textarea, select { font: inherit; }
 }
 
 /* Aligned category icon inside section titles. */
-.section-title__icon,
-.section-title-icon {
-    display: block;
-    flex-shrink: 0;
-    height: 22px;
-    object-fit: contain;
-    width: 22px;
-}
+.section-title__icon, .section-title-icon { display: block; flex-shrink: 0; height: 22px; object-fit: contain; width: 22px; }
 
 /* Fluid secondary explanatory subtitle text below titles. */
-.section-subtitle,
+.section-subtitle { color: var(--text-muted); font-size: clamp(13px, 1.2vw, 15px); font-weight: 500; line-height: 1.5; margin: 0; }
+.hero-title { font-size: clamp(32px, 4.2vw, 56px); line-height: 1.08; margin-bottom: 16px; max-width: 18ch; }
 .hero-desc {
-    color: var(--text-muted);
-    font-size: clamp(13px, 1.2vw, 15px);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    color: rgba(255, 255, 255, 0.84);
+    display: -webkit-box;
+    font-size: clamp(14px, 1.25vw, 17px);
     font-weight: 500;
-    line-height: 1.5;
-    margin: 0;
+    line-clamp: 4;
+    line-height: 1.55;
+    margin: 0 0 24px 0;
+    max-width: 68ch;
+    overflow: hidden;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.68);
 }
 
 /* Small uppercase metadata typography for genre, duration, and year. */
-.text-meta {
-    color: var(--text-muted);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-}
-
-/* Universal status pill badge component. */
-.badge {
-    align-items: center;
-    border-radius: 4px;
-    box-sizing: border-box;
-    display: inline-flex;
-    font-size: 11px;
-    font-weight: 800;
-    justify-content: center;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    min-height: 20px;
-    padding: 3px 8px;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-/* Filled badge with primary brand highlight color. */
-.badge--primary { background-color: var(--primary-color); color: #050505; }
-
-/* Outline badge with transparent background and subtle border. */
-.badge--outline,
-.version-badge { background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; }
-
-/* Success status indicator badge with emerald background. */
-.badge--success { background-color: #2ec4b6; color: #050505; }
-
-/* Warning status indicator badge with amber background. */
-.badge--warning { background-color: #ff9f1c; color: #050505; }
-
-/* Destructive or mature rating alert badge with crimson background. */
-.badge--danger { background-color: #e71d36; color: #ffffff; }
+.text-meta { color: var(--text-muted); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
 
 /* Fullscreen background poster wrapper with absolute positioning. */
-.media-backdrop,
-.details-backdrop,
-.playlist-backdrop { inset: 0; overflow: hidden; position: absolute; z-index: 0; }
+.media-backdrop, .details-backdrop, .playlist-backdrop {
+    background-color: #16181d;
+    background-image: radial-gradient(ellipse at 76% 24%, rgba(var(--primary-rgb), 0.34) 0%, rgba(var(--primary-rgb), 0.12) 42%, transparent 72%), linear-gradient(135deg, #252830 0%, #16181d 55%, #0c0d10 100%);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 68vh;
+    inset: 0 0 auto 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: 0;
+}
+.media-backdrop img, .details-backdrop img, .playlist-backdrop img { height: 100%; object-fit: cover; opacity: 0.22; width: 100%; }
 
-/* Image element filling media backdrop. */
-.media-backdrop img,
-.details-backdrop img,
-.playlist-backdrop img { height: 100%; object-fit: cover; opacity: 0.22; width: 100%; }
+/* Linear gradient mask darkening background for high text contrast. */
+.media-backdrop__overlay, .backdrop-overlay {
+    background: linear-gradient(90deg, rgba(16, 18, 22, 0.9) 0%, rgba(16, 18, 22, 0.65) 48%, rgba(16, 18, 22, 0.32) 100%), linear-gradient(0deg, #111318 0%, rgba(17, 19, 24, 0.55) 38%, transparent 100%);
+    inset: 0;
+    position: absolute;
+}
 
-/* Linear and radial gradient mask darkening background for high text contrast. */
-.media-backdrop__overlay,
-.backdrop-overlay { background: linear-gradient(90deg, rgba(5, 5, 5, 0.98), rgba(5, 5, 5, 0.82) 48%, rgba(5, 5, 5, 0.58)), linear-gradient(0deg, var(--background-color), transparent 54%); inset: 0; position: absolute; }
+/* Ambient dark-grey and theme-accent overlay when no backdrop image is available. */
+.media-backdrop--empty .media-backdrop__overlay, .backdrop-overlay-empty {
+    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.32) 0%, rgba(var(--primary-rgb), 0.1) 46%, transparent 76%), linear-gradient(180deg, rgba(30, 33, 40, 0.25) 0%, #111318 100%);
+}
 
 /* Centered circular media action play indicator on trailers and cards. */
 .media-play-icon {
@@ -1040,19 +921,15 @@ input, textarea, select { font: inherit; }
     height: 48px;
     justify-content: center;
     position: absolute;
-    transition: background-color 0.16s ease, border-color 0.16s ease;
+    transition: background-color 150ms ease, border-color 150ms ease;
     width: 48px;
 }
 
 /* ==========================================================================
-   SECTION 2: GLOBAL UI COMPONENTS - LOADER & SHIMMER EFFECT
-   Source File: loader.css (RELOCATED to app/src/main/assets/main/gui/css/loader.css)
+   SECTION 6: GLOBAL UI COMPONENTS (SPLASH, MODAL, TOAST, NAVIGATION RAIL)
    ========================================================================== */
-/* ==========================================================================
-   SECTION 3: GLOBAL UI COMPONENTS - SPLASH SCREEN INITIAL GLOW
-   Source File: splash.css
-   ========================================================================== */
-/* Styles the main fullscreen splash screen container overlay and its transition effects. */
+
+/* Fullscreen splash screen container overlay and transition effects. */
 #splash-screen {
     align-items: center;
     background: #050505;
@@ -1068,56 +945,22 @@ input, textarea, select { font: inherit; }
     width: 100%;
     z-index: 9999;
 }
-
 #splash-screen.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
-
 .splash-content { align-items: center; display: flex; flex-direction: column; gap: 34px; }
-
 .splash-logo-container { align-items: center; display: flex; flex-direction: row; gap: 18px; justify-content: center; margin-bottom: 0; }
-
 .splash-logo-img { display: block; flex: 0 0 72px; height: 72px; object-fit: contain; width: 72px; }
-
-.splash-logo-text {
-    color: #fff;
-    font-size: 52px;
-    font-weight: 600;
-    letter-spacing: 0;
-    line-height: 1;
-    margin: 0;
-}
-
-.page-title {
-    color: #fff;
-    font-size: 42px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin: 0;
-}
-
-.profiles-title {
-    color: #fff;
-    font-size: clamp(34px, 4vw, 54px);
-    font-weight: 700;
-    line-height: 1.1;
-    margin: 0;
-    text-align: left;
-}
-
+.splash-logo-text { color: #ffffff; font-size: 52px; font-weight: 600; letter-spacing: 0; line-height: 1; margin: 0; }
 .splash-loader-container { opacity: 1; transition: opacity 0.25s ease; }
-
 .hero-content.transitioning, .splash-loader-container.hidden { opacity: 0; }
 
-/* ==========================================================================
-   SECTION 4: GLOBAL UI COMPONENTS - MODAL & DIALOG OVERLAY SYSTEM (OOCSS)
-   ========================================================================== */
-/* CSS Class: Canonical modal backdrop and window manager providing glassmorphic background blur and flex centering. */
+/* Canonical modal backdrop and window manager providing glassmorphic background blur and flex centering. */
 .modal {
     align-items: center;
     background: rgba(0, 0, 0, 0.82);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     display: flex;
+    height: 100%;
     inset: 0;
     justify-content: center;
     opacity: 0;
@@ -1127,18 +970,11 @@ input, textarea, select { font: inherit; }
     transition: opacity 0.25s ease, visibility 0.25s ease;
     visibility: hidden;
     width: 100%;
-    height: 100%;
     z-index: 10000;
 }
+.modal.is-open, .modal.is-active, .modal.active, .modal.show, .modal.visible { opacity: 1; pointer-events: auto; visibility: visible; }
 
-/* CSS Class: Active state modifier displaying modal overlay and enabling pointer interaction. */
-.modal.is-open,
-.modal.is-active,
-.modal.active,
-.modal.show,
-.modal.visible { opacity: 1; pointer-events: auto; visibility: visible; }
-
-/* CSS Class: Core modal dialog card panel encapsulating header, body, and action footer. */
+/* Core modal dialog card panel encapsulating header, body, and action footer. */
 .modal__dialog {
     background: #161616;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1154,33 +990,17 @@ input, textarea, select { font: inherit; }
     text-align: center;
     width: min(600px, 92vw);
 }
-
-/* CSS Class: Small structural modifier for simple confirmation and single-choice prompt modals. */
 .modal__dialog--sm { max-width: 480px; padding: 24px 28px; width: min(480px, 92vw); }
-
-/* CSS Class: Medium structural modifier for standard multi-option settings and playlist management modals. */
 .modal__dialog--md { max-width: 600px; width: min(600px, 92vw); }
-
-/* CSS Class: Large structural modifier for version selectors, update announcements, and changelogs. */
 .modal__dialog--lg { max-width: 880px; width: min(880px, 94vw); }
-
-/* CSS Class: Extra-large structural modifier for complex discovery filter grids and country selection. */
 .modal__dialog--xl { max-width: 1200px; width: min(1200px, 94vw); }
-
-/* CSS Class: Skin variant applying red alert ambient styling for destructive action modals. */
 .modal--danger .modal__dialog { border: 1px solid rgba(230, 57, 70, 0.45); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 24px rgba(230, 57, 70, 0.15); }
 
-/* CSS Class: Header container row aligning title and optional top-right dismiss action. */
-.modal__header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    width: 100%;
-}
+/* Header container row aligning title and optional top-right dismiss action. */
+.modal__header { align-items: center; display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%; }
 
-/* CSS Class: Primary heading typography standard for modal dialogs. */
-.modal__title, .modal-title, .update-title, .error-title {
+/* Primary heading typography standard for modal dialogs. */
+.modal__title, .update-title, .error-title {
     color: #ffffff;
     font-size: 26px;
     font-weight: 700;
@@ -1190,35 +1010,13 @@ input, textarea, select { font: inherit; }
     text-align: center;
     width: 100%;
 }
+.modal__title--truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* CSS Class: Text truncation modifier for modal titles containing dynamic content names. */
-.modal__title--truncate, .modal-title-truncated { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Top-right circular close button positioning inside modal dialogs. */
+.modal__close { font-size: 24px; position: absolute; right: 18px; top: 18px; z-index: 10; }
 
-/* CSS Class: Top-right circular close button for dismissing non-blocking modal dialogs. */
-.modal__close, .modal-close-x {
-    align-items: center;
-    background: transparent;
-    border: 2px solid transparent;
-    border-radius: 50%;
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-    font-size: 24px;
-    height: 36px;
-    justify-content: center;
-    line-height: 1;
-    position: absolute;
-    right: 18px;
-    top: 18px;
-    transition: color 0.15s ease, border-color 0.15s ease;
-    width: 36px;
-    z-index: 10;
-}
-/* Focus and hover states for modal close button with standard white outline. */
-.modal__close:hover, .modal__close:focus, .modal-close-x:hover, .modal-close-x:focus { border-color: #ffffff; color: #ffffff; outline: none; }
-
-/* CSS Class: Flexible content body container for modal options and forms. */
-.modal__body, .modal-body, .error-message-container, .update-body {
+/* Flexible content body container for modal options and forms. */
+.modal__body, .error-message-container, .update-body {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -1229,136 +1027,36 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-/* CSS Class: Scrollable viewport modifier with branded track and thumb scrollbars. */
-.modal__body--scroll, .modal-scroll-area, .scrollable-modal-body, .update-changelog { max-height: 56vh; overflow-x: hidden; overflow-y: auto; padding: 0 12px 12px; }
+/* Scrollable viewport modifier with branded track and thumb scrollbars. */
+.modal__body--scroll, .update-changelog { max-height: 56vh; overflow-x: hidden; overflow-y: auto; padding: 0 12px 12px; }
+.modal__body--scroll::-webkit-scrollbar, .update-changelog::-webkit-scrollbar, .livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar { width: 6px; }
+.modal__body--scroll::-webkit-scrollbar-track, .update-changelog::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
+.modal__body--scroll::-webkit-scrollbar-thumb, .update-changelog::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
+.modal__body--scroll::-webkit-scrollbar-thumb:hover, .update-changelog::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
 
-/* Scrollbar track and thumb styling for scrollable modal bodies */
-.modal__body--scroll::-webkit-scrollbar,
-.modal-scroll-area::-webkit-scrollbar,
-.scrollable-modal-body::-webkit-scrollbar,
-.update-changelog::-webkit-scrollbar { width: 6px; }
-.modal__body--scroll::-webkit-scrollbar-track,
-.modal-scroll-area::-webkit-scrollbar-track,
-.scrollable-modal-body::-webkit-scrollbar-track,
-.update-changelog::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
-.modal__body--scroll::-webkit-scrollbar-thumb,
-.modal-scroll-area::-webkit-scrollbar-thumb,
-.scrollable-modal-body::-webkit-scrollbar-thumb,
-.update-changelog::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
-.modal__body--scroll::-webkit-scrollbar-thumb:hover,
-.modal-scroll-area::-webkit-scrollbar-thumb:hover,
-.scrollable-modal-body::-webkit-scrollbar-thumb:hover,
-.update-changelog::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
+/* Explanatory descriptive text inside modal dialogs. */
+.modal__desc, .error-message { color: var(--text-muted); font-size: 15px; line-height: 1.5; margin-bottom: 20px; text-align: center; }
 
-/* CSS Class: Explanatory descriptive text inside modal dialogs. */
-.modal__desc, .modal-message, .error-message {
-    color: var(--text-muted);
-    font-size: 15px;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    text-align: center;
-}
+/* Search input container header inside selection modals. */
+.modal__search { padding: 0 0 16px; width: 100%; }
 
-/* CSS Class: Search input container header inside selection modals. */
-.modal__search, .modal-search-wrapper { padding: 0 0 16px; width: 100%; }
+/* Action footer container providing spacing and layout for modal dialogs. */
+.modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 12px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; width: 100%; }
+.modal__footer--center { justify-content: center; }
+.modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 0; width: 100%; }
 
-/* CSS Class: Action footer container providing spacing and layout for modal dialogs. */
-.modal__footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-    margin-top: 18px;
-    padding-top: 16px;
-    width: 100%;
-}
-
-/* CSS Class: Centered footer modifier for informational modals. */
-.modal__footer--center, .centered-footer { justify-content: center; }
-
-/* Icon container wrapper for system error modals, compact circular badge styling. */
-.error-icon-container {
-    align-items: center;
-    background: rgba(var(--primary-rgb), 0.14);
-    border-radius: var(--radius-lg);
-    display: flex;
-    height: 50px;
-    justify-content: center;
-    margin-bottom: 14px;
-    width: 50px;
-}
-
-/* Masked SVG error graphic icon inside system error modals. */
-.error-icon-mask {
-    -webkit-mask-image: url('../images/error.svg');
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    background-color: var(--primary-color);
-    height: 24px;
-    mask-image: url('../images/error.svg');
-    mask-position: center;
-    mask-repeat: no-repeat;
-    mask-size: contain;
-    width: 24px;
-}
-
-/* Masked SVG status icon inside toast notifications. */
-.toast-icon-mask {
-    -webkit-mask-image: var(--icon-url);
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    background-color: currentColor;
-    height: 18px;
-    mask-image: var(--icon-url);
-    mask-repeat: no-repeat;
-    mask-size: contain;
-    width: 18px;
-}
-
-.toast-error .toast-icon-mask,
-.toast-warning .toast-icon-mask { --icon-url: url('../images/disconnected.svg'); }
-
-.error-title { color: #fff; font-size: 30px; font-weight: 900; margin-bottom: 14px; }
-
-.error-message-container {
-    background: rgba(0, 0, 0, 0.34);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
-    margin-bottom: 26px;
-    max-height: 260px;
-    overflow-y: auto;
-    padding: 18px;
-    width: 100%;
-}
-
-.error-message {
-    color: rgba(255, 255, 255, 0.78);
-    font-size: 15px;
-    line-height: 1.5;
-    margin: 0;
-    text-align: left;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-/* CSS Class: Container for interactive error recovery action buttons. */
+/* Error modal specific icon and message overrides. */
+.error-icon-container { align-items: center; align-self: center; background: rgba(var(--primary-rgb), 0.14); border-radius: var(--radius-lg); display: flex; height: 50px; justify-content: center; margin-bottom: 14px; width: 50px; }
+.error-icon-mask { -webkit-mask-image: url('../images/error.svg'); -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background-color: var(--primary-color); height: 24px; mask-image: url('../images/error.svg'); mask-position: center; mask-repeat: no-repeat; mask-size: contain; width: 24px; }
+.error-title { color: #ffffff; font-size: 30px; font-weight: 900; margin-bottom: 14px; }
+.error-message-container { background: rgba(0, 0, 0, 0.34); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); margin-bottom: 26px; max-height: 260px; overflow-y: auto; padding: 18px; width: 100%; }
+.error-message { color: rgba(255, 255, 255, 0.78); font-size: 15px; line-height: 1.5; margin: 0; text-align: left; white-space: pre-wrap; word-break: break-word; }
 .error-actions { display: flex; gap: 12px; justify-content: center; width: 100%; }
 
-/* ==========================================================================
-   SECTION 5: GLOBAL UI COMPONENTS - TOAST NOTIFICATION ALERTS
-   Source File: toast.css
-   ========================================================================== */
-/* CSS Class: Container holding stacked toast notifications on the screen */
+/* Toast notification alerts and floating network status indicator. */
 .toast-container { display: flex; flex-direction: column; gap: 10px; pointer-events: none; position: fixed; z-index: 10000; }
-
-/* CSS Class: Positions the toast container to the bottom right of the screen */
 .toast-container.bottom-right { bottom: 28px; right: 28px; }
-
-/* CSS Class: Positions the toast container to the top right of the screen */
 .toast-container.top-right { right: 28px; top: 28px; }
-
-/* CSS Class: Individual toast element styled with glassmorphism and slide-in transition */
 .toast {
     align-items: center;
     background: rgba(15, 15, 15, 0.85);
@@ -1379,88 +1077,29 @@ input, textarea, select { font: inherit; }
     transition: transform 0.28s ease, opacity 0.2s ease;
     will-change: transform, opacity;
 }
-
-/* CSS Class: Active state showing the visible slide-in entrance transition */
 .toast.visible { opacity: 1; transform: translateX(0); }
-
-/* CSS Class: Icon wrapper within a toast notification */
-.toast-icon {
-    align-items: center;
-    color: var(--primary-color);
-    display: flex;
-    flex: 0 0 24px;
-    height: 24px;
-    justify-content: center;
-    width: 24px;
-}
-
-/* CSS Class: Headline text styling for toast titles */
-.toast-title { color: #fff; font-size: 15px; font-weight: 900; margin: 0 0 2px; }
-
-/* CSS Class: Description text paragraph inside toasts */
+.toast-icon { align-items: center; color: var(--primary-color); display: flex; flex: 0 0 24px; height: 24px; justify-content: center; width: 24px; }
+.toast-icon-mask { -webkit-mask-image: var(--icon-url); -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background-color: currentColor; height: 18px; mask-image: var(--icon-url); mask-repeat: no-repeat; mask-size: contain; width: 18px; }
+.toast-error .toast-icon-mask, .toast-warning .toast-icon-mask { --icon-url: url('../images/disconnected.svg'); }
+.toast-title { color: #ffffff; font-size: 15px; font-weight: 900; margin: 0 0 2px; }
 .toast-message { color: rgba(255, 255, 255, 0.74); font-size: 14px; line-height: 1.35; margin: 0; }
-
-/* CSS Class: Error specific styling variant for toast left borders */
 .toast-error { border-left-color: #ff7770; }
-
-/* CSS Class: Colors elements inside error toasts red */
 .toast-error .toast-icon, .toast-error .toast-title, .form-message.error { color: #ff7770; }
-
-/* CSS Class: Warning specific styling variant for toast left borders */
 .toast-warning { border-left-color: #f1c84c; }
-
-/* CSS Class: Colors elements inside warning toasts yellow */
 .toast-warning .toast-icon, .toast-warning .toast-title { color: #f1c84c; }
-
-/* CSS Class: Colors elements inside info toasts blue */
 .toast-info .toast-icon { color: #63b3ff; }
+.toast-actions { display: flex; gap: 8px; margin-top: 10px; }
 
-/* CSS Class: Floating network connection status icon overlay, on top of toasts */
-.network-status-overlay {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 10010;
-    pointer-events: none;
-    opacity: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    transition: opacity 0.3s ease;
-}
-
-/* CSS Class: Active state showing the visible network overlay status icon */
+/* Floating network connection status icon overlay. */
+.network-status-overlay { align-items: center; bottom: 28px; display: flex; height: 28px; justify-content: center; opacity: 0; pointer-events: none; position: fixed; right: 28px; transition: opacity 0.3s ease; width: 28px; z-index: 10010; }
 .network-status-overlay.visible { opacity: 1; }
-
-/* CSS Class: Lost connection state coloring the network overlay red */
 .network-status-overlay.lost { color: #ff7770; }
-
-/* CSS Class: Slow connection state coloring the network overlay yellow */
 .network-status-overlay.slow { color: #f1c84c; }
-
-/* CSS Class: Restored connection state coloring the network overlay green */
 .network-status-overlay.connected { color: var(--primary-color); }
-
-/* CSS Class: Blinking utility class for connection overlay icons */
 .toast-blink-icon { animation: toast-pulse-opacity 1.5s infinite ease-in-out; }
 
-/* CSS Class: Keyframes animation for connection status icon pulsing */
-@keyframes toast-pulse-opacity {
-    0% { opacity: 0.7; }
-    50% { opacity: 0.4; }
-    100% { opacity: 0.7; }
-}
-
-/* ==========================================================================
-   SECTION 6: GLOBAL UI COMPONENTS - NAVIGATION RAIL (OOCSS)
-   Source File: sidebar.css
-   ========================================================================== */
-
 /* Main vertical navigation rail container with smooth width expansion on TV and hover. */
-.nav-rail,
-.navbar {
+.nav-rail, .navbar {
     align-items: stretch;
     background: #000000eb;
     border-right: none;
@@ -1476,64 +1115,13 @@ input, textarea, select { font: inherit; }
     width: var(--app-sidebar-width);
     z-index: 1000;
 }
-
-/* Expanded state for navigation rail container. */
-#app.sidebar-always-expanded .nav-rail,
-#app.sidebar-always-expanded .navbar,
-.nav-rail:hover,
-.nav-rail:focus-within,
-.navbar:hover,
-.navbar:focus-within { width: var(--app-sidebar-expanded-width); }
-
-/* Branding header inside navigation rail containing logo and title. */
-.nav-rail__header,
-.logo-container {
-    align-items: center;
-    box-sizing: border-box;
-    display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
-    min-height: 44px;
-    padding: 0 12px;
-    white-space: nowrap;
-    width: 100%;
-}
-
-/* Scaled SVG logo icon inside rail header. */
-.nav-rail__logo,
-.logo-img {
-    display: block;
-    flex: 0 0 24px;
-    height: 24px;
-    object-fit: contain;
-    width: 24px;
-}
-
-/* Application brand text label fading in when navigation rail expands. */
-.nav-rail__brand,
-.logo-text {
-    color: #ffffff;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    will-change: opacity;
-}
-
-/* Navigation links group container. */
-.nav-rail__group,
-.nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
-
-/* Bottom utilities group container pinned to lower edge of navigation rail. */
-.nav-rail__group--bottom,
-.nav-utilities {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-top: auto;
-    width: 100%;
-}
+#app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar,
+.nav-rail:hover, .nav-rail:focus-within, .navbar:hover, .navbar:focus-within { width: var(--app-sidebar-expanded-width); }
+.nav-rail__header, .logo-container { align-items: center; box-sizing: border-box; display: flex; gap: 12px; margin-bottom: 12px; min-height: 44px; padding: 0 12px; white-space: nowrap; width: 100%; }
+.nav-rail__logo, .logo-img { display: block; flex: 0 0 24px; height: 24px; object-fit: contain; width: 24px; }
+.nav-rail__brand, .logo-text { color: #ffffff; font-size: 22px; font-weight: 600; letter-spacing: -0.03em; opacity: 0; transition: opacity 0.25s ease; will-change: opacity; }
+.nav-rail__group, .nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
+.nav-rail__group--bottom, .nav-utilities { display: flex; flex-direction: column; gap: 5px; margin-top: auto; width: 100%; }
 
 /* Navigation button item for sidebar routes. */
 .nav-item {
@@ -1552,25 +1140,16 @@ input, textarea, select { font: inherit; }
     padding: 0;
     position: relative;
     text-decoration: none;
-    transition: width 0.25s ease, background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+    transition: width 0.25s ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease;
     white-space: nowrap;
     width: calc(var(--app-sidebar-width) - 20px);
 }
-
-/* Hover state for navigation link buttons. */
 .nav-item:hover { background: rgba(255, 255, 255, 0.22); border-color: transparent; color: #ffffff; }
-
-/* Focus state for navigation link buttons with standard white border. */
-.nav-item:focus,
-.nav-item.focused { background: rgba(255, 255, 255, 0.22); border-color: #ffffff; color: #ffffff; outline: none; }
-
-/* Active route state highlight for navigation items. */
-.nav-item.is-active,
-.nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #ffffff; }
+.nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.22); border-color: #ffffff; color: #ffffff; outline: none; }
+.nav-item.is-active, .nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #ffffff; }
 
 /* Masked icon container inside navigation item. */
-.nav-item__icon,
-.nav-icon {
+.nav-item__icon, .nav-icon {
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: contain;
@@ -1584,1420 +1163,50 @@ input, textarea, select { font: inherit; }
     mask-size: contain;
     width: 24px;
 }
+.nav-item.is-active .nav-item__icon, .nav-item.active .nav-icon { background-color: var(--primary-color); }
+.nav-item__label, .nav-item span { opacity: 0; transition: opacity 0.25s ease; }
+#app.sidebar-always-expanded .nav-item, .nav-rail:hover .nav-item, .nav-rail:focus-within .nav-item, .navbar:hover .nav-item, .navbar:focus-within .nav-item { width: 100%; }
+#app.sidebar-always-expanded .nav-item__label, .nav-rail:hover .nav-item__label, .nav-rail:focus-within .nav-item__label,
+#app.sidebar-always-expanded .nav-item span, .navbar:hover .nav-item span, .navbar:focus-within .nav-item span { opacity: 1; pointer-events: auto; }
 
-/* Active route state highlight for navigation icon with primary theme color. */
-.nav-item.is-active .nav-item__icon,
-.nav-item.active .nav-icon { background-color: var(--primary-color); }
-
-/* Route text label inside navigation item fading in when rail expands. */
-.nav-item__label,
-.nav-item span { opacity: 0; transition: opacity 0.25s ease; }
-
-/* Expanded state for navigation item button. */
-#app.sidebar-always-expanded .nav-item,
-.nav-rail:hover .nav-item,
-.nav-rail:focus-within .nav-item,
-.navbar:hover .nav-item,
-.navbar:focus-within .nav-item { width: 100%; }
-
-/* Expanded state for navigation item text label. */
-#app.sidebar-always-expanded .nav-item__label,
-.nav-rail:hover .nav-item__label,
-.nav-rail:focus-within .nav-item__label,
-#app.sidebar-always-expanded .nav-item span,
-.navbar:hover .nav-item span,
-.navbar:focus-within .nav-item span { opacity: 1; pointer-events: auto; }
+/* Sidebar route SVG mask sources. */
+.nav-icon.search { -webkit-mask-image: url('../images/search.svg'); mask-image: url('../images/search.svg'); }
+.nav-icon.home { -webkit-mask-image: url('../images/home.svg'); mask-image: url('../images/home.svg'); }
+.nav-icon.movies { -webkit-mask-image: url('../images/movies.svg'); mask-image: url('../images/movies.svg'); }
+.nav-icon.series { -webkit-mask-image: url('../images/series.svg'); mask-image: url('../images/series.svg'); }
+.nav-icon.playlists { -webkit-mask-image: url('../images/playlists.svg'); mask-image: url('../images/playlists.svg'); }
+.nav-icon.livetv { -webkit-mask-image: url('../images/livetv.svg'); mask-image: url('../images/livetv.svg'); }
+.nav-icon.account { -webkit-mask-image: url('../images/account.svg'); mask-image: url('../images/account.svg'); }
+.nav-icon.settings { -webkit-mask-image: url('../images/settings.svg'); mask-image: url('../images/settings.svg'); }
 
 /* ==========================================================================
-   SECTION 7: PAGE SPECIFIC - USER PROFILES OVERVIEW
-   Source File: profiles.css
+   SECTION 7: HERO SLIDER, MEDIA RAILS & SHARED PAGE CONTAINERS
    ========================================================================== */
-/* Explains: Setting item info wrapper for layout spacing. */
-.setting-info { min-width: 0; }
 
-/* Explains: Typography and layout style for channel names in list items. */
-.channel-list-name {
-    color: #fff;
-    font-size: 19px;
-    font-weight: 800;
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-}
-
-/* Explains: Text labels for input fields and search suggestions. */
-/* Explains: Validation message text wrapper. */
-.form-message { font-size: 13px; font-weight: 700; min-height: 18px; text-align: center; }
-
-/* ==========================================================================
-   SECTION 8: PAGE SPECIFIC - SHARED MEDIA RAIL ROWS (HOME, MOVIES, SERIES)
-   Source File: home.css
-   ========================================================================== */
-.row { animation: fadeIn 0.35s ease-out forwards; opacity: 0; padding: 0; position: relative; z-index: 20; }
-
-/* Layout wrapper container for movie and series content rails. */
-.row-container {
-    align-items: center;
-    contain: layout;
-    contain-intrinsic-size: auto var(--row-min-height);
-    content-visibility: auto;
-    display: flex;
-    margin-bottom: 14px;
-    min-height: var(--row-min-height);
-    position: relative;
-    width: 100%;
-}
-
-.handle {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.62);
-    border: 2px solid transparent;
-    border-radius: var(--radius-md);
-    bottom: 26px;
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    font-size: 34px;
-    justify-content: center;
-    opacity: 0;
-    position: absolute;
-    top: 10px;
-    transition: opacity 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
-    width: 44px;
-    z-index: 50;
-}
-
-.handle:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; outline: none; }
-
-.row:nth-child(2) { animation-delay: 0.08s; }
-
-.row:nth-child(3) { animation-delay: 0.14s; }
-
-.row:nth-child(5) { animation-delay: 0.26s; }
-
-/* ==========================================================================
-   SECTION 9: PAGE SPECIFIC - MEDIA DETAILS PAGE
-   Source File: details.css
-   ========================================================================== */
-/* Details Page Styles */
-.details-page { background-color: var(--background-color); height: auto; min-height: 100vh; padding-bottom: 3rem; padding-top: 4rem; position: relative; }
-
-.details-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-    margin: 0 auto;
-    max-width: 90rem;
-    padding: 0 5%;
-    position: relative;
-    z-index: 10;
-}
-
-.details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; }
-
-.details-info { flex: 1; max-width: 50%; }
-
-.details-hero-poster { border: 0.1875rem solid rgba(255, 255, 255, 0.1); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
-
-.details-meta { align-items: center; color: #aaa; display: flex; font-size: 18px; gap: 15px; margin-bottom: 20px; }
-
-/* Styling for metadata tags in the details view (date box and rating chip). */
-/* Specific styling for the release date tag */
-.date-box { background: var(--primary-color); border-radius: 5px; color: #000; font-size: 16px; font-weight: bold; padding: 4px 10px; }
-
-/* Styling for metadata tags in the details view (date box and rating chip). */
-/* Specific styling for age rating indicator tags */
-.rating-chip {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 4px 10px;
-}
-
-.rating-chip.rating-R, .rating-chip.rating-TV-MA { background-color: #ff4500; border-color: #ff4500; color: #fff; }
-
-/* Container for genre tags displaying categories associated with a title. */
-.details-genres { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-
-.genre-chip {
-    backdrop-filter: blur(5px);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    color: #fff;
-    font-family: inherit;
-    font-size: 14px;
-    padding: 6px 14px;
-    transition: border-color 0.16s ease, background-color 0.16s ease;
-}
-
-.genre-chip:hover { background: rgba(255, 255, 255, 0.2); border-color: transparent; cursor: pointer; outline: none; }
-.genre-chip.focused, .genre-chip:focus { background: rgba(255, 255, 255, 0.2); border-color: #ffffff; cursor: pointer; outline: none; }
-
-.details-overview { color: #ddd; font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
-
-.details-actions { display: flex; gap: 20px; }
-
-/* Bottom Section - Seasons and Episodes Side by Side */
-.details-bottom {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    margin: 0 auto;
-    max-width: 1400px;
-    width: 100%;
-}
-
-/* Seasons List Sidebar */
-.details-seasons {
-    backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    flex-shrink: 0;
-    max-height: 600px;
-    overflow-y: auto;
-    padding: 20px;
-    width: 250px;
-}
-
-/* Explains: Alignment style for season select buttons in details view sidebar. */
-.season-btn { justify-content: flex-start; text-align: left; width: 100%; }
-
-.episode-image {
-    background-color: #000;
-    background-position: center;
-    background-size: cover;
-    border-radius: 5px;
-    flex-shrink: 0;
-    height: 112px;
-    width: 200px;
-}
-
-.episode-info { display: flex; flex: 1; flex-direction: column; justify-content: center; }
-
-.episode-header { align-items: baseline; display: flex; gap: 10px; margin-bottom: 8px; }
-
-.episode-number { color: var(--primary-color); font-size: 20px; font-weight: bold; }
-
-.episode-name { color: #fff; font-size: 20px; font-weight: bold; }
-
-.episode-overview {
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    color: #aaa;
-    display: -webkit-box;
-    font-size: 14px;
-    line-clamp: 3;
-    line-height: 1.4;
-    overflow: hidden;
-}
-
-.playlist-selection-list { margin-bottom: 20px; max-height: 300px; overflow-y: auto; text-align: left; }
-
-.playlist-option { border-bottom: 2px solid rgba(255, 255, 255, 0.15); padding: 10px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
-
-/* ==========================================================================
-   SECTION 11: PAGE SPECIFIC - LIVE TV GUIDE LAYOUT
-   Source File: livetv.css
-   ========================================================================== */
-.livetv-page-layout { box-sizing: border-box; color: #fff; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-
-.top-bar.livetv-top-bar { padding: 2% var(--app-content-padding-x) 0; }
-.top-bar.livetv-top-bar .form-control-wrapper { width: 30%; }
-.top-bar__actions.livetv-top-actions { width: 68%; }
-
-/* Explains: Close/Clear button nested inside Live TV search box wrapper. */
-.search-clear-btn {
-    align-items: center;
+/* Hero header layout container in normal document flow. */
+.hero {
+    align-items: flex-end;
     background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
     display: flex;
-    font-size: 24px;
-    height: 100%;
-    justify-content: center;
-    padding: 0 4px;
-}
-
-/* Explains: Focus and hover styles for search clear button. */
-.search-clear-btn:hover { border: 2px solid transparent; color: #fff; outline: none; }
-.search-clear-btn:focus, .search-clear-btn.focused { border: 2px solid #fff; border-radius: 50%; color: #fff; outline: none; }
-
-.category-chip {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid transparent;
-    border-radius: var(--radius-md);
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    display: inline-flex;
-    flex: 0 0 auto;
-    font-size: 14px;
-    font-weight: 800;
-    gap: 8px;
-    padding: 10px 20px;
-    transition: background 0.16s, border-color 0.16s, color 0.16s;
-}
-
-.category-chip:hover { background: rgba(255, 255, 255, 0.12); border-color: transparent; color: #fff; outline: none; }
-.category-chip:focus, .category-chip.focused { background: rgba(255, 255, 255, 0.12); border-color: #fff; color: #fff; outline: none; }
-
-.category-chip.active { background: var(--primary-color); border-color: transparent; color: #050505; }
-
-.category-chip.active:hover { border-color: transparent; color: #050505; }
-.category-chip.active:focus, .category-chip.active.focused { border-color: #fff; color: #050505; }
-
-.livetv-two-column-layout { box-sizing: border-box; display: flex; flex: 1; gap: 2%; min-height: 0; padding: 1.5rem var(--app-content-padding-x) var(--app-content-padding-x); }
-
-.livetv-list-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 30%; }
-
-.livetv-list-column::-webkit-scrollbar-thumb, .livetv-preview-column::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
-
-.channel-list-item {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
-    box-sizing: border-box;
-    cursor: pointer;
-    display: flex;
-    padding: 6px 12px;
+    height: 60vh;
+    min-height: 560px;
+    overflow: hidden;
+    padding: 0 var(--app-content-padding-x) 72px;
     position: relative;
-    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
-    width: 100%;
-}
-
-.channel-list-item:hover, .channel-list-item:focus, .channel-list-item.focused { background: rgba(255, 255, 255, 0.08); }
-
-.list-status-dot { border-radius: 50%; flex-shrink: 0; height: 8px; margin-right: 12px; width: 8px; }
-
-.list-status-dot.checking { background: #f1c84c; }
-
-.list-status-dot.online { background: #46d369; }
-
-.list-status-dot.offline { background: #e24a4a; }
-
-.channel-list-logo-container {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-sm);
-    display: flex;
-    flex-shrink: 0;
-    height: 32px;
-    justify-content: center;
-    overflow: hidden;
-    width: 48px;
-}
-
-.channel-list-logo { max-height: 90%; max-width: 90%; object-fit: contain; }
-
-.channel-list-meta-container { display: flex; flex: 1; flex-direction: column; gap: 0px; margin-left: 12px; min-width: 0; }
-/* Explains: Content container for version chips in the update selection modal. */
-.version-chip-content {
-    align-items: flex-start;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-    width: 100%;
-}
-
-/* Explains: Container for vertical Live TV channel items grid list. */
-.channels-list { box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; padding: 6px; width: 100%; }
-
-/* Explains: Program title typography for upcoming programs in details list. */
-.upcoming-program-title {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 68%; }
-
-.hero-active-content { display: flex; flex-direction: column; gap: 16px; height: 100%; min-height: 0; width: 100%; }
-
-.preview-card-video {
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    box-sizing: border-box;
-    height: 60%;
-    min-height: 0;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.preview-video-loading {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
     z-index: 2;
 }
-
-.player-loading-overlay {
-    align-items: center;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    height: 100%;
-    justify-content: center;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 150;
-}
-
-.epg-card { display: flex; flex: 1; flex-direction: column; gap: 16px; min-height: 0; overflow: hidden; }
-
-.details-epg-section { display: flex; flex-direction: column; flex-shrink: 0; gap: 8px; width: 100%; }
-
-.details-upcoming-section { display: flex; flex: 1; flex-direction: column; gap: 12px; min-height: 0; width: 100%; }
-
-.epg-active-show { display: flex; flex-direction: column; gap: 8px; }
-
-.epg-show-title { color: #fff; font-size: 24px; font-weight: 800; text-align: left; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
-
-.epg-progress-bar-container { background: rgba(255, 255, 255, 0.1); border-radius: 5px; flex: 1; height: 8px; overflow: hidden; }
-
-/* Explains: Progress bar fill indicating program duration in the Live TV EPG details card. */
-.epg-progress-bar-fill { background: var(--primary-color); height: 100%; transition: width 0.3s ease; width: 0%; }
-
-.upcoming-programs-list {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 10px;
-    min-height: 0;
-    overflow-y: auto;
-    width: 100%;
-}
-
-.upcoming-program-row {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-left: 4px solid var(--primary-color);
-    border-radius: var(--radius-md);
-    display: flex;
-    gap: 16px;
-    padding: 14px 20px;
-    transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.upcoming-program-row:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); }
-
-.upcoming-program-time { color: var(--primary-color); flex-shrink: 0; font-size: 15px; font-weight: 800; letter-spacing: 0.05em; }
-
-.loading-center {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: var(--radius-lg);
-    color: var(--text-muted);
-    display: flex;
-    font-size: 17px;
-    justify-content: center;
-    min-height: 200px;
-    width: 100%;
-}
-
-/* Explains: Centered glassmorphic box for the initial Live TV state. */
-.hero-placeholder-content {
-    align-items: center;
-    backdrop-filter: blur(12px);
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius-lg);
-    box-sizing: border-box;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    padding: 8%;
-    text-align: center;
-}
-
-/* Explains: Large gradient-filled TV icon using livetv.svg as a mask. */
-.placeholder-icon-large {
-    -webkit-mask-image: url('../images/livetv.svg');
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    background: linear-gradient(135deg, var(--primary-color) 0%, rgba(255, 255, 255, 0.6) 100%);
-    height: 6rem;
-    margin-bottom: 1.5rem;
-    mask-image: url('../images/livetv.svg');
-    mask-repeat: no-repeat;
-    mask-size: contain;
-    opacity: 0.85;
-    transition: opacity 0.3s ease, filter 0.3s ease;
-    width: 6rem;
-}
-
-/* Explains: Glow animation on hover of the placeholder content. */
-.hero-placeholder-content:hover .placeholder-icon-large { filter: drop-shadow(0 0 8px rgba(var(--primary-rgb), 0.5)); opacity: 1; }
-
-/* Explains: Title header text styled with a subtle vertical color gradient. */
-.hero-placeholder-content h1 {
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
-    background-clip: text;
-    font-size: 1.8rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    margin: 0 0 0.8rem 0;
-}
-
-/* Explains: Muted subtitle text limited in width to keep it readable. */
-.hero-placeholder-content p { color: var(--text-muted); font-size: 1rem; line-height: 1.5; margin: 0; max-width: 80%; }
-
-/* ==========================================================================
-   SECTION 12: PAGE SPECIFIC - LIVE TV VIDEO PLAYER
-   Source File: tv-player.css
-   ========================================================================== */
-.tv-player-container { background: #000; height: 100%; overflow: hidden; position: relative; width: 100%; }
-
-.tv-overlay {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%);
-    display: flex;
-    flex-direction: column;
+.hero::before {
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%);
+    content: "";
     inset: 0;
-    justify-content: space-between;
-    opacity: 0;
-    padding: 5vh 5vw;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
     pointer-events: none;
     position: absolute;
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 12;
+    z-index: 2;
 }
-
-.tv-overlay-top { align-items: center; display: flex; justify-content: flex-start; }
-
-.tv-overlay-bottom { align-items: center; display: flex; justify-content: space-between; width: 100%; }
-
-.tv-controls-left { align-items: center; display: flex; gap: 24px; }
-
-/* Specific dimensions for TV player circular control buttons. */
-#tv-back { height: 60px; width: 60px; }
-
-#tv-play-pause { height: 68px; width: 68px; }
-
-.play-pause-btn { background: var(--primary-color); color: #fff; height: 68px; width: 68px; }
-
-.play-pause-btn:hover { background: var(--primary-color); border-color: transparent; }
-.play-pause-btn:focus, .play-pause-btn.focused { background: var(--primary-color); border-color: #fff; }
-
-.tv-info { display: flex; flex-direction: column; justify-content: center; max-width: 50vw; }
-
-.tv-info h1 {
-    color: white;
-    font-size: 28px;
-    font-weight: 900;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-    white-space: nowrap;
-}
-
-.tv-meta-row { align-items: center; display: flex; gap: 12px; margin-top: 8px; }
-
-.tv-group-badge {
-    background: rgba(var(--primary-rgb), 0.15);
-    border: 1px solid rgba(var(--primary-rgb), 0.3);
-    border-radius: var(--radius-xs);
-    color: var(--primary-color);
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 0.05em;
-    padding: 4px 10px;
-    text-transform: uppercase;
-}
-
-.tv-epg-info { color: rgba(255, 255, 255, 0.6); font-size: 14px; font-weight: 700; }
-
-.tv-controls-right { align-items: center; display: flex; gap: 28px; }
-
-.tv-zap-guide { align-items: flex-end; display: flex; flex-direction: column; }
-
-.guide-key {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: var(--radius-xs);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 900;
-    padding: 2px 10px;
-}
-
-.guide-label { color: rgba(255, 255, 255, 0.55); font-size: 11px; font-weight: 800; letter-spacing: 0.05em; margin-top: 5px; text-transform: uppercase; }
-
-.tv-status-badge {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 5px;
-    display: flex;
-    gap: 8px;
-    padding: 6px 14px;
-}
-
-.tv-quality-badge { color: #fff; font-size: 12px; font-weight: 900; }
-
-.tv-zapping-hud {
-    backdrop-filter: blur(8px);
-    background: rgba(0, 0, 0, 0.85);
-    border-left: 5px solid var(--primary-color);
-    border-radius: var(--radius-md);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    min-width: 260px;
-    padding: 16px 28px;
-    pointer-events: none;
-    position: absolute;
-    right: 5vw;
-    top: 5vh;
-    z-index: 9;
-}
-
-.tv-zapping-hud.fade-in { animation: hudFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-.zapping-label { color: var(--primary-color); font-size: 12px; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px; text-transform: uppercase; }
-
-.zapping-channel-name { color: #fff; font-size: 18px; font-weight: 900; }
-
-.tv-loading {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    bottom: 0;
-    display: none;
-    justify-content: center;
-    left: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 10;
-}
-
-/* ==========================================================================
-   SECTION 13: PAGE SPECIFIC - PLAYLIST OVERVIEW
-   Source File: playlists.css
-   ========================================================================== */
-.playlists-container { height: 100%; overflow-y: auto; padding: var(--app-content-padding-y) var(--app-content-padding-x) 72px; }
-
-.page-header { align-items: center; animation: fadeInDown 0.28s ease-out; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 30px; }
-
-.playlists-grid { animation: fadeInUp 0.32s ease-out; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr)); }
-
-.empty-state {
-    background: rgba(255, 255, 255, 0.045);
-    border: 2px dashed rgba(255, 255, 255, 0.16);
-    border-radius: var(--radius-lg);
-    color: var(--text-muted);
-    font-size: 18px;
-    grid-column: 1 / -1;
-    padding: 54px;
-    text-align: center;
-}
-
-.playlist-cover { background: #101010; height: 100%; overflow: hidden; position: relative; width: 100%; }
-
-.playlist-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
-
-/* Explains: Typography styling for time labels within EPG show lists. */
-.epg-time { color: var(--text-muted); font-size: 13px; font-weight: 700; }
-
-/* ==========================================================================
-   SECTION 14: PAGE SPECIFIC - PLAYLIST DETAILS
-   Source File: playlist-details.css
-   ========================================================================== */
-.page-container { height: 100%; }
-
-.playlist-hero-cover { aspect-ratio: 16 / 9; height: auto; object-fit: cover; }
-
-.backdrop-overlay { background: linear-gradient(90deg, rgba(5, 5, 5, 0.98), rgba(5, 5, 5, 0.82) 48%, rgba(5, 5, 5, 0.58)),
-        linear-gradient(0deg, var(--background-color), transparent 54%); inset: 0; position: absolute; }
-
-.playlist-items-grid { display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr)); padding-bottom: 64px; }
-
-/* Container row that places the episode-styled card and its action buttons side-by-side. */
-.playlist-item-row { align-items: center; display: flex; gap: 15px; margin-bottom: 12px; width: 100%; }
-
-/* Flex item containing the movie card, set to grow to fill available space. */
-/* Episodes List */
-.playlist-item-card-wrapper, .toast-content, .episodes-list, .profile-details { flex: 1; min-width: 0; }
-
-/* Vertical layout containing the circular move and delete buttons. */
-.playlist-item-actions { display: flex; flex-shrink: 0; gap: 10px; }
-
-/* Glowing border styling for the entire row to indicate it is currently being moved. */
-.playlist-item-row.moving-active .card--row { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5); }
-
-/* ==========================================================================
-   SECTION 15: PAGE SPECIFIC - SEARCH SYSTEM & FILTERS
-   Source File: search.css
-   ========================================================================== */
-.search-page-layout { color: #fff; height: 100%; overflow: hidden; width: 100%; }
-
-.search-main { display: flex; flex-direction: column; height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); }
-
-.search-container-wrapper {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 4% auto 2%;
-    max-width: min(720px, 90%);
-    text-align: center;
-    width: 80%;
-}
-
-.profile-card.drag-over { border-color: var(--primary-color); }
-
-.search-actions { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; width: 100%; }
-
-.recent-searches-row { align-items: center; display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; width: 100%; }
-
-.recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
-
-/* 
- * Explanation:
- * - .results-container: The scrollable area containing the search results grid.
- * - Restructured with percentage padding to center layout space dynamically based on device size.
- * - Sets a top padding of 8% to prevent the top row of posters from being affected by the gradient mask when scrolled to the top.
- * - Utilizes a stationary linear gradient mask-image on both top and bottom edges so that the grid 
- *   posters fade out fluently when scrolled towards boundaries, rather than abruptly disappearing.
- */
-.results-container {
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
-    flex: 1;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
-    min-height: 0;
-    overflow-y: auto;
-    padding-bottom: 6%;
-    padding-left: 6%;
-    padding-right: 6%;
-    padding-top: 8%;
-}
-
-/* 
- * Explanation:
- * - .search-results-grid: The grid container managing search result posters layout.
- * - Overrides the poster width to be slightly smaller specifically for the search results page.
- * - Arranges poster cards dynamically utilizing a responsive auto-fill layout flow.
- */
-.search-results-grid { --poster-width: clamp(105px, 9.5vw, 136px); align-items: start; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr)); }
-
-/* Spans the loader container across all grid columns to center it horizontally in the search results area. */
-.search-results-grid .loading-center { grid-column: 1 / -1; }
-
-.select-options-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 0 28px 16px; }
-
-.seasons-list-content { display: flex; flex-direction: column; gap: 0.625rem; }
-
-.scrollable { max-height: 54vh; }
-
-/* ==========================================================================
-   SECTION 16: PAGE SPECIFIC - SYSTEM SETTINGS PANEL
-   Source File: settings.css
-   ========================================================================== */
-/* Container for settings page with smooth fade-in and centered bounds */
-.settings-container {
-    animation: fadeIn 0.35s ease-out;
-    box-sizing: border-box;
-    margin: 0 auto;
-    max-width: 1060px;
-    padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px;
-    width: 100%;
-}
-
-/* Main settings page title typography */
-.settings-header h1 { color: #fff; font-size: 40px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 8px; }
-
-/* Subtitle description for settings overview */
-.settings-header p { color: var(--text-muted); font-size: 17px; margin-bottom: 30px; }
-
-/* Grouped settings section card styled with borderless dark surface matching Home and Search */
-.settings-section {
-    background: rgba(255, 255, 255, 0.04);
-    border: none;
-    border-radius: var(--radius-md);
-    box-shadow: none;
-    margin-bottom: 28px;
-    padding: 24px 28px;
-}
-
-/* Styling for a single settings item row layout without harsh borders */
-.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.04); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
-
-/* Center-aligns settings elements inside a centered settings row */
-.setting-item.centered-setting { justify-content: center; padding: 16px 0; }
-
-/* Remove top border from the first settings item row */
-.setting-item:first-of-type { border-top: 0; }
-
-/* Title label for individual setting items */
-.setting-label { color: #fff; font-size: 19px; font-weight: 700; margin-bottom: 4px; }
-
-/* Subtext description explaining the setting item */
-.setting-description { color: var(--text-muted); font-size: 15px; line-height: 1.45; }
-
-/* Right-hand flexbox container aligning settings controls horizontally */
-.setting-control { align-items: center; display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; }
-
-/* Readout chip badge for current setting value */
-.current-value-display {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: none;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    display: inline-flex;
-    font-size: 16px;
-    font-weight: 700;
-    height: 46px;
-    justify-content: center;
-    min-width: 0;
-    padding: 0 18px;
-    text-align: center;
-}
-
-/* Color preview circular swatch in Accent Color setting row */
-.color-preview-circle,
-#current-color-display {
-    background: var(--primary-color);
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    display: inline-block;
-    flex-shrink: 0;
-    font-size: 0;
-    height: 36px;
-    padding: 0;
-    width: 36px;
-}
-
-/* Trigger button modifier for editing setting values */
-.edit-trigger {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 3px solid transparent;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    cursor: pointer;
-    display: inline-flex;
-    flex-shrink: 0;
-    height: 46px;
-    justify-content: center;
-    min-height: 46px;
-    min-width: 46px;
-    padding: 0;
-    transition: background 0.18s ease, border-color 0.18s ease;
-    width: 46px;
-}
-
-.edit-trigger:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; }
-
-.edit-trigger:focus-visible,
-.edit-trigger.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: none; }
-
-/* Stepper button container for UI scale adjustments */
-.scale-control-container {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: none;
-    border-radius: var(--radius-sm);
-    display: inline-flex;
-    gap: 6px;
-    height: 46px;
-    padding: 4px 6px;
-}
-
-/* Value text inside scale control container */
-.scale-control-container .centered-value {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 17px;
-    font-weight: 700;
-    min-width: 60px;
-    padding: 0 4px;
-    text-align: center;
-}
-
-/* Stepper button inside scale adjust container */
-.scale-adjust-btn {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 3px solid transparent;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    cursor: pointer;
-    display: inline-flex;
-    font-size: 20px;
-    font-weight: 800;
-    height: 36px;
-    justify-content: center;
-    line-height: 1;
-    min-height: 36px;
-    min-width: 36px;
-    padding: 0;
-    width: 36px;
-}
-
-.scale-adjust-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; }
-
-.scale-adjust-btn:focus-visible,
-.scale-adjust-btn.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: none; }
-
-/* Stepper navigation icon for modal steppers */
-.setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
-
-/* Explains: SVG icon inside settings row buttons */
-.setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
-
-/* Status label for update checker */
-.update-status-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
-
-.loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
-
-.edit-trigger:active { background: rgba(255, 255, 255, 0.2); }
-
-.providers-list { display: flex; flex-direction: column; gap: 1.5%; margin-bottom: 2%; width: 100%; }
-
-/* Explains: Row container for a streaming provider or Live TV M3U playlist entry with solid opaque surface. */
-.provider-item {
-    align-items: center;
-    background: #202020;
-    border: none;
-    border-radius: var(--radius-md);
-    box-sizing: border-box;
-    display: flex;
-    gap: 12px;
-    margin-bottom: 10px;
-    padding: 10px 14px;
-    position: relative;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
-    width: 100%;
-}
-
-/* Explains: Prevents accidental hover or focus indicators on non-interactive row container. */
-.provider-item:hover, .provider-item:focus, .provider-item.focused { background: #202020; border: none; box-shadow: none; outline: none; }
-
-/* Explains: Elevated floating state for active reordering - distinctly lighter background and crisp white border. */
-.provider-item.moving,
-.provider-item.moving:hover,
-.provider-item.moving:focus,
-.provider-item.moving.focused {
-    background: #2c2c2c;
-    border: 2px solid #ffffff;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88);
-    outline: none;
-    z-index: 20;
-}
-
-/* Explains: Active drag state when moving an item with the mouse cursor. */
-.provider-item.dragging {
-    background: #333333;
-    border: 2px solid #ffffff;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95);
-    cursor: grabbing !important;
-    opacity: 0.98;
-    outline: none;
-    user-select: none;
-    z-index: 50 !important;
-}
-
-/* Explains: Action buttons container in player provider and M3U playlist items. */
-.provider-actions { align-items: center; display: flex; gap: 8px; }
-
-/* Explains: Compact circular icon button sizing for provider list action items. */
-.provider-actions .edit-trigger { height: 42px; min-height: 42px; min-width: 42px; width: 42px; }
-
-/* Explains: Grab cursor to indicate draggable handle for cursor/mouse reordering. */
-.provider-move-btn { cursor: grab; }
-.provider-move-btn:active, .provider-item.dragging .provider-move-btn { cursor: grabbing; }
-
-/* Explains: Active state indicator when reordering a provider or playlist item - clean neutral secondary styling. */
-.provider-move-btn.active-moving { background: #333333; border-color: #ffffff; }
-
-/* Utility class for stretching elements to fill 100% width and height. */
-.loader-inline-container .ivids-loader, .full-size { height: 100%; width: 100%; }
-
-/* CSS Class: Vertical layout container for stacked modal action options. */
-.vertical-modal-actions {
-    border-top: none;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 14px;
-    padding-top: 0;
-    width: 100%;
-}
-
-/* CSS Class: Horizontal layout container for evenly distributed modal action buttons. */
-.horizontal-modal-actions {
-    border-top: none;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 0;
-    width: 100%;
-}
-
-.color-dot { border: 2px solid rgba(255, 255, 255, 0.32); border-radius: 999px; height: 44px; width: 44px; }
-
-.warning-container {
-    background: rgba(255, 107, 53, 0.11);
-    border-left: 4px solid #ff6b35;
-    border-radius: var(--radius-md);
-    color: #ffb08f;
-    font-size: 14px;
-    line-height: 1.45;
-    margin-top: 4px;
-    padding: 14px 16px;
-}
-
-/* ==========================================================================
-   SECTION 17: PAGE SPECIFIC - ACCOUNT AND PROFILE MANAGEMENT
-   Source File: account.css
-   ========================================================================== */
-/* Main scroll container for account view with smooth fade in */
-.account-container {
-    animation: fadeIn 0.35s ease;
-    box-sizing: border-box;
-    margin: 0 auto;
-    max-width: 1060px;
-    padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px;
-    width: 100%;
-}
-
-/* Sizing and typography for account page header */
-.account-header h1 { color: #fff; font-size: 40px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 28px; }
-
-/* Dark card container for account section matching Home/Search card aesthetics */
-.account-section {
-    background: rgba(255, 255, 255, 0.04);
-    border: none;
-    border-radius: var(--radius-md);
-    box-shadow: none;
-    margin-bottom: 28px;
-    padding: 32px 36px;
-}
-
-/* Flex layout aligning the profile avatar and user account details */
-.profile-display { align-items: center; display: flex; gap: 36px; }
-
-/* Profile avatar squircle with clean letter centering */
-.profile-avatar.large {
-    align-items: center;
-    border: 3px solid rgba(255, 255, 255, 0.25);
-    border-radius: var(--radius-md);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    color: #fff;
-    display: flex;
-    flex: 0 0 108px;
-    font-size: 48px;
-    font-weight: 800;
-    height: 108px;
-    justify-content: center;
-    width: 108px;
-}
-
-/* User profile details flex container */
-.profile-details {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 0;
-}
-
-/* Main display name text for current user profile */
-.profile-name-text {
-    color: #fff;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* CSS Class: Action button row for user profile authentication and registration. */
-.profile-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
-
-.tv-overlay.show { opacity: 1; pointer-events: auto; }
-
-/* ==========================================================================
-   SECTION 26: PREMIUM TV-FIRST & MOBILE-RESPONSIVE APP UPDATE SYSTEM MODAL
-   ========================================================================== */
-
-/* CSS Class: Header block centering title and icon within the update modal. */
-.update-header { align-items: center; display: flex; flex-direction: column; gap: 8px; }
-
-/* CSS Class: Rounded container wrapper holding the green themed update SVG icon. */
-.update-icon-container {
-    align-items: center;
-    background: rgba(var(--primary-rgb), 0.14);
-    border-radius: var(--radius-lg);
-    display: flex;
-    height: 76px;
-    justify-content: center;
-    margin-bottom: 12px;
-    width: 76px;
-    align-self: center;
-}
-
-/* CSS Class: Vector SVG mask graphic representing update activity. */
-.update-icon-mask {
-    -webkit-mask-image: url('../images/update.svg');
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    background-color: var(--primary-color);
-    height: 38px;
-    mask-image: url('../images/update.svg');
-    mask-position: center;
-    mask-repeat: no-repeat;
-    mask-size: contain;
-    width: 38px;
-}
-
-/* CSS Class: Title typography displaying the update availability heading. */
-
-/* CSS Class: Horizontal container for displaying current and remote version badges side-by-side. */
-.version-badge-container { align-items: center; display: flex; flex-direction: row; justify-content: center; gap: 14px; margin-bottom: 8px; }
-
-/* CSS Class: Typography styling for the individual version identifier tags. */
-.version-badge { border-radius: 5px; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; }
-
-/* CSS Class: Version badge highlighting the currently installed release. */
-.version-badge.current { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.65); }
-
-/* CSS Class: Version badge highlighting the new/remote update release version. */
-.version-badge.remote { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); color: var(--primary-color); }
-
-/* CSS Class: Arrow indicating transition direction between local and remote versions. */
-.version-arrow { color: rgba(255, 255, 255, 0.4); font-size: 1rem; }
-
-/* CSS Class: Styled card module enclosing target update branch title and label details. */
-.update-branch-section {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius-md);
-    padding: 12px;
-    margin-bottom: 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-/* CSS Class: Sub-heading title labeling the active update branch source. */
-.update-branch-title {
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-/* CSS Class: Text wrapper displaying the release build/branch target name. */
-.update-release-name { color: #fff; font-size: 1.1rem; font-weight: 700; }
-
-/* CSS Class: Header label preceding the update changelog list details. */
-.update-changelog-title {
-    align-self: flex-start;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    margin-top: 8px;
-    text-transform: uppercase;
-}
-
-/* CSS Class: Changelog body content panel rendering scrollable html release details. */
-.update-changelog-body {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 5px;
-    box-sizing: border-box;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 0.88rem;
-    line-height: 1.6;
-    max-height: 140px;
-    overflow-y: auto;
-    padding: 12px;
-    text-align: left;
-    width: 100%;
-}
-
-/* CSS Class: Horizontal footer area wrapping dismissal and confirmation buttons. */
-.update-footer-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; width: 100%; }
-
-/* CSS Class: Container wrapping downloading elements cleanly stacked on top of each other. */
-.update-progress-container {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    margin-top: 8px;
-}
-
-/* CSS Class: Loading track background hosting the progress bar loader indicators. */
-.update-progress-bar-bg {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 5px;
-    height: 10px;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-/* CSS Class: Colored bar indicating percentage completed in downloading sequence. */
-.update-progress-bar {
-    background: var(--primary-color);
-    border-radius: 5px;
-    bottom: 0;
-    box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6);
-    left: 0;
-    position: absolute;
-    top: 0;
-    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 0%;
-}
-
-/* CSS Class: Status label describing current percentage ratio and loading phase. */
-.update-progress-text { color: var(--text-color, #fff); font-size: 14px; font-weight: 700; margin-top: 4px; }
-
-.toast-actions { display: flex; gap: 8px; margin-top: 10px; }
-
-/* ==========================================================================
-   SECTION 27: APP UPDATE SYSTEM - VERSION MODAL
-   ========================================================================== */
-/* Custom scrollbar widths for Live TV columns and modal scroll bodies */
-.livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar, .scrollable-modal-body::-webkit-scrollbar, .modal__body--scroll::-webkit-scrollbar { width: 6px; }
-
-/* CSS Class: Version selector vertical list keeping items strictly stacked one below each other. */
-.version-option-list {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px;
-    overflow: visible !important;
-    padding: 4px 0 8px;
-    width: 100%;
-}
-
-/* CSS Class: Individual option chip card within the version selector with transparent background and thin border. */
-.version-option-list .chip--option {
-    align-items: center;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: var(--radius-md);
-    box-sizing: border-box;
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    min-height: 60px;
-    overflow: hidden;
-    padding: 12px 18px;
-    text-align: left;
-    transition: background-color 150ms ease, border-color 150ms ease;
-    width: 100%;
-}
-
-.version-option-list .chip--option:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); }
-
-.version-option-list .chip--option:focus,
-.version-option-list .chip--option.focused { background: rgba(255, 255, 255, 0.08); border: 2px solid #ffffff; outline: none; }
-
-.hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 8px; width: 100%; }
-
-.version-tag-badge {
-    background: var(--primary-color, #46d369);
-    border-radius: 5px;
-    color: #050505;
-    font-size: 9px;
-    font-weight: 900;
-    padding: 2px 6px;
-    text-transform: uppercase;
-}
-
-/* CSS Class: Date label positioned next to the version badge without taking up extra margins. */
-.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
-
-.version-chip-title {
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 700;
-    margin-top: 2px;
-    text-align: left;
-}
-
-.version-chip-desc {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 12px;
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-}
-
-/* CSS Class: SVG loader image sizing utility. */
-.ivids-loader { width: clamp(32px, 4.5vw, 60px); height: clamp(32px, 4.5vw, 60px); display: inline-block; vertical-align: middle; }
-
-/* CSS Class: Inline loader container centered horizontally and vertically inside the version modal body. */
-#version-list-loader {
-    align-items: center;
-    display: flex;
-    inset: auto;
-    justify-content: center;
-    margin: 0 auto;
-    min-height: 220px;
-    position: relative;
-    width: 100%;
-}
-
-/* CSS Class: Translucent green checkmark SVG icon positioned on the right side of the installed version card. */
-.version-applied-icon { flex-shrink: 0; height: 28px; margin-left: auto; width: 28px; }
-
-/* ==========================================================================
-   SECTION 10: PAGE SPECIFIC - VIDEO PLAYER (VOD)
-   Source File: player.css
-   ========================================================================== */
-/* Outer wrapper container that spans the full viewport to house the player page. */
-.video-container { background: #000; height: 100%; overflow: hidden; position: relative; width: 100%; }
-
-.player-container { height: 100%; position: relative; width: 100%; }
-
-iframe, #native-video-player { background: #000; border: none; height: 100%; width: 100%; }
-
-/* Status and error modal panel for video player load warnings, cleanly centered on screen. */
-.player-status-panel {
-    align-items: center;
-    background: rgba(18, 18, 18, 0.96);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-panel);
-    box-sizing: border-box;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    height: fit-content;
-    inset: 0;
-    justify-content: center;
-    margin: auto;
-    max-width: 500px;
-    padding: 4%;
-    position: absolute;
-    text-align: center;
-    width: 80%;
-    z-index: 200;
-}
-
-.player-status-actions { display: flex; gap: 2%; justify-content: center; margin-top: 3%; }
-
-/* The head-up display container containing all controls and metadata. */
-.player-hud {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: space-between;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
-    visibility: hidden;
-    width: 100%;
-    z-index: 100;
-}
-
-.player-hud.visible { opacity: 1; pointer-events: auto; visibility: visible; }
-
-/* Bottom HUD overlay container configured as a three-column grid. */
-.hud-bottom-panel {
-    align-items: center;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 60%, transparent 100%);
-    bottom: 0;
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: 20% 60% 20%;
-    height: auto;
-    left: 0;
-    padding: 3% 4%;
-    pointer-events: auto;
-    position: absolute;
-    width: 100%;
-}
-
-.hud-control-slot { align-items: center; display: flex; }
-
-.hud-slot-left { justify-content: flex-start; }
-
-/* CSS Class: Centered container alignment utility for the middle player HUD control slot. */
-.hud-slot-middle { justify-content: center; width: 100%; }
-
-.hud-slot-right { justify-content: flex-end; }
-
-.server-selection-overlay { display: flex; justify-content: center; width: 100%; }
-
-.server-list {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    overflow-x: auto;
-    padding: 4px 0;
-    scrollbar-width: none;
-    width: 100%;
-}
-
-/* CSS Class: Hero header layout container in normal document flow. */
-.hero { position: relative; z-index: 2; background: transparent; }
-
-/* CSS Class: Hero slider background slides track container. Positioned absolutely inside hero header. */
-.hero-slides-track {
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* CSS Class: Individual slide item within hero slides track. Cross-fades opacity between slides without horizontal sliding. */
+.hero-content { padding-top: 24px; position: relative; transition: opacity 0.35s ease; width: min(1100px, 90%); z-index: 2; }
+.hero-slides-track { height: 100%; left: 0; pointer-events: none; position: absolute; top: 0; width: 100%; z-index: 1; }
 .hero-slide {
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
     background-attachment: fixed;
@@ -3015,149 +1224,208 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     will-change: opacity;
     z-index: 0;
 }
-
-/* CSS Class: Active slide state enabling full opacity cross-fade. */
 .hero-slide.active { opacity: 1; z-index: 1; }
 
-/* === Migrated from details.html === */
-/* CSS Class: Dropdown select wrapper container for seasons in details page, hidden by default on desktop/TV. */
-.seasons-dropdown-wrapper { display: none; width: 100%; }
-
-/* Focus highlight thicker border for actor profiles */
-.disney-cast-img { aspect-ratio: 2 / 3; background-color: var(--surface-soft); background-position: center; background-size: cover; width: 100%; }
-
-.disney-cast-name {
-    color: var(--text-color);
-    font-size: 0.9rem;
-    font-weight: 700;
-    overflow: hidden;
-    padding: 0.35rem 0.25rem 0.1rem 0.25rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+/* Centered overlay loader containers. */
+.loader-center-container { align-items: center; display: flex; inset: 0; justify-content: center; position: absolute; }
+#hero-loader-container { background: rgba(0, 0, 0, 0.22); z-index: 5; }
+.ivids-loader {
+    -webkit-mask-image: url('../svg/loader.svg');
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    animation: ivids-loader-spin 0.9s linear infinite;
+    background-color: var(--primary-color);
+    display: inline-block;
+    height: clamp(32px, 4.5vw, 60px);
+    mask-image: url('../svg/loader.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    vertical-align: middle;
+    width: clamp(32px, 4.5vw, 60px);
 }
-
-.disney-cast-character { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
-
-.disney-episode-thumb { aspect-ratio: 16 / 9; background-color: var(--surface-soft); background-position: center; background-size: cover; width: 25%; }
-
-.disney-episode-overview {
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    color: var(--text-muted);
-    display: -webkit-box;
-    font-size: 1rem;
-    line-clamp: 2;
-    line-height: 1.5;
-    overflow: hidden;
+/* Hides inner img tag so CSS mask-image renders svg/loader.svg in dynamic var(--primary-color). */
+.ivids-loader-svg { display: block; height: 100%; opacity: 0; pointer-events: none; width: 100%; }
+/* Centered overlay spinner inside poster cards, skeletons, thumbnails, and cast cards while loading. */
+.poster-loader, .is-skeleton > .ivids-loader {
+    height: clamp(28px, 3vw, 40px);
+    inset: 0;
+    margin: auto;
+    pointer-events: none;
+    position: absolute;
+    width: clamp(28px, 3vw, 40px);
+    z-index: 5;
 }
+/* Skeleton error fallback container and icon when a row fetch fails. */
+.skeleton-error-container { align-items: center; display: flex; height: 100%; justify-content: center; width: 100%; }
+.skeleton-error-icon { height: 32px; opacity: 0.75; width: 32px; }
 
-.player-loading-text { color: rgba(255, 255, 255, 0.7); font-size: 18px; font-weight: 500; letter-spacing: 1px; }
-
-/* ==========================================================================
-   SECTION 5: LOGIN & REGISTRATION STRUCTURAL LAYOUT
-   ========================================================================== */
-/* Full-height viewport wrapper for the authentication screen */
-.login-page-wrapper {
+/* Category row containers and carousel navigation handles. */
+.row { animation: fadeIn 0.35s ease-out forwards; opacity: 0; padding: 0; position: relative; z-index: 20; }
+.row:nth-child(2) { animation-delay: 0.08s; }
+.row:nth-child(3) { animation-delay: 0.14s; }
+.row:nth-child(5) { animation-delay: 0.26s; }
+.row-container {
     align-items: center;
-    background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.05) 0%, rgba(5, 5, 5, 0.98) 70%);
-    box-sizing: border-box;
+    contain: layout;
+    contain-intrinsic-size: auto var(--row-min-height);
+    content-visibility: auto;
     display: flex;
-    justify-content: center;
-    min-height: 100%;
-    padding: var(--app-content-padding-y) var(--app-content-padding-x);
-    position: relative;
-}
-
-/* Card bounding container for login view */
-.login-card-container { box-sizing: border-box; margin: 0 auto; position: relative; width: min(460px, 92vw); }
-
-/* Authentication modal card matching Search modal styling */
-.login-card {
-    background: #141414;
-    border: none;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-    box-sizing: border-box;
-    margin: 0 auto;
-    max-height: 94vh;
-    min-height: auto;
-    overflow-y: auto;
-    padding: 28px 28px 24px;
+    margin-bottom: 14px;
+    min-height: var(--row-min-height);
     position: relative;
     width: 100%;
 }
-
-/* Back button positioned inside top-left of login card */
-#login-circle-back {
+.handle {
     align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 3px solid transparent;
-    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.62);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    bottom: 26px;
+    color: #ffffff;
     cursor: pointer;
     display: flex;
-    height: 38px;
+    font-size: 34px;
     justify-content: center;
-    left: 20px;
+    opacity: 0;
     position: absolute;
-    top: 20px;
-    transition: background 0.18s ease, border-color 0.18s ease;
-    width: 38px;
-    z-index: 10;
+    top: 10px;
+    transition: opacity 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+    width: 44px;
+    z-index: 50;
 }
+.handle:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; outline: none; }
+.handle:focus, .handle.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; opacity: 1; outline: none; }
 
-#login-circle-back:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; }
-
-#login-circle-back:focus-visible,
-#login-circle-back.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: none; }
-
-/* External SVG icon inside back button */
-.login-back-icon { height: 18px; object-fit: contain; pointer-events: none; width: 18px; }
-
-/* Header containing title and subtitle inside login card */
-.login-header {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-bottom: 24px;
-    text-align: center;
-}
-
-/* Sets margins and adjusts typography sizes for the branding header */
-.login-title-text { color: #fff; font-size: 26px; font-weight: 800; margin: 0 0 6px; }
-
-/* Subtext description below title */
-.login-subtitle-text { color: var(--text-muted); font-size: 14px; margin: 0; }
-
-/* Row aligning PIN label and digit count helper text */
-.login-pin-row {
-    align-items: baseline;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px;
+/* Unified page containers for Playlists, Settings, and Account views. */
+.playlists-container, .settings-container, .account-container {
+    animation: fadeIn 0.35s ease-out;
+    box-sizing: border-box;
+    padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px;
     width: 100%;
 }
+.playlists-container { height: 100%; overflow-y: auto; }
+.settings-container, .account-container { margin: 0 auto; max-width: 1060px; }
+.page-container { height: 100%; }
 
-.login-pin-row label { margin-bottom: 0; }
+/* Unified page header bar and surface section panels. */
+.page-header { align-items: center; animation: fadeInDown 0.28s ease-out; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 30px; }
+.settings-header h1 { margin-bottom: 8px; }
+.settings-header p { color: var(--text-muted); font-size: 17px; margin-bottom: 30px; }
+.account-header h1 { margin-bottom: 28px; }
 
-/* Helper text showing allowed digit range for PIN */
-.login-pin-hint { color: var(--text-dim); font-size: 12px; font-weight: 600; }
-
-/* CSS Class: Action buttons footer for login form submission and cancellation. */
-.login-footer {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 14px;
-    width: 100%;
+/* Unified dark surface section container for Settings and Account groups. */
+.settings-section, .account-section {
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: none;
+    margin-bottom: 28px;
+    padding: 24px 28px;
 }
+.account-section { padding: 32px 36px; }
 
-/* CSS Class: Reusable utility class for auto-centering block/flex elements horizontally. */
-.mx-auto { margin: 0 auto; }
+/* ==========================================================================
+   SECTION 8: DETAILS, PLAYLISTS & SEARCH PAGE LAYOUTS
+   ========================================================================== */
 
-/* CSS Class: Version details info button with transparent border by default (only visible on focus/hover). */
-.version-info-btn {
+/* Details page layout and hero metadata columns. */
+.details-page {
+    background: radial-gradient(circle at 80% 16%, rgba(var(--primary-rgb), 0.24) 0%, rgba(var(--primary-rgb), 0.07) 40%, transparent 70%), radial-gradient(circle at 14% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 52%), linear-gradient(165deg, #1f2229 0%, #13151a 48%, #0b0c0f 100%);
+    background-color: #13151a;
+    height: auto;
+    min-height: 100vh;
+    padding-bottom: 3rem;
+    padding-top: 4rem;
+    position: relative;
+}
+.details-layout { display: flex; flex-direction: column; gap: 2.5rem; margin: 0 auto; max-width: 90rem; padding: 0 5%; position: relative; transition: opacity 0.2s ease; z-index: 10; }
+/* Hides unpopulated details layout while metadata is being fetched from API. */
+.details-layout.is-loading { opacity: 0; pointer-events: none; }
+/* Centers full-page loader inside details page during initial API metadata request. */
+#details-page-loader { min-height: 70vh; z-index: 20; }
+/* Relative positioning for details poster container so poster-loader centers accurately. */
+.details-poster-container { position: relative; }
+.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #262932 0%, #16181e 100%); border-radius: 5px; min-width: 20rem; width: 25vw; }
+.details-poster-container.is-loading.is-widescreen { aspect-ratio: 16 / 9; }
+.details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; }
+.details-info { flex: 1; max-width: 50%; }
+.details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #262932 0%, #16181e 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
+.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.34) 0%, rgba(var(--primary-rgb), 0.08) 50%, transparent 75%), linear-gradient(145deg, #282b34 0%, #171920 100%); border: 0.1875rem solid rgba(var(--primary-rgb), 0.35); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5), inset 0 0 32px rgba(var(--primary-rgb), 0.12); min-width: 20rem; width: 25vw; }
+.details-poster-container.is-empty.is-widescreen { aspect-ratio: 16 / 9; }
+.details-meta { align-items: center; color: #aaaaaa; display: flex; font-size: 18px; gap: 15px; margin-bottom: 20px; }
+.details-genres { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.details-overview { color: #dddddd; font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+.details-actions { display: flex; gap: 20px; }
+.details-bottom { align-items: flex-start; display: flex; flex-direction: row; gap: 30px; margin: 0 auto; max-width: 1400px; width: 100%; }
+
+/* Seasons list sidebar and episode/playlist item headers. */
+.details-seasons { backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px; flex-shrink: 0; max-height: 600px; overflow-y: auto; padding: 20px; width: 250px; }
+.season-btn { justify-content: flex-start; text-align: left; width: 100%; }
+.seasons-dropdown-wrapper { display: none; width: 100%; }
+.seasons-list-content { display: flex; flex-direction: column; gap: 0.625rem; }
+.episode-header { align-items: baseline; display: flex; gap: 10px; margin-bottom: 4px; }
+.episode-number { color: var(--primary-color); font-size: 18px; font-weight: 800; }
+.playlist-selection-list { margin-bottom: 20px; max-height: 300px; overflow-y: auto; text-align: left; }
+
+/* Cast profile card elements and two-column About panel in Details view. */
+.disney-about-content { display: flex; gap: 2.5rem; width: 100%; }
+.disney-about-left, .disney-about-right { flex: 1; min-width: 0; }
+.disney-about-description { color: #dddddd; font-size: 16px; line-height: 1.6; }
+.disney-cast-img { aspect-ratio: 2 / 3; background-color: #1a1c22; background-image: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.25) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #16181e 100%); background-position: center; background-size: cover; position: relative; width: 100%; }
+.disney-cast-name { color: var(--text-color); font-size: 0.9rem; font-weight: 700; overflow: hidden; padding: 0.35rem 0.25rem 0.1rem; text-overflow: ellipsis; white-space: nowrap; }
+.disney-cast-character { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Playlists overview and Playlist Details item rows. */
+.empty-state { background: rgba(255, 255, 255, 0.045); border: 2px dashed rgba(255, 255, 255, 0.16); border-radius: var(--radius-lg); color: var(--text-muted); font-size: 18px; grid-column: 1 / -1; padding: 54px; text-align: center; }
+.playlist-cover { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #15171c 100%); height: 100%; overflow: hidden; position: relative; width: 100%; }
+.playlist-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.playlist-hero-cover { aspect-ratio: 16 / 9; height: auto; object-fit: cover; }
+.playlist-item-row { align-items: center; display: flex; gap: 15px; margin-bottom: 12px; width: 100%; }
+.playlist-item-row .card--row { margin-bottom: 0; }
+.playlist-item-card-wrapper, .toast-content, .episodes-list, .profile-details { flex: 1; min-width: 0; }
+.playlist-item-row.moving-active .card--row { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5); }
+
+/* Search page layout, recent search chips bar, and results grid container. */
+.search-page-layout { color: #ffffff; height: 100%; overflow: hidden; width: 100%; }
+.search-main { display: flex; flex-direction: column; height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); }
+.search-container-wrapper { align-items: center; display: flex; flex-direction: column; justify-content: center; margin: 4% auto 2%; max-width: min(720px, 90%); text-align: center; width: 80%; }
+.search-box { margin-bottom: 14px; width: 100%; }
+.search-icon, .filter-icon { height: 20px; margin-right: 8px; opacity: 0.85; width: 20px; }
+.trash-icon { height: 14px; width: 14px; }
+.search-actions { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; width: 100%; }
+.recent-searches-row { align-items: center; display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; width: 100%; }
+.recent-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
+.recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.recent-delete-btn { font-size: 16px; line-height: 1; margin-left: 4px; opacity: 0.7; }
+.recent-delete-btn:hover { opacity: 1; }
+.results-container {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    flex: 1;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8% 6% 6%;
+}
+.search-results-grid { --poster-width: clamp(105px, 9.5vw, 136px); align-items: start; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr)); }
+.search-results-grid .loading-center { grid-column: 1 / -1; }
+.select-options-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 0 28px 16px; }
+.filter-main-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+.group-header { align-items: center; display: flex; justify-content: space-between; }
+
+/* ==========================================================================
+   SECTION 9: LIVE TV GUIDE, TV PLAYER & VOD PLAYER LAYOUTS
+   ========================================================================== */
+
+/* Live TV guide two-column layout and channel list items. */
+.livetv-page-layout { box-sizing: border-box; color: #ffffff; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+.top-bar.livetv-top-bar { padding: 2% var(--app-content-padding-x) 0; }
+.top-bar.livetv-top-bar .form-control-wrapper { width: 30%; }
+.top-bar__actions.livetv-top-actions { width: 68%; }
+
+/* Clear button nested inside Live TV search input wrapper (consistent 2px border prevents focus shift). */
+.search-clear-btn {
     align-items: center;
     background: transparent;
     border: 2px solid transparent;
@@ -3166,147 +1434,259 @@ iframe, #native-video-player { background: #000; border: none; height: 100%; wid
     cursor: pointer;
     display: flex;
     flex-shrink: 0;
-    height: 34px;
+    font-size: 22px;
+    height: 32px;
     justify-content: center;
-    margin-left: 12px;
-    min-width: 34px;
-    transition: color 0.16s ease, border-color 0.16s ease;
-    width: 34px;
+    padding: 0;
+    transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+    width: 32px;
 }
+.search-clear-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; color: #ffffff; outline: none; }
+.search-clear-btn:focus, .search-clear-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
 
-/* CSS Class: Masked SVG element displaying the version info 'i' letter. */
-.version-info-icon {
-    -webkit-mask-image: url('../images/info.svg');
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-    background-color: currentColor;
-    height: 20px;
-    mask-image: url('../images/info.svg');
-    mask-position: center;
-    mask-repeat: no-repeat;
-    mask-size: contain;
-    width: 20px;
-    pointer-events: none;
+/* Live TV columns, channel list items, and EPG preview panel. */
+.livetv-two-column-layout { box-sizing: border-box; display: flex; flex: 1; gap: 2%; min-height: 0; padding: 1.5rem var(--app-content-padding-x) var(--app-content-padding-x); }
+.livetv-list-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 30%; }
+.livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 68%; }
+.livetv-list-column::-webkit-scrollbar-thumb, .livetv-preview-column::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
+.channels-list { box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; padding: 6px; width: 100%; }
+.channel-list-item {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    padding: 6px 12px;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
 }
+.channel-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+.channel-list-item:focus, .channel-list-item.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+.list-status-dot { border-radius: 50%; flex-shrink: 0; height: 8px; margin-right: 12px; width: 8px; }
+.list-status-dot.checking { background: #f1c84c; }
+.list-status-dot.online { background: #46d369; }
+.list-status-dot.offline { background: #e24a4a; }
+.channel-list-logo-container { align-items: center; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-sm); display: flex; flex-shrink: 0; height: 32px; justify-content: center; overflow: hidden; width: 48px; }
+.channel-list-logo { max-height: 90%; max-width: 90%; object-fit: contain; }
+.channel-list-meta-container { display: flex; flex: 1; flex-direction: column; gap: 0; margin-left: 12px; min-width: 0; }
+.channel-list-name { color: #ffffff; font-size: 19px; font-weight: 800; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 
-/* Styles the container for parsed markdown content with clean text formatting. */
-.markdown-body { color: var(--text-color); font-size: 0.9rem; line-height: 1.6; padding: 0 2%; text-align: left; word-break: break-word; }
+/* Live TV EPG and preview video panel. */
+.hero-active-content { display: flex; flex-direction: column; gap: 16px; height: 100%; min-height: 0; width: 100%; }
+.preview-card-video { background: #000000; border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); box-sizing: border-box; height: 60%; min-height: 0; overflow: hidden; position: relative; width: 100%; }
+.preview-video-loading { align-items: center; background: rgba(0, 0, 0, 0.5); display: flex; height: 100%; justify-content: center; left: 0; position: absolute; top: 0; width: 100%; z-index: 2; }
+.epg-card { display: flex; flex: 1; flex-direction: column; gap: 16px; min-height: 0; overflow: hidden; padding: 20px; }
+.details-epg-section { display: flex; flex-direction: column; flex-shrink: 0; gap: 8px; width: 100%; }
+.details-upcoming-section { display: flex; flex: 1; flex-direction: column; gap: 12px; min-height: 0; width: 100%; }
+.epg-active-show { display: flex; flex-direction: column; gap: 8px; }
+.epg-show-title { color: #ffffff; font-size: 24px; font-weight: 800; text-align: left; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
+.epg-time { color: var(--text-muted); font-size: 13px; font-weight: 700; }
+.hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 8px; width: 100%; }
+.epg-progress-bar-container { background: rgba(255, 255, 255, 0.1); border-radius: 5px; flex: 1; height: 8px; overflow: hidden; }
+.epg-progress-bar-fill { background: var(--primary-color); height: 100%; transition: width 0.3s ease; width: 0%; }
+.upcoming-programs-list { display: flex; flex: 1; flex-direction: column; gap: 10px; min-height: 0; overflow-y: auto; width: 100%; }
+.upcoming-program-row { align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.04); border-left: 4px solid var(--primary-color); border-radius: var(--radius-md); display: flex; gap: 16px; padding: 14px 20px; transition: background 0.2s ease, border-color 0.2s ease; }
+.upcoming-program-row:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); }
+.upcoming-program-time { color: var(--primary-color); flex-shrink: 0; font-size: 15px; font-weight: 800; letter-spacing: 0.05em; }
+.upcoming-program-title { color: #ffffff; font-size: 15px; font-weight: 700; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.loading-center { align-items: center; background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-lg); color: var(--text-muted); display: flex; font-size: 17px; justify-content: center; min-height: 200px; width: 100%; }
 
-/* Styles heading 2 elements inside markdown containers. */
-.markdown-body h2, .update-changelog-body h2 { color: #fff; font-size: 1.25rem; font-weight: 700; margin: 16px 0 8px 0; }
+/* Live TV initial placeholder panel. */
+.hero-placeholder-content { align-items: center; backdrop-filter: blur(12px); background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 1; flex-direction: column; justify-content: center; padding: 8%; text-align: center; }
+.placeholder-icon-large { -webkit-mask-image: url('../images/livetv.svg'); -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background: linear-gradient(135deg, var(--primary-color) 0%, rgba(255, 255, 255, 0.6) 100%); height: 6rem; margin-bottom: 1.5rem; mask-image: url('../images/livetv.svg'); mask-repeat: no-repeat; mask-size: contain; opacity: 0.85; transition: opacity 0.3s ease, filter 0.3s ease; width: 6rem; }
+.hero-placeholder-content:hover .placeholder-icon-large { filter: drop-shadow(0 0 8px rgba(var(--primary-rgb), 0.5)); opacity: 1; }
+.hero-placeholder-content h1 { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%); background-clip: text; font-size: 1.8rem; font-weight: 900; letter-spacing: -0.02em; margin: 0 0 0.8rem 0; }
+.hero-placeholder-content p { color: var(--text-muted); font-size: 1rem; line-height: 1.5; margin: 0; max-width: 80%; }
 
-/* Styles heading 3 elements inside markdown containers. */
-.markdown-body h3, .update-changelog-body h3 { color: #fff; font-size: 1.15rem; font-weight: 700; margin: 14px 0 8px 0; }
+/* Live TV fullscreen player overlay. */
+.tv-player-container { background: #000000; height: 100%; overflow: hidden; position: relative; width: 100%; }
+.tv-video { height: 100%; object-fit: contain; width: 100%; }
+.tv-overlay { background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%); display: flex; flex-direction: column; inset: 0; justify-content: space-between; opacity: 0; padding: 5vh 5vw; pointer-events: none; position: absolute; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 12; }
+.tv-overlay.show { opacity: 1; pointer-events: auto; }
+.tv-overlay-top { align-items: center; display: flex; justify-content: flex-start; }
+.tv-overlay-bottom { align-items: center; display: flex; justify-content: space-between; width: 100%; }
+.tv-controls-left { align-items: center; display: flex; gap: 24px; }
+.tv-info { display: flex; flex-direction: column; justify-content: center; max-width: 50vw; }
+.tv-info h1 { color: #ffffff; font-size: 28px; font-weight: 900; margin: 0; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); white-space: nowrap; }
+.tv-meta-row { align-items: center; display: flex; gap: 12px; margin-top: 8px; }
+.tv-group-badge { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); border-radius: var(--radius-xs); color: var(--primary-color); font-size: 12px; font-weight: 900; letter-spacing: 0.05em; padding: 4px 10px; text-transform: uppercase; }
+.tv-epg-info { color: rgba(255, 255, 255, 0.6); font-size: 14px; font-weight: 700; }
+.tv-controls-right { align-items: center; display: flex; gap: 28px; }
+.tv-zap-guide { align-items: flex-end; display: flex; flex-direction: column; }
+.guide-key { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-xs); color: #ffffff; font-size: 15px; font-weight: 900; padding: 2px 10px; }
+.guide-label { color: rgba(255, 255, 255, 0.55); font-size: 11px; font-weight: 800; letter-spacing: 0.05em; margin-top: 5px; text-transform: uppercase; }
+.tv-status-badge { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 5px; display: flex; gap: 8px; padding: 6px 14px; }
+.tv-quality-badge { color: #ffffff; font-size: 12px; font-weight: 900; }
+.tv-zapping-hud { backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.85); border-left: 5px solid var(--primary-color); border-radius: var(--radius-md); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; min-width: 260px; padding: 16px 28px; pointer-events: none; position: absolute; right: 5vw; top: 5vh; z-index: 9; }
+.tv-zapping-hud.fade-in { animation: hudFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.zapping-label { color: var(--primary-color); font-size: 12px; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px; text-transform: uppercase; }
+.zapping-channel-name { color: #ffffff; font-size: 18px; font-weight: 900; }
+.tv-loading { align-items: center; background: rgba(0, 0, 0, 0.5); bottom: 0; display: none; justify-content: center; left: 0; pointer-events: none; position: absolute; right: 0; top: 0; z-index: 10; }
 
-/* Styles heading 4 elements inside markdown containers. */
-.markdown-body h4, .update-changelog-body h4 { color: #fff; font-size: 1.05rem; font-weight: 600; margin: 12px 0 6px 0; }
+/* VOD Video player page and HUD overlay. */
+.video-container { background: #000000; height: 100%; overflow: hidden; position: relative; width: 100%; }
+.player-container { height: 100%; position: relative; width: 100%; }
+iframe, #native-video-player { background: #000000; border: none; height: 100%; width: 100%; }
+.player-loading-overlay { align-items: center; background: #000000; display: flex; flex-direction: column; gap: 20px; height: 100%; justify-content: center; left: 0; position: absolute; top: 0; width: 100%; z-index: 150; }
+.player-loading-text { color: rgba(255, 255, 255, 0.7); font-size: 18px; font-weight: 500; letter-spacing: 1px; }
+.player-status-panel { align-items: center; background: rgba(18, 18, 18, 0.96); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-lg); box-shadow: var(--shadow-panel); box-sizing: border-box; color: #ffffff; display: flex; flex-direction: column; height: fit-content; inset: 0; justify-content: center; margin: auto; max-width: 500px; padding: 4%; position: absolute; text-align: center; width: 80%; z-index: 200; }
+.player-status-actions { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+.player-hud { display: flex; flex-direction: column; height: 100%; justify-content: space-between; left: 0; opacity: 0; pointer-events: none; position: absolute; top: 0; transition: opacity 0.4s ease, visibility 0.4s ease; visibility: hidden; width: 100%; z-index: 100; }
+.player-hud.visible { opacity: 1; pointer-events: auto; visibility: visible; }
+.hud-bottom-panel { align-items: center; background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 60%, transparent 100%); bottom: 0; box-sizing: border-box; display: grid; grid-template-columns: 20% 60% 20%; height: auto; left: 0; padding: 3% 4%; pointer-events: auto; position: absolute; width: 100%; }
+.hud-control-slot { align-items: center; display: flex; }
+.hud-slot-left { justify-content: flex-start; }
+.hud-slot-middle { justify-content: center; width: 100%; }
+.hud-slot-right { justify-content: flex-end; }
+.server-selection-overlay { display: flex; justify-content: center; width: 100%; }
+.server-list { display: flex; gap: 12px; justify-content: center; overflow-x: auto; padding: 4px 0; scrollbar-width: none; width: 100%; }
 
-/* Styles heading 5 elements inside markdown containers. */
-.markdown-body h5, .update-changelog-body h5 { color: #fff; font-size: 0.95rem; font-weight: 600; margin: 10px 0 6px 0; }
+/* ==========================================================================
+   SECTION 10: SETTINGS, ACCOUNT, LOGIN & APP UPDATE COMPONENTS
+   ========================================================================== */
 
-/* Styles heading 6 elements inside markdown containers. */
-.markdown-body h6, .update-changelog-body h6 { color: #fff; font-size: 0.9rem; font-weight: 600; margin: 8px 0 4px 0; }
+/* Settings item rows, value badges, and stepper controls. */
+.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.04); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
+.setting-item:first-of-type { border-top: 0; }
+.setting-item.centered-setting { justify-content: center; padding: 16px 0; }
+.setting-info { min-width: 0; }
+.setting-label { color: #ffffff; font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+.setting-description { color: var(--text-muted); font-size: 15px; line-height: 1.45; }
+.setting-control { align-items: center; display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; }
+.current-value-display { align-items: center; background: rgba(255, 255, 255, 0.08); border: none; border-radius: var(--radius-sm); color: #ffffff; display: inline-flex; font-size: 16px; font-weight: 700; height: 46px; justify-content: center; min-width: 0; padding: 0 18px; text-align: center; }
+.color-preview-circle, #current-color-display { background: var(--primary-color); border: none; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); display: inline-block; flex-shrink: 0; font-size: 0; height: 36px; padding: 0; width: 36px; }
+.scale-control-container { align-items: center; background: rgba(255, 255, 255, 0.06); border: none; border-radius: var(--radius-sm); display: inline-flex; gap: 6px; height: 46px; padding: 4px 6px; }
+.scale-control-container .centered-value { background: transparent; border: none; color: #ffffff; font-size: 17px; font-weight: 700; min-width: 60px; padding: 0 4px; text-align: center; }
+.setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
+.setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
+.update-status-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
+.loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
 
-/* Styles paragraphs inside markdown containers for proper margins. */
-.markdown-body p, .update-changelog-body p { line-height: 1.6; margin: 0 0 10px 0; }
+/* Streaming providers and M3U playlists reorderable rows. */
+.providers-list { display: flex; flex-direction: column; gap: 1.5%; margin-bottom: 2%; width: 100%; }
+.provider-item { align-items: center; background: #202020; border: none; border-radius: var(--radius-md); box-sizing: border-box; display: flex; gap: 12px; margin-bottom: 10px; padding: 10px 14px; position: relative; transition: background 0.2s ease, box-shadow 0.2s ease; width: 100%; }
+.provider-item:hover, .provider-item:focus, .provider-item.focused { background: #202020; border: none; box-shadow: none; outline: none; }
+.provider-item.moving, .provider-item.moving:hover, .provider-item.moving:focus, .provider-item.moving.focused { background: #2c2c2c; border: 2px solid #ffffff; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88); outline: none; z-index: 20; }
+.provider-item.dragging { background: #333333; border: 2px solid #ffffff; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95); cursor: grabbing; opacity: 0.98; outline: none; user-select: none; z-index: 50; }
+.provider-actions { align-items: center; display: flex; gap: 8px; }
+.provider-actions .edit-trigger { height: 42px; min-height: 42px; min-width: 42px; width: 42px; }
+.provider-move-btn { cursor: grab; }
+.provider-move-btn:active, .provider-item.dragging .provider-move-btn { cursor: grabbing; }
+.provider-move-btn.active-moving { background: #333333; border-color: #ffffff; }
 
-/* Styles unordered list blocks inside markdown containers. */
-.markdown-body ul, .update-changelog-body ul { list-style-type: disc; margin: 0 0 12px 0; padding-left: 20px; }
-
-/* Styles list items inside markdown lists. */
-.markdown-body li, .update-changelog-body li { line-height: 1.5; margin-bottom: 4px; }
-
-/* Styles inline code elements inside markdown content. */
-.markdown-body code, .update-changelog-body code { background: rgba(255, 255, 255, 0.08); border-radius: 5px; font-family: monospace; font-size: 0.85rem; padding: 2px 6px; word-break: break-all; }
-
-/* Styles anchor links in markdown blocks with theme accent color. */
-.markdown-body a, .update-changelog-body a { color: var(--primary-color); text-decoration: underline; }
-
-/* Styles focused or hovered anchor links in markdown blocks. */
-.markdown-body a:hover, .markdown-body a:focus, .update-changelog-body a:hover, .update-changelog-body a:focus { color: #fff; text-decoration: underline; }
-
-/* 1. Mega Focus/Hover Outline for standard focusable elements */
-/* Applies a high-visibility focus outline to any focused TV/keyboard element (no white border on hover). */
-.focusable:focus, .focusable.focused, .focusable:focus-within, .focusable-container:focus-within, .focusable-container.focused { border-color: #ffffff; box-shadow: none; outline: none; }
-
-.focusable:hover, .focusable-container:hover { outline: none; }
-
-/* Suppresses borders and outlines for inputs, buttons, and selects nested within wrappers to prevent double focus rings. */
-.input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable { border: none; box-shadow: none; outline: none; }
-
-/* Color dots for theme customization */
+/* Accent color dots and warning banner inside settings modals. */
+.color-dot { border: 2px solid rgba(255, 255, 255, 0.32); border-radius: 999px; height: 44px; width: 44px; }
 .color-dot.green { background-color: #46d369; }
 .color-dot.red { background-color: #e50914; }
 .color-dot.blue { background-color: #00d4ff; }
 .color-dot.purple { background-color: #9146ff; }
 .color-dot.orange { background-color: #ff6b35; }
 .color-dot.yellow { background-color: #ffd700; }
-.meta-separator-dot { color: var(--text-dim); margin: 0 4px; }
+.warning-container { background: rgba(255, 107, 53, 0.11); border-left: 4px solid #ff6b35; border-radius: var(--radius-md); color: #ffb08f; font-size: 14px; line-height: 1.45; margin-top: 4px; padding: 14px 16px; }
 
-/* Sidebar search icon masking source. */
-.nav-icon.search { -webkit-mask-image: url('../images/search.svg'); mask-image: url('../images/search.svg'); }
+/* Language stepper inside settings language modal. */
+.language-stepper-container { align-items: center; display: flex; gap: 16px; justify-content: center; margin: 16px 0 24px; width: 100%; }
+.language-stepper-value { align-items: center; background: #222222; border: none; border-radius: var(--radius-md); color: #ffffff; display: flex; font-size: 18px; font-weight: 800; gap: 12px; justify-content: center; min-height: 56px; min-width: 240px; padding: 0 24px; text-align: center; }
+.display-flag-span, .language-stepper-value .display-flag-span { align-items: center; display: inline-flex; font-family: "Twemoji Country Flags", inherit; font-size: 22px; line-height: 1; margin-right: 12px; }
 
-/* Sidebar home icon masking source. */
-.nav-icon.home { -webkit-mask-image: url('../images/home.svg'); mask-image: url('../images/home.svg'); }
+/* Account profile display and avatar. */
+.profile-display { align-items: center; display: flex; gap: 36px; }
+.profile-avatar.large { align-items: center; border: 3px solid rgba(255, 255, 255, 0.25); border-radius: var(--radius-md); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); color: #ffffff; display: flex; flex: 0 0 108px; font-size: 48px; font-weight: 800; height: 108px; justify-content: center; width: 108px; }
+.profile-details { display: flex; flex: 1; flex-direction: column; gap: 12px; min-width: 0; }
+.profile-name-text { color: #ffffff; font-size: 28px; font-weight: 700; margin: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
 
-/* Sidebar movies icon masking source. */
-.nav-icon.movies { -webkit-mask-image: url('../images/movies.svg'); mask-image: url('../images/movies.svg'); }
+/* Login and registration screen layout. */
+.login-page-wrapper { align-items: center; background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.05) 0%, rgba(5, 5, 5, 0.98) 70%); box-sizing: border-box; display: flex; justify-content: center; min-height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); position: relative; }
+.login-card-container { box-sizing: border-box; margin: 0 auto; position: relative; width: min(460px, 92vw); }
+.login-panel { background: #141414; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9); box-sizing: border-box; margin: 0 auto; max-height: 94vh; overflow-y: auto; padding: 28px 28px 24px; position: relative; width: 100%; }
+#login-circle-back { left: 20px; position: absolute; top: 20px; z-index: 10; }
+.login-back-icon { height: 18px; object-fit: contain; pointer-events: none; width: 18px; }
+.login-header { align-items: center; display: flex; flex-direction: column; justify-content: center; margin-bottom: 24px; text-align: center; }
+.login-title-text { color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px; text-align: center; justify-content: center; }
+.login-subtitle-text { color: var(--text-muted); font-size: 14px; margin: 0; }
+.login-pin-row { align-items: baseline; display: flex; justify-content: space-between; margin-bottom: 6px; width: 100%; }
+.login-pin-row label { margin-bottom: 0; }
+.login-pin-hint { color: var(--text-dim); font-size: 12px; font-weight: 600; }
+.login-footer { align-items: center; display: flex; flex-direction: column; gap: 8px; margin-top: 14px; width: 100%; }
 
-/* Sidebar series icon masking source. */
-.nav-icon.series { -webkit-mask-image: url('../images/series.svg'); mask-image: url('../images/series.svg'); }
+/* App update prompt modal and developer version selector. */
+.update-header { align-items: center; display: flex; flex-direction: column; gap: 8px; }
+.update-icon-container { align-items: center; align-self: center; background: rgba(var(--primary-rgb), 0.14); border-radius: var(--radius-lg); display: flex; height: 76px; justify-content: center; margin-bottom: 12px; width: 76px; }
+.update-icon-mask { -webkit-mask-image: url('../images/update.svg'); -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background-color: var(--primary-color); height: 38px; mask-image: url('../images/update.svg'); mask-position: center; mask-repeat: no-repeat; mask-size: contain; width: 38px; }
+.version-badge-container { align-items: center; display: flex; flex-direction: row; gap: 14px; justify-content: center; margin-bottom: 8px; }
+.version-badge { border-radius: 5px; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; }
+.version-badge.current { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.65); }
+.version-badge.remote { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); color: var(--primary-color); }
+.version-arrow { color: rgba(255, 255, 255, 0.4); font-size: 1rem; }
+.update-branch-section { align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; padding: 12px; }
+.update-branch-title { color: rgba(255, 255, 255, 0.4); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.update-release-name { color: #ffffff; font-size: 1.1rem; font-weight: 700; }
+.update-changelog-title { align-self: flex-start; color: rgba(255, 255, 255, 0.5); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; margin-top: 8px; text-transform: uppercase; }
+.update-changelog-body { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 5px; box-sizing: border-box; color: rgba(255, 255, 255, 0.75); font-size: 0.88rem; line-height: 1.6; max-height: 140px; overflow-y: auto; padding: 12px; text-align: left; width: 100%; }
+.update-footer-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; width: 100%; }
+.update-progress-container { align-items: center; display: none; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%; }
+.update-progress-bar-bg { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 5px; height: 10px; overflow: hidden; position: relative; width: 100%; }
+.update-progress-bar { background: var(--primary-color); border-radius: 5px; bottom: 0; box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6); left: 0; position: absolute; top: 0; transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+.update-progress-text { color: var(--text-color, #ffffff); font-size: 14px; font-weight: 700; margin-top: 4px; }
 
-/* Sidebar playlists icon masking source. */
-.nav-icon.playlists { -webkit-mask-image: url('../images/playlists.svg'); mask-image: url('../images/playlists.svg'); }
+/* Version selector vertical list and option cards. */
+.version-option-list { display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 4px 0 8px; width: 100%; }
+.version-option-list .chip--option { justify-content: flex-start; min-height: 60px; padding: 12px 18px; text-align: left; width: 100%; }
+.version-chip-content { align-items: flex-start; display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; width: 100%; }
+.version-tag-badge { background: var(--primary-color, #46d369); border-radius: 5px; color: #050505; font-size: 9px; font-weight: 900; padding: 2px 6px; text-transform: uppercase; }
+.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
+.version-chip-title { color: #ffffff; font-size: 14px; font-weight: 700; margin-top: 2px; text-align: left; }
+.version-chip-desc { color: rgba(255, 255, 255, 0.65); font-size: 12px; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+#version-list-loader { align-items: center; display: flex; inset: auto; justify-content: center; margin: 0 auto; min-height: 220px; position: relative; width: 100%; }
+.version-applied-icon { flex-shrink: 0; height: 28px; margin-left: auto; width: 28px; }
 
-/* Sidebar Live TV icon masking source. */
-.nav-icon.livetv { -webkit-mask-image: url('../images/livetv.svg'); mask-image: url('../images/livetv.svg'); }
-
-/* Sidebar account icon masking source. */
-.nav-icon.account { -webkit-mask-image: url('../images/account.svg'); mask-image: url('../images/account.svg'); }
-
-/* Sidebar settings icon masking source. */
-.nav-icon.settings { -webkit-mask-image: url('../images/settings.svg'); mask-image: url('../images/settings.svg'); }
+/* Markdown changelog formatting. */
+.markdown-body { color: var(--text-color); font-size: 0.9rem; line-height: 1.6; padding: 0 2%; text-align: left; word-break: break-word; }
+.markdown-body h2, .update-changelog-body h2 { color: #ffffff; font-size: 1.25rem; font-weight: 700; margin: 16px 0 8px; }
+.markdown-body h3, .update-changelog-body h3 { color: #ffffff; font-size: 1.15rem; font-weight: 700; margin: 14px 0 8px; }
+.markdown-body h4, .update-changelog-body h4 { color: #ffffff; font-size: 1.05rem; font-weight: 600; margin: 12px 0 6px; }
+.markdown-body h5, .update-changelog-body h5 { color: #ffffff; font-size: 0.95rem; font-weight: 600; margin: 10px 0 6px; }
+.markdown-body h6, .update-changelog-body h6 { color: #ffffff; font-size: 0.9rem; font-weight: 600; margin: 8px 0 4px; }
+.markdown-body p, .update-changelog-body p { line-height: 1.6; margin: 0 0 10px; }
+.markdown-body ul, .update-changelog-body ul { list-style-type: disc; margin: 0 0 12px; padding-left: 20px; }
+.markdown-body li, .update-changelog-body li { line-height: 1.5; margin-bottom: 4px; }
+.markdown-body code, .update-changelog-body code { background: rgba(255, 255, 255, 0.08); border-radius: 5px; font-family: monospace; font-size: 0.85rem; padding: 2px 6px; word-break: break-all; }
+.markdown-body a, .update-changelog-body a { color: var(--primary-color); text-decoration: underline; }
+.markdown-body a:hover, .markdown-body a:focus, .update-changelog-body a:hover, .update-changelog-body a:focus { color: #ffffff; text-decoration: underline; }
 
 /* ==========================================================================
-   ANIMATION KEYFRAMES
+   SECTION 11: UNIVERSAL SPATIAL NAVIGATION FOCUS, KEYFRAMES & MEDIA QUERIES
    ========================================================================== */
 
-@keyframes fadeIn {
-from { opacity: 0; }
+/* High-visibility focus border for any focused TV/keyboard element (no white border on hover). */
+.focusable:focus, .focusable.focused, .focusable:focus-within, .focusable-container:focus-within, .focusable-container.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    outline: none;
+}
+.focusable:hover, .focusable-container:hover { outline: none; }
 
-to { opacity: 1; }
+/* Suppresses borders and outlines for inputs and selects nested within wrappers to prevent double focus rings. */
+.input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable {
+    border: none;
+    box-shadow: none;
+    outline: none;
 }
 
-@keyframes fadeInDown {
-from { opacity: 0; margin-top: -8px; }
+/* Chromium native off-screen rendering optimization for poster cards and channel items. */
+.recyclable-card, .poster-card, .channel-list-item { contain-intrinsic-size: 150px 225px; content-visibility: auto; }
 
-to { opacity: 1; margin-top: 0; }
-}
-
-@keyframes fadeInUp {
-from { opacity: 0; margin-top: 8px; }
-
-to { opacity: 1; margin-top: 0; }
-}
-
-@keyframes hudFadeIn {
-
-    /* Explains: Fade controls for temporary indicators. */
-from { opacity: 0; }
-
-to { opacity: 1; }
-}
-
-@keyframes pulse-border {
-0% { box-shadow: 0 0 2px rgba(var(--primary-rgb), 0.2); }
-
-100% { box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.6); }
-}
-
-/* ==========================================================================
-   RESPONSIVE MEDIA QUERIES
-   ========================================================================== */
+/* Keyframe animations. */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInDown { from { margin-top: -8px; opacity: 0; } to { margin-top: 0; opacity: 1; } }
+@keyframes fadeInUp { from { margin-top: 8px; opacity: 0; } to { margin-top: 0; opacity: 1; } }
+@keyframes hudFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes toast-pulse-opacity { 0% { opacity: 0.7; } 50% { opacity: 0.4; } 100% { opacity: 0.7; } }
+@keyframes ivids-loader-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* Media query for large laptops and 1080p displays. */
 @media (min-aspect-ratio: 3/4) and (max-width: 1440px) {
@@ -3319,9 +1699,7 @@ to { opacity: 1; }
         --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.30);
         --shadow-panel: 0 12px 36px rgba(0, 0, 0, 0.40);
     }
-
     .hero { height: 50vh; min-height: 380px; padding-bottom: 40px; }
-
 }
 
 /* Media query for medium/small screens like 720p TV and laptops. */
@@ -3335,14 +1713,13 @@ to { opacity: 1; }
         --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.25);
         --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.32);
     }
-
     .hero { height: 46vh; min-height: 320px; padding-bottom: 30px; }
     .row-container { margin-bottom: 8px; }
     .details-top { gap: 20px; }
     .details-backdrop { height: 46vh; }
 }
 
-/* Intermediate media query for small viewports to scale spacing and shadows down. */
+/* Intermediate media query for small viewports. */
 @media (min-aspect-ratio: 3/4) and (max-width: 1100px) {
     :root {
         --app-content-padding-x: 18px;
@@ -3351,12 +1728,10 @@ to { opacity: 1; }
         --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.22);
         --shadow-panel: 0 6px 16px rgba(0, 0, 0, 0.28);
     }
-
     .hero { height: 44vh; min-height: 280px; padding-bottom: 25px; }
-
 }
 
-/* Intermediate media query for common TV WebView effective viewports to scale spacing and shadows further down. */
+/* Intermediate media query for common TV WebView effective viewports. */
 @media (min-aspect-ratio: 3/4) and (max-width: 960px) {
     :root {
         --app-content-padding-x: 16px;
@@ -3366,12 +1741,10 @@ to { opacity: 1; }
         --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.18);
         --shadow-panel: 0 4px 10px rgba(0, 0, 0, 0.22);
     }
-
     .hero { height: 42vh; min-height: 240px; padding-bottom: 20px; }
-
 }
 
-/* Media query for very small viewports like 480p screen or small displays. */
+/* Media query for very small viewports like 480p screens. */
 @media (min-aspect-ratio: 3/4) and (max-width: 900px) {
     :root {
         --app-content-padding-x: 14px;
@@ -3382,7 +1755,6 @@ to { opacity: 1; }
         --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.15);
         --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.18);
     }
-
     .hero { height: 40vh; min-height: 220px; padding-bottom: 16px; }
     .btn { font-size: 11px; min-height: 32px; padding: 4px 12px; }
     .row-container { margin-bottom: 6px; }
@@ -3393,70 +1765,12 @@ to { opacity: 1; }
     .details-bottom { flex-direction: column; gap: 10px; }
 }
 
-/* Media query for screens larger than 1080p (like 1440p and 4K displays) to scale down posters. */
+/* Media query for screens larger than 1080p (1440p and 4K displays). */
 @media (min-width: 1921px) {
-:root { --poster-width: 154px; }
+    :root { --poster-width: 154px; }
 }
 
 /* Media query to stack chip grids into a single column on compact viewports. */
 @media (max-width: 1024px) {
-    .chip-grid,
-.chip-grid--2col { grid-template-columns: 1fr; gap: 12px; }
+    .chip-grid, .chip-grid--2col { gap: 12px; grid-template-columns: 1fr; }
 }
-
-/* Styles the container for the horizontal language stepper in the settings modal. */
-.language-stepper-container {
-    align-items: center;
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    margin: 16px 0 24px;
-    width: 100%;
-}
-
-/* Styles the center display card for the currently selected language. */
-.language-stepper-value {
-    align-items: center;
-    background: #222222;
-    border: none;
-    border-radius: var(--radius-md);
-    color: #ffffff;
-    display: flex;
-    font-size: 18px;
-    font-weight: 800;
-    gap: 12px;
-    justify-content: center;
-    min-height: 56px;
-    min-width: 240px;
-    padding: 0 24px;
-    text-align: center;
-}
-
-/* Styles the country flag emoji element, using the Twemoji polyfill font family for Windows browser compatibility. */
-.display-flag-span,
-.language-stepper-value .display-flag-span {
-    align-items: center;
-    display: inline-flex;
-    font-family: "Twemoji Country Flags", inherit;
-    font-size: 22px;
-    line-height: 1;
-    margin-right: 12px;
-}
-
-/* Styles the circular stepper arrow buttons for next/prev language navigation. */
-.stepper-arrow-btn {
-    align-items: center;
-    display: flex;
-    flex-shrink: 0;
-    height: 48px;
-    justify-content: center;
-    width: 48px;
-}
-
-/* Styles the SVG icons nested inside the stepper arrow buttons. */
-.stepper-arrow-btn svg { height: 22px; width: 22px; }
-
-/* Chromium native off-screen rendering optimization for poster cards and list elements */
-.recyclable-card,
-.poster-card,
-.channel-list-item { content-visibility: auto; contain-intrinsic-size: 150px 225px; }

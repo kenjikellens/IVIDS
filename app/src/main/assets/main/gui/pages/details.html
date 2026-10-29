@@ -3,7 +3,10 @@
     <div class="media-backdrop details-backdrop" id="details-backdrop">
         <div class="media-backdrop__overlay details-backdrop-overlay"></div>
     </div>
-    <div class="details-layout">
+    <div id="details-page-loader" class="loader-center-container">
+        <div class="ivids-loader"></div>
+    </div>
+    <div class="details-layout is-loading">
         <div class="details-top">
             <div class="details-info">
                 <h1 class="title-hero details-title" id="details-title"></h1>
@@ -73,13 +76,13 @@
 </div>
 
 <!-- Add to Playlist Modal -->
-<div id="add-to-playlist-modal" class="modal modal-overlay">
-    <div class="modal__dialog modal__dialog--md modal-content">
-        <h2 class="modal__title modal-title" data-i18n="details.addToPlaylist">Add to Playlist</h2>
-        <div id="playlist-selection-list" class="modal__body playlist-selection-list">
+<div id="add-to-playlist-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
+        <h2 class="modal__title" data-i18n="details.addToPlaylist">Add to Playlist</h2>
+        <div id="playlist-selection-list" class="modal__body modal__body--scroll playlist-selection-list">
             <!-- Playlists to select will be injected here -->
         </div>
-        <div class="modal__footer modal-actions vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button id="add-to-playlist-cancel" class="btn btn--secondary btn--sm focusable" data-i18n="details.cancel">Cancel</button>
         </div>
     </div>

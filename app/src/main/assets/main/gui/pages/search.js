@@ -82,6 +82,8 @@ export async function init(params) {
         const sortCancelBtn = document.getElementById('sort-cancel-btn');
 
         // Initialize UI with current filters
+        const initialGrid = document.getElementById('search-results');
+        if (initialGrid) initialGrid.innerHTML = `<div class="loading-center">${getLoaderHtml()}</div>`;
         await renderAllFilters(currentFilters);
 
         // Search only when Enter is pressed or searchBtn is clicked
@@ -582,6 +584,14 @@ async function fetchResults(reset) {
             results = page1Res.concat(page2Res);
             currentPage = 2; // Next infinite scroll fetch will be page 3
         } else {
+            let pageLoader = document.getElementById('search-pagination-loader');
+            if (!pageLoader && grid && grid.parentElement) {
+                pageLoader = document.createElement('div');
+                pageLoader.id = 'search-pagination-loader';
+                pageLoader.className = 'loading-center';
+                pageLoader.innerHTML = getLoaderHtml();
+                grid.parentElement.appendChild(pageLoader);
+            }
             results = await fetchPage(currentPage);
         }
 
@@ -598,6 +608,8 @@ async function fetchResults(reset) {
     } catch (error) {
         console.error('Error fetching results:', error);
     } finally {
+        const pageLoader = document.getElementById('search-pagination-loader');
+        if (pageLoader) pageLoader.remove();
         isLoading = false;
     }
 }
@@ -685,7 +697,7 @@ function renderRecentSearches() {
     }
     row.classList.remove('hidden');
     list.innerHTML = recent.map(q => `
-        <div class="recent-item focusable" tabindex="0" data-query="${q}">
+        <div class="chip chip--recent recent-item focusable" tabindex="0" data-query="${q}">
             <span class="recent-item-text">${q}</span>
             <span class="recent-delete-btn" title="Delete search">&times;</span>
         </div>

@@ -93,6 +93,11 @@ export function setupRow(elementId, items, defaultType = null) {
             existingButtons[i].remove();
         }
 
+        // Ensure all poster elements in this row are queued for loading
+        Array.from(rowPosters.querySelectorAll('.card--poster, .collection-card')).forEach(btn => {
+            lazyLoader.loadImage(btn);
+        });
+
         // Ensure newly created poster elements have tabindex
         SpatialNav.ensureTabindex(rowPosters);
     } catch (error) {
@@ -265,6 +270,9 @@ export function createPosterElement(item, defaultType = null, sizeContainerWidth
         img.style.opacity = '1';
     } else {
         img.dataset.src = imageUrl;
+        const loader = createLoaderElement();
+        loader.classList.add('poster-loader');
+        btn.appendChild(loader);
     }
     img.alt = item.title || item.name || 'Unknown';
 
@@ -303,7 +311,93 @@ export function createPosterElement(item, defaultType = null, sizeContainerWidth
     }
 
     lazyLoader.observeItem(btn);
-
     return btn;
 }
 
+/**
+ * Loads an image element with a centered SVG loader (.poster-loader) inside its container until decoding completes.
+ * @param {HTMLImageElement} imgEl - Target image element.
+ * @param {HTMLElement} containerEl - Parent container element with relative positioning.
+ * @param {string} imageUrl - Network URL of the image to load.
+ * @param {Function} [onFallback] - Optional callback invoked when the image fails to load.
+ */
+export function attachImageWithLoader(imgEl, containerEl, imageUrl, onFallback = null) {
+    if (!imgEl) return;
+    const host = containerEl || imgEl.parentElement;
+    if (host) {
+        host.querySelectorAll('.poster-loader').forEach(el => el.remove());
+    }
+
+    if (!imageUrl) {
+        if (host) host.classList.remove('is-loading');
+        if (typeof onFallback === 'function') onFallback();
+        return;
+    }
+
+    if (imageCache.has(imageUrl)) {
+        if (host) host.classList.remove('is-loading');
+        imgEl.style.opacity = '1';
+        imgEl.src = imageCache.get(imageUrl);
+        return;
+    }
+
+    if (host) host.classList.add('is-loading');
+    imgEl.style.opacity = '0';
+    imgEl.style.transition = 'opacity 0.25s ease';
+
+    const loader = createLoaderElement();
+    loader.classList.add('poster-loader');
+    if (host) host.appendChild(loader);
+
+    let finished = false;
+    const finalize = (ok) => {
+        if (finished) return;
+        finished = true;
+        loader.remove();
+        if (host) host.classList.remove('is-loading');
+        if (ok) {
+            imgEl.style.opacity = '1';
+        } else if (typeof onFallback === 'function') {
+            onFallback();
+        }
+    };
+
+    imgEl.onload = () => finalize(true);
+    imgEl.onerror = () => finalize(false);
+
+    imageCache.getOrFetch(imageUrl).then(blobUrl => {
+        imgEl.src = blobUrl || imageUrl;
+        if (imgEl.complete && imgEl.naturalWidth > 0) {
+            finalize(true);
+        }
+    }).catch(() => {
+        imgEl.src = imageUrl;
+    });
+}
+
+/**
+ * Loads a CSS background-image on a target container while displaying a centered SVG loader (.poster-loader).
+ * @param {HTMLElement} targetEl - Target element to receive background-image.
+ * @param {string} imageUrl - Network URL of the background image.
+ */
+export function loadBackgroundWithLoader(targetEl, imageUrl) {
+    if (!targetEl || !imageUrl) return;
+    targetEl.querySelectorAll('.poster-loader').forEach(el => el.remove());
+
+    if (imageCache.has(imageUrl)) {
+        targetEl.style.backgroundImage = `url(${imageCache.get(imageUrl)})`;
+        return;
+    }
+
+    const loader = createLoaderElement();
+    loader.classList.add('poster-loader');
+    targetEl.appendChild(loader);
+
+    imageCache.getOrFetch(imageUrl).then(blobUrl => {
+        const finalUrl = blobUrl || imageUrl;
+        targetEl.style.backgroundImage = `url(${finalUrl})`;
+        loader.remove();
+    }).catch(() => {
+        loader.remove();
+    });
+}

@@ -34,7 +34,9 @@
         .splash-logo-container { display: flex; flex-direction: row; align-items: center; gap: 18px; }
         .splash-logo-img { width: 72px; height: 72px; object-fit: contain; }
         .splash-logo-text { margin: 0; color: #fff; font-size: 52px; font-family: 'Outfit', sans-serif; font-weight: 600; line-height: 1; }
-        .ivids-loader { display: inline-flex; justify-content: center; align-items: center; width: 44px; height: 44px; }
+        .ivids-loader { display: inline-block; width: 44px; height: 44px; background-color: var(--primary-color, #46d369); -webkit-mask-image: url('svg/loader.svg'); mask-image: url('svg/loader.svg'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; animation: ivids-loader-spin 0.9s linear infinite; }
+        .ivids-loader-svg { opacity: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+        @keyframes ivids-loader-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 
     <!-- Unified Stylesheet -->
@@ -60,11 +62,11 @@
 
 
     <!-- Exit Confirmation Modal -->
-    <div id="exit-modal" class="modal modal-overlay">
-        <div class="modal__dialog modal__dialog--sm modal-content exit-modal-content">
-            <h2 class="modal__title modal-title" data-i18n="exit.title">Exit Application</h2>
+    <div id="exit-modal" class="modal">
+        <div class="modal__dialog modal__dialog--sm exit-modal-content">
+            <h2 class="modal__title" data-i18n="exit.title">Exit Application</h2>
             <p class="modal__desc exit-message" data-i18n="exit.message">Are you sure you want to exit IVIDS?</p>
-            <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
+            <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
                 <button id="confirm-exit-btn" class="btn btn--danger focusable" data-i18n="exit.confirm">Exit</button>
                 <button id="cancel-exit-btn" class="btn btn--secondary btn--sm focusable" data-i18n="exit.cancel">Cancel</button>
             </div>

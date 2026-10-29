@@ -23,7 +23,7 @@ export class UpdatePrompt {
 
         this.modalElement = document.createElement('div');
         this.modalElement.id = 'update-overlay';
-        this.modalElement.className = 'modal modal-overlay update-modal-overlay';
+        this.modalElement.className = 'modal update-modal-overlay';
         
         this.modalElement.innerHTML = `
             <div class="modal__dialog modal__dialog--lg update-modal">

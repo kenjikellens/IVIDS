@@ -1,7 +1,7 @@
 import { cacheManager } from './cache-manager.js';
 import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
 import { PersistentStorage } from './persistent-storage.js';
-import { API_CONFIG, PLAYER_CONFIG } from './constants.js';
+import { API_CONFIG, PLAYER_CONFIG, NETWORK_CONFIG } from './constants.js';
 
 const API_KEY = 'a341dc9a3c2dffa62668b614a98c1188'; // TODO: Replace with your TMDb API Key
 const BASE_URL = API_CONFIG.BASE_URL;
@@ -23,6 +23,26 @@ const DEFAULT_PLAYER_PROVIDERS = [...PLAYER_CONFIG.DEFAULT_PROVIDERS];
 let _slowConnectionResult = null;
 let _slowConnectionTimestamp = 0;
 const SLOW_CONNECTION_TTL = 5000;
+let _measuredSlowUntil = 0;
+
+/**
+ * Marks the connection as slow for a specified duration based on live latency or throughput measurements.
+ * @param {number} [durationMs=60000] - Duration in milliseconds to keep slow mode active.
+ */
+function markMeasuredSlowConnection(durationMs = 60000) {
+    const now = Date.now();
+    const wasSlow = _slowConnectionResult === true || now < _measuredSlowUntil || (typeof window !== 'undefined' && now < (window.__ividsSlowUntil || 0));
+    _measuredSlowUntil = now + durationMs;
+    _slowConnectionResult = true;
+    _slowConnectionTimestamp = now;
+    if (typeof window !== 'undefined') {
+        window.__ividsSlowUntil = _measuredSlowUntil;
+        window.__ividsSlowConnection = true;
+        if (!wasSlow) {
+            window.dispatchEvent(new CustomEvent('networkslowdetected'));
+        }
+    }
+}
 
 /**
  * Invalidates the cached slow-connection state.
@@ -30,6 +50,11 @@ const SLOW_CONNECTION_TTL = 5000;
 function invalidateSlowConnectionCache() {
     _slowConnectionResult = null;
     _slowConnectionTimestamp = 0;
+    _measuredSlowUntil = 0;
+    if (typeof window !== 'undefined') {
+        window.__ividsSlowUntil = 0;
+        window.__ividsSlowConnection = false;
+    }
 }
 
 // Image Size Constants
@@ -49,6 +74,7 @@ async function fetchWithRetry(resource, options = {}) {
     for (let i = 0; i <= retries; i++) {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), timeout);
+        const reqStart = Date.now();
         try {
             const response = await fetch(resource, {
                 ...options,
@@ -60,10 +86,16 @@ async function fetchWithRetry(resource, options = {}) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
+            if ((Date.now() - reqStart) > 1200 || i > 0) {
+                markMeasuredSlowConnection(60000);
+            }
             return response;
         } catch (error) {
             clearTimeout(id);
             lastError = error;
+            if ((Date.now() - reqStart) > 1200 || error?.name === 'AbortError') {
+                markMeasuredSlowConnection(60000);
+            }
             if (i < retries) {
                 // Wait slightly before retrying (exponential backoff)
                 await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
@@ -171,7 +203,24 @@ export const Api = {
      * without setting the persistent dataSaver flag, using a 0.5 Mbps threshold.
      * @returns {boolean} True if slow connection or data saver mode is active.
      */
+    /**
+     * Marks the active connection as slow for a specified duration and clears cached size tiers.
+     * @param {number} [durationMs=60000] - Duration in milliseconds to keep slow mode active.
+     */
+    markSlowConnection: (durationMs = 60000) => {
+        markMeasuredSlowConnection(durationMs);
+        Api._recommendedSizes = {};
+    },
+
     isSlowConnection: () => {
+        const isExpiringSlow = Date.now() < _measuredSlowUntil || (typeof window !== 'undefined' && Date.now() < (window.__ividsSlowUntil || 0));
+        if (isExpiringSlow) {
+            if (typeof window !== 'undefined') window.__ividsSlowConnection = true;
+            return true;
+        } else if (typeof window !== 'undefined' && window.__ividsSlowUntil && Date.now() >= window.__ividsSlowUntil) {
+            window.__ividsSlowConnection = false;
+            window.__ividsSlowUntil = 0;
+        }
         const now = Date.now();
         if (_slowConnectionResult !== null && (now - _slowConnectionTimestamp) < SLOW_CONNECTION_TTL) {
             return _slowConnectionResult;
@@ -215,7 +264,11 @@ export const Api = {
                 _slowConnectionTimestamp = now;
                 return true;
             }
-            if (typeof conn.downlink === 'number' && conn.downlink < 1.5) {
+            const isSlowEffectiveType = conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.effectiveType === '3g';
+            const isHighRtt = typeof conn.rtt === 'number' && conn.rtt > 500;
+            const isLowDownlink = typeof conn.downlink === 'number' && conn.downlink > 0 && conn.downlink < NETWORK_CONFIG.SLOW_THRESHOLD_MBPS;
+            if (isSlowEffectiveType || isHighRtt || isLowDownlink) {
+                markMeasuredSlowConnection(15000);
                 _slowConnectionResult = true;
                 _slowConnectionTimestamp = now;
                 return true;
@@ -295,6 +348,8 @@ export const Api = {
         } else {
             if (vw <= 900) return 'w780';
             if (Api.isTV()) return 'w780';
+            if (vw <= 900) return 'w780';
+            if (Api.isTV()) return 'w780';
             return BACKDROP_SIZE; // w1280
         }
     },
@@ -308,7 +363,7 @@ export const Api = {
      */
     getRecommendedSizeForContainer: (containerWidth, isBackdrop = false) => {
         if (Api.isSlowConnection()) {
-            return isBackdrop ? 'w500' : 'w92';
+            return isBackdrop ? 'w300' : 'w92';
         }
 
         const dpr = window.devicePixelRatio || 1;
@@ -322,6 +377,7 @@ export const Api = {
             }
             if (physicalWidth <= 300) return 'w300';
             if (physicalWidth <= 780) return 'w780';
+            if (physicalWidth <= 780) return 'w780';
             if (physicalWidth <= 1280) return 'w1280';
             return 'original';
         } else {
@@ -332,6 +388,8 @@ export const Api = {
             if (physicalWidth <= 92) return 'w92';
             if (physicalWidth <= 154) return 'w154';
             if (physicalWidth <= 185) return 'w185';
+            if (physicalWidth <= 342) return 'w342';
+            if (physicalWidth <= 500) return 'w500';
             if (physicalWidth <= 342) return 'w342';
             if (physicalWidth <= 500) return 'w500';
             if (physicalWidth <= 780) return 'w780';
@@ -346,6 +404,15 @@ export const Api = {
      */
     // Cached recommended sizes to avoid recalculation
     _recommendedSizes: {},
+
+    /**
+     * Resets cached recommended image sizes and slow-connection evaluation state
+     * so subsequent image requests recalculate optimal high-resolution dimensions.
+     */
+    invalidateImageQualityCache: () => {
+        Api._recommendedSizes = {};
+        invalidateSlowConnectionCache();
+    },
 
     getImageUrl: (path, size = null) => {
         if (!path) return 'assets/placeholder.png';

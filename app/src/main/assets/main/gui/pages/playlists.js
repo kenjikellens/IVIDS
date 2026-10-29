@@ -2,7 +2,7 @@ import { Playlists } from '../../logic/playlists.js';
 import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
-import { manageModal } from '../js/utils/ui-helper.js';
+import { manageModal, attachImageWithLoader } from '../js/utils/ui-helper.js';
 
 /**
  * Initializes the playlists overview page controller.
@@ -66,11 +66,11 @@ function createPlaylistCard(playlist) {
     card.dataset.id = playlist.id;
 
     // Get cover image from first item or use placeholder
-    let imageUrl = 'images/placeholder-playlist.svg';
+    let imageUrl = '';
     if (playlist.items && playlist.items.length > 0) {
         const firstItem = playlist.items[0];
         if (firstItem.backdrop_path || firstItem.poster_path) {
-            imageUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path);
+            imageUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.isSlowConnection() ? 'w300' : 'w500');
         }
     }
 
@@ -79,7 +79,7 @@ function createPlaylistCard(playlist) {
 
     card.innerHTML = `
         <div class="playlist-cover">
-            <img src="${imageUrl}" alt="${playlist.name}" loading="lazy">
+            ${imageUrl ? `<img class="playlist-cover-img" alt="${playlist.name}" loading="lazy">` : ''}
             <div class="badge badge--primary playlist-badge">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <line x1="8" y1="6" x2="21" y2="6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -90,13 +90,17 @@ function createPlaylistCard(playlist) {
                     <line x1="3" y1="18" x2="3.01" y2="18" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <div class="playlist-overlay">
-                <div class="playlist-name">${playlist.name}</div>
-                <div class="playlist-meta">${itemText}</div>
+            <div class="card__overlay playlist-overlay">
+                <div class="card__title">${playlist.name}</div>
+                <div class="card__desc">${itemText}</div>
             </div>
         </div>
     `;
 
+    const coverImg = card.querySelector('.playlist-cover-img');
+    if (coverImg && imageUrl) {
+        attachImageWithLoader(coverImg, card.querySelector('.playlist-cover'), imageUrl, () => coverImg.remove());
+    }
     card.addEventListener('click', () => {
         Router.loadPage('playlist-details', { id: playlist.id });
     });

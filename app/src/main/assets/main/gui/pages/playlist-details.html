@@ -40,7 +40,7 @@
 
             <div class="details-bottom">
                 <div class="recommendations-section">
-                    <h3 class="section-title row-title" data-i18n="playlists.items">Playlist Items</h3>
+                    <h3 class="section-title" data-i18n="playlists.items">Playlist Items</h3>
                     <div id="playlist-items-container" class="episodes-list">
                         <!-- Items injected via JS -->
                     </div>
@@ -52,8 +52,8 @@
     <!-- Confirmation Modal -->
     <div id="confirmation-modal" class="modal modal--danger">
         <div class="modal__dialog modal__dialog--sm">
-            <h2 class="modal__title modal-title" data-i18n="playlists.removeItemTitle">Remove Item</h2>
-            <p class="modal__desc modal-message" data-i18n="playlists.removeItemMessage">Are you sure you want to remove this item from the playlist?</p>
+            <h2 class="modal__title" data-i18n="playlists.removeItemTitle">Remove Item</h2>
+            <p class="modal__desc" data-i18n="playlists.removeItemMessage">Are you sure you want to remove this item from the playlist?</p>
             <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
                 <button id="modal-confirm-btn" class="btn btn--danger focusable" data-i18n="playlists.deleteItem">Remove</button>
                 <button id="modal-cancel-btn" class="btn btn--secondary btn--sm focusable" data-i18n="playlists.cancel">Cancel</button>
@@ -64,8 +64,8 @@
     <!-- Edit Playlist Modal -->
     <div id="edit-playlist-modal" class="modal">
         <div class="modal__dialog modal__dialog--md">
-            <h2 class="modal__title modal-title" data-i18n="playlists.editInfo">Edit Info</h2>
-            <div class="modal__body modal-body">
+            <h2 class="modal__title" data-i18n="playlists.editInfo">Edit Info</h2>
+            <div class="modal__body">
                 <input id="edit-playlist-name-input" class="form-input focusable" type="text" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder">
             </div>
             <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
@@ -78,7 +78,7 @@
     <!-- Item Context Drawer Modal -->
     <div id="item-context-modal" class="modal">
         <div class="modal__dialog modal__dialog--sm">
-            <h2 id="context-item-title" class="modal__title modal__title--truncate modal-title modal-title-truncated">Movie Title</h2>
+            <h2 id="context-item-title" class="modal__title modal__title--truncate">Movie Title</h2>
             <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
                 <button id="context-play-btn" class="btn btn--primary focusable" data-i18n="player.play">Play Content</button>
                 <button id="context-details-btn" class="btn btn--secondary focusable" data-i18n="player.moreInfo">View Info Details</button>

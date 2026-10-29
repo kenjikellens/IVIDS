@@ -7,6 +7,7 @@ import I18n from '../js/i18n.js';
 import { getLoaderHtml } from '../js/loader.js';
 import { ErrorHandler } from '../js/error-handler.js';
 import { imageCache } from '../../logic/image-cache.js';
+import { attachImageWithLoader, loadBackgroundWithLoader } from '../js/utils/ui-helper.js';
 
 let currentSeriesId = null;
 
@@ -76,6 +77,10 @@ export async function init(params) {
 function render(item, type) {
     try {
         const bg = document.getElementById('details-backdrop');
+        const pageLoader = document.getElementById('details-page-loader');
+        if (pageLoader) pageLoader.classList.add('hidden');
+        const detailsLayout = document.querySelector('.details-layout');
+        if (detailsLayout) detailsLayout.classList.remove('is-loading');
         const title = document.getElementById('details-title');
         const date = document.getElementById('details-date');
         const overview = document.getElementById('details-overview');
@@ -117,7 +122,7 @@ function render(item, type) {
         if (date) {
             try {
                 const year = (item.release_date || item.first_air_date || '').substring(0, 4);
-                date.innerHTML = year ? `<span class="date-box">${year}</span>` : '';
+                date.innerHTML = year ? `<span class="badge badge--primary">${year}</span>` : '';
             } catch (dateError) {
                 console.error('Error rendering date:', dateError);
             }
@@ -145,40 +150,64 @@ function render(item, type) {
         }
 
         if (bg) {
-            if (Api.isSlowConnection() || !item.backdrop_path) {
-                bg.style.backgroundImage = 'none';
+            if (!item.backdrop_path) {
+                bg.style.backgroundImage = '';
+                bg.classList.add('media-backdrop--empty');
             } else {
                 const width = bg.clientWidth;
                 const sizeKey = Api.getRecommendedSizeForContainer(width, true);
                 const backdropUrl = Api.getImageUrl(item.backdrop_path, sizeKey);
                 // Use blob cache for instant backdrop rendering
-                const cachedBackdrop = imageCache.has(backdropUrl) ? imageCache.get(backdropUrl) : backdropUrl;
-                bg.style.backgroundImage = `url(${cachedBackdrop})`;
+                // Keep the fallback gradient visible until the real backdrop has been fetched (w300 on slow connections)
+                bg.classList.add('media-backdrop--empty');
+
                 bg.style.willChange = 'background-image';
-                // Queue background caching if not already cached
-                if (!imageCache.has(backdropUrl)) {
-                    const img = new Image();
-                    img.src = backdropUrl;
+                // Swap in the real backdrop once fetched; keep the fallback gradient if it fails
+                if (backdropUrl) {
+                    imageCache.getOrFetch(backdropUrl).then(blobUrl => {
+                        bg.style.backgroundImage = `url(${blobUrl || backdropUrl})`;
+                        bg.classList.remove('media-backdrop--empty');
+                    }).catch(() => {
+                        bg.style.backgroundImage = '';
+                        bg.classList.add('media-backdrop--empty');
+                    });
+
                 }
             }
         }
 
         const poster = document.getElementById('details-poster');
-        if (poster && item.poster_path) {
+        if (poster) {
+            if (item.poster_path) {
+                if (poster.parentElement) poster.parentElement.classList.remove('is-empty');
+                poster.classList.remove('hidden');
+                poster.onerror = () => {
+                    poster.classList.add('hidden');
+                    if (poster.parentElement) poster.parentElement.classList.add('is-empty');
+                };
             try {
                 const width = poster.parentElement ? poster.parentElement.clientWidth : 0;
                 const sizeKey = Api.getRecommendedSizeForContainer(width, false);
                 const posterUrl = Api.getImageUrl(item.poster_path, sizeKey);
                 // Use blob cache for instant poster rendering
-                if (imageCache.has(posterUrl)) {
+                attachImageWithLoader(poster, poster.parentElement, posterUrl, () => {
+                    poster.classList.add('hidden');
+                    if (poster.parentElement) poster.parentElement.classList.add('is-empty');
+                });
+                if (false && imageCache.has(posterUrl)) {
                     poster.src = imageCache.get(posterUrl);
                 } else {
-                    poster.src = posterUrl;
-                    imageCache.getOrFetch(posterUrl);
+                    // handled by attachImageWithLoader
+                    // cached by attachImageWithLoader
                 }
                 poster.style.willChange = 'transform';
             } catch (pError) {
-                console.error('Error setting poster image:', pError);
+                    console.error('Error setting poster image:', pError);
+                }
+            } else {
+                poster.removeAttribute('src');
+                poster.classList.add('hidden');
+                if (poster.parentElement) poster.parentElement.classList.add('is-empty');
             }
         }
 
@@ -600,16 +629,16 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 const episodeNumber = episode.episode_number || '?';
                 const episodeName = episode.name || I18n.t('details.untitled');
                 const episodeOverview = episode.overview || I18n.t('details.noDescription');
-                const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.STILL_SIZE) : '';
-                const bgImage = stillPath ? `url('${stillPath}')` : 'none';
+                const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.isSlowConnection() ? 'w300' : Api.STILL_SIZE) : '';
+                const thumbStyle = '';
 
                 el.innerHTML = `
-                    <div class="disney-episode-thumb" style="background-image: ${bgImage};"></div>
-                    <div class="disney-episode-info">
-                        <div class="disney-episode-title">
+                    <div class="card__thumb"${thumbStyle}></div>
+                    <div class="card__body">
+                        <div class="card__title">
                             ${episodeNumber}. ${episodeName}
                         </div>
-                        <p class="disney-episode-overview">${episodeOverview}</p>
+                        <p class="card__desc">${episodeOverview}</p>
                     </div>
                 `;
 
@@ -622,6 +651,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                     }
                 };
 
+                if (stillPath) loadBackgroundWithLoader(el.querySelector('.card__thumb'), stillPath);
                 container.appendChild(el);
             } catch (episodeError) {
                 console.error('Error rendering episode:', episodeError);
@@ -815,15 +845,16 @@ function renderExtras(videos, contentId, mediaType) {
             }
             
             card.innerHTML = `
-                <div class="disney-extra-thumb-left" style="background-image: url('${thumbUrl}');">
+                <div class="card__thumb">
                     <div class="disney-extra-play-icon">▶</div>
                 </div>
-                <div class="disney-extra-info">
-                    <div class="disney-extra-type">${video.type}</div>
-                    <div class="disney-extra-title">${video.name}</div>
-                    <p class="disney-extra-description">${video.type}${pubDateStr}</p>
+                <div class="card__body">
+                    <div class="card__meta">${video.type}</div>
+                    <div class="card__title">${video.name}</div>
+                    <p class="card__desc">${video.type}${pubDateStr}</p>
                 </div>
             `;
+            loadBackgroundWithLoader(card.querySelector('.card__thumb'), thumbUrl);
             container.appendChild(card);
         });
     } catch (error) {
@@ -863,10 +894,14 @@ function renderAbout(overview, credits) {
                 : '';
             
             card.innerHTML = `
-                <div class="disney-cast-img" ${profileImgStyle}></div>
+                <div class="disney-cast-img"></div>
                 <div class="disney-cast-name">${actor.name}</div>
                 <div class="disney-cast-character">${actor.character || ''}</div>
             `;
+            if (actor.profile_path) {
+                const profileUrl = Api.getImageUrl(actor.profile_path, Api.isSlowConnection() ? 'w92' : 'w185');
+                loadBackgroundWithLoader(card.querySelector('.disney-cast-img'), profileUrl);
+            }
             castContainer.appendChild(card);
         });
     } catch (error) {

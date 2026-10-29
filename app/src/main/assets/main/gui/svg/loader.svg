@@ -3,7 +3,6 @@
        Head = fully opaque + rounded cap. Tail = fully transparent.
        Native SMIL rotation anchored exactly to viewBox center (30,30). -->
   <g>
-    <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="0.9s" repeatCount="indefinite" />
     <path d="M 46.07,49.15 A 25,25 0 0,1 43.89,50.79" fill="none" stroke="var(--primary-color, #46d369)" stroke-width="4.5" stroke-opacity="0.02" />
     <path d="M 43.89,50.79 A 25,25 0 0,1 41.54,52.18" fill="none" stroke="var(--primary-color, #46d369)" stroke-width="4.5" stroke-opacity="0.041" />
     <path d="M 41.54,52.18 A 25,25 0 0,1 39.06,53.30" fill="none" stroke="var(--primary-color, #46d369)" stroke-width="4.5" stroke-opacity="0.062" />

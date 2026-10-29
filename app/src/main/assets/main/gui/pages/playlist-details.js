@@ -2,7 +2,7 @@ import { Playlists } from '../../logic/playlists.js';
 import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
-import { manageModal } from '../js/utils/ui-helper.js';
+import { manageModal, attachImageWithLoader, loadBackgroundWithLoader } from '../js/utils/ui-helper.js';
 
 
 let currentPlaylistId = null;
@@ -99,11 +99,34 @@ function render() {
     if (posterEl) {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
-            const posterUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path);
-            posterEl.src = posterUrl;
+            const posterUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.isSlowConnection() ? 'w300' : undefined);
+            posterEl.classList.remove('hidden');
             posterEl.style.display = 'block';
+            if (posterEl.parentElement) posterEl.parentElement.classList.remove('is-empty', 'is-widescreen');
+            attachImageWithLoader(posterEl, posterEl.parentElement, posterUrl, () => {
+                posterEl.classList.add('hidden');
+                posterEl.style.display = 'none';
+                if (posterEl.parentElement) posterEl.parentElement.classList.add('is-empty', 'is-widescreen');
+            });
+            if (false) {
+                posterEl.src = posterUrl;
+                posterEl.classList.remove('hidden');
+                posterEl.style.display = 'block';
+            }
+            if (posterEl.parentElement) posterEl.parentElement.classList.remove('is-empty', 'is-widescreen');
+            if (false && posterEl) {
+                posterEl.onerror = () => {
+                    posterEl.classList.add('hidden');
+                    posterEl.style.display = 'none';
+                    if (posterEl.parentElement) posterEl.parentElement.classList.add('is-empty', 'is-widescreen');
+                };
+                posterEl.style.display = 'block';
+            }
         } else {
-            posterEl.src = 'images/placeholder-playlist.svg';
+            posterEl.removeAttribute('src');
+            posterEl.classList.add('hidden');
+            posterEl.style.display = 'none';
+            if (posterEl.parentElement) posterEl.parentElement.classList.add('is-empty', 'is-widescreen');
         }
     }
 
@@ -112,12 +135,15 @@ function render() {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
             const backdropUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.getRecommendedBackdropSize());
+            backdropEl.classList.remove('media-backdrop--empty');
             backdropEl.innerHTML = `
                 <img src="${backdropUrl}" alt="Backdrop">
                 <div class="backdrop-overlay"></div>
             `;
         } else {
-            backdropEl.innerHTML = `<div class="backdrop-overlay backdrop-overlay-empty"></div>`;
+            backdropEl.classList.remove('media-backdrop--empty');
+            backdropEl.classList.add('media-backdrop--empty');
+            backdropEl.innerHTML = `<div class="media-backdrop__overlay backdrop-overlay backdrop-overlay-empty"></div>`;
         }
     }
 
@@ -185,7 +211,7 @@ function toggleMoveMode(index) {
         render();
         // Shift focus back to the move button of the item
         setTimeout(() => {
-            const btn = document.querySelector(`.btn--circle[data-index="${index}"], .btn-circle[data-index="${index}"]`);
+            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"], .btn--circle[data-index="${index}"]`);
             if (btn) btn.focus();
         }, 10);
     } else {
@@ -205,7 +231,7 @@ function toggleMoveMode(index) {
 
         // Shift focus back to the move button of the item
         setTimeout(() => {
-            const btn = document.querySelector(`.btn--circle[data-index="${index}"], .btn-circle[data-index="${index}"]`);
+            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"], .btn--circle[data-index="${index}"]`);
             if (btn) btn.focus();
         }, 10);
     }
@@ -236,31 +262,32 @@ function createItemElement(item, index, total) {
     itemCard.dataset.id = item.id;
     itemCard.dataset.type = item.media_type;
 
-    const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path, Api.STILL_SIZE);
-    const bgImage = imageUrl ? `url('${imageUrl}')` : 'none';
+    const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path, Api.isSlowConnection() ? 'w300' : Api.STILL_SIZE);
+    const thumbStyle = '';
 
     itemCard.innerHTML = `
-        <div class="episode-image" style="background-image: ${bgImage};"></div>
-        <div class="episode-info">
+        <div class="card__thumb card__thumb--sm"${thumbStyle}></div>
+        <div class="card__body">
             <div class="episode-header">
                 <span class="episode-number">${index + 1}</span>
-                <span class="episode-name">${item.title || item.name}</span>
+                <span class="card__title">${item.title || item.name}</span>
             </div>
-            <p class="episode-overview">${item.overview || ''}</p>
+            <p class="card__desc">${item.overview || ''}</p>
         </div>
     `;
 
     // Click on item card navigates to content details
+    if (imageUrl) loadBackgroundWithLoader(itemCard.querySelector('.card__thumb'), imageUrl);
     itemCard.onclick = () => {
         Router.loadPage('details', { id: item.id, type: item.media_type });
     };
 
     const actionsWrapper = document.createElement('div');
-    actionsWrapper.className = 'playlist-item-actions';
+    actionsWrapper.className = 'card__actions playlist-item-actions';
 
     // Circular Move button
     const moveBtn = document.createElement('button');
-    moveBtn.className = 'btn btn--secondary btn--circle focusable';
+    moveBtn.className = 'btn btn--secondary btn--circle playlist-action-btn focusable';
     if (activeMoveIndex === index) {
         moveBtn.classList.add('is-active', 'active');
     }

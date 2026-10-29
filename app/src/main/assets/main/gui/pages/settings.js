@@ -1108,7 +1108,7 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-move-btn focusable';
+            moveBtn.className = 'btn btn--secondary btn--square edit-trigger provider-move-btn focusable';
             moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
             moveBtn.title = 'Move';
             if (this.movingProviderId === provider.id) {
@@ -1138,7 +1138,7 @@ class SettingsManager {
 
             if (provider.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
+                deleteBtn.className = 'btn btn--secondary btn--square edit-trigger provider-delete-btn focusable';
                 deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
                 deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {
@@ -1196,7 +1196,7 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-move-btn focusable';
+            moveBtn.className = 'btn btn--secondary btn--square edit-trigger provider-move-btn focusable';
             moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
             moveBtn.title = 'Move';
             if (this.movingM3uId === playlist.id) {
@@ -1226,7 +1226,7 @@ class SettingsManager {
 
             if (playlist.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
+                deleteBtn.className = 'btn btn--secondary btn--square edit-trigger provider-delete-btn focusable';
                 deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
                 deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {

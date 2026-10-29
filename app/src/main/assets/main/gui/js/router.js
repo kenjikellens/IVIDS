@@ -24,6 +24,19 @@ export const Router = {
     isLoading: false,
 
     /**
+     * Clears the HTML template cache and forces a clean reload of the currently active route.
+     * Used after cache invalidation (e.g. Ctrl+F5) to re-render all views and images at full quality.
+     */
+    reloadCurrentPage() {
+        _htmlCache.clear();
+        const activePage = this.currentPage || 'home';
+        const activeParams = this.params || {};
+        this.currentPage = null;
+        this.isLoading = false;
+        this.loadPage(activePage, activeParams, false);
+    },
+
+    /**
      * Loads page HTML templates, JS controllers, and spatial navigation rules, updating viewport layout and sidebar display status.
      * Affects page loading state, route history stack, active sidebar visibility/display style, and focus target.
      * @param {string} pageName - The ID of the page to load.

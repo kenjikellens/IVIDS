@@ -166,10 +166,14 @@ export class RegionalCategoryService {
     _initBackgroundValidation() {
         const runProbe = () => {
             try {
-                if (sessionStorage.getItem('ivids_user_country')) return;
-                fetch('https://api.country.is')
+                if (sessionStorage.getItem('ivids_user_country') || sessionStorage.getItem('ivids_user_country_probed')) return;
+                sessionStorage.setItem('ivids_user_country_probed', '1');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                fetch('https://api.country.is', { signal: controller.signal })
                     .then(res => res.json())
                     .then(data => {
+                        clearTimeout(timeoutId);
                         if (data && data.country) {
                             sessionStorage.setItem('ivids_user_country', data.country);
                             if (this.cachedContext) {
@@ -177,7 +181,10 @@ export class RegionalCategoryService {
                             }
                         }
                     })
-                    .catch(() => { /* Silent fallback to timezone */ });
+                    .catch(() => {
+                        clearTimeout(timeoutId);
+                        /* Silent fallback to timezone */
+                    });
             } catch (e) { /* ignore */ }
         };
 

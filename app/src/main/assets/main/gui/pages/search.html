@@ -3,7 +3,7 @@
         <div class="search-container-wrapper">
             <div id="recent-searches-row" class="recent-searches-row hidden">
                 <span class="recent-label" data-i18n="search.recent">Recent:</span>
-                <button id="clear-recents-btn" class="focusable clear-recents-btn" title="Clear Recents">
+                <button id="clear-recents-btn" class="btn btn--secondary btn--sm clear-recents-btn focusable" title="Clear Recents">
                     <img src="images/trash.svg" class="trash-icon" alt="Clear">
                     <span data-i18n="search.clearRecents">Clear</span>
                 </button>
@@ -43,9 +43,9 @@
     <!-- Filter Modal (Replaces Sidebar) -->
     <div id="filter-modal" class="modal">
         <div class="modal__dialog modal__dialog--xl">
-            <h2 class="modal__title modal-title" data-i18n="search.filters">Filters</h2>
+            <h2 class="modal__title" data-i18n="search.filters">Filters</h2>
 
-            <div class="modal__body modal__body--scroll modal-scroll-area">
+            <div class="modal__body modal__body--scroll">
                 <div class="filter-main-grid">
                     <!-- Row 1: Content Type & Year -->
                     <!-- Content Type -->
@@ -120,11 +120,11 @@
     <!-- Genre Selection Modal -->
     <div id="genre-modal" class="modal">
         <div class="modal__dialog modal__dialog--md">
-            <h2 class="modal__title modal-title" data-i18n="search.genres">Select Genres</h2>
+            <h2 class="modal__title" data-i18n="search.genres">Select Genres</h2>
             <div id="genre-filters" class="modal__body chip-grid chip-grid--3col">
                 <!-- Genres injected here -->
             </div>
-            <div class="modal__footer modal-actions btn-group btn-group--fill">
+            <div class="modal__footer btn-group btn-group--fill">
                 <button id="genre-done-btn" class="btn btn--secondary focusable" data-i18n="search.done">Done</button>
             </div>
         </div>
@@ -133,7 +133,7 @@
     <!-- Custom Select Modals -->
     <div id="sort-modal" class="modal">
         <div class="modal__dialog modal__dialog--sm">
-            <h2 class="modal__title modal-title" data-i18n="search.sortBy">Sort By</h2>
+            <h2 class="modal__title" data-i18n="search.sortBy">Sort By</h2>
             <div class="modal__body select-options-list" id="sort-options-list">
                 <div class="chip chip--option focusable" data-value="popularity.desc" data-i18n="search.popularity">Popularity
                 </div>
@@ -153,12 +153,12 @@
 
     <div id="country-modal" class="modal">
         <div class="modal__dialog modal__dialog--xl">
-            <h2 class="modal__title modal-title" data-i18n="search.country">Production Country</h2>
-            <div class="modal__search modal-search-wrapper">
+            <h2 class="modal__title" data-i18n="search.country">Production Country</h2>
+            <div class="modal__search">
                 <input type="text" id="country-search-input" class="form-input form-input--compact focusable"
                     placeholder="Search countries..." data-i18n="search.searchCountries" readonly>
             </div>
-            <div id="country-options-list" class="modal__body modal__body--scroll chip-grid chip-grid--3col scrollable">
+            <div id="country-options-list" class="modal__body modal__body--scroll chip-grid chip-grid--3col">
                 <!-- Countries injected here -->
             </div>
         </div>

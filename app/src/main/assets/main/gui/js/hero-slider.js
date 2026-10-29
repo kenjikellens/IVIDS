@@ -73,9 +73,35 @@ export class HeroSlider {
         if (!imageUrl) return;
 
         if (applyStyle) {
-            const cachedUrl = imageCache.has(imageUrl) ? imageCache.get(imageUrl) : imageUrl;
+            if (imageCache.has(imageUrl)) {
+                const cachedUrl = imageCache.get(imageUrl);
+                slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
+                slide.dataset.loaded = 'true';
+                if (slideIndex === 0 && this.container) {
+                    const loader = this.container.querySelector('.loader-center-container');
+                    if (loader) loader.style.display = 'none';
+                }
+            } else {
+                imageCache.getOrFetch(imageUrl).then((blobUrl) => {
+                    const finalUrl = blobUrl || imageUrl;
+                    slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${finalUrl})`;
+                    slide.dataset.loaded = 'true';
+                    if (slideIndex === 0 && this.container) {
+                        const loader = this.container.querySelector('.loader-center-container');
+                        if (loader) loader.style.display = 'none';
+                    }
+                }).catch(() => {
+                    slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${imageUrl})`;
+                    if (slideIndex === 0 && this.container) {
+                        const loader = this.container.querySelector('.loader-center-container');
+                        if (loader) loader.style.display = 'none';
+                    }
+                });
+            }
+            if (false) {
             slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
             slide.dataset.loaded = 'true';
+            }
         }
 
         if (!this._prefetchedIndices.has(slideIndex)) {
@@ -137,7 +163,7 @@ export class HeroSlider {
 
         // Hide initial loader if present
         const loader = this.container.querySelector('.loader-center-container');
-        if (loader) loader.style.display = 'none';
+        if (loader && imageCache.has(this.items[0] ? Api.getImageUrl(this.items[0].backdrop_path, backdropSize) : '')) loader.style.display = 'none';
 
         // 4. Initial render to set text content
         this.render(this.currentIndex, true);

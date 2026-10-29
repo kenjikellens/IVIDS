@@ -12,7 +12,7 @@ export class ErrorHandler {
             if (!document.getElementById('error-modal')) {
                 const modal = document.createElement('div');
                 modal.id = 'error-modal';
-                modal.className = 'modal modal-overlay modal--danger error-modal';
+                modal.className = 'modal modal--danger error-modal';
                 modal.innerHTML = `
                     <div class="modal__dialog modal__dialog--sm error-content">
                         <div class="error-icon-container">

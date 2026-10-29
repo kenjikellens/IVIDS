@@ -7,7 +7,7 @@
     <!-- Appearance Settings -->
     <div class="settings-section">
         <h2 class="section-title">
-            <img src="images/settings.svg" class="section-title__icon section-title-icon" alt="">
+            <img src="images/settings.svg" class="section-title__icon" alt="">
             <span data-i18n="settings.appearance">Appearance</span>
         </h2>
 
@@ -18,7 +18,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-language-display" class="current-value-display">English</div>
-                <button id="edit-language-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Language">
+                <button id="edit-language-btn" class="btn btn--secondary btn--square edit-trigger focusable" title="Edit Language">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -30,9 +30,9 @@
                 <div class="setting-description" data-i18n="settings.uiScaleDesc">Adjust the size of the user interface</div>
             </div>
             <div class="setting-control scale-control-container">
-                <button id="dec-uiscale-btn" class="btn btn--secondary btn--circle edit-trigger focusable scale-adjust-btn">-</button>
+                <button id="dec-uiscale-btn" class="btn btn--secondary btn--square-sm edit-trigger focusable scale-adjust-btn">-</button>
                 <div id="current-uiscale-display" class="current-value-display centered-value">100%</div>
-                <button id="inc-uiscale-btn" class="btn btn--secondary btn--circle edit-trigger focusable scale-adjust-btn">+</button>
+                <button id="inc-uiscale-btn" class="btn btn--secondary btn--square-sm edit-trigger focusable scale-adjust-btn">+</button>
             </div>
         </div>
 
@@ -44,7 +44,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-color-display" class="color-preview-circle"></div>
-                <button id="edit-color-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Color">
+                <button id="edit-color-btn" class="btn btn--secondary btn--square edit-trigger focusable" title="Edit Color">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -54,7 +54,7 @@
     <!-- Content Settings -->
     <div class="settings-section">
         <h2 class="section-title">
-            <img src="images/movies.svg" class="section-title__icon section-title-icon" alt="">
+            <img src="images/movies.svg" class="section-title__icon" alt="">
             <span data-i18n="settings.contentSettings">Content</span>
         </h2>
 
@@ -89,7 +89,7 @@
     <!-- Player Settings -->
     <div id="player-settings-section" class="settings-section">
         <h2 class="section-title">
-            <img src="images/play.svg" class="section-title__icon section-title-icon" alt="">
+            <img src="images/play.svg" class="section-title__icon" alt="">
             <span data-i18n="settings.playerProvider">Player</span>
         </h2>
 
@@ -100,7 +100,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-player-display" class="current-value-display">—</div>
-                <button id="edit-player-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Provider">
+                <button id="edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable" title="Edit Provider">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -110,7 +110,7 @@
     <!-- Live TV Settings -->
     <div id="livetv-settings-section" class="settings-section">
         <h2 class="section-title">
-            <img src="images/livetv.svg" class="section-title__icon section-title-icon" alt="">
+            <img src="images/livetv.svg" class="section-title__icon" alt="">
             <span data-i18n="settings_livetv.title">Live TV Configuration</span>
         </h2>
 
@@ -121,7 +121,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-m3u-display" class="current-value-display">0 Playlists</div>
-                <button id="edit-m3u-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Playlists">
+                <button id="edit-m3u-btn" class="btn btn--secondary btn--square edit-trigger focusable" title="Edit Playlists">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -131,7 +131,7 @@
     <!-- App Updates Settings -->
     <div id="app-updates-section" class="settings-section">
         <h2 class="section-title">
-            <img src="images/info.svg" class="section-title__icon section-title-icon" alt="">
+            <img src="images/info.svg" class="section-title__icon" alt="">
             <span data-i18n="settings.updates">App Updates</span>
         </h2>
 
@@ -143,7 +143,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-update-mode-display" class="current-value-display">Manual</div>
-                <button id="edit-update-mode-btn" class="btn btn--secondary btn--circle edit-trigger focusable" title="Edit Update Mode">
+                <button id="edit-update-mode-btn" class="btn btn--secondary btn--square edit-trigger focusable" title="Edit Update Mode">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -167,7 +167,7 @@
     <!-- App Info Settings -->
     <div id="app-info-section" class="settings-section">
         <h2 class="section-title">
-            <img src="images/info.svg" class="section-title__icon section-title-icon" alt="">
+            <img src="images/info.svg" class="section-title__icon" alt="">
             <span data-i18n="settings.appInfo">App Info</span>
         </h2>
 
@@ -180,22 +180,22 @@
 <!-- Language Modal -->
 <div id="language-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <h2 class="modal__title modal-title" data-i18n="settings.language">Language</h2>
-        <div class="modal__body modal-body">
+        <h2 class="modal__title" data-i18n="settings.language">Language</h2>
+        <div class="modal__body">
             <div class="language-stepper-container">
-                <button id="lang-prev-btn" class="btn btn--secondary btn--circle edit-trigger focusable stepper-arrow-btn" aria-label="Previous Language">
+                <button id="lang-prev-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn" aria-label="Previous Language">
                     <img src="images/back.svg" class="setting-stepper-icon" alt="Previous">
                 </button>
                 <div id="lang-stepper-display" class="current-value-display language-stepper-value">
                     <span id="lang-stepper-flag" class="display-flag-span">🇺🇸</span>
                     <span id="lang-stepper-name">English</span>
                 </div>
-                <button id="lang-next-btn" class="btn btn--secondary btn--circle edit-trigger focusable stepper-arrow-btn" aria-label="Next Language">
+                <button id="lang-next-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn" aria-label="Next Language">
                     <img src="images/arrow.svg" class="setting-stepper-icon" alt="Next">
                 </button>
             </div>
         </div>
-        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -205,8 +205,8 @@
 <!-- Color Modal -->
 <div id="color-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <h2 class="modal__title modal-title" data-i18n="settings.accentColor">Accent Color</h2>
-        <div class="modal__body modal-body">
+        <h2 class="modal__title" data-i18n="settings.accentColor">Accent Color</h2>
+        <div class="modal__body">
             <div id="color-options" class="chip-grid chip-grid--color">
                 <div class="chip chip--option chip--color focusable" data-value="#46d369">
                     <div class="color-dot green"></div>
@@ -228,7 +228,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -239,8 +239,8 @@
 <!-- Update Mode Modal -->
 <div id="update-mode-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <h2 class="modal__title modal-title" data-i18n="settings.updateMode">Update Mode</h2>
-        <div class="modal__body modal-body">
+        <h2 class="modal__title" data-i18n="settings.updateMode">Update Mode</h2>
+        <div class="modal__body">
             <div id="update-mode-options" class="chip-grid chip-grid--2col">
                 <div class="chip chip--option focusable" data-value="auto" data-i18n="settings.mode.auto">Auto</div>
                 <div class="chip chip--option focusable" data-value="manual" data-i18n="settings.mode.manual">Manual</div>
@@ -253,7 +253,7 @@
                 recommended for developers only and may contain unstable builds.
             </div>
         </div>
-        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -263,8 +263,8 @@
 <!-- Version Selector Modal -->
 <div id="version-selector-modal" class="modal">
     <div class="modal__dialog modal__dialog--lg">
-        <h2 class="modal__title modal-title" data-i18n="settings.selectVersion">Select Version</h2>
-        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
+        <h2 class="modal__title" data-i18n="settings.selectVersion">Select Version</h2>
+        <div class="modal__body modal__body--scroll">
             <div id="version-list-loader" class="loader-center-container hidden">
                 <div class="ivids-loader"></div>
             </div>
@@ -272,7 +272,7 @@
                 <!-- Dynamically populated version chips -->
             </div>
         </div>
-        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
@@ -281,14 +281,14 @@
 <!-- Player Providers Modal -->
 <div id="player-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <h2 class="modal__title modal-title" data-i18n="settings.playerProviders">Player Providers</h2>
-        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
+        <h2 class="modal__title" data-i18n="settings.playerProviders">Player Providers</h2>
+        <div class="modal__body modal__body--scroll">
             <div id="player-providers-list" class="providers-list">
                 <!-- Dynamically populated provider items -->
             </div>
             <button id="add-provider-btn" class="btn btn--secondary focusable" data-i18n="settings.addProvider">Add Provider</button>
         </div>
-        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -298,14 +298,14 @@
 <!-- M3U Playlists Modal -->
 <div id="m3u-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <h2 class="modal__title modal-title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
-        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
+        <h2 class="modal__title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
+        <div class="modal__body modal__body--scroll">
             <div id="m3u-playlists-list" class="providers-list">
                 <!-- Dynamically populated playlist items -->
             </div>
             <button id="add-m3u-btn" class="btn btn--secondary focusable" data-i18n="settings.addM3uPlaylist">Add Playlist</button>
         </div>
-        <div class="modal__footer modal-footer vertical-modal-actions btn-group btn-group--vertical">
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button class="btn btn--primary focusable" data-i18n="common.apply">Apply</button>
             <button class="btn btn--secondary btn--sm focusable" data-i18n="common.cancel">Cancel</button>
         </div>
@@ -315,8 +315,8 @@
 <!-- App Info Modal -->
 <div id="app-info-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <h2 class="modal__title modal-title" data-i18n="settings.appInfo">App Info</h2>
-        <div class="modal__body modal-body">
+        <h2 class="modal__title" data-i18n="settings.appInfo">App Info</h2>
+        <div class="modal__body">
             <div class="setting-item">
                 <div class="setting-info">
                     <div class="setting-label" data-i18n="settings.appVersion">App Version</div>
@@ -336,7 +336,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal__footer modal-footer">
+        <div class="modal__footer">
             <button class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
         </div>
     </div>
@@ -345,14 +345,14 @@
 <!-- Changes Modal -->
 <div id="changes-modal" class="modal">
     <div class="modal__dialog modal__dialog--lg">
-        <button class="modal__close modal-close-x focusable" aria-label="Close modal">&times;</button>
-        <h2 id="changes-modal-title" class="modal__title modal-title" data-i18n="settings.changes">Changes</h2>
-        <div class="modal__body modal__body--scroll modal-body scrollable-modal-body">
+        <button class="btn btn--ghost btn--circle modal__close focusable" aria-label="Close modal">&times;</button>
+        <h2 id="changes-modal-title" class="modal__title" data-i18n="settings.changes">Changes</h2>
+        <div class="modal__body modal__body--scroll">
             <div id="changes-modal-content" class="markdown-body">
                 <!-- Dynamically populated release notes -->
             </div>
         </div>
-        <div class="modal__footer modal__footer--center modal-footer centered-footer">
+        <div class="modal__footer modal__footer--center">
             <button class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
         </div>
     </div>
@@ -360,4 +360,3 @@
 
 <!-- Enforce trailing target to protect fragment SVGs from Live Server script injection corruption -->
 </body>
-

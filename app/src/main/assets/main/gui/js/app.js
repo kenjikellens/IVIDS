@@ -9,6 +9,8 @@ import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper
 import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { manageModal } from './utils/ui-helper.js';
 import { NETWORK_CONFIG } from '../../logic/constants.js';
+import { imageCache } from '../../logic/image-cache.js';
+import { cacheManager } from '../../logic/cache-manager.js';
 import './loader.js';
 import './i18n.js';
 // Polyfills flag emojis on platforms where they are not natively supported (like Windows browser/Electron).
@@ -677,17 +679,21 @@ function initNetworkListeners() {
      */
     const checkSpeed = () => {
         try {
-            let isActuallySlow = false;
+            const now = Date.now();
+            let isActuallySlow = Boolean(typeof window !== 'undefined' && now < (window.__ividsSlowUntil || 0));
+            if (!isActuallySlow && typeof Api !== 'undefined' && typeof Api.isSlowConnection === 'function') {
+                isActuallySlow = Api.isSlowConnection();
+            }
             if (typeof navigator !== 'undefined' && navigator.connection) {
                 const conn = navigator.connection;
                 if (conn.saveData) {
                     isActuallySlow = true;
-                } else if (typeof conn.downlink === 'number' && conn.downlink < NETWORK_CONFIG.SLOW_THRESHOLD_MBPS) {
+                } else if (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.effectiveType === '3g' || (typeof conn.rtt === 'number' && conn.rtt > 500) || (typeof conn.downlink === 'number' && conn.downlink > 0 && conn.downlink < NETWORK_CONFIG.SLOW_THRESHOLD_MBPS)) {
                     isActuallySlow = true;
                 }
             }
 
-            const now = Date.now();
+
 
             if (isActuallySlow) {
                 // Check cool-down window before displaying slow internet alert icon
@@ -735,6 +741,13 @@ function initNetworkListeners() {
     // Perform check on initialization
     setTimeout(checkSpeed, 1000);
 
+    window.addEventListener('networkslowdetected', () => {
+        if (typeof Api !== 'undefined' && typeof Api.markSlowConnection === 'function') {
+            Api.markSlowConnection(60000);
+        }
+        checkSpeed();
+    });
+
     // Listen for custom toggle events dispatched from settings
     window.addEventListener('datasaverchanged', () => {
         try {
@@ -754,6 +767,61 @@ function initNetworkListeners() {
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden') {
             console.log('App: Saving last active timestamp');
+            localStorage.setItem('ivids-last-active', Date.now());
+        }
+    });
+
+    /**
+     * Purges in-memory blob cache, session API cache, and cached image resolution tiers,
+     * enabling HTTP disk-cache bypass so all images reload at full resolution.
+     * @param {boolean} [reloadCurrentRoute=true] - Whether to immediately re-render the active page.
+     */
+    const purgeImageAndApiCaches = (reloadCurrentRoute = true) => {
+        try {
+            if (imageCache && typeof imageCache.clearAndBypassHttpCache === 'function') {
+                imageCache.clearAndBypassHttpCache();
+            }
+            if (cacheManager && typeof cacheManager.clear === 'function') {
+                cacheManager.clear();
+            }
+            if (Api && typeof Api.invalidateImageQualityCache === 'function') {
+                Api.invalidateImageQualityCache();
+            }
+            if (typeof window !== 'undefined') {
+                window.__ividsSlowUntil = 0;
+                window.__ividsSlowConnection = false;
+            }
+            sessionStorage.setItem('ivids_force_image_reload', '1');
+            if (reloadCurrentRoute && Router && typeof Router.reloadCurrentPage === 'function') {
+                Router.reloadCurrentPage();
+            }
+        } catch (err) {
+            console.error('App: Failed to purge image and API caches:', err);
+        }
+    };
+
+    // Intercept Ctrl+F5, Shift+F5, F5, and Ctrl+Shift+R to purge image/API caches and reload images at full quality
+    window.addEventListener('keydown', (e) => {
+        const isF5 = e.key === 'F5' || e.keyCode === 116;
+        const isHardReloadShortcut = (e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'R' || e.key === 'r');
+        if (isF5 || isHardReloadShortcut) {
+            e.preventDefault();
+            purgeImageAndApiCaches(true);
+        }
+    }, { capture: true });
+
+    // If the browser performed a document reload (e.g. via browser toolbar or native Ctrl+F5), purge caches on boot
+    try {
+        const navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        if ((navEntry && navEntry.type === 'reload') || sessionStorage.getItem('ivids_force_image_reload') === '1') {
+            sessionStorage.removeItem('ivids_force_image_reload');
+            purgeImageAndApiCaches(false);
+        }
+    } catch (e) { /* ignore navigation timing errors */ }
+
+    // Keep structure balanced with outer listener block
+    window.addEventListener('pagehide', () => {
+        if (document.visibilityState === 'hidden') {
             localStorage.setItem('ivids-last-active', Date.now());
         }
     });
