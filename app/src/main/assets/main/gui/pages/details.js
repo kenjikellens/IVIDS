@@ -98,6 +98,13 @@ function render(item, type) {
             return;
         }
 
+        const backBtn = document.getElementById('details-back-btn');
+        if (backBtn) {
+            backBtn.onclick = () => {
+                Router.goBack('home');
+            };
+        }
+
         title.textContent = item.title || item.name || I18n.t('details.unknownTitle');
 
         // Render Genres
@@ -259,12 +266,14 @@ function render(item, type) {
 
         if (trailerBtn) {
             if (mainTrailerKey) {
-                trailerBtn.style.display = 'inline-flex';
+                trailerBtn.classList.remove('hidden');
+                trailerBtn.style.display = '';
                 const trailerObj = item.videos.results.find(v => v.key === mainTrailerKey);
                 const trailerName = trailerObj ? ` (${trailerObj.name})` : '';
                 trailerBtn.textContent = `${I18n.t('details.watchTrailer')}${trailerName}`;
                 trailerBtn.onclick = () => Router.loadPage('player', { id: item.id, type: 'trailer', ytKey: mainTrailerKey, mediaType: type });
             } else {
+                trailerBtn.classList.add('hidden');
                 trailerBtn.style.display = 'none';
             }
         }
