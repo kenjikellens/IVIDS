@@ -14,7 +14,15 @@ const KEY_MAP = {
     Escape: 27,
     Backspace: 8,
     Back: 10009,
-    AndroidBack: 4
+    AndroidBack: 4,
+    MediaPlay: 415,
+    MediaPause: 19,
+    MediaPlayPause: 179,
+    MediaFastForward: 417,
+    MediaRewind: 412,
+    MediaStop: 413,
+    MediaTrackNext: 417,
+    MediaTrackPrevious: 412
 };
 
 export const SpatialNav = {
@@ -37,7 +45,8 @@ export const SpatialNav = {
      * @returns {'smooth'|'auto'} The preferred scroll behavior.
      */
     getScrollBehavior() {
-        const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        const perf = (typeof window !== 'undefined' && window.performance) ? window.performance : (typeof performance !== 'undefined' ? performance : null);
+        const now = (perf && typeof perf.now === 'function') ? perf.now() : Date.now();
         const interval = now - (this._lastNavTimestamp || 0);
         this._lastNavTimestamp = now;
         return interval < 180 ? 'auto' : 'smooth';
@@ -49,7 +58,7 @@ export const SpatialNav = {
      * @returns {boolean} True if the viewport width is within the portrait mobile range.
      */
     isPortrait() {
-        return window.matchMedia('(max-width: 600px)').matches;
+        return window.matchMedia('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px), (max-width: 600px)').matches;
     },
 
     /**
@@ -322,6 +331,17 @@ export const SpatialNav = {
             return true;
         }
 
+        // Delegate to active page logic handleBack
+        if (this.currentPageLogic && typeof this.currentPageLogic.handleBack === 'function') {
+            try {
+                if (this.currentPageLogic.handleBack()) {
+                    return true;
+                }
+            } catch (err) {
+                console.error('Error in currentPageLogic.handleBack:', err);
+            }
+        }
+
         if (this.onBack) {
             this.onBack();
             return true;
@@ -372,10 +392,18 @@ export const SpatialNav = {
         }
     },
 
+    /**
+     * Sets the active page-specific spatial navigation controller logic.
+     * @param {Object|null} logic - The page controller instance or null to clear.
+     */
     setPageLogic(logic) {
         this.currentPageLogic = logic;
     },
 
+    /**
+     * Traps spatial navigation focus within a specific container (e.g. modal overlay).
+     * @param {HTMLElement|null} container - Container to scope focus to.
+     */
     setFocusTrap(container) {
         this.focusTrapContainer = container;
         if (container) {
@@ -387,6 +415,9 @@ export const SpatialNav = {
         }
     },
 
+    /**
+     * Clears active focus trap container and restores global focus scope.
+     */
     clearFocusTrap() {
         this.focusTrapContainer = null;
     },
@@ -419,7 +450,7 @@ export const SpatialNav = {
 
         // FASTEST CHECK: offsetParent is null if display:none or parent is display:none.
         // For fixed elements (sidebar or modals), check container directly instead of walking 12 DOM levels
-        if (el.offsetParent === null) {
+        if (el.offsetParent === null && el.parentElement !== null) {
             const fixedContainer = el.closest('#sidebar-container, .modal, .modal-overlay, .update-modal-overlay');
             if (!fixedContainer) {
                 return false;
@@ -497,6 +528,9 @@ export const SpatialNav = {
         if (current) current.classList.remove('focused');
 
         element.classList.add('focused');
+        if (this.currentPageLogic) {
+            this.currentPageLogic.lastFocusedElement = element;
+        }
 
         if (this.isPortrait() && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
             this.activateInput(element);
@@ -506,6 +540,9 @@ export const SpatialNav = {
         element.focus({ preventScroll: true }); // Prevent browser auto-scroll, we handle it
     },
 
+    /**
+     * Restores focus to the last focused element if still visible, or falls back to first focusable.
+     */
     refocus() {
         if (this.lastFocusedElement && this.isVisible(this.lastFocusedElement)) {
             this.setFocus(this.lastFocusedElement);
@@ -636,7 +673,35 @@ export const SpatialNav = {
         const isBack = (keyCode === 8 || keyCode === 27 || keyCode === 10009 || keyCode === 4);
         const isNum = ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105));
 
-        if (!isNav && !isAction && !isBack && !isNum) return;
+        const isMedia = (
+            keyCode === 415 || keyCode === 19 || keyCode === 179 || keyCode === 417 ||
+            keyCode === 412 || keyCode === 413 || (e.key && e.key.startsWith('Media'))
+        );
+
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        const isTyping = (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || (document.activeElement && document.activeElement.isContentEditable));
+        if (isTyping && !isBack && !isNav && !isAction) {
+            return;
+        }
+
+        if (!isNav && !isAction && !isBack && !isNum && !isMedia) return;
+
+        // Allow active page controller to intercept key before core engine handling
+        if (this.currentPageLogic && typeof this.currentPageLogic.handleKey === 'function') {
+            try {
+                if (this.currentPageLogic.handleKey(e, keyCode)) {
+                    e.preventDefault();
+                    return;
+                }
+            } catch (err) {
+                console.error('Error in currentPageLogic.handleKey:', err);
+            }
+        }
+
+        if (isMedia) {
+            e.preventDefault();
+            return;
+        }
 
         const current = document.querySelector('.focused');
 
@@ -787,7 +852,7 @@ export const SpatialNav = {
 
         // 2c. Fast-path: Returning from sidebar to main content
         const sidebarContainer = document.getElementById('sidebar-container');
-        if (sidebarContainer && sidebarContainer.contains(current) && !this.focusTrapContainer) {
+        if (sidebarContainer && sidebarContainer.contains(current) && !this.focusTrapContainer && !this.isPortrait()) {
             if (direction === 'right') {
                 if (this.lastFocusedElement && this.getMainView()?.contains(this.lastFocusedElement) && this.isVisible(this.lastFocusedElement)) {
                     return this.lastFocusedElement;
@@ -883,3 +948,8 @@ export const SpatialNav = {
         return best;
     }
 };
+
+// Global browser window bridge for Android native back button & web contexts
+if (typeof window !== 'undefined') {
+    window.SpatialNav = SpatialNav;
+}

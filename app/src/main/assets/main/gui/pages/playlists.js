@@ -6,22 +6,10 @@ import { manageModal, attachImageWithLoader } from '../js/utils/ui-helper.js';
 
 /**
  * Initializes the playlists overview page controller.
- * Establishes spatial navigation routing and initiates rendering.
+ * Triggers initial playlist rendering and attaches creation modal listeners.
  */
 export const init = async () => {
     console.log('Initializing Playlists Page');
-
-    // Register page logic for SpatialNav
-    SpatialNav.setPageLogic({
-        id: 'playlists',
-        findNext: (current, direction) => {
-            if (current.id === 'create-playlist-btn' && direction === 'down') {
-                const firstCard = document.querySelector('.card--widescreen.focusable, .playlist-card.focusable');
-                if (firstCard) return firstCard;
-            }
-            return null;
-        }
-    });
 
     render();
     attachListeners();
@@ -70,7 +58,8 @@ function createPlaylistCard(playlist) {
     if (playlist.items && playlist.items.length > 0) {
         const firstItem = playlist.items[0];
         if (firstItem.backdrop_path || firstItem.poster_path) {
-            imageUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.isSlowConnection() ? 'w300' : 'w500');
+            const coverSize = firstItem.backdrop_path ? Api.getRecommendedBackdropSize() : Api.getRecommendedPosterSize();
+            imageUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, coverSize);
         }
     }
 

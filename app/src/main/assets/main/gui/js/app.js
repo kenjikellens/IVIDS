@@ -13,6 +13,11 @@ import { imageCache } from '../../logic/image-cache.js';
 import { cacheManager } from '../../logic/cache-manager.js';
 import './loader.js';
 import './i18n.js';
+
+// Expose SpatialNav globally for Android TV native bridge (MainActivity.java) and legacy modules
+if (typeof window !== 'undefined') {
+    window.SpatialNav = SpatialNav;
+}
 // Polyfills flag emojis on platforms where they are not natively supported (like Windows browser/Electron).
 // Defer loading until after initial boot so it does not contend for startup network bandwidth.
 const _loadFlagPolyfill = () => {
@@ -742,8 +747,13 @@ function initNetworkListeners() {
     setTimeout(checkSpeed, 1000);
 
     window.addEventListener('networkslowdetected', () => {
-        if (typeof Api !== 'undefined' && typeof Api.markSlowConnection === 'function') {
-            Api.markSlowConnection(60000);
+        if (typeof Api !== 'undefined') {
+            if (typeof Api.markSlowConnection === 'function') {
+                Api.markSlowConnection(60000);
+            }
+            if (typeof Api.invalidateImageQualityCache === 'function') {
+                Api.invalidateImageQualityCache();
+            }
         }
         checkSpeed();
     });
@@ -754,8 +764,8 @@ function initNetworkListeners() {
             if (typeof imageCache !== 'undefined' && imageCache.destroy) {
                 imageCache.destroy();
             }
-            if (typeof Api !== 'undefined' && Api._recommendedSizes) {
-                Api._recommendedSizes = {};
+            if (typeof Api !== 'undefined' && typeof Api.invalidateImageQualityCache === 'function') {
+                Api.invalidateImageQualityCache();
             }
         } catch (e) {
             console.error('App: Error resetting image cache on datasaverchanged:', e);

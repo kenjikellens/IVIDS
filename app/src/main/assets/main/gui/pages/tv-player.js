@@ -12,12 +12,9 @@ const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
 
 /**
- * init function
- * =============
- * Explains: Initializes the custom TV player, binds media controls, handles D-pad zapping,
+ * Initializes the custom TV player, binds media controls, handles D-pad zapping,
  * handles custom overlay visibility behavior, and handles memory cleanup.
- * 
- * @param {object} params - Dynamic route parameters including video URL and metadata.
+ * @param {Object} params - Dynamic route parameters including video URL and metadata.
  */
 export async function init(params) {
     console.log('TV Player initializing with params:', params);
@@ -33,16 +30,87 @@ export async function init(params) {
     const iconPause = document.getElementById('icon-pause');
     const zappingHud = document.getElementById('tv-zapping-hud');
     const zappingName = document.getElementById('zapping-channel-name');
+    const aspectRatioBtn = document.getElementById('tv-aspect-ratio');
+    const epgBtn = document.getElementById('tv-epg-btn');
+    const epgCloseBtn = document.getElementById('tv-epg-close');
+
     let currentStreamUrl = '';
     let streamErrorRetries = 0;
     let autoZapAttempts = 0;
     let autoZapTimer = null;
     let streamStartupTimer = null;
 
+    const aspectModes = ['contain', 'cover', 'fill'];
+    let currentAspectIndex = 0;
+
     /**
-     * updateEpgInfo function
-     * ======================
-     * Explains: Dynamically updates the Electronic Program Guide details in the player overlay.
+     * Cycles the video container object-fit mode across contain, cover, and fill.
+     */
+    function toggleAspectRatio() {
+        currentAspectIndex = (currentAspectIndex + 1) % aspectModes.length;
+        const mode = aspectModes[currentAspectIndex];
+        if (video) {
+            video.style.objectFit = mode;
+        }
+        Toast.show(`Aspect Ratio: ${mode.toUpperCase()}`, { type: 'info' });
+    }
+
+    /**
+     * Opens or closes the quick electronic program guide channel overlay list.
+     * @param {boolean} [show] - Explicit open or close flag.
+     */
+    function toggleQuickEpg(show) {
+        const quickEpg = document.getElementById('tv-quick-epg');
+        const quickEpgList = document.getElementById('tv-quick-epg-list');
+        if (!quickEpg) return;
+
+        const shouldOpen = (show !== undefined) ? show : !quickEpg.classList.contains('is-open');
+
+        if (shouldOpen) {
+            if (quickEpgList && window.liveTvState?.channels) {
+                quickEpgList.innerHTML = '';
+                const channels = window.liveTvState.channels;
+                const currentIndex = window.liveTvState.currentIndex || 0;
+                const maxRender = Math.min(channels.length, 60);
+
+                for (let i = 0; i < maxRender; i++) {
+                    const ch = channels[i];
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn--secondary btn--block focusable channel-list-item' + (i === currentIndex ? ' is-active btn--primary' : '');
+                    btn.textContent = ch.name;
+                    btn.dataset.channelIndex = i;
+                    btn.onclick = () => {
+                        window.liveTvState.currentIndex = i;
+                        loadStream(ch.url);
+                        if (title) title.textContent = ch.name;
+                        if (group) group.textContent = ch.group ? ch.group.replace(/:/g, ' ') : '';
+                        updateEpgInfo(ch.name, ch.group || '', ch.tvgId || '');
+                        toggleQuickEpg(false);
+                        showOverlay();
+                    };
+                    quickEpgList.appendChild(btn);
+                }
+            }
+            quickEpg.style.display = 'flex';
+            quickEpg.classList.add('is-open');
+            quickEpg.classList.remove('hidden');
+
+            const activeItem = quickEpg.querySelector('.channel-list-item.is-active') || quickEpg.querySelector('.channel-list-item.focusable');
+            if (activeItem) SpatialNav.setFocus(activeItem);
+        } else {
+            quickEpg.classList.remove('is-open');
+            quickEpg.classList.add('hidden');
+            quickEpg.style.display = 'none';
+
+            if (playPauseBtn) SpatialNav.setFocus(playPauseBtn);
+        }
+    }
+
+    /**
+     * Dynamically updates the Electronic Program Guide details in the player overlay.
+     * @param {string} channelName - The current channel name.
+     * @param {string} channelGroup - The category or group string.
+     * @param {string} [tvgId] - Optional EPG identifier.
      */
     async function updateEpgInfo(channelName, channelGroup, tvgId = '') {
         const tvEpgEl = document.getElementById('tv-epg');
@@ -56,10 +124,9 @@ export async function init(params) {
     }
 
     /**
-     * loadStream function
-     * ===================
-     * Explains: Loads HLS/Live stream URL, attaching it to Hls.js demuxer on PC,
+     * Loads HLS/Live stream URL, attaching it to Hls.js demuxer on PC,
      * or natively on Android WebView/Safari.
+     * @param {string} url - Target stream source URL.
      */
     function loadStream(url) {
         currentStreamUrl = url;
@@ -186,7 +253,7 @@ export async function init(params) {
     video.onplaying = () => {
         if (loader) loader.style.display = 'none';
         clearTimeout(streamStartupTimer);
-        updatePlaybackIconState(false); // Make sure pause button shows
+        updatePlaybackIconState(false);
         autoZapAttempts = 0;
         updateStoredChannelStatus(currentStreamUrl, 'online');
     };
@@ -198,10 +265,7 @@ export async function init(params) {
     };
 
     /**
-     * updatePlaybackIconState function
-     * ================================
-     * Explains: Toggles play and pause vector icon representations based on player state.
-     * 
+     * Toggles play and pause vector icon representations based on player state.
      * @param {boolean} isPaused - True if playback is paused.
      */
     function updatePlaybackIconState(isPaused) {
@@ -214,20 +278,43 @@ export async function init(params) {
         }
     }
 
+    /**
+     * Toggles playback between paused and playing states.
+     */
+    function togglePlayPause() {
+        if (video.paused) {
+            video.play().then(() => updatePlaybackIconState(false)).catch(err => console.error(err));
+        } else {
+            video.pause();
+            updatePlaybackIconState(true);
+        }
+        showOverlay();
+    }
+
     // Toggle play/pause
     if (playPauseBtn) {
-        playPauseBtn.onclick = () => {
-            if (video.paused) {
-                video.play().then(() => updatePlaybackIconState(false)).catch(err => console.error(err));
-            } else {
-                video.pause();
-                updatePlaybackIconState(true);
-            }
-            showOverlay();
-        };
+        playPauseBtn.onclick = () => togglePlayPause();
+    }
+
+    // Aspect ratio button click handler
+    if (aspectRatioBtn) {
+        aspectRatioBtn.onclick = () => toggleAspectRatio();
+    }
+
+    // Quick EPG button click handler
+    if (epgBtn) {
+        epgBtn.onclick = () => toggleQuickEpg(true);
+    }
+
+    // Quick EPG close button handler
+    if (epgCloseBtn) {
+        epgCloseBtn.onclick = () => toggleQuickEpg(false);
     }
 
     let tvPlayerBackHandler = () => {
+        if (SpatialNav.currentPageLogic && typeof SpatialNav.currentPageLogic.handleBack === 'function') {
+            if (SpatialNav.currentPageLogic.handleBack()) return true;
+        }
         exitPlayer();
         return true;
     };
@@ -241,9 +328,7 @@ export async function init(params) {
     }
 
     /**
-     * exitPlayer function
-     * ===================
-     * Explains: Dismantles video sources, triggers cleanup functions, and navigates backwards.
+     * Dismantles video sources, triggers cleanup functions, and navigates backwards.
      */
     function exitPlayer() {
         if (window.tvPlayerCleanups) {
@@ -279,7 +364,6 @@ export async function init(params) {
         overlayTimeout = setTimeout(() => {
             if (overlay) {
                 overlay.classList.remove('show');
-                // Remove focused class and blur elements inside the overlay when it hides
                 overlay.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
                 if (document.activeElement && overlay.contains(document.activeElement)) {
                     document.activeElement.blur();
@@ -291,11 +375,21 @@ export async function init(params) {
     };
 
     /**
-     * zapChannel function
-     * ===================
-     * Explains: Shifts current channel to a new index, updates DOM elements, triggers zapping HUD displays,
+     * Hides the TV controls overlay immediately.
+     */
+    const hideOverlay = () => {
+        if (overlay) {
+            overlay.classList.remove('show');
+            overlay.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+            if (document.activeElement && overlay.contains(document.activeElement)) {
+                document.activeElement.blur();
+            }
+        }
+    };
+
+    /**
+     * Shifts current channel to a new index, updates DOM elements, triggers zapping HUD displays,
      * and performs channel stream switches.
-     * 
      * @param {number} direction - Direction modifier (-1 for UP, +1 for DOWN).
      */
     const zapChannel = (direction) => {
@@ -378,26 +472,6 @@ export async function init(params) {
     };
 
     /**
-     * Event handler for zapping channels using ArrowUp/ArrowDown keys.
-     * Only executes channel switches if the control overlay is hidden.
-     * @param {KeyboardEvent} e - The keydown event object.
-     */
-    const zappingHandler = (e) => {
-        const isOverlayVisible = overlay && overlay.classList.contains('show');
-        if (isOverlayVisible) {
-            return;
-        }
-
-        if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            zapChannel(-1);
-        } else if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            zapChannel(1);
-        }
-    };
-
-    /**
      * Mouse movement handler that triggers showing the control overlay.
      * Ensures overlays are visible upon user mouse activity.
      */
@@ -411,12 +485,23 @@ export async function init(params) {
     }
 
     window.addEventListener('keydown', keydownHandler);
-    window.addEventListener('keydown', zappingHandler);
     window.addEventListener('mousemove', mousemoveHandler);
+
+    // Expose helpers for spatialNavTvPlayer
+    window.tvZapChannel = (dir) => zapChannel(dir);
+    window.tvToggleQuickEpg = (show) => toggleQuickEpg(show);
+    window.tvToggleAspectRatio = () => toggleAspectRatio();
+    window.tvPlayPause = () => togglePlayPause();
+    window.tvShowOverlay = () => showOverlay();
+    window.tvHideOverlay = () => hideOverlay();
+    window.tvIsOverlayVisible = () => overlay && overlay.classList.contains('show');
+    window.tvIsQuickEpgOpen = () => {
+        const q = document.getElementById('tv-quick-epg');
+        return q && q.classList.contains('is-open');
+    };
 
     window.tvPlayerCleanups = () => {
         window.removeEventListener('keydown', keydownHandler);
-        window.removeEventListener('keydown', zappingHandler);
         window.removeEventListener('mousemove', mousemoveHandler);
         if (tvPlayerBackHandler) {
             SpatialNav.popBackHandler(tvPlayerBackHandler);
@@ -430,6 +515,15 @@ export async function init(params) {
             hlsInstance.destroy();
             hlsInstance = null;
         }
+
+        delete window.tvZapChannel;
+        delete window.tvToggleQuickEpg;
+        delete window.tvToggleAspectRatio;
+        delete window.tvPlayPause;
+        delete window.tvShowOverlay;
+        delete window.tvHideOverlay;
+        delete window.tvIsOverlayVisible;
+        delete window.tvIsQuickEpgOpen;
     };
 
     // Display initial overlay
@@ -441,9 +535,8 @@ export async function init(params) {
 
 /**
  * Persists channel health so the Live TV list can hide broken streams by default.
- *
  * @param {string} url - Channel stream URL.
- * @param {string} status - online/offline.
+ * @param {string} status - online/offline status string.
  */
 function updateStoredChannelStatus(url, status) {
     if (!url) return;

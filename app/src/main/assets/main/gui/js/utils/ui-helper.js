@@ -66,22 +66,14 @@ export function setupRow(elementId, items, defaultType = null) {
             console.error('Error creating row container:', containerError);
         }
 
-        let rowButtonWidth = null;
-
         items.forEach((item, index) => {
             try {
                 if (!item.poster_path) return;
 
                 const existingBtn = existingButtons[index] || null;
-                const containerWidth = rowButtonWidth || 0;
-
-                const btn = createPosterElement(item, defaultType, containerWidth, false, existingBtn);
+                const btn = createPosterElement(item, defaultType, 0, false, existingBtn);
                 if (btn && !existingBtn) {
                     rowPosters.appendChild(btn);
-                }
-
-                if (btn && (rowButtonWidth === null || rowButtonWidth === 0)) {
-                    rowButtonWidth = btn.clientWidth || 0;
                 }
             } catch (itemError) {
                 console.error('Error rendering poster item:', itemError);
@@ -260,7 +252,7 @@ export function createPosterElement(item, defaultType = null, sizeContainerWidth
         triggerBootImageLoaded();
     };
 
-    const sizeKey = Api.getRecommendedSizeForContainer(sizeContainerWidth, false);
+    const sizeKey = Api.getRecommendedPosterSize();
     const imageUrl = Api.getImageUrl(item.poster_path, sizeKey);
 
     // If the image is already in the blob cache, set src directly for instant rendering

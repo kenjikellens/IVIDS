@@ -81,6 +81,18 @@ export const Router = {
         this.isLoading = true;
         this.params = params;
 
+        // Unmount previous spatial nav page logic safely prior to clearing view
+        if (SpatialNav && SpatialNav.currentPageLogic && typeof SpatialNav.currentPageLogic.unmount === 'function') {
+            try {
+                SpatialNav.currentPageLogic.unmount();
+            } catch (unmountErr) {
+                console.error('Error unmounting spatial nav logic:', unmountErr);
+            }
+        }
+        if (SpatialNav && typeof SpatialNav.setPageLogic === 'function') {
+            SpatialNav.setPageLogic(null);
+        }
+
         // Clear orphan back handlers registered by previous page
         if (SpatialNav && typeof SpatialNav.clearBackHandlers === 'function') {
             SpatialNav.clearBackHandlers();
@@ -204,7 +216,16 @@ export const Router = {
                     if (currentGen !== _loadGeneration) return;
                     const logicKey = `spatialNav${pageName.charAt(0).toUpperCase()}${pageName.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase())}`;
                     if (navModule && navModule[logicKey]) {
-                        SpatialNav.setPageLogic(navModule[logicKey]);
+                        const rawController = navModule[logicKey] || navModule.default;
+                        const controller = (typeof rawController === 'function') ? new rawController() : rawController;
+                        SpatialNav.setPageLogic(controller);
+                        if (controller && typeof controller.mount === 'function') {
+                            try {
+                                controller.mount(params);
+                            } catch (mountErr) {
+                                console.error(`Error mounting spatial nav logic for ${pageName}:`, mountErr);
+                            }
+                        }
                     } else {
                         SpatialNav.setPageLogic(null);
                     }

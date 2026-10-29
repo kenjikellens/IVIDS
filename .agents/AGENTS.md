@@ -16,6 +16,3 @@ Step-by-step procedural runbooks invoked via slash commands or recommended when 
 2. **[/add-page](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/add-page.md)**: End-to-end walkthrough for creating new views (HTML template, JS controller, `global.css`, `sidebar.html`, `router.js`, and i18n keys).
 3. **[/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/update-translations.md)**: Batch translation workflow to sync translation keys across all language files in `gui/lang/` using Python scripts in `scratch/`.
 4. **[/oocss-refactor](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/oocss-refactor.md)**: Phased protocol for refactoring CSS components to Object-Oriented CSS (OOCSS), updating HTML/JS templates in synchronized batches, and purging redundant container overrides.
-
-## Rule for any tool call
-you MUST always write "I will [create/delete/edit/run] [filename or short explanation (of the command or tool call and what it does)]" before calling any tool. in the language of the users latest response/message

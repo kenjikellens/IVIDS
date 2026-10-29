@@ -150,7 +150,9 @@ export const spatialNavDetails = {
         // 1. Sidebar Boundary: Returning into Details page content (Right from desktop sidebar, Up from mobile bottom nav)
         const inSidebar = current.closest('#sidebar-container') !== null;
         if (inSidebar) {
-            if (direction === 'right' || direction === 'up') {
+            const isMobileBottom = SpatialNav.isPortrait && SpatialNav.isPortrait();
+            const shouldEnter = isMobileBottom ? (direction === 'up') : (direction === 'right');
+            if (shouldEnter) {
                 if (SpatialNav.lastFocusedElement && document.getElementById('main-view')?.contains(SpatialNav.lastFocusedElement) && isElementVisible(SpatialNav.lastFocusedElement)) {
                     return SpatialNav.lastFocusedElement;
                 }
@@ -405,5 +407,28 @@ export const spatialNavDetails = {
         }
 
         return null;
+    },
+
+    /**
+     * Handles back button navigation on the Details page.
+     * Moves focus back to primary play button before triggering router back.
+     * @returns {boolean} True if back navigation was handled locally.
+     */
+    handleBack: () => {
+        const modal = document.getElementById('add-to-playlist-modal');
+        if (modal && isElementVisible(modal)) {
+            const closeBtn = modal.querySelector('.modal-close, #close-playlist-modal');
+            if (closeBtn) {
+                closeBtn.click();
+                return true;
+            }
+        }
+        const current = document.querySelector('.focused') || document.activeElement;
+        const playBtn = document.getElementById('details-play');
+        if (current && playBtn && current !== playBtn && !current.closest('#sidebar-container')) {
+            SpatialNav.setFocus(playBtn);
+            return true;
+        }
+        return false;
     }
 };

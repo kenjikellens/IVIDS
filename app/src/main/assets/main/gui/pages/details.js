@@ -158,9 +158,8 @@ function render(item, type) {
                 bg.style.backgroundImage = '';
                 bg.classList.add('media-backdrop--empty');
             } else {
-                const width = bg.clientWidth;
-                const sizeKey = Api.getRecommendedSizeForContainer(width, true);
-                const backdropUrl = Api.getImageUrl(item.backdrop_path, sizeKey);
+                const backdropSize = Api.getRecommendedBackdropSize();
+                const backdropUrl = Api.getImageUrl(item.backdrop_path, backdropSize);
                 // Use blob cache for instant backdrop rendering
                 // Keep the fallback gradient visible until the real backdrop has been fetched (w300 on slow connections)
                 bg.classList.add('media-backdrop--empty');
@@ -190,9 +189,8 @@ function render(item, type) {
                     if (poster.parentElement) poster.parentElement.classList.add('is-empty');
                 };
             try {
-                const width = poster.parentElement ? poster.parentElement.clientWidth : 0;
-                const sizeKey = Api.getRecommendedSizeForContainer(width, false);
-                const posterUrl = Api.getImageUrl(item.poster_path, sizeKey);
+                const posterSize = Api.getRecommendedDetailPosterSize();
+                const posterUrl = Api.getImageUrl(item.poster_path, posterSize);
                 // Use blob cache for instant poster rendering
                 attachImageWithLoader(poster, poster.parentElement, posterUrl, () => {
                     poster.classList.add('hidden');
@@ -658,7 +656,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 const episodeNumber = episode.episode_number || '?';
                 const episodeName = episode.name || I18n.t('details.untitled');
                 const episodeOverview = episode.overview || I18n.t('details.noDescription');
-                const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.isSlowConnection() ? 'w300' : Api.STILL_SIZE) : '';
+                const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.getRecommendedStillSize()) : '';
                 const thumbStyle = '';
 
                 el.innerHTML = `
@@ -932,7 +930,7 @@ function renderAbout(overview, credits) {
                 <div class="disney-cast-character">${actor.character || ''}</div>
             `;
             if (actor.profile_path) {
-                const profileUrl = Api.getImageUrl(actor.profile_path, Api.isSlowConnection() ? 'w92' : 'w185');
+                const profileUrl = Api.getImageUrl(actor.profile_path, Api.getRecommendedProfileSize());
                 loadBackgroundWithLoader(card.querySelector('.disney-cast-img'), profileUrl);
             }
             castContainer.appendChild(card);

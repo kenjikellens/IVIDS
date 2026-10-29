@@ -12,6 +12,19 @@ let keydownHandler = null;
 let globalKeydownHandler = null;
 let popstateHandler = null;
 let playerBackHandler = null;
+let progressInterval = null;
+
+/**
+ * Formats a duration in seconds into MM:SS format.
+ * @param {number} seconds - Playback timestamp in seconds.
+ * @returns {string} Formatted timestamp string.
+ */
+function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) return '00:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
 
 /**
  * Binds detailed console log event listeners to native HTML5 video player element.
@@ -78,6 +91,10 @@ window.playerCleanups = function() {
         clearTimeout(providerTimeout);
         providerTimeout = null;
     }
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
     if (mouseMoveHandler) {
         window.removeEventListener('mousemove', mouseMoveHandler);
         mouseMoveHandler = null;
@@ -114,7 +131,278 @@ window.playerCleanups = function() {
     } catch (e) {
         console.error('Error cleaning up native video:', e);
     }
+
+    // Clean up window hooks
+    delete window.playerShowHud;
+    delete window.playerHideHud;
+    delete window.playerResetHudTimer;
+    delete window.playerTogglePlayPause;
+    delete window.playerSeek;
+    delete window.playerOpenModal;
+    delete window.playerCloseModal;
 };
+
+/**
+ * Toggles play and pause state between the active video playback source and HUD icons.
+ */
+function togglePlayPause() {
+    const videoEl = document.getElementById('native-video-player');
+    const iconPause = document.getElementById('player-icon-pause');
+    const iconPlay = document.getElementById('player-icon-play');
+
+    if (videoEl && videoEl.style.display !== 'none' && videoEl.src) {
+        if (videoEl.paused) {
+            videoEl.play().catch(e => console.warn('Play error:', e));
+            if (iconPause) iconPause.classList.remove('hidden');
+            if (iconPlay) iconPlay.classList.add('hidden');
+        } else {
+            videoEl.pause();
+            if (iconPause) iconPause.classList.add('hidden');
+            if (iconPlay) iconPlay.classList.remove('hidden');
+        }
+    } else {
+        const iframe = document.getElementById('player-iframe');
+        if (iframe && iframe.contentWindow) {
+            try {
+                iframe.contentWindow.postMessage({ type: 'play', action: 'toggle' }, '*');
+            } catch (e) {
+                console.warn('[IVIDS Player] Iframe postMessage notice:', e);
+            }
+        }
+        if (iconPause && iconPlay) {
+            const isPaused = iconPause.classList.contains('hidden');
+            if (isPaused) {
+                iconPause.classList.remove('hidden');
+                iconPlay.classList.add('hidden');
+            } else {
+                iconPause.classList.add('hidden');
+                iconPlay.classList.remove('hidden');
+            }
+        }
+    }
+}
+
+/**
+ * Seeks playback forward or backward by a relative number of seconds.
+ * @param {number} deltaSeconds - Time delta to seek (positive or negative).
+ */
+function seekBy(deltaSeconds) {
+    const videoEl = document.getElementById('native-video-player');
+    if (videoEl && videoEl.style.display !== 'none' && videoEl.src) {
+        videoEl.currentTime = Math.max(0, Math.min(videoEl.duration || Infinity, videoEl.currentTime + deltaSeconds));
+    } else {
+        const iframe = document.getElementById('player-iframe');
+        if (iframe && iframe.contentWindow) {
+            try {
+                iframe.contentWindow.postMessage({ type: 'seek', delta: deltaSeconds }, '*');
+            } catch (e) {
+                console.warn('[IVIDS Player] Iframe postMessage notice:', e);
+            }
+        }
+    }
+}
+
+/**
+ * Displays the audio / subtitle / quality modal sheet and populates selectable options.
+ * @param {string} title - The header title string of the modal.
+ * @param {Array<{label: string, value: string, active?: boolean}>} options - Options list to display.
+ * @param {Function} [onSelect] - Optional selection callback.
+ */
+function openModalSheet(title, options = [], onSelect = null) {
+    const modal = document.getElementById('player-modal-sheet');
+    const modalTitle = document.getElementById('player-modal-title');
+    const modalOptions = document.getElementById('player-modal-options');
+    if (!modal) return;
+
+    if (modalTitle) modalTitle.textContent = title || window.i18n?.t('player.tracksTitle') || 'Audio & Subtitles';
+    if (modalOptions) {
+        modalOptions.innerHTML = '';
+        const items = (options && options.length > 0) ? options : [
+            { label: 'Default / Auto', value: 'default', active: true },
+            { label: 'English', value: 'en', active: false },
+            { label: 'Original Audio', value: 'orig', active: false }
+        ];
+
+        items.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn--secondary btn--block focusable modal-option' + (opt.active ? ' is-active' : '');
+            btn.textContent = opt.label;
+            btn.dataset.value = opt.value;
+            btn.onclick = () => {
+                modalOptions.querySelectorAll('.modal-option').forEach(b => b.classList.remove('is-active'));
+                btn.classList.add('is-active');
+                if (onSelect) onSelect(opt);
+                closeModalSheet();
+            };
+            modalOptions.appendChild(btn);
+        });
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('is-open');
+    modal.classList.remove('hidden');
+
+    const firstOption = modal.querySelector('.modal-option.focusable');
+    if (firstOption) SpatialNav.setFocus(firstOption);
+}
+
+/**
+ * Closes the active audio / subtitle / quality modal sheet and restores focus to OSD trigger.
+ */
+function closeModalSheet() {
+    const modal = document.getElementById('player-modal-sheet');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+
+    const trigger = document.getElementById('player-audio-sub') || document.getElementById('player-settings') || document.getElementById('play-pause-btn');
+    if (trigger) SpatialNav.setFocus(trigger);
+}
+
+/**
+ * Binds click listeners and actions to all OSD buttons, scrub bar, and modal sheets.
+ * @param {Object} params - Active route parameters.
+ */
+function setupMediaControls(params) {
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    if (playPauseBtn) {
+        playPauseBtn.onclick = () => togglePlayPause();
+    }
+
+    const rewindBtn = document.getElementById('player-rewind');
+    if (rewindBtn) {
+        rewindBtn.onclick = () => seekBy(-10);
+    }
+
+    const forwardBtn = document.getElementById('player-forward');
+    if (forwardBtn) {
+        forwardBtn.onclick = () => seekBy(10);
+    }
+
+    const prevBtn = document.getElementById('player-prev');
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            if (params.type === 'tv' && params.season && params.episode && parseInt(params.episode) > 1) {
+                Router.loadPage('player', {
+                    id: params.id,
+                    type: 'tv',
+                    season: params.season,
+                    episode: parseInt(params.episode) - 1
+                });
+            } else {
+                seekBy(-9999);
+            }
+        };
+    }
+
+    const nextBtn = document.getElementById('player-next');
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            if (params.type === 'tv' && params.season && params.episode) {
+                Router.loadPage('player', {
+                    id: params.id,
+                    type: 'tv',
+                    season: params.season,
+                    episode: parseInt(params.episode) + 1
+                });
+            } else {
+                seekBy(30);
+            }
+        };
+    }
+
+    const audioSubBtn = document.getElementById('player-audio-sub');
+    if (audioSubBtn) {
+        audioSubBtn.onclick = () => {
+            openModalSheet('Audio & Subtitles', [
+                { label: 'Auto (Original Audio)', value: 'auto', active: true },
+                { label: 'English Stereo', value: 'en', active: false },
+                { label: 'English Subtitles', value: 'en-sub', active: false },
+                { label: 'Subtitles Off', value: 'off', active: false }
+            ]);
+        };
+    }
+
+    const settingsBtn = document.getElementById('player-settings');
+    if (settingsBtn) {
+        settingsBtn.onclick = () => {
+            const serverOverlay = document.getElementById('server-selection-overlay');
+            if (serverOverlay) {
+                const isHidden = serverOverlay.style.display === 'none';
+                serverOverlay.style.display = isHidden ? 'flex' : 'none';
+                if (isHidden) {
+                    const activeServer = serverOverlay.querySelector('.server-btn.active') || serverOverlay.querySelector('.server-btn.focusable');
+                    if (activeServer) SpatialNav.setFocus(activeServer);
+                }
+            }
+        };
+    }
+
+    const fullscreenBtn = document.getElementById('player-fullscreen');
+    if (fullscreenBtn) {
+        fullscreenBtn.onclick = () => {
+            try {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(e => console.warn(e));
+                } else {
+                    document.exitFullscreen().catch(e => console.warn(e));
+                }
+            } catch (err) {
+                console.warn('Fullscreen toggle failed:', err);
+            }
+        };
+    }
+
+    const progressBar = document.getElementById('player-progress-bar');
+    if (progressBar) {
+        progressBar.onclick = (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            const videoEl = document.getElementById('native-video-player');
+            if (videoEl && videoEl.duration) {
+                videoEl.currentTime = pos * videoEl.duration;
+            }
+        };
+    }
+
+    const modalClose = document.getElementById('player-modal-close');
+    if (modalClose) {
+        modalClose.onclick = () => closeModalSheet();
+    }
+
+    // Set title display
+    const titleEl = document.getElementById('player-title');
+    if (titleEl) {
+        if (params.title) {
+            titleEl.textContent = params.title;
+        } else if (params.id) {
+            Api.getDetails(params.id, params.type || 'movie').then(details => {
+                if (details && titleEl) {
+                    const name = details.title || details.name || 'IVIDS Player';
+                    const epInfo = (params.season && params.episode) ? ` - S${params.season} E${params.episode}` : '';
+                    titleEl.textContent = `${name}${epInfo}`;
+                }
+            }).catch(() => {});
+        }
+    }
+
+    // Track native video playback progress
+    const nativeVideo = document.getElementById('native-video-player');
+    if (nativeVideo) {
+        nativeVideo.addEventListener('timeupdate', () => {
+            const fill = document.getElementById('player-progress-fill');
+            const curTime = document.getElementById('player-current-time');
+            const durTime = document.getElementById('player-duration');
+            if (nativeVideo.duration && fill) {
+                const pct = (nativeVideo.currentTime / nativeVideo.duration) * 100;
+                fill.style.width = `${pct}%`;
+            }
+            if (curTime) curTime.textContent = formatTime(nativeVideo.currentTime);
+            if (durTime) durTime.textContent = formatTime(nativeVideo.duration);
+        });
+    }
+}
 
 /**
  * Initializes the video player page by loading content metadata, configuring the iframe source,
@@ -154,7 +442,7 @@ export async function init(params) {
             const code = event.keyCode || event.which;
             if (key === 'Escape' || key === 'Backspace' || code === 27 || code === 8 || code === 4 || code === 10009 || code === 461 || key === 'GoBack' || key === 'Back') {
                 event.preventDefault();
-                exitPlayer(params);
+                SpatialNav.back();
             }
         };
         window.addEventListener('keydown', globalKeydownHandler);
@@ -176,6 +464,9 @@ export async function init(params) {
             SpatialNav.popBackHandler(playerBackHandler);
         }
         playerBackHandler = () => {
+            if (SpatialNav.currentPageLogic && typeof SpatialNav.currentPageLogic.handleBack === 'function') {
+                if (SpatialNav.currentPageLogic.handleBack()) return true;
+            }
             exitPlayer(params);
             return true;
         };
@@ -188,10 +479,12 @@ export async function init(params) {
             };
         }
 
+        // Setup media button listeners
+        setupMediaControls(params);
+
         // Handle Live TV
         if (params.type === 'live') {
             const videoUrl = params.url;
-            const title = params.title || 'Live TV';
 
             // Hide standard iframe, show native video
             const iframe = document.getElementById('video-player');
@@ -201,6 +494,7 @@ export async function init(params) {
             if (videoEl) {
                 videoEl.style.display = 'block';
                 videoEl.src = videoUrl;
+                bindNativeVideoLogs(videoEl);
                 videoEl.play().catch(e => console.error('Error playing live stream:', e));
             }
 
@@ -360,7 +654,7 @@ export async function init(params) {
 async function checkForNextEpisode(seriesId, currentSeason, currentEpisode) {
     try {
         const nextBtnContainer = document.getElementById('next-episode-container');
-        const nextBtn = document.getElementById('player-next');
+        const nextBtn = document.getElementById('player-next-ep-btn') || document.getElementById('player-next');
 
         if (!nextBtnContainer || !nextBtn) return;
 
@@ -399,10 +693,11 @@ async function checkForNextEpisode(seriesId, currentSeason, currentEpisode) {
  */
 function showNextButton(seriesId, nextSeason, nextEpisode) {
     const container = document.getElementById('next-episode-container');
-    const btn = document.getElementById('player-next');
+    const btn = document.getElementById('player-next-ep-btn') || document.getElementById('player-next');
 
     if (container && btn) {
         container.style.display = 'block';
+        container.classList.remove('hidden');
         btn.onclick = () => {
             Router.loadPage('player', {
                 id: seriesId,
@@ -466,7 +761,6 @@ function renderServerSelection(params, iframe) {
             btn.classList.remove('btn--secondary', 'btn-secondary');
             currentServerId = server.id;
 
-            const loadingOverlay = document.getElementById('player-loading-overlay');
             const statusPanel = document.getElementById('player-status-panel');
             const videoEl = document.getElementById('native-video-player');
 
@@ -510,16 +804,22 @@ function setupOverlayVisibility(params) {
         
         const wasHidden = !playerHud.classList.contains('visible');
         playerHud.style.display = 'flex';
+        playerHud.classList.remove('hidden');
         
         requestAnimationFrame(() => {
             playerHud.classList.add('visible');
             if (wasHidden) {
-                const activeServer = playerHud.querySelector('.server-btn.active');
-                if (activeServer) {
-                    SpatialNav.setFocus(activeServer);
+                const playPause = document.getElementById('play-pause-btn');
+                if (playPause && SpatialNav.isVisible(playPause)) {
+                    SpatialNav.setFocus(playPause);
                 } else {
-                    const backBtn = document.getElementById('player-back');
-                    if (backBtn) SpatialNav.setFocus(backBtn);
+                    const activeServer = playerHud.querySelector('.server-btn.active');
+                    if (activeServer) {
+                        SpatialNav.setFocus(activeServer);
+                    } else {
+                        const backBtn = document.getElementById('player-back');
+                        if (backBtn) SpatialNav.setFocus(backBtn);
+                    }
                 }
             }
         });
@@ -576,6 +876,20 @@ function setupOverlayVisibility(params) {
     window.addEventListener('mousemove', mouseMoveHandler);
     window.addEventListener('click', clickHandler);
     window.addEventListener('keydown', keydownHandler);
+
+    // Expose helpers for spatialNavPlayer
+    window.playerShowHud = showHUD;
+    window.playerHideHud = hideHUD;
+    window.playerResetHudTimer = () => {
+        if (hudTimeout) {
+            clearTimeout(hudTimeout);
+            hudTimeout = setTimeout(() => hideHUD(), 4000);
+        }
+    };
+    window.playerTogglePlayPause = togglePlayPause;
+    window.playerSeek = seekBy;
+    window.playerOpenModal = openModalSheet;
+    window.playerCloseModal = closeModalSheet;
     
     showHUD();
 }

@@ -57,6 +57,42 @@ export const API_CONFIG = Object.freeze({
     })
 });
 
+/** Deterministic screen-size resolution tiers and single low-quality fallback mode */
+export const IMAGE_TIER_CONFIG = Object.freeze({
+    // Exactly 1 unified low-quality fallback tier for slow connections & data saver mode
+    SLOW_TIER: Object.freeze({
+        POSTER: 'w185',
+        DETAIL_POSTER: 'w185',
+        BACKDROP: 'w300',
+        STILL: 'w300',
+        PROFILE: 'w185'
+    }),
+    // Compact / Mobile viewports (width <= 600px or mobile responsive mode)
+    COMPACT: Object.freeze({
+        POSTER: 'w185',
+        DETAIL_POSTER: 'w185',
+        BACKDROP: 'w300',
+        STILL: 'w300',
+        PROFILE: 'w185'
+    }),
+    // Medium / Tablet viewports (601px - 1080px)
+    MEDIUM: Object.freeze({
+        POSTER: 'w342',
+        DETAIL_POSTER: 'w342',
+        BACKDROP: 'w780',
+        STILL: 'w300',
+        PROFILE: 'w185'
+    }),
+    // Large / Desktop & TV viewports (> 1080px)
+    LARGE: Object.freeze({
+        POSTER: 'w342',
+        DETAIL_POSTER: 'w500',
+        BACKDROP: 'w1280',
+        STILL: 'w300',
+        PROFILE: 'w185'
+    })
+});
+
 /** Video player controls & streaming server provider registry */
 export const PLAYER_CONFIG = Object.freeze({
     CONTROLS_TIMEOUT_MS: 4000,

@@ -21,9 +21,18 @@ export async function init() {
     const signOutBtn = document.getElementById('account-sign-out-btn');
 
     // Hide all actions first
-    if (signInBtn) signInBtn.style.display = 'none';
-    if (createAccBtn) createAccBtn.style.display = 'none';
-    if (signOutBtn) signOutBtn.style.display = 'none';
+    if (signInBtn) {
+        signInBtn.style.display = 'none';
+        signInBtn.classList.add('hidden');
+    }
+    if (createAccBtn) {
+        createAccBtn.style.display = 'none';
+        createAccBtn.classList.add('hidden');
+    }
+    if (signOutBtn) {
+        signOutBtn.style.display = 'none';
+        signOutBtn.classList.add('hidden');
+    }
 
     if (account) {
         // Logged In state
@@ -34,7 +43,10 @@ export async function init() {
             avatarEl.textContent = account.name.charAt(0).toUpperCase();
         }
 
-        if (signOutBtn) signOutBtn.style.display = 'inline-block';
+        if (signOutBtn) {
+            signOutBtn.style.display = 'inline-block';
+            signOutBtn.classList.remove('hidden');
+        }
     } else {
         // Anonymous (Logged Out) state
         if (sectionTitle) sectionTitle.textContent = window.i18n?.t('account.anonymousMode') || 'Guest Mode';
@@ -44,8 +56,14 @@ export async function init() {
             avatarEl.textContent = '?';
         }
 
-        if (signInBtn) signInBtn.style.display = 'inline-block';
-        if (createAccBtn) createAccBtn.style.display = 'inline-block';
+        if (signInBtn) {
+            signInBtn.style.display = 'inline-block';
+            signInBtn.classList.remove('hidden');
+        }
+        if (createAccBtn) {
+            createAccBtn.style.display = 'inline-block';
+            createAccBtn.classList.remove('hidden');
+        }
     }
 
     // Apply translations

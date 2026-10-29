@@ -178,7 +178,7 @@ class ImageCache {
     }
 
     /**
-     * Rewrites a TMDb image URL to its lightweight low-resolution equivalent (w92 for posters, w300 for backdrops).
+     * Rewrites a TMDb image URL to the single unified low-resolution mode (w185 for posters, w300 for backdrops).
      * @param {string} url - Original TMDb image URL.
      * @returns {string} Downgraded low-resolution TMDb image URL.
      */
@@ -186,7 +186,7 @@ class ImageCache {
         if (!url || typeof url !== 'string' || !url.includes('/t/p/')) return url;
         return url.replace(/\/t\/p\/(w154|w185|w342|w500|w780|w1280|original)\//, (match, size) => {
             const isBackdrop = size === 'w780' || size === 'w1280' || size === 'original';
-            return `/t/p/${isBackdrop ? 'w300' : 'w92'}/`;
+            return `/t/p/${isBackdrop ? 'w300' : 'w185'}/`;
         });
     }
 

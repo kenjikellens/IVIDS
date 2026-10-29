@@ -99,7 +99,8 @@ function render() {
     if (posterEl) {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
-            const posterUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.isSlowConnection() ? 'w300' : undefined);
+            const posterSize = firstItem.backdrop_path ? Api.getRecommendedBackdropSize() : Api.getRecommendedDetailPosterSize();
+            const posterUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, posterSize);
             posterEl.classList.remove('hidden');
             posterEl.style.display = 'block';
             if (posterEl.parentElement) posterEl.parentElement.classList.remove('is-empty', 'is-widescreen');
@@ -262,7 +263,8 @@ function createItemElement(item, index, total) {
     itemCard.dataset.id = item.id;
     itemCard.dataset.type = item.media_type;
 
-    const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path, Api.isSlowConnection() ? 'w300' : Api.STILL_SIZE);
+    const imageSize = item.backdrop_path ? Api.getRecommendedStillSize() : Api.getRecommendedPosterSize();
+    const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path, imageSize);
     const thumbStyle = '';
 
     itemCard.innerHTML = `
@@ -385,18 +387,6 @@ function attachListeners(playlist) {
     const backBtn = document.getElementById('back-btn');
     const editInfoBtn = document.getElementById('edit-info-btn');
 
-    const handleLeftNav = (e) => {
-        if (e.key === 'ArrowLeft' || e.keyCode === 37) {
-            e.preventDefault();
-            e.stopPropagation();
-            const sidebarLink = document.querySelector('#sidebar-container .nav-item.active') ||
-                document.querySelector('#sidebar-container .nav-item');
-            if (sidebarLink) {
-                SpatialNav.setFocus(sidebarLink);
-            }
-        }
-    };
-
     if (playAllBtn) {
         if (playlist.items.length > 0) {
             playAllBtn.style.display = 'flex';
@@ -404,7 +394,6 @@ function attachListeners(playlist) {
                 const firstItem = playlist.items[0];
                 Router.loadPage('details', { id: firstItem.id, type: firstItem.media_type });
             };
-            playAllBtn.addEventListener('keydown', handleLeftNav);
         } else {
             playAllBtn.style.display = 'none';
         }
@@ -414,7 +403,6 @@ function attachListeners(playlist) {
         backBtn.onclick = () => {
             Router.goBack('playlists');
         };
-        backBtn.addEventListener('keydown', handleLeftNav);
     }
 
     if (editInfoBtn) {
@@ -422,7 +410,6 @@ function attachListeners(playlist) {
         editInfoBtn.onclick = () => {
             openEditPlaylistModal(playlist);
         };
-        editInfoBtn.addEventListener('keydown', handleLeftNav);
     }
 
     if (clearBtn) {
@@ -439,7 +426,6 @@ function attachListeners(playlist) {
                     }
                 );
             };
-            clearBtn.addEventListener('keydown', handleLeftNav);
         }
     }
 
@@ -457,7 +443,6 @@ function attachListeners(playlist) {
                     }
                 );
             };
-            deleteBtn.addEventListener('keydown', handleLeftNav);
         }
     }
 }
@@ -495,4 +480,3 @@ function showConfirmationModal(title, message, onConfirm) {
         closeModal();
     };
 }
-
