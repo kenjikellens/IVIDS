@@ -4,1795 +4,292 @@
 
 /* Custom root variables defining design system tokens for portrait mobile viewports. */
 :root {
-    --poster-width: clamp(96px, 28vw, 120px);
-    --app-content-padding-x: clamp(14px, 4vw, 20px);
-    --app-content-padding-y: clamp(12px, 3vw, 18px);
-    --bottom-nav-height: 58px;
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-}
-
-/* Universal mobile tap highlight and callout reset for smooth touch responsiveness. */
-*, *::before, *::after {
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-touch-callout: none;
-}
-
-/* Strict hidden utility ensuring elements marked as hidden are never rendered. */
-.hidden,
-[hidden],
-.btn.hidden,
-.tab-panel.hidden,
-.details-bottom.hidden {
-    display: none !important;
-}
-
-/* Disables shifting, sliding, transitions, and moving animations on mobile viewports for stable rendering. */
-#main-view,
-#sidebar-container,
-.nav-rail,
-.navbar,
-.nav-item,
-.row,
-.search-page-layout,
-.search-main,
-.playlists-container,
-.account-container,
-.settings-container,
-.details-page,
-.details-layout,
-.page-container,
-.page-header,
-.media-grid,
-.media-grid--widescreen,
-.media-grid--posters,
-.media-rail,
-.row-posters,
-.results-container,
-.settings-section,
-.account-section,
-.modal__dialog {
-    animation: none !important;
-    transform: none !important;
-    transition: none !important;
-}
-
-/* Strictly eliminates hover, focus, and active displacement transforms (scale, translate) on mobile. */
-.focusable:hover,
-.focusable:focus,
-.focusable.focused,
-.focusable:active,
-.btn:hover,
-.btn:focus,
-.btn:active,
-.card:hover,
-.card:focus,
-.card:active,
-.chip:hover,
-.chip:focus,
-.chip:active,
-.nav-item:hover,
-.nav-item:focus,
-.nav-item:active {
-    -webkit-transform: none !important;
-    transform: none !important;
+    --poster-width: clamp(110px, 27vw, 128px);
+    --app-content-padding-x: 4%;
+    --app-content-padding-y: 3%;
 }
 
 /* Block layout reset for mobile viewport. */
-#app {
-    display: block;
-    height: 100%;
-    position: relative;
-    width: 100%;
-}
+#app { display: block; height: 100%; position: relative; width: 100%; }
 
 /* Keeps the bottom navigation container at full width on mobile. */
-#sidebar-container,
-.sidebar-always-expanded #sidebar-container,
-#app.sidebar-always-expanded #sidebar-container,
-#app #sidebar-container {
-    bottom: 0 !important;
-    box-sizing: border-box !important;
-    flex: none !important;
-    flex-basis: auto !important;
-    height: auto !important;
-    left: 0 !important;
-    padding-bottom: 0 !important;
-    pointer-events: none !important;
-    position: fixed !important;
-    right: 0 !important;
-    top: auto !important;
-    transition: none !important;
-    width: 100% !important;
-    z-index: 3000 !important;
+#app #sidebar-container, #app.sidebar-always-expanded #sidebar-container {
+    bottom: 0;
+    flex-basis: auto;
+    height: auto;
+    left: 0;
+    padding-bottom: 0;
+    pointer-events: none;
+    position: fixed;
+    right: 0;
+    top: auto;
+    width: 100%;
+    z-index: 3000;
 }
 
-/* Sizing, margin, momentum scrolling, and bottom safe-area adjustments for main view area. */
+/* Sizing, margin, and scrolling adjustments for main view area. */
 #main-view {
-    -webkit-overflow-scrolling: touch;
     box-sizing: border-box;
     height: 100vh;
-    overscroll-behavior-y: contain;
-    padding-bottom: calc(88px + env(safe-area-inset-bottom, 20px));
-    touch-action: pan-y;
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
     width: 100vw;
 }
 
-/* Glassmorphic mobile bottom navigation bar surface with safe-area insets. */
-#app.sidebar-always-expanded .nav-rail,
-#app.sidebar-always-expanded .navbar,
-#app .nav-rail,
-#app .navbar,
-.sidebar-always-expanded .nav-rail,
-.sidebar-always-expanded .navbar,
-.nav-rail:hover,
-.nav-rail:focus-within,
-.navbar:hover,
-.navbar:focus-within,
-.nav-rail,
-.navbar {
-    align-items: center !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    background: rgba(10, 10, 10, 0.92) !important;
-    border-right: none !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-    bottom: 0 !important;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.55) !important;
-    box-sizing: border-box !important;
-    flex-direction: row !important;
-    gap: 4px !important;
-    height: auto !important;
-    justify-content: space-between !important;
-    left: 0 !important;
-    min-height: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
-    overflow: visible !important;
-    padding: 6px calc(10px + env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) calc(10px + env(safe-area-inset-left, 0px)) !important;
-    pointer-events: auto !important;
-    position: fixed !important;
-    right: 0 !important;
-    top: auto !important;
-    transition: none !important;
-    width: 100% !important;
-    z-index: 3000 !important;
-}
-
-/* Unwraps nav item containers to let items space evenly across navbar. */
-#app .nav-rail__group,
-#app .nav-links,
-#app .nav-utilities,
-.nav-rail__group,
-.nav-links,
-.nav-utilities {
-    display: contents !important;
-}
-
-/* Layout and touch tap-target geometry override for bottom nav items (min 44x44px). */
-#app.sidebar-always-expanded .nav-item,
-#app .nav-item,
-.sidebar-always-expanded .nav-item,
-.nav-item {
-    align-items: center !important;
-    aspect-ratio: 1 / 1 !important;
-    background: transparent;
-    border: 2px solid transparent;
-    border-radius: var(--radius-sm) !important;
-    display: flex !important;
-    flex: 1 1 0 !important;
-    height: auto !important;
-    justify-content: center !important;
-    margin: 0 !important;
-    max-width: 52px !important;
-    min-height: 44px !important;
-    min-width: 44px !important;
-    padding: 0 !important;
-    transition: none !important;
-    width: 100% !important;
-}
-
-/* Active state for mobile bottom navigation items with subtle glow accent. */
-.nav-item.active,
-.sidebar-always-expanded .nav-item.active,
-#app.sidebar-always-expanded .nav-item.active {
-    background: rgba(var(--primary-rgb), 0.16);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.2);
-}
-
-/* Active touch feedback for mobile bottom navigation items without displacement animations. */
-.nav-item:active,
-.sidebar-always-expanded .nav-item:active,
-#app.sidebar-always-expanded .nav-item:active {
-    background: rgba(var(--primary-rgb), 0.26);
-    border-color: var(--primary-color);
-    opacity: 0.9;
-}
-
-/* High-contrast focus state for mobile bottom navigation items. */
-.nav-item:focus,
-.nav-item.focused,
-.sidebar-always-expanded .nav-item:focus,
-.sidebar-always-expanded .nav-item.focused,
-#app.sidebar-always-expanded .nav-item:focus,
-#app.sidebar-always-expanded .nav-item.focused {
-    border: 2.5px solid #ffffff;
-    outline: none;
-}
-
-/* Nav icon sizing and margins on mobile. */
-.nav-item__icon,
-.nav-icon {
-    flex-basis: 25px;
-    height: 25px;
-    margin: 0;
-    width: 25px;
-}
-
-/* Hides elements that should not render on mobile bottom navigation. */
-#app.sidebar-always-expanded .nav-rail__header,
-#app.sidebar-always-expanded .logo-container,
-#app.sidebar-always-expanded .nav-item__label,
-#app.sidebar-always-expanded .nav-item span,
-#app.sidebar-always-expanded .logo-text,
-.nav-rail__header,
-.logo-container,
-.nav-item__label,
-.nav-item span,
-.logo-text,
-.nav-item::before,
-.nav-item[data-route="livetv"],
-.nav-item[data-route="music"] {
-    display: none !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    visibility: hidden !important;
-    width: 0 !important;
-}
-
-/* Order index for Home navigation item. */
-.nav-item[data-route="home"] { order: 1; }
-
-/* Order index for Movies navigation item. */
-.nav-item[data-route="movies"] { order: 2; }
-
-/* Order index for Series navigation item. */
-.nav-item[data-route="series"] { order: 3; }
-
-/* Order index for Search navigation item. */
-.nav-item[data-route="search"] { order: 4; }
-
-/* Order index for Playlists navigation item. */
-.nav-item[data-route="playlists"] { order: 5; }
-
-/* Order index for Account navigation item. */
-.nav-item[data-route="account"] { order: 6; }
-
-/* Order index for Settings navigation item. */
-.nav-item[data-route="settings"] { order: 7; }
-
-/* Colors the active, hovered, or focused navigation icon with the solid theme accent color. */
-.nav-item.active .nav-icon,
-.nav-item:hover .nav-icon,
-.nav-item:focus .nav-icon,
-.nav-item.focused .nav-icon,
-.sidebar-always-expanded .nav-item.active .nav-icon,
-.sidebar-always-expanded .nav-item:hover .nav-icon,
-.sidebar-always-expanded .nav-item:focus .nav-icon,
-.sidebar-always-expanded .nav-item.focused .nav-icon,
-#app.sidebar-always-expanded .nav-item.active .nav-icon,
-#app.sidebar-always-expanded .nav-item:hover .nav-icon,
-#app.sidebar-always-expanded .nav-item:focus .nav-icon,
-#app.sidebar-always-expanded .nav-item.focused .nav-icon {
-    background-color: var(--primary-color);
-}
-
-/* Height, layout, and scrim positioning adjustments for the hero banner on mobile. */
-.hero {
-    align-items: flex-end;
-    display: flex;
-    height: 46vh;
-    min-height: 330px;
-    padding: 0 var(--app-content-padding-x) 5%;
-    position: relative;
-}
-
-/* Dark gradient scrim overlay on mobile hero slide ensuring crisp title readability. */
-.hero::before {
-    background: linear-gradient(to top, #050505 8%, rgba(5, 5, 5, 0.75) 45%, rgba(5, 5, 5, 0.1) 100%);
-    bottom: 0;
-    content: "";
-    left: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1;
-}
-
-/* Background sizing and centering for mobile hero slide images. */
-.hero-slide {
-    background-attachment: scroll;
-    background-position: center top;
-    background-size: cover;
-}
-
-/* Mobile hero content container positioned above scrim layer with centered typography. */
-.hero-content {
-    margin: 0 auto;
-    position: relative;
-    text-align: center;
-    width: 100%;
-    z-index: 2;
-}
-
-/* Mobile hero display title typography hierarchy. */
-.hero-title,
-.hero-content h2 {
-    font-size: clamp(20px, 5.5vw, 26px);
-    font-weight: 800;
-    line-height: 1.25;
-    margin-bottom: 8px;
-    text-align: center;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
-}
-
-/* Hero synopsis clamp and typography preventing cut-off text on mobile screens. */
-.hero-desc {
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    color: rgba(255, 255, 255, 0.88);
-    display: -webkit-box;
-    font-size: 13.5px;
-    font-weight: 500;
-    line-height: 1.45;
-    margin: 0 auto 12px;
-    max-width: 90%;
-    overflow: hidden;
-    text-align: center;
-    text-overflow: ellipsis;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
-}
-
-/* Centered action button container for mobile hero banner. */
-.hero-buttons {
-    display: flex;
-    justify-content: center;
-    margin-top: 6px;
-    width: 100%;
-}
-
-/* Touch-friendly hero action button with prominent accent styling. */
-.hero-buttons .btn {
-    border-radius: var(--radius-md);
-    font-size: 15px;
-    font-weight: 700;
-    margin: 0 auto;
-    max-width: 90%;
-    min-height: 46px;
-    min-width: 140px;
-    padding: 12px 28px;
-    width: fit-content;
-}
-
-/* Centered layout for mobile category row titles, section headings, and page headers. */
-.row-title,
-.section-title,
-.row > .section-title,
-.page-header,
-.page-title,
-.section-header {
-    align-items: center !important;
-    display: flex !important;
-    justify-content: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    text-align: center !important;
-    width: 100% !important;
-}
-
-/* Scrolling momentum and spacing adjustments for horizontal media rails. */
-.media-rail,
-.row-posters {
-    -webkit-overflow-scrolling: touch;
-    gap: 10px;
-    overscroll-behavior-x: contain;
-    padding: 2% var(--app-content-padding-x) 4%;
-    scroll-snap-type: x mandatory;
-    touch-action: pan-x pan-y;
-}
-
-/* Card snap alignment inside horizontal media rails on touch drag. */
-.media-rail .card,
-.row-posters .card {
-    scroll-snap-align: start;
-}
-
-/* Search main view area padding override with safe area inset for top status bar. */
-.search-main {
-    box-sizing: border-box;
-    height: 100%;
-    padding: calc(16px + env(safe-area-inset-top, 24px)) var(--app-content-padding-x) 2%;
-}
-
-/* Search input container wrapper centered on mobile viewport. */
-.search-container-wrapper {
-    margin: 8px auto 16px;
-    max-width: 100%;
-    width: 100%;
-}
-
-/* Search input form control wrapper with touch-friendly height and subtle glass border. */
-.search-box .form-control-wrapper {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
-    min-height: 48px;
-}
-
-/* Search input text styling with comfortable line height and touch spacing. */
-.search-box .form-input {
-    font-size: 15px;
-    min-height: 48px;
-}
-
-/* Enhanced contrast for search and form input placeholders on mobile. */
-.form-input::placeholder,
-::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-    opacity: 1;
-}
-
-/* Action button row below search input with equal-width buttons and minimum 44px tap targets. */
-.search-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    width: 100%;
-}
-
-/* Search action button touch sizing and typography. */
-.search-actions .btn {
-    flex: 1 1 0;
-    font-weight: 600;
-    min-height: 44px;
-}
-
-/* Vertical flow layout for recent searches row on mobile screens. */
-.recent-searches-row {
+/* Mobile bottom navigation bar surface spanning 100% full width. */
+#app .nav-rail, #app .navbar, #app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar {
     align-items: center;
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
-}
-
-/* Horizontal scrolling or wrapping container for recent search chips. */
-.recent-list {
-    -webkit-overflow-scrolling: touch;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    width: 100%;
-}
-
-/* Touch-optimized recent search chip with minimum 44px tap target. */
-.chip--recent {
-    align-items: center;
-    border-radius: var(--radius-md);
-    display: inline-flex;
-    font-size: 13.5px;
-    min-height: 44px;
-    padding: 8px 14px;
-}
-
-/* Search results container with momentum scrolling and bottom spacing. */
-.results-container {
-    -webkit-mask-image: none;
-    -webkit-overflow-scrolling: touch;
-    mask-image: none;
-    overscroll-behavior-y: contain;
-    padding: 2% 2% 8%;
-    touch-action: pan-y;
-}
-
-/* Fluid responsive grid for mobile media posters utilizing single centralized poster width token. */
-.media-grid--posters,
-.search-results-grid {
-    gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
-}
-
-/* Mobile bottom sheet container layout for filter modal dialog. */
-#filter-modal {
-    align-items: flex-end;
-    padding: 0;
-}
-
-/* Mobile bottom sheet panel for search filter modal with safe-area insets. */
-#filter-modal .modal__dialog {
-    background: rgba(18, 18, 18, 0.96);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-bottom: none;
-    border-radius: 20px 20px 0 0;
+    background: rgba(0, 0, 0, 0.98);
+    border-right: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     bottom: 0;
-    box-shadow: 0 -8px 36px rgba(0, 0, 0, 0.7);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 4px;
+    height: auto;
+    justify-content: space-between;
     left: 0;
-    margin: 0;
-    max-height: 85vh;
-    max-width: 100%;
-    padding: 16px 16px calc(14px + env(safe-area-inset-bottom, 12px)) 16px;
+    overflow: visible;
+    padding: 6px calc(12px + env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
+    pointer-events: auto;
     position: fixed;
     right: 0;
     top: auto;
     width: 100%;
 }
 
-/* Centered heading typography for filter modal bottom sheet. */
-#filter-modal .modal__title {
-    font-size: 19px;
-    font-weight: 700;
-    margin: 0;
-    padding: 0 0 12px 0;
-    text-align: center;
-    width: 100%;
-}
+/* Unwraps nav item containers to let items space evenly across navbar. */
+#app .nav-rail__group, #app .nav-links, #app .nav-utilities { display: contents; }
 
-/* Touch-optimized momentum scroll body for filter modal bottom sheet. */
-#filter-modal .modal__body--scroll {
-    -webkit-overflow-scrolling: touch;
-    flex: 1 1 auto;
-    max-height: calc(85vh - 130px);
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding: 4px 2px;
-    touch-action: pan-y;
-}
-
-/* Single column layout for search filter modal grid on mobile. */
-.filter-main-grid {
-    gap: 12px;
-    grid-template-columns: 1fr;
-}
-
-/* Visually hides native checkboxes and radio inputs inside filter chips for custom styled appearance. */
-.chip input[type="checkbox"],
-.chip input[type="radio"],
-.chip--filter input[type="checkbox"],
-.chip--filter input[type="radio"] {
-    border: 0;
-    clip: rect(0, 0, 0, 0);
-    height: 0;
-    margin: -1px;
-    opacity: 0;
-    overflow: hidden;
-    padding: 0;
-    pointer-events: none;
-    position: absolute;
-    white-space: nowrap;
-    width: 0;
-}
-
-/* Form group typography and layout alignment inside search filter modal. */
-.filter-main-grid .form-group,
-#filter-modal .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 12px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Section label typography inside filter modal form groups (15.5px semi-bold centered). */
-.filter-main-grid .form-group h3,
-#filter-modal .form-group h3,
-#filter-modal .group-header h3 {
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 15.5px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    margin: 0 0 6px 0;
-    text-align: center;
-    width: 100%;
-}
-
-/* Production country and select trigger button styling inside filter modal. */
-.filter-main-grid .form-select-trigger,
-#country-select-btn,
-#sort-by-btn,
-#genre-select-btn {
+/* Layout and spacing override for bottom nav item. */
+#app .nav-item, #app.sidebar-always-expanded .nav-item {
     align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-md);
-    box-sizing: border-box;
-    color: #ffffff;
+    aspect-ratio: 1 / 1;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 5px;
     display: flex;
-    font-size: 14.5px;
-    font-weight: 600;
-    justify-content: space-between;
-    min-height: 48px;
-    padding: 0 14px;
-    width: 100%;
-}
-
-/* Truncates long country and sort selection labels cleanly without overflow. */
-#country-label,
-#sort-by-label {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Two-column responsive grid layout for country selection modal on mobile. */
-#country-options-list {
-    gap: 8px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-/* Horizontal action buttons row for filter modal footer taking max 48px height. */
-#filter-modal .modal__footer,
-#filter-modal .modal__footer.modal__footer--vertical,
-#filter-modal .btn-group--vertical {
-    align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    height: auto;
-    justify-content: space-between;
-    margin-top: 10px;
-    max-height: 48px;
-    padding-top: 10px;
-    width: 100%;
-}
-
-/* Compact horizontal buttons inside filter bottom sheet footer. */
-#filter-modal .modal__footer .btn {
-    border-radius: var(--radius-md);
     flex: 1 1 0;
-    font-size: 14px;
-    font-weight: 600;
-    height: 44px;
-    max-height: 48px;
-    min-height: 44px;
-    min-width: 0;
-    padding: 0 10px;
-    width: auto;
-}
-
-/* Primary Apply button styling in filter modal footer. */
-#filter-modal #close-filters-btn {
-    background: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.35);
-    color: #050505;
-    font-weight: 700;
-}
-
-/* Danger Clear All button styling in filter modal footer. */
-#filter-modal #clear-filters-btn {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    color: #fca5a5;
-    font-weight: 600;
-}
-
-/* Secondary Cancel button styling in filter modal footer. */
-#filter-modal #cancel-filters-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: none;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 600;
-}
-
-/* Fixed floating back button for mobile details page ensuring continuous navigation availability while scrolling. */
-.details-back-btn {
-    align-items: center;
-    background: rgba(18, 18, 18, 0.78);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 50%;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
-    display: flex;
-    height: 44px;
+    height: auto;
     justify-content: center;
-    left: 16px;
-    min-height: 44px;
-    min-width: 44px;
+    margin: 0;
+    max-width: 52px;
     padding: 0;
-    position: fixed;
-    top: calc(14px + env(safe-area-inset-top, 20px));
-    width: 44px;
-    z-index: 1000;
+    width: 100%;
 }
 
-/* Active touch feedback for mobile details back button without displacement animations. */
-.details-back-btn:active {
-    background: rgba(var(--primary-rgb), 0.25);
+/* Active and focused states for mobile bottom navigation items. */
+#app .nav-item.active, #app.sidebar-always-expanded .nav-item.active {
+    background: rgba(var(--primary-rgb), 0.16);
     border-color: var(--primary-color);
 }
-
-/* High-contrast focus state for mobile details back button. */
-.details-back-btn:focus,
-.details-back-btn.focused {
-    border-color: #ffffff;
+#app .nav-item:focus, #app .nav-item.focused, #app.sidebar-always-expanded .nav-item:focus, #app.sidebar-always-expanded .nav-item.focused {
+    border: 3px solid #ffffff;
     outline: none;
 }
 
-/* Back arrow icon sizing inside mobile details back button. */
-.details-back-icon {
-    height: 20px;
-    width: 20px;
-}
+/* Nav icon sizing and margins on mobile. */
+#app .nav-item__icon, #app .nav-icon { flex-basis: 25px; height: 25px; margin: 0; width: 25px; }
 
-/* Compact vertical flow on mobile details layout eliminating empty gaps. */
-.details-layout {
-    gap: 12px;
-    padding: 0 var(--app-content-padding-x);
-}
-
-/* Stacked content layout for movie and TV details page header on mobile with clearance for back button. */
-.details-top {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 0;
-    padding-top: calc(58px + env(safe-area-inset-top, 20px));
-    text-align: center;
-}
-
-/* Centered container for details hero poster. */
-.details-poster-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 4px;
-    order: 1;
-    width: 100%;
-}
-
-/* Glassmorphic border and soft shadow for the details hero poster. */
-.details-hero-poster {
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: var(--radius-md);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
-    height: auto;
-    max-width: 38vw;
-    min-width: 105px;
-    width: 135px;
-}
-
-/* Centered column layout for details title, metadata, and buttons. */
-.details-info {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    max-width: 100%;
-    order: 2;
-    text-align: center;
-    width: 100%;
-}
-
-/* Prominent fluid hero title typography on details page centered. */
-.details-title {
-    font-size: clamp(22px, 6vw, 28px);
-    font-weight: 800;
-    justify-content: center;
-    line-height: 1.25;
-    margin-bottom: 6px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Hides duplicate inline overview on mobile header since full synopsis renders in About tab. */
-.details-overview {
+/* Hides elements that should not render on mobile bottom navigation. */
+#app .nav-rail__header, #app .logo-container, #app .nav-item__label, #app .nav-item span,
+#app .nav-item::before, #app .nav-item[data-route="livetv"], #app .nav-item[data-route="music"] {
     display: none;
 }
 
-/* Backdrop image height constraint on mobile devices. */
-.details-backdrop {
-    height: 35vh;
+/* Ordering for mobile navigation items. */
+#app .nav-item[data-route="home"] { order: 1; }
+#app .nav-item[data-route="movies"] { order: 2; }
+#app .nav-item[data-route="series"] { order: 3; }
+#app .nav-item[data-route="search"] { order: 4; }
+#app .nav-item[data-route="playlists"] { order: 5; }
+#app .nav-item[data-route="account"] { order: 6; }
+#app .nav-item[data-route="settings"] { order: 7; }
+
+/* Colors the active or focused navigation icon with the solid theme accent color. */
+#app .nav-item.active .nav-icon, #app .nav-item:hover .nav-icon, #app .nav-item:focus .nav-icon, #app .nav-item.focused .nav-icon,
+#app.sidebar-always-expanded .nav-item.active .nav-icon, #app.sidebar-always-expanded .nav-item:hover .nav-icon,
+#app.sidebar-always-expanded .nav-item:focus .nav-icon, #app.sidebar-always-expanded .nav-item.focused .nav-icon {
+    background-color: var(--primary-color);
 }
 
-/* Centered metadata tags and genre chips layout. */
-.details-meta,
-.details-genres {
+/* Height and layout adjustments for the hero banner on mobile. */
+#app .hero { align-items: flex-end; height: 45vh; min-height: 320px; padding: 0 4% 5%; }
+#app .hero-slide { background-attachment: scroll; background-position: center top; background-size: cover; }
+#app .hero-content { margin: 0 auto; text-align: center; width: 100%; }
+#app .hero-buttons { display: flex; justify-content: center; margin-top: 4px; width: 100%; }
+#app .hero-buttons .btn { margin: 0 auto; max-width: 90%; padding: 10px 24px; width: fit-content; }
+
+/* Scrolling and gap adjustments for media rails. */
+#app .media-rail, #app .row-posters { gap: 10px; padding: 2% 4% 4%; }
+
+/* Centered category and section row headings on mobile viewports. */
+#app .row-title, #app .section-title, #app .row > .section-title, #app h2.section-title.row-title {
     align-items: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-
-/* Touch-optimized ergonomics for genre chips with minimum 44px touch target. */
-.chip--genre {
-    align-items: center;
-    border-radius: var(--radius-sm);
-    display: inline-flex;
-    font-size: 13.5px;
-    font-weight: 600;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 8px 16px;
-    position: relative;
-}
-
-/* Touch-optimized ergonomics for content advisory rating chips with minimum 44px touch target. */
-.chip--rating {
-    align-items: center;
-    border-radius: var(--radius-sm);
-    display: inline-flex;
-    font-size: 12.5px;
-    font-weight: 800;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 6px 14px;
-    position: relative;
-    text-transform: uppercase;
-}
-
-/* Expands touch hit area for mobile metadata chips to ensure strict 44px ergonomics. */
-.chip--genre::before,
-.chip--rating::before {
-    bottom: 0;
-    content: "";
-    left: 0;
-    min-height: 44px;
-    min-width: 44px;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
-/* Full-width vertical stack for mobile details action buttons with compact margins. */
-.details-actions {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    justify-content: center;
-    margin: 8px 0 6px;
-    width: 100%;
-}
-
-/* Mobile details action button touch targets and geometry. */
-.details-actions .btn {
-    border-radius: var(--radius-md);
-    font-size: 15px;
-    font-weight: 700;
-    min-height: 46px;
-    padding: 12px 16px;
-    width: 100%;
-}
-
-/* Horizontal tab navigation bar for mobile details views with tight spacing. */
-.tab-bar,
-#details-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    margin-top: 4px;
-    width: 100%;
-}
-
-/* Touch-optimized tab button inside details tab bar. */
-.tab-btn {
-    flex: 1 1 0;
-    font-size: 14px;
-    font-weight: 600;
-    min-height: 44px;
-    padding: 10px 12px;
-}
-
-/* Active tab panels flow layout on mobile details view. */
-.tab-panel:not(.hidden),
-.details-bottom:not(.hidden) {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-}
-
-/* Column flow for About and Synopsis section on mobile screens. */
-.disney-about-content {
-    flex-direction: column;
-    gap: 20px;
-    padding-bottom: 40px;
-    width: 100%;
-}
-
-/* Centered section title in Disney About tab content. */
-.disney-about-content .section-title {
-    align-items: center;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
     text-align: center;
     width: 100%;
 }
 
-/* Full width column blocks inside About tab. */
-.disney-about-left,
-.disney-about-right {
-    width: 100%;
-}
-
-/* Fluid grid for cast and crew cards on mobile devices. */
-.media-grid--cast,
-.disney-cast-grid {
+/* Search main view area padding override with safe area inset for top status bar. */
+#app .search-main { box-sizing: border-box; height: 100%; padding: calc(16px + env(safe-area-inset-top, 24px)) 4% 2%; }
+#app .search-container-wrapper { margin: 10px auto 2%; max-width: 100%; width: 92%; }
+#app .recent-searches-row { align-items: flex-start; flex-direction: column; gap: 8px; }
+#app .results-container { -webkit-mask-image: none; mask-image: none; padding: 2% 2% 8%; }
+#app .media-grid--posters, #app .search-results-grid {
+    --poster-width: clamp(86px, 26vw, 108px);
     gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
 }
+.filter-main-grid { gap: 12px; grid-template-columns: 1fr; }
 
-/* Transparent container override for TV show season selector. */
-.details-seasons {
-    backdrop-filter: none;
-    background: transparent;
-    border: none;
-    max-height: none;
-    padding: 0;
-    width: 100%;
-}
+/* Stacked content layout for the movie and TV details page header on mobile. */
+#app .details-top { align-items: center; display: flex; flex-direction: column; gap: 12px; padding-top: calc(10px + env(safe-area-inset-top, 16px)); text-align: center; }
+#app .details-poster-container { display: flex; justify-content: center; margin-bottom: 4px; order: 1; width: 100%; }
+#app .details-hero-poster { border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 5px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7); height: auto; max-width: 35vw; min-width: 100px; width: 130px; }
+#app .details-info { align-items: center; display: flex; flex-direction: column; max-width: 100%; order: 2; text-align: center; width: 100%; }
+#app .details-overview { display: none; }
+#app .details-backdrop { height: 35vh; }
+#app .details-meta, #app .details-genres { align-items: center; justify-content: center; margin-bottom: 10px; }
+#app .details-actions { align-items: center; display: flex; flex-direction: column; gap: 10px; justify-content: center; margin: 6px 0 16px; width: 100%; }
+#app .details-actions .btn { border-radius: 5px; font-size: 15px; padding: 12px 16px; width: 100%; }
 
-/* Hides desktop season button list on mobile viewports. */
-.seasons-list-content {
-    display: none;
-}
-
-/* Displays touch-friendly native dropdown for season selection on mobile. */
-.seasons-dropdown-wrapper {
-    display: flex;
-    margin-bottom: 8px;
-    min-height: 48px;
-    width: 100%;
-}
+/* Tab panels and About section on mobile details view. */
+#app .tab-panel.hidden, #app .details-bottom.hidden { display: none; }
+#app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+#app .disney-about-content { flex-direction: column; gap: 20px; padding-bottom: 40px; width: 100%; }
+#app .disney-about-left, #app .disney-about-right { width: 100%; }
+#app .media-grid--cast, #app .disney-cast-grid { gap: 10px; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); width: 100%; }
+#app .details-seasons { backdrop-filter: none; background: transparent; border: none; max-height: none; padding: 0; width: 100%; }
+#app .seasons-list-content { display: none; }
+#app .seasons-dropdown-wrapper { display: flex; }
 
 /* Stacked column flow layout for horizontal row cards on mobile. */
-.card--row {
-    align-items: stretch;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: var(--radius-md);
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px;
-}
+#app .card--row { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
+#app .card__thumb, #app .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
+#app .card__body { width: 100%; }
 
-/* Full-width responsive aspect ratio for card thumbnails on mobile. */
-.card__thumb,
-.card__thumb--sm {
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radius-sm);
-    height: auto;
-    width: 100%;
-}
-
-/* Full width container for episode card body information. */
-.card__body {
-    width: 100%;
-}
-
-/* Live TV top controls bar layout on mobile. */
-.livetv-top-bar {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
-    padding: 4% var(--app-content-padding-x) 0;
-}
-
-/* Full-width action row for Live TV filters. */
-.livetv-top-actions {
-    justify-content: space-between;
-    width: 100%;
-}
-
-/* Touch-optimized height for Live TV channel and category selects. */
-.form-select-wrapper {
-    flex: 1 1 auto;
-    height: 48px;
-    min-height: 48px;
-}
-
-/* Reversed two-column layout for mobile Live TV (video preview on top). */
-.livetv-two-column-layout {
-    flex-direction: column-reverse;
-    gap: 15px;
-    padding: 4% var(--app-content-padding-x);
-}
-
-/* Channel list column with smooth momentum scrolling on mobile. */
-.livetv-list-column {
-    -webkit-overflow-scrolling: touch;
-    height: 40vh;
-    overscroll-behavior-y: contain;
-    width: 100%;
-}
-
-/* Channel preview video column width override. */
-.livetv-preview-column {
-    height: auto;
-    width: 100%;
-}
-
-/* Video preview card height constraint. */
-.preview-card-video {
-    height: 30vh;
-}
+/* Live TV mobile layout overrides. */
+#app .livetv-top-bar { align-items: stretch; flex-direction: column; gap: 10px; padding: 4% var(--app-content-padding-x) 0; }
+#app .livetv-top-actions { justify-content: space-between; width: 100%; }
+#app .form-select-wrapper { flex: 1; height: 48px; }
+#app .livetv-two-column-layout { flex-direction: column-reverse; gap: 15px; padding: 4% var(--app-content-padding-x); }
+#app .livetv-list-column { height: 40vh; width: 100%; }
+#app .livetv-preview-column { height: auto; width: 100%; }
+#app .preview-card-video { height: 30vh; }
 
 /* Single column grid flow for custom playlists grid on mobile. */
-.media-grid--widescreen,
-.playlists-grid {
-    gap: 12px;
-    grid-template-columns: 1fr;
-}
+#app .media-grid--widescreen, #app .playlists-grid { gap: 12px; grid-template-columns: 1fr; }
 
-/* Mobile container padding overrides accommodating phone top notch and bottom nav clearance. */
-.playlists-container,
-.settings-container,
-.account-container,
-.page-container,
-.details-page {
+/* Mobile container top padding overrides to accommodate phone top status bar and notch areas. */
+#app .playlists-container, #app .settings-container, #app .account-container, #app .page-container {
     box-sizing: border-box;
-    padding: calc(16px + env(safe-area-inset-top, 24px)) var(--app-content-padding-x) calc(88px + env(safe-area-inset-bottom, 20px));
+    padding: calc(16px + env(safe-area-inset-top, 24px)) var(--app-content-padding-x) 72px;
     width: 100%;
 }
-
-/* Centered layout for mobile page titles and header containers. */
-.page-header {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    justify-content: center;
-    text-align: center;
-    width: 100%;
-}
-
-/* Centered fluid typography for mobile page titles and main section headers. */
-.page-title,
-.settings-header,
-.settings-header h1,
-.account-header,
-.account-header h1,
-.playlist-details-header h1,
-.login-title-text {
-    align-items: center;
-    display: flex;
-    font-size: clamp(22px, 5.5vw, 28px);
-    font-weight: 800;
-    justify-content: center;
-    letter-spacing: -0.02em;
-    text-align: center;
-    width: 100%;
-}
-
-/* Centered subtitle styling for settings and general pages. */
-.settings-header p {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin: 4px 0 20px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Glassmorphic card surface for Settings and Account sections. */
-.settings-section,
-.account-section {
-    background: rgba(22, 22, 22, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-    margin-bottom: 20px;
-    padding: 18px 16px;
-}
-
-/* Category section title styling inside settings card centered. */
-.settings-section .section-title,
-.account-section .section-title,
-.playlist-details-container .section-title {
-    align-items: center;
-    display: flex;
-    font-size: 15.5px;
-    font-weight: 700;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 8px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Setting row item with touch-friendly vertical padding and subtle divider. */
-.setting-item {
-    align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-    justify-content: space-between;
-    min-height: 52px;
-    padding: 14px 0;
-}
-
-/* Removes top divider on first setting item inside a section card. */
-.setting-item:first-of-type {
-    border-top: none;
-}
-
-/* Centered layout for standalone action items in settings. */
-.setting-item.centered-setting {
-    justify-content: center;
-    padding: 16px 0;
-}
-
-/* Flexible text information area inside setting item. */
-.setting-info {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-/* High-contrast label for setting preferences. */
-.setting-label {
-    color: #ffffff;
-    font-size: 15.5px;
-    font-weight: 600;
-    margin-bottom: 3px;
-}
-
-/* Secondary muted explanation for setting preferences. */
-.setting-description {
-    color: var(--text-muted);
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-/* Control container holding buttons, toggles, or displays. */
-.setting-control {
-    align-items: center;
-    display: flex;
-    flex: 0 0 auto;
-    gap: 8px;
-    justify-content: flex-end;
-    width: auto;
-}
-
-/* Manual update check container alignment. */
-#manual-check-container {
-    align-items: center;
-    text-align: center;
-}
-
-/* Centered control row for update check button. */
-#manual-check-container .setting-control {
-    justify-content: center;
-}
-
-/* Value display badge for current setting selection with touch-friendly height. */
-.current-value-display {
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 700;
-    height: 44px;
-    max-width: 150px;
-    min-height: 44px;
-    overflow: hidden;
-    padding: 0 12px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Square setting trigger button with minimum 44x44px touch tap target. */
-.btn--square,
-.edit-trigger {
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
-    height: 44px;
-    min-height: 44px;
-    min-width: 44px;
-    width: 44px;
-}
-
-/* Edit pencil icon dimensions inside setting control. */
-.setting-edit-icon {
-    height: 20px;
-    width: 20px;
-}
-
-/* UI scale control container with glass background and touch-friendly height. */
-.scale-control-container {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-sm);
-    display: inline-flex;
-    flex-direction: row;
-    flex-shrink: 0;
-    gap: 6px;
-    height: 46px;
-    padding: 3px 6px;
-    width: auto;
-}
-
-/* Scale increment and decrement buttons with minimum 44x44px touch targets. */
-.btn--square-sm,
-.scale-adjust-btn {
-    border-radius: var(--radius-sm);
-    font-size: 18px;
-    font-weight: 700;
-    height: 44px;
-    min-height: 44px;
-    min-width: 44px;
-    width: 44px;
-}
-
-/* Center numeric display between scale adjustment buttons. */
-.scale-control-container .centered-value {
-    flex: none;
-    font-size: 14px;
-    font-weight: 700;
-    min-width: 44px;
-    text-align: center;
-    width: auto;
-}
-
-/* Toggle switch container with minimum 44px touch target height. */
-.form-toggle {
-    align-items: center;
-    border-radius: 999px;
-    display: inline-flex;
-    flex-shrink: 0;
-    height: 34px;
-    min-height: 44px;
-    position: relative;
-    width: 60px;
-}
-
-/* Slider knob inside toggle switch with smooth positioning. */
-.form-toggle__slider {
-    border-radius: 50%;
-    height: 26px;
-    left: 4px;
-    top: 9px;
-    width: 26px;
-}
-
-/* Active slider knob position when toggle input is checked. */
-.form-toggle:has(input:checked) .form-toggle__slider {
-    left: 30px;
-}
-
-/* Color preview circle with crisp outline. */
-.color-preview-circle,
-#current-color-display {
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    border-radius: 50%;
-    height: 36px;
-    width: 36px;
-}
-
-/* Account profile vertical stack layout on mobile. */
-.profile-display {
-    align-items: center;
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-}
-
-/* Large profile avatar with glowing border and shadow on mobile. */
-.profile-avatar.large {
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-    flex: 0 0 100px;
-    font-size: 40px;
-    height: 100px;
-    width: 100px;
-}
-
-/* User account display name typography centered. */
-.profile-name-text {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Centered action button container for user profile. */
-.profile-actions {
-    justify-content: center;
-    width: 100%;
-}
-
-/* Glassmorphic surface panel for mobile authentication forms. */
-.login-panel {
-    background: rgba(22, 22, 22, 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
-    padding: 24px 20px;
-}
-
-/* Mobile modal dialog container with glassmorphism, responsive width, and soft drop shadow. */
-.modal__dialog {
-    background: rgba(18, 18, 18, 0.94);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.75);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-    max-height: 84vh;
-    max-width: 380px;
-    padding: 18px;
-    width: 92vw;
-}
-
-/* Heading typography for mobile modal dialogs centered. */
-.modal__title {
-    font-size: 20px;
-    font-weight: 700;
-    padding: 8px 12px 12px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Mobile modal scrollable body container with momentum scrolling. */
-.modal__body {
-    -webkit-overflow-scrolling: touch;
-    max-height: 56vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding: 4px;
-}
-
-/* Touch-optimized scroll body for complex modal forms and filter lists. */
-.modal__body--scroll {
-    -webkit-overflow-scrolling: touch;
-    flex: 1 1 auto;
-    max-height: 56vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding-right: 4px;
-    touch-action: pan-y;
-}
-
-/* Modal action footer with stacked vertical buttons on standard mobile dialogs. */
-.modal__footer {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 14px;
-    padding: 0;
-    width: 100%;
-}
-
-/* Full-width touch-friendly button inside standard mobile modal footer. */
-.modal__footer .btn {
-    flex: none;
-    min-height: 46px;
-    min-width: 0;
-    width: 100%;
-}
-
-/* Radiant primary accent glassmorphic button inside modal footers. */
-.modal__footer .btn--primary,
-#close-filters-btn {
-    background: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    border-radius: var(--radius-md);
-    box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.35);
-    color: #050505;
-    font-size: 15px;
-    font-weight: 700;
-    min-height: 46px;
-    width: 100%;
-}
-
-/* Hover and active touch feedback for primary modal footer button. */
-.modal__footer .btn--primary:hover,
-.modal__footer .btn--primary:active {
-    filter: brightness(1.08);
-    opacity: 0.95;
-}
-
-/* Subtle glassmorphic red danger styling for reset actions inside modal footers. */
-.modal__footer .btn--danger,
-#clear-filters-btn {
-    background: rgba(239, 68, 68, 0.14);
-    border: 1px solid rgba(239, 68, 68, 0.28);
-    border-radius: var(--radius-md);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    color: #fca5a5;
-    font-size: 14.5px;
-    font-weight: 600;
-    min-height: 46px;
-    width: 100%;
-}
-
-/* Hover and active touch feedback for danger reset button inside modal footers. */
-.modal__footer .btn--danger:hover,
-.modal__footer .btn--danger:active {
-    background: rgba(239, 68, 68, 0.24);
-    border-color: rgba(239, 68, 68, 0.45);
-    color: #ffffff;
-}
-
-/* Subtle dark glass styling for cancel actions inside modal footers with guaranteed 44px+ touch height. */
-.modal__footer .btn--secondary,
-#cancel-filters-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-md);
-    box-shadow: none;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 14.5px;
-    font-weight: 600;
-    height: 44px;
-    min-height: 44px;
-    width: 100%;
-}
-
-/* Hover and active touch feedback for secondary cancel button inside modal footers. */
-.modal__footer .btn--secondary:hover,
-.modal__footer .btn--secondary:active {
-    background: rgba(255, 255, 255, 0.14);
-    color: #ffffff;
-}
-
-/* Color selection chips grid on mobile. */
-.chip-grid--color {
-    gap: 10px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-/* Touch-friendly color chip height and padding. */
-.chip--color {
-    min-height: 68px;
-    padding: 8px;
-}
-
-/* Provider list item stacked column layout. */
-.provider-item {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px;
-}
-
-/* Action alignment inside provider item. */
-.provider-actions {
-    justify-content: flex-end;
-}
-
-/* Stepper container for language selection modal on mobile. */
-.language-stepper-container {
-    align-items: center;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin: 12px 0 20px;
-    width: 100%;
-}
-
-/* Value badge for selected language with comfortable touch height. */
-.language-stepper-value {
-    align-items: center;
-    display: flex;
-    font-size: 15px;
-    font-weight: 700;
-    gap: 8px;
-    justify-content: center;
-    max-width: 200px;
-    min-height: 46px;
-    min-width: 0;
-    padding: 0 12px;
-    text-align: center;
-    width: 100%;
-}
-
-/* Flag emoji or SVG icon size inside language stepper. */
-.display-flag-span,
-.language-stepper-value .display-flag-span {
-    font-size: 18px;
-    margin-right: 6px;
-}
-
-/* Language stepper arrow button with minimum 44x44px touch tap target. */
-.stepper-arrow-btn {
-    align-items: center;
-    border-radius: 50%;
-    display: flex;
-    flex-shrink: 0;
-    height: 44px;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    width: 44px;
-}
-
-/* Arrow icon size inside language stepper button. */
-.stepper-arrow-btn svg,
-.stepper-arrow-btn img {
-    height: 18px;
-    width: 18px;
-}
-
-/* Universal mobile button touch target geometry with minimum 44px height. */
-.btn {
-    border-radius: var(--radius-md);
-    font-size: 14.5px;
-    font-weight: 600;
-    gap: 8px;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 10px 20px;
-}
-
-/* Small button modifier preserved with compliant 44px touch height for ergonomics. */
-.btn--sm,
-.btn-small {
-    font-size: 13.5px;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 8px 14px;
-}
-
-/* Circular button modifier with 44x44px touch tap target. */
-.btn--circle,
-.btn-circle {
-    border-radius: 50%;
-    height: 44px;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 0;
-    width: 44px;
-}
-
-/* Large circular button modifier (48x48px). */
-.btn--circle-lg {
-    border-radius: 50%;
-    height: 48px;
-    min-height: 48px;
-    min-width: 48px;
-    padding: 0;
-    width: 48px;
-}
-
-/* Extra-large circular button modifier (56x56px). */
-.btn--circle-xl {
-    border-radius: 50%;
-    height: 56px;
-    min-height: 56px;
-    min-width: 56px;
-    padding: 0;
-    width: 56px;
-}
-
-/* Active touch feedback for standard buttons without displacement animations. */
-.btn:active {
-    background-color: rgba(255, 255, 255, 0.16);
-    opacity: 0.82;
-}
-
-/* Active touch feedback for primary accent buttons without displacement animations. */
-.btn--primary:active {
-    filter: brightness(0.92);
-    opacity: 0.9;
-}
-
-/* Active touch feedback for danger action buttons without displacement animations. */
-.btn--danger:active {
-    filter: brightness(0.9);
-    opacity: 0.9;
-}
-
-/* Active touch feedback for interactive media cards without displacement animations. */
-.card--interactive:active,
-.card--row:active,
-.card--poster:active {
-    border-color: rgba(255, 255, 255, 0.35);
-    opacity: 0.92;
-}
-
-/* Active touch feedback for chips and filter options without displacement animations. */
-.chip:active {
-    background: rgba(var(--primary-rgb), 0.2);
-    border-color: var(--primary-color);
-}
-
-/* Toast container positioning at top of mobile screen with status bar safe-area inset. */
-.toast-container,
-.toast-container.bottom-right,
-.toast-container.top-right {
-    bottom: auto;
-    left: 0;
-    margin: 0 auto;
-    max-width: 400px;
-    right: 0;
-    top: calc(14px + env(safe-area-inset-top, 0px));
-    width: 90%;
-    z-index: 9999;
-}
-
-/* Glassmorphic mobile toast notification with soft shadow and stable static display. */
-.toast {
-    background: rgba(22, 22, 22, 0.94);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-md);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
-    min-height: 48px;
-    padding: 12px 18px;
-}
-
-/* Visible state for toast message. */
-.toast.visible {
-    opacity: 1;
-}
-
-/* Hidden state for dismissed toast message. */
-.toast:not(.visible) {
-    display: none !important;
-}
-
-/* Vertical option list inside version updater. */
-.version-option-list {
-    flex-direction: column;
-}
-
-/* Version badge column arrangement on mobile. */
-.version-badge-container {
-    align-items: center;
-    flex-direction: column;
-    gap: 6px;
-}
-
-/* Rotates version transition arrow vertically for mobile layouts. */
-.version-arrow {
-    transform: rotate(90deg);
-}
-
-/* Network status overlay position above mobile bottom navigation bar. */
-.network-status-overlay {
-    bottom: calc(var(--bottom-nav-height, 58px) + 16px + env(safe-area-inset-bottom, 0px));
-    right: 16px;
-}
-
-/* Full width form input elements on mobile viewport. */
-.details-actions .btn,
-.profile-actions .btn,
-.livetv-top-bar .search-box,
-.form-input {
-    width: 100%;
-}
-
-/* Mobile player HUD bottom panel safe area and touch containment. */
-.hud-bottom-panel {
-    padding: 2% 4% calc(8px + env(safe-area-inset-bottom, 0px));
-}
-
-/* Smooth momentum scrolling for streaming server selection list. */
-.server-list {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-}
-
-/* Mobile landscape optimizations: sleek bottom navigation bar and horizontal safe areas. */
+#app .page-header { align-items: flex-start; flex-direction: column; gap: 12px; }
+
+/* Mobile Settings and Account typography and section card overrides. */
+#app .page-title, #app .settings-header h1, #app .account-header h1 { font-size: clamp(24px, 6vw, 30px); }
+#app .settings-section, #app .account-section { border-radius: var(--radius-md); margin-bottom: 20px; padding: 18px 16px; }
+#app .settings-section .section-title { font-size: 15px; gap: 10px; margin-bottom: 4px; }
+#app .setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: row; gap: 12px; justify-content: space-between; padding: 14px 0; }
+#app .setting-item:first-of-type { border-top: none; }
+#app .setting-item.centered-setting { justify-content: center; padding: 16px 0; }
+#app .setting-info { flex: 1 1 auto; min-width: 0; }
+#app .setting-label { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+#app .setting-description { color: var(--text-muted); font-size: 13px; line-height: 1.35; }
+#app .setting-control { align-items: center; display: flex; flex: 0 0 auto; gap: 8px; justify-content: flex-end; width: auto; }
+#app #manual-check-container { align-items: center; text-align: center; }
+#app #manual-check-container .setting-control { justify-content: center; }
+#app .current-value-display { border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; height: 40px; max-width: 150px; overflow: hidden; padding: 0 12px; text-overflow: ellipsis; white-space: nowrap; }
+#app .btn--square, #app .edit-trigger { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
+#app .setting-edit-icon { height: 18px; width: 18px; }
+#app .scale-control-container { align-items: center; border-radius: var(--radius-sm); display: inline-flex; flex-direction: row; flex-shrink: 0; gap: 4px; height: 40px; padding: 3px 4px; width: auto; }
+#app .btn--square-sm, #app .scale-adjust-btn { border-radius: var(--radius-sm); font-size: 17px; height: 32px; min-height: 32px; min-width: 32px; width: 32px; }
+#app .scale-control-container .centered-value { flex: none; font-size: 14px; min-width: 44px; width: auto; }
+#app .form-toggle { border-radius: 999px; flex-shrink: 0; height: 32px; width: 58px; }
+#app .form-toggle__slider { height: 22px; left: 2px; top: 2px; width: 22px; }
+#app .form-toggle:has(input:checked) .form-toggle__slider { left: 28px; }
+#app .color-preview-circle, #app #current-color-display { height: 32px; width: 32px; }
+
+/* Account profile layout on mobile. */
+#app .profile-display { align-items: center; flex-direction: column; gap: 20px; text-align: center; }
+#app .profile-avatar.large { flex: 0 0 100px; font-size: 40px; height: 100px; width: 100px; }
+#app .profile-name-text { font-size: 24px; margin-bottom: 12px; text-align: center; }
+#app .profile-actions { justify-content: center; width: 100%; }
+#app .login-panel { padding: 24px 20px; }
+
+/* Modal sizing, padding, and height constraints for mobile screens. */
+#app .modal__dialog { box-sizing: border-box; display: flex; flex-direction: column; margin: 0 auto; max-height: 82vh; max-width: 350px; padding: 16px; width: 90vw; }
+.modal__title { font-size: 20px; padding: 12px 16px 8px; }
+.modal__body { max-height: 55vh; overflow-y: auto; padding: 4px; }
+#app .modal__body--scroll { -webkit-overflow-scrolling: touch; flex: 1 1 auto; max-height: 55vh; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; touch-action: pan-y; }
+#app .modal__footer { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; padding: 0; width: 100%; }
+#app .modal__footer .btn { flex: none; min-height: 44px; min-width: 0; width: 100%; }
+
+/* Chip grids, provider items, and language stepper on mobile. */
+.chip-grid--color { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.chip--color { min-height: 68px; padding: 8px; }
+.provider-item { align-items: stretch; flex-direction: column; gap: 8px; padding: 10px; }
+.provider-actions { justify-content: flex-end; }
+#app .language-stepper-container { align-items: center; display: flex; gap: 8px; justify-content: center; margin: 12px 0 20px; width: 100%; }
+#app .language-stepper-value { align-items: center; display: flex; font-size: 15px; font-weight: 700; gap: 8px; justify-content: center; max-width: 200px; min-height: 46px; min-width: 0; padding: 0 12px; text-align: center; width: 100%; }
+#app .display-flag-span, #app .language-stepper-value .display-flag-span { font-size: 18px; margin-right: 6px; }
+#app .stepper-arrow-btn { align-items: center; border-radius: 50%; display: flex; flex-shrink: 0; height: 42px; justify-content: center; min-height: 42px; min-width: 42px; width: 42px; }
+#app .stepper-arrow-btn svg, #app .stepper-arrow-btn img { height: 18px; width: 18px; }
+
+/* Mobile button touch targets and geometry. */
+#app .btn { border-radius: var(--radius-md); font-size: 14px; gap: 8px; min-height: 44px; padding: 10px 20px; }
+#app .btn--sm, #app .btn-small { font-size: 13px; min-height: 36px; padding: 6px 14px; }
+#app .btn--circle, #app .btn-circle { border-radius: 50%; height: 38px; min-height: 38px; min-width: 38px; padding: 0; width: 38px; }
+#app .btn--circle-lg { border-radius: 50%; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
+#app .btn--circle-xl { border-radius: 50%; height: 56px; min-height: 56px; min-width: 56px; padding: 0; width: 56px; }
+
+/* Toast notifications and version badges on mobile. */
+.toast-container, .toast-container.bottom-right, .toast-container.top-right { bottom: auto; left: 0; margin: 0 auto; max-width: 400px; right: 0; top: 20px; width: 90%; }
+.toast { transform: translateY(-120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease; }
+.toast.visible { opacity: 1; transform: translateY(0); }
+.toast:not(.visible) { opacity: 0; transform: translateY(-120%); }
+#app .version-option-list { flex-direction: column; }
+.version-badge-container { align-items: center; flex-direction: column; gap: 6px; }
+.version-arrow { transform: rotate(90deg); }
+.network-status-overlay { bottom: calc(var(--app-sidebar-width, 64px) + 16px); right: 16px; }
+#app .details-actions .btn, #app .profile-actions .btn, #app .livetv-top-bar .search-box, .form-input { width: 100%; }
+
+/* Mobile landscape optimizations: keep sleek bottom navigation bar on landscape phones. */
 @media (orientation: landscape) and (max-height: 500px) {
-    /* Safe-area insets for landscape sidebar container. */
-    #sidebar-container,
-    .sidebar-always-expanded #sidebar-container,
-    #app.sidebar-always-expanded #sidebar-container,
-    #app #sidebar-container {
-        bottom: 0 !important;
-        box-sizing: border-box !important;
-        flex: none !important;
-        height: auto !important;
-        left: 0 !important;
-        padding-left: env(safe-area-inset-left, 0px) !important;
-        padding-right: env(safe-area-inset-right, 0px) !important;
-        right: 0 !important;
-        top: auto !important;
-        transition: none !important;
-        width: 100% !important;
-        z-index: 3000 !important;
+    #app #sidebar-container, #app.sidebar-always-expanded #sidebar-container {
+        height: auto;
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
     }
-
-    /* Safe-area insets and bottom clearance for main view in landscape phone mode. */
     #main-view {
         padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
         padding-left: env(safe-area-inset-left, 0px);
         padding-right: env(safe-area-inset-right, 0px);
     }
-
-    /* Compact height bottom navigation bar for landscape phones. */
-    .nav-rail,
-    .navbar,
-    .sidebar-always-expanded .nav-rail,
-    .sidebar-always-expanded .navbar,
-    #app.sidebar-always-expanded .nav-rail,
-    #app.sidebar-always-expanded .navbar,
-    #app .nav-rail,
-    #app .navbar {
-        align-items: center !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        background: rgba(10, 10, 10, 0.92) !important;
-        border-right: none !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-        bottom: 0 !important;
-        box-sizing: border-box !important;
-        flex-direction: row !important;
-        gap: 8px !important;
-        height: auto !important;
-        justify-content: space-between !important;
-        left: 0 !important;
-        min-height: calc(44px + env(safe-area-inset-bottom, 0px)) !important;
-        padding: 4px calc(12px + env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px)) !important;
-        position: fixed !important;
-        right: 0 !important;
-        top: auto !important;
-        transition: none !important;
-        width: 100% !important;
-        z-index: 3000 !important;
+    #app .nav-rail, #app .navbar, #app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar {
+        gap: 8px;
+        height: auto;
+        justify-content: space-between;
+        padding: 4px calc(12px + env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
+        width: 100%;
     }
-
-    /* Compact item aspect ratio and touch target for landscape navigation items. */
-    .nav-item,
-    .sidebar-always-expanded .nav-item,
-    #app.sidebar-always-expanded .nav-item,
-    #app .nav-item {
-        align-items: center !important;
-        aspect-ratio: 1 / 1 !important;
-        border-radius: var(--radius-sm) !important;
-        display: flex !important;
-        flex: 1 1 0 !important;
-        height: auto !important;
-        justify-content: center !important;
-        margin: 0 !important;
-        max-width: 48px !important;
-        min-height: 44px !important;
-        min-width: 44px !important;
-        padding: 0 !important;
-        transition: none !important;
-        width: 100% !important;
+    #app .nav-item, #app.sidebar-always-expanded .nav-item {
+        aspect-ratio: 1 / 1;
+        flex: 1 1 0;
+        height: auto;
+        max-width: 48px;
+        width: 100%;
     }
-
-    /* Scaled icon size inside landscape bottom navigation items. */
-    .nav-item__icon,
-    .nav-icon,
-    .sidebar-always-expanded .nav-item__icon,
-    .sidebar-always-expanded .nav-icon,
-    #app.sidebar-always-expanded .nav-item__icon,
-    #app.sidebar-always-expanded .nav-icon {
-        flex-basis: 22px !important;
-        height: 22px !important;
-        width: 22px !important;
+    #app .nav-item__icon, #app .nav-icon, #app.sidebar-always-expanded .nav-item__icon, #app.sidebar-always-expanded .nav-icon {
+        flex-basis: 22px;
+        height: 22px;
+        width: 22px;
     }
 }
