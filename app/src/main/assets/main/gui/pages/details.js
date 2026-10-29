@@ -254,8 +254,8 @@ function render(item, type) {
         // Watch Trailer Button Logic
         let mainTrailerKey = null;
         if (item.videos?.results) {
-            const trailer = item.videos.results.find(v => v.site.toLowerCase() === 'youtube' && v.type.toLowerCase() === 'trailer');
-            const fallback = item.videos.results.find(v => v.site.toLowerCase() === 'youtube' && (v.type.toLowerCase() === 'teaser' || v.type.toLowerCase() === 'clip'));
+            const trailer = item.videos.results.find(v => (v.site || '').toLowerCase() === 'youtube' && (v.type || '').toLowerCase() === 'trailer');
+            const fallback = item.videos.results.find(v => (v.site || '').toLowerCase() === 'youtube' && ((v.type || '').toLowerCase() === 'teaser' || (v.type || '').toLowerCase() === 'clip'));
             mainTrailerKey = trailer ? trailer.key : (fallback ? fallback.key : null);
         }
 
@@ -384,8 +384,9 @@ function openPlaylistModal(item, type) {
 
         const closeModal = () => {
             if (closePlaylistModalFn) {
-                closePlaylistModalFn();
+                const fn = closePlaylistModalFn;
                 closePlaylistModalFn = null;
+                fn();
             } else {
                 modal.classList.remove('is-open');
                 modal.style.display = 'none';
@@ -456,9 +457,7 @@ function openPlaylistModal(item, type) {
         }
 
         const firstFocus = listContainer.querySelector('.btn.focusable') || cancelBtn;
-        closePlaylistModalFn = manageModal(modal, firstFocus, () => {
-            closePlaylistModalFn = null;
-        });
+        closePlaylistModalFn = manageModal(modal, firstFocus);
     } catch (error) {
         console.error('Error in openPlaylistModal:', error);
         ErrorHandler.show('Failed to open playlist modal.');
@@ -860,7 +859,7 @@ function renderExtras(videos, contentId, mediaType) {
         });
         
         sortedVideos.forEach(video => {
-            if (video.site.toLowerCase() !== 'youtube') return;
+            if ((video.site || '').toLowerCase() !== 'youtube') return;
             
             const card = document.createElement('div');
             card.className = 'card card--row card--interactive disney-extra-item focusable';

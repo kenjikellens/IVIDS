@@ -147,10 +147,10 @@ export const spatialNavDetails = {
     findNext: (current, direction) => {
         if (!current) return null;
 
-        // 1. Sidebar Boundary: Returning right from sidebar into Details page content
+        // 1. Sidebar Boundary: Returning into Details page content (Right from desktop sidebar, Up from mobile bottom nav)
         const inSidebar = current.closest('#sidebar-container') !== null;
         if (inSidebar) {
-            if (direction === 'right') {
+            if (direction === 'right' || direction === 'up') {
                 if (SpatialNav.lastFocusedElement && document.getElementById('main-view')?.contains(SpatialNav.lastFocusedElement) && isElementVisible(SpatialNav.lastFocusedElement)) {
                     return SpatialNav.lastFocusedElement;
                 }
@@ -255,8 +255,10 @@ export const spatialNavDetails = {
             if (direction === 'up') {
                 const actions = Array.from(document.querySelectorAll('.details-actions .btn.focusable')).filter(isElementVisible);
                 if (actions.length > 0) {
-                    // Land on bottom action button if vertical, or play button if horizontal
-                    return actions[actions.length - 1];
+                    const isVertical = actions.length > 1 && Math.abs(actions[0].getBoundingClientRect().left - actions[1].getBoundingClientRect().left) < 15;
+                    // On mobile (vertical stack), land on the bottom action button closest to tabs.
+                    // On desktop (horizontal row), land on the primary "Play" button (actions[0]).
+                    return isVertical ? actions[actions.length - 1] : actions[0];
                 }
                 const playBtn = document.getElementById('details-play');
                 if (playBtn && isElementVisible(playBtn)) return playBtn;
