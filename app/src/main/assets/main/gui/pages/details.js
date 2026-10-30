@@ -11,6 +11,7 @@ import { attachImageWithLoader, loadBackgroundWithLoader, manageModal } from '..
 
 let currentSeriesId = null;
 let closePlaylistModalFn = null;
+let detailsTabAnimation = null;
 
 /**
  * Initializes the details page by fetching content metadata.
@@ -70,6 +71,29 @@ export async function init(params) {
 }
 
 /**
+ * Updates a details action label without removing its decorative icon.
+ * @param {HTMLButtonElement} button - Action button whose visible or accessible label changes.
+ * @param {string} label - Translated label to expose for the action.
+ */
+function setDetailsActionLabel(button, label) {
+    button.setAttribute('aria-label', label);
+    configureDetailsActionIcons(button);
+    const labelElement = button.querySelector('.details-play-label, .details-action-label');
+    if (labelElement) labelElement.textContent = label;
+}
+
+/**
+ * Shows decorative action icons only while the mobile stylesheet layout is active.
+ * This keeps the desktop and TV details buttons text-only.
+ * @param {HTMLButtonElement} button - Details action button containing an optional mobile icon.
+ */
+function configureDetailsActionIcons(button) {
+    const mobileLayout = Boolean(window.matchMedia?.('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)').matches);
+    button.querySelectorAll('.details-mobile-icon').forEach(icon => icon.classList.toggle('hidden', !mobileLayout));
+    button.querySelectorAll('.details-play-label').forEach(label => label.classList.toggle('hidden', mobileLayout));
+}
+
+/**
  * Renders the details page content, setting up metadata, backdrop image, buttons, and tabs.
  * Updates the details DOM elements and checks recently watched history.
  * @param {Object} item - The details metadata object of the content.
@@ -91,6 +115,7 @@ function render(item, type) {
         const playBtn = document.getElementById('details-play');
         const trailerBtn = document.getElementById('details-trailer');
         const playlistBtn = document.getElementById('details-playlist');
+        if (playlistBtn) configureDetailsActionIcons(playlistBtn);
 
         // Check for critical DOM elements
         if (!title || !playBtn) {
@@ -226,7 +251,7 @@ function render(item, type) {
 
             if (watchedItem && watchedItem.season !== undefined && watchedItem.episode !== undefined) {
                 // Update button text to show Resume for series
-                playBtn.textContent = `${I18n.t('details.resume')} S${watchedItem.season}:E${watchedItem.episode}`;
+                setDetailsActionLabel(playBtn, `${I18n.t('details.resume')} S${watchedItem.season}:E${watchedItem.episode}`);
                 playBtn.onclick = () => Router.loadPage('player', {
                     id: item.id,
                     type: type,
@@ -234,7 +259,7 @@ function render(item, type) {
                     episode: watchedItem.episode
                 });
             } else {
-                playBtn.textContent = I18n.t('details.play');
+                setDetailsActionLabel(playBtn, I18n.t('details.play'));
                 playBtn.onclick = () => {
                     if (type === 'tv') {
                         Router.loadPage('player', { id: item.id, type: type, season: 1, episode: 1 });
@@ -246,7 +271,7 @@ function render(item, type) {
         } catch (watchError) {
             console.error('Error checking watch history:', watchError);
             // Fallback to normal play button
-            playBtn.textContent = I18n.t('details.play');
+            setDetailsActionLabel(playBtn, I18n.t('details.play'));
             playBtn.onclick = () => {
                 if (type === 'tv') {
                     Router.loadPage('player', { id: item.id, type: type, season: 1, episode: 1 });
@@ -270,7 +295,7 @@ function render(item, type) {
                 trailerBtn.style.display = '';
                 const trailerObj = item.videos.results.find(v => v.key === mainTrailerKey);
                 const trailerName = trailerObj ? ` (${trailerObj.name})` : '';
-                trailerBtn.textContent = `${I18n.t('details.watchTrailer')}${trailerName}`;
+                setDetailsActionLabel(trailerBtn, `${I18n.t('details.watchTrailer')}${trailerName}`);
                 trailerBtn.onclick = () => Router.loadPage('player', { id: item.id, type: 'trailer', ytKey: mainTrailerKey, mediaType: type });
             } else {
                 trailerBtn.classList.add('hidden');
@@ -711,6 +736,13 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
  */
 function switchTab(tabName) {
     try {
+        if (getActiveTab() === tabName) return;
+
+        if (detailsTabAnimation) {
+            detailsTabAnimation.cancel();
+            detailsTabAnimation = null;
+        }
+
         document.querySelectorAll('.tab-panel, .disney-tab-panel').forEach(panel => {
             panel.classList.add('hidden');
             panel.style.display = 'none';
@@ -724,8 +756,23 @@ function switchTab(tabName) {
         const activePanel = document.getElementById(`panel-${tabName}`);
         if (activePanel) {
             activePanel.classList.remove('hidden');
-            activePanel.style.display = tabName === 'seasons' ? 'flex' : 'block';
+            activePanel.style.removeProperty('display');
             SpatialNav.ensureTabindex(activePanel);
+
+            const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+            if (!prefersReducedMotion && typeof activePanel.animate === 'function') {
+                const animation = activePanel.animate(
+                    [
+                        { opacity: 0, transform: 'translateY(8px)' },
+                        { opacity: 1, transform: 'translateY(0)' }
+                    ],
+                    { duration: 200, easing: 'cubic-bezier(0.2, 0, 0, 1)' }
+                );
+                detailsTabAnimation = animation;
+                animation.onfinish = () => {
+                    if (detailsTabAnimation === animation) detailsTabAnimation = null;
+                };
+            }
         }
         
         const activeBtn = document.getElementById(`tab-${tabName}`);

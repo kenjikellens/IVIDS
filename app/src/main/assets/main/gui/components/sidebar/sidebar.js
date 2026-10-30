@@ -1,6 +1,8 @@
 import { Router } from '../../js/router.js';
 
 let _cachedHtml = null;
+let responsiveNavMediaQuery = null;
+let responsiveNavMediaHandler = null;
 
 export const Sidebar = {
     /**
@@ -43,6 +45,8 @@ export const Sidebar = {
             }
             container.innerHTML = `<nav class="nav-rail navbar" id="header">${html}</nav>`;
 
+            Sidebar.setupResponsiveNavigation(container);
+
             // Initialize event listeners
             Sidebar.attachListeners();
 
@@ -59,8 +63,45 @@ export const Sidebar = {
         }
     },
 
+    /**
+     * Keeps desktop utility links in their footer group and moves them into the shared mobile grid.
+     * @param {HTMLElement} container - Mounted sidebar root.
+     */
+    setupResponsiveNavigation: (container) => {
+        const links = container.querySelector('#nav-links');
+        const utilities = container.querySelector('#nav-utilities');
+        if (!links || !utilities || typeof window.matchMedia !== 'function') return;
+
+        if (responsiveNavMediaQuery && responsiveNavMediaHandler) {
+            if (typeof responsiveNavMediaQuery.removeEventListener === 'function') {
+                responsiveNavMediaQuery.removeEventListener('change', responsiveNavMediaHandler);
+            } else if (typeof responsiveNavMediaQuery.removeListener === 'function') {
+                responsiveNavMediaQuery.removeListener(responsiveNavMediaHandler);
+            }
+        }
+
+        const mediaQuery = window.matchMedia('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)');
+        const syncGroups = (event) => {
+            const destination = event.matches ? links : utilities;
+            ['account', 'settings'].forEach(route => {
+                const link = container.querySelector(`.nav-item[data-route="${route}"]`);
+                if (link && link.parentElement !== destination) destination.appendChild(link);
+            });
+        };
+
+        syncGroups(mediaQuery);
+        responsiveNavMediaQuery = mediaQuery;
+        responsiveNavMediaHandler = syncGroups;
+        if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', responsiveNavMediaHandler);
+        } else if (typeof mediaQuery.addListener === 'function') {
+            mediaQuery.addListener(responsiveNavMediaHandler);
+        }
+    },
+
+    /** Binds navigation destinations without changing their size or color on tap. */
     attachListeners: () => {
-        document.querySelectorAll('.nav-item').forEach(link => {
+        document.querySelectorAll('#sidebar-container .nav-item').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const route = e.currentTarget.dataset.route;

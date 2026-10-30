@@ -28,9 +28,6 @@
       "!**/*.map"
     ]
   },
-  "directories": {
-    "doc": "docs"
-  },
   "dependencies": {
     "7zip-bin": "^5.2.0",
     "agent-base": "^6.0.2",

@@ -1620,6 +1620,15 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .color-preview-circle, #current-color-display { background: var(--primary-color); border: none; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); display: inline-block; flex-shrink: 0; font-size: 0; height: 36px; padding: 0; width: 36px; }
 .scale-control-container { align-items: center; background: rgba(255, 255, 255, 0.06); border: none; border-radius: var(--radius-sm); display: inline-flex; gap: 6px; height: 46px; padding: 4px 6px; }
 .scale-control-container .centered-value { background: transparent; border: none; color: #ffffff; font-size: 17px; font-weight: 700; min-width: 60px; padding: 0 4px; text-align: center; }
+.setting-item--ui-scale { align-items: center; }
+.ui-scale-control { align-items: center; background: transparent; border: 0; display: inline-flex; flex: 0 0 auto; gap: 12px; height: auto; padding: 0; }
+.ui-scale-control .scale-adjust-btn { align-items: center; background: #242424; border: 2px solid #383838; border-radius: 11px; display: inline-flex; font-size: 22px; height: 46px; justify-content: center; min-height: 46px; min-width: 46px; padding: 0; width: 46px; }
+.ui-scale-output { align-items: center; color: #ffffff; display: inline-flex; font-size: 15px; font-variant-numeric: tabular-nums; font-weight: 700; justify-content: center; min-width: 64px; padding: 0 6px; }
+.app-info-action { align-items: center; background: #181818; border: 2px solid #303030; border-radius: 14px; box-sizing: border-box; color: #f4f4f4; cursor: pointer; display: grid; font: inherit; gap: 14px; grid-template-columns: 24px minmax(0, 1fr) 24px; min-height: 64px; padding: 0 18px; text-align: left; transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease; width: 100%; }
+.app-info-action:hover, .app-info-action:focus-visible, .app-info-action.focused { background: #202020; border-color: #686868; outline: none; }
+.app-info-action:active { transform: translateY(1px); }
+.app-info-action__icon { filter: brightness(0) invert(1); height: 22px; opacity: 0.9; width: 22px; }
+.app-info-action__chevron { color: #a8a8a8; font-size: 30px; font-weight: 300; justify-self: end; line-height: 1; }
 .setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
 .setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
 .update-status-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }

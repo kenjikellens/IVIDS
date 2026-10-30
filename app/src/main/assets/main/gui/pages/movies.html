@@ -6,7 +6,12 @@
         <h1 class="title-hero hero-title" id="hero-title"></h1>
         <p class="hero-desc" id="hero-desc"></p>
         <div class="hero-buttons btn-group">
-            <button class="btn btn--primary focusable" id="play-btn" data-i18n="player.play">Play</button>
+            <button class="btn btn--primary focusable play-icon-button" id="play-btn" type="button">
+                <svg class="mobile-play-icon hidden" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M5 3L19 12L5 21V3Z" fill="#111111"></path>
+                </svg>
+                <span class="play-button-label" data-i18n="player.play">Play</span>
+            </button>
         </div>
     </div>
 </header>

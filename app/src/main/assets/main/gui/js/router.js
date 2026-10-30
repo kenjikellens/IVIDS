@@ -8,6 +8,9 @@ import { domRecycler } from './dom-recycler.js';
 /** In-memory cache of fetched page HTML templates, keyed by page name. Eliminates re-fetching on back-nav. */
 const _htmlCache = new Map();
 
+/** Cache key for page templates so edited mobile button markup is fetched after an app restart. */
+const PAGE_TEMPLATE_CACHE_VERSION = '20261030T1941';
+
 /** Flag to track whether the initial boot page has loaded. Used to skip splash signals on subsequent loads. */
 let _initialLoadComplete = false;
 
@@ -124,7 +127,8 @@ export const Router = {
             }
             // Toggle always-expanded sidebar class based on page
             const alwaysExpandedPages = ['search', 'playlists', 'settings', 'account'];
-            if (alwaysExpandedPages.includes(pageName)) {
+            const mobileNavigation = window.matchMedia?.('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)').matches;
+            if (alwaysExpandedPages.includes(pageName) && !mobileNavigation) {
                 app.classList.add('sidebar-always-expanded');
             } else {
                 app.classList.remove('sidebar-always-expanded');
@@ -154,7 +158,7 @@ export const Router = {
             } else {
                 const controller = new AbortController();
                 _activeAbortController = controller;
-                const fetchPromise = fetch(`pages/${pageName}.html`, { signal: controller.signal });
+                const fetchPromise = fetch(`pages/${pageName}.html?v=${PAGE_TEMPLATE_CACHE_VERSION}`, { signal: controller.signal });
                 
                 let timeoutId;
                 const timeoutPromise = new Promise((_, reject) => {
@@ -198,7 +202,7 @@ export const Router = {
             try {
                 const isBrowsePage = ['home', 'movies', 'series'].includes(pageName);
                 const modulePath = isBrowsePage ? '../pages/browse.js' : `../pages/${pageName}.js`;
-                const module = await import(modulePath);
+                const module = await import(`${modulePath}?v=${PAGE_TEMPLATE_CACHE_VERSION}`);
                 if (currentGen !== _loadGeneration) return;
 
                 // 3. Initialize Page
@@ -251,11 +255,11 @@ export const Router = {
                         if (p !== pageName) {
                             const isBrowse = ['home', 'movies', 'series'].includes(p);
                             const modulePath = isBrowse ? '../pages/browse.js' : `../pages/${p}.js`;
-                            import(modulePath).catch(() => { /* silent preload failure is OK */ });
+                            import(`${modulePath}?v=${PAGE_TEMPLATE_CACHE_VERSION}`).catch(() => { /* silent preload failure is OK */ });
                             
                             // Prefetch HTML template and cache it
                             if (!_htmlCache.has(p)) {
-                                fetch(`pages/${p}.html`)
+                                fetch(`pages/${p}.html?v=${PAGE_TEMPLATE_CACHE_VERSION}`)
                                     .then(response => {
                                         if (response.ok) {
                                             return response.text();

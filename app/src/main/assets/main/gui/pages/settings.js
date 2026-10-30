@@ -13,7 +13,7 @@ import { VersionManager } from '../js/version-manager.js';
 let settingsManagerInstance = null;
 
 const LANGUAGE_OPTIONS = [
-    { code: 'ar', name: '🇸🇦 Arabic' },
+    { code: 'ar', name: '🇸🇦 العربية' },
     { code: 'bg', name: '🇧🇬 Български' },
     { code: 'bn', name: '🇧🇩 বাংলা' },
     { code: 'ca', name: '🇪🇸 Català' },
@@ -27,20 +27,20 @@ const LANGUAGE_OPTIONS = [
     { code: 'fi', name: '🇫🇮 Suomi' },
     { code: 'fr', name: '🇫🇷 Français' },
     { code: 'he', name: '🇮🇱 עברית' },
-    { code: 'hi', name: '🇮🇳 Hindi' },
+    { code: 'hi', name: '🇮🇳 हिन्दी' },
     { code: 'hr', name: '🇭🇷 Hrvatski' },
     { code: 'hu', name: '🇭🇺 Magyar' },
     { code: 'id', name: '🇮🇩 Indonesia' },
     { code: 'it', name: '🇮🇹 Italiano' },
-    { code: 'ja', name: '🇯🇵 Japanese' },
-    { code: 'ko', name: '🇰🇷 Korean' },
+    { code: 'ja', name: '🇯🇵 日本語' },
+    { code: 'ko', name: '🇰🇷 한국어' },
     { code: 'ms', name: '🇲🇾 Bahasa Melayu' },
     { code: 'nl', name: '🇳🇱 Nederlands' },
     { code: 'no', name: '🇳🇴 Norsk' },
     { code: 'pl', name: '🇵🇱 Polski' },
     { code: 'pt', name: '🇵🇹 Português' },
     { code: 'ro', name: '🇷🇴 Română' },
-    { code: 'ru', name: '🇷🇺 Russian' },
+    { code: 'ru', name: '🇷🇺 Русский' },
     { code: 'sk', name: '🇸🇰 Slovenčina' },
     { code: 'sr', name: '🇷🇸 Српски' },
     { code: 'sv', name: '🇸🇪 Svenska' },
@@ -48,8 +48,8 @@ const LANGUAGE_OPTIONS = [
     { code: 'tl', name: '🇵🇭 Tagalog' },
     { code: 'tr', name: '🇹🇷 Türkçe' },
     { code: 'uk', name: '🇺🇦 Українська' },
-    { code: 'vi', name: '🇻🇳 Vietnamese' },
-    { code: 'zh', name: '🇨🇳 Chinese' }
+    { code: 'vi', name: '🇻🇳 Tiếng Việt' },
+    { code: 'zh', name: '🇨🇳 中文' }
 ];
 
 /**
@@ -241,12 +241,20 @@ class SettingsManager {
         this.applySettingsGlobally();
     }
 
+    /** Updates the interface scale, previews it immediately, and optionally persists it. */
+    setUiScale(value, persist = false) {
+        const normalizedScale = Math.max(0.5, Math.min(2, Math.round(Number(value) * 10) / 10));
+        this.settings.uiScale = normalizedScale.toFixed(1);
+        this.updateDisplays();
+        if (persist) this.saveSettings();
+        else this.applySettingsGlobally();
+    }
+
     /**
      * Binds click event handlers programmatically to settings trigger buttons and modal actions.
      * This coordinates opening modals, triggering updates, and setting up remote capture loops.
      */
     initializeUI() {
-
         // Appearance Modals Triggers
         const editLangBtn = document.getElementById('edit-language-btn');
         if (editLangBtn) {
@@ -297,22 +305,14 @@ class SettingsManager {
         const decBtn = document.getElementById('dec-uiscale-btn');
         if (decBtn) {
             decBtn.onclick = () => {
-                let currentScale = parseFloat(this.settings.uiScale || '1.0');
-                currentScale = Math.max(0.5, Math.round((currentScale - 0.1) * 10) / 10);
-                this.settings.uiScale = currentScale.toFixed(1);
-                this.saveSettings();
-                this.updateDisplays();
+                this.setUiScale(parseFloat(this.settings.uiScale || '1.0') - 0.1, true);
             };
         }
 
         const incBtn = document.getElementById('inc-uiscale-btn');
         if (incBtn) {
             incBtn.onclick = () => {
-                let currentScale = parseFloat(this.settings.uiScale || '1.0');
-                currentScale = Math.min(2.0, Math.round((currentScale + 0.1) * 10) / 10);
-                this.settings.uiScale = currentScale.toFixed(1);
-                this.saveSettings();
-                this.updateDisplays();
+                this.setUiScale(parseFloat(this.settings.uiScale || '1.0') + 0.1, true);
             };
         }
 
@@ -330,6 +330,16 @@ class SettingsManager {
         if (editUpdateModeBtn) {
             editUpdateModeBtn.onclick = () => this.openModal('update-mode-modal');
         }
+
+        document.querySelectorAll('.settings-container .setting-item').forEach(row => {
+            row.onclick = (event) => {
+                // The UI scale row is a value control, not a row-level shortcut: only its +/- buttons change scale.
+                if (row.classList.contains('setting-item--ui-scale')) return;
+                if (event.target.closest('button, input, select, a, .form-toggle')) return;
+                const action = row.querySelector('.edit-trigger, .form-toggle, #check-updates-btn, #app-info-btn, .btn');
+                if (action) action.click();
+            };
+        });
 
         const appInfoBtn = document.getElementById('app-info-btn');
         if (appInfoBtn) {
@@ -519,9 +529,9 @@ class SettingsManager {
         }
 
         const scaleDisplay = document.getElementById('current-uiscale-display');
+        const currentScale = Math.max(0.5, Math.min(2, parseFloat(this.settings.uiScale || '1.0')));
         if (scaleDisplay) {
-            const pct = Math.round(parseFloat(this.settings.uiScale || '1.0') * 100);
-            scaleDisplay.textContent = `${pct}%`;
+            scaleDisplay.textContent = `${Math.round(currentScale * 100)}%`;
         }
         
         const toggleAdultInput = document.getElementById('adult-toggle-input');
@@ -557,7 +567,13 @@ class SettingsManager {
         const manualContainer = document.getElementById('manual-check-container');
         if (manualContainer) {
             const isManualOrAdvanced = this.settings.updateMode === 'manual' || this.settings.updateMode === 'advanced';
-            manualContainer.style.display = isManualOrAdvanced ? 'flex' : 'none';
+            if (isManualOrAdvanced) {
+                manualContainer.classList.remove('hidden');
+                manualContainer.style.display = 'flex';
+            } else {
+                manualContainer.classList.add('hidden');
+                manualContainer.style.display = 'none';
+            }
 
             const checkBtn = document.getElementById('check-updates-btn');
             const checkLabel = manualContainer.querySelector('.setting-label');
@@ -831,6 +847,7 @@ class SettingsManager {
                 };
             }
         } else if (modalId === 'language-modal') {
+            this.renderLanguageOptions();
             const flagEl = document.getElementById('lang-stepper-flag');
             const nameEl = document.getElementById('lang-stepper-name');
             const updateLangStepper = () => {
@@ -856,6 +873,8 @@ class SettingsManager {
                     idx = (idx - 1 + LANGUAGE_OPTIONS.length) % LANGUAGE_OPTIONS.length;
                     this.pendingSettings.language = LANGUAGE_OPTIONS[idx].code;
                     updateLangStepper();
+                    this.syncLanguageOptions();
+                    if (window.i18n) window.i18n.setLanguage(this.pendingSettings.language);
                 };
             }
 
@@ -868,6 +887,8 @@ class SettingsManager {
                     idx = (idx + 1) % LANGUAGE_OPTIONS.length;
                     this.pendingSettings.language = LANGUAGE_OPTIONS[idx].code;
                     updateLangStepper();
+                    this.syncLanguageOptions();
+                    if (window.i18n) window.i18n.setLanguage(this.pendingSettings.language);
                 };
             }
         } else {
@@ -884,7 +905,8 @@ class SettingsManager {
 
         let focusTarget = null;
         if (modalId === 'language-modal') {
-            focusTarget = document.getElementById('lang-next-btn') || document.getElementById('lang-prev-btn');
+            focusTarget = modal.querySelector('#language-selection-grid .language-card') ||
+                document.getElementById('lang-next-btn') || document.getElementById('lang-prev-btn');
         } else if (modalId === 'color-modal' || modalId === 'update-mode-modal') {
             focusTarget = modal.querySelector('.chip--option.is-active, .chip--option.active, .option-chip.active');
         } else if (modalId === 'player-modal') {
@@ -934,6 +956,24 @@ class SettingsManager {
             };
         }
 
+        const backBtn = modal.querySelector('.modal__back-btn');
+        if (backBtn) {
+            const handleBack = (e) => {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                if (modalId === 'language-modal') {
+                    this.applyPending('language');
+                } else if (['color-modal', 'update-mode-modal', 'player-modal', 'm3u-modal'].includes(modalId)) {
+                    this.applyPending(key);
+                } else {
+                    this.closeModal();
+                }
+            };
+            backBtn.onclick = handleBack;
+        }
+
         const closeXBtn = modal.querySelector('.modal__close, .modal-close-x');
         if (closeXBtn) {
             closeXBtn.onclick = (e) => {
@@ -980,9 +1020,91 @@ class SettingsManager {
         if (modalId === 'update-mode-modal') {
             const warning = document.getElementById('advanced-warning');
             if (warning) {
-                warning.style.display = value === 'advanced' ? 'block' : 'none';
+                if (value === 'advanced') {
+                    warning.classList.remove('hidden');
+                    warning.style.display = 'block';
+                } else {
+                    warning.classList.add('hidden');
+                    warning.style.display = 'none';
+                }
             }
         }
+    }
+
+    /**
+     * Renders the available language choices as searchable native-name rows with flags.
+     * Each choice updates the pending language and commits it immediately.
+     */
+    renderLanguageOptions() {
+        const grid = document.getElementById('language-selection-grid');
+        if (!grid) return;
+        const searchInput = document.getElementById('language-search');
+
+        const mobileLayout = window.matchMedia?.('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)').matches;
+        if (!mobileLayout) {
+            grid.replaceChildren();
+            searchInput?.classList.add('hidden');
+            return;
+        }
+
+        searchInput?.classList.remove('hidden');
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.oninput = () => this.filterLanguageOptions(searchInput.value);
+        }
+        grid.replaceChildren();
+        LANGUAGE_OPTIONS.forEach(({ code, name }) => {
+            const match = name.match(/^([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])\s+(.*)$/);
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'language-card focusable';
+            card.dataset.language = code;
+            card.setAttribute('aria-pressed', String((this.pendingSettings.language || 'en') === code));
+
+            const flag = document.createElement('span');
+            flag.className = 'language-card__flag';
+            flag.textContent = match ? match[1] : '';
+            const label = document.createElement('span');
+            label.className = 'language-card__name';
+            label.textContent = match ? match[2] : name;
+            const check = document.createElement('span');
+            check.className = 'language-card__check';
+            check.setAttribute('aria-hidden', 'true');
+            check.textContent = '✓';
+            card.append(flag, label, check);
+            card.onclick = async () => {
+                this.pendingSettings.language = code;
+                this.syncLanguageOptions();
+                if (window.i18n) await window.i18n.setLanguage(code);
+                await this.applyPending('language');
+            };
+            grid.appendChild(card);
+        });
+        this.syncLanguageOptions();
+    }
+
+    /**
+     * Filters the mobile language list by its displayed native-language name.
+     * @param {string} query - Text entered in the language search field.
+     */
+    filterLanguageOptions(query) {
+        const normalizedQuery = query.trim().toLocaleLowerCase();
+        document.querySelectorAll('#language-selection-grid .language-card').forEach(card => {
+            const languageName = card.querySelector('.language-card__name')?.textContent || '';
+            card.hidden = !languageName.toLocaleLowerCase().includes(normalizedQuery);
+        });
+    }
+
+    /**
+     * Updates the selected language card and its accessible pressed state.
+     */
+    syncLanguageOptions() {
+        const selectedLanguage = this.pendingSettings.language || 'en';
+        document.querySelectorAll('#language-selection-grid .language-card').forEach(card => {
+            const selected = card.dataset.language === selectedLanguage;
+            card.classList.toggle('is-active', selected);
+            card.setAttribute('aria-pressed', String(selected));
+        });
     }
 
     /**
@@ -1016,7 +1138,13 @@ class SettingsManager {
         if (key === 'updateMode') {
             const warning = document.getElementById('advanced-warning');
             if (warning) {
-                warning.style.display = value === 'advanced' ? 'block' : 'none';
+                if (value === 'advanced') {
+                    warning.classList.remove('hidden');
+                    warning.style.display = 'block';
+                } else {
+                    warning.classList.add('hidden');
+                    warning.style.display = 'none';
+                }
             }
         }
 
@@ -1094,6 +1222,14 @@ class SettingsManager {
                 item.classList.add('moving');
             }
             item.dataset.id = provider.id;
+
+            const header = document.createElement('div');
+            header.className = 'provider-header';
+            const title = document.createElement('span');
+            title.className = 'provider-title';
+            title.textContent = provider.name || `Provider ${idx + 1}`;
+            header.appendChild(title);
+            item.appendChild(header);
 
             const input = document.createElement('input');
             input.type = 'url';
@@ -1182,6 +1318,14 @@ class SettingsManager {
                 item.classList.add('moving');
             }
             item.dataset.id = playlist.id;
+
+            const header = document.createElement('div');
+            header.className = 'provider-header';
+            const title = document.createElement('span');
+            title.className = 'provider-title';
+            title.textContent = playlist.name || `Playlist ${idx + 1}`;
+            header.appendChild(title);
+            item.appendChild(header);
 
             const input = document.createElement('input');
             input.type = 'url';

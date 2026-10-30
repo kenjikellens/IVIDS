@@ -26,6 +26,8 @@ export function init(params = {}) {
     const circleBackBtn = document.getElementById('login-circle-back');
     const tabs = Array.from(document.querySelectorAll('.tab-btn, .login-tab'));
 
+    enableNativeMobileInputs([emailInput, usernameInput, pinInput]);
+
     tabs.forEach(tab => {
         tab.onclick = () => setMode(tab.dataset.mode || 'signin');
     });
@@ -63,6 +65,21 @@ export function init(params = {}) {
     updateCooldownMessage();
     if (window.i18n) window.i18n.applyTranslations();
     SpatialNav.focusFirst();
+}
+
+/**
+ * Enables the native on-screen keyboard for touch mobile users while retaining TV input behavior.
+ * The desktop and TV flow keeps its existing readonly fields and remote keyboard integration.
+ * @param {Array<HTMLInputElement|null>} inputs - Login fields to configure for touch entry.
+ */
+function enableNativeMobileInputs(inputs) {
+    const isTouchMobile = window.matchMedia?.('(pointer: coarse) and (max-width: 950px)').matches;
+    if (!isTouchMobile) return;
+
+    inputs.filter(Boolean).forEach(input => {
+        input.removeAttribute('readonly');
+        input.inputMode = input.id === 'login-pin' ? 'numeric' : (input.id === 'login-email' ? 'email' : 'text');
+    });
 }
 
 function t(key, fallback, replacements = {}) {

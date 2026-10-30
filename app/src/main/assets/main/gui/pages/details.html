@@ -20,10 +20,20 @@
                 </div>
                 <p class="details-overview" id="details-overview"></p>
                 <div class="details-actions btn-group">
-                    <button class="btn btn--primary focusable" id="details-play" data-i18n="details.play">Play</button>
-                    <button class="btn btn--secondary focusable hidden" id="details-trailer" data-i18n="details.watchTrailer">Watch Trailer</button>
-                    <button class="btn btn--secondary focusable" id="details-playlist"
-                        data-i18n="details.addToPlaylist">Add to Playlist</button>
+                    <button class="btn btn--primary focusable play-icon-button details-play-icon-btn" id="details-play" type="button" aria-label="Play">
+                        <svg class="mobile-play-icon details-play-icon details-mobile-icon hidden" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M5 3L19 12L5 21V3Z" fill="#111111"></path>
+                        </svg>
+                        <span class="details-play-label hidden" data-i18n="details.play" aria-hidden="true">Play</span>
+                    </button>
+                    <button class="btn btn--secondary focusable hidden" id="details-trailer">
+                        <img src="images/movies.svg" class="details-action-icon details-mobile-icon hidden" alt="">
+                        <span class="details-action-label" data-i18n="details.watchTrailer">Watch Trailer</span>
+                    </button>
+                    <button class="btn btn--secondary focusable" id="details-playlist">
+                        <img src="images/playlists.svg" class="details-action-icon details-mobile-icon hidden" alt="">
+                        <span class="details-action-label" data-i18n="details.addToPlaylist">Add to Playlist</span>
+                    </button>
                 </div>
             </div>
             <div class="details-poster-container">

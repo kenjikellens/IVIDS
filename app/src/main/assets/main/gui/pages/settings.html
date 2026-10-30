@@ -24,15 +24,15 @@
             </div>
         </div>
 
-        <div class="setting-item">
+        <div class="setting-item setting-item--ui-scale">
             <div class="setting-info">
-                <div class="setting-label" data-i18n="settings.uiScale">UI Scale</div>
-                <div class="setting-description" data-i18n="settings.uiScaleDesc">Adjust the size of the user interface</div>
+                <div class="setting-label" id="ui-scale-label" data-i18n="settings.uiScale">UI Scale</div>
+                <div class="setting-description" id="ui-scale-description" data-i18n="settings.uiScaleDesc">Adjust the size of the user interface</div>
             </div>
-            <div class="setting-control scale-control-container">
-                <button id="dec-uiscale-btn" class="btn btn--secondary btn--square-sm edit-trigger focusable scale-adjust-btn">-</button>
-                <div id="current-uiscale-display" class="current-value-display centered-value">100%</div>
-                <button id="inc-uiscale-btn" class="btn btn--secondary btn--square-sm edit-trigger focusable scale-adjust-btn">+</button>
+            <div class="setting-control ui-scale-control">
+                <button id="dec-uiscale-btn" class="btn btn--secondary btn--square-sm focusable scale-adjust-btn" type="button" aria-label="Decrease UI size">−</button>
+                <output id="current-uiscale-display" class="ui-scale-output" aria-live="polite">100%</output>
+                <button id="inc-uiscale-btn" class="btn btn--secondary btn--square-sm focusable scale-adjust-btn" type="button" aria-label="Increase UI size">+</button>
             </div>
         </div>
 
@@ -165,23 +165,26 @@
     </div>
 
     <!-- App Info Settings -->
-    <div id="app-info-section" class="settings-section">
-        <h2 class="section-title">
-            <img src="images/info.svg" class="section-title__icon" alt="">
+    <div id="app-info-section" class="settings-section settings-section--app-info">
+        <button id="app-info-btn" class="app-info-action focusable" type="button">
+            <img src="images/info.svg" class="app-info-action__icon" alt="">
             <span data-i18n="settings.appInfo">App Info</span>
-        </h2>
-
-        <div class="setting-item centered-setting">
-            <button id="app-info-btn" class="btn btn--secondary btn--fixed-min mx-auto focusable" data-i18n="settings.appInfo">App Info</button>
-        </div>
+            <span class="app-info-action__chevron" aria-hidden="true">›</span>
+        </button>
     </div>
 </div>
 
 <!-- Language Modal -->
 <div id="language-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <h2 class="modal__title" data-i18n="settings.language">Language</h2>
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
+        <h2 id="language-modal-title" class="modal__title" data-i18n="settings.language">Language</h2>
         <div class="modal__body">
+            <input id="language-search" class="form-input language-search focusable hidden" type="search"
+                autocomplete="off" data-i18n="search.placeholder" placeholder="Search for movies or series...">
+            <div id="language-selection-grid" class="language-selection-grid" aria-labelledby="language-modal-title"></div>
             <div class="language-stepper-container">
                 <button id="lang-prev-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn" aria-label="Previous Language">
                     <img src="images/back.svg" class="setting-stepper-icon" alt="Previous">
@@ -205,6 +208,9 @@
 <!-- Color Modal -->
 <div id="color-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
         <h2 class="modal__title" data-i18n="settings.accentColor">Accent Color</h2>
         <div class="modal__body">
             <div id="color-options" class="chip-grid chip-grid--color">
@@ -239,6 +245,9 @@
 <!-- Update Mode Modal -->
 <div id="update-mode-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
         <h2 class="modal__title" data-i18n="settings.updateMode">Update Mode</h2>
         <div class="modal__body">
             <div id="update-mode-options" class="chip-grid chip-grid--2col">
@@ -263,6 +272,9 @@
 <!-- Version Selector Modal -->
 <div id="version-selector-modal" class="modal">
     <div class="modal__dialog modal__dialog--lg">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
         <h2 class="modal__title" data-i18n="settings.selectVersion">Select Version</h2>
         <div class="modal__body modal__body--scroll">
             <div id="version-list-loader" class="loader-center-container hidden">
@@ -281,6 +293,9 @@
 <!-- Player Providers Modal -->
 <div id="player-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
         <h2 class="modal__title" data-i18n="settings.playerProviders">Player Providers</h2>
         <div class="modal__body modal__body--scroll">
             <div id="player-providers-list" class="providers-list">
@@ -298,6 +313,9 @@
 <!-- M3U Playlists Modal -->
 <div id="m3u-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
         <h2 class="modal__title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
         <div class="modal__body modal__body--scroll">
             <div id="m3u-playlists-list" class="providers-list">
@@ -315,6 +333,9 @@
 <!-- App Info Modal -->
 <div id="app-info-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
         <h2 class="modal__title" data-i18n="settings.appInfo">App Info</h2>
         <div class="modal__body">
             <div class="setting-item">
@@ -345,6 +366,9 @@
 <!-- Changes Modal -->
 <div id="changes-modal" class="modal">
     <div class="modal__dialog modal__dialog--lg">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
         <button class="btn btn--ghost btn--circle modal__close focusable" aria-label="Close modal">&times;</button>
         <h2 id="changes-modal-title" class="modal__title" data-i18n="settings.changes">Changes</h2>
         <div class="modal__body modal__body--scroll">
