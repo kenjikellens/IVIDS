@@ -1,5 +1,5 @@
 <div class="livetv-page-layout">
-    <!-- Top Area: Search and Compact Actions -->
+    <!-- Top Area: Clean Search Bar Only (Categories/Countries are in the Left Vertical List) -->
     <div class="top-bar livetv-top-bar">
         <div class="search-box">
             <div class="form-control-wrapper focusable-container">
@@ -9,22 +9,21 @@
                 <button id="search-clear" class="search-clear-btn focusable hidden" aria-label="Clear Search">&times;</button>
             </div>
         </div>
-
-        <div class="top-bar__actions livetv-top-actions btn-group">
-            <button id="livetv-filter-btn" class="btn btn--secondary focusable" title="Filters">
-                <img src="images/filter.svg" class="filter-icon" alt="Filters">
-                <span data-i18n="livetv.filters">Filters</span>
-                <span id="active-filter-badge" class="badge badge--primary hidden">0</span>
-            </button>
-        </div>
     </div>
 
-    <!-- Two-Column Layout Body -->
+    <!-- Three-Column IPTV Body: [Categories / Countries List] | [Channels List] | [Video Preview & EPG] -->
     <div class="livetv-two-column-layout">
-        <!-- Left Column: Scrollable list of channels -->
+        <!-- Left Column: Vertical Scrollable List of Categories & Countries -->
+        <div class="livetv-categories-column">
+            <div class="categories-list" id="categories-list">
+                <!-- Dynamically injected focusable category & country rows -->
+            </div>
+        </div>
+
+        <!-- Middle Column: Scrollable list of channels -->
         <div class="livetv-list-column">
             <div class="channels-list" id="channels-list">
-                <!-- Dynamically injected wide rectangular rows -->
+                <!-- Dynamically injected clean channel rows -->
             </div>
 
             <div id="no-channels-message" class="empty-state hidden">
@@ -44,7 +43,7 @@
             <!-- Active Channel Details -->
             <div id="hero-active-content" class="hero-active-content hidden">
                 <!-- Top Card: 16:9 Widescreen Video Preview -->
-                <div class="card card--panel card--widescreen preview-card preview-card-video">
+                <div class="card card--panel card--widescreen preview-card preview-card-video focusable" id="livetv-preview-card" tabindex="0">
                     <video id="livetv-preview-video" autoplay muted playsinline></video>
                     <div id="preview-video-loading" class="preview-video-loading hidden">
                         <div class="ivids-loader"></div>
@@ -79,43 +78,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modern Filter Modal -->
-    <div id="livetv-filter-modal" class="modal">
-        <div class="modal__dialog modal__dialog--xl">
-            <h2 class="modal__title" data-i18n="livetv.filterDialog">Filter Channels</h2>
-
-            <div class="modal__body modal__body--scroll">
-                <!-- Genre Section -->
-                <div class="form-group">
-                    <div class="group-header">
-                        <h3 data-i18n="livetv.genre">Genre</h3>
-                        <span id="genre-filter-count" class="badge"></span>
-                    </div>
-                    <div id="filter-genre-chips" class="chip-grid chip-grid--3col">
-                        <!-- Genre chips injected dynamically -->
-                    </div>
-                </div>
-
-                <!-- Country Section -->
-                <div class="form-group">
-                    <div class="group-header">
-                        <h3 data-i18n="livetv.country">Country</h3>
-                        <span id="country-filter-count" class="badge"></span>
-                    </div>
-                    <div id="filter-country-chips" class="chip-grid chip-grid--3col">
-                        <!-- Country chips injected dynamically -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
-                <button id="filter-apply-btn" class="btn btn--primary focusable" data-i18n="livetv.apply">Apply</button>
-                <button id="filter-clear-btn" class="btn btn--danger focusable" data-i18n="livetv.clearFilters">Clear All</button>
-                <button id="filter-cancel-btn" class="btn btn--secondary focusable" data-i18n="livetv.cancel">Cancel</button>
             </div>
         </div>
     </div>

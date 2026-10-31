@@ -1538,9 +1538,26 @@ input, textarea, select { font: inherit; }
 /* Live TV main two-column content layout. */
 .livetv-two-column-layout { box-sizing: border-box; display: flex; flex: 1; gap: 2%; min-height: 0; padding: 1rem var(--app-content-padding-x) var(--app-content-padding-x); }
 /* Left scrollable channel list column. */
-.livetv-list-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 34%; }
+/* Left scrollable categories and countries list column. */
+.livetv-categories-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 20%; }
+/* Vertical stack container for category and country rows. */
+.categories-list { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 4px; width: 100%; }
+/* Category and country row item in the Live TV left column. */
+.category-list-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; gap: 10px; justify-content: space-between; min-height: 46px; padding: 10px 14px; transition: border-color 150ms ease, background-color 150ms ease; width: 100%; }
+/* Category row hover state. */
+.category-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+/* Selected category row active state with primary brand highlight. */
+.category-list-item.active, .category-list-item.is-selected { background: rgba(var(--primary-rgb), 0.2); border-color: var(--primary-color); }
+/* Category row spatial navigation focus state. */
+.category-list-item:focus, .category-list-item.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+/* Category or country label text. */
+.category-list-name { color: #ffffff; font-size: 0.95rem; font-weight: 700; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+/* Channel count badge inside category row. */
+.category-list-count { background: rgba(255, 255, 255, 0.08); border-radius: 999px; color: var(--text-muted); flex-shrink: 0; font-size: 0.78rem; font-weight: 700; padding: 2px 8px; }
+/* Middle scrollable channel list column. */
+.livetv-list-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 28%; }
 /* Right channel video preview and EPG schedule column. */
-.livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 64%; }
+.livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 48%; }
 .livetv-list-column::-webkit-scrollbar-thumb, .livetv-preview-column::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
 /* Channel items vertical stack container. */
 .channels-list { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 4px; width: 100%; }

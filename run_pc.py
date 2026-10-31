@@ -519,6 +519,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         try:
+            self._proxy_headers_sent = False
             req = urllib.request.Request(target_url)
             referer = query.get('referer', [None])[0]
             origin = query.get('origin', [None])[0]
@@ -619,6 +620,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     else:
                         self.send_header('Cache-Control', 'no-store')
                     self.end_headers()
+                    self._proxy_headers_sent = True
                     self.wfile.write(body)
                 else:
                     # Stream directly to client
@@ -635,6 +637,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     else:
                         self.send_header('Cache-Control', 'no-store')
                     self.end_headers()
+                    self._proxy_headers_sent = True
 
                     if first_chunk:
                         self.wfile.write(first_chunk)
@@ -657,6 +660,11 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 sys.stderr.write(f"[IVIDS] Failed to send URLError response to client: {str(se)}\n")
         except (ConnectionError, OSError) as e:
             # Client connection aborted, reset, or closed gracefully
+            if not getattr(self, '_proxy_headers_sent', False):
+                try:
+                    self.send_error(502, f'Upstream connection failed: {str(e)}')
+                except Exception:
+                    pass
             sys.stderr.write(f"[IVIDS] Client connection closed or aborted during proxying: {str(e)}\n")
         except Exception as e:
             try:
