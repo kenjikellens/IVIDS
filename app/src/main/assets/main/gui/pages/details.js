@@ -912,6 +912,44 @@ function setupTabSwipe() {
 }
 
 /**
+ * Renders the centered empty state with circular retry button for the Extras tab.
+ * @param {HTMLElement} container - The extras-list container.
+ * @param {number|string} contentId - TMDb media identifier.
+ * @param {string} mediaType - Media type ('movie' or 'tv').
+ */
+function renderExtrasEmptyState(container, contentId, mediaType) {
+    container.innerHTML = '';
+    const emptyState = document.createElement('div');
+    emptyState.className = 'extras-empty-state';
+    emptyState.innerHTML = `
+        <p class="extras-empty-text">${I18n.t('details.noExtras')}</p>
+        <button type="button" class="btn btn--secondary btn--circle extras-retry-btn focusable" id="extras-retry-btn" title="${I18n.t('common.retry') || 'Retry'}" aria-label="${I18n.t('common.retry') || 'Retry'}">
+            <img src="svg/retry.svg" class="extras-retry-icon" alt="">
+        </button>
+    `;
+    container.appendChild(emptyState);
+
+    const retryBtn = emptyState.querySelector('#extras-retry-btn');
+    if (retryBtn) {
+        retryBtn.onclick = async () => {
+            container.innerHTML = `<div class="loader-center-container">${getLoaderHtml()}</div>`;
+            try {
+                const refreshed = await Api.getDetails(contentId, mediaType);
+                if (refreshed && refreshed.videos) {
+                    renderExtras(refreshed.videos, contentId, mediaType);
+                } else {
+                    renderExtrasEmptyState(container, contentId, mediaType);
+                }
+            } catch (err) {
+                console.error('Error retrying extras:', err);
+                renderExtrasEmptyState(container, contentId, mediaType);
+            }
+        };
+    }
+    SpatialNav.ensureTabindex(container);
+}
+
+/**
  * Renders extra videos (trailers, clips, featurettes) inside a vertical list layout.
  * Affects the list of extra videos in the Extras panel.
  * @param {Object} videos - The TMDb videos response object.
@@ -925,7 +963,7 @@ function renderExtras(videos, contentId, mediaType) {
         container.innerHTML = '';
         
         if (!videos || !videos.results || videos.results.length === 0) {
-            container.innerHTML = `<p class="text-muted-light py-20">${I18n.t('details.noExtras')}</p>`;
+            renderExtrasEmptyState(container, contentId, mediaType);
             return;
         }
         
@@ -973,6 +1011,11 @@ function renderExtras(videos, contentId, mediaType) {
             loadBackgroundWithLoader(card.querySelector('.card__thumb'), thumbUrl);
             container.appendChild(card);
         });
+
+        if (container.children.length === 0) {
+            renderExtrasEmptyState(container, contentId, mediaType);
+            return;
+        }
 
         SpatialNav.ensureTabindex(container);
     } catch (error) {

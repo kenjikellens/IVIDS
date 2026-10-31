@@ -242,6 +242,14 @@ class SettingsManager {
     }
 
     /** Updates the interface scale, previews it immediately, and optionally persists it. */
+    /**
+     * Determines whether the active client viewport is in mobile touch portrait layout.
+     * @returns {boolean} True if matching mobile viewport bounds.
+     */
+    isMobileLayout() {
+        return Boolean(window.matchMedia?.('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)').matches);
+    }
+
     setUiScale(value, persist = false) {
         const normalizedScale = Math.max(0.5, Math.min(2, Math.round(Number(value) * 10) / 10));
         this.settings.uiScale = normalizedScale.toFixed(1);
@@ -333,6 +341,8 @@ class SettingsManager {
 
         document.querySelectorAll('.settings-container .setting-item').forEach(row => {
             row.onclick = (event) => {
+                // In landscape mode / desktop viewports, row clicks are disabled so only explicit buttons or toggles respond.
+                if (!this.isMobileLayout()) return;
                 // The UI scale row is a value control, not a row-level shortcut: only its +/- buttons change scale.
                 if (row.classList.contains('setting-item--ui-scale')) return;
                 if (event.target.closest('button, input, select, a, .form-toggle')) return;
@@ -353,7 +363,13 @@ class SettingsManager {
                 this.openUpdateCheckModal();
             };
             const checkRow = document.getElementById('check-updates-row');
-            if (checkRow) checkRow.onclick = () => this.openUpdateCheckModal();
+            if (checkRow) {
+                checkRow.onclick = (e) => {
+                    if (!this.isMobileLayout()) return;
+                    if (e.target.closest('#check-updates-btn')) return;
+                    this.openUpdateCheckModal();
+                };
+            }
         }
 
         const updateCloseX = document.getElementById('update-modal-close-x');

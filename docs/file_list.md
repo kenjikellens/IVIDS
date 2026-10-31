@@ -126,6 +126,7 @@ app/src/main/assets/main/gui/svg/error.svg
 app/src/main/assets/main/gui/svg/info.svg
 app/src/main/assets/main/gui/svg/loader.svg
 app/src/main/assets/main/gui/svg/move.svg
+app/src/main/assets/main/gui/svg/retry.svg
 app/src/main/assets/main/gui/svg/trash.svg
 app/src/main/assets/main/icon.png
 app/src/main/assets/main/logic/account-helper.js

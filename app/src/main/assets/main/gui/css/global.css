@@ -444,6 +444,70 @@ input, textarea, select { font: inherit; }
     width: 42px;
 }
 
+/* Empty state container for the Extras and Trailers panel when no videos exist. */
+.extras-empty-state {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    min-height: 240px;
+    padding: 60px 20px 40px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Subtle greyish empty state description text. */
+.extras-empty-text {
+    color: #888888;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 400px;
+}
+
+/* Circular retry button beneath empty state message. */
+.extras-retry-btn {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    height: 48px;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 48px;
+}
+
+/* Hover state for circular retry button. */
+.extras-retry-btn:hover, .extras-retry-btn:active {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Focus state for circular retry button with standardized thick white outline. */
+.extras-retry-btn:focus, .extras-retry-btn.focused {
+    border-color: #ffffff;
+    outline: 2px solid #ffffff;
+}
+
+/* Standalone retry icon inside empty state action button. */
+.extras-retry-icon {
+    color: #ffffff;
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 20px;
+    pointer-events: none;
+    width: 20px;
+}
+
 /* Card gradient overlay providing dark readability backing for widescreen card titles. */
 .card__overlay, .playlist-overlay {
     align-items: flex-start;
@@ -506,6 +570,22 @@ input, textarea, select { font: inherit; }
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
     width: 100%;
+}
+
+/* Episode metadata typography (duration, air date) inside row cards. */
+.episode-meta {
+    align-items: center;
+    color: var(--text-muted);
+    display: flex;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.episode-meta__item:not(:last-child)::after {
+    color: rgba(255, 255, 255, 0.35);
+    content: "•";
+    margin-left: 8px;
 }
 
 /* Card description and overview text with 2-line clamping. */
@@ -1380,8 +1460,46 @@ input, textarea, select { font: inherit; }
     padding-top: 4rem;
     position: relative;
 }
-/* Circular floating back button for details view (hidden on desktop/TV viewport). */
-.details-back-btn { display: none; }
+/* Circular floating back button positioned top-left for navigation. */
+.details-back-btn {
+    align-items: center;
+    background: rgba(18, 18, 18, 0.75);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    left: calc(var(--app-sidebar-width) + 24px);
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    position: fixed;
+    top: 24px;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 44px;
+    z-index: 100;
+}
+/* Hover state for circular details back button. */
+.details-back-btn:hover, .details-back-btn:active {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+/* Focus state for circular details back button with standardized thick white outline. */
+.details-back-btn:focus, .details-back-btn.focused {
+    border-color: #ffffff;
+    outline: 2px solid #ffffff;
+}
+/* Icon inside circular details back button. */
+.details-back-icon {
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 20px;
+    pointer-events: none;
+    width: 20px;
+}
 .details-layout { display: flex; flex-direction: column; gap: 2.5rem; margin: 0 auto; max-width: 90rem; padding: 0 5%; position: relative; transition: opacity 0.2s ease; z-index: 10; }
 /* Hides unpopulated details layout while metadata is being fetched from API. */
 .details-layout.is-loading { opacity: 0; pointer-events: none; }

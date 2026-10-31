@@ -126,6 +126,39 @@
 #app .details-page { box-sizing: border-box; min-height: 100vh; padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px)); }
 #app .details-layout { gap: 12px; margin: 0 auto; max-width: 600px; padding: 0 16px; position: relative; z-index: 1; }
 
+/* Mobile circular floating back button pinned to top-left with safe-area spacing. */
+#app #details-back-btn,
+#app .details-back-btn {
+    align-items: center;
+    background: rgba(18, 18, 18, 0.72);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    height: 42px;
+    justify-content: center;
+    left: 16px;
+    min-height: 42px;
+    min-width: 42px;
+    padding: 0;
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    width: 42px;
+    z-index: 50;
+}
+#app .details-back-btn:active {
+    background: rgba(255, 255, 255, 0.18);
+}
+#app .details-back-icon {
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 18px;
+    pointer-events: none;
+    width: 18px;
+}
+
 /* Sleek background backdrop for mobile hero. */
 #app .details-backdrop { height: 24vh; min-height: 160px; position: absolute; top: 0; left: 0; right: 0; width: 100%; }
 #app .details-backdrop-overlay { background: linear-gradient(180deg, rgba(5, 5, 5, 0) 0%, rgba(5, 5, 5, 0.45) 55%, #050505 100%); }
@@ -142,17 +175,17 @@
 
 /* Compact horizontal action buttons row. */
 #app .details-actions { align-items: center; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 8px; margin: 4px 0 10px; width: 100%; }
-#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; flex: 1 1 0; font-size: 14px; font-weight: 700; gap: 8px; height: 42px; justify-content: center; min-height: 42px; min-width: 0; padding: 0 14px; width: auto; }
+#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: 12px; color: #111111; display: inline-flex; flex: 1 1 0; font-size: 14px; font-weight: 700; gap: 8px; height: 48px; justify-content: center; min-height: 48px; min-width: 0; padding: 0 14px; width: auto; }
 #app .details-play-icon { display: inline-block !important; filter: brightness(0); height: 16px; pointer-events: none; width: 16px; }
 #app .details-play-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 14px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: hidden; position: static; text-overflow: ellipsis; white-space: nowrap; }
-#app #details-trailer, #app #details-playlist { align-items: center; background: #1d1d1d; border: 1px solid #383838; border-radius: var(--radius-sm); color: #f5f5f5; display: inline-flex; flex: 1 1 0; font-size: 13.5px; font-weight: 600; gap: 6px; height: 42px; justify-content: center; min-height: 42px; min-width: 0; padding: 0 10px; width: auto; }
+#app #details-trailer, #app #details-playlist { align-items: center; background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; display: inline-flex; flex: 1 1 0; font-size: 13.5px; font-weight: 600; gap: 6px; height: 48px; justify-content: center; min-height: 48px; min-width: 0; padding: 0 10px; width: auto; }
 #app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 16px; height: 16px; pointer-events: none; width: 16px; }
 #app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* Compact pill tab bar for mobile. */
-#app #details-tabs { align-items: stretch; background: #191919; border: 1px solid #303030; border-radius: 999px; box-sizing: border-box; display: flex; gap: 4px; justify-content: center; margin: 4px auto 10px; max-width: 500px; padding: 3px; width: 100%; }
-#app #details-tabs .btn { background: transparent; border: 0; border-radius: 999px; flex: 1 1 0; font-size: 13px; font-weight: 600; height: 36px; min-height: 36px; min-width: 0; padding: 0 8px; transition: background-color 180ms ease, color 180ms ease; }
-#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .btn.btn--primary { background: #ffffff; color: #111111; }
+/* Unified dark glassmorphic tab bar for mobile. */
+#app #details-tabs { align-items: stretch; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; box-sizing: border-box; display: flex; gap: 6px; justify-content: center; margin: 4px auto 12px; max-width: 500px; padding: 4px; width: 100%; }
+#app #details-tabs .btn { background: transparent; border: 1px solid transparent; border-radius: 8px; color: #aaaaaa; flex: 1 1 0; font-size: 13.5px; font-weight: 600; height: 40px; min-height: 40px; min-width: 0; padding: 0 8px; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
+#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .btn.btn--primary { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.28); color: #ffffff; font-weight: 700; }
 
 /* Tab panels and About section on mobile details view. */
 #app .tab-panel.hidden, #app .details-bottom.hidden { display: none; }
@@ -169,20 +202,29 @@
 #app .seasons-dropdown-wrapper::after { border-bottom: 2px solid rgba(255, 255, 255, 0.7); border-right: 2px solid rgba(255, 255, 255, 0.7); content: ''; height: 5px; pointer-events: none; position: absolute; right: 14px; top: calc(50% - 4px); transform: rotate(45deg); width: 5px; }
 #app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: 13.5px; font-weight: 700; height: 100%; min-height: 36px; outline: none; padding: 0 32px 0 16px; width: 100%; }
 
-/* Compact horizontal streaming episode row card on mobile (Netflix / YouTube mobile style). */
+/* Compact horizontal streaming episode and extra trailer row cards on mobile. */
 #app .disney-episode-item,
-#app .card--row.disney-episode-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-sm); box-sizing: border-box; display: flex; flex-direction: row; gap: 12px; margin-bottom: 8px; padding: 8px 10px; width: 100%; }
-#app .disney-episode-item:active { background: rgba(255, 255, 255, 0.08); }
+#app .card--row.disney-episode-item,
+#app .disney-extra-item,
+#app .card--row.disney-extra-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-sm); box-sizing: border-box; display: flex; flex-direction: row; gap: 12px; margin-bottom: 8px; padding: 8px 10px; width: 100%; }
+#app .disney-episode-item:active, #app .disney-extra-item:active { background: rgba(255, 255, 255, 0.08); }
 #app .disney-episode-item.watched { border-left: 3px solid var(--primary-color); }
 
 /* Compact 16:9 thumbnail on the left. */
-#app .disney-episode-item .card__thumb { aspect-ratio: 16 / 9; border-radius: var(--radius-sm); flex: 0 0 clamp(118px, 32vw, 130px); height: auto; overflow: hidden; position: relative; width: clamp(118px, 32vw, 130px); }
+#app .disney-episode-item .card__thumb,
+#app .disney-extra-item .card__thumb { aspect-ratio: 16 / 9; border-radius: var(--radius-sm); flex: 0 0 clamp(118px, 32vw, 130px); height: auto; overflow: hidden; position: relative; width: clamp(118px, 32vw, 130px); }
 
-/* Episode card body with vertical alignment. */
-#app .disney-episode-item .card__body { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: center; min-width: 0; width: auto; }
+/* Episode and extra card body with vertical alignment. */
+#app .disney-episode-item .card__body,
+#app .disney-extra-item .card__body { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: center; min-width: 0; width: auto; }
 
-/* Episode title typography. */
-#app .disney-episode-item .card__title { color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Episode and extra title typography. */
+#app .disney-episode-item .card__title,
+#app .disney-extra-item .card__title { color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Extra trailer category badge and publish metadata. */
+#app .disney-extra-item .card__meta { color: var(--primary-color, #46d369); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 2px; text-transform: uppercase; }
+#app .disney-extra-item .card__desc { color: #888888; font-size: 12px; line-height: 1.3; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Episode metadata (duration & year). */
 #app .disney-episode-item .episode-meta { align-items: center; color: #888888; display: flex; font-size: 11.5px; font-weight: 600; gap: 6px; margin-bottom: 3px; }
@@ -191,13 +233,24 @@
 /* Episode 2-line truncated description. */
 #app .disney-episode-item .card__desc { -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: #999999; display: -webkit-box; font-size: 12px; line-clamp: 2; line-height: 1.35; margin: 0; overflow: hidden; }
 
-/* Extra scroll padding at bottom of episodes container. */
-#app #details-episodes { box-sizing: border-box; padding-bottom: 24px; }
+/* Extra scroll padding at bottom of episodes and extras containers. */
+#app #details-episodes, #app #extras-list { box-sizing: border-box; padding-bottom: 24px; }
+
+/* Empty state container for Extras & Trailers tab on mobile. */
+#app .extras-empty-state { align-items: center; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; justify-content: center; min-height: 240px; padding: 48px 16px 32px; text-align: center; width: 100%; }
+/* Centered greyish empty text. */
+#app .extras-empty-text { color: #888888; font-size: 14.5px; font-weight: 500; line-height: 1.4; margin: 0; max-width: 320px; }
+/* Circular retry action button in empty state. */
+#app .extras-retry-btn { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 50%; box-sizing: border-box; cursor: pointer; display: inline-flex; height: 48px; justify-content: center; min-height: 48px; min-width: 48px; padding: 0; transition: background-color 150ms ease, border-color 150ms ease; width: 48px; }
+#app .extras-retry-btn:hover, #app .extras-retry-btn:active { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.35); }
+#app .extras-retry-btn:focus, #app .extras-retry-btn.focused { border-color: #ffffff; outline: 2px solid #ffffff; }
+/* Retry icon inside circular button. */
+#app .extras-retry-icon { color: #ffffff; display: block; filter: brightness(0) invert(1); height: 20px; pointer-events: none; width: 20px; }
 
 /* Non-episode horizontal row cards fallback (e.g. playlist item rows on mobile). */
-#app .card--row:not(.disney-episode-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
-#app .card--row:not(.disney-episode-item) .card__thumb, #app .card--row:not(.disney-episode-item) .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
-#app .card--row:not(.disney-episode-item) .card__body { width: 100%; }
+#app .card--row:not(.disney-episode-item):not(.disney-extra-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
+#app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb, #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
+#app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__body { width: 100%; }
 
 /* Live TV mobile layout overrides. */
 #app .livetv-top-bar { align-items: stretch; flex-direction: column; gap: 10px; padding: 4% var(--app-content-padding-x) 0; }
@@ -803,8 +856,9 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .hero-buttons #play-btn .mobile-play-icon, #app #play-all-btn .mobile-play-icon, body #context-play-btn .mobile-play-icon { display: inline-block !important; fill: #111111; height: 18px; pointer-events: none; width: 18px; }
 #app .hero-buttons #play-btn .play-button-label, #app #play-all-btn .play-button-label, body #context-play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
 #app .details-actions { align-items: center; gap: 10px; }
-#app #details-trailer, #app #details-playlist { background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; min-height: 48px; }
-#app #details-tabs .tab-btn.is-active, #app #details-tabs .tab-btn.active { background: #ffffff; color: #111111; }
+#app #details-play { border-radius: 12px; height: 48px; min-height: 48px; }
+#app #details-trailer, #app #details-playlist { background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; height: 48px; min-height: 48px; }
+#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .tab-btn.is-active, #app #details-tabs .tab-btn.active { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.28); color: #ffffff; }
 
 /* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */
 #app .settings-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
