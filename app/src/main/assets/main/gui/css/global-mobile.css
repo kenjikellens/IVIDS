@@ -122,33 +122,82 @@
 }
 .filter-main-grid { gap: 12px; grid-template-columns: 1fr; }
 
-/* Stacked content layout for the movie and TV details page header on mobile. */
-#app .details-top { align-items: center; display: flex; flex-direction: column; gap: 12px; padding-top: calc(10px + env(safe-area-inset-top, 16px)); text-align: center; }
-#app .details-poster-container { display: flex; justify-content: center; margin-bottom: 4px; order: 1; width: 100%; }
-#app .details-hero-poster { border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 5px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7); height: auto; max-width: 35vw; min-width: 100px; width: 130px; }
+/* Mobile details page root container with safe-area spacing and bottom nav rail clearance. */
+#app .details-page { box-sizing: border-box; min-height: 100vh; padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px)); }
+#app .details-layout { gap: 12px; margin: 0 auto; max-width: 600px; padding: 0 16px; position: relative; z-index: 1; }
+
+/* Sleek background backdrop for mobile hero. */
+#app .details-backdrop { height: 24vh; min-height: 160px; position: absolute; top: 0; left: 0; right: 0; width: 100%; }
+#app .details-backdrop-overlay { background: linear-gradient(180deg, rgba(5, 5, 5, 0) 0%, rgba(5, 5, 5, 0.45) 55%, #050505 100%); }
+
+/* Compact mobile hero layout centering the poster, title and metadata. */
+#app .details-top { align-items: center; display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; padding-top: 0; text-align: center; }
+#app .details-poster-container { display: flex; justify-content: center; margin-bottom: 2px; order: 1; width: 100%; }
+#app .details-hero-poster { border: 2px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-sm); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); height: auto; max-height: 155px; max-width: 28vw; min-width: 90px; width: 105px; }
 #app .details-info { align-items: center; display: flex; flex-direction: column; max-width: 100%; order: 2; text-align: center; width: 100%; }
-/* Centers the film or series title in the details header on mobile viewports. */
-#app #details-title, #app .details-info .details-title, #app .details-title { margin-left: auto; margin-right: auto; text-align: center; width: 100%; }
+#app #details-title, #app .details-info .details-title, #app .details-title { font-size: clamp(20px, 5.5vw, 24px); font-weight: 800; line-height: 1.25; margin: 2px auto; text-align: center; width: 100%; }
 #app .details-overview { display: none; }
-#app .details-backdrop { height: 35vh; }
-#app .details-meta, #app .details-genres { align-items: center; justify-content: center; margin-bottom: 10px; }
-#app .details-actions { align-items: center; display: flex; flex-direction: column; gap: 10px; justify-content: center; margin: 6px 0 16px; width: 100%; }
-#app .details-actions .btn { border-radius: 5px; font-size: 15px; padding: 12px 16px; width: 100%; }
+#app .details-meta, #app .details-genres { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 6px; }
+#app .details-meta span, #app .details-genres > * { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; font-size: 11px; font-weight: 600; padding: 3px 9px; }
+
+/* Compact horizontal action buttons row. */
+#app .details-actions { align-items: center; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 8px; margin: 4px 0 10px; width: 100%; }
+#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; flex: 1 1 0; font-size: 14px; font-weight: 700; gap: 8px; height: 42px; justify-content: center; min-height: 42px; min-width: 0; padding: 0 14px; width: auto; }
+#app .details-play-icon { display: inline-block !important; filter: brightness(0); height: 16px; pointer-events: none; width: 16px; }
+#app .details-play-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 14px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: hidden; position: static; text-overflow: ellipsis; white-space: nowrap; }
+#app #details-trailer, #app #details-playlist { align-items: center; background: #1d1d1d; border: 1px solid #383838; border-radius: var(--radius-sm); color: #f5f5f5; display: inline-flex; flex: 1 1 0; font-size: 13.5px; font-weight: 600; gap: 6px; height: 42px; justify-content: center; min-height: 42px; min-width: 0; padding: 0 10px; width: auto; }
+#app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 16px; height: 16px; pointer-events: none; width: 16px; }
+#app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Compact pill tab bar for mobile. */
+#app #details-tabs { align-items: stretch; background: #191919; border: 1px solid #303030; border-radius: 999px; box-sizing: border-box; display: flex; gap: 4px; justify-content: center; margin: 4px auto 10px; max-width: 500px; padding: 3px; width: 100%; }
+#app #details-tabs .btn { background: transparent; border: 0; border-radius: 999px; flex: 1 1 0; font-size: 13px; font-weight: 600; height: 36px; min-height: 36px; min-width: 0; padding: 0 8px; transition: background-color 180ms ease, color 180ms ease; }
+#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .btn.btn--primary { background: #ffffff; color: #111111; }
 
 /* Tab panels and About section on mobile details view. */
 #app .tab-panel.hidden, #app .details-bottom.hidden { display: none; }
-#app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+#app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 #app .disney-about-content { flex-direction: column; gap: 20px; padding-bottom: 40px; width: 100%; }
 #app .disney-about-left, #app .disney-about-right { width: 100%; }
-#app .media-grid--cast, #app .disney-cast-grid { gap: 10px; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); width: 100%; }
-#app .details-seasons { backdrop-filter: none; background: transparent; border: none; max-height: none; padding: 0; width: 100%; }
-#app .seasons-list-content { display: none; }
-#app .seasons-dropdown-wrapper { display: flex; }
+#app .media-grid--cast, #app .disney-cast-grid { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+#app .disney-cast-img { aspect-ratio: 1; border: 2px solid rgba(255, 255, 255, 0.12); border-radius: 50%; margin: 0 auto; max-width: 88px; overflow: hidden; }
 
-/* Stacked column flow layout for horizontal row cards on mobile. */
-#app .card--row { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
-#app .card__thumb, #app .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
-#app .card__body { width: 100%; }
+/* Touch-friendly compact season selector pill. */
+#app .details-seasons { align-items: center; backdrop-filter: none; background: transparent; border: none; display: flex; justify-content: flex-start; margin: 2px 0 8px; max-height: none; padding: 0; width: 100%; }
+#app .seasons-list-content { display: none; }
+#app .seasons-dropdown-wrapper { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 999px; box-sizing: border-box; display: inline-flex; height: 36px; max-width: 220px; min-height: 36px; position: relative; transition: background-color 150ms ease, border-color 150ms ease; width: auto; }
+#app .seasons-dropdown-wrapper::after { border-bottom: 2px solid rgba(255, 255, 255, 0.7); border-right: 2px solid rgba(255, 255, 255, 0.7); content: ''; height: 5px; pointer-events: none; position: absolute; right: 14px; top: calc(50% - 4px); transform: rotate(45deg); width: 5px; }
+#app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: 13.5px; font-weight: 700; height: 100%; min-height: 36px; outline: none; padding: 0 32px 0 16px; width: 100%; }
+
+/* Compact horizontal streaming episode row card on mobile (Netflix / YouTube mobile style). */
+#app .disney-episode-item,
+#app .card--row.disney-episode-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-sm); box-sizing: border-box; display: flex; flex-direction: row; gap: 12px; margin-bottom: 8px; padding: 8px 10px; width: 100%; }
+#app .disney-episode-item:active { background: rgba(255, 255, 255, 0.08); }
+#app .disney-episode-item.watched { border-left: 3px solid var(--primary-color); }
+
+/* Compact 16:9 thumbnail on the left. */
+#app .disney-episode-item .card__thumb { aspect-ratio: 16 / 9; border-radius: var(--radius-sm); flex: 0 0 clamp(118px, 32vw, 130px); height: auto; overflow: hidden; position: relative; width: clamp(118px, 32vw, 130px); }
+
+/* Episode card body with vertical alignment. */
+#app .disney-episode-item .card__body { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: center; min-width: 0; width: auto; }
+
+/* Episode title typography. */
+#app .disney-episode-item .card__title { color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Episode metadata (duration & year). */
+#app .disney-episode-item .episode-meta { align-items: center; color: #888888; display: flex; font-size: 11.5px; font-weight: 600; gap: 6px; margin-bottom: 3px; }
+#app .disney-episode-item .episode-meta__item:not(:last-child)::after { color: rgba(255, 255, 255, 0.3); content: "•"; margin-left: 6px; }
+
+/* Episode 2-line truncated description. */
+#app .disney-episode-item .card__desc { -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: #999999; display: -webkit-box; font-size: 12px; line-clamp: 2; line-height: 1.35; margin: 0; overflow: hidden; }
+
+/* Extra scroll padding at bottom of episodes container. */
+#app #details-episodes { box-sizing: border-box; padding-bottom: 24px; }
+
+/* Non-episode horizontal row cards fallback (e.g. playlist item rows on mobile). */
+#app .card--row:not(.disney-episode-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
+#app .card--row:not(.disney-episode-item) .card__thumb, #app .card--row:not(.disney-episode-item) .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
+#app .card--row:not(.disney-episode-item) .card__body { width: 100%; }
 
 /* Live TV mobile layout overrides. */
 #app .livetv-top-bar { align-items: stretch; flex-direction: column; gap: 10px; padding: 4% var(--app-content-padding-x) 0; }
@@ -623,29 +672,6 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 #app .media-grid--posters > .poster-wrapper, #app .search-results-grid > .poster-wrapper { min-width: 0; width: 100%; }
 #app .card__badge, #app .poster-badge { backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 4px; font-size: 11px; padding: 2px 6px; position: absolute; right: 6px; top: 6px; }
 
-/* Mobile details hero fades into the page surface and gives playback first priority. */
-#app .details-backdrop { height: 40vh; min-height: 280px; position: absolute; }
-#app .details-backdrop-overlay { background: linear-gradient(180deg, rgba(5, 5, 5, 0) 0%, rgba(5, 5, 5, 0.4) 60%, #050505 100%); }
-#app .details-layout { position: relative; z-index: 1; }
-#app .details-top { gap: 10px; padding-top: calc(20px + env(safe-area-inset-top, 0px)); }
-#app .details-hero-poster { border-radius: 10px; max-width: 34vw; }
-#app .details-title { font-size: clamp(22px, 5.5vw, 28px); }
-#app .details-meta span, #app .details-genres > * { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; padding: 6px 10px; }
-#app .details-actions { align-items: center; flex-direction: row; flex-wrap: nowrap; gap: 10px; }
-#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; flex: 1 1 auto; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; padding: 0 18px; width: auto; }
-#app .details-play-icon { display: inline-block !important; filter: brightness(0); height: 18px; pointer-events: none; width: 18px; }
-#app .details-play-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
-#app #details-trailer, #app #details-playlist { align-items: center; border-radius: var(--radius-sm); display: inline-flex; flex: 1 1 0; gap: 8px; justify-content: center; min-width: 0; padding: 8px 10px; width: auto; }
-#app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 18px; height: 18px; pointer-events: none; width: 18px; }
-#app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#app #details-tabs { align-items: stretch; background: #191919; border: 1px solid #303030; border-radius: 999px; box-sizing: border-box; display: flex; gap: 4px; justify-content: center; margin: 10px auto 18px; max-width: 560px; padding: 4px; width: calc(100% - 32px); }
-#app #details-tabs .btn { background: transparent; border: 0; border-radius: 999px; flex: 1 1 0; min-height: 48px; min-width: 0; padding: 8px 6px; transition: background-color 180ms ease, color 180ms ease, transform 140ms ease; }
-#app #details-tabs .btn:active { transform: scale(0.96); }
-#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .btn.btn--primary { background: #ffffff; color: #111111; }
-#app .seasons-dropdown-wrapper { border-radius: 999px; min-height: 48px; }
-#app #seasons-dropdown { border-radius: 999px; font-size: 16px; min-height: 48px; }
-#app .media-grid--cast, #app .disney-cast-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-#app .disney-cast-img { aspect-ratio: 1; border: 2px solid rgba(255, 255, 255, 0.12); border-radius: 50%; margin: 0 auto; max-width: 88px; overflow: hidden; }
 
 body #changes-modal .modal__close { display: none; }
 
