@@ -107,21 +107,13 @@ export class SourceManager {
     }
 
     /**
-     * Sorts a channel array by source priority, stream viability score, and name.
+     * Sorts a channel array strictly alphabetically from A to Z by channel display name.
      *
      * @param {Array<Channel>} list - Channels to sort in place.
-     * @returns {Array<Channel>} Sorted channels.
+     * @returns {Array<Channel>} Alphabetically sorted channels.
      */
     _sortChannels(list) {
-        return list.sort((a, b) => {
-            const prioDiff = a.sourcePriority - b.sourcePriority;
-            if (prioDiff !== 0) return prioDiff;
-
-            const scoreDiff = b.getStreamScore() - a.getStreamScore();
-            if (scoreDiff !== 0) return scoreDiff;
-
-            return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
-        });
+        return list.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
     }
 
     /**

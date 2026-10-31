@@ -513,7 +513,22 @@ public class MainActivity extends AppCompatActivity {
 
                         while ((line = reader.readLine()) != null) {
                             String trimmed = line.trim();
-                            if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+                            if (trimmed.isEmpty()) {
+                                continue;
+                            }
+                            if (trimmed.startsWith("#")) {
+                                if (trimmed.startsWith("#EXT-X-MEDIA") && trimmed.contains("URI=\"")) {
+                                    int uStart = trimmed.indexOf("URI=\"") + 5;
+                                    int uEnd = trimmed.indexOf("\"", uStart);
+                                    if (uEnd > uStart) {
+                                        String rawUri = trimmed.substring(uStart, uEnd);
+                                        String resolvedUri = (rawUri.startsWith("http://") || rawUri.startsWith("https://"))
+                                                ? rawUri
+                                                : baseUri.resolve(rawUri).toString();
+                                        String proxiedUri = "http://localhost/proxy?url=" + URLEncoder.encode(resolvedUri, "UTF-8") + suffix;
+                                        trimmed = trimmed.substring(0, uStart) + proxiedUri + trimmed.substring(uEnd);
+                                    }
+                                }
                                 sb.append(trimmed).append("\n");
                             } else {
                                 String resolved = (trimmed.startsWith("http://") || trimmed.startsWith("https://"))

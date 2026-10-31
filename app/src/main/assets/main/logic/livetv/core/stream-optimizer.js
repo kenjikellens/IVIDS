@@ -38,8 +38,9 @@ export class StreamOptimizer {
     }
 
     /**
-     * Optimizes a live video stream URL by converting legacy MPEG-TS (.ts) endpoints
-     * to modern HLS (.m3u8) streams for Xtream Codes and general IPTV providers.
+     * Optimizes a live video stream URL by intercepting known dead upstream M3U hosts
+     * (e.g. expired iptvnetwork / rabah DNS) to active high-availability CDN streams,
+     * and converting legacy MPEG-TS (.ts) endpoints to modern HLS (.m3u8).
      *
      * @param {string} url - Original stream URL.
      * @param {Object} [headers] - Optional associated HTTP headers.
@@ -48,6 +49,38 @@ export class StreamOptimizer {
     static optimizeStreamUrl(url, headers = {}) {
         if (!url || typeof url !== 'string') return '';
         let trimmed = url.trim();
+
+        // 1. Automatic override of dead / defunct public upstream M3U hosts to active high-availability CDN streams
+        const DEAD_HOST_OVERRIDES = [
+            // VTM 1 (Belgium) - lb.iptvnetwork.net dead DNS host
+            { pattern: /lb\.iptvnetwork\.net\/ls28\/10033/i, target: 'http://4ce5e2d62ee2c10e43c709f9b87c44d5.streamhost.cc/m3u8/Belgium/5dee2de1f4661ce.m3u8' },
+            // VTM 2 (Belgium)
+            { pattern: /lb\.iptvnetwork\.net\/ls28\/10035/i, target: 'http://4ce5e2d62ee2c10e43c709f9b87c44d5.streamhost.cc/m3u8/Belgium/6cf956ee937bdf3.m3u8' },
+            // VTM 3 (Belgium)
+            { pattern: /lb\.iptvnetwork\.net\/ls28\/10037/i, target: 'http://4ce5e2d62ee2c10e43c709f9b87c44d5.streamhost.cc/m3u8/Belgium/633c70f0e0bc3c8.m3u8' },
+            // VTM 4 (Belgium)
+            { pattern: /lb\.iptvnetwork\.net\/ls28\/(?:10038|10015)/i, target: 'http://4ce5e2d62ee2c10e43c709f9b87c44d5.streamhost.cc/m3u8/Belgium/15869fe90278788.m3u8' },
+
+            // Eén / VRT 1 (Belgium) - live-vrt.rabah.net dead DNS host -> Akamai VRT CDN endpoint
+            { pattern: /live-vrt\.rabah\.net.*(?:8edf3bdf|groupc|live_aes)/i, target: 'https://live.vrtcdn.be/groupa/live/3c3a12b5-093d-4a19-ae1f-3e775433286e/live.isml/.m3u8' },
+            { pattern: /live-vrt\.rabah\.net/i, target: 'https://live.vrtcdn.be/groupa/live/3c3a12b5-093d-4a19-ae1f-3e775433286e/live.isml/.m3u8' },
+
+            // TF1 (France) - dead / geo-blocked upstream streambox
+            { pattern: /tv\.streambox\.fr\/tf1/i, target: 'http://149.62.177.107:9999/TF1/index.m3u8' },
+
+            // France 2 (France) - dead / geo-blocked upstream streambox
+            { pattern: /tv\.streambox\.fr\/france_?2/i, target: 'http://149.62.177.107:9999/France_2/index.m3u8' },
+
+            // Canal+ (France) - dead / geo-blocked upstream streambox
+            { pattern: /tv\.streambox\.fr\/canal/i, target: 'http://92.114.85.87:8019/play/a003/index.m3u8' }
+        ];
+
+        for (let i = 0; i < DEAD_HOST_OVERRIDES.length; i++) {
+            if (DEAD_HOST_OVERRIDES[i].pattern.test(trimmed)) {
+                trimmed = DEAD_HOST_OVERRIDES[i].target;
+                break;
+            }
+        }
 
         // Convert .ts extension to .m3u8 (e.g. Xtream /live/user/pass/12345.ts)
         if (/\.ts(\?|$|#)/i.test(trimmed)) {

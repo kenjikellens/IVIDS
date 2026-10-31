@@ -66,20 +66,20 @@ export class M3uProvider extends BaseStreamProvider {
                     const rawName = (item.name || '').toLowerCase();
                     const rawUrl = (item.url || '').toLowerCase();
                     if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) return false;
-                    // Skip only explicitly DRM-encrypted or geo-blocked streams
-                    if (/\[geo-?blocked\]|\[drm\]/i.test(rawName)) {
+                    // Skip only explicitly DRM-encrypted streams
+                    if (/\[drm\]/i.test(rawName)) {
                         return false;
                     }
                     return true;
                 })
                 .map(item => {
+                    const cleanName = (item.name || '').replace(/\s*\[geo-?blocked\]\s*/gi, ' ').trim();
                     const group = item.group || this.category;
                     const extraTags = this.countryTag ? [this.countryTag] : [];
-                    const optimizedUrl = StreamOptimizer.optimizeStreamUrl(item.url);
-                    const reqHeaders = StreamOptimizer.getRequiredHeaders(optimizedUrl);
+                    const reqHeaders = StreamOptimizer.getRequiredHeaders(item.url);
                     return this.createChannel({
-                        name: item.name,
-                        url: optimizedUrl,
+                        name: cleanName || item.name,
+                        url: item.url,
                         logo: item.logo || '',
                         group: group,
                         groupTags: extraTags,

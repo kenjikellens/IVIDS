@@ -522,18 +522,20 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(400, 'Missing url parameter')
             return
 
+        parsed_target = urllib.parse.urlparse(target_url)
+        target_host = (parsed_target.hostname or '').lower()
+        now = time.time()
+        if target_host and target_host in _DEAD_HOSTS:
+            if now - _DEAD_HOSTS[target_host] < 30.0:
+                self.send_error(502, f'Host unreachable (cached): {target_host}')
+                return
+            else:
+                del _DEAD_HOSTS[target_host]
+
         if not is_safe_url(target_url):
             self.send_error(403, 'Forbidden target URL')
-            parsed_target = urllib.parse.urlparse(target_url)
-            target_host = (parsed_target.hostname or '').lower()
-            now = time.time()
-            if target_host and target_host in _DEAD_HOSTS:
-                if now - _DEAD_HOSTS[target_host] < 30.0:
-                    self.send_error(502, f'Host unreachable (cached): {target_host}')
-                    return
-                else:
-                    del _DEAD_HOSTS[target_host]
             return
+
 
         try:
             self._proxy_headers_sent = False
@@ -703,14 +705,15 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             try:
                 self.send_error(e.code, f'Upstream error: {e.reason}')
             except Exception as se:
-                sys.stderr.write(f"[IVIDS] Failed to send HTTPError response to client: {str(se)}\n")
-        except urllib.error.URLError as e:
-            if target_host and ('getaddrinfo' in str(e.reason).lower() or '11001' in str(e.reason)):
+                pass
+        except (TimeoutError, urllib.error.URLError) as e:
+            reason_str = str(getattr(e, 'reason', e)).lower()
+            if target_host and ('getaddrinfo' in reason_str or '11001' in reason_str):
                 _DEAD_HOSTS[target_host] = time.time()
             try:
-                self.send_error(502, f'Proxy connection failed: {e.reason}')
-            except Exception as se:
-                sys.stderr.write(f"[IVIDS] Failed to send URLError response to client: {str(se)}\n")
+                self.send_error(504 if 'timed out' in reason_str else 502, f'Proxy connection failed: {reason_str}')
+            except Exception:
+                pass
         except (ConnectionError, OSError) as e:
             # Client connection aborted, reset, or closed gracefully
             if not getattr(self, '_proxy_headers_sent', False):
@@ -718,7 +721,6 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     self.send_error(502, f'Upstream connection failed: {str(e)}')
                 except Exception:
                     pass
-            sys.stderr.write(f"[IVIDS] Client connection closed or aborted during proxying: {str(e)}\n")
         except Exception as e:
             try:
                 self.send_error(500, f'Proxy error: {str(e)}')
@@ -751,6 +753,22 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             pass
 
 
+class QuietThreadingHTTPServer(ThreadingHTTPServer):
+    """
+    Threaded HTTP Server that suppresses noisy tracebacks when video clients
+    abort connections during rapid channel zapping (WSAECONNABORTED / WinError 10053).
+    """
+    allow_reuse_address = True
+
+    def handle_error(self, request, client_address):
+        exc_type, exc_val, _ = sys.exc_info()
+        if exc_type in (ConnectionResetError, ConnectionAbortedError, BrokenPipeError, TimeoutError):
+            return
+        if isinstance(exc_val, (ConnectionResetError, ConnectionAbortedError, BrokenPipeError, TimeoutError, OSError)):
+            return
+        super().handle_error(request, client_address)
+
+
 def start_server():
     """
     Initializes and starts the threaded HTTP server on an available port, opening the browser to the interface.
@@ -760,11 +778,10 @@ def start_server():
     os.chdir(ASSETS_DIR)
 
     port = PORT
-    # Enable address reuse on the class level to prevent "address already in use" errors on restart
-    ThreadingHTTPServer.allow_reuse_address = True
+    QuietThreadingHTTPServer.allow_reuse_address = True
     while True:
         try:
-            server = ThreadingHTTPServer(("", port), IVIDSHTTPRequestHandler)
+            server = QuietThreadingHTTPServer(("", port), IVIDSHTTPRequestHandler)
             break
         except OSError:
             if port >= PORT + 40:
