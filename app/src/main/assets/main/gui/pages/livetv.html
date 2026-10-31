@@ -28,21 +28,13 @@
             </div>
         </div>
 
-        <!-- Right Column: Channel Preview & EPG details -->
+        <!-- Right Column: Channel Preview & EPG details (Consistent Structure from Initial Load) -->
         <div class="livetv-preview-column">
-            <!-- Default Placeholder when no channel is focused -->
-            <div id="hero-placeholder" class="hero-placeholder-content">
-                <div class="placeholder-icon-large"></div>
-                <h1 data-i18n="livetv.title">Live TV</h1>
-                <p data-i18n="livetv.selectSubtitle">Discover and watch hundreds of live channels</p>
-            </div>
-
-            <!-- Active Channel Details -->
-            <div id="hero-active-content" class="hero-active-content hidden">
+            <div id="hero-active-content" class="hero-active-content">
                 <!-- Top Card: 16:9 Widescreen Video Preview -->
                 <div class="card card--panel card--widescreen preview-card preview-card-video focusable" id="livetv-preview-card" tabindex="0">
                     <video id="livetv-preview-video" autoplay muted playsinline></video>
-                    <div id="preview-video-loading" class="preview-video-loading hidden">
+                    <div id="preview-video-loading" class="preview-video-loading">
                         <div class="ivids-loader"></div>
                     </div>
                 </div>
@@ -50,19 +42,19 @@
                 <!-- Bottom Card: Current & Upcoming Program EPG Schedules -->
                 <div class="card card--panel epg-panel epg-card">
                     <!-- Current Program Schedule -->
-                    <div id="hero-epg-container" class="details-epg-section hidden">
+                    <div id="hero-epg-container" class="details-epg-section">
                         <h3 class="section-title">
                             <span class="live-badge" data-i18n="livetv.live">LIVE</span>
                             <span data-i18n="livetv.playingNow">Playing Now</span>
                         </h3>
                         <div class="epg-active-show">
-                            <span id="hero-epg-title" class="epg-show-title"></span>
+                            <span id="hero-epg-title" class="epg-show-title" data-i18n="livetv.loading">Loading channels...</span>
                             <div class="hero-epg-progress-wrapper">
-                                <span id="hero-epg-start" class="epg-time"></span>
+                                <span id="hero-epg-start" class="epg-time">--:--</span>
                                 <div class="epg-progress-bar-container">
                                     <div id="hero-epg-progress" class="epg-progress-bar-fill"></div>
                                 </div>
-                                <span id="hero-epg-end" class="epg-time"></span>
+                                <span id="hero-epg-end" class="epg-time">--:--</span>
                             </div>
                         </div>
                     </div>
