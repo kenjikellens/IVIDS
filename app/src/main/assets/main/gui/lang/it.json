@@ -126,7 +126,10 @@
         "devOfficialReleases": "Official Releases",
         "devBleedingEdge": "Bleeding Edge",
         "installed": "Installed",
-        "activeTag": "Active"
+        "activeTag": "Active",
+        "noUpdateDesc": "You are running the latest version of IVIDS.",
+        "updateFoundDesc": "A new version of IVIDS is ready to install.",
+        "updateErrorDesc": "Could not reach update server. Check your connection."
     },
     "common": {
         "close": "Chiudi",

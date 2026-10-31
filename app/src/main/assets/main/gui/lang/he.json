@@ -119,7 +119,10 @@
         "adultContentOff": "כבוי",
         "adultContentWarning": "אזהרה: הפעלה זו תציג תוכן למבוגרים בלבד. הגדרה זו מומלצת רק למשתמשים בני 18 ומעלה.",
         "dataSaver": "חוסך נתונים / אינטרנט איטי",
-        "dataSaverDesc": "טען תמונות באיכות נמוכה יותר והפחת את פעילות הרשת"
+        "dataSaverDesc": "טען תמונות באיכות נמוכה יותר והפחת את פעילות הרשת",
+        "noUpdateDesc": "You are running the latest version of IVIDS.",
+        "updateFoundDesc": "A new version of IVIDS is ready to install.",
+        "updateErrorDesc": "Could not reach update server. Check your connection."
     },
     "common": {
         "close": "סגור",

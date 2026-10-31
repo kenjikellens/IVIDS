@@ -119,7 +119,10 @@
         "adultContentOff": "خاموش",
         "adultContentWarning": "هشدار: با فعال کردن این، محتوای صریح برای بزرگسالان نشان داده می‌شود. این تنظیم فقط برای کاربران بالای ۱۸ سال توصیه می شود.",
         "dataSaver": "ذخیره داده / اینترنت کند",
-        "dataSaverDesc": "عکس‌های با کیفیت پایین‌تر را بارگیری کنید و فعالیت شبکه را کاهش دهید"
+        "dataSaverDesc": "عکس‌های با کیفیت پایین‌تر را بارگیری کنید و فعالیت شبکه را کاهش دهید",
+        "noUpdateDesc": "You are running the latest version of IVIDS.",
+        "updateFoundDesc": "A new version of IVIDS is ready to install.",
+        "updateErrorDesc": "Could not reach update server. Check your connection."
     },
     "common": {
         "close": "بستن",

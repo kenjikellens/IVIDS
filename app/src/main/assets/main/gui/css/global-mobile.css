@@ -652,15 +652,16 @@ body #changes-modal .modal__close { display: none; }
 /* Language selection list with simple divider lines and zero border-radius. */
 body .language-selection-grid { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
 body .language-stepper-container { display: none; }
-body .language-search { background: #161616; border: 1px solid #333333; border-radius: 0 !important; color: #ffffff; flex: 0 0 46px; font-size: 15px; margin: 0 0 12px; padding: 0 14px; position: sticky; top: 0; z-index: 2; }
-body .language-card { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0 !important; color: #ffffff; cursor: pointer; display: flex; gap: 14px; min-height: 52px; min-width: 0; padding: 12px 10px; text-align: left; width: 100%; box-sizing: border-box; }
-body .language-card:first-child { border-top: 1px solid #222222; }
+body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px !important; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0 0 16px; padding: 0 18px; position: sticky; top: 0; width: 100%; z-index: 2; }
+body .language-search:focus { border-color: var(--primary-color); outline: none; }
+body .language-card { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1c1c1c; border-radius: 0 !important; color: #ffffff; cursor: pointer; display: flex; gap: 14px; min-height: 52px; min-width: 0; padding: 14px 12px; text-align: left; width: 100%; box-sizing: border-box; }
+body .language-card:first-child { border-top: 1px solid #1c1c1c; }
 body .language-card:active { background: rgba(255, 255, 255, 0.08); }
 body .language-card.is-active { background: transparent; color: var(--primary-color); }
 body .language-card.is-active .language-card__name { color: var(--primary-color); font-weight: 700; }
-body .language-card:focus-visible, body .language-card.focused { background: rgba(255, 255, 255, 0.08); border-radius: 0 !important; outline: 2px solid var(--primary-color); outline-offset: -2px; }
+body .language-card:focus-visible, body .language-card.focused { background: transparent; border-color: transparent !important; border-radius: 0 !important; outline: none !important; }
 body .language-card__flag { flex: 0 0 auto; font-size: 22px; width: 30px; }
-body .language-card__name { flex: 1; font-size: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body .language-card__name { flex: 1; font-size: 15.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 body .language-card__check { color: var(--primary-color); flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
 body .language-card.is-active .language-card__check { opacity: 1; }
 
@@ -790,36 +791,96 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .settings-section .section-title { border: 0; color: #888888; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
 #app .settings-section .section-title__icon { display: none; }
 
-/* Full-width YouTube-style touch rows: pure text labels, no subtitles, no inline values or badges. */
-#app .settings-container .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 52px; padding: 16px 20px; transition: background-color 100ms ease; width: 100%; }
+/* Suppress TV spatial-nav persistent focus outlines on mobile touch viewports. */
+#app .btn:focus-visible, #app .btn.focused,
+#app .settings-container .setting-item:focus-visible, #app .settings-container .setting-item.focused,
+#app .ui-scale-control .scale-adjust-btn:focus-visible, #app .ui-scale-control .scale-adjust-btn.focused,
+#app .profile-actions .btn:focus-visible, #app .profile-actions .btn.focused,
+#app .form-toggle:focus-visible, #app .form-toggle.focused,
+body .modal .focusable:focus-visible, body .modal .focusable.focused {
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Full-width YouTube-style touch rows: clean title, subtle subtitle, and right-aligned chevron. */
+#app .settings-container .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; }
 #app .settings-container .setting-item:first-of-type { border-top: 1px solid #1a1a1a; }
 #app .settings-container .setting-item:active { background: rgba(255, 255, 255, 0.08); }
 #app .settings-container .setting-info { flex: 1 1 auto; min-width: 0; padding-right: 12px; }
 #app .settings-container .setting-label { color: #f1f1f1; font-size: 16px; font-weight: 400; line-height: 1.35; margin: 0; }
-#app .settings-container .setting-description { display: none !important; }
+#app .settings-container .setting-description { color: #888888; display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; }
 
-/* In YouTube settings, items that open a subpage show zero inline clutter. */
-#app .settings-container .current-value-display { display: none !important; }
-#app .settings-container .color-preview-circle { display: none !important; }
-#app .settings-container .setting-item .edit-trigger { display: none !important; }
+/* Subtitle/value display and chevron indicators in YouTube style. */
+#app .settings-container .setting-control { align-items: center; display: inline-flex; flex: 0 0 auto; gap: 6px; justify-content: flex-end; }
+#app .settings-container .current-value-display { align-items: center; background: transparent; border: 0; color: #888888; display: inline-flex; font-size: 14px; font-weight: 400; height: 24px; line-height: 1; margin-right: 4px; padding: 0; }
+#app .settings-container .color-preview-circle { border-radius: 50%; height: 16px; width: 16px; margin-right: 4px; display: inline-block; }
+#app .settings-container .setting-item .edit-trigger { align-items: center; background: transparent; border: 0; border-radius: 50%; display: inline-flex; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; padding: 0; width: 14px; }
+#app .settings-container .setting-item .edit-trigger .setting-edit-icon { display: none; }
+#app .settings-container .setting-item .edit-trigger::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
 
 /* Keep switches and scale steppers cleanly visible on the right. */
 #app .settings-container .setting-control:has(.form-toggle),
 #app .settings-container .setting-control.ui-scale-control { display: inline-flex !important; }
-#app .settings-container .ui-scale-control .current-value-display { display: inline-flex !important; }
+#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; display: inline-flex !important; font-size: 13.5px; font-weight: 600; height: 34px; justify-content: center; min-width: 44px; text-align: center; }
 
 /* Clean, native-feeling circular UI scale stepper buttons. */
 #app .settings-container .ui-scale-control { background: transparent; border: 0; border-radius: 0; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
 #app .settings-container .ui-scale-control .scale-adjust-btn { background: #222222; border: 1px solid #333333; border-radius: 50%; color: #ffffff; font-size: 16px; font-weight: 600; height: 34px; min-height: 34px; min-width: 34px; width: 34px; }
 #app .settings-container .ui-scale-control .scale-adjust-btn:active { background: #383838; }
 #app .settings-container .ui-scale-control .scale-adjust-btn::after { content: none; display: none; }
-#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; font-size: 13.5px; font-weight: 600; height: 34px; justify-content: center; min-width: 44px; text-align: center; }
 
 #app .settings-section--app-info { margin-bottom: 18px; padding: 0 20px; }
-#app .settings-container #app-info-btn { background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; color: #f1f1f1; font-size: 16px; font-weight: 400; justify-content: flex-start; min-height: 52px; padding: 16px 0; width: 100%; }
+#app .settings-container #app-info-btn { background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; color: #f1f1f1; font-size: 16px; font-weight: 400; justify-content: space-between; min-height: 52px; padding: 16px 0; width: 100%; display: flex; align-items: center; }
 #app .settings-container #app-info-btn:active { background: rgba(255, 255, 255, 0.08); }
 #app .settings-container #app-info-btn .btn__icon { display: none; }
-#app .settings-container #app-info-btn .btn__chevron { display: none; }
+#app .settings-container #app-info-btn .btn__chevron { color: #666666; font-size: 18px; display: inline-block; }
+
+/* Prevent floating network status icon from colliding on mobile */
+.network-status-overlay { display: none !important; }
+
+/* Dedicated Update Check Modal Styling */
+#update-check-modal .modal__dialog { display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; padding-bottom: 24px; position: relative; }
+#app .modal__close-btn { align-items: center; background: transparent; border: 0; border-radius: 50%; color: #888888; cursor: pointer; display: inline-flex; font-size: 20px; height: 38px; justify-content: center; position: absolute; right: 14px; top: 14px; width: 38px; z-index: 10; }
+#app .modal__close-btn:active { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+#update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
+#update-check-modal .update-modal-heading { color: #f1f1f1; font-size: 19px; font-weight: 600; margin: 16px 0 6px; }
+#update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
+#update-check-modal .update-version-badge { background: rgba(70, 211, 105, 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
+#update-check-modal .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: #000000; font-weight: 700; border-radius: 12px; }
+#update-check-modal .btn--secondary { background: transparent; border: 1px solid #383838; color: #f1f1f1; border-radius: 12px; }
+#update-check-modal #update-modal-back-btn { align-items: center; background: transparent; border: 1px solid #383838; border-radius: 12px; color: #f1f1f1; display: inline-flex; font-size: 14.5px; gap: 6px; justify-content: center; }
+#update-check-modal #update-modal-back-btn:active { background: rgba(255, 255, 255, 0.08); }
+
+/* Check updates row formatted as a clean YouTube settings tap surface without an action button. */
+#app #check-updates-row { cursor: pointer; }
+#app #check-updates-row .setting-control { align-items: center; display: inline-flex; }
+#app #check-updates-row #check-updates-btn { align-items: center; background: transparent !important; border: 0 !important; box-shadow: none !important; color: transparent !important; display: inline-flex; font-size: 0 !important; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; outline: none !important; padding: 0; width: 14px; }
+#app #check-updates-row #check-updates-btn .setting-edit-icon { display: none !important; }
+#app #check-updates-row #check-updates-btn::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
+
+/* Prevent floating network status icon from colliding on mobile */
+.network-status-overlay { display: none !important; }
+
+/* Dedicated Update Check Modal Styling */
+#update-check-modal .modal__dialog { display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; padding-bottom: 24px; position: relative; }
+#app .modal__close-btn { align-items: center; background: transparent; border: 0; border-radius: 50%; color: #888888; cursor: pointer; display: inline-flex; font-size: 20px; height: 38px; justify-content: center; position: absolute; right: 14px; top: 14px; width: 38px; z-index: 10; }
+#app .modal__close-btn:active { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+#update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
+#update-check-modal .update-modal-heading { color: #f1f1f1; font-size: 19px; font-weight: 600; margin: 16px 0 6px; }
+#update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
+#update-check-modal .update-version-badge { background: rgba(70, 211, 105, 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
+#update-check-modal .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: #000000; font-weight: 700; border-radius: 12px; }
+#update-check-modal .btn--secondary { background: transparent; border: 1px solid #383838; color: #f1f1f1; border-radius: 12px; }
+#update-check-modal #update-modal-back-btn { align-items: center; background: transparent; border: 1px solid #383838; border-radius: 12px; color: #f1f1f1; display: inline-flex; font-size: 14.5px; gap: 6px; justify-content: center; }
+#update-check-modal #update-modal-back-btn:active { background: rgba(255, 255, 255, 0.08); }
+
+/* Check updates row formatted as a clean YouTube settings tap surface without an action button. */
+#app #check-updates-row { cursor: pointer; }
+#app #check-updates-row .setting-control { align-items: center; display: inline-flex; }
+#app #check-updates-row #check-updates-btn { align-items: center; background: transparent !important; border: 0 !important; box-shadow: none !important; color: transparent !important; display: inline-flex; font-size: 0 !important; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; outline: none !important; padding: 0; width: 14px; }
+#app #check-updates-row #check-updates-btn .setting-edit-icon { display: none !important; }
+#app #check-updates-row #check-updates-btn::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
 
 /* Account screen styled as YouTube Account / Menu view (Screen 2). */
 #app .account-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }

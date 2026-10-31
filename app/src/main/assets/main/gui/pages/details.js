@@ -647,6 +647,29 @@ async function loadSeasonEpisodes(seriesId, seasonNumber) {
 }
 
 /**
+ * Formats episode duration in minutes to human-readable string (e.g. "45m" or "1h 15m").
+ * @param {number|null} minutes - Duration in minutes.
+ * @returns {string} Formatted duration string or empty string.
+ */
+function formatEpisodeDuration(minutes) {
+    if (!minutes || typeof minutes !== 'number') return '';
+    if (minutes < 60) return `${minutes}m`;
+    const hrs = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hrs}h ${mins}m` : `${hrs}h`;
+}
+
+/**
+ * Formats episode air date to a 4-digit release year string.
+ * @param {string|null} dateStr - Date string YYYY-MM-DD.
+ * @returns {string} Formatted year or empty string.
+ */
+function formatEpisodeAirDate(dateStr) {
+    if (!dateStr || typeof dateStr !== 'string') return '';
+    return dateStr.substring(0, 4);
+}
+
+/**
  * Renders the episodes vertical list for TV shows.
  * Updates the episodes container inside the seasons tab panel.
  * @param {Array} episodes - List of episode metadata objects.
@@ -692,13 +715,18 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 const episodeOverview = episode.overview || I18n.t('details.noDescription');
                 const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.getRecommendedStillSize()) : '';
                 const thumbStyle = '';
+                const durationStr = formatEpisodeDuration(episode.runtime);
+                const airDateStr = formatEpisodeAirDate(episode.air_date);
+                const metaParts = [];
+                if (durationStr) metaParts.push(`<span class="episode-meta__item">${durationStr}</span>`);
+                if (airDateStr) metaParts.push(`<span class="episode-meta__item">${airDateStr}</span>`);
+                const metaHtml = metaParts.length > 0 ? `<div class="episode-meta">${metaParts.join('')}</div>` : '';
 
                 el.innerHTML = `
                     <div class="card__thumb"${thumbStyle}></div>
                     <div class="card__body">
-                        <div class="card__title">
-                            ${episodeNumber}. ${episodeName}
-                        </div>
+                        <div class="card__title">${episodeNumber}. ${episodeName}</div>
+                        ${metaHtml}
                         <p class="card__desc">${episodeOverview}</p>
                     </div>
                 `;

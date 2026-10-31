@@ -119,7 +119,10 @@
         "adultContentOff": "বন্ধ",
         "adultContentWarning": "সতর্কতা: এটি সক্ষম করলে স্পষ্ট প্রাপ্তবয়স্ক সামগ্রী দেখাবে৷ এই সেটিং শুধুমাত্র 18+ বয়সী ব্যবহারকারীদের জন্য সুপারিশ করা হয়।",
         "dataSaver": "ডেটা সেভার / স্লো ইন্টারনেট",
-        "dataSaverDesc": "নিম্ন মানের ফটো লোড করুন এবং নেটওয়ার্ক কার্যকলাপ হ্রাস করুন"
+        "dataSaverDesc": "নিম্ন মানের ফটো লোড করুন এবং নেটওয়ার্ক কার্যকলাপ হ্রাস করুন",
+        "noUpdateDesc": "You are running the latest version of IVIDS.",
+        "updateFoundDesc": "A new version of IVIDS is ready to install.",
+        "updateErrorDesc": "Could not reach update server. Check your connection."
     },
     "common": {
         "close": "বন্ধ",

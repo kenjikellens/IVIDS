@@ -53,9 +53,9 @@
         "updates": "App Updates",
         "updateMode": "Update Modus",
         "updateModeDesc": "Kies hoe de app omgaat met updates",
-        "checkNow": "Update Controle",
+        "checkNow": "Controleren op updates",
         "checkNowDesc": "Handmatig zoeken naar nieuwe app-versies",
-        "checkButton": "Controleren",
+        "checkButton": "Controleren op updates",
         "check": "Controleren",
         "checking": "Zoeken...",
         "updateFound": "Update Beschikbaar",
@@ -121,7 +121,10 @@
         "devOfficialReleases": "Official Releases",
         "devBleedingEdge": "Bleeding Edge",
         "installed": "Installed",
-        "activeTag": "Active"
+        "activeTag": "Active",
+        "noUpdateDesc": "U gebruikt de nieuwste versie van IVIDS.",
+        "updateFoundDesc": "Er is een nieuwe versie van IVIDS beschikbaar om te installeren.",
+        "updateErrorDesc": "Kan updateserver niet bereiken. Controleer uw verbinding."
     },
     "common": {
         "close": "Sluiten",

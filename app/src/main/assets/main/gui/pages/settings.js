@@ -356,6 +356,11 @@ class SettingsManager {
             if (checkRow) checkRow.onclick = () => this.openUpdateCheckModal();
         }
 
+        const updateCloseX = document.getElementById('update-modal-close-x');
+        if (updateCloseX) {
+            updateCloseX.onclick = () => this.closeModal();
+        }
+
         const cancelBtn = document.getElementById('cancel-update-btn');
         if (cancelBtn) {
             cancelBtn.onclick = () => this.handleCancelUpdate();
@@ -462,6 +467,39 @@ class SettingsManager {
         const cancelBtn = document.getElementById('cancel-update-btn');
         if (cancelBtn) cancelBtn.style.display = 'inline-block';
 
+        const modalHeading = document.getElementById('update-modal-status-heading');
+        const modalDesc = document.getElementById('update-modal-status-desc');
+        const modalSpinner = document.getElementById('update-modal-spinner');
+        const modalBadge = document.getElementById('update-modal-version-badge');
+        const installBtn = document.getElementById('update-modal-install-btn');
+        const backBtn = document.getElementById('update-modal-back-btn');
+
+        if (modalSpinner) modalSpinner.style.display = 'none';
+        if (modalHeading) modalHeading.textContent = window.i18n?.t('settings.updateFound') || 'Update Available';
+        if (modalDesc) modalDesc.textContent = window.i18n?.t('settings.updateFoundDesc') || 'A new version of IVIDS is ready to install.';
+        if (modalBadge) {
+            modalBadge.textContent = 'v' + version;
+            modalBadge.classList.remove('hidden');
+        }
+        if (installBtn) {
+            installBtn.classList.remove('hidden');
+            installBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
+            installBtn.onclick = () => {
+                import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                    this.closeModal();
+                    UpdatePrompt.show(version);
+                }).catch(err => {
+                    console.error('Settings: Failed to load update-prompt.js', err);
+                    if (window.AndroidUpdate) {
+                        window.AndroidUpdate.downloadAndInstall();
+                    } else if (window.latestUpdateDownloadUrl) {
+                        window.open(window.latestUpdateDownloadUrl, '_blank');
+                    }
+                });
+            };
+        }
+        if (backBtn) backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
+
         const statusText = document.getElementById('update-status-text');
         if (statusText) {
             statusText.style.display = 'inline-block';
@@ -506,6 +544,54 @@ class SettingsManager {
         if (loaderContainer) loaderContainer.style.display = 'none';
 
         SpatialNav.refocus();
+    }
+
+    /**
+     * Opens the dedicated YouTube-style update check modal and initiates an update probe.
+     */
+    openUpdateCheckModal() {
+        this.openModal('update-check-modal');
+        this.startModalUpdateCheck();
+    }
+
+    /**
+     * Runs the update checker inside the modal with animated loader and dynamic response states.
+     */
+    startModalUpdateCheck() {
+        this.isCheckingUpdates = true;
+        const heading = document.getElementById('update-modal-status-heading');
+        const desc = document.getElementById('update-modal-status-desc');
+        const spinner = document.getElementById('update-modal-spinner');
+        const installBtn = document.getElementById('update-modal-install-btn');
+        const retryBtn = document.getElementById('update-modal-retry-btn');
+        const backBtn = document.getElementById('update-modal-back-btn');
+        const badge = document.getElementById('update-modal-version-badge');
+
+        if (heading) heading.textContent = window.i18n?.t('settings.updateStatus.connecting-api') || 'Connecting...';
+        if (desc) desc.textContent = '';
+        if (badge) badge.classList.add('hidden');
+        if (installBtn) installBtn.classList.add('hidden');
+        if (retryBtn) retryBtn.classList.add('hidden');
+        if (backBtn) {
+            backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.cancel') || 'Annuleren');
+            backBtn.onclick = () => this.closeModal();
+        }
+
+        if (spinner) {
+            spinner.style.display = 'flex';
+            spinner.innerHTML = '<div class="ivids-loader"></div>';
+            if (window.LoaderManager && window.LoaderManager.createLoader) {
+                const loaderEl = spinner.querySelector('.ivids-loader');
+                window.LoaderManager.createLoader(loaderEl);
+            }
+        }
+
+        import('../js/updater.js').then(({ Updater }) => {
+            Updater.checkForUpdates(true);
+        }).catch(err => {
+            console.error('Settings: Failed to load updater', err);
+            this.handleUpdateError();
+        });
     }
 
     /**
@@ -569,7 +655,7 @@ class SettingsManager {
             modeDisplay.textContent = window.i18n?.t(`settings.mode.${this.settings.updateMode}`) || this.settings.updateMode;
         }
 
-        const manualContainer = document.getElementById('manual-check-container');
+        const manualContainer = document.getElementById('check-updates-row') || document.getElementById('manual-check-container');
         if (manualContainer) {
             const isManualOrAdvanced = this.settings.updateMode === 'manual' || this.settings.updateMode === 'advanced';
             if (isManualOrAdvanced) {
@@ -585,11 +671,11 @@ class SettingsManager {
             const checkDesc = manualContainer.querySelector('.setting-description');
 
             if (this.settings.updateMode === 'advanced') {
-                if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.toast.select') || 'Select Version';
+                // Selection handled by modal trigger
                 if (checkLabel) checkLabel.textContent = window.i18n?.t('settings.checkNow') || 'Check for Updates';
                 if (checkDesc) checkDesc.textContent = 'Choose any branch or release build to install';
             } else {
-                if (checkBtn) checkBtn.textContent = window.i18n?.t('settings.checkButton') || 'Check Now';
+                // Check action opens modal dialog
                 if (checkLabel) checkLabel.textContent = window.i18n?.t('settings.checkNow') || 'Check for Updates';
                 if (checkDesc) checkDesc.textContent = window.i18n?.t('settings.checkNowDesc') || 'Manually search for updates';
             }
@@ -1613,6 +1699,8 @@ class SettingsManager {
         const statusText = document.getElementById('update-status-text');
         if (statusText) {
             statusText.textContent = window.i18n?.t(`settings.updateStatus.${statusKey}`) || statusKey;
+            const modalHeading = document.getElementById('update-modal-status-heading');
+            if (modalHeading) modalHeading.textContent = window.i18n?.t(`settings.updateStatus.${statusKey}`) || statusKey;
         }
     }
 
@@ -1632,6 +1720,39 @@ class SettingsManager {
         if (statusText) statusText.textContent = (window.i18n?.t('settings.updateFound') || 'Update Found') + ': ' + version;
         if (loaderContainer) loaderContainer.style.display = 'none';
         if (cancelBtn) cancelBtn.style.display = 'inline-block';
+
+        const modalHeading = document.getElementById('update-modal-status-heading');
+        const modalDesc = document.getElementById('update-modal-status-desc');
+        const modalSpinner = document.getElementById('update-modal-spinner');
+        const modalBadge = document.getElementById('update-modal-version-badge');
+        const installBtn = document.getElementById('update-modal-install-btn');
+        const backBtn = document.getElementById('update-modal-back-btn');
+
+        if (modalSpinner) modalSpinner.style.display = 'none';
+        if (modalHeading) modalHeading.textContent = window.i18n?.t('settings.updateFound') || 'Update Available';
+        if (modalDesc) modalDesc.textContent = window.i18n?.t('settings.updateFoundDesc') || 'A new version of IVIDS is ready to install.';
+        if (modalBadge) {
+            modalBadge.textContent = 'v' + version;
+            modalBadge.classList.remove('hidden');
+        }
+        if (installBtn) {
+            installBtn.classList.remove('hidden');
+            installBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
+            installBtn.onclick = () => {
+                import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                    this.closeModal();
+                    UpdatePrompt.show(version);
+                }).catch(err => {
+                    console.error('Settings: Failed to load update-prompt.js', err);
+                    if (window.AndroidUpdate) {
+                        window.AndroidUpdate.downloadAndInstall();
+                    } else if (window.latestUpdateDownloadUrl) {
+                        window.open(window.latestUpdateDownloadUrl, '_blank');
+                    }
+                });
+            };
+        }
+        if (backBtn) backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
 
         if (checkBtn) {
             checkBtn.style.display = 'inline-block';
@@ -1666,13 +1787,26 @@ class SettingsManager {
         const cancelBtn = document.getElementById('cancel-update-btn');
 
         if (statusText) statusText.textContent = window.i18n?.t('settings.noUpdate') || 'Up to date';
+        const noUpHeading = document.getElementById('update-modal-status-heading');
+        const noUpDesc = document.getElementById('update-modal-status-desc');
+        const noUpSpinner = document.getElementById('update-modal-spinner');
+        const noUpBadge = document.getElementById('update-modal-version-badge');
+        const noUpBackBtn = document.getElementById('update-modal-back-btn');
+        if (noUpSpinner) noUpSpinner.style.display = 'none';
+        if (noUpBadge) noUpBadge.classList.add('hidden');
+        if (noUpHeading) noUpHeading.textContent = window.i18n?.t('settings.noUpdate') || 'Up to date';
+        if (noUpDesc) noUpDesc.textContent = window.i18n?.t('settings.noUpdateDesc') || 'You are running the latest version of IVIDS.';
+        if (noUpBackBtn) {
+            noUpBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
+            noUpBackBtn.onclick = () => this.closeModal();
+        }
         if (loaderContainer) loaderContainer.style.display = 'none';
         if (cancelBtn) cancelBtn.style.display = 'none';
 
         setTimeout(() => {
             if (checkBtn) {
                 checkBtn.style.display = 'inline-block';
-                checkBtn.textContent = window.i18n?.t('settings.checkButton') || 'Check Now';
+                // Reset inline status
                 this.initializeUI();
             }
             if (statusText) statusText.style.display = 'none';
@@ -1693,6 +1827,22 @@ class SettingsManager {
         const cancelBtn = document.getElementById('cancel-update-btn');
 
         if (statusText) statusText.textContent = window.i18n?.t('settings.updateError') || 'Error checking';
+        const errHeading = document.getElementById('update-modal-status-heading');
+        const errDesc = document.getElementById('update-modal-status-desc');
+        const errSpinner = document.getElementById('update-modal-spinner');
+        const errRetryBtn = document.getElementById('update-modal-retry-btn');
+        const errBackBtn = document.getElementById('update-modal-back-btn');
+        if (errSpinner) errSpinner.style.display = 'none';
+        if (errHeading) errHeading.textContent = window.i18n?.t('settings.updateError') || 'Error checking';
+        if (errDesc) errDesc.textContent = window.i18n?.t('settings.updateErrorDesc') || 'Could not reach update server. Check your connection.';
+        if (errRetryBtn) {
+            errRetryBtn.classList.remove('hidden');
+            errRetryBtn.onclick = () => this.startModalUpdateCheck();
+        }
+        if (errBackBtn) {
+            errBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
+            errBackBtn.onclick = () => this.closeModal();
+        }
         if (loaderContainer) loaderContainer.style.display = 'none';
         if (cancelBtn) cancelBtn.style.display = 'none';
 

@@ -1073,6 +1073,10 @@ input, textarea, select { font: inherit; }
 .modal__footer--center { justify-content: center; }
 .modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 0; width: 100%; }
 
+/* Floating close button with 'X' in modal top-right corner. */
+.modal__close-btn { align-items: center; background: transparent; border: 0; color: #aaaaaa; cursor: pointer; display: inline-flex; font-size: 18px; height: 36px; justify-content: center; position: absolute; right: 16px; top: 16px; width: 36px; z-index: 10; }
+.modal__close-btn:hover, .modal__close-btn:focus, .modal__close-btn.focused { color: #ffffff; outline: none; }
+
 /* Zero border-radius for all interactive buttons and options inside modal popups (excluding back chevron). */
 .modal .btn:not(.modal__back-btn), .modal button:not(.modal__back-btn), .modal .modal-option, .modal .language-card, .modal .chip, .modal .playlist-item, .modal .form-input, .modal .form-select-wrapper { border-radius: 0 !important; }
 /* Clean zero-gap list containers for modal selections with divider lines. */
