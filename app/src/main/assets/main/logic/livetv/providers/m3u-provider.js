@@ -22,11 +22,12 @@ export class M3uProvider extends BaseStreamProvider {
     constructor(id, name, url, options = {}) {
         super(id, name, options);
         this.url = (url || '').trim();
-        this.countryTag = options.country ? options.country.toLowerCase() : '';
+        this.countryTag = options.country ? options.country.toLowerCase().trim() : '';
     }
 
     /**
-     * Fetches the playlist content via proxy and returns normalized Channel instances.
+     * Fetches the playlist content (using direct CORS first for public GitHub/iptv-org playlists,
+     * falling back to the local proxy) and returns normalized Channel instances with explicit country metadata.
      * 
      * @returns {Promise<Array<Channel>>} Parsed channels.
      */
@@ -65,31 +66,31 @@ export class M3uProvider extends BaseStreamProvider {
                     const rawName = (item.name || '').toLowerCase();
                     const rawUrl = (item.url || '').toLowerCase();
                     if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) return false;
-                    // Skip geo-blocked, DRM-encrypted, or known dead hosts
-                    if (/\[geo-?blocked\]|\[drm\]|live_aes\.isml|rabah\.net|ln24\.be|145\.239\.5\.177|artesimulcast\.akamaized\.net/i.test(`${rawName} ${rawUrl}`)) {
+                    // Skip only explicitly DRM-encrypted or geo-blocked streams
+                    if (/\[geo-?blocked\]|\[drm\]/i.test(rawName)) {
                         return false;
                     }
                     return true;
                 })
                 .map(item => {
-                const group = item.group || this.category;
-                const extraTags = this.countryTag ? [this.countryTag] : [];
-                const optimizedUrl = StreamOptimizer.optimizeStreamUrl(item.url);
-                const reqHeaders = StreamOptimizer.getRequiredHeaders(optimizedUrl);
-                return this.createChannel({
-                    name: item.name,
-                    url: optimizedUrl,
-                    logo: item.logo || '',
-                    group: group,
-                    groupTags: extraTags,
-                    tvgId: item.tvgId || '',
-                    headers: reqHeaders
+                    const group = item.group || this.category;
+                    const extraTags = this.countryTag ? [this.countryTag] : [];
+                    const optimizedUrl = StreamOptimizer.optimizeStreamUrl(item.url);
+                    const reqHeaders = StreamOptimizer.getRequiredHeaders(optimizedUrl);
+                    return this.createChannel({
+                        name: item.name,
+                        url: optimizedUrl,
+                        logo: item.logo || '',
+                        group: group,
+                        groupTags: extraTags,
+                        country: this.countryTag,
+                        tvgId: item.tvgId || '',
+                        headers: reqHeaders
+                    });
                 });
-            });
         } catch (error) {
             console.warn(`[M3uProvider] Failed to load ${this.name}:`, error.message);
             return [];
         }
     }
 }
-

@@ -1,9 +1,8 @@
 import { sourceManager } from '../../logic/livetv/core/source-manager.js';
-import { StreamOptimizer } from '../../logic/livetv/core/stream-optimizer.js';
+import { LiveStreamEngine } from '../../logic/livetv/core/live-stream-engine.js';
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
-import { proxyUrl } from '../js/utils/proxy.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
 
 /**
@@ -33,7 +32,7 @@ let searchQuery = '';
 let selectedChannel = null;
 let activeCategoryKey = 'all';
 const statusCache = new Map();
-let previewHls = null;
+let previewEngine = null;
 let previewTimeout = null;
 let searchDebounceTimer = null;
 let categoryFocusTimer = null;
@@ -42,25 +41,29 @@ let loadSourcesPromise = null;
 let liveTvPageBackHandler = null;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
-const BROKEN_CHANNELS_API_URL = '/api/broken-channels';
-const brokenChannelsSet = new Set();
 
 let renderedCount = 0;
 const CHUNK_SIZE = 35;
 
 /**
  * Priority countries displayed near the top of the vertical Categories / Countries list.
+ * Uses strict exact country keys ('country:belgium', etc.) backed by SourceManager's O(1) categoryIndex.
  */
 const PRIORITY_COUNTRIES = [
-    { key: 'country:netherlands', label: 'Netherlands', match: ['netherlands', 'dutch', 'nl'] },
-    { key: 'country:belgium', label: 'Belgium', match: ['belgium', 'belgian', 'be'] },
-    { key: 'country:france', label: 'France', match: ['france', 'french', 'fr'] },
-    { key: 'country:spain', label: 'Spain', match: ['spain', 'spanish', 'es'] },
-    { key: 'country:germany', label: 'Germany', match: ['germany', 'german', 'de'] },
-    { key: 'country:portugal', label: 'Portugal', match: ['portugal', 'portuguese', 'pt'] },
-    { key: 'country:italy', label: 'Italy', match: ['italy', 'italian', 'it'] },
-    { key: 'country:united kingdom', label: 'United Kingdom', match: ['united kingdom', 'uk', 'england', 'britain'] },
-    { key: 'country:united states', label: 'United States', match: ['united states', 'usa', 'us'] }
+    { key: 'country:netherlands', label: 'Netherlands' },
+    { key: 'country:belgium', label: 'Belgium' },
+    { key: 'country:france', label: 'France' },
+    { key: 'country:spain', label: 'Spain' },
+    { key: 'country:germany', label: 'Germany' },
+    { key: 'country:portugal', label: 'Portugal' },
+    { key: 'country:italy', label: 'Italy' },
+    { key: 'country:united kingdom', label: 'United Kingdom' },
+    { key: 'country:united states', label: 'United States' }
+];
+
+const ALLOWED_GENRES = [
+    'News', 'Movies', 'Entertainment', 'Music', 'Kids', 'Documentary',
+    'General', 'Series', 'Comedy', 'Lifestyle', 'Culture', 'Education', 'Science'
 ];
 
 /**
@@ -79,61 +82,8 @@ export function formatPrimaryCategory(groupStr) {
 window.formatPrimaryCategory = formatPrimaryCategory;
 
 /**
- * Checks whether a channel belongs to the Sports category.
- *
- * @param {object} channel - Channel object to inspect.
- * @returns {boolean} True if the channel is a sports broadcast.
- */
-function isSportsChannel(channel) {
-    if (!channel) return false;
-    if (channel.isSports) return true;
-    const tags = Array.isArray(channel.groupTags) ? channel.groupTags.join(' ').toLowerCase() : '';
-    const group = (channel.group || '').toLowerCase();
-    const name = (channel.name || '').toLowerCase();
-    const combined = `${tags} ${group} ${name}`;
-    return /sport|voetbal|football|soccer|canal\+\s*(foot|sport|live)|bein|ziggo|dazn|eurosport|espn|sky\s*sport|tnt\s*sport|arena\s*sport|premier\s*league|fighting|motor|golf|tennis|nba|nfl|ufc|f1/i.test(combined);
-}
-
-/**
- * Checks whether a channel matches the given category/country key from #categories-list.
- *
- * @param {object} channel - Channel object to evaluate.
- * @param {string} categoryKey - Selected category key ('all', 'sports', 'country:...', 'genre:...').
- * @returns {boolean} True if the channel belongs to the category.
- */
-function channelMatchesCategoryKey(channel, categoryKey) {
-    if (!categoryKey || categoryKey === 'all') return true;
-    if (categoryKey === 'sports') {
-        return isSportsChannel(channel);
-    }
-
-    const tags = Array.isArray(channel.groupTags) ? channel.groupTags.map(t => t.toLowerCase()) : [];
-    const groupParts = (channel.group || '').split(/[;|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-    const sourceName = (channel.sourceName || '').toLowerCase();
-
-    if (categoryKey.startsWith('country:')) {
-        const target = categoryKey.slice('country:'.length).toLowerCase();
-        const countryDef = PRIORITY_COUNTRIES.find(c => c.key === categoryKey);
-        const matchTerms = countryDef ? countryDef.match : [target];
-        return matchTerms.some(term =>
-            tags.includes(term) ||
-            groupParts.includes(term) ||
-            sourceName === term ||
-            (channel.group && channel.group.toLowerCase().includes(term))
-        );
-    }
-
-    if (categoryKey.startsWith('genre:')) {
-        const targetGenre = categoryKey.slice('genre:'.length).toLowerCase();
-        return groupParts.includes(targetGenre) || tags.includes(targetGenre);
-    }
-
-    return true;
-}
-
-/**
- * Initializes the 3-column Live TV page, resetting state variables, clearing active preview,
- * setting up event listeners, and starting progressive IPTV playlist loading.
+ * Initializes the 3-column Live TV page, resetting state variables, initializing the unified
+ * LiveStreamEngine for the 16:9 preview, setting up event listeners, and starting progressive IPTV playlist loading.
  * 
  * @param {object} params - Routing parameters.
  */
@@ -145,6 +95,7 @@ export async function init(params) {
     selectedChannel = null;
     loadStatusCache();
     cleanupPreview();
+    initPreviewEngine();
 
     const originalLoadPage = Router.loadPage;
     const originalGoBack = Router.goBack;
@@ -173,7 +124,7 @@ export async function init(params) {
      * Wraps Router.loadPage to cleanup the preview player before navigating.
      */
     Router.loadPage = async function(pageName, paramsArg, addToHistory, targetFocus) {
-        cleanupPreview();
+        destroyPreviewEngine();
         restoreRouter();
         return originalLoadPage.call(Router, pageName, paramsArg, addToHistory, targetFocus);
     };
@@ -182,7 +133,7 @@ export async function init(params) {
      * Wraps Router.goBack to cleanup the preview player before navigating back.
      */
     Router.goBack = function(fallbackPage, fallbackParams) {
-        cleanupPreview();
+        destroyPreviewEngine();
         restoreRouter();
         return originalGoBack.call(Router, fallbackPage, fallbackParams);
     };
@@ -201,7 +152,8 @@ export async function init(params) {
 
     setupEventListeners();
 
-    if (allChannels.length > 0) {
+    if (sourceManager.cachedChannels.length > 0) {
+        allChannels = sourceManager.cachedChannels;
         renderCategoriesList();
         filterAndRenderChannels(true);
         SpatialNav.focusFirst();
@@ -223,6 +175,35 @@ export async function init(params) {
     }
 
     SpatialNav.focusFirst();
+}
+
+/**
+ * Instantiates the unified LiveStreamEngine bound to #livetv-preview-video.
+ */
+function initPreviewEngine() {
+    const video = document.getElementById('livetv-preview-video');
+    const loader = document.getElementById('preview-video-loading');
+    if (!video) return;
+
+    if (previewEngine) {
+        previewEngine.destroy();
+    }
+
+    previewEngine = new LiveStreamEngine(video, {
+        isPreview: true,
+        onLoading: (channel) => {
+            if (loader) loader.classList.remove('hidden');
+            if (channel?.url) updateChannelStatus(channel.url, 'checking');
+        },
+        onPlaying: (channel) => {
+            if (loader) loader.classList.add('hidden');
+            if (channel?.url) updateChannelStatus(channel.url, 'online');
+        },
+        onOffline: (channel) => {
+            if (loader) loader.classList.add('hidden');
+            if (channel?.url) updateChannelStatus(channel.url, 'offline');
+        }
+    });
 }
 
 /**
@@ -261,9 +242,8 @@ function renderLoadingSkeletons() {
 }
 
 /**
- * Builds and renders the vertical Categories & Countries list (#categories-list) on the left column.
- * Includes "All Channels", "Sports", all countries (Netherlands, Belgium, France, Spain, Germany, Portugal, Italy, UK, USA),
- * and major channel genres with live channel counts.
+ * Builds and renders the vertical Categories & Countries list (#categories-list) on the left column
+ * using O(1) pre-indexed category buckets from SourceManager.
  */
 function renderCategoriesList() {
     const container = document.getElementById('categories-list');
@@ -282,23 +262,17 @@ function renderCategoriesList() {
         count: allChannels.length
     });
 
-    // 2. Sports (All live sports & football across all providers)
-    let sportsCount = 0;
-    for (let i = 0; i < allChannels.length; i++) {
-        if (isSportsChannel(allChannels[i])) sportsCount++;
-    }
+    // 2. Sports
+    const sportsChannels = sourceManager.getChannelsByCategory('sports');
     items.push({
         key: 'sports',
         label: 'Sports',
-        count: sportsCount
+        count: sportsChannels.length
     });
 
-    // 3. Countries (Netherlands, Belgium, France, Spain, Germany, Portugal, Italy, UK, USA)
+    // 3. Priority Countries (Strict exact country buckets — no substring matching!)
     PRIORITY_COUNTRIES.forEach(country => {
-        let count = 0;
-        for (let i = 0; i < allChannels.length; i++) {
-            if (channelMatchesCategoryKey(allChannels[i], country.key)) count++;
-        }
+        const count = sourceManager.getChannelsByCategory(country.key).length;
         if (count > 0) {
             items.push({
                 key: country.key,
@@ -308,28 +282,13 @@ function renderCategoriesList() {
         }
     });
 
-    // 4. Dynamic Genres from playlists (excluding countries and raw compound tags)
-    const knownCountryTerms = new Set(PRIORITY_COUNTRIES.flatMap(c => c.match));
-    const genreCounts = new Map();
-    const allowedGenres = [
-        'News', 'Movies', 'Entertainment', 'Music', 'Kids', 'Documentary',
-        'General', 'Series', 'Comedy', 'Lifestyle', 'Culture', 'Education', 'Science'
-    ];
-
-    allChannels.forEach(c => {
-        const primary = formatPrimaryCategory(c.group);
-        if (!primary || primary.toLowerCase() === 'sports' || knownCountryTerms.has(primary.toLowerCase())) return;
-        const matchedAllowed = allowedGenres.find(g => g.toLowerCase() === primary.toLowerCase());
-        if (matchedAllowed) {
-            genreCounts.set(matchedAllowed, (genreCounts.get(matchedAllowed) || 0) + 1);
-        }
-    });
-
-    allowedGenres.forEach(genreName => {
-        const count = genreCounts.get(genreName) || 0;
+    // 4. Allowed Genres
+    ALLOWED_GENRES.forEach(genreName => {
+        const key = `genre:${genreName.toLowerCase()}`;
+        const count = sourceManager.getChannelsByCategory(key).length;
         if (count > 0) {
             items.push({
-                key: `genre:${genreName.toLowerCase()}`,
+                key,
                 label: genreName,
                 count
             });
@@ -399,7 +358,7 @@ function renderCategoriesList() {
 
 /**
  * Asynchronously loads M3U channel lists from all registered providers progressively.
- * Updates the vertical Categories/Countries list and Channels list as providers finish.
+ * Never discards channels via broken-channels.json so every channel remains available.
  */
 async function loadAllSources() {
     const empty = document.getElementById('no-channels-message');
@@ -407,13 +366,11 @@ async function loadAllSources() {
     try {
         if (empty) empty.classList.add('hidden');
 
-        await loadBrokenChannelsDb();
-
         const settings = loadMergedSettings();
         sourceManager.registerDefaultProviders(settings);
 
         let initialRenderDone = false;
-        allChannels = await sourceManager.loadAllChannels(brokenChannelsSet, false, (progressChannels) => {
+        allChannels = await sourceManager.loadAllChannels(null, false, (progressChannels) => {
             allChannels = progressChannels;
             if (!initialRenderDone && allChannels.length > 0) {
                 initialRenderDone = true;
@@ -425,7 +382,7 @@ async function loadAllSources() {
                 progressiveRenderTimer = setTimeout(() => {
                     renderCategoriesList();
                     filterAndRenderChannels(false);
-                }, 400);
+                }, 350);
             }
         });
 
@@ -448,18 +405,21 @@ async function loadAllSources() {
 }
 
 /**
- * Updates the filteredChannels array based on activeCategoryKey and searchQuery without clearing DOM.
+ * Updates the filteredChannels array in O(1) using SourceManager's categoryIndex when no search query is active,
+ * or filters the selected bucket by searchQuery. Never hides channels based on offline statusCache.
  */
 function updateFilteredChannelsArray() {
+    const baseBucket = sourceManager.getChannelsByCategory(activeCategoryKey);
     const q = searchQuery.toLowerCase().trim();
-    filteredChannels = allChannels.filter(c => {
-        if (!channelMatchesCategoryKey(c, activeCategoryKey)) return false;
-        if (q) {
-            const matchesName = (c.searchNameLower || (c.name ? c.name.toLowerCase() : '')).includes(q);
-            const matchesGroup = c.group && c.group.toLowerCase().includes(q);
-            if (!matchesName && !matchesGroup) return false;
-        }
-        return true;
+    if (!q) {
+        filteredChannels = baseBucket;
+        return;
+    }
+
+    filteredChannels = baseBucket.filter(c => {
+        const matchesName = (c.searchNameLower || (c.name ? c.name.toLowerCase() : '')).includes(q);
+        const matchesGroup = c.group && c.group.toLowerCase().includes(q);
+        return matchesName || matchesGroup;
     });
 }
 
@@ -501,16 +461,14 @@ function filterAndRenderChannels(resetFocus = false) {
 }
 
 /**
- * Updates the right-hand preview column with the selected channel's EPG details and triggers debounced HLS preview playback.
+ * Updates the right-hand preview column with the selected channel's EPG details and triggers
+ * debounced Multi-Stage Smart HLS preview playback via LiveStreamEngine.
  * 
  * @param {object} channel - The selected channel object to preview.
  */
 async function showChannelDetail(channel) {
     selectedChannel = channel;
-    const placeholder = document.getElementById('hero-placeholder');
     const content = document.getElementById('hero-active-content');
-
-    if (placeholder) placeholder.style.display = 'none';
     if (content) content.classList.remove('hidden');
 
     const previewCard = document.getElementById('livetv-preview-card');
@@ -541,14 +499,19 @@ async function showChannelDetail(channel) {
     if (previewTimeout) {
         clearTimeout(previewTimeout);
     }
-    const video = document.getElementById('livetv-preview-video');
-    if (video) {
-        video.pause();
-        video.src = '';
+    if (previewEngine) {
+        previewEngine.stop();
     }
+
     previewTimeout = setTimeout(async () => {
         if (!selectedChannel || selectedChannel.url !== channel.url) return;
-        loadPreviewStream(channel);
+
+        if (!previewEngine) {
+            initPreviewEngine();
+        }
+        if (previewEngine) {
+            previewEngine.loadChannel(channel);
+        }
 
         const [epg, upcomingShows] = await Promise.all([
             EpgManager.getCurrentProgram(channel.name, channel.group, channel.tvgId),
@@ -587,118 +550,30 @@ async function showChannelDetail(channel) {
 }
 
 /**
- * Asynchronously loads the selected IPTV channel stream into the 16:9 preview video element.
- * 
- * @param {object|string} channel - Channel object or stream URL.
- */
-function loadPreviewStream(channel) {
-    const url = typeof channel === 'string' ? channel : channel?.url;
-    const headers = typeof channel === 'object' ? channel?.headers : {};
-    const video = document.getElementById('livetv-preview-video');
-    const loader = document.getElementById('preview-video-loading');
-    if (!video || !url) return;
-
-    if (previewHls) {
-        previewHls.destroy();
-        previewHls = null;
-    }
-
-    if (loader) loader.classList.remove('hidden');
-
-    video.onloadstart = () => {
-        if (loader) loader.classList.remove('hidden');
-    };
-    video.onplaying = () => {
-        if (loader) loader.classList.add('hidden');
-        updateChannelStatus(url, 'online');
-    };
-    video.onerror = () => {
-        if (loader) loader.classList.add('hidden');
-        updateChannelStatus(url, 'offline');
-    };
-
-    const streamUrl = StreamOptimizer.getProxiedStreamUrl ? StreamOptimizer.getProxiedStreamUrl(url, headers) : proxyUrl(url);
-
-    if (window.Hls && window.Hls.isSupported()) {
-        previewHls = new window.Hls({
-            maxMaxBufferLength: 8,
-            maxBufferLength: 4,
-            liveSyncDurationCount: 2,
-            initialLiveManifestSize: 2,
-            enableWorker: true,
-            lowLatencyMode: true,
-            startLevel: -1,
-            capLevelToPlayerSize: false
-        });
-        previewHls.loadSource(streamUrl);
-        previewHls.attachMedia(video);
-        previewHls.on(window.Hls.Events.MANIFEST_PARSED, (event, data) => {
-            // Select the highest HD/FHD resolution or bitrate level
-            if (previewHls && Array.isArray(data?.levels) && data.levels.length > 1) {
-                let bestIdx = data.levels.length - 1;
-                let maxScore = -1;
-                data.levels.forEach((lvl, idx) => {
-                    const score = (lvl.height || 0) * 1000000 + (lvl.bitrate || 0);
-                    if (score > maxScore) {
-                        maxScore = score;
-                        bestIdx = idx;
-                    }
-                });
-                previewHls.nextLevel = bestIdx;
-            }
-            video.play().catch(e => {
-                if (e.name !== 'AbortError') {
-                    console.warn('Error starting HLS preview video:', e);
-                }
-            });
-        });
-        previewHls.on(window.Hls.Events.ERROR, (event, data) => {
-            if (data.fatal) {
-                if (loader) loader.classList.add('hidden');
-                updateChannelStatus(url, 'offline');
-                if (previewHls) {
-                    previewHls.destroy();
-                    previewHls = null;
-                }
-            }
-        });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = streamUrl;
-        video.play().catch(e => {
-            if (e.name !== 'AbortError') {
-                console.warn('Error starting native preview video:', e);
-            }
-        });
-    } else {
-        if (loader) loader.classList.add('hidden');
-    }
-}
-
-/**
- * Releases playback resources, destroys the preview HLS instance, and clears the video element's source.
+ * Stops active preview playback and hides the loading spinner.
  */
 function cleanupPreview() {
     if (previewTimeout) {
         clearTimeout(previewTimeout);
         previewTimeout = null;
     }
-    if (previewHls) {
-        previewHls.destroy();
-        previewHls = null;
-    }
-    const video = document.getElementById('livetv-preview-video');
-    if (video) {
-        video.pause();
-        video.src = '';
-        try {
-            video.load();
-        } catch (e) {
-            console.error('Error clearing preview video:', e);
-        }
+    if (previewEngine) {
+        previewEngine.stop();
     }
     const loader = document.getElementById('preview-video-loading');
     if (loader) {
         loader.classList.add('hidden');
+    }
+}
+
+/**
+ * Completely destroys the preview LiveStreamEngine instance when navigating away from the page.
+ */
+function destroyPreviewEngine() {
+    cleanupPreview();
+    if (previewEngine) {
+        previewEngine.destroy();
+        previewEngine = null;
     }
 }
 
@@ -715,7 +590,7 @@ function playChannel(channel) {
         currentIndex: index >= 0 ? index : 0
     };
 
-    cleanupPreview();
+    destroyPreviewEngine();
     Router.loadPage('tv-player', {
         url: channel.url,
         title: channel.name,
@@ -776,7 +651,7 @@ function setupEventListeners() {
 }
 
 /**
- * Loads cached channel health statuses from localStorage.
+ * Loads cached channel health statuses from localStorage (used strictly for status dot color, never to hide channels).
  */
 function loadStatusCache() {
     statusCache.clear();
@@ -816,15 +691,18 @@ function scheduleSaveStatusCache() {
 }
 
 /**
- * Updates the cached online/offline status for a channel URL and updates its status dot in the DOM.
+ * Updates the visual status dot ('online' = green, 'offline' = red, 'checking' = yellow) for a channel URL.
+ * NEVER removes or hides the channel from the DOM or playlist so the user can always retry it.
  * 
  * @param {string} url - Channel stream URL.
- * @param {string} status - The current playback status ('online' | 'offline').
+ * @param {string} status - The current playback status ('online' | 'offline' | 'checking').
  */
 function updateChannelStatus(url, status) {
     if (!url) return;
-    statusCache.set(url, { status, timestamp: Date.now() });
-    scheduleSaveStatusCache();
+    if (status === 'online' || status === 'offline') {
+        statusCache.set(url, { status, timestamp: Date.now() });
+        scheduleSaveStatusCache();
+    }
 
     const escapedUrl = url.replace(/"/g, '\\"');
     const row = document.querySelector(`.channel-list-item[data-url="${escapedUrl}"], .channel-card[data-url="${escapedUrl}"]`);
@@ -908,40 +786,4 @@ function renderNextChunk(preserveFocusedUrl = null) {
     }
 
     renderedCount = end;
-}
-
-/**
- * Normalizes a URL by stripping its scheme (http/https), trailing slashes, and leading/trailing whitespace.
- * 
- * @param {string} url - The URL to normalize.
- * @returns {string} The normalized URL.
- */
-function normalizeUrl(url) {
-    if (!url) return '';
-    return url.trim()
-        .toLowerCase()
-        .replace(/^https?:\/\//, '')
-        .replace(/\/+$/, '');
-}
-
-/**
- * Fetches the persistent broken channels database from the project file.
- */
-async function loadBrokenChannelsDb() {
-    try {
-        const response = await fetch(`${BROKEN_CHANNELS_API_URL}?_=${Date.now()}`);
-        if (!response.ok) {
-            const fallback = await fetch(`../../logic/livetv/broken-channels.json?_=${Date.now()}`);
-            if (fallback.ok) {
-                const urls = await fallback.json();
-                urls.forEach(url => brokenChannelsSet.add(normalizeUrl(url)));
-            }
-            return;
-        }
-        const urls = await response.json();
-        urls.forEach(url => brokenChannelsSet.add(normalizeUrl(url)));
-        console.log(`[LiveTV] Loaded ${brokenChannelsSet.size} known broken channels from database.`);
-    } catch (error) {
-        console.warn('Failed to load broken channels database:', error);
-    }
 }

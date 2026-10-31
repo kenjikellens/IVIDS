@@ -9,7 +9,7 @@ import { domRecycler } from './dom-recycler.js';
 const _htmlCache = new Map();
 
 /** Cache key for page templates so edited mobile button markup is fetched after an app restart. */
-const PAGE_TEMPLATE_CACHE_VERSION = '20261031T1438';
+let PAGE_TEMPLATE_CACHE_VERSION = '20261031T1501';
 
 /** Flag to track whether the initial boot page has loaded. Used to skip splash signals on subsequent loads. */
 let _initialLoadComplete = false;
@@ -36,6 +36,12 @@ export const Router = {
         const activeParams = this.params || {};
         this.currentPage = null;
         this.isLoading = false;
+        const stamp = Date.now();
+        PAGE_TEMPLATE_CACHE_VERSION = String(stamp);
+        document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+            const baseHref = link.getAttribute('href')?.split('?')[0];
+            if (baseHref) link.setAttribute('href', `${baseHref}?v=${stamp}`);
+        });
         this.loadPage(activePage, activeParams, false);
     },
 

@@ -2,12 +2,12 @@ import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { Toast } from '../js/toast.js';
-import { StreamOptimizer } from '../../logic/livetv/core/stream-optimizer.js';
+import { LiveStreamEngine } from '../../logic/livetv/core/live-stream-engine.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
 
 let overlayTimeout;
 let zappingHudTimeout;
-let hlsInstance = null;
+let playerEngine = null;
 let epgRequestId = 0;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const LIVE_TV_FAVORITES_KEY = 'ivids-live-tv-favorites';
@@ -29,8 +29,8 @@ export function formatPrimaryCategory(groupStr) {
 }
 
 /**
- * Initializes the custom TV player, binds media controls, handles D-pad zapping,
- * manages custom overlay visibility behavior, and handles memory cleanup.
+ * Initializes the custom TV player using the unified LiveStreamEngine, binds media controls,
+ * handles D-pad zapping, manages custom overlay visibility behavior, and handles memory cleanup.
  * @param {Object} params - Dynamic route parameters including video URL and metadata.
  */
 export async function init(params) {
@@ -54,13 +54,10 @@ export async function init(params) {
     const prevBtn = document.getElementById('tv-prev-btn');
     const nextBtn = document.getElementById('tv-next-btn');
     const retryBtn = document.getElementById('tv-retry-btn');
+    const qualityBadgeEl = document.querySelector('.tv-quality-badge');
+    const statusDotEl = document.querySelector('.tv-status-badge .status-dot');
 
     let currentStreamUrl = '';
-    let streamErrorRetries = 0;
-    let autoZapAttempts = 0;
-    let autoZapTimer = null;
-    let streamStartupTimer = null;
-    let fallbackIndex = 0;
     const favoritesSet = new Set();
 
     /**
@@ -158,26 +155,6 @@ export async function init(params) {
 
     loadFavorites();
 
-    /**
-     * Attempts loading an alternative stream from channel fallback URLs when available,
-     * otherwise schedules zapping to the next channel in the playlist.
-     * @param {string} failedUrl - The URL that encountered a failure.
-     * @returns {boolean} True if a fallback URL was found and loaded.
-     */
-    function tryFallbackOrZap(failedUrl) {
-        updateStoredChannelStatus(failedUrl, 'offline');
-        const channel = getCurrentChannel();
-        if (channel && Array.isArray(channel.fallbackUrls) && fallbackIndex < channel.fallbackUrls.length) {
-            const nextFallbackUrl = channel.fallbackUrls[fallbackIndex++];
-            console.warn(`Stream failed, attempting fallback (${fallbackIndex}/${channel.fallbackUrls.length}):`, nextFallbackUrl);
-            Toast.show(`Stream error. Trying fallback stream (${fallbackIndex}/${channel.fallbackUrls.length})...`, { type: 'warning' });
-            loadStream(nextFallbackUrl, channel.headers, true);
-            return true;
-        }
-        scheduleNextPlayableChannel();
-        return false;
-    }
-
     const aspectModes = ['contain', 'cover', 'fill'];
     let currentAspectIndex = 0;
 
@@ -224,8 +201,7 @@ export async function init(params) {
                     btn.dataset.channelIndex = i;
                     btn.onclick = () => {
                         window.liveTvState.currentIndex = i;
-                        fallbackIndex = 0;
-                        loadStream(ch.url, ch.headers);
+                        loadStream(ch, ch.headers);
                         if (title) title.textContent = ch.name;
                         if (group) group.textContent = formatPrimaryCategory(ch.group || '');
                         updateFavUI(ch);
@@ -269,123 +245,70 @@ export async function init(params) {
         }
     }
 
-    /**
-     * Loads HLS/Live stream URL, attaching it to Hls.js demuxer on PC,
-     * or natively on Android WebView/Safari.
-     * @param {string} url - Target stream source URL.
-     * @param {Object} [channelHeaders] - Optional headers for stream authentication.
-     * @param {boolean} [isFallback=false] - Whether this load is an alternative fallback attempt.
-     */
-    function loadStream(url, channelHeaders = null, isFallback = false) {
-        currentStreamUrl = url;
-        streamErrorRetries = 0;
-        if (!isFallback) {
-            fallbackIndex = 0;
-        }
-        if (autoZapTimer) {
-            clearTimeout(autoZapTimer);
-            autoZapTimer = null;
-        }
-        clearTimeout(streamStartupTimer);
+    if (playerEngine) {
+        playerEngine.destroy();
+    }
 
-        if (hlsInstance) {
-            hlsInstance.destroy();
-            hlsInstance = null;
-        }
-
-        const headers = channelHeaders || getCurrentChannel()?.headers || {};
-        const streamUrl = StreamOptimizer.getProxiedStreamUrl(url, headers);
-        streamStartupTimer = setTimeout(() => {
-            const isReady = video && video.readyState >= 2 && !video.paused;
-            if (!isReady && currentStreamUrl === url) {
-                console.warn('Stream startup timed out, attempting fallback or next channel:', url);
-                tryFallbackOrZap(url);
+    playerEngine = new LiveStreamEngine(video, {
+        isPreview: false,
+        onLoading: (channel) => {
+            if (loader) {
+                loader.classList.remove('hidden');
+                loader.style.display = 'flex';
             }
-        }, 12000);
+            if (statusDotEl) {
+                statusDotEl.classList.remove('online', 'offline');
+                statusDotEl.classList.add('checking');
+            }
+        },
+        onPlaying: (channel, qualityLabel) => {
+            if (loader) {
+                loader.classList.add('hidden');
+                loader.style.display = 'none';
+            }
+            updatePlaybackIconState(false);
+            if (qualityBadgeEl) {
+                qualityBadgeEl.textContent = qualityLabel || 'LIVE HD';
+            }
+            if (statusDotEl) {
+                statusDotEl.classList.remove('checking', 'offline');
+                statusDotEl.classList.add('online');
+            }
+            if (channel?.url) {
+                updateStoredChannelStatus(channel.url, 'online');
+            }
+        },
+        onOffline: (channel) => {
+            if (loader) {
+                loader.classList.add('hidden');
+                loader.style.display = 'none';
+            }
+            if (statusDotEl) {
+                statusDotEl.classList.remove('checking', 'online');
+                statusDotEl.classList.add('offline');
+            }
+            if (channel?.url) {
+                updateStoredChannelStatus(channel.url, 'offline');
+            }
+            Toast.show('Stream is momenteel offline. Gebruik pijl omhoog/omlaag voor een ander kanaal of probeer het later opnieuw.', { type: 'warning' });
+        }
+    });
 
-        if (window.Hls && window.Hls.isSupported()) {
-            console.log('TV Player: Playing stream using HLS.js library');
-            hlsInstance = new window.Hls({
-                enableWorker: true,
-                lowLatencyMode: true,
-                backBufferLength: 30,
-                maxBufferLength: 12,
-                maxMaxBufferLength: 24,
-                liveSyncDurationCount: 2,
-                initialLiveManifestSize: 2,
-                startLevel: -1,
-                capLevelToPlayerSize: false
-            });
-            hlsInstance.loadSource(streamUrl);
-            hlsInstance.attachMedia(video);
-            hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, (event, data) => {
-                // Select highest resolution/bitrate HD/FHD stream level immediately on startup
-                if (hlsInstance && Array.isArray(data?.levels) && data.levels.length > 1) {
-                    let bestIdx = data.levels.length - 1;
-                    let bestScore = -1;
-                    data.levels.forEach((lvl, idx) => {
-                        const score = (lvl.height || 0) * 1000000 + (lvl.bitrate || 0);
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestIdx = idx;
-                        }
-                    });
-                    hlsInstance.currentLevel = bestIdx;
-                    hlsInstance.nextLevel = bestIdx;
-                }
-                video.play().catch(e => {
-                    if (e.name === 'AbortError') {
-                        console.log('Playback request was interrupted (AbortError), ignoring.');
-                        return;
-                    }
-                    console.error('Error starting TV stream (HLS.js):', e);
-                    tryFallbackOrZap(url);
-                });
-            });
-            hlsInstance.on(window.Hls.Events.ERROR, (event, data) => {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case window.Hls.ErrorTypes.NETWORK_ERROR:
-                            if (streamErrorRetries < 1) {
-                                streamErrorRetries++;
-                                console.error('Fatal network error, trying to recover...', data);
-                                hlsInstance.startLoad();
-                            } else {
-                                console.error('Fatal network error, attempting fallback or next channel...', data);
-                                tryFallbackOrZap(url);
-                            }
-                            break;
-                        case window.Hls.ErrorTypes.MEDIA_ERROR:
-                            if (streamErrorRetries < 1) {
-                                streamErrorRetries++;
-                                console.error('Fatal media error, trying to recover...', data);
-                                hlsInstance.recoverMediaError();
-                            } else {
-                                console.error('Fatal media error, attempting fallback or next channel...', data);
-                                tryFallbackOrZap(url);
-                            }
-                            break;
-                        default:
-                            console.error('Fatal unrecoverable HLS.js error:', data);
-                            tryFallbackOrZap(url);
-                            break;
-                    }
-                }
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            console.log('TV Player: Playing stream natively');
-            video.src = streamUrl;
-            video.play().catch(e => {
-                if (e.name === 'AbortError') {
-                    console.log('Playback request was interrupted (AbortError), ignoring.');
-                    return;
-                }
-                console.error('Error starting TV stream (Native):', e);
-                tryFallbackOrZap(url);
-            });
-        } else {
-            if (loader) loader.style.display = 'none';
-            Toast.show('HLS playback is not supported in this browser.', { type: 'error' });
+    /**
+     * Loads the given channel or URL via the Multi-Stage Smart LiveStreamEngine.
+     * Never auto-zaps away against the user's will and never deletes the channel.
+     *
+     * @param {Object|string} channelOrUrl - Channel object or stream URL.
+     * @param {Object} [channelHeaders] - Optional custom HTTP headers.
+     */
+    function loadStream(channelOrUrl, channelHeaders = null) {
+        const channelObj = typeof channelOrUrl === 'object' && channelOrUrl !== null
+            ? channelOrUrl
+            : (getCurrentChannel() || { url: channelOrUrl, name: title?.textContent || 'Live TV', headers: channelHeaders || {} });
+
+        currentStreamUrl = channelObj.url || (typeof channelOrUrl === 'string' ? channelOrUrl : '');
+        if (playerEngine) {
+            playerEngine.loadChannel(channelObj, channelHeaders || channelObj.headers);
         }
     }
 
@@ -407,27 +330,15 @@ export async function init(params) {
 
     // Load initial source
     if (params.url) {
-        const initialChannel = getCurrentChannel();
-        loadStream(params.url, initialChannel?.headers || params.headers);
+        const initialChannel = getCurrentChannel() || {
+            url: params.url,
+            name: params.title || 'Live TV',
+            group: params.group || 'Live TV',
+            tvgId: params.tvgId || '',
+            headers: params.headers || {}
+        };
+        loadStream(initialChannel, initialChannel.headers || params.headers);
     }
-
-    // Media element callbacks
-    video.onloadstart = () => {
-        if (loader) loader.style.display = 'flex';
-    };
-    video.onplaying = () => {
-        if (loader) loader.style.display = 'none';
-        clearTimeout(streamStartupTimer);
-        updatePlaybackIconState(false);
-        autoZapAttempts = 0;
-        fallbackIndex = 0;
-        updateStoredChannelStatus(currentStreamUrl, 'online');
-    };
-    video.onerror = () => {
-        console.error('Video error:', video.error);
-        if (loader) loader.style.display = 'none';
-        tryFallbackOrZap(currentStreamUrl);
-    };
 
     /**
      * Toggles play and pause icon elements based on player state.
@@ -460,7 +371,10 @@ export async function init(params) {
      */
     function togglePlayPause() {
         if (video.paused) {
-            video.play().then(() => updatePlaybackIconState(false)).catch(err => console.error(err));
+            video.play().then(() => updatePlaybackIconState(false)).catch(() => {
+                const ch = getCurrentChannel();
+                loadStream(ch || currentStreamUrl, ch?.headers);
+            });
         } else {
             video.pause();
             updatePlaybackIconState(true);
@@ -493,7 +407,7 @@ export async function init(params) {
     if (retryBtn) {
         retryBtn.onclick = () => {
             const ch = getCurrentChannel();
-            loadStream(ch?.url || currentStreamUrl, ch?.headers);
+            loadStream(ch || currentStreamUrl, ch?.headers);
         };
     }
 
@@ -524,11 +438,9 @@ export async function init(params) {
         const appEl = document.getElementById('app');
         if (appEl) appEl.classList.remove('fullscreen-layout');
 
-        video.pause();
-        video.src = '';
-        if (hlsInstance) {
-            hlsInstance.destroy();
-            hlsInstance = null;
+        if (playerEngine) {
+            playerEngine.destroy();
+            playerEngine = null;
         }
         Router.goBack();
     }
@@ -545,8 +457,6 @@ export async function init(params) {
 
     /**
      * Shows the TV controls overlay and optionally moves spatial focus to the default control.
-     * When called with shouldFocus=false (e.g., during fullscreen channel zapping), displays the
-     * info banner briefly without moving focus to a random button.
      * @param {boolean} [shouldFocus=true] - Whether to focus an interactive button on the overlay.
      */
     const showOverlay = (shouldFocus = true) => {
@@ -581,8 +491,8 @@ export async function init(params) {
 
     /**
      * Switches current channel by the given direction delta (-1 for previous, +1 for next),
-     * updates DOM metadata with clean primary category formatting, shows the zapping HUD
-     * and passive overlay banner without stealing focus to a random button, and loads the stream.
+     * updates DOM metadata with clean primary category formatting, shows the zapping HUD,
+     * and loads the stream via LiveStreamEngine.
      * @param {number} direction - Direction modifier (-1 for UP/Prev, +1 for DOWN/Next).
      */
     const switchChannel = (direction) => {
@@ -624,44 +534,12 @@ export async function init(params) {
         updateEpgInfo(nextChannel.name, nextChannel.group || '', nextChannel.tvgId || '');
 
         // Switch stream URL
-        if (loader) loader.style.display = 'flex';
-        video.pause();
-        fallbackIndex = 0;
-        loadStream(nextChannel.url, nextChannel.headers);
+        loadStream(nextChannel, nextChannel.headers);
 
         // Briefly show overlay banner without moving focus to a random button if overlay wasn't actively focused
         const isActivelyFocused = Boolean(overlay && overlay.querySelector('.focused'));
         showOverlay(isActivelyFocused);
     };
-
-    const zapChannel = switchChannel;
-
-    /**
-     * Moves forward after a broken stream instead of leaving the player dead.
-     */
-    function scheduleNextPlayableChannel() {
-        if (loader) loader.style.display = 'none';
-        if (hlsInstance) {
-            hlsInstance.destroy();
-            hlsInstance = null;
-        }
-        clearTimeout(streamStartupTimer);
-
-        if (!window.liveTvState?.channels || window.liveTvState.channels.length < 2) {
-            Toast.show('Error playing stream. This channel may be temporarily unavailable.', { type: 'error' });
-            return;
-        }
-
-        if (autoZapAttempts >= Math.min(10, window.liveTvState.channels.length - 1)) {
-            Toast.show('Could not find a playable channel nearby. Try another channel or source.', { type: 'error' });
-            return;
-        }
-
-        autoZapAttempts++;
-        Toast.show('Channel failed. Trying the next stream...', { type: 'warning' });
-        clearTimeout(autoZapTimer);
-        autoZapTimer = setTimeout(() => switchChannel(1), 900);
-    }
 
     /**
      * Mouse movement handler that reveals the control overlay for pointer users.
@@ -701,11 +579,9 @@ export async function init(params) {
         }
         clearTimeout(overlayTimeout);
         clearTimeout(zappingHudTimeout);
-        clearTimeout(autoZapTimer);
-        clearTimeout(streamStartupTimer);
-        if (hlsInstance) {
-            hlsInstance.destroy();
-            hlsInstance = null;
+        if (playerEngine) {
+            playerEngine.destroy();
+            playerEngine = null;
         }
 
         delete window.tvZapChannel;
@@ -726,7 +602,7 @@ export async function init(params) {
 }
 
 /**
- * Persists channel health so the Live TV list can hide broken streams by default.
+ * Persists channel status dot color in localStorage (used only for the status dot indicator, never to hide channels).
  * @param {string} url - Channel stream URL.
  * @param {string} status - online/offline status string.
  */

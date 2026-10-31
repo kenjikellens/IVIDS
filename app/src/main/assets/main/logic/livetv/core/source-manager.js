@@ -3,7 +3,8 @@
  * ===================================
  * Central registry and orchestrator for all Live TV stream providers.
  * Manages parallel execution, progressive delivery, error isolation, stream scoring,
- * URL deduplication, and broken-channel filtering.
+ * URL deduplication (promoting explicit country tags when a regional provider also lists a channel),
+ * and O(1) pre-indexed category/country buckets.
  */
 
 import { Channel } from './channel.js';
@@ -12,13 +13,19 @@ import { M3uProvider } from '../providers/m3u-provider.js';
 import { XtreamProvider } from '../providers/xtream-provider.js';
 import { REGIONAL_CATALOG } from '../catalogs/regional-sources.js';
 
+const ALLOWED_GENRES = [
+    'News', 'Movies', 'Entertainment', 'Music', 'Kids', 'Documentary',
+    'General', 'Series', 'Comedy', 'Lifestyle', 'Culture', 'Education', 'Science'
+];
+
 export class SourceManager {
     /**
-     * Initializes the SourceManager singleton instance.
+     * Initializes the SourceManager singleton instance with an O(1) category index map.
      */
     constructor() {
         this.providers = new Map();
         this.cachedChannels = [];
+        this.categoryIndex = new Map();
         this.lastFetchTimestamp = 0;
         this.cacheTtlMs = 15 * 60 * 1000; // 15 minutes
     }
@@ -80,7 +87,7 @@ export class SourceManager {
                 }
                 const customProvider = new M3uProvider(`custom_${item.id || idx}`, name, item.url, {
                     category: 'Custom',
-                    priority: 1 // Highest priority for user's own playlists
+                    priority: 1
                 });
                 this.registerProvider(customProvider);
             });
@@ -107,11 +114,9 @@ export class SourceManager {
      */
     _sortChannels(list) {
         return list.sort((a, b) => {
-            // 1. Source priority (lower number = higher priority: Custom=1, Free-TV=2, NL/BE=10, etc.)
             const prioDiff = a.sourcePriority - b.sourcePriority;
             if (prioDiff !== 0) return prioDiff;
 
-            // 2. Stream viability score (.m3u8 + https first)
             const scoreDiff = b.getStreamScore() - a.getStreamScore();
             if (scoreDiff !== 0) return scoreDiff;
 
@@ -120,15 +125,74 @@ export class SourceManager {
     }
 
     /**
+     * Rebuilds the O(1) category and country lookup buckets (`categoryIndex`) for instant UI filtering.
+     *
+     * @param {Array<Channel>} channels - Sorted array of all channels.
+     */
+    _rebuildCategoryIndex(channels) {
+        this.categoryIndex.clear();
+        this.categoryIndex.set('all', channels);
+
+        const sportsBucket = [];
+        this.categoryIndex.set('sports', sportsBucket);
+
+        channels.forEach(c => {
+            if (c.isSports) {
+                sportsBucket.push(c);
+            }
+
+            if (c.country) {
+                const countryKey = `country:${c.country}`;
+                let bucket = this.categoryIndex.get(countryKey);
+                if (!bucket) {
+                    bucket = [];
+                    this.categoryIndex.set(countryKey, bucket);
+                }
+                bucket.push(c);
+            }
+
+            if (c.group) {
+                const primary = c.group.split(/[;|]/)[0]?.trim() || '';
+                if (primary) {
+                    const matchedGenre = ALLOWED_GENRES.find(g => g.toLowerCase() === primary.toLowerCase());
+                    if (matchedGenre) {
+                        const genreKey = `genre:${matchedGenre.toLowerCase()}`;
+                        let gBucket = this.categoryIndex.get(genreKey);
+                        if (!gBucket) {
+                            gBucket = [];
+                            this.categoryIndex.set(genreKey, gBucket);
+                        }
+                        gBucket.push(c);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Returns the pre-indexed array of channels for a given category/country key in O(1) time.
+     *
+     * @param {string} [categoryKey='all'] - Category key ('all', 'sports', 'country:belgium', 'genre:news', etc.).
+     * @returns {Array<Channel>} Matching channels.
+     */
+    getChannelsByCategory(categoryKey = 'all') {
+        if (!categoryKey || categoryKey === 'all') {
+            return this.cachedChannels;
+        }
+        return this.categoryIndex.get(categoryKey) || [];
+    }
+
+    /**
      * Executes all registered providers in parallel, progressively invokes onProgress as providers resolve,
-     * deduplicates by URL, excludes persistent broken channels, and sorts streams.
+     * deduplicates by URL (enriching country metadata when a regional source resolves for an existing URL),
+     * and builds the O(1) category index. Never discards channels based on broken-channels.json.
      * 
-     * @param {Set<string>} [brokenUrlsSet] - Set of normalized broken channel URLs to skip.
-     * @param {boolean} [forceRefresh] - Bypasses memory cache if true.
-     * @param {Function} [onProgress] - Optional callback invoked progressively with current merged channels.
+     * @param {Set<string>} [_deprecatedBrokenSet] - Ignored so channels are never permanently hidden.
+     * @param {boolean} [forceRefresh=false] - Bypasses memory cache if true.
+     * @param {Function} [onProgress=null] - Optional callback invoked progressively with current merged channels.
      * @returns {Promise<Array<Channel>>} Sorted and deduplicated channels.
      */
-    async loadAllChannels(brokenUrlsSet = new Set(), forceRefresh = false, onProgress = null) {
+    async loadAllChannels(_deprecatedBrokenSet = null, forceRefresh = false, onProgress = null) {
         const now = Date.now();
         if (!forceRefresh && this.cachedChannels.length > 0 && (now - this.lastFetchTimestamp < this.cacheTtlMs)) {
             if (typeof onProgress === 'function') {
@@ -141,29 +205,48 @@ export class SourceManager {
         if (providerList.length === 0) return [];
 
         const merged = [];
-        const seenUrls = new Set();
+        const byNormalizedUrl = new Map();
 
         const fetchPromises = providerList.map(async provider => {
             try {
                 const channels = await provider.fetchChannels();
                 if (Array.isArray(channels) && channels.length > 0) {
-                    let added = 0;
+                    let changed = false;
                     channels.forEach(channel => {
                         if (!(channel instanceof Channel)) {
                             channel = new Channel(channel);
                         }
                         const normalized = channel.normalizedUrl;
-                        if (!normalized || seenUrls.has(normalized)) return;
-                        if (brokenUrlsSet && brokenUrlsSet.has(normalized)) return;
+                        if (!normalized) return;
 
-                        seenUrls.add(normalized);
+                        const existing = byNormalizedUrl.get(normalized);
+                        if (existing) {
+                            // Enrich existing channel if this regional provider supplies a concrete country tag
+                            if (!existing.country && channel.country) {
+                                existing.country = channel.country;
+                                changed = true;
+                            }
+                            if (!existing.tvgId && channel.tvgId) {
+                                existing.tvgId = channel.tvgId;
+                            }
+                            if (!existing.logo && channel.logo) {
+                                existing.logo = channel.logo;
+                            }
+                            return;
+                        }
+
+                        byNormalizedUrl.set(normalized, channel);
                         merged.push(channel);
-                        added++;
+                        changed = true;
                     });
 
-                    if (added > 0 && typeof onProgress === 'function') {
+                    if (changed) {
                         this._sortChannels(merged);
-                        onProgress([...merged]);
+                        this.cachedChannels = merged;
+                        this._rebuildCategoryIndex(merged);
+                        if (typeof onProgress === 'function') {
+                            onProgress([...merged]);
+                        }
                     }
                 }
                 return channels;
@@ -177,6 +260,7 @@ export class SourceManager {
         this._sortChannels(merged);
 
         this.cachedChannels = merged;
+        this._rebuildCategoryIndex(merged);
         this.lastFetchTimestamp = now;
         return this.cachedChannels;
     }
@@ -191,10 +275,11 @@ export class SourceManager {
     }
 
     /**
-     * Clears internal memory cache.
+     * Clears internal memory cache and category index.
      */
     clearCache() {
         this.cachedChannels = [];
+        this.categoryIndex.clear();
         this.lastFetchTimestamp = 0;
     }
 }

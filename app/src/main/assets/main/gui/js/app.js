@@ -810,11 +810,10 @@ function initNetworkListeners() {
         }
     };
 
-    // Intercept Ctrl+F5, Shift+F5, F5, and Ctrl+Shift+R to purge image/API caches and reload images at full quality
+    // Intercept F5 to purge image/API caches while allowing Ctrl+Shift+R / Ctrl+F5 to perform a true browser reload
     window.addEventListener('keydown', (e) => {
-        const isF5 = e.key === 'F5' || e.keyCode === 116;
-        const isHardReloadShortcut = (e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'R' || e.key === 'r');
-        if (isF5 || isHardReloadShortcut) {
+        const isPlainF5 = (e.key === 'F5' || e.keyCode === 116) && !e.ctrlKey && !e.shiftKey && !e.metaKey;
+        if (isPlainF5) {
             e.preventDefault();
             purgeImageAndApiCaches(true);
         }
