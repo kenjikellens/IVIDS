@@ -701,6 +701,7 @@ input, textarea, select { font: inherit; }
     font-weight: 700;
     justify-content: center;
     gap: 8px;
+    margin: 0;
     min-height: 48px;
     padding: 10px 16px;
     position: relative;
@@ -1566,8 +1567,9 @@ input, textarea, select { font: inherit; }
 .livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 58%; }
 .livetv-list-column::-webkit-scrollbar-thumb, .livetv-preview-column::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
 /* Channel items vertical stack container. */
-.channels-list { box-sizing: border-box; display: flex; flex: 1; flex-direction: column; gap: 8px; min-height: 0; overflow-y: auto; padding: 0 4px 4px; width: 100%; }
-/* OOCSS Channel card component for Live TV channel list. */
+.channels-list { box-sizing: border-box; display: flex; flex: 1; flex-direction: column; gap: 8px; min-height: 0; overflow-y: auto; padding: 4px; width: 100%; }
+/* OOCSS Channel card component for Live TV channel list with 8px spacing. */
+
 .channel-card, .channel-list-item {
     align-items: center;
     background: rgba(255, 255, 255, 0.04);
@@ -1579,6 +1581,26 @@ input, textarea, select { font: inherit; }
     gap: 12px;
     flex-shrink: 0;
     height: 48px;
+    margin: 0;
+    margin: 0;
+    min-height: 48px;
+    padding: 8px 14px;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+.channel-card, .channel-list-item {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+    height: 48px;
+    margin: 0;
     min-height: 48px;
     padding: 8px 14px;
     position: relative;

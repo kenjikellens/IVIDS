@@ -144,10 +144,9 @@ export class LiveStreamEngine {
             )
         );
 
-        if (StreamOptimizer.isLocalhost() && isPlainHttpOrRawIp) {
-            // Raw IP / plain HTTP IPTV servers never send CORS headers to http://localhost:8000;
-            // routing strictly via /proxy avoids browser CORS errors and enables VLC User-Agent fallback.
-            return [proxied];
+        if (StreamOptimizer.isLocalhost()) {
+            // On localhost, proxy-first prevents browser CORS policy blocks from external origins
+            return isPlainHttpOrRawIp ? [proxied] : [proxied, rawUrl];
         }
 
         if (hasCustomHeaders || isPlainHttpOrRawIp) {
@@ -176,7 +175,7 @@ export class LiveStreamEngine {
 
             let settled = false;
             let mediaRecoveryAttempted = false;
-            const timeoutMs = this.isPreview ? 6000 : 8500;
+            const timeoutMs = this.isPreview ? 5000 : 7000;
 
             const finish = (success, qualityLabel = 'HD') => {
                 if (settled) return;
@@ -209,11 +208,11 @@ export class LiveStreamEngine {
                     maxMaxBufferLength: this.isPreview ? 10 : 28,
                     liveSyncDurationCount: 2,
                     initialLiveManifestSize: 1,
-                    manifestLoadingTimeOut: this.isPreview ? 4500 : 7000,
+                    manifestLoadingTimeOut: this.isPreview ? 3500 : 5500,
                     manifestLoadingMaxRetry: 0,
-                    levelLoadingTimeOut: this.isPreview ? 4500 : 7000,
+                    levelLoadingTimeOut: this.isPreview ? 3500 : 5500,
                     levelLoadingMaxRetry: 0,
-                    fragLoadingTimeOut: 7000,
+                    fragLoadingTimeOut: 5500,
                     fragLoadingMaxRetry: 1,
                     startLevel: -1,
                     capLevelToPlayerSize: false

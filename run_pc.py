@@ -14,6 +14,14 @@ import socket
 import ipaddress
 import functools
 from http.server import ThreadingHTTPServer
+import ssl
+import time
+
+# Unverified SSL context to allow video stream CDN endpoints with domain/wildcard mismatches
+_UNVERIFIED_SSL_CTX = ssl._create_unverified_context()
+
+# Memory cache for dead hostnames (DNS getaddrinfo failures) with 30-second TTL
+_DEAD_HOSTS = {}
 
 # Register the SVG MIME type to ensure Windows systems serve vector graphics correctly
 mimetypes.add_type('image/svg+xml', '.svg')
@@ -340,7 +348,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             for target_url in target_urls:
                 try:
                     req = urllib.request.Request(target_url, headers=headers)
-                    with urllib.request.urlopen(req, timeout=5) as response:
+                    with urllib.request.urlopen(req, timeout=4, context=_UNVERIFIED_SSL_CTX) as response:
                         html = response.read().decode('utf-8', errors='ignore')
 
                         m3u8_matches = re.findall(r'(https?://[^\s\'"<>]+?\.m3u8[^\s\'"<>]*?)(?:[\s\'"<>]|$)', html)
@@ -516,6 +524,15 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         if not is_safe_url(target_url):
             self.send_error(403, 'Forbidden target URL')
+            parsed_target = urllib.parse.urlparse(target_url)
+            target_host = (parsed_target.hostname or '').lower()
+            now = time.time()
+            if target_host and target_host in _DEAD_HOSTS:
+                if now - _DEAD_HOSTS[target_host] < 30.0:
+                    self.send_error(502, f'Host unreachable (cached): {target_host}')
+                    return
+                else:
+                    del _DEAD_HOSTS[target_host]
             return
 
         try:
@@ -574,7 +591,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     req.add_header('Origin', prof_orig)
                 req.add_header('Accept', '*/*')
                 try:
-                    response = urllib.request.urlopen(req, timeout=8)
+                    response = urllib.request.urlopen(req, timeout=4, context=_UNVERIFIED_SSL_CTX)
                     user_agent, referer, origin = prof_ua, prof_ref, prof_orig
                     break
                 except urllib.error.HTTPError as he:
@@ -688,6 +705,8 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             except Exception as se:
                 sys.stderr.write(f"[IVIDS] Failed to send HTTPError response to client: {str(se)}\n")
         except urllib.error.URLError as e:
+            if target_host and ('getaddrinfo' in str(e.reason).lower() or '11001' in str(e.reason)):
+                _DEAD_HOSTS[target_host] = time.time()
             try:
                 self.send_error(502, f'Proxy connection failed: {e.reason}')
             except Exception as se:

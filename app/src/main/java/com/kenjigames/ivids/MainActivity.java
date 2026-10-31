@@ -460,9 +460,12 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     URL u = new URL(targetUrl);
                     conn = (HttpURLConnection) u.openConnection();
+                    if (conn instanceof javax.net.ssl.HttpsURLConnection) {
+                        ((javax.net.ssl.HttpsURLConnection) conn).setHostnameVerifier((hostname, session) -> true);
+                    }
                     conn.setInstanceFollowRedirects(true);
-                    conn.setConnectTimeout(6500);
-                    conn.setReadTimeout(8000);
+                    conn.setConnectTimeout(4500);
+                    conn.setReadTimeout(6000);
                     conn.setRequestProperty("User-Agent", prof[0]);
                     if (prof[1] != null && !prof[1].isEmpty()) conn.setRequestProperty("Referer", prof[1]);
                     if (prof[2] != null && !prof[2].isEmpty()) conn.setRequestProperty("Origin", prof[2]);
