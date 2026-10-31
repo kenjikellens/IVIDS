@@ -8,6 +8,10 @@ trigger: always_on
 - **Unified Stylesheets**: All CSS styles MUST be written in external stylesheet files under `app/src/main/assets/main/gui/css/`:
   - [global.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global.css): Primary stylesheet for desktop, Android TV, and standard viewports.
   - [global-mobile.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global-mobile.css): Responsive overrides for mobile touch devices and compact viewports.
+- **Mobile Mode vs. Landscape/TV Mode Separation**: Mobile mode (portrait touch viewports in `global-mobile.css`) has a completely distinct visual styling and layout from landscape/TV/desktop mode in `global.css`:
+  - Mobile mode features touch-optimized pill buttons, bottom navigation rails, full-width touch surfaces, and custom touch response.
+  - Landscape/TV mode features wide-aspect navigation with the vertical sidebar nav-rail, spatial navigation focus borders (`outline: 2px solid #ffffff`), and standard widescreen layouts.
+  - NEVER treat mobile styling and landscape styling as identical, and never copy or overwrite desktop/landscape styles into mobile mode (or vice versa).
 - **No Page-Specific CSS Files**: NEVER create individual page stylesheets (e.g. `css/[page].css`) or component CSS files, as they are not loaded by `index.html`.
 - **No Inline Styles**: NEVER use inline `style="..."` attributes in HTML.
 

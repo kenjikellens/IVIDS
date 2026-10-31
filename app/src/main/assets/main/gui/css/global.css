@@ -885,7 +885,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Aligned category icon inside section titles. */
-.section-title__icon, .section-title-icon { display: block; flex-shrink: 0; height: 22px; object-fit: contain; width: 22px; }
+.section-title__icon, .section-title-icon { display: block; filter: brightness(0) invert(1); flex-shrink: 0; height: 22px; object-fit: contain; width: 22px; }
 
 /* Fluid secondary explanatory subtitle text below titles. */
 .section-subtitle { color: var(--text-muted); font-size: clamp(13px, 1.2vw, 15px); font-weight: 500; line-height: 1.5; margin: 0; }
@@ -1072,6 +1072,15 @@ input, textarea, select { font: inherit; }
 .modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 12px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; width: 100%; }
 .modal__footer--center { justify-content: center; }
 .modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 0; width: 100%; }
+
+/* Zero border-radius for all interactive buttons and options inside modal popups. */
+.modal .btn, .modal button, .modal .modal-option, .modal .language-card, .modal .chip, .modal .playlist-item, .modal .form-input, .modal .form-select-wrapper { border-radius: 0 !important; }
+/* Clean zero-gap list containers for modal selections with divider lines. */
+.modal-options-list, .playlist-selection-list, .language-selection-grid { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
+/* Flat list option with divider line and zero radius inside modals. */
+.modal-options-list .modal-option, .playlist-selection-list .playlist-item, .language-selection-grid .language-card { border: 0; border-bottom: 1px solid #222222; border-radius: 0 !important; }
+/* Top border for first option in modal lists. */
+.modal-options-list .modal-option:first-child, .playlist-selection-list .playlist-item:first-child, .language-selection-grid .language-card:first-child { border-top: 1px solid #222222; }
 
 /* Error modal specific icon and message overrides. */
 .error-icon-container { align-items: center; align-self: center; background: rgba(var(--primary-rgb), 0.14); border-radius: var(--radius-lg); display: flex; height: 50px; justify-content: center; margin-bottom: 14px; width: 50px; }

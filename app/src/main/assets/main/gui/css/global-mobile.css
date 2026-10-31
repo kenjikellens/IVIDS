@@ -618,10 +618,10 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 #app .details-title { font-size: clamp(22px, 5.5vw, 28px); }
 #app .details-meta span, #app .details-genres > * { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; padding: 6px 10px; }
 #app .details-actions { align-items: center; flex-direction: row; flex-wrap: nowrap; gap: 10px; }
-#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: 50%; box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.34); color: #050505; display: inline-flex; flex: 0 0 56px; height: 56px; justify-content: center; min-height: 56px; padding: 0; width: 56px; }
-#app .details-play-icon { filter: brightness(0); height: 24px; pointer-events: none; width: 24px; }
-#app .details-play-label { border: 0; clip: rect(0, 0, 0, 0); clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
-#app #details-trailer, #app #details-playlist { align-items: center; border-radius: 14px; display: inline-flex; flex: 1 1 0; gap: 8px; justify-content: center; min-width: 0; padding: 8px 10px; width: auto; }
+#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; flex: 1 1 auto; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; padding: 0 18px; width: auto; }
+#app .details-play-icon { display: inline-block !important; filter: brightness(0); height: 18px; pointer-events: none; width: 18px; }
+#app .details-play-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
+#app #details-trailer, #app #details-playlist { align-items: center; border-radius: var(--radius-sm); display: inline-flex; flex: 1 1 0; gap: 8px; justify-content: center; min-width: 0; padding: 8px 10px; width: auto; }
 #app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 18px; height: 18px; pointer-events: none; width: 18px; }
 #app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #app #details-tabs { align-items: stretch; background: #191919; border: 1px solid #303030; border-radius: 999px; box-sizing: border-box; display: flex; gap: 4px; justify-content: center; margin: 10px auto 18px; max-width: 560px; padding: 4px; width: calc(100% - 32px); }
@@ -648,17 +648,18 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 body .modal__back-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 body #changes-modal .modal__close { display: none; }
 
-/* Language card grid replaces the arrow stepper on mobile while retaining it for TV layouts. */
-body .language-selection-grid { display: flex; flex-direction: column; gap: 4px; padding: 8px 0; }
+/* Language selection list with simple divider lines and zero border-radius. */
+body .language-selection-grid { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
 body .language-stepper-container { display: none; }
-body .language-search { background: #111111; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; flex: 0 0 48px; font-size: 16px; margin: 0 0 12px; padding: 0 14px; position: sticky; top: 0; z-index: 2; }
-body .language-card { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 12px; color: #ffffff; cursor: pointer; display: flex; gap: 14px; min-height: 58px; min-width: 0; padding: 8px 12px; text-align: left; }
-body .language-card { transition: background-color 0.14s ease, border-color 0.14s ease, transform 0.12s ease; }
-body .language-card:active { transform: scale(0.985); }
-body .language-card.is-active { background: rgba(var(--primary-rgb), 0.12); border-color: rgba(var(--primary-rgb), 0.55); }
+body .language-search { background: #161616; border: 1px solid #333333; border-radius: 0 !important; color: #ffffff; flex: 0 0 46px; font-size: 15px; margin: 0 0 12px; padding: 0 14px; position: sticky; top: 0; z-index: 2; }
+body .language-card { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0 !important; color: #ffffff; cursor: pointer; display: flex; gap: 14px; min-height: 52px; min-width: 0; padding: 12px 10px; text-align: left; width: 100%; box-sizing: border-box; }
+body .language-card:first-child { border-top: 1px solid #222222; }
+body .language-card:active { background: #1c1c1c; }
+body .language-card.is-active { background: #181818; }
+body .language-card:focus-visible, body .language-card.focused { background: #222222; border-radius: 0 !important; outline: 2px solid #ffffff; outline-offset: -2px; }
 body .language-card__flag { flex: 0 0 auto; font-size: 22px; width: 30px; }
 body .language-card__name { flex: 1; font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-body .language-card__check { color: var(--primary-color); flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
+body .language-card__check { color: #ffffff; flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
 body .language-card.is-active .language-card__check { opacity: 1; }
 
 /* Respects the device motion preference for mobile page transitions. */
@@ -765,16 +766,10 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .form-toggle:has(input:checked) .form-toggle__slider { background-color: #111111; left: 31px; }
 #app .form-toggle:focus-visible, #app .form-toggle.focused { outline: 2px solid #ffffff; outline-offset: 2px; }
 
-/* Every mobile play action is a white circle with a guaranteed-visible black SVG icon. */
-#app .play-icon-button, body #context-play-btn.play-icon-button { align-items: center; background: #ffffff; border: 0; border-radius: 50%; box-shadow: none; color: #111111; display: inline-flex; flex: 0 0 56px; height: 56px; justify-content: center; min-height: 56px; padding: 0; position: relative; width: 56px; }
-#app .play-icon-button .mobile-play-icon, body #context-play-btn .mobile-play-icon { display: block !important; height: 26px; pointer-events: none; width: 26px; }
-#app .play-icon-button .play-button-label, body #context-play-btn .play-button-label { border: 0; clip: rect(0, 0, 0, 0); clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
-#app #play-btn, #app #play-all-btn, #app #details-play { flex: 0 0 56px; height: 56px; min-height: 56px; width: 56px; }
-#app #details-play .details-play-icon { filter: brightness(0); height: 26px; pointer-events: none; width: 26px; }
-#app #details-play .details-play-label { display: none; }
-#playlist-details-view .details-actions { align-items: flex-start; flex-direction: column; }
-#playlist-details-view #play-all-btn { align-self: flex-start; }
-body #context-play-btn.play-icon-button { align-self: center; }
+/* Tactile hero play button on mobile with visible label and icon. */
+#app .hero-buttons #play-btn, #app #play-all-btn, body #context-play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
+#app .hero-buttons #play-btn .mobile-play-icon, #app #play-all-btn .mobile-play-icon, body #context-play-btn .mobile-play-icon { display: inline-block !important; fill: #111111; height: 18px; pointer-events: none; width: 18px; }
+#app .hero-buttons #play-btn .play-button-label, #app #play-all-btn .play-button-label, body #context-play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
 #app .details-actions { align-items: center; gap: 10px; }
 #app #details-trailer, #app #details-playlist { background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; min-height: 48px; }
 #app #details-tabs .tab-btn.is-active, #app #details-tabs .tab-btn.active { background: #ffffff; color: #111111; }
@@ -784,37 +779,30 @@ body #context-play-btn.play-icon-button { align-self: center; }
 #app .settings-header { margin-bottom: 26px; text-align: left; }
 #app .settings-header h1, #app .account-header h1 { color: #f5f5f5; font-size: 30px; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 6px; }
 #app .settings-header p { color: var(--mobile-muted); font-size: 14px; line-height: 1.5; margin: 0; }
+/* Mobile settings grouped sections, titles, and pure white category icons. */
 #app .settings-section { background: transparent; border: 0; border-radius: 0; box-shadow: none; margin: 0 0 28px; padding: 0; }
 #app .settings-section .section-title { border-bottom: 1px solid #292929; color: #bcbcbc; font-size: 12px; font-weight: 700; gap: 10px; letter-spacing: 0.08em; margin: 0; padding: 0 0 12px; text-transform: uppercase; }
-#app .settings-section .section-title__icon { height: 17px; opacity: 0.8; width: 17px; }
-#app .settings-container .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #292929; border-radius: 0; cursor: pointer; display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr) auto; min-height: 72px; padding: 12px 2px; }
+#app .settings-section .section-title__icon { filter: brightness(0) invert(1); height: 17px; opacity: 0.9; width: 17px; }
+/* Mobile settings rows, typography, and tap feedback. */
+#app .settings-container .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #292929; border-radius: 0; cursor: pointer; display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr) auto; min-height: 68px; padding: 13px 2px; }
 #app .settings-container .setting-item:active { background: rgba(255, 255, 255, 0.045); }
 #app .settings-container .setting-info { min-width: 0; }
 #app .settings-container .setting-label { color: #f1f1f1; font-size: 15px; font-weight: 600; line-height: 1.35; margin: 0 0 3px; }
-#app .settings-container .setting-description { color: var(--mobile-muted); font-size: 12px; line-height: 1.35; }
-#app .settings-container .setting-control { flex: 0 0 auto; gap: 8px; }
-#app .settings-container .current-value-display { background: transparent; border: 0; color: #bcbcbc; font-size: 13px; font-weight: 500; height: auto; max-width: clamp(64px, 24vw, 112px); padding: 0; }
-#app .settings-container .setting-item .edit-trigger { background: transparent; border: 0; border-radius: 50%; height: 48px; min-height: 48px; min-width: 48px; width: 48px; }
+#app .settings-container .setting-description { color: var(--mobile-muted); font-size: 12.5px; line-height: 1.38; }
+/* Symmetrically aligned value displays and vector chevron indicators on mobile. */
+#app .settings-container .setting-control { align-items: center; display: inline-flex; flex: 0 0 auto; gap: 6px; justify-content: flex-end; margin-right: 4px; }
+#app .settings-container .current-value-display { align-items: center; background: transparent; border: 0; color: #b8b8b8; display: inline-flex; font-size: 14px; font-weight: 500; height: 24px; line-height: 1; max-width: clamp(80px, 30vw, 140px); overflow: hidden; padding: 0; text-overflow: ellipsis; white-space: nowrap; }
+#app .settings-container .setting-item .edit-trigger { align-items: center; background: transparent; border: 0; border-radius: 4px; display: inline-flex; height: 24px; justify-content: center; min-height: 24px; min-width: 18px; padding: 0; width: 18px; }
 #app .settings-container .setting-item .edit-trigger .setting-edit-icon { display: none; }
-#app .settings-container .setting-item .edit-trigger::after { color: #a8a8a8; content: "›"; font-size: 30px; font-weight: 300; line-height: 1; }
-#app .settings-container .scale-control-container { background: #191919; border: 1px solid #303030; border-radius: 12px; gap: 2px; height: 52px; padding: 2px; }
-#app .settings-container .scale-control-container .scale-adjust-btn { background: #242424; border: 0; border-radius: 9px; font-size: 18px; height: 46px; min-height: 46px; min-width: 46px; width: 46px; }
-#app .settings-container .scale-control-container .scale-adjust-btn::after { content: none; }
-#app .settings-container .scale-control-container .centered-value { color: #ffffff; font-size: 13px; min-width: 42px; }
-#app .settings-container .form-toggle { background: transparent; border: 0; height: 48px; width: 64px; }
-#app .settings-container .form-toggle::before { background: #333333; border-radius: 999px; content: ""; height: 30px; left: 6px; position: absolute; top: 9px; width: 52px; }
-#app .settings-container .form-toggle__slider { height: 24px; left: 9px; top: 12px; width: 24px; }
-#app .settings-container .form-toggle:has(input:checked)::before { background: #ffffff; }
-#app .settings-container .form-toggle:has(input:checked) .form-toggle__slider { background: #111111; left: 31px; }
-#app .settings-container .setting-item.centered-setting { justify-content: flex-start; padding: 12px 2px; }
-#app .settings-container .setting-item.centered-setting .btn { background: transparent; border: 0; color: #f1f1f1; grid-column: 1 / -1; justify-content: flex-start; padding: 0; }
+#app .settings-container .setting-item .edit-trigger::after { background-color: #888888; content: ""; display: inline-block; height: 16px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 16px; }
+/* Tactile UI scale controls and app info card on mobile. */
 #app .settings-container .ui-scale-control { background: transparent; border: 0; border-radius: 0; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
 #app .settings-container .ui-scale-control .scale-adjust-btn { background: #242424; border: 2px solid #383838; border-radius: 11px; height: 46px; min-height: 46px; min-width: 46px; width: 46px; }
 #app .settings-container .ui-scale-control .scale-adjust-btn::after { content: none; display: none; }
-#app .settings-container .ui-scale-output { min-width: 58px; }
+#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; font-size: 14px; font-weight: 700; height: 46px; justify-content: center; min-width: 56px; text-align: center; }
 #app .settings-section--app-info { margin-bottom: 18px; }
 #app .settings-container #app-info-btn { border: 2px solid #303030; border-radius: 14px; min-height: 64px; padding: 0 16px; }
-#app .settings-container #app-info-btn:active { background: #181818; transform: translateY(1px); }
+#app .settings-container #app-info-btn:active { background: #181818; }
 #app .settings-container #app-info-btn .btn__icon { height: 21px; width: 21px; }
 
 /* Account screen uses a compact profile header and full-width account actions. */
@@ -858,14 +846,14 @@ html body .modal__title { color: #f5f5f5; font-size: 19px; font-weight: 650; let
 body .modal__footer { background: #0f0f0f; }
 body .modal__footer .btn--primary { background: #ffffff; border-color: #ffffff; color: #111111; }
 body .modal__footer .btn--secondary { background: transparent; border-color: #444444; color: #f5f5f5; }
-html body .modal__back-btn { background: #1d1d1d; border-color: #383838; height: 48px; left: 18px; min-height: 48px; min-width: 48px; top: calc(env(safe-area-inset-top, 0px) + 12px); width: 48px; }
-body .language-search { background: #1a1a1a; border-color: #383838; color: #ffffff; }
-body .language-card { border-radius: 10px; min-height: 60px; }
-body .language-card.is-active { background: #222222; border-color: #404040; }
-body .language-card__check { color: #ffffff; }
-body .language-card:focus-visible { outline: 2px solid #ffffff; outline-offset: 1px; }
-body .modal .chip.is-selected, body .modal .chip.is-active, body .modal .chip.selected, body .modal .chip.active { background: #222222; border-color: #ffffff; box-shadow: none; color: #ffffff; }
-body .modal .chip--color.is-active, body .modal .chip--color.active { box-shadow: 0 0 0 2px #ffffff; }
+html body .modal__back-btn { background: #1d1d1d; border-color: #383838; border-radius: 0 !important; height: 48px; left: 18px; min-height: 48px; min-width: 48px; top: calc(env(safe-area-inset-top, 0px) + 12px); width: 48px; }
+/* Zero border-radius across all buttons, options, chips, and controls in all popups/modals. */
+body .modal .btn, body .modal button, body .modal .modal-option, body .modal .language-card, body .modal .chip, body .modal .form-input, body .modal .playlist-item, body .modal__footer .btn { border-radius: 0 !important; }
+body .modal .modal-option, body .modal .playlist-item { border: 0; border-bottom: 1px solid #222222; }
+body .modal .modal-option:first-child, body .modal .playlist-item:first-child { border-top: 1px solid #222222; }
+body .modal .modal-options-list, body .modal .playlist-selection-list { gap: 0; }
+body .modal .chip.is-selected, body .modal .chip.is-active, body .modal .chip.selected, body .modal .chip.active { background: #222222; border-color: #ffffff; border-radius: 0 !important; box-shadow: none; color: #ffffff; }
+body .modal .chip--color.is-active, body .modal .chip--color.active { border-radius: 0 !important; box-shadow: 0 0 0 2px #ffffff; }
 
 /* Avoid motion when the system asks for reduced animations. */
 @media (prefers-reduced-motion: reduce) {
