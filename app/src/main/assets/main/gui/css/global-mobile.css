@@ -625,9 +625,9 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 #app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 18px; height: 18px; pointer-events: none; width: 18px; }
 #app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #app #details-tabs { align-items: stretch; background: #191919; border: 1px solid #303030; border-radius: 999px; box-sizing: border-box; display: flex; gap: 4px; justify-content: center; margin: 10px auto 18px; max-width: 560px; padding: 4px; width: calc(100% - 32px); }
-#app #details-tabs .tab-btn { background: transparent; border: 0; border-radius: 999px; flex: 1 1 0; min-height: 48px; min-width: 0; padding: 8px 6px; transition: background-color 180ms ease, color 180ms ease, transform 140ms ease; }
-#app #details-tabs .tab-btn:active { transform: scale(0.96); }
-#app #details-tabs .tab-btn.is-active, #app #details-tabs .tab-btn.active { background: #ffffff; color: #111111; }
+#app #details-tabs .btn { background: transparent; border: 0; border-radius: 999px; flex: 1 1 0; min-height: 48px; min-width: 0; padding: 8px 6px; transition: background-color 180ms ease, color 180ms ease, transform 140ms ease; }
+#app #details-tabs .btn:active { transform: scale(0.96); }
+#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .btn.btn--primary { background: #ffffff; color: #111111; }
 #app .seasons-dropdown-wrapper { border-radius: 999px; min-height: 48px; }
 #app #seasons-dropdown { border-radius: 999px; font-size: 16px; min-height: 48px; }
 #app .media-grid--cast, #app .disney-cast-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -666,8 +666,8 @@ body .language-card.is-active .language-card__check { opacity: 1; }
     html body .modal__dialog, body .modal__dialog { transform: none; transition: none; }
     #app .btn { transition: none; }
     #app .btn:active { transform: none; }
-    #app .tab-bar--fill .tab-btn { transition: none; }
-    #app .tab-bar--fill .tab-btn:active { transform: none; }
+    #app .tab-bar--fill .btn { transition: none; }
+    #app .tab-bar--fill .btn:active { transform: none; }
     body .modal__footer .btn, body .modal__back-btn, body .language-card { transition: none; }
     body .modal__footer .btn:active, body .modal__back-btn:active, body .language-card:active { transform: none; }
 }
@@ -683,10 +683,10 @@ body .chip--color.is-active, body .chip--color.active { box-shadow: 0 0 0 2px #f
 #app .login-card-container { max-width: 460px; }
 #app #login-circle-back { height: 44px; left: 0; min-height: 44px; min-width: 44px; top: 0; width: 44px; }
 #app .tab-bar--fill { background: transparent; border-bottom: 1px solid rgba(255, 255, 255, 0.14); border-radius: 0; gap: 16px; padding: 0; }
-#app .tab-bar--fill .tab-btn { background: transparent; border: 0; border-bottom: 2px solid transparent; border-radius: 0; box-shadow: none; flex: 1; min-height: 48px; padding: 10px 8px; }
-#app .tab-bar--fill .tab-btn { transition: border-color 0.14s ease, color 0.14s ease, transform 0.12s ease; }
-#app .tab-bar--fill .tab-btn:active { transform: scale(0.98); }
-#app .tab-bar--fill .tab-btn.is-active, #app .tab-bar--fill .tab-btn.active { background: transparent; border-bottom-color: var(--primary-color); color: #ffffff; }
+#app .tab-bar--fill .btn { background: transparent; border: 0; border-bottom: 2px solid transparent; border-radius: 0; box-shadow: none; flex: 1; min-height: 48px; padding: 10px 8px; }
+#app .tab-bar--fill .btn { transition: border-color 0.14s ease, color 0.14s ease, transform 0.12s ease; }
+#app .tab-bar--fill .btn:active { transform: scale(0.98); }
+#app .tab-bar--fill .btn.is-active, #app .tab-bar--fill .btn.active { background: transparent; border-bottom-color: var(--primary-color); color: #ffffff; }
 #app .login-panel .form-input { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; font-size: 16px; height: 50px; min-height: 50px; }
 #app .login-panel .form-label { color: #ffffff; font-size: 13.5px; font-weight: 700; }
 #app #login-submit { border-radius: 14px; font-size: 16px; min-height: 52px; width: 100%; }
@@ -813,9 +813,9 @@ body #context-play-btn.play-icon-button { align-self: center; }
 #app .settings-container .ui-scale-control .scale-adjust-btn::after { content: none; display: none; }
 #app .settings-container .ui-scale-output { min-width: 58px; }
 #app .settings-section--app-info { margin-bottom: 18px; }
-#app .settings-container .app-info-action { border: 2px solid #303030; border-radius: 14px; min-height: 64px; padding: 0 16px; }
-#app .settings-container .app-info-action:active { background: #181818; transform: translateY(1px); }
-#app .settings-container .app-info-action__icon { height: 21px; width: 21px; }
+#app .settings-container #app-info-btn { border: 2px solid #303030; border-radius: 14px; min-height: 64px; padding: 0 16px; }
+#app .settings-container #app-info-btn:active { background: #181818; transform: translateY(1px); }
+#app .settings-container #app-info-btn .btn__icon { height: 21px; width: 21px; }
 
 /* Account screen uses a compact profile header and full-width account actions. */
 #app .account-container { margin: 0 auto; max-width: 680px; padding: calc(28px + env(safe-area-inset-top, 0px)) 22px calc(84px + env(safe-area-inset-bottom, 0px)); }
@@ -838,8 +838,8 @@ body #context-play-btn.play-icon-button { align-self: center; }
 #app .login-title-text { font-size: 28px; justify-content: flex-start; text-align: left; }
 #app .login-subtitle-text { color: var(--mobile-muted); font-size: 14px; text-align: left; }
 #app .tab-bar--fill { border-bottom-color: #343434; gap: 18px; margin-bottom: 20px; }
-#app .tab-bar--fill .tab-btn { color: #aaaaaa; font-size: 15px; font-weight: 600; min-height: 48px; }
-#app .tab-bar--fill .tab-btn.is-active, #app .tab-bar--fill .tab-btn.active { border-bottom-color: #ffffff; color: #ffffff; }
+#app .tab-bar--fill .btn { color: #aaaaaa; font-size: 15px; font-weight: 600; min-height: 48px; }
+#app .tab-bar--fill .btn.is-active, #app .tab-bar--fill .btn.active { border-bottom-color: #ffffff; color: #ffffff; }
 #app .login-panel .form-input { background: #191919; border: 1px solid #353535; border-radius: 12px; color: #ffffff; font-size: 16px; height: 52px; min-height: 52px; padding: 0 15px; width: 100%; }
 #app .login-panel .form-input:focus { background: #202020; border-color: #ffffff; }
 #app .login-panel .form-label { color: #e2e2e2; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
@@ -873,7 +873,7 @@ body .modal .chip--color.is-active, body .modal .chip--color.active { box-shadow
     #app .btn:active, body .modal__footer .btn:active, body .modal__back-btn:active { transform: none; }
     #sidebar-container .nav-rail .nav-item { transition: none; }
     #sidebar-container .nav-rail .nav-item:active, #sidebar-container .nav-rail .nav-item.is-pressed { transform: none; }
-    #app #details-tabs .tab-btn { transition: none; }
+    #app #details-tabs .btn { transition: none; }
 }
 
 /* Account and authentication actions keep a clearly visible 2px outline. */

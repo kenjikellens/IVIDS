@@ -748,7 +748,7 @@ function switchTab(tabName) {
             panel.style.display = 'none';
         });
         
-        document.querySelectorAll('.tab-btn, .disney-tab-btn').forEach(btn => {
+        document.querySelectorAll('#details-tabs .btn, .tab-btn, .disney-tab-btn').forEach(btn => {
             btn.classList.remove('is-active', 'active', 'btn--primary', 'btn-primary');
             btn.classList.add('btn--secondary');
         });
@@ -804,7 +804,7 @@ function getVisibleTabs() {
  * @returns {string|null} The active tab name or null if none found.
  */
 function getActiveTab() {
-    const activeBtn = document.querySelector('.tab-btn.is-active, .tab-btn.btn--primary, .disney-tab-btn.btn--primary, .disney-tab-btn.btn-primary');
+    const activeBtn = document.querySelector('#details-tabs .btn.btn--primary, #details-tabs .btn.is-active, .tab-btn.is-active, .tab-btn.btn--primary, .disney-tab-btn.btn--primary, .disney-tab-btn.btn-primary');
     if (activeBtn && activeBtn.id) {
         return activeBtn.id.replace('tab-', '');
     }

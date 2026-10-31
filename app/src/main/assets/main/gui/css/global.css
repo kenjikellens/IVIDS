@@ -184,12 +184,12 @@ input, textarea, select { font: inherit; }
 /* Focus state for primary button skin variant with standardized thick white border. */
 .btn--primary:focus, .btn--primary:focus-visible, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; color: #ffffff; outline: none; }
 
-/* Secondary skin variant styling buttons with soft neutral translucent fill. */
-.btn--secondary, .btn-secondary { background: rgba(255, 255, 255, 0.08); border-color: transparent; color: #ffffff; }
+/* Secondary skin variant styling buttons with soft neutral translucent fill and tactile border for TV affordance. */
+.btn--secondary, .btn-secondary { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.18); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35); color: #ffffff; }
 /* Hover state for secondary button skin variant. */
-.btn--secondary:hover, .btn-secondary:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for secondary button skin variant with standardized thick white border. */
-.btn--secondary:focus, .btn--secondary:focus-visible, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; color: #ffffff; outline: none; }
+.btn--secondary:hover, .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.35); color: #ffffff; outline: none; }
+/* Focus state for secondary button skin variant with standardized thick white border for TV. */
+.btn--secondary:focus, .btn--secondary:focus-visible, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; box-shadow: 0 0 14px rgba(255, 255, 255, 0.45); color: #ffffff; outline: none; }
 
 /* Danger skin variant styling destructive action buttons with red fill. */
 .btn--danger, .btn-danger { background: #b92b23; border-color: transparent; color: #ffffff; }
@@ -829,56 +829,7 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 .tab-bar--fill { border-bottom: none; padding-bottom: 0; }
-.tab-bar--fill .tab-btn { flex: 1; }
-
-/* Focusable tab button component for switching view panels, matching standard button geometry and tokens. */
-.tab-btn {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 3px solid transparent;
-    border-radius: var(--radius-md);
-    box-sizing: border-box;
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-flex;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    justify-content: center;
-    line-height: 1;
-    min-height: 44px;
-    padding: 8px 22px;
-    position: relative;
-    text-align: center;
-    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
-    user-select: none;
-    white-space: nowrap;
-}
-/* Hover state for tab button matching secondary button hover fill. */
-.tab-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for tab button with standardized crisp white highlight border. */
-.tab-btn:focus, .tab-btn.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; color: #ffffff; outline: none; }
-/* Active tab button styled synchronously with brand theme primary action buttons. */
-.tab-btn.is-active, .tab-btn.active, .tab-btn.btn--primary {
-    background: rgba(var(--primary-rgb), 0.25);
-    border-color: transparent;
-    color: #ffffff;
-    font-weight: 800;
-}
-/* Hover state for active tab button matching primary button hover fill. */
-.tab-btn.is-active:hover, .tab-btn.active:hover, .tab-btn.btn--primary:hover {
-    background: rgba(var(--primary-rgb), 0.35);
-    border-color: transparent;
-    color: #ffffff;
-    outline: none;
-}
-/* Focus state for active tab button with standardized crisp white highlight border. */
-.tab-btn.is-active:focus, .tab-btn.is-active.focused, .tab-btn.active:focus, .tab-btn.active.focused, .tab-btn.btn--primary:focus, .tab-btn.btn--primary.focused {
-    background: rgba(var(--primary-rgb), 0.35);
-    border-color: #ffffff;
-    color: #ffffff;
-    outline: none;
-}
+.tab-bar--fill .btn { flex: 1; }
 
 /* Tab content panel component displayed conditionally. */
 .tab-panel { display: block; width: 100%; }
@@ -1790,14 +1741,12 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .scale-control-container { align-items: center; background: rgba(255, 255, 255, 0.06); border: none; border-radius: var(--radius-sm); display: inline-flex; gap: 6px; height: 46px; padding: 4px 6px; }
 .scale-control-container .centered-value { background: transparent; border: none; color: #ffffff; font-size: 17px; font-weight: 700; min-width: 60px; padding: 0 4px; text-align: center; }
 .setting-item--ui-scale { align-items: center; }
-.ui-scale-control { align-items: center; background: transparent; border: 0; display: inline-flex; flex: 0 0 auto; gap: 12px; height: auto; padding: 0; }
-.ui-scale-control .scale-adjust-btn { align-items: center; background: #242424; border: 2px solid #383838; border-radius: 11px; display: inline-flex; font-size: 22px; height: 46px; justify-content: center; min-height: 46px; min-width: 46px; padding: 0; width: 46px; }
-.ui-scale-output { align-items: center; color: #ffffff; display: inline-flex; font-size: 15px; font-variant-numeric: tabular-nums; font-weight: 700; justify-content: center; min-width: 64px; padding: 0 6px; }
-.app-info-action { align-items: center; background: #181818; border: 2px solid #303030; border-radius: 14px; box-sizing: border-box; color: #f4f4f4; cursor: pointer; display: grid; font: inherit; gap: 14px; grid-template-columns: 24px minmax(0, 1fr) 24px; min-height: 64px; padding: 0 18px; text-align: left; transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease; width: 100%; }
-.app-info-action:hover, .app-info-action:focus-visible, .app-info-action.focused { background: #202020; border-color: #686868; outline: none; }
-.app-info-action:active { transform: translateY(1px); }
-.app-info-action__icon { filter: brightness(0) invert(1); height: 22px; opacity: 0.9; width: 22px; }
-.app-info-action__chevron { color: #a8a8a8; font-size: 30px; font-weight: 300; justify-self: end; line-height: 1; }
+/* UI scale control container with aligned stepper buttons and output display. */
+.ui-scale-control { align-items: center; background: transparent; border: 0; display: inline-flex; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
+/* Stepper adjust buttons (+ and -) matching the exact dimensions and tactile styling of settings buttons. */
+.ui-scale-control .scale-adjust-btn { font-size: 24px; font-weight: 700; line-height: 1; }
+/* Trailing chevron indicator for full-width action buttons. */
+.btn__chevron { color: #a8a8a8; font-size: 26px; font-weight: 300; line-height: 1; margin-left: auto; }
 .setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
 .setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
 .update-status-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }

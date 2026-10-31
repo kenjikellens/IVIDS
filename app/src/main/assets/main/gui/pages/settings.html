@@ -30,9 +30,9 @@
                 <div class="setting-description" id="ui-scale-description" data-i18n="settings.uiScaleDesc">Adjust the size of the user interface</div>
             </div>
             <div class="setting-control ui-scale-control">
-                <button id="dec-uiscale-btn" class="btn btn--secondary btn--square-sm focusable scale-adjust-btn" type="button" aria-label="Decrease UI size">−</button>
-                <output id="current-uiscale-display" class="ui-scale-output" aria-live="polite">100%</output>
-                <button id="inc-uiscale-btn" class="btn btn--secondary btn--square-sm focusable scale-adjust-btn" type="button" aria-label="Increase UI size">+</button>
+                <button id="dec-uiscale-btn" class="btn btn--secondary btn--square focusable scale-adjust-btn" type="button" aria-label="Decrease UI size">−</button>
+                <output id="current-uiscale-display" class="current-value-display" aria-live="polite">100%</output>
+                <button id="inc-uiscale-btn" class="btn btn--secondary btn--square focusable scale-adjust-btn" type="button" aria-label="Increase UI size">+</button>
             </div>
         </div>
 
@@ -166,10 +166,10 @@
 
     <!-- App Info Settings -->
     <div id="app-info-section" class="settings-section settings-section--app-info">
-        <button id="app-info-btn" class="app-info-action focusable" type="button">
-            <img src="images/info.svg" class="app-info-action__icon" alt="">
+        <button id="app-info-btn" class="btn btn--secondary btn--block focusable" type="button">
+            <img src="images/info.svg" class="btn__icon" alt="">
             <span data-i18n="settings.appInfo">App Info</span>
-            <span class="app-info-action__chevron" aria-hidden="true">›</span>
+            <span class="btn__chevron" aria-hidden="true">›</span>
         </button>
     </div>
 </div>
