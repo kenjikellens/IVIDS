@@ -341,13 +341,13 @@ class SettingsManager {
             editUpdateModeBtn.onclick = () => this.openModal('update-mode-modal');
         }
 
-        // Desktop Advanced Settings accordion toggle
-        const advancedToggle = document.getElementById('advanced-settings-toggle');
-        const advancedSection = document.getElementById('advanced-settings-section');
-        if (advancedToggle && advancedSection) {
-            advancedToggle.onclick = () => {
-                const isOpen = advancedSection.classList.toggle('is-open');
-                advancedToggle.setAttribute('aria-expanded', String(isOpen));
+        // Desktop Advanced Settings dropdown toggle
+        const advancedDropdownBtn = document.getElementById('advanced-dropdown-btn');
+        const advancedContainer = document.getElementById('advanced-dropdown-container');
+        if (advancedDropdownBtn && advancedContainer) {
+            advancedDropdownBtn.onclick = () => {
+                const isHidden = advancedContainer.classList.toggle('hidden');
+                advancedDropdownBtn.setAttribute('aria-expanded', String(!isHidden));
             };
         }
 
@@ -803,6 +803,24 @@ class SettingsManager {
             const isWindows = /windows/i.test(navigator.userAgent);
             platformDisplay.textContent = isAndroid ? 'Android' : (isWindows ? 'Windows' : 'Web');
         }
+
+        const delayVal = this.settings.delayAction !== undefined ? this.settings.delayAction : 100;
+        const delayText = delayVal === 0 || delayVal === '0' ? '0ms' : `${delayVal}ms`;
+        const delayDisplay = document.getElementById('current-delay-action-display');
+        if (delayDisplay) delayDisplay.textContent = delayText;
+        const mobileDelayDisplay = document.getElementById('mobile-delay-action-display');
+        if (mobileDelayDisplay) mobileDelayDisplay.textContent = delayText;
+
+        const mobileModeDisplay = document.getElementById('mobile-update-mode-display');
+        if (mobileModeDisplay) {
+            mobileModeDisplay.textContent = window.i18n?.t(`settings.mode.${this.settings.updateMode}`) || this.settings.updateMode;
+        }
+
+        const mobileCheckRow = document.getElementById('mobile-check-updates-row');
+        if (mobileCheckRow) {
+            const isManualOrAdvanced = this.settings.updateMode === 'manual' || this.settings.updateMode === 'advanced';
+            mobileCheckRow.style.display = isManualOrAdvanced ? 'flex' : 'none';
+        }
     }
 
     /**
@@ -1128,6 +1146,13 @@ class SettingsManager {
         const modal = document.getElementById(modalId);
         if (!modal) return;
 
+        let prevModal = null;
+        let prevCloseFn = null;
+        if (this.currentModal && this.currentModal.id === 'advanced-settings-modal' && modalId !== 'advanced-settings-modal') {
+            prevModal = this.currentModal;
+            prevCloseFn = this.closeModalFn;
+        }
+
         this.currentModal = modal;
         this.pendingSettings = { ...this.settings };
         if (this.settings.playerProviders) {
@@ -1142,7 +1167,8 @@ class SettingsManager {
             'color-modal': 'accentColor',
             'update-mode-modal': 'updateMode',
             'player-modal': 'playerProviders',
-            'm3u-modal': 'm3uPlaylists'
+            'm3u-modal': 'm3uPlaylists',
+            'delay-action-modal': 'delayAction'
         };
         const key = keyMap[modalId] || modalId.replace('-modal', '');
 
@@ -1241,7 +1267,7 @@ class SettingsManager {
         if (modalId === 'language-modal') {
             focusTarget = modal.querySelector('#language-selection-grid .language-card') ||
                 document.getElementById('lang-next-btn') || document.getElementById('lang-prev-btn');
-        } else if (modalId === 'color-modal' || modalId === 'update-mode-modal') {
+        } else if (modalId === 'color-modal' || modalId === 'update-mode-modal' || modalId === 'delay-action-modal') {
             focusTarget = modal.querySelector('.chip--option.is-active, .chip--option.active, .option-chip.active');
         } else if (modalId === 'player-modal') {
             focusTarget = modal.querySelector('.form-input, .provider-url-input') || document.getElementById('add-provider-btn');
@@ -1278,6 +1304,22 @@ class SettingsManager {
             this.closeModalFn = null;
         };
 
+        if (prevModal) {
+            const originalCloseFn = this.closeModalFn;
+            this.closeModalFn = (revert = true) => {
+                if (originalCloseFn) originalCloseFn(revert);
+                this.currentModal = prevModal;
+                this.closeModalFn = prevCloseFn;
+                if (prevModal) {
+                    prevModal.classList.add('show', 'is-open');
+                    if (window.SpatialNav) {
+                        window.SpatialNav.setFocusTrap(prevModal);
+                        window.SpatialNav.refocus();
+                    }
+                }
+            };
+        }
+
         modal.onclick = (e) => {
             if (e.target === modal) {
                 this.closeModal();
@@ -1301,7 +1343,7 @@ class SettingsManager {
                 }
                 if (modalId === 'language-modal') {
                     this.applyPending('language');
-                } else if (['color-modal', 'update-mode-modal', 'player-modal', 'm3u-modal'].includes(modalId)) {
+                } else if (['color-modal', 'update-mode-modal', 'player-modal', 'm3u-modal', 'delay-action-modal'].includes(modalId)) {
                     this.applyPending(key);
                 } else {
                     this.closeModal();
@@ -1338,7 +1380,8 @@ class SettingsManager {
         const keyMap = {
             'language-modal': 'language',
             'color-modal': 'accentColor',
-            'update-mode-modal': 'updateMode'
+            'update-mode-modal': 'updateMode',
+            'delay-action-modal': 'delayAction'
         };
         const key = keyMap[modalId] || modalId.replace('-modal', '');
         const value = this.pendingSettings[key];
@@ -1534,6 +1577,12 @@ class SettingsManager {
             await window.i18n.setLanguage(newValue);
         } else if (key === 'accentColor') {
             this.applySettings();
+        } else if (key === 'delayAction') {
+            const num = parseInt(newValue, 10);
+            this.settings.delayAction = isNaN(num) ? 100 : num;
+            if (window.ActionDelayManager) {
+                window.ActionDelayManager.getInstance().setDelay(this.settings.delayAction);
+            }
         }
 
         this.updateDisplays();

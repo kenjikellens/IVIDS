@@ -805,8 +805,11 @@ html, body, #app { background-color: var(--mobile-surface); }
 
 /* Mobile settings grouped sections and category titles matching YouTube settings. */
 #app .settings-section { background: transparent; border: 0; border-radius: 0; box-shadow: none; margin: 0 0 16px; padding: 0; }
-#app .settings-section .section-title { border: 0; color: #888888; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
-#app .settings-section .section-title__icon { display: none; }
+#app .settings-section .section-title,
+body #advanced-settings-modal .section-title { border: 0; color: #888888; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
+#app .settings-section .section-title__icon,
+body #advanced-settings-modal .section-title__icon { display: none; }
+body #advanced-settings-modal .modal__body { padding: 0; }
 
 /* Suppress TV spatial-nav persistent focus outlines on mobile touch viewports. */
 #app .btn:focus-visible, #app .btn.focused,
@@ -821,20 +824,31 @@ body .modal .focusable:focus-visible, body .modal .focusable.focused {
 }
 
 /* Full-width YouTube-style touch rows: clean title, subtle subtitle, and right-aligned chevron. */
-#app .settings-container .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; }
-#app .settings-container .setting-item:first-of-type { border-top: 1px solid #1a1a1a; }
-#app .settings-container .setting-item:active { background: rgba(255, 255, 255, 0.08); }
-#app .settings-container .setting-info { flex: 1 1 auto; min-width: 0; padding-right: 12px; }
-#app .settings-container .setting-label { color: #f1f1f1; font-size: 16px; font-weight: 400; line-height: 1.35; margin: 0; }
-#app .settings-container .setting-description { color: #888888; display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; }
+#app .settings-container .setting-item,
+body #advanced-settings-modal .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; }
+#app .settings-container .setting-item:first-of-type,
+body #advanced-settings-modal .setting-item:first-of-type { border-top: 1px solid #1a1a1a; }
+#app .settings-container .setting-item:active,
+body #advanced-settings-modal .setting-item:active { background: rgba(255, 255, 255, 0.08); }
+#app .settings-container .setting-info,
+body #advanced-settings-modal .setting-info { flex: 1 1 auto; min-width: 0; padding-right: 12px; }
+#app .settings-container .setting-label,
+body #advanced-settings-modal .setting-label { color: #f1f1f1; font-size: 16px; font-weight: 400; line-height: 1.35; margin: 0; }
+#app .settings-container .setting-description,
+body #advanced-settings-modal .setting-description { color: #888888; display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; }
 
 /* Subtitle/value display and chevron indicators in YouTube style. */
-#app .settings-container .setting-control { align-items: center; display: inline-flex; flex: 0 0 auto; gap: 6px; justify-content: flex-end; }
-#app .settings-container .current-value-display { align-items: center; background: transparent; border: 0; color: #888888; display: inline-flex; font-size: 14px; font-weight: 400; height: 24px; line-height: 1; margin-right: 4px; padding: 0; }
+#app .settings-container .setting-control,
+body #advanced-settings-modal .setting-control { align-items: center; display: inline-flex; flex: 0 0 auto; gap: 6px; justify-content: flex-end; }
+#app .settings-container .current-value-display,
+body #advanced-settings-modal .current-value-display { align-items: center; background: transparent; border: 0; color: #888888; display: inline-flex; font-size: 14px; font-weight: 400; height: 24px; line-height: 1; margin-right: 4px; padding: 0; }
 #app .settings-container .color-preview-circle { border-radius: 50%; height: 16px; width: 16px; margin-right: 4px; display: inline-block; }
-#app .settings-container .setting-item .edit-trigger { align-items: center; background: transparent; border: 0; border-radius: 50%; display: inline-flex; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; padding: 0; width: 14px; }
-#app .settings-container .setting-item .edit-trigger .setting-edit-icon { display: none; }
-#app .settings-container .setting-item .edit-trigger::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
+#app .settings-container .setting-item .edit-trigger,
+body #advanced-settings-modal .setting-item .edit-trigger { align-items: center; background: transparent; border: 0; border-radius: 50%; display: inline-flex; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; padding: 0; width: 14px; }
+#app .settings-container .setting-item .edit-trigger .setting-edit-icon,
+body #advanced-settings-modal .setting-item .edit-trigger .setting-edit-icon { display: none; }
+#app .settings-container .setting-item .edit-trigger::after,
+body #advanced-settings-modal .setting-item .edit-trigger::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
 
 /* Keep switches and scale steppers cleanly visible on the right. */
 #app .settings-container .setting-control:has(.form-toggle),
@@ -853,7 +867,9 @@ body .modal .focusable:focus-visible, body .modal .focusable.focused {
 #app .settings-container #app-info-btn .btn__icon { display: none; }
 #app .settings-container #app-info-btn .btn__chevron { color: #666666; font-size: 18px; display: inline-block; }
 
-/* Mobile layout: hide desktop collapsible section and show mobile entry row */
+/* Mobile layout: hide desktop dropdown and show mobile entry row */
+#app .advanced-dropdown-wrapper,
+#app #advanced-dropdown-container,
 #app #advanced-settings-section { display: none !important; }
 #app #mobile-advanced-item { display: flex !important; }
 
@@ -881,7 +897,7 @@ body .modal__close-btn:active { background: rgba(255, 255, 255, 0.1); color: #ff
 #app #check-updates-row #check-updates-btn::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
 
 /* Mobile: Update mode options stacked vertically in full-width single column */
-body #update-mode-modal #update-mode-options {
+body #update-mode-modal #update-mode-options, body #delay-action-modal #delay-action-options, body .modal .chip-grid--2col {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -889,7 +905,7 @@ body #update-mode-modal #update-mode-options {
     width: 100%;
 }
 /* Mobile: Full-width tap targets for update mode options */
-body #update-mode-modal #update-mode-options .chip--option {
+body #update-mode-modal #update-mode-options .chip--option, body #delay-action-modal #delay-action-options .chip--option, body .modal .chip-grid--2col .chip--option {
     align-items: center;
     border-radius: 12px;
     box-sizing: border-box;

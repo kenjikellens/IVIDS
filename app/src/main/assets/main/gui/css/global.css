@@ -1494,8 +1494,8 @@ input, textarea, select { font: inherit; }
 /* Centered container for the small desktop advanced settings dropdown button */
 .advanced-dropdown-wrapper { display: flex; justify-content: center; margin: 8px 0 24px; width: 100%; }
 
-/* Small pill-shaped dropdown toggle button under Live TV */
-.advanced-dropdown-btn { border-radius: 999px; font-size: 14.5px; font-weight: 600; gap: 8px; padding: 10px 22px; }
+/* Small dropdown toggle button under Live TV */
+.advanced-dropdown-btn { font-size: 14.5px; font-weight: 600; gap: 8px; padding: 10px 22px; }
 
 /* Rotating dropdown arrow inside toggle button */
 .dropdown-chevron { display: inline-block; font-size: 11px; margin-left: 6px; transition: transform 0.2s ease; }

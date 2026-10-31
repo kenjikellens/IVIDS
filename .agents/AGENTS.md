@@ -17,3 +17,5 @@ Step-by-step procedural runbooks invoked via slash commands or recommended when 
 3. **[/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/update-translations.md)**: Batch translation workflow to sync translation keys across all language files in `gui/lang/` using Python scripts in `scratch/`.
 4. **[/oocss-refactor](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/oocss-refactor.md)**: Phased protocol for refactoring CSS components to Object-Oriented CSS (OOCSS), updating HTML/JS templates in synchronized batches, and purging redundant container overrides.
 5. **[/build-and-push-main](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/.agents/workflows/build-and-push-main.md)**: Protocol for compiling Windows EXE and Android APK binaries, verifying packaging, and pushing commit history directly to main without creating releases or tags.
+
+You MUST always update the Task.md artifact when the user asks for something or criticizes something you did, so that you don't forget what you need to change.
