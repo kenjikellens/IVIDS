@@ -2,8 +2,8 @@
  * SourceManager Facade / Orchestrator
  * ===================================
  * Central registry and orchestrator for all Live TV stream providers.
- * Manages parallel execution, error isolation, stream scoring, URL deduplication,
- * and broken-channel filtering.
+ * Manages parallel execution, progressive delivery, error isolation, stream scoring,
+ * URL deduplication, and broken-channel filtering.
  */
 
 import { Channel } from './channel.js';
@@ -43,18 +43,14 @@ export class SourceManager {
     }
 
     /**
-     * Registers the full suite of default providers (Sports, Regional Catalogs, Custom M3Us).
+     * Registers the full suite of default providers (Regional Catalogs, Sports, Custom M3Us, Xtream).
      * 
      * @param {Object} [settings] - Merged user settings.
      */
     registerDefaultProviders(settings = {}) {
         this.providers.clear();
 
-        // 1. High-priority Canal+ Football & Live Sports
-        const sports = new SportsProvider();
-        this.registerProvider(sports);
-
-        // 2. Curated Regional and Global M3U catalogs (NL, BE, ES, FR, DE, PT, IT, Global)
+        // 1. Curated Regional and Global M3U catalogs (Free-TV Global, NL, BE, ES, FR, DE, PT, IT, UK, USA)
         REGIONAL_CATALOG.forEach(entry => {
             const m3u = new M3uProvider(entry.id, entry.name, entry.url, {
                 category: entry.category,
@@ -63,6 +59,10 @@ export class SourceManager {
             });
             this.registerProvider(m3u);
         });
+
+        // 2. Live Sports provider
+        const sports = new SportsProvider();
+        this.registerProvider(sports);
 
         // 3. User Custom M3U Playlists
         const customPlaylists = settings.m3uPlaylists || [];
@@ -80,14 +80,14 @@ export class SourceManager {
                 }
                 const customProvider = new M3uProvider(`custom_${item.id || idx}`, name, item.url, {
                     category: 'Custom',
-                    priority: 3 // Higher priority than public regional
+                    priority: 1 // Highest priority for user's own playlists
                 });
                 this.registerProvider(customProvider);
             });
         } else if (settings.m3uUrl) {
             const singleCustom = new M3uProvider('custom_single', 'Custom Playlist', settings.m3uUrl, {
                 category: 'Custom',
-                priority: 3
+                priority: 1
             });
             this.registerProvider(singleCustom);
         }
@@ -100,69 +100,81 @@ export class SourceManager {
     }
 
     /**
-     * Executes all registered providers in parallel, merges results, deduplicates by URL,
-     * excludes persistent broken channels, and sorts streams by viability score and priority.
+     * Sorts a channel array by source priority, stream viability score, and name.
+     *
+     * @param {Array<Channel>} list - Channels to sort in place.
+     * @returns {Array<Channel>} Sorted channels.
+     */
+    _sortChannels(list) {
+        return list.sort((a, b) => {
+            // 1. Source priority (lower number = higher priority: Custom=1, Free-TV=2, NL/BE=10, etc.)
+            const prioDiff = a.sourcePriority - b.sourcePriority;
+            if (prioDiff !== 0) return prioDiff;
+
+            // 2. Stream viability score (.m3u8 + https first)
+            const scoreDiff = b.getStreamScore() - a.getStreamScore();
+            if (scoreDiff !== 0) return scoreDiff;
+
+            return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+        });
+    }
+
+    /**
+     * Executes all registered providers in parallel, progressively invokes onProgress as providers resolve,
+     * deduplicates by URL, excludes persistent broken channels, and sorts streams.
      * 
      * @param {Set<string>} [brokenUrlsSet] - Set of normalized broken channel URLs to skip.
      * @param {boolean} [forceRefresh] - Bypasses memory cache if true.
+     * @param {Function} [onProgress] - Optional callback invoked progressively with current merged channels.
      * @returns {Promise<Array<Channel>>} Sorted and deduplicated channels.
      */
-    async loadAllChannels(brokenUrlsSet = new Set(), forceRefresh = false) {
+    async loadAllChannels(brokenUrlsSet = new Set(), forceRefresh = false, onProgress = null) {
         const now = Date.now();
         if (!forceRefresh && this.cachedChannels.length > 0 && (now - this.lastFetchTimestamp < this.cacheTtlMs)) {
+            if (typeof onProgress === 'function') {
+                onProgress(this.cachedChannels);
+            }
             return this.cachedChannels;
         }
 
         const providerList = Array.from(this.providers.values()).filter(p => p.enabled);
         if (providerList.length === 0) return [];
 
-        // Parallel execution with error containment via allSettled
+        const merged = [];
+        const seenUrls = new Set();
+
         const fetchPromises = providerList.map(async provider => {
             try {
-                return await provider.fetchChannels();
+                const channels = await provider.fetchChannels();
+                if (Array.isArray(channels) && channels.length > 0) {
+                    let added = 0;
+                    channels.forEach(channel => {
+                        if (!(channel instanceof Channel)) {
+                            channel = new Channel(channel);
+                        }
+                        const normalized = channel.normalizedUrl;
+                        if (!normalized || seenUrls.has(normalized)) return;
+                        if (brokenUrlsSet && brokenUrlsSet.has(normalized)) return;
+
+                        seenUrls.add(normalized);
+                        merged.push(channel);
+                        added++;
+                    });
+
+                    if (added > 0 && typeof onProgress === 'function') {
+                        this._sortChannels(merged);
+                        onProgress([...merged]);
+                    }
+                }
+                return channels;
             } catch (err) {
                 console.warn(`[SourceManager] Provider ${provider.name} failed:`, err);
                 return [];
             }
         });
 
-        const results = await Promise.allSettled(fetchPromises);
-        const merged = [];
-        const seenUrls = new Set();
-
-        results.forEach(res => {
-            if (res.status === 'fulfilled' && Array.isArray(res.value)) {
-                res.value.forEach(channel => {
-                    if (!(channel instanceof Channel)) {
-                        channel = new Channel(channel);
-                    }
-
-                    const normalized = channel.normalizedUrl;
-                    if (!normalized || seenUrls.has(normalized)) return;
-                    if (brokenUrlsSet && brokenUrlsSet.has(normalized)) return;
-
-                    seenUrls.add(normalized);
-                    merged.push(channel);
-                });
-            }
-        });
-
-        // Sort: Sports channels first, then by stream score, then source priority, then alphabetical
-        merged.sort((a, b) => {
-            // Live sports channels first
-            if (a.isLiveMatch !== b.isLiveMatch) return b.isLiveMatch ? 1 : -1;
-            if (a.isSports !== b.isSports) return b.isSports ? 1 : -1;
-
-            // Stream viability score (.m3u8 vs .ts)
-            const scoreDiff = b.getStreamScore() - a.getStreamScore();
-            if (scoreDiff !== 0) return scoreDiff;
-
-            // Source priority (lower number = higher priority)
-            const prioDiff = a.sourcePriority - b.sourcePriority;
-            if (prioDiff !== 0) return prioDiff;
-
-            return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
-        });
+        await Promise.allSettled(fetchPromises);
+        this._sortChannels(merged);
 
         this.cachedChannels = merged;
         this.lastFetchTimestamp = now;
@@ -189,4 +201,3 @@ export class SourceManager {
 
 // Export singleton instance
 export const sourceManager = new SourceManager();
-

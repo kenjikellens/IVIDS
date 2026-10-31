@@ -10,20 +10,20 @@
 
     <!-- Custom Player Overlay (Auto Hides) -->
     <div class="tv-overlay" id="tv-overlay">
-        <!-- Glassmorphic Top Bar -->
         <div class="tv-overlay-top tv-top-bar">
-            <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-back" title="Back">
+            <button class="btn btn--secondary btn--circle-xl focusable" id="tv-back" title="Back">
                 <img src="images/back.svg" alt="Back" class="btn__icon">
             </button>
-            <div class="tv-top-status">
-                <span class="status-dot online"></span>
-                <span class="tv-quality-badge">LIVE HD</span>
-            </div>
         </div>
 
-        <!-- Glassmorphic Bottom Control Bar -->
         <div class="tv-overlay-bottom tv-bottom-bar">
             <div class="tv-controls-left">
+                <!-- Play/Pause Toggle -->
+                <button class="btn btn--primary btn--circle-xl play-pause-btn focusable" id="tv-play-pause" title="Play/Pause">
+                    <img id="icon-pause" src="images/pause.svg" alt="Pause" class="btn__icon">
+                    <img id="icon-play" src="images/play.svg" alt="Play" class="btn__icon hidden">
+                </button>
+
                 <!-- Channel Metadata -->
                 <div class="tv-info">
                     <h1 id="tv-title">Channel Name</h1>
@@ -36,10 +36,6 @@
 
             <div class="tv-controls-right">
                 <div class="btn-group tv-extra-controls">
-                    <!-- Favorite Toggle Button -->
-                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-fav-btn" title="Toggle Favorite">
-                        <img id="tv-fav-icon" src="images/star.svg" alt="Favorite" class="btn__icon">
-                    </button>
                     <!-- Previous Channel Button -->
                     <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-prev-btn" title="Previous Channel">
                         <img src="images/chevron-up.svg" alt="Previous Channel" class="btn__icon">
@@ -48,16 +44,12 @@
                     <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-next-btn" title="Next Channel">
                         <img src="images/chevron-down.svg" alt="Next Channel" class="btn__icon">
                     </button>
-                    <!-- Subtitles Toggle Button -->
-                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-subtitles-btn" title="Subtitles">
-                        <img src="images/subtitles.svg" alt="Subtitles" class="btn__icon">
+                    <!-- Aspect Ratio Switcher -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-aspect-ratio" title="Aspect Ratio">
+                        <img src="images/aspect-ratio.svg" alt="Aspect Ratio" class="btn__icon">
                     </button>
-                    <!-- Audio Track Toggle Button -->
-                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-audio-btn" title="Audio Track">
-                        <img src="images/audio-track.svg" alt="Audio" class="btn__icon">
-                    </button>
-                    <!-- Channel Guide / EPG Trigger Button -->
-                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-channels-btn" title="Channel Guide">
+                    <!-- Quick Channel Guide / EPG Trigger -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-epg-btn" title="Channel Guide">
                         <img src="images/channel-list.svg" alt="Channels" class="btn__icon">
                     </button>
                 </div>
@@ -67,11 +59,15 @@
                     <span class="guide-key">&#9650;/&#9660;</span>
                     <span class="guide-label" data-i18n="livetv.zapChannel">Zap Channel</span>
                 </div>
+                <div class="tv-status-badge">
+                    <span class="status-dot online"></span>
+                    <span class="tv-quality-badge">LIVE HD</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Quick EPG / Channel Guide Modal Overlay (Zero inline styles, uses .hidden) -->
+    <!-- Quick EPG / Channel Guide Modal Overlay -->
     <div class="modal tv-quick-epg hidden" id="tv-quick-epg">
         <div class="modal__dialog modal__dialog--md">
             <div class="modal__header">

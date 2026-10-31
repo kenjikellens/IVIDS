@@ -160,6 +160,10 @@ input, textarea, select { font: inherit; }
 
 /* Extra-large circular icon button modifier (64px) for TV and fullscreen player overlays. */
 .btn--circle-xl { border-radius: 50%; flex-shrink: 0; height: 64px; min-height: 64px; min-width: 64px; padding: 0; width: 64px; }
+/* Icon sizing inside medium circular buttons. */
+.btn--circle-md img, .btn--circle-md .btn__icon { height: 20px; width: 20px; }
+/* Icon sizing inside extra-large circular buttons. */
+.btn--circle-xl img, .btn--circle-xl .btn__icon { height: 26px; width: 26px; }
 
 /* Square icon action button modifier (46px) for settings triggers and list item actions. */
 .btn--square { border-radius: var(--radius-sm); flex-shrink: 0; height: 46px; min-height: 46px; min-width: 46px; padding: 0; width: 46px; }
@@ -1603,7 +1607,7 @@ input, textarea, select { font: inherit; }
 .preview-card__video-wrap { height: 100%; position: relative; width: 100%; }
 
 /* Video element inside preview card. */
-.preview-card__video-wrap video { background: #000000; height: 100%; object-fit: contain; width: 100%; }
+.preview-card-video video, .preview-card__video-wrap video { background: #000000; height: 100%; object-fit: contain; width: 100%; }
 
 /* Cinematic gradient overlay across video preview. */
 .preview-card__overlay { background: linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.85) 100%); box-sizing: border-box; display: flex; flex-direction: column; inset: 0; justify-content: space-between; padding: 20px 24px; pointer-events: none; position: absolute; z-index: 3; }

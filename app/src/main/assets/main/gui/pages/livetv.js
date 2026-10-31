@@ -213,7 +213,7 @@ export async function init(params) {
             SpatialNav.popBackHandler(liveTvPageBackHandler);
             liveTvPageBackHandler = null;
         }
-        window.removeEventListener('keydown', handleKeyDown);
+
     };
 
     /**
@@ -259,7 +259,15 @@ export async function init(params) {
             countEl.textContent = `${allChannels.length} channels`;
             settings = loadMergedSettings();
             sourceManager.registerDefaultProviders(settings);
-            allChannels = await sourceManager.loadAllChannels(brokenChannelsSet);
+            let initialRenderDone = false;
+        allChannels = await sourceManager.loadAllChannels(brokenChannelsSet, false, (progressChannels) => {
+            allChannels = progressChannels;
+            if (!initialRenderDone && allChannels.length > 0) {
+                initialRenderDone = true;
+                const currentFocused = document.querySelector('.focused');
+                filterAndRenderChannels(!currentFocused);
+            }
+        });
             settings = loadMergedSettings();
             const totalSources = sourceManager.getProviderCount();
             totalSrcEl.textContent = `${totalSources} sources`;
@@ -304,12 +312,11 @@ function renderLoadingSkeletons() {
             const skeleton = document.createElement('div');
             skeleton.className = 'channel-card card is-skeleton';
             skeleton.innerHTML = `
-                <span class="channel-card__index">-</span>
                 <span class="list-status-dot checking"></span>
-                <div class="channel-card__logo-wrap">
+                <div class="channel-card__logo-wrap channel-list-logo-container">
                     <div class="skeleton-logo-placeholder"></div>
                 </div>
-                <div class="channel-card__meta">
+                <div class="channel-card__meta channel-list-meta-container">
                     <div class="skeleton-text skeleton-name"></div>
                 </div>
             `;
@@ -335,7 +342,15 @@ async function loadAllSources() {
 
         settings = loadMergedSettings();
         sourceManager.registerDefaultProviders(settings);
-        allChannels = await sourceManager.loadAllChannels(brokenChannelsSet);
+        let initialRenderDone = false;
+        allChannels = await sourceManager.loadAllChannels(brokenChannelsSet, false, (progressChannels) => {
+            allChannels = progressChannels;
+            if (!initialRenderDone && allChannels.length > 0) {
+                initialRenderDone = true;
+                const currentFocused = document.querySelector('.focused');
+                filterAndRenderChannels(!currentFocused);
+            }
+        });
 
         // Extract unique genres and countries
         const genresSet = new Set();
@@ -885,8 +900,7 @@ function setupEventListeners() {
         SpatialNav.pushBackHandler(liveTvPageBackHandler);
     }
 
-    window.removeEventListener('keydown', handleKeyDown);
-    window.addEventListener('keydown', handleKeyDown);
+
 
     if (filterBtn) {
         filterBtn.onclick = () => openFilterModal();
@@ -1063,26 +1077,15 @@ function renderNextChunk() {
         const iconUrl = channel.logo || 'images/livetv.svg';
         const status = statusCache.get(channel.url)?.status || 'unknown';
         const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
-        const category = channel.group || 'Live TV';
-        const isSports = Boolean(
-            channel.isSports || 
-            (channel.groupTags && (channel.groupTags.includes('sports') || channel.groupTags.includes('voetbal'))) ||
-            (channel.name && /sport|canal\+|voetbal|football|live match/i.test(channel.name))
-        );
 
         item.innerHTML = `
-            <span class="channel-card__index">${i + 1}</span>
             <span class="list-status-dot ${statusClass}"></span>
-            <div class="channel-card__logo-wrap">
-                <img src="${iconUrl}" class="channel-card__logo" loading="lazy" onerror="this.src='images/livetv.svg'">
+            <div class="channel-card__logo-wrap channel-list-logo-container">
+                <img src="${iconUrl}" class="channel-card__logo channel-list-logo" loading="lazy" onerror="this.src='images/livetv.svg'">
             </div>
-            <div class="channel-card__meta">
-                <span class="channel-card__title">${channel.name}</span>
+            <div class="channel-card__meta channel-list-meta-container">
+                <span class="channel-card__title channel-list-name">${channel.name}</span>
             </div>
-            ${isSports ? '<span class="channel-card__badge badge badge--primary">SPORT</span>' : ''}
-            <button class="channel-card__fav-btn" title="Toggle Favorite" aria-label="Favorite" tabindex="-1">
-                <img src="${isFav ? 'images/star-filled.svg' : 'images/star.svg'}" class="fav-icon" alt="Favorite">
-            </button>
         `;
 
         item.onkeydown = (e) => {
@@ -1104,22 +1107,9 @@ function renderNextChunk() {
             }
         };
 
-        item.onclick = (e) => {
-            if (e.target.closest('.channel-card__fav-btn')) {
-                e.stopPropagation();
-                toggleFavorite(channel);
-                return;
-            }
+        item.onclick = () => {
             playChannel(channel);
         };
-
-        const favBtn = item.querySelector('.channel-card__fav-btn');
-        if (favBtn) {
-            favBtn.onclick = (e) => {
-                e.stopPropagation();
-                toggleFavorite(channel);
-            };
-        }
 
         fragment.appendChild(item);
 

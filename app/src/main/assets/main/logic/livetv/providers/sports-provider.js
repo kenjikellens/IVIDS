@@ -1,9 +1,8 @@
 /**
  * SportsProvider Strategy
  * =======================
- * Dedicated strategy for live sports and Canal+ / French / European sports broadcasts.
- * Uses verified live HLS (.m3u8) streams and dynamically enriches sports channels
- * without injecting dead placeholder domains.
+ * Dedicated strategy for live sports and European sports broadcasts.
+ * Uses verified high-availability CDN HLS (.m3u8) streams.
  */
 
 import { BaseStreamProvider } from './base-provider.js';
@@ -18,7 +17,7 @@ export class SportsProvider extends BaseStreamProvider {
     constructor(options = {}) {
         super('sports_canalplus', 'Live Sports', {
             category: 'Sports',
-            priority: 15,
+            priority: 8,
             ...options
         });
     }
@@ -76,15 +75,6 @@ export class SportsProvider extends BaseStreamProvider {
                 group: 'Sports',
                 groupTags: ['sports', 'united states'],
                 tvgId: 'ACCDigitalNetwork.us'
-            },
-            {
-                id: 'sport_30a_golf',
-                name: '30A Golf Kingdom',
-                url: 'https://30a-tv.com/feeds/vidaa/golf.m3u8',
-                logo: 'https://i.imgur.com/Lv53nh4.png',
-                group: 'Sports',
-                groupTags: ['sports', 'united states'],
-                tvgId: '30AGolfKingdom.us'
             }
         ];
 

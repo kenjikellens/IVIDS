@@ -9,7 +9,7 @@ import { domRecycler } from './dom-recycler.js';
 const _htmlCache = new Map();
 
 /** Cache key for page templates so edited mobile button markup is fetched after an app restart. */
-const PAGE_TEMPLATE_CACHE_VERSION = '20261030T1941';
+const PAGE_TEMPLATE_CACHE_VERSION = '20261031T1420';
 
 /** Flag to track whether the initial boot page has loaded. Used to skip splash signals on subsequent loads. */
 let _initialLoadComplete = false;
