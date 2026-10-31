@@ -520,6 +520,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             self._proxy_headers_sent = False
+            self._proxy_headers_sent = False
             req = urllib.request.Request(target_url)
             referer = query.get('referer', [None])[0]
             origin = query.get('origin', [None])[0]

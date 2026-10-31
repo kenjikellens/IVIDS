@@ -159,7 +159,7 @@ export const Router = {
                 const controller = new AbortController();
                 _activeAbortController = controller;
                 const fetchPromise = fetch(`pages/${pageName}.html?v=${PAGE_TEMPLATE_CACHE_VERSION}`, { signal: controller.signal });
-                
+
                 let timeoutId;
                 const timeoutPromise = new Promise((_, reject) => {
                     timeoutId = setTimeout(() => {
@@ -256,7 +256,7 @@ export const Router = {
                             const isBrowse = ['home', 'movies', 'series'].includes(p);
                             const modulePath = isBrowse ? '../pages/browse.js' : `../pages/${p}.js`;
                             import(`${modulePath}?v=${PAGE_TEMPLATE_CACHE_VERSION}`).catch(() => { /* silent preload failure is OK */ });
-                            
+
                             // Prefetch HTML template and cache it
                             if (!_htmlCache.has(p)) {
                                 fetch(`pages/${p}.html?v=${PAGE_TEMPLATE_CACHE_VERSION}`)
