@@ -133,7 +133,8 @@
         "branchWarningDesc": "Achtung: Dies ist eine Live-Entwicklungsversion direkt aus dem 'main'-Branch. Sie kann instabil sein oder unfertige Funktionen enthalten.",
         "installBranchTitle": "Live-Branch-Build installieren",
         "installVersionTitle": "Version installieren",
-        "installNow": "Jetzt installieren"
+        "installNow": "Jetzt installieren",
+        "moreInfo": "Mehr Informationen"
     },
     "common": {
         "close": "Schließen",

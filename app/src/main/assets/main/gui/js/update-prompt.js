@@ -11,66 +11,66 @@ import { VersionManager } from './version-manager.js';
  */
 export class UpdatePrompt {
     static modalElement = null;
+    static changelogModalElement = null;
     static previousFocus = null;
     static activeStatus = 'downloading';
 
     /**
-     * Programmatically initializes the update notification overlay markup.
-     * Appends the container to the document body to avoid layout clippings.
+     * Programmatically initializes the update notification overlay and dedicated changelog modal markup.
+     * Appends containers to document body to avoid layout clippings.
      */
     static init() {
-        if (this.modalElement) return;
-
-        this.modalElement = document.createElement('div');
-        this.modalElement.id = 'update-overlay';
-        this.modalElement.className = 'modal update-modal-overlay';
-        
-        this.modalElement.innerHTML = `
-            <div class="modal__dialog modal__dialog--lg update-modal">
-                <div class="modal__header update-header">
-                    <div class="update-icon-container">
-                        <div class="update-icon-mask"></div>
+        if (!this.modalElement) {
+            this.modalElement = document.createElement('div');
+            this.modalElement.id = 'update-overlay';
+            this.modalElement.className = 'modal update-modal-overlay';
+            this.modalElement.style.zIndex = '100000';
+            
+            this.modalElement.innerHTML = `
+                <div class="modal__dialog modal__dialog--lg update-modal">
+                    <div class="modal__header update-header">
+                        <div class="update-icon-container">
+                            <div class="update-icon-mask"></div>
+                        </div>
+                        <h2 class="modal__title update-title"></h2>
                     </div>
-                    <h2 class="modal__title update-title"></h2>
-                </div>
-                <div class="modal__body modal__body--scroll update-info-block">
-                    <div class="version-badge-container">
-                        <span class="badge badge--outline version-badge current"></span>
-                        <span class="version-arrow">→</span>
-                        <span class="badge badge--outline version-badge remote"></span>
-                    </div>
-                    <div class="update-branch-section">
-                        <div class="update-branch-title"></div>
-                        <div class="update-release-name"></div>
-                    </div>
-                    <div id="update-experimental-warning" class="update-experimental-warning" style="display: none;">
-                        <span class="warning-icon">⚠️</span>
-                        <div class="warning-content">
-                            <span class="warning-title"></span>
-                            <p class="warning-text"></p>
+                    <div class="modal__body modal__body--scroll update-info-block">
+                        <div class="version-badge-container">
+                            <span class="badge badge--outline version-badge current"></span>
+                            <span class="version-arrow">→</span>
+                            <span class="badge badge--outline version-badge remote"></span>
+                        </div>
+                        <div class="update-branch-section">
+                            <div class="update-branch-title"></div>
+                            <div class="update-release-name"></div>
+                        </div>
+                        <div id="update-experimental-warning" class="update-experimental-warning" style="display: none;">
+                            <span class="warning-icon">⚠️</span>
+                            <div class="warning-content">
+                                <span class="warning-title"></span>
+                                <p class="warning-text"></p>
+                            </div>
+                        </div>
+                        <div class="update-more-info-container" id="update-more-info-container">
+                            <button id="update-more-info-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button">
+                                <span>Meer informatie</span>
+                            </button>
                         </div>
                     </div>
-                    <div class="update-more-info-container" id="update-more-info-container">
-                        <button id="update-more-info-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button">
-                            <span>Meer informatie</span>
-                        </button>
+                    <div class="update-progress-container" id="update-progress-container">
+                        <div class="update-progress-bar-bg">
+                            <div class="update-progress-bar" id="update-progress-bar"></div>
+                        </div>
+                        <span class="update-progress-text" id="update-progress-text"></span>
                     </div>
-
-                </div>
-                <div class="update-progress-container" id="update-progress-container">
-                    <div class="update-progress-bar-bg">
-                        <div class="update-progress-bar" id="update-progress-bar"></div>
+                    <div class="modal__footer update-footer-actions btn-group btn-group--fill" id="update-actions">
+                        <button class="btn btn--secondary focusable" id="update-dismiss-btn"></button>
+                        <button class="btn btn--primary focusable" id="update-download-btn"></button>
                     </div>
-                    <span class="update-progress-text" id="update-progress-text"></span>
                 </div>
-                <div class="modal__footer update-footer-actions btn-group btn-group--fill" id="update-actions">
-                    <button class="btn btn--secondary focusable" id="update-dismiss-btn"></button>
-                    <button class="btn btn--primary focusable" id="update-download-btn"></button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(this.modalElement);
+            `;
+            document.body.appendChild(this.modalElement);
+        }
 
         if (!this.changelogModalElement) {
             this.changelogModalElement = document.createElement('div');
@@ -120,20 +120,20 @@ export class UpdatePrompt {
 
     /**
      * Shows the premium update modal dialog and populates the release info.
-     * Restores/focuses the SpatialNav controls and loads the release changelog body.
+     * Restores/focuses the SpatialNav controls and sets up the release changelog modal.
      * 
      * @param {string} version - The version tag found on the remote server.
      * @param {HTMLElement} [returnFocusElement] - Explicit element to receive focus when update prompt is dismissed.
+     * @param {Object} [options={}] - Optional parameters such as isManualSelection and isBranch flags.
      * @returns {Promise<void>}
      */
     static async show(version, returnFocusElement = null, options = {}) {
-        // Initialize HTML if not already mounted
         this.init();
 
         // Ensure version selector or any open modal overlay is completely hidden so modals are never stacked
         const openModals = document.querySelectorAll('.modal.is-open, .modal.show, #version-selector-modal');
         openModals.forEach(m => {
-            if (m.id !== 'update-overlay') {
+            if (m.id !== 'update-overlay' && m.id !== 'update-changelog-modal') {
                 m.classList.remove('show', 'is-open', 'active');
                 m.style.setProperty('display', 'none', 'important');
                 m.style.setProperty('visibility', 'hidden', 'important');
@@ -173,8 +173,6 @@ export class UpdatePrompt {
         const releaseNameEl = this.modalElement.querySelector('.update-release-name');
         const currentBadgeEl = this.modalElement.querySelector('.version-badge.current');
         const remoteBadgeEl = this.modalElement.querySelector('.version-badge.remote');
-        const changelogTitleEl = this.modalElement.querySelector('.update-changelog-title');
-        const changelogBodyEl = this.modalElement.querySelector('.update-changelog-body');
         const confirmBtn = document.getElementById('update-download-btn');
         const dismissBtn = document.getElementById('update-dismiss-btn');
         const progressContainer = document.getElementById('update-progress-container');
@@ -217,7 +215,14 @@ export class UpdatePrompt {
         if (branchTitleEl) {
             branchTitleEl.textContent = this.translate('settings.branch', 'Branch');
         }
-        if (changelogTitleEl) changelogTitleEl.textContent = this.translate('settings.whatsNew', "What's New:");
+        dismissBtn.textContent = isManual ? this.translate('common.cancel', 'Annuleren') : this.translate('settings.later', 'Later');
+        confirmBtn.textContent = isManual ? this.translate('settings.installNow', 'Nu installeren') : this.translate('settings.updateNow', 'Install Now');
+
+        currentBadgeEl.textContent = currentVer;
+        remoteBadgeEl.textContent = release.tag_name;
+        releaseNameEl.textContent = release.name || 'Prerelease Update';
+
+        // Bind 'Meer informatie' button to open dedicated Markdown changelog modal
         const moreInfoBtn = document.getElementById('update-more-info-btn');
         if (moreInfoBtn) {
             const moreInfoSpan = moreInfoBtn.querySelector('span');
@@ -226,14 +231,6 @@ export class UpdatePrompt {
                 this.openChangelog(release, parsedBody);
             };
         }
-        dismissBtn.textContent = isManual ? this.translate('common.cancel', 'Annuleren') : this.translate('settings.later', 'Later');
-        confirmBtn.textContent = isManual ? this.translate('settings.installNow', 'Nu installeren') : this.translate('settings.updateNow', 'Install Now');
-
-        
-        currentBadgeEl.textContent = currentVer;
-        remoteBadgeEl.textContent = release.tag_name;
-        releaseNameEl.textContent = release.name || 'Prerelease Update';
-        if (changelogBodyEl) changelogBodyEl.innerHTML = parsedBody;
 
         // Reset progress bar visibility and reset visual states
         progressContainer.style.display = 'none';
@@ -241,10 +238,6 @@ export class UpdatePrompt {
         confirmBtn.style.display = 'inline-flex';
         dismissBtn.style.display = 'inline-flex';
         if (progressText) progressText.style.color = '';
-
-        // Make sure changelog and branch info elements are visible
-        if (changelogTitleEl) changelogTitleEl.style.display = 'block';
-        if (changelogBodyEl) changelogBodyEl.style.display = 'block';
 
         // Render modal with display and active transition trigger immediately
         this.modalElement.style.display = 'flex';
@@ -318,7 +311,6 @@ export class UpdatePrompt {
         SpatialNav.setFocusTrap(this.modalElement);
         const moreInfoBtn = document.getElementById('update-more-info-btn');
         if (moreInfoBtn) SpatialNav.setFocus(moreInfoBtn);
-        };
     }
 
     /**
@@ -343,7 +335,7 @@ export class UpdatePrompt {
 
     /**
      * Programmatically initiates the update download process.
-     * Hides the changelog, updates the modal title, and delegates download to native or PC bridge.
+     * Delegates download to native or PC bridge.
      */
     static startDownload() {
         const actionsContainer = document.getElementById('update-actions');
@@ -351,6 +343,8 @@ export class UpdatePrompt {
         const progressBar = document.getElementById('update-progress-bar');
         const progressText = document.getElementById('update-progress-text');
         const titleEl = this.modalElement.querySelector('.update-title');
+        const moreInfoContainer = document.getElementById('update-more-info-container');
+        if (moreInfoContainer) moreInfoContainer.style.display = 'none';
 
         const isBranch = window.latestUpdateVersion === 'Branch';
         if (isBranch && window.AndroidUpdate && typeof window.AndroidUpdate.clearCachedApk === 'function') {
@@ -369,12 +363,6 @@ export class UpdatePrompt {
                 console.warn('UpdatePrompt: Failed to check existing APK', e);
             }
         }
-
-        // Hide changelog section on download for a clean layout
-        const changelogTitle = this.modalElement.querySelector('.update-changelog-title');
-        const changelogBody = this.modalElement.querySelector('.update-changelog-body');
-        if (changelogTitle) changelogTitle.style.display = 'none';
-        if (changelogBody) changelogBody.style.display = 'none';
 
         if (actionsContainer) actionsContainer.style.display = 'none';
         if (progressContainer) progressContainer.style.display = 'flex';
@@ -449,60 +437,6 @@ export class UpdatePrompt {
             }
             window.open(window.latestUpdateDownloadUrl, '_blank');
             this.dismiss();
-        };
-    }
-
-    /**
-     * Opens dedicated full Markdown modal for release notes.
-     * @param {Object} release - GitHub release object.
-     * @param {string} parsedBody - Parsed Markdown HTML.
-     */
-    static openChangelog(release, parsedBody) {
-        if (!this.changelogModalElement) return;
-
-        this.modalElement.style.display = 'none';
-        this.changelogModalElement.style.display = 'flex';
-        this.changelogModalElement.classList.add('visible', 'is-open');
-
-        const titleEl = document.getElementById('update-changelog-modal-title');
-        const contentEl = document.getElementById('update-changelog-modal-content');
-        const closeBtn = document.getElementById('update-changelog-close-btn');
-        const backBtn = document.getElementById('update-changelog-back-btn');
-
-        if (titleEl) {
-            titleEl.textContent = release.name || `${this.translate('settings.changes', 'Changes')} (${release.tag_name})`;
-        }
-        if (contentEl) {
-            contentEl.innerHTML = parsedBody;
-        }
-        if (closeBtn) {
-            closeBtn.textContent = this.translate('common.close', 'Sluiten');
-            closeBtn.onclick = () => this.closeChangelog();
-        }
-        if (backBtn) {
-            backBtn.onclick = () => this.closeChangelog();
-        }
-
-        SpatialNav.setFocusTrap(this.changelogModalElement);
-        const focusTarget = backBtn || closeBtn;
-        if (focusTarget) SpatialNav.setFocus(focusTarget);
-    }
-
-    /**
-     * Closes dedicated Markdown modal and restores the main update prompt.
-     */
-    static closeChangelog() {
-        if (!this.changelogModalElement) return;
-
-        this.changelogModalElement.classList.remove('visible', 'is-open');
-        this.changelogModalElement.style.display = 'none';
-
-        this.modalElement.style.display = 'flex';
-        this.modalElement.classList.add('visible', 'is-open');
-
-        SpatialNav.setFocusTrap(this.modalElement);
-        const moreInfoBtn = document.getElementById('update-more-info-btn');
-        if (moreInfoBtn) SpatialNav.setFocus(moreInfoBtn);
         } else {
             console.warn('UpdatePrompt: No native bridge or update download link found.');
             this.handleError();
@@ -646,10 +580,15 @@ export class UpdatePrompt {
     }
 
     /**
-     * Closes the update modal dialog and restores navigation focus trap.
+     * Closes the update modal dialog and dedicated changelog modal, restoring navigation focus trap.
      * Affects overlay element visibility and focus state of SpatialNav.
      */
     static dismiss() {
+        if (this.changelogModalElement) {
+            this.changelogModalElement.classList.remove('visible', 'is-open');
+            this.changelogModalElement.style.display = 'none';
+        }
+
         if (!this.modalElement) return;
 
         this.modalElement.classList.remove('visible', 'is-open');

@@ -133,7 +133,8 @@
         "branchWarningDesc": "Attention : Il s'agit d'une version de développement en direct de la branche 'main'. Elle peut être instable ou contenir des bugs.",
         "installBranchTitle": "Installer le build de la branche",
         "installVersionTitle": "Installer la version",
-        "installNow": "Installer maintenant"
+        "installNow": "Installer maintenant",
+        "moreInfo": "Plus d'informations"
     },
     "common": {
         "close": "Fermer",

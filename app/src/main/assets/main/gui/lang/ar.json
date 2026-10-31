@@ -138,7 +138,8 @@
         "branchWarningDesc": "Warning: This is a live development build directly from the 'main' branch. It may be unstable or contain unfinished features.",
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
-        "installNow": "Install Now"
+        "installNow": "Install Now",
+        "moreInfo": "More Information"
     },
     "common": {
         "close": "إغلاق",

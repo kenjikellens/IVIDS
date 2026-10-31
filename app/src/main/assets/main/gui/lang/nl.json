@@ -133,7 +133,8 @@
         "branchWarningDesc": "Let op: Dit is een live ontwikkelingsversie rechtstreeks vanaf de 'main' branch. Deze build kan onstabiel zijn of onvoltooide functies bevatten.",
         "installBranchTitle": "Live Branch Build Installeren",
         "installVersionTitle": "Versie installeren",
-        "installNow": "Nu installeren"
+        "installNow": "Nu installeren",
+        "moreInfo": "Meer informatie"
     },
     "common": {
         "close": "Sluiten",

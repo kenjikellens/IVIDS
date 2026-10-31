@@ -133,7 +133,8 @@
         "branchWarningDesc": "Atención: Esta es una compilación de desarrollo en vivo directamente de la rama 'main'. Puede ser inestable o contener errores.",
         "installBranchTitle": "Instalar versión de la rama principal",
         "installVersionTitle": "Instalar versión",
-        "installNow": "Instalar ahora"
+        "installNow": "Instalar ahora",
+        "moreInfo": "Más información"
     },
     "common": {
         "close": "Cerrar",

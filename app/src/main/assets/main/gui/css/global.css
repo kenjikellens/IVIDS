@@ -2019,6 +2019,17 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 #version-list-loader { align-items: center; display: flex; inset: auto; justify-content: center; margin: 0 auto; min-height: 220px; position: relative; width: 100%; }
 .version-applied-icon { flex-shrink: 0; height: 28px; margin-left: auto; width: 28px; }
 
+/* Update more info button container */
+.update-more-info-container { box-sizing: border-box; margin: 10px 0 6px; width: 100%; }
+/* Update more info button */
+#update-more-info-btn { border-radius: 12px; font-size: 14.5px; font-weight: 600; min-height: 44px; width: 100%; }
+/* Update changelog dedicated modal scroll container */
+.update-changelog-scroll { box-sizing: border-box; max-height: 60vh; overflow-x: hidden; overflow-y: auto; padding: 8px 16px 20px; width: 100%; }
+.update-changelog-scroll::-webkit-scrollbar { width: 6px; }
+.update-changelog-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
+.update-changelog-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
+.update-changelog-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
+
 /* Markdown changelog formatting. */
 .markdown-body { color: var(--text-color); font-size: 0.9rem; line-height: 1.6; padding: 0 2%; text-align: left; word-break: break-word; }
 .markdown-body h2, .update-changelog-body h2 { color: #ffffff; font-size: 1.25rem; font-weight: 700; margin: 16px 0 8px; }
