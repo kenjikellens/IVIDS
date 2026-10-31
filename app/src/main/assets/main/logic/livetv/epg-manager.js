@@ -11,6 +11,7 @@ export class EpgManager {
     static guideLookup = new Map();
     static guideCache = new Map();
     static guideFetchPromises = new Map();
+    static channelProgramCache = new Map();
     static initPromise = null;
     static initialized = false;
     static FETCH_TIMEOUT_MS = 12000;
@@ -208,6 +209,11 @@ export class EpgManager {
         const normalizedTvgId = this.normalizeTvgId(tvgId);
         if (!normalizedTvgId) return [];
 
+        const cachedPrograms = this.channelProgramCache.get(normalizedTvgId);
+        if (cachedPrograms && Date.now() - cachedPrograms.timestamp < this.CACHE_TTL_MS) {
+            return cachedPrograms.programs;
+        }
+
         const guide = this.resolveGuide(normalizedTvgId);
         if (!guide) return [];
 
@@ -217,6 +223,7 @@ export class EpgManager {
         const candidateIds = this.getCandidateChannelIds(normalizedTvgId, guide);
         const programs = this.parsePrograms(xml, candidateIds);
         programs.sort((a, b) => a.startDate - b.startDate);
+        this.channelProgramCache.set(normalizedTvgId, { programs, timestamp: Date.now() });
         return programs;
     }
 
@@ -298,24 +305,27 @@ export class EpgManager {
      */
     static async readResponseBody(response, url) {
         const isGzip = url.toLowerCase().endsWith('.gz');
-        if (isGzip && typeof DecompressionStream !== 'undefined' && response.body) {
-            const fallbackResponse = response.clone();
-            try {
-                const decompressedStream = response.body.pipeThrough(new DecompressionStream('gzip'));
-                const reader = decompressedStream.getReader();
-                const decoder = new TextDecoder('utf-8');
-                let result = '';
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    result += decoder.decode(value, { stream: true });
+        if (isGzip) {
+            const buffer = await response.arrayBuffer();
+            const bytes = new Uint8Array(buffer);
+            if (bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b && typeof DecompressionStream !== 'undefined') {
+                try {
+                    const decompressedStream = new Blob([buffer]).stream().pipeThrough(new DecompressionStream('gzip'));
+                    const reader = decompressedStream.getReader();
+                    const decoder = new TextDecoder('utf-8');
+                    let result = '';
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        result += decoder.decode(value, { stream: true });
+                    }
+                    result += decoder.decode();
+                    return result;
+                } catch (e) {
+                    return new TextDecoder('utf-8').decode(bytes);
                 }
-                result += decoder.decode();
-                return result;
-            } catch (e) {
-                // Response was already decompressed by proxy; fall back silently to text()
-                return fallbackResponse.text();
             }
+            return new TextDecoder('utf-8').decode(bytes);
         }
         return response.text();
     }

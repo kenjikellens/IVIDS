@@ -34,8 +34,24 @@ export class M3uProvider extends BaseStreamProvider {
         if (!this.url || !this.enabled) return [];
 
         try {
-            const targetUrl = proxyUrl(StreamOptimizer.optimizePlaylistUrl(this.url));
-            const response = await this.fetchWithTimeout(targetUrl);
+            const optimizedPlaylistUrl = StreamOptimizer.optimizePlaylistUrl(this.url);
+            let response = null;
+
+            // Public GitHub/iptv-org playlists support direct CORS and fetch 10x faster directly
+            const isCorsSafePublic = /^https:\/\/(raw\.githubusercontent\.com|iptv-org\.github\.io)\//i.test(optimizedPlaylistUrl);
+            if (isCorsSafePublic) {
+                try {
+                    response = await this.fetchWithTimeout(optimizedPlaylistUrl);
+                } catch (directErr) {
+                    response = null;
+                }
+            }
+
+            if (!response || !response.ok) {
+                const targetUrl = proxyUrl(optimizedPlaylistUrl);
+                response = await this.fetchWithTimeout(targetUrl);
+            }
+
             if (!response.ok) {
                 console.warn(`[M3uProvider] HTTP error ${response.status} for ${this.name} (${this.url})`);
                 return [];

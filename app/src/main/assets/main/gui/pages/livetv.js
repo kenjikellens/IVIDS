@@ -424,13 +424,8 @@ async function loadAllSources() {
                 if (progressiveRenderTimer) clearTimeout(progressiveRenderTimer);
                 progressiveRenderTimer = setTimeout(() => {
                     renderCategoriesList();
-                    // If currently rendered list has fewer than CHUNK_SIZE items or user is viewing a newly populated category, refresh list
-                    const prevFilteredLen = filteredChannels.length;
-                    updateFilteredChannelsArray();
-                    if (renderedCount < CHUNK_SIZE && filteredChannels.length > prevFilteredLen) {
-                        renderNextChunk();
-                    }
-                }, 600);
+                    filterAndRenderChannels(false);
+                }, 400);
             }
         });
 
@@ -444,15 +439,7 @@ async function loadAllSources() {
             if (empty) empty.classList.remove('hidden');
         } else {
             const currentFocused = document.querySelector('.focused');
-            const hasRenderedChannels = document.querySelectorAll('#channels-list .channel-list-item:not(.is-skeleton)').length > 0;
-            if (!hasRenderedChannels) {
-                filterAndRenderChannels(!currentFocused);
-            } else {
-                updateFilteredChannelsArray();
-                if (renderedCount < CHUNK_SIZE) {
-                    renderNextChunk();
-                }
-            }
+            filterAndRenderChannels(!currentFocused);
         }
     } catch (error) {
         console.error('Error loading sources:', error);
@@ -466,10 +453,9 @@ async function loadAllSources() {
 function updateFilteredChannelsArray() {
     const q = searchQuery.toLowerCase().trim();
     filteredChannels = allChannels.filter(c => {
-        if (statusCache.get(c.url)?.status === 'offline') return false;
         if (!channelMatchesCategoryKey(c, activeCategoryKey)) return false;
         if (q) {
-            const matchesName = c.name && c.name.toLowerCase().includes(q);
+            const matchesName = (c.searchNameLower || (c.name ? c.name.toLowerCase() : '')).includes(q);
             const matchesGroup = c.group && c.group.toLowerCase().includes(q);
             if (!matchesName && !matchesGroup) return false;
         }
@@ -479,14 +465,19 @@ function updateFilteredChannelsArray() {
 
 /**
  * Filters `allChannels` by activeCategoryKey and searchQuery, then renders the first chunk of channels.
+ * Preserves the scroll position and focus if a channel row is already focused.
  * 
  * @param {boolean} [resetFocus=false] - Whether to reset SpatialNav focus after rendering.
  */
 function filterAndRenderChannels(resetFocus = false) {
     updateFilteredChannelsArray();
 
-    renderedCount = 0;
     const container = document.getElementById('channels-list');
+    const prevScrollTop = container ? container.scrollTop : 0;
+    const focusedChanEl = document.querySelector('#channels-list .focused');
+    const focusedChanUrl = focusedChanEl ? focusedChanEl.dataset.url : null;
+
+    renderedCount = 0;
     if (container) {
         container.innerHTML = '';
         container.scrollTop = 0;
@@ -497,7 +488,11 @@ function filterAndRenderChannels(resetFocus = false) {
         if (empty) empty.classList.remove('hidden');
     } else {
         if (empty) empty.classList.add('hidden');
-        renderNextChunk();
+        renderNextChunk(focusedChanUrl);
+
+        if (container && focusedChanUrl) {
+            container.scrollTop = prevScrollTop;
+        }
 
         if (resetFocus && !document.querySelector('.focused')) {
             SpatialNav.focusFirst();
@@ -551,45 +546,44 @@ async function showChannelDetail(channel) {
         video.pause();
         video.src = '';
     }
-    previewTimeout = setTimeout(() => {
-        if (selectedChannel && selectedChannel.url === channel.url) {
-            loadPreviewStream(channel);
+    previewTimeout = setTimeout(async () => {
+        if (!selectedChannel || selectedChannel.url !== channel.url) return;
+        loadPreviewStream(channel);
+
+        const [epg, upcomingShows] = await Promise.all([
+            EpgManager.getCurrentProgram(channel.name, channel.group, channel.tvgId),
+            EpgManager.getUpcomingPrograms(channel.name, channel.group, 3, channel.tvgId)
+        ]);
+
+        if (!selectedChannel || selectedChannel.url !== channel.url) return;
+
+        if (epgContainer) {
+            if (epgTitleEl) epgTitleEl.textContent = epg.title || channel.name;
+            if (epgStartEl) epgStartEl.textContent = epg.start;
+            if (epgEndEl) epgEndEl.textContent = epg.end;
+            if (epgProgressEl) epgProgressEl.style.width = `${epg.progress}%`;
         }
-    }, 300);
 
-    const [epg, upcomingShows] = await Promise.all([
-        EpgManager.getCurrentProgram(channel.name, channel.group, channel.tvgId),
-        EpgManager.getUpcomingPrograms(channel.name, channel.group, 3, channel.tvgId)
-    ]);
-
-    if (!selectedChannel || selectedChannel.url !== channel.url) return;
-
-    if (epgContainer) {
-        if (epgTitleEl) epgTitleEl.textContent = epg.title || channel.name;
-        if (epgStartEl) epgStartEl.textContent = epg.start;
-        if (epgEndEl) epgEndEl.textContent = epg.end;
-        if (epgProgressEl) epgProgressEl.style.width = `${epg.progress}%`;
-    }
-
-    if (upcomingListEl) {
-        upcomingListEl.innerHTML = '';
-        if (upcomingShows.length === 0) {
-            const row = document.createElement('div');
-            row.className = 'upcoming-program-row';
-            row.innerHTML = `<span class="upcoming-program-title">${noEpgText}</span>`;
-            upcomingListEl.appendChild(row);
-        } else {
-            upcomingShows.forEach(show => {
+        if (upcomingListEl) {
+            upcomingListEl.innerHTML = '';
+            if (upcomingShows.length === 0) {
                 const row = document.createElement('div');
                 row.className = 'upcoming-program-row';
-                row.innerHTML = `
-                    <span class="upcoming-program-time">${show.start} - ${show.end}</span>
-                    <span class="upcoming-program-title">${show.title}</span>
-                `;
+                row.innerHTML = `<span class="upcoming-program-title">${noEpgText}</span>`;
                 upcomingListEl.appendChild(row);
-            });
+            } else {
+                upcomingShows.forEach(show => {
+                    const row = document.createElement('div');
+                    row.className = 'upcoming-program-row';
+                    row.innerHTML = `
+                        <span class="upcoming-program-time">${show.start} - ${show.end}</span>
+                        <span class="upcoming-program-title">${show.title}</span>
+                    `;
+                    upcomingListEl.appendChild(row);
+                });
+            }
         }
-    }
+    }, 300);
 }
 
 /**
@@ -639,9 +633,18 @@ function loadPreviewStream(channel) {
         previewHls.loadSource(streamUrl);
         previewHls.attachMedia(video);
         previewHls.on(window.Hls.Events.MANIFEST_PARSED, (event, data) => {
-            // Lock to highest available HD/FHD bitrate level when multiple quality levels exist
+            // Select the highest HD/FHD resolution or bitrate level
             if (previewHls && Array.isArray(data?.levels) && data.levels.length > 1) {
-                previewHls.nextLevel = data.levels.length - 1;
+                let bestIdx = data.levels.length - 1;
+                let maxScore = -1;
+                data.levels.forEach((lvl, idx) => {
+                    const score = (lvl.height || 0) * 1000000 + (lvl.bitrate || 0);
+                    if (score > maxScore) {
+                        maxScore = score;
+                        bestIdx = idx;
+                    }
+                });
+                previewHls.nextLevel = bestIdx;
             }
             video.play().catch(e => {
                 if (e.name !== 'AbortError') {
@@ -826,16 +829,6 @@ function updateChannelStatus(url, status) {
     const escapedUrl = url.replace(/"/g, '\\"');
     const row = document.querySelector(`.channel-list-item[data-url="${escapedUrl}"], .channel-card[data-url="${escapedUrl}"]`);
     if (row) {
-        if (status === 'offline') {
-            const norm = normalizeUrl(url);
-            if (norm) brokenChannelsSet.add(norm);
-            fetch(BROKEN_CHANNELS_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) }).catch(() => {});
-            const wasFocused = row.classList.contains('focused') || document.activeElement === row;
-            const nextRow = row.nextElementSibling || row.previousElementSibling;
-            row.remove();
-            if (wasFocused && nextRow) SpatialNav.setFocus(nextRow);
-            return;
-        }
         const dot = row.querySelector('.list-status-dot');
         if (dot) {
             dot.classList.remove('checking', 'online', 'offline');
@@ -846,15 +839,17 @@ function updateChannelStatus(url, status) {
 
 /**
  * Renders the next batch of clean channel rows in #channels-list (status dot, logo, and channel name only).
+ * 
+ * @param {string|null} [preserveFocusedUrl=null] - Optional URL of the channel that should retain focus after re-render.
  */
-function renderNextChunk() {
+function renderNextChunk(preserveFocusedUrl = null) {
     if (renderedCount >= filteredChannels.length) return;
 
     const container = document.getElementById('channels-list');
     if (!container) return;
 
     const currentFocused = document.querySelector('#channels-list .focused');
-    const focusedUrl = currentFocused && currentFocused.dataset.url;
+    const focusedUrl = preserveFocusedUrl || (currentFocused && currentFocused.dataset.url);
 
     const start = renderedCount;
     const end = Math.min(start + CHUNK_SIZE, filteredChannels.length);
@@ -906,7 +901,8 @@ function renderNextChunk() {
     container.appendChild(fragment);
 
     if (refocusTarget) {
-        SpatialNav.setFocus(refocusTarget);
+        refocusTarget.classList.add('focused');
+        refocusTarget.focus({ preventScroll: true });
     } else if (start === 0 && filteredChannels.length > 0 && !selectedChannel) {
         showChannelDetail(filteredChannels[0]);
     }
