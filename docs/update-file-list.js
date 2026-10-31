@@ -32,7 +32,14 @@ const ROOT_FILES = [
     'build.bat',
     'build.gradle.kts',
     'settings.gradle.kts',
-    'run_pc.py'
+    'run_pc.py',
+    'main.js',
+    'preload.js',
+    'package.json',
+    'build-parallel.js',
+    'increment-version-code.js',
+    'update-version.js',
+    'validate-build-integrity.js'
 ];
 
 /**

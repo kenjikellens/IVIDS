@@ -15,7 +15,17 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -321,6 +331,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             Uri url = request.getUrl();
+            if (url != null && ("localhost".equalsIgnoreCase(url.getHost()) || "127.0.0.1".equals(url.getHost())) && "/proxy".equals(url.getPath())) {
+                return handleStreamProxyRequest(url);
+            }
             if (url != null && isAd(url.getHost())) {
                 Log.d(TAG, "Blocking ad request: " + url);
                 return new WebResourceResponse("text/plain", "UTF-8", new ByteArrayInputStream("".getBytes()));
@@ -393,6 +406,138 @@ public class MainActivity extends AppCompatActivity {
          * @param host The hostname to verify (e.g., "admob.com").
          * @return true if the host is a known ad provider, false otherwise.
          */
+        /**
+         * Native Android stream proxy handler for http://localhost/proxy?url=... requests.
+         * Bypasses WebView CORS restrictions, spoofs anti-403 headers (VLC / Referer / Origin),
+         * and rewrites .m3u8 manifest sub-links for seamless Live TV playback in the APK.
+         *
+         * @param proxyUri Intercepted proxy URI containing target 'url' and optional header params.
+         * @return WebResourceResponse with permissive CORS headers.
+         */
+        private WebResourceResponse handleStreamProxyRequest(Uri proxyUri) {
+            Map<String, String> corsHeaders = new HashMap<>();
+            corsHeaders.put("Access-Control-Allow-Origin", "*");
+            corsHeaders.put("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+            corsHeaders.put("Access-Control-Allow-Headers", "*");
+            corsHeaders.put("Cache-Control", "no-store");
+
+            String targetUrl = proxyUri.getQueryParameter("url");
+            if (targetUrl == null || targetUrl.isEmpty()) {
+                return new WebResourceResponse("text/plain", "UTF-8", 400, "Bad Request", corsHeaders, new ByteArrayInputStream(new byte[0]));
+            }
+
+            String referer = proxyUri.getQueryParameter("referer");
+            String origin = proxyUri.getQueryParameter("origin");
+            String userAgent = proxyUri.getQueryParameter("user-agent");
+
+            String chromeUa = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+            String vlcUa = "VLC/3.0.20 LibVLC/3.0.20";
+            String lowerUrl = targetUrl.toLowerCase();
+            boolean isRawIptv = lowerUrl.matches("^https?://\\d+\\.\\d+\\.\\d+\\.\\d+.*") || lowerUrl.contains(":8008/") || lowerUrl.contains(":8080/") || lowerUrl.contains("/play/");
+
+            String targetOrigin = null;
+            try {
+                URI parsed = new URI(targetUrl);
+                if (parsed.getScheme() != null && parsed.getAuthority() != null) {
+                    targetOrigin = parsed.getScheme() + "://" + parsed.getAuthority();
+                }
+            } catch (Exception ignored) {}
+
+            String firstUa = (userAgent != null && !userAgent.isEmpty()) ? userAgent : (isRawIptv ? vlcUa : chromeUa);
+            String[][] profiles = new String[][] {
+                { firstUa, referer, origin },
+                { vlcUa, null, null },
+                { chromeUa, targetOrigin != null ? targetOrigin + "/" : referer, targetOrigin != null ? targetOrigin : origin }
+            };
+
+            HttpURLConnection conn = null;
+            String winningUa = firstUa;
+            String winningRef = referer;
+            String winningOrig = origin;
+            int statusCode = 502;
+
+            for (String[] prof : profiles) {
+                try {
+                    URL u = new URL(targetUrl);
+                    conn = (HttpURLConnection) u.openConnection();
+                    conn.setInstanceFollowRedirects(true);
+                    conn.setConnectTimeout(6500);
+                    conn.setReadTimeout(8000);
+                    conn.setRequestProperty("User-Agent", prof[0]);
+                    if (prof[1] != null && !prof[1].isEmpty()) conn.setRequestProperty("Referer", prof[1]);
+                    if (prof[2] != null && !prof[2].isEmpty()) conn.setRequestProperty("Origin", prof[2]);
+                    conn.setRequestProperty("Accept", "*/*");
+
+                    statusCode = conn.getResponseCode();
+                    if (statusCode == 401 || statusCode == 403 || statusCode == 406) {
+                        conn.disconnect();
+                        conn = null;
+                        continue;
+                    }
+                    winningUa = prof[0];
+                    winningRef = prof[1];
+                    winningOrig = prof[2];
+                    break;
+                } catch (Exception e) {
+                    if (conn != null) {
+                        conn.disconnect();
+                        conn = null;
+                    }
+                }
+            }
+
+            if (conn == null || statusCode >= 400) {
+                if (conn != null) conn.disconnect();
+                return new WebResourceResponse("text/plain", "UTF-8", statusCode >= 400 ? statusCode : 502, "Upstream Error", corsHeaders, new ByteArrayInputStream(new byte[0]));
+            }
+
+            try {
+                String contentType = conn.getContentType();
+                if (contentType == null || contentType.isEmpty()) {
+                    contentType = "application/octet-stream";
+                }
+                boolean isM3u8 = lowerUrl.contains(".m3u8") || contentType.toLowerCase().contains("mpegurl");
+                if (isM3u8) {
+                    StringBuilder sb = new StringBuilder();
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                        String line;
+                        StringBuilder extra = new StringBuilder();
+                        if (winningRef != null && !winningRef.isEmpty()) extra.append("&referer=").append(URLEncoder.encode(winningRef, "UTF-8"));
+                        if (winningOrig != null && !winningOrig.isEmpty()) extra.append("&origin=").append(URLEncoder.encode(winningOrig, "UTF-8"));
+                        if (winningUa != null && !winningUa.isEmpty()) extra.append("&user-agent=").append(URLEncoder.encode(winningUa, "UTF-8"));
+                        String suffix = extra.toString();
+                        URI baseUri = new URI(targetUrl);
+
+                        while ((line = reader.readLine()) != null) {
+                            String trimmed = line.trim();
+                            if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+                                sb.append(trimmed).append("\n");
+                            } else {
+                                String resolved = (trimmed.startsWith("http://") || trimmed.startsWith("https://"))
+                                        ? trimmed
+                                        : baseUri.resolve(trimmed).toString();
+                                sb.append("http://localhost/proxy?url=")
+                                  .append(URLEncoder.encode(resolved, "UTF-8"))
+                                  .append(suffix)
+                                  .append("\n");
+                            }
+                        }
+                    } finally {
+                        conn.disconnect();
+                    }
+                    byte[] bodyBytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+                    return new WebResourceResponse("application/vnd.apple.mpegurl", "UTF-8", 200, "OK", corsHeaders, new ByteArrayInputStream(bodyBytes));
+                } else {
+                    String cleanMime = contentType.split(";")[0].trim();
+                    InputStream stream = conn.getInputStream();
+                    return new WebResourceResponse(cleanMime, null, 200, "OK", corsHeaders, stream);
+                }
+            } catch (Exception e) {
+                conn.disconnect();
+                return new WebResourceResponse("text/plain", "UTF-8", 502, "Proxy Error", corsHeaders, new ByteArrayInputStream(new byte[0]));
+            }
+        }
+
         private boolean isAd(@Nullable String host) {
             if (host == null)
                 return false;
@@ -436,6 +581,10 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
         webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        String defaultUa = webSettings.getUserAgentString();
+        if (defaultUa != null) {
+            webSettings.setUserAgentString(defaultUa.replace("; wv", "").replace("Version/4.0 ", ""));
+        }
 
         // Block popups
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);

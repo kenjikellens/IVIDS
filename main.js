@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
@@ -163,7 +163,69 @@ function createWindow() {
 }
 
 // App lifecycle listeners
+/**
+ * Configures Electron session network interceptors so Live TV HLS streams (.m3u8 / .ts)
+ * work in IVIDS.exe without CORS blocks, file:// Origin rejections, or Electron User-Agent blocks.
+ */
+function configureStreamNetworkInterceptors() {
+    const defaultSession = session.defaultSession;
+    if (!defaultSession || !defaultSession.webRequest) return;
+
+    const chromeUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+    const vlcUA = 'VLC/3.0.20 LibVLC/3.0.20';
+
+    defaultSession.webRequest.onBeforeSendHeaders({ urls: ['http://*/*', 'https://*/*'] }, (details, callback) => {
+        const headers = { ...details.requestHeaders };
+        const urlLower = (details.url || '').toLowerCase();
+        const isRawIptv = /^https?:\/\/\d+\.\d+\.\d+\.\d+|:(?:8008|8080|8880|25461|1935)\/|\/play\/[a-z0-9]+/i.test(urlLower);
+
+        if (isRawIptv) {
+            headers['User-Agent'] = vlcUA;
+            delete headers['Origin'];
+            delete headers['Referer'];
+        } else {
+            headers['User-Agent'] = chromeUA;
+            if (urlLower.includes('daddylive') || urlLower.includes('dlhd') || urlLower.includes('daddyhd')) {
+                headers['Referer'] = 'https://daddylive.mp/';
+                headers['Origin'] = 'https://daddylive.mp';
+            } else if (urlLower.includes('sportshub')) {
+                headers['Referer'] = 'https://sportshub.stream/';
+                headers['Origin'] = 'https://sportshub.stream';
+            } else if (urlLower.includes('1stream')) {
+                headers['Referer'] = 'https://1stream.top/';
+                headers['Origin'] = 'https://1stream.top';
+            } else if (urlLower.includes('canal') || urlLower.includes('mycanal')) {
+                headers['Referer'] = 'https://www.canalplus.com/';
+                headers['Origin'] = 'https://www.canalplus.com';
+            } else if (!headers['Origin'] || headers['Origin'] === 'null' || String(headers['Origin']).startsWith('file://')) {
+                try {
+                    const parsed = new URL(details.url);
+                    headers['Origin'] = `${parsed.protocol}//${parsed.host}`;
+                    if (!headers['Referer'] || String(headers['Referer']).startsWith('file://')) {
+                        headers['Referer'] = `${parsed.protocol}//${parsed.host}/`;
+                    }
+                } catch (e) {
+                    delete headers['Origin'];
+                }
+            }
+        }
+
+        callback({ requestHeaders: headers });
+    });
+
+    defaultSession.webRequest.onHeadersReceived({ urls: ['http://*/*', 'https://*/*'] }, (details, callback) => {
+        const responseHeaders = { ...(details.responseHeaders || {}) };
+        delete responseHeaders['access-control-allow-origin'];
+        delete responseHeaders['Access-Control-Allow-Origin'];
+        responseHeaders['Access-Control-Allow-Origin'] = ['*'];
+        responseHeaders['Access-Control-Allow-Methods'] = ['GET, HEAD, POST, OPTIONS'];
+        responseHeaders['Access-Control-Allow-Headers'] = ['*'];
+        callback({ responseHeaders });
+    });
+}
+
 app.whenReady().then(() => {
+    configureStreamNetworkInterceptors();
     createWindow();
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();

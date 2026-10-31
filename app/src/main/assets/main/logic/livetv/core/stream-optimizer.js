@@ -2,14 +2,14 @@
  * Stream Optimizer Service
  * ========================
  * Provides URL normalization, Xtream Codes compatibility optimizations,
- * anti-403 anti-hotlinking header spoofing for protected sports/Canal+ CDNs,
- * and proxy query string encoding.
+ * anti-403 anti-hotlinking header spoofing for protected sports/Canal+/IPTV CDNs,
+ * and proxy query string encoding for both PC localhost and Android APK WebView.
  */
 
 export class StreamOptimizer {
     /**
      * Determines whether the current client runtime is hosted on a local proxy server.
-     * 
+     *
      * @returns {boolean} True if running on localhost or 127.0.0.1.
      */
     static isLocalhost() {
@@ -19,9 +19,28 @@ export class StreamOptimizer {
     }
 
     /**
+     * Determines whether the current client runtime is the Android APK WebView.
+     *
+     * @returns {boolean} True if running inside MainActivity WebView on Android.
+     */
+    static isAndroidWebView() {
+        if (typeof window === 'undefined') return false;
+        return Boolean(window.AndroidUpdate || window.AndroidSettings);
+    }
+
+    /**
+     * Determines whether a local or native WebView stream proxy is available.
+     *
+     * @returns {boolean} True on localhost server or Android APK WebView.
+     */
+    static canUseProxy() {
+        return StreamOptimizer.isLocalhost() || StreamOptimizer.isAndroidWebView();
+    }
+
+    /**
      * Optimizes a live video stream URL by converting legacy MPEG-TS (.ts) endpoints
      * to modern HLS (.m3u8) streams for Xtream Codes and general IPTV providers.
-     * 
+     *
      * @param {string} url - Original stream URL.
      * @param {Object} [headers] - Optional associated HTTP headers.
      * @returns {string} Optimized stream URL.
@@ -31,7 +50,6 @@ export class StreamOptimizer {
         let trimmed = url.trim();
 
         // Convert .ts extension to .m3u8 (e.g. Xtream /live/user/pass/12345.ts)
-        // Handles paths ending in .ts or with query strings e.g. .ts?token=...
         if (/\.ts(\?|$|#)/i.test(trimmed)) {
             trimmed = trimmed.replace(/\.ts(\?|$|#)/i, '.m3u8$1');
         }
@@ -42,7 +60,7 @@ export class StreamOptimizer {
     /**
      * Ensures Xtream Codes M3U playlist URLs request HLS (.m3u8) output format
      * by injecting or updating the 'output=m3u8' query parameter.
-     * 
+     *
      * @param {string} url - Target M3U playlist URL.
      * @returns {string} Optimized playlist URL.
      */
@@ -65,8 +83,8 @@ export class StreamOptimizer {
 
     /**
      * Resolves required anti-blocking spoof headers (Referer, Origin, User-Agent)
-     * for known protected sports domains and Canal+ streams.
-     * 
+     * for known protected sports domains, Canal+ streams, and raw IP / Astra IPTV servers.
+     *
      * @param {string} url - Target stream URL.
      * @returns {Object} Headers dictionary with Referer, Origin, and/or User-Agent.
      */
@@ -76,6 +94,7 @@ export class StreamOptimizer {
         const headers = {};
 
         const defaultUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+        const vlcUA = 'VLC/3.0.20 LibVLC/3.0.20';
 
         if (lower.includes('daddylive') || lower.includes('dlhd') || lower.includes('daddyhd')) {
             headers['Referer'] = 'https://daddylive.mp/';
@@ -93,6 +112,8 @@ export class StreamOptimizer {
             headers['Referer'] = 'https://www.canalplus.com/';
             headers['Origin'] = 'https://www.canalplus.com';
             headers['User-Agent'] = defaultUA;
+        } else if (/^https?:\/\/\d+\.\d+\.\d+\.\d+|:(?:8008|8080|8880|25461|1935)\/|\/play\/[a-z0-9]+/i.test(lower)) {
+            headers['User-Agent'] = vlcUA;
         }
 
         return headers;
@@ -100,8 +121,8 @@ export class StreamOptimizer {
 
     /**
      * Converts a stream URL into a proxied URL with anti-blocking headers encoded
-     * into query parameters when running in a localhost proxy environment.
-     * 
+     * into query parameters when running in a localhost or Android APK WebView environment.
+     *
      * @param {string} url - Raw or optimized stream URL.
      * @param {Object} [customHeaders] - Optional custom headers to merge.
      * @returns {string} Proxied stream URL or optimized direct URL.
@@ -110,14 +131,18 @@ export class StreamOptimizer {
         if (!url) return '';
         const optimized = StreamOptimizer.optimizeStreamUrl(url);
 
-        if (!StreamOptimizer.isLocalhost() || (!optimized.startsWith('http://') && !optimized.startsWith('https://'))) {
+        if (!StreamOptimizer.canUseProxy() || (!optimized.startsWith('http://') && !optimized.startsWith('https://'))) {
             return optimized;
         }
 
         const requiredHeaders = StreamOptimizer.getRequiredHeaders(optimized);
         const mergedHeaders = { ...customHeaders, ...requiredHeaders };
 
-        let proxyPath = `/proxy?url=${encodeURIComponent(optimized)}`;
+        const basePrefix = StreamOptimizer.isAndroidWebView() && !StreamOptimizer.isLocalhost()
+            ? 'http://localhost/proxy?url='
+            : '/proxy?url=';
+
+        let proxyPath = `${basePrefix}${encodeURIComponent(optimized)}`;
 
         const referer = mergedHeaders['Referer'] || mergedHeaders['referer'];
         if (referer) {
@@ -137,4 +162,3 @@ export class StreamOptimizer {
         return proxyPath;
     }
 }
-

@@ -2,13 +2,13 @@
  * LiveStreamEngine
  * ================
  * Unified Object-Oriented HLS & Native Live Video Stream Engine for both the Live TV
- * 16:9 preview card and the fullscreen TV Player.
+ * 16:9 preview card and the fullscreen TV Player across PC Browser, Windows .exe, and Android .apk.
  *
  * Features:
  * 1. Multi-Stage Smart Connection Pipeline:
- *    - Stage 1: Direct browser HLS playback (0ms proxy overhead, avoids CDN urllib blocks)
- *      or Proxy playback first when anti-hotlinking Referer/Origin headers are required.
- *    - Stage 2: Automatic seamless route flip (Direct <-> Local Proxy) on CORS, 403/502,
+ *    - Stage 1: Optimal primary route (Proxy-first for plain HTTP / raw IP / custom-header streams
+ *      to prevent browser CORS blocks; Direct-first for public HTTPS CDN streams).
+ *    - Stage 2: Automatic seamless route flip (Direct <-> Local/Android Proxy) on CORS, 403/502,
  *      network error, or manifest watchdog timeout.
  *    - Stage 3: Automatic media error recovery (`recoverMediaError()`) and `fallbackUrls` chain.
  *    - Stage 4: Non-destructive offline state notification (never deletes channels).
@@ -75,7 +75,6 @@ export class LiveStreamEngine {
             return false;
         }
 
-        const headers = customHeaders || channel.headers || StreamOptimizer.getRequiredHeaders(primaryUrl);
         const candidateUrls = [primaryUrl];
         if (Array.isArray(channel.fallbackUrls)) {
             channel.fallbackUrls.forEach(fb => {
@@ -89,6 +88,11 @@ export class LiveStreamEngine {
         for (let i = 0; i < candidateUrls.length; i++) {
             if (genId !== this.generationId) return false;
             const candidateUrl = candidateUrls[i];
+            const headers = {
+                ...(StreamOptimizer.getRequiredHeaders(candidateUrl) || {}),
+                ...(channel.headers || {}),
+                ...(customHeaders || {})
+            };
             const routeOrder = this._buildRouteOrder(candidateUrl, headers);
 
             for (let r = 0; r < routeOrder.length; r++) {
@@ -111,17 +115,18 @@ export class LiveStreamEngine {
     }
 
     /**
-     * Determines the ordered list of stream URLs to attempt (Direct vs Local Proxy).
-     * When running on localhost:
-     * - Streams requiring spoofed Referer/Origin headers or plain HTTP streams on an HTTPS page try Proxy first, then Direct.
-     * - Standard public HTTPS HLS streams try Direct first (fastest, avoids Python proxy bottlenecks), then Proxy on CORS/network failure.
+     * Determines the ordered list of stream URLs to attempt (Direct vs Local/Android Proxy).
+     * - Plain HTTP streams or raw IP/Astra IPTV servers on localhost route exclusivamente via Proxy
+     *   so Chrome never logs CORS policy blocks on raw IP servers.
+     * - Streams requiring custom Referer/Origin/User-Agent try Proxy first, then Direct.
+     * - Standard public HTTPS streams try Direct first, then fallback to Proxy on CORS/403.
      *
      * @param {string} rawUrl - Optimized stream URL.
      * @param {Object} headers - Associated HTTP headers.
      * @returns {Array<string>} Ordered list of endpoint URLs to attempt.
      */
     _buildRouteOrder(rawUrl, headers = {}) {
-        if (!StreamOptimizer.isLocalhost()) {
+        if (!StreamOptimizer.canUseProxy()) {
             return [rawUrl];
         }
 
@@ -130,15 +135,25 @@ export class LiveStreamEngine {
             return [rawUrl];
         }
 
+        const isPlainHttpOrRawIp = /^http:\/\/|^https?:\/\/\d+\.\d+\.\d+\.\d+|:(?:8008|8080|8880|25461|1935)\/|\/play\/[a-z0-9]+/i.test(rawUrl);
         const hasCustomHeaders = Boolean(
-            headers && (headers.Referer || headers.referer || headers.Origin || headers.origin)
+            headers && (
+                headers.Referer || headers.referer ||
+                headers.Origin || headers.origin ||
+                headers['User-Agent'] || headers['user-agent']
+            )
         );
 
-        if (hasCustomHeaders) {
+        if (StreamOptimizer.isLocalhost() && isPlainHttpOrRawIp) {
+            // Raw IP / plain HTTP IPTV servers never send CORS headers to http://localhost:8000;
+            // routing strictly via /proxy avoids browser CORS errors and enables VLC User-Agent fallback.
+            return [proxied];
+        }
+
+        if (hasCustomHeaders || isPlainHttpOrRawIp) {
             return [proxied, rawUrl];
         }
 
-        // Standard public stream: try Direct Browser HLS first, then fallback to Local Proxy if CORS blocks it
         return [rawUrl, proxied];
     }
 
@@ -161,7 +176,7 @@ export class LiveStreamEngine {
 
             let settled = false;
             let mediaRecoveryAttempted = false;
-            const timeoutMs = this.isPreview ? 6500 : 9000;
+            const timeoutMs = this.isPreview ? 6000 : 8500;
 
             const finish = (success, qualityLabel = 'HD') => {
                 if (settled) return;
@@ -194,12 +209,12 @@ export class LiveStreamEngine {
                     maxMaxBufferLength: this.isPreview ? 10 : 28,
                     liveSyncDurationCount: 2,
                     initialLiveManifestSize: 1,
-                    manifestLoadingTimeOut: this.isPreview ? 5000 : 7500,
-                    manifestLoadingMaxRetry: 1,
-                    levelLoadingTimeOut: this.isPreview ? 5000 : 7500,
-                    levelLoadingMaxRetry: 1,
-                    fragLoadingTimeOut: 8000,
-                    fragLoadingMaxRetry: 2,
+                    manifestLoadingTimeOut: this.isPreview ? 4500 : 7000,
+                    manifestLoadingMaxRetry: 0,
+                    levelLoadingTimeOut: this.isPreview ? 4500 : 7000,
+                    levelLoadingMaxRetry: 0,
+                    fragLoadingTimeOut: 7000,
+                    fragLoadingMaxRetry: 1,
                     startLevel: -1,
                     capLevelToPlayerSize: false
                 });
@@ -283,7 +298,7 @@ export class LiveStreamEngine {
      * @param {Object} hls - Active Hls.js instance.
      * @param {Array} levels - Parsed HLS quality levels.
      * @param {string} [fallbackLabel='HD'] - Default quality label if levels have no height metadata.
-     * @returns {string} Resolved quality badge string ('4K', 'FHD', 'HD', 'LIVE HD').
+     * @returns {string} Resolved quality badge string ('4K UHD', 'FHD 1080p', 'HD 720p', 'LIVE HD').
      */
     _lockHighestHdLevel(hls, levels, fallbackLabel = 'HD') {
         if (!hls || !Array.isArray(levels) || levels.length === 0) {
@@ -351,23 +366,19 @@ export class LiveStreamEngine {
     }
 
     /**
-     * Stops active playback and cancels any in-flight connection attempts.
+     * Stops playback immediately and invalidates any in-flight stream load attempts.
      */
     stop() {
         this.generationId++;
-        this.activeChannel = null;
         this._cleanupCurrentAttempt();
+        this.activeChannel = null;
     }
 
     /**
-     * Releases all resources held by this engine instance.
+     * Destroys the engine and releases all media resources.
      */
     destroy() {
         this.stop();
         this.video = null;
-        this.onLoading = null;
-        this.onPlaying = null;
-        this.onOffline = null;
     }
 }
-

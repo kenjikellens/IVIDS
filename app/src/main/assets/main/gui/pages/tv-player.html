@@ -11,7 +11,7 @@
     <!-- Custom Player Overlay (Auto Hides) -->
     <div class="tv-overlay" id="tv-overlay">
         <div class="tv-overlay-top tv-top-bar">
-            <button class="btn btn--secondary btn--circle-xl focusable" id="tv-back" title="Back">
+            <button class="btn btn--secondary btn--circle-md focusable tv-back-btn" id="tv-back" title="Back">
                 <img src="images/back.svg" alt="Back" class="btn__icon">
             </button>
         </div>
@@ -48,34 +48,13 @@
                     <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-aspect-ratio" title="Aspect Ratio">
                         <img src="images/aspect-ratio.svg" alt="Aspect Ratio" class="btn__icon">
                     </button>
-                    <!-- Quick Channel Guide / EPG Trigger -->
-                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-epg-btn" title="Channel Guide">
-                        <img src="images/channel-list.svg" alt="Channels" class="btn__icon">
-                    </button>
                 </div>
 
-                <!-- Channel Zap Guide Indicators -->
-                <div class="tv-zap-guide">
-                    <span class="guide-key">&#9650;/&#9660;</span>
-                    <span class="guide-label" data-i18n="livetv.zapChannel">Zap Channel</span>
-                </div>
+                <!-- Stream Health & Quality Status Badge -->
                 <div class="tv-status-badge">
                     <span class="status-dot online"></span>
                     <span class="tv-quality-badge">LIVE HD</span>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick EPG / Channel Guide Modal Overlay -->
-    <div class="modal tv-quick-epg hidden" id="tv-quick-epg">
-        <div class="modal__dialog modal__dialog--md">
-            <div class="modal__header">
-                <h3 class="modal__title" data-i18n="livetv.title">Live TV Guide</h3>
-                <button class="btn modal__close focusable" id="tv-epg-close" aria-label="Close">&times;</button>
-            </div>
-            <div class="modal__body modal__body--scroll" id="tv-quick-epg-list">
-                <!-- Dynamically populated focusable channel list items -->
             </div>
         </div>
     </div>

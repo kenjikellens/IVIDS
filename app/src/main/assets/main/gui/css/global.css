@@ -1694,7 +1694,26 @@ input, textarea, select { font: inherit; }
 .tv-video { height: 100%; object-fit: contain; width: 100%; }
 .tv-overlay { background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%); display: flex; flex-direction: column; inset: 0; justify-content: space-between; opacity: 0; padding: 5vh 5vw; pointer-events: none; position: absolute; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 12; }
 .tv-overlay.show { opacity: 1; pointer-events: auto; }
-.tv-overlay-top { align-items: center; display: flex; justify-content: flex-start; }
+.tv-overlay-top { align-items: center; display: flex; justify-content: flex-start; pointer-events: auto; }
+/* Live TV fullscreen player top back button. */
+.tv-back-btn {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    pointer-events: auto;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 44px;
+}
+.tv-back-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.4); }
+.tv-back-btn:focus, .tv-back-btn.focused { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; outline: none; }
 .tv-overlay-bottom { align-items: center; display: flex; justify-content: space-between; width: 100%; }
 .tv-controls-left { align-items: center; display: flex; gap: 24px; }
 .tv-info { display: flex; flex-direction: column; justify-content: center; max-width: 50vw; }

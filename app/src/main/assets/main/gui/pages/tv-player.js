@@ -3,14 +3,12 @@ import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { Toast } from '../js/toast.js';
 import { LiveStreamEngine } from '../../logic/livetv/core/live-stream-engine.js';
-import { getNamespacedKey } from '../../logic/account-helper.js';
 
 let overlayTimeout;
 let zappingHudTimeout;
 let playerEngine = null;
 let epgRequestId = 0;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
-const LIVE_TV_FAVORITES_KEY = 'ivids-live-tv-favorites';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
 
 /**
@@ -48,9 +46,6 @@ export async function init(params) {
     const zappingHud = document.getElementById('tv-zapping-hud');
     const zappingName = document.getElementById('zapping-channel-name');
     const aspectRatioBtn = document.getElementById('tv-aspect-ratio');
-    const epgBtn = document.getElementById('tv-channels-btn') || document.getElementById('tv-epg-btn');
-    const epgCloseBtn = document.getElementById('tv-epg-close');
-    const favBtn = document.getElementById('tv-fav-btn');
     const prevBtn = document.getElementById('tv-prev-btn');
     const nextBtn = document.getElementById('tv-next-btn');
     const retryBtn = document.getElementById('tv-retry-btn');
@@ -58,40 +53,6 @@ export async function init(params) {
     const statusDotEl = document.querySelector('.tv-status-badge .status-dot');
 
     let currentStreamUrl = '';
-    const favoritesSet = new Set();
-
-    /**
-     * Loads saved Live TV favorites from localStorage into the player's favoritesSet.
-     */
-    function loadFavorites() {
-        favoritesSet.clear();
-        try {
-            const userFavKey = getNamespacedKey(LIVE_TV_FAVORITES_KEY);
-            const saved = localStorage.getItem(userFavKey) || localStorage.getItem(LIVE_TV_FAVORITES_KEY);
-            if (saved) {
-                const list = JSON.parse(saved);
-                if (Array.isArray(list)) {
-                    list.forEach(id => favoritesSet.add(id));
-                }
-            }
-        } catch (e) {
-            console.warn('TV Player: Error loading favorites:', e);
-        }
-    }
-
-    /**
-     * Saves the updated favoritesSet back to localStorage.
-     */
-    function saveFavorites() {
-        try {
-            const userFavKey = getNamespacedKey(LIVE_TV_FAVORITES_KEY);
-            const data = JSON.stringify(Array.from(favoritesSet));
-            localStorage.setItem(userFavKey, data);
-            localStorage.setItem(LIVE_TV_FAVORITES_KEY, data);
-        } catch (e) {
-            console.warn('TV Player: Error saving favorites:', e);
-        }
-    }
 
     /**
      * Resolves the active Channel domain object from the global liveTvState.
@@ -103,57 +64,6 @@ export async function init(params) {
         }
         return null;
     }
-
-    /**
-     * Checks whether the given channel is marked as a favorite.
-     * @param {Object|null} channel - Channel object to check.
-     * @returns {boolean} True if favorited.
-     */
-    function isChannelFavorite(channel) {
-        if (!channel) return false;
-        const id = channel.id || channel.url;
-        return favoritesSet.has(id) ||
-            Boolean(channel.id && favoritesSet.has(channel.id)) ||
-            Boolean(channel.url && favoritesSet.has(channel.url));
-    }
-
-    /**
-     * Updates the #tv-fav-btn and #tv-fav-icon UI using standalone SVG files (images/star-filled.svg vs images/star.svg).
-     * Never uses inline SVG markup.
-     * @param {Object|null} [channel] - Channel to reflect; defaults to getCurrentChannel().
-     */
-    function updateFavUI(channel = getCurrentChannel()) {
-        const btn = document.getElementById('tv-fav-btn');
-        const icon = document.getElementById('tv-fav-icon') || (btn ? btn.querySelector('img') : null);
-        const isFav = isChannelFavorite(channel);
-        if (btn) {
-            btn.classList.toggle('active', isFav);
-        }
-        if (icon) {
-            icon.src = isFav ? 'images/star-filled.svg' : 'images/star.svg';
-        }
-    }
-
-    /**
-     * Toggles the favorite state for the current channel and updates #tv-fav-btn.
-     */
-    function toggleFavorite() {
-        const channel = getCurrentChannel() || { url: currentStreamUrl, name: title?.textContent || '' };
-        const id = channel.id || channel.url;
-        if (!id) return;
-
-        if (isChannelFavorite(channel)) {
-            if (channel.id) favoritesSet.delete(channel.id);
-            if (channel.url) favoritesSet.delete(channel.url);
-        } else {
-            favoritesSet.add(id);
-        }
-        saveFavorites();
-        updateFavUI(channel);
-        resetOverlayTimer();
-    }
-
-    loadFavorites();
 
     const aspectModes = ['contain', 'cover', 'fill'];
     let currentAspectIndex = 0;
@@ -169,63 +79,6 @@ export async function init(params) {
         }
         Toast.show(`Aspect Ratio: ${mode.toUpperCase()}`, { type: 'info' });
         resetOverlayTimer();
-    }
-
-    /**
-     * Opens or closes the quick electronic program guide / side channel list panel.
-     * Renders clean channel items with primary category badges.
-     * @param {boolean} [show] - Explicit open or close flag.
-     */
-    function toggleQuickEpg(show) {
-        const quickEpg = document.getElementById('tv-side-panel') || document.getElementById('tv-quick-epg');
-        const quickEpgList = document.getElementById('tv-channel-list') || document.getElementById('tv-quick-epg-list');
-        if (!quickEpg) return;
-
-        const shouldOpen = (show !== undefined) ? show : !quickEpg.classList.contains('is-open');
-
-        if (shouldOpen) {
-            if (quickEpgList && window.liveTvState?.channels) {
-                quickEpgList.innerHTML = '';
-                const channels = window.liveTvState.channels;
-                const currentIndex = window.liveTvState.currentIndex || 0;
-                const maxRender = Math.min(channels.length, 60);
-                const startIdx = Math.max(0, Math.min(currentIndex - 20, channels.length - maxRender));
-                const endIdx = startIdx + maxRender;
-
-                for (let i = startIdx; i < endIdx; i++) {
-                    const ch = channels[i];
-                    const btn = document.createElement('button');
-                    btn.className = 'btn btn--secondary btn--block focusable channel-list-item' + (i === currentIndex ? ' is-active active btn--primary' : '');
-                    const cleanGroup = formatPrimaryCategory(ch.group || '');
-                    btn.textContent = cleanGroup && cleanGroup !== 'Live TV' ? `${ch.name} (${cleanGroup})` : ch.name;
-                    btn.dataset.channelIndex = i;
-                    btn.onclick = () => {
-                        window.liveTvState.currentIndex = i;
-                        loadStream(ch, ch.headers);
-                        if (title) title.textContent = ch.name;
-                        if (group) group.textContent = formatPrimaryCategory(ch.group || '');
-                        updateFavUI(ch);
-                        updateEpgInfo(ch.name, ch.group || '', ch.tvgId || '');
-                        toggleQuickEpg(false);
-                        showOverlay(true);
-                    };
-                    quickEpgList.appendChild(btn);
-                }
-            }
-            quickEpg.classList.add('is-open', 'active');
-            quickEpg.classList.remove('hidden');
-            quickEpg.style.display = 'flex';
-
-            const activeItem = quickEpg.querySelector('.channel-list-item.is-active') || quickEpg.querySelector('.channel-list-item.focusable');
-            if (activeItem) SpatialNav.setFocus(activeItem);
-        } else {
-            quickEpg.classList.remove('is-open', 'active', 'open');
-            quickEpg.classList.add('hidden');
-            quickEpg.style.display = 'none';
-
-            const returnBtn = document.getElementById('tv-channels-btn') || document.getElementById('tv-epg-btn') || playPauseBtn;
-            if (returnBtn) SpatialNav.setFocus(returnBtn);
-        }
     }
 
     /**
@@ -297,7 +150,6 @@ export async function init(params) {
     /**
      * Loads the given channel or URL via the Multi-Stage Smart LiveStreamEngine.
      * Never auto-zaps away against the user's will and never deletes the channel.
-     *
      * @param {Object|string} channelOrUrl - Channel object or stream URL.
      * @param {Object} [channelHeaders] - Optional custom HTTP headers.
      */
@@ -323,7 +175,6 @@ export async function init(params) {
     // Set initial text content with clean primary category formatting
     if (params.title && title) title.textContent = params.title;
     if (group) group.textContent = formatPrimaryCategory(params.group || getCurrentChannel()?.group || '');
-    updateFavUI(getCurrentChannel());
 
     // Set initial EPG details
     updateEpgInfo(params.title || 'Channel Name', params.group || '', params.tvgId || '');
@@ -389,15 +240,6 @@ export async function init(params) {
     if (aspectRatioBtn) {
         aspectRatioBtn.onclick = () => toggleAspectRatio();
     }
-    if (epgBtn) {
-        epgBtn.onclick = () => toggleQuickEpg(true);
-    }
-    if (epgCloseBtn) {
-        epgCloseBtn.onclick = () => toggleQuickEpg(false);
-    }
-    if (favBtn) {
-        favBtn.onclick = () => toggleFavorite();
-    }
     if (prevBtn) {
         prevBtn.onclick = () => switchChannel(-1);
     }
@@ -411,6 +253,13 @@ export async function init(params) {
         };
     }
 
+    // Direct exit on UI Back button click
+    if (backBtn) {
+        backBtn.onclick = () => {
+            exitPlayer();
+        };
+    }
+
     let tvPlayerBackHandler = () => {
         if (SpatialNav.currentPageLogic && typeof SpatialNav.currentPageLogic.handleBack === 'function') {
             if (SpatialNav.currentPageLogic.handleBack()) return true;
@@ -419,12 +268,6 @@ export async function init(params) {
         return true;
     };
     SpatialNav.pushBackHandler(tvPlayerBackHandler);
-
-    if (backBtn) {
-        backBtn.onclick = () => {
-            SpatialNav.back();
-        };
-    }
 
     /**
      * Dismantles video sources, triggers cleanup functions, and navigates backwards.
@@ -456,7 +299,7 @@ export async function init(params) {
     }
 
     /**
-     * Shows the TV controls overlay and optionally moves spatial focus to the default control.
+     * Shows the TV controls overlay and always defaults focus to #tv-play-pause (never #tv-back).
      * @param {boolean} [shouldFocus=true] - Whether to focus an interactive button on the overlay.
      */
     const showOverlay = (shouldFocus = true) => {
@@ -466,7 +309,10 @@ export async function init(params) {
         if (shouldFocus) {
             const hasFocusedInside = overlay && overlay.querySelector('.focused');
             if (wasHidden || !hasFocusedInside) {
-                SpatialNav.focusFirst();
+                const target = document.getElementById('tv-play-pause') || (overlay ? overlay.querySelector('.focusable') : null);
+                if (target) {
+                    SpatialNav.setFocus(target);
+                }
             }
         } else if (wasHidden && overlay) {
             overlay.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
@@ -528,7 +374,6 @@ export async function init(params) {
         // Update control panel metadata with clean primary category
         if (title) title.textContent = nextChannel.name;
         if (group) group.textContent = formatPrimaryCategory(nextChannel.group || '');
-        updateFavUI(nextChannel);
 
         // Update zapped EPG details
         updateEpgInfo(nextChannel.name, nextChannel.group || '', nextChannel.tvgId || '');
@@ -536,16 +381,15 @@ export async function init(params) {
         // Switch stream URL
         loadStream(nextChannel, nextChannel.headers);
 
-        // Briefly show overlay banner without moving focus to a random button if overlay wasn't actively focused
-        const isActivelyFocused = Boolean(overlay && overlay.querySelector('.focused'));
-        showOverlay(isActivelyFocused);
+        // Briefly show overlay banner without moving focus away
+        showOverlay(false);
     };
 
     /**
      * Mouse movement handler that reveals the control overlay for pointer users.
      */
     const mousemoveHandler = () => {
-        showOverlay(true);
+        showOverlay(false);
     };
 
     // Register cleanup hook
@@ -558,18 +402,12 @@ export async function init(params) {
     // Expose helpers for spatialNavTvPlayer
     window.tvZapChannel = (dir) => switchChannel(dir);
     window.tvSwitchChannel = (dir) => switchChannel(dir);
-    window.tvToggleQuickEpg = (show) => toggleQuickEpg(show);
     window.tvToggleAspectRatio = () => toggleAspectRatio();
     window.tvPlayPause = () => togglePlayPause();
     window.tvShowOverlay = (shouldFocus = true) => showOverlay(shouldFocus);
     window.tvHideOverlay = () => hideOverlay();
     window.tvResetOverlayTimer = () => resetOverlayTimer();
-    window.tvUpdateFavUI = () => updateFavUI();
     window.tvIsOverlayVisible = () => overlay && overlay.classList.contains('show');
-    window.tvIsQuickEpgOpen = () => {
-        const q = document.getElementById('tv-side-panel') || document.getElementById('tv-quick-epg');
-        return Boolean(q && q.classList.contains('is-open'));
-    };
 
     window.tvPlayerCleanups = () => {
         window.removeEventListener('mousemove', mousemoveHandler);
@@ -586,18 +424,15 @@ export async function init(params) {
 
         delete window.tvZapChannel;
         delete window.tvSwitchChannel;
-        delete window.tvToggleQuickEpg;
         delete window.tvToggleAspectRatio;
         delete window.tvPlayPause;
         delete window.tvShowOverlay;
         delete window.tvHideOverlay;
         delete window.tvResetOverlayTimer;
-        delete window.tvUpdateFavUI;
         delete window.tvIsOverlayVisible;
-        delete window.tvIsQuickEpgOpen;
     };
 
-    // Display initial overlay and focus controls
+    // Display initial overlay and focus the primary Play/Pause control
     showOverlay(true);
 }
 

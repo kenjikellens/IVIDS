@@ -551,7 +551,40 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 req.add_header('Origin', origin)
             req.add_header('Accept', '*/*')
 
-            with urllib.request.urlopen(req, timeout=15) as response:
+            chrome_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            vlc_ua = 'VLC/3.0.20 LibVLC/3.0.20'
+            parsed_t = urllib.parse.urlparse(target_url)
+            target_origin = f"{parsed_t.scheme}://{parsed_t.netloc}" if parsed_t.scheme and parsed_t.netloc else None
+            is_raw_iptv = bool(re.search(r'^https?://\d+\.\d+\.\d+\.\d+|:(?:8008|8080|8880|25461|1935)/|/play/[a-z0-9]+', target_lower))
+            first_ua = vlc_ua if (is_raw_iptv and not query.get('user-agent')) else user_agent
+            profiles = [
+                (first_ua, referer, origin),
+                (vlc_ua, None, None),
+                (chrome_ua, f"{target_origin}/" if target_origin else referer, target_origin or origin),
+                ('Lavf/60.3.100', None, None)
+            ]
+            response = None
+            last_http_err = None
+            for prof_ua, prof_ref, prof_orig in profiles:
+                req = urllib.request.Request(target_url)
+                req.add_header('User-Agent', prof_ua)
+                if prof_ref:
+                    req.add_header('Referer', prof_ref)
+                if prof_orig:
+                    req.add_header('Origin', prof_orig)
+                req.add_header('Accept', '*/*')
+                try:
+                    response = urllib.request.urlopen(req, timeout=8)
+                    user_agent, referer, origin = prof_ua, prof_ref, prof_orig
+                    break
+                except urllib.error.HTTPError as he:
+                    last_http_err = he
+                    if he.code in (401, 403, 406):
+                        continue
+                    raise
+            if response is None and last_http_err is not None:
+                raise last_http_err
+            with response:
                 content_type = response.headers.get('Content-Type', 'application/octet-stream')
                 
                 # Check URL path and headers first

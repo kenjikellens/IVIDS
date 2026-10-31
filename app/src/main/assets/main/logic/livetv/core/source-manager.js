@@ -125,11 +125,48 @@ export class SourceManager {
     }
 
     /**
+     * Cross-links alternate stream URLs across channels sharing the same normalized name + country or tvgId
+     * so LiveStreamEngine can automatically fail over when a primary server (e.g. raw IP or dead domain) is offline.
+     *
+     * @param {Array<Channel>} channels - Sorted array of channels.
+     */
+    _linkMirrorFallbackUrls(channels) {
+        const groups = new Map();
+        channels.forEach(c => {
+            const key = c.tvgId
+                ? `tvg:${c.tvgId.toLowerCase()}`
+                : `name:${c.country || 'global'}:${c.searchNameLower}`;
+            let list = groups.get(key);
+            if (!list) {
+                list = [];
+                groups.set(key, list);
+            }
+            list.push(c);
+        });
+
+        groups.forEach(list => {
+            if (list.length <= 1) return;
+            const allUrls = list.map(ch => ch.url).filter(Boolean);
+            list.forEach(ch => {
+                const existingFb = Array.isArray(ch.fallbackUrls) ? ch.fallbackUrls : [];
+                const mergedFb = [...existingFb];
+                allUrls.forEach(u => {
+                    if (u !== ch.url && !mergedFb.includes(u) && mergedFb.length < 4) {
+                        mergedFb.push(u);
+                    }
+                });
+                ch.fallbackUrls = mergedFb;
+            });
+        });
+    }
+
+    /**
      * Rebuilds the O(1) category and country lookup buckets (`categoryIndex`) for instant UI filtering.
      *
      * @param {Array<Channel>} channels - Sorted array of all channels.
      */
     _rebuildCategoryIndex(channels) {
+        this._linkMirrorFallbackUrls(channels);
         this.categoryIndex.clear();
         this.categoryIndex.set('all', channels);
 
