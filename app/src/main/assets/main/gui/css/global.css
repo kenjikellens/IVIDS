@@ -1536,14 +1536,14 @@ input, textarea, select { font: inherit; }
 
 /* Live TV columns, channel list items, and EPG preview panel. */
 /* Live TV main two-column content layout. */
-.livetv-two-column-layout { box-sizing: border-box; display: flex; flex: 1; gap: 2%; min-height: 0; padding: 1rem var(--app-content-padding-x) var(--app-content-padding-x); }
+.livetv-two-column-layout { box-sizing: border-box; display: flex; flex: 1; gap: 12px; height: 100%; min-height: 0; padding: 14px var(--app-content-padding-x); }
 /* Left scrollable channel list column. */
 /* Left scrollable categories and countries list column. */
-.livetv-categories-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 20%; }
+.livetv-categories-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 17%; }
 /* Vertical stack container for category and country rows. */
 .categories-list { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 4px; width: 100%; }
 /* Category and country row item in the Live TV left column. */
-.category-list-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; gap: 10px; justify-content: space-between; min-height: 46px; padding: 10px 14px; transition: border-color 150ms ease, background-color 150ms ease; width: 100%; }
+.category-list-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; gap: 8px; justify-content: space-between; min-height: 40px; padding: 7px 12px; transition: border-color 150ms ease, background-color 150ms ease; width: 100%; }
 /* Category row hover state. */
 .category-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
 /* Selected category row active state with primary brand highlight. */
@@ -1551,16 +1551,18 @@ input, textarea, select { font: inherit; }
 /* Category row spatial navigation focus state. */
 .category-list-item:focus, .category-list-item.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
 /* Category or country label text. */
-.category-list-name { color: #ffffff; font-size: 0.95rem; font-weight: 700; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.category-list-name { color: #ffffff; font-size: 0.88rem; font-weight: 700; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 /* Channel count badge inside category row. */
 .category-list-count { background: rgba(255, 255, 255, 0.08); border-radius: 999px; color: var(--text-muted); flex-shrink: 0; font-size: 0.78rem; font-weight: 700; padding: 2px 8px; }
 /* Middle scrollable channel list column. */
-.livetv-list-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 28%; }
+.livetv-list-column { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; overflow: hidden; width: 25%; }
+/* Search input box at the top of the middle channel list column. */
+.livetv-search-box { flex-shrink: 0; padding: 2px 2px 0; width: 100%; }
 /* Right channel video preview and EPG schedule column. */
-.livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 48%; }
+.livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 58%; }
 .livetv-list-column::-webkit-scrollbar-thumb, .livetv-preview-column::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
 /* Channel items vertical stack container. */
-.channels-list { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 4px; width: 100%; }
+.channels-list { box-sizing: border-box; display: flex; flex: 1; flex-direction: column; gap: 5px; min-height: 0; overflow-y: auto; padding: 2px; width: 100%; }
 /* OOCSS Channel card component for Live TV channel list. */
 .channel-card, .channel-list-item {
     align-items: center;
@@ -1616,15 +1618,15 @@ input, textarea, select { font: inherit; }
 .channel-card__fav-btn .fav-icon, .channel-card__fav-btn img { display: block; height: 16px; object-fit: contain; width: 16px; }
 
 /* Live TV EPG and preview video panel. */
-.hero-active-content { display: flex; flex-direction: column; gap: 16px; height: 100%; min-height: 0; width: 100%; }
+.hero-active-content { display: flex; flex-direction: column; gap: 10px; height: 100%; min-height: 0; width: 100%; }
 /* 16:9 Widescreen video preview card. */
-.preview-card, .preview-card-video { aspect-ratio: 16 / 9; background: #000000; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); box-sizing: border-box; max-height: 56%; min-height: 240px; overflow: hidden; position: relative; width: 100%; }
+.preview-card, .preview-card-video { aspect-ratio: 16 / 9; background: #000000; border: 2px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); box-sizing: border-box; flex: 1 1 auto; max-height: 72%; min-height: 280px; overflow: hidden; position: relative; width: 100%; }
 
 /* Video container wrapper inside preview card. */
 .preview-card__video-wrap { height: 100%; position: relative; width: 100%; }
 
 /* Video element inside preview card. */
-.preview-card-video video, .preview-card__video-wrap video { background: #000000; height: 100%; object-fit: contain; width: 100%; }
+.preview-card-video video, .preview-card__video-wrap video { background: #000000; display: block; height: 100%; object-fit: cover; width: 100%; }
 
 /* Cinematic gradient overlay across video preview. */
 .preview-card__overlay { background: linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.85) 100%); box-sizing: border-box; display: flex; flex-direction: column; inset: 0; justify-content: space-between; padding: 20px 24px; pointer-events: none; position: absolute; z-index: 3; }
@@ -1651,20 +1653,24 @@ input, textarea, select { font: inherit; }
 .preview-card__actions .btn__icon { height: 18px; width: 18px; }
 .preview-video-loading { align-items: center; background: rgba(0, 0, 0, 0.5); display: flex; height: 100%; justify-content: center; left: 0; position: absolute; top: 0; width: 100%; z-index: 2; }
 /* EPG Schedule panel card surface. */
-.epg-panel, .epg-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 1; flex-direction: column; gap: 16px; min-height: 0; overflow: hidden; padding: 20px 24px; }
+.epg-panel, .epg-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 0 1 auto; flex-direction: column; gap: 8px; min-height: 0; overflow: hidden; padding: 12px 16px; }
+/* Compact section headers inside EPG card. */
+.epg-card .section-title { color: rgba(255, 255, 255, 0.7); font-size: 11px; font-weight: 700; gap: 6px; letter-spacing: 0.05em; margin-bottom: 2px; text-transform: uppercase; }
+/* Compact red LIVE badge inside EPG section header. */
+.epg-card .live-badge { background: #e24a4a; border-radius: 4px; color: #ffffff; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; padding: 2px 6px; }
 .details-epg-section { display: flex; flex-direction: column; flex-shrink: 0; gap: 8px; width: 100%; }
 .details-upcoming-section { display: flex; flex: 1; flex-direction: column; gap: 12px; min-height: 0; width: 100%; }
 .epg-active-show { display: flex; flex-direction: column; gap: 8px; }
-.epg-show-title { color: #ffffff; font-size: 24px; font-weight: 800; text-align: left; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
+.epg-show-title { color: #ffffff; font-size: 14px; font-weight: 600; text-align: left; }
 .epg-time { color: var(--text-muted); font-size: 13px; font-weight: 700; }
 .hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 8px; width: 100%; }
 .epg-progress-bar-container { background: rgba(255, 255, 255, 0.1); border-radius: 5px; flex: 1; height: 8px; overflow: hidden; }
 .epg-progress-bar-fill { background: var(--primary-color); height: 100%; transition: width 0.3s ease; width: 0%; }
 .upcoming-programs-list { display: flex; flex: 1; flex-direction: column; gap: 10px; min-height: 0; overflow-y: auto; width: 100%; }
-.upcoming-program-row { align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.04); border-left: 4px solid var(--primary-color); border-radius: var(--radius-md); display: flex; gap: 16px; padding: 14px 20px; transition: background 0.2s ease, border-color 0.2s ease; }
+.upcoming-program-row { align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.04); border-left: 3px solid var(--primary-color); border-radius: var(--radius-sm); display: flex; gap: 10px; padding: 7px 12px; transition: background 0.2s ease, border-color 0.2s ease; }
 .upcoming-program-row:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); }
-.upcoming-program-time { color: var(--primary-color); flex-shrink: 0; font-size: 15px; font-weight: 800; letter-spacing: 0.05em; }
-.upcoming-program-title { color: #ffffff; font-size: 15px; font-weight: 700; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.upcoming-program-time { color: var(--primary-color); flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; }
+.upcoming-program-title { color: rgba(255, 255, 255, 0.82); font-size: 12px; font-weight: 500; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .loading-center { align-items: center; background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-lg); color: var(--text-muted); display: flex; font-size: 17px; justify-content: center; min-height: 200px; width: 100%; }
 
 /* Live TV initial placeholder panel. */

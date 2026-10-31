@@ -313,7 +313,7 @@ export class EpgManager {
                 result += decoder.decode();
                 return result;
             } catch (e) {
-                console.warn('Decompression failed (response may be pre-decompressed by proxy). Falling back to raw response text:', e);
+                // Response was already decompressed by proxy; fall back silently to text()
                 return fallbackResponse.text();
             }
         }

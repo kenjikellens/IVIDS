@@ -307,14 +307,20 @@ export async function init(params) {
                 enableWorker: true,
                 lowLatencyMode: true,
                 backBufferLength: 30,
-                maxBufferLength: 10,
-                maxMaxBufferLength: 20,
+                maxBufferLength: 12,
+                maxMaxBufferLength: 24,
                 liveSyncDurationCount: 2,
-                initialLiveManifestSize: 2
+                initialLiveManifestSize: 2,
+                startLevel: -1,
+                capLevelToPlayerSize: false
             });
             hlsInstance.loadSource(streamUrl);
             hlsInstance.attachMedia(video);
-            hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
+            hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, (event, data) => {
+                // Prefer highest HD/FHD stream level automatically
+                if (hlsInstance && Array.isArray(data?.levels) && data.levels.length > 1) {
+                    hlsInstance.nextLevel = data.levels.length - 1;
+                }
                 video.play().catch(e => {
                     if (e.name === 'AbortError') {
                         console.log('Playback request was interrupted (AbortError), ignoring.');

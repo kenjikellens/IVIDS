@@ -430,7 +430,7 @@ async function loadAllSources() {
                     if (renderedCount < CHUNK_SIZE && filteredChannels.length > prevFilteredLen) {
                         renderNextChunk();
                     }
-                }, 350);
+                }, 600);
             }
         });
 
@@ -555,7 +555,7 @@ async function showChannelDetail(channel) {
         if (selectedChannel && selectedChannel.url === channel.url) {
             loadPreviewStream(channel);
         }
-    }, 450);
+    }, 300);
 
     const [epg, upcomingShows] = await Promise.all([
         EpgManager.getCurrentProgram(channel.name, channel.group, channel.tvgId),
@@ -627,16 +627,22 @@ function loadPreviewStream(channel) {
 
     if (window.Hls && window.Hls.isSupported()) {
         previewHls = new window.Hls({
-            maxMaxBufferLength: 5,
-            maxBufferLength: 3,
+            maxMaxBufferLength: 8,
+            maxBufferLength: 4,
             liveSyncDurationCount: 2,
             initialLiveManifestSize: 2,
             enableWorker: true,
-            lowLatencyMode: true
+            lowLatencyMode: true,
+            startLevel: -1,
+            capLevelToPlayerSize: false
         });
         previewHls.loadSource(streamUrl);
         previewHls.attachMedia(video);
-        previewHls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+        previewHls.on(window.Hls.Events.MANIFEST_PARSED, (event, data) => {
+            // Lock to highest available HD/FHD bitrate level when multiple quality levels exist
+            if (previewHls && Array.isArray(data?.levels) && data.levels.length > 1) {
+                previewHls.nextLevel = data.levels.length - 1;
+            }
             video.play().catch(e => {
                 if (e.name !== 'AbortError') {
                     console.warn('Error starting HLS preview video:', e);
@@ -756,7 +762,7 @@ function setupEventListeners() {
         };
     }
 
-    const listColumn = document.querySelector('.livetv-list-column');
+    const listColumn = document.getElementById('channels-list') || document.querySelector('.livetv-list-column');
     if (listColumn) {
         listColumn.onscroll = () => {
             if (listColumn.scrollTop + listColumn.clientHeight >= listColumn.scrollHeight - 300) {
