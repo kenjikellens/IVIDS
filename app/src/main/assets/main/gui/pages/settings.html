@@ -337,7 +337,7 @@
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
-        <h2 class="modal__title" data-i18n="settings.appInfo">App Info</h2>
+        <h2 class="modal__title" data-i18n="settings.appInfo">App-informatie</h2>
         <div class="modal__body app-info-body">
             <div class="app-info-header">
                 <img src="images/icon.svg" class="app-info-logo" alt="IVIDS">
@@ -346,43 +346,23 @@
                     <div id="app-info-version-pill" class="badge badge--primary app-info-badge">v0.6.4</div>
                 </div>
             </div>
-            <div class="app-info-list">
-                <div class="setting-item app-info-item universal-onclick">
-                    <div class="setting-info">
-                        <div class="setting-label" data-i18n="settings.appVersion">App Version</div>
-                        <div class="setting-description" data-i18n="settings.appVersionDesc">The currently installed release version of IVIDS</div>
-                    </div>
-                    <div class="setting-control">
-                        <div id="app-version-display" class="current-value-display">--</div>
-                    </div>
+            <div class="app-info-details">
+                <div class="app-info-row">
+                    <span class="app-info-label" data-i18n="settings.appVersion">App-versie</span>
+                    <span id="app-version-display" class="app-info-value">--</span>
                 </div>
-                <div class="setting-item app-info-item universal-onclick">
-                    <div class="setting-info">
-                        <div class="setting-label" data-i18n="settings.appDeveloper">Developer</div>
-                        <div class="setting-description" data-i18n="settings.appDeveloperDesc">Created by the IVIDS Development Team</div>
-                    </div>
-                    <div class="setting-control">
-                        <div class="current-value-display">Kenji Games</div>
-                    </div>
+                <div class="app-info-row">
+                    <span class="app-info-label" data-i18n="settings.appDeveloper">Ontwikkelaar</span>
+                    <span class="app-info-value">Kenji Games</span>
                 </div>
-                <div class="setting-item app-info-item universal-onclick">
-                    <div class="setting-info">
-                        <div class="setting-label" data-i18n="settings.appPlatform">Platform</div>
-                        <div class="setting-description" data-i18n="settings.appPlatformDesc">Target operating system & client</div>
-                    </div>
-                    <div class="setting-control">
-                        <div id="app-platform-display" class="current-value-display">--</div>
-                    </div>
+                <div class="app-info-row">
+                    <span class="app-info-label" data-i18n="settings.appPlatform">Platform</span>
+                    <span id="app-platform-display" class="app-info-value">--</span>
                 </div>
-            </div>
-            <div class="app-info-actions">
-                <button id="app-info-changes-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button" data-i18n="settings.viewChangelog">
-                    Bekijk wijzigingen
-                </button>
             </div>
         </div>
         <div class="modal__footer">
-            <button class="btn btn--secondary btn--block focusable universal-onclick" data-i18n="common.close">Close</button>
+            <button class="btn btn--secondary btn--block focusable universal-onclick" data-i18n="common.close">Sluiten</button>
         </div>
     </div>
 </div>
