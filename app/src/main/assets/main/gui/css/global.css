@@ -1073,8 +1073,8 @@ input, textarea, select { font: inherit; }
 .modal__footer--center { justify-content: center; }
 .modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 0; width: 100%; }
 
-/* Zero border-radius for all interactive buttons and options inside modal popups. */
-.modal .btn, .modal button, .modal .modal-option, .modal .language-card, .modal .chip, .modal .playlist-item, .modal .form-input, .modal .form-select-wrapper { border-radius: 0 !important; }
+/* Zero border-radius for all interactive buttons and options inside modal popups (excluding back chevron). */
+.modal .btn:not(.modal__back-btn), .modal button:not(.modal__back-btn), .modal .modal-option, .modal .language-card, .modal .chip, .modal .playlist-item, .modal .form-input, .modal .form-select-wrapper { border-radius: 0 !important; }
 /* Clean zero-gap list containers for modal selections with divider lines. */
 .modal-options-list, .playlist-selection-list, .language-selection-grid { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
 /* Flat list option with divider line and zero radius inside modals. */

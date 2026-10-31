@@ -32,8 +32,9 @@
     box-sizing: border-box;
     height: 100vh;
     height: 100dvh;
+    overflow-x: hidden;
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
-    width: 100vw;
+    width: 100%;
 }
 
 /* Mobile bottom navigation bar surface spanning 100% full width. */
@@ -355,30 +356,43 @@ html body .modal__close, .modal__close {
     z-index: 10;
 }
 
-/* Top-left back button for mobile full-screen sub-pages */
+/* Top-left back button for mobile sub-pages: invisible round button showing only the arrow, circular highlight on click. */
 html body .modal__back-btn, body .modal__back-btn, .modal__back-btn {
     align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 50%;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
     cursor: pointer;
-    display: flex;
-    height: 40px;
+    display: inline-flex;
+    height: 44px;
     justify-content: center;
-    left: 16px;
+    left: 10px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
     position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 14px);
-    width: 40px;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    transition: background-color 140ms ease;
+    width: 44px;
     z-index: 20;
+}
+html body .modal__back-btn:active, body .modal__back-btn:active {
+    background: rgba(255, 255, 255, 0.14) !important;
+    transform: none !important;
+}
+html body .modal__back-btn:focus-visible, body .modal__back-btn.focused {
+    background: rgba(255, 255, 255, 0.16) !important;
+    outline: none !important;
 }
 
 /* Icon image inside mobile sub-page back button */
 .modal-back-icon {
     display: block;
     filter: brightness(0) invert(1);
-    height: 20px;
+    height: 24px;
     pointer-events: none;
-    width: 20px;
+    width: 24px;
 }
 
 /* Fluid scrollable content body in full-screen sub-page */
@@ -633,19 +647,6 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 #app .media-grid--cast, #app .disney-cast-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 #app .disney-cast-img { aspect-ratio: 1; border: 2px solid rgba(255, 255, 255, 0.12); border-radius: 50%; margin: 0 auto; max-width: 88px; overflow: hidden; }
 
-/* Settings rows expose a full-width touch area and preserve existing child controls. */
-#app .settings-container .setting-item { border-radius: 10px; cursor: pointer; min-height: 56px; padding: 12px 12px; transition: background-color 0.15s ease; }
-#app .settings-container .setting-item:active { background: rgba(255, 255, 255, 0.06); }
-#app .settings-container .setting-item .setting-control { min-height: 44px; }
-#app .settings-container .setting-label { font-size: 16px; }
-#app .settings-container .setting-description { font-size: 13px; }
-#app .settings-container .setting-item .edit-trigger { height: 48px; min-height: 48px; min-width: 48px; width: 48px; }
-#app .scale-control-container { height: 52px; min-height: 52px; }
-#app .scale-control-container .scale-adjust-btn, #app .scale-control-container .btn--square-sm { height: 48px; min-height: 48px; min-width: 48px; width: 48px; }
-#app .form-toggle { height: 48px; width: 64px; }
-#app .form-toggle__slider { top: 13px; }
-#app .form-toggle:has(input:checked) .form-toggle__slider { left: 34px; }
-body .modal__back-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 body #changes-modal .modal__close { display: none; }
 
 /* Language selection list with simple divider lines and zero border-radius. */
@@ -796,10 +797,10 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .settings-container .setting-item .edit-trigger .setting-edit-icon { display: none; }
 #app .settings-container .setting-item .edit-trigger::after { background-color: #888888; content: ""; display: inline-block; height: 16px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 16px; }
 /* Tactile UI scale controls and app info card on mobile. */
-#app .settings-container .ui-scale-control { background: transparent; border: 0; border-radius: 0; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
-#app .settings-container .ui-scale-control .scale-adjust-btn { background: #242424; border: 2px solid #383838; border-radius: 11px; height: 46px; min-height: 46px; min-width: 46px; width: 46px; }
+#app .settings-container .ui-scale-control { background: transparent; border: 0; border-radius: 0; flex: 0 0 auto; gap: 4px; height: auto; padding: 0; }
+#app .settings-container .ui-scale-control .scale-adjust-btn { background: #242424; border: 1.5px solid #383838; border-radius: 8px; font-size: 18px; height: 38px; min-height: 38px; min-width: 38px; width: 38px; }
 #app .settings-container .ui-scale-control .scale-adjust-btn::after { content: none; display: none; }
-#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; font-size: 14px; font-weight: 700; height: 46px; justify-content: center; min-width: 56px; text-align: center; }
+#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; font-size: 13.5px; font-weight: 700; height: 38px; justify-content: center; min-width: 44px; text-align: center; }
 #app .settings-section--app-info { margin-bottom: 18px; }
 #app .settings-container #app-info-btn { border: 2px solid #303030; border-radius: 14px; min-height: 64px; padding: 0 16px; }
 #app .settings-container #app-info-btn:active { background: #181818; }
@@ -821,7 +822,8 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .login-page-wrapper { align-items: flex-start; background: #0f0f0f; box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
 #app .login-card-container { max-width: 460px; width: 100%; }
 #app .login-panel { background: transparent; border: 0; border-radius: 0; box-shadow: none; max-height: none; overflow: visible; padding: 64px 0 12px; width: 100%; }
-#app #login-circle-back { background: #1d1d1d; border: 1px solid #383838; height: 48px; left: 0; min-height: 48px; min-width: 48px; top: 0; width: 48px; }
+#app #login-circle-back { background: transparent; border: 0; border-radius: 50%; height: 44px; left: 0; min-height: 44px; min-width: 44px; top: 0; width: 44px; }
+#app #login-circle-back:active { background: rgba(255, 255, 255, 0.14); }
 #app .login-header { align-items: flex-start; margin: 0 0 28px; text-align: left; }
 #app .login-title-text { font-size: 28px; justify-content: flex-start; text-align: left; }
 #app .login-subtitle-text { color: var(--mobile-muted); font-size: 14px; text-align: left; }
@@ -846,9 +848,8 @@ html body .modal__title { color: #f5f5f5; font-size: 19px; font-weight: 650; let
 body .modal__footer { background: #0f0f0f; }
 body .modal__footer .btn--primary { background: #ffffff; border-color: #ffffff; color: #111111; }
 body .modal__footer .btn--secondary { background: transparent; border-color: #444444; color: #f5f5f5; }
-html body .modal__back-btn { background: #1d1d1d; border-color: #383838; border-radius: 0 !important; height: 48px; left: 18px; min-height: 48px; min-width: 48px; top: calc(env(safe-area-inset-top, 0px) + 12px); width: 48px; }
-/* Zero border-radius across all buttons, options, chips, and controls in all popups/modals. */
-body .modal .btn, body .modal button, body .modal .modal-option, body .modal .language-card, body .modal .chip, body .modal .form-input, body .modal .playlist-item, body .modal__footer .btn { border-radius: 0 !important; }
+/* Zero border-radius across all buttons, options, chips, and controls in all popups/modals (excluding circular back chevron). */
+body .modal .btn:not(.modal__back-btn), body .modal button:not(.modal__back-btn), body .modal .modal-option, body .modal .language-card, body .modal .chip, body .modal .form-input, body .modal .playlist-item, body .modal__footer .btn { border-radius: 0 !important; }
 body .modal .modal-option, body .modal .playlist-item { border: 0; border-bottom: 1px solid #222222; }
 body .modal .modal-option:first-child, body .modal .playlist-item:first-child { border-top: 1px solid #222222; }
 body .modal .modal-options-list, body .modal .playlist-selection-list { gap: 0; }

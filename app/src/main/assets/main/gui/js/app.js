@@ -869,8 +869,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('ivids-last-route');
             localStorage.removeItem('ivids-last-active');
 
-            // Always go to home on startup.
-            Router.loadPage('home');
+            // Honor location hash if provided (e.g. #settings), fallback to home.
+            const hashRoute = location.hash ? location.hash.replace(/^#\/?/, '').split('?')[0] : '';
+            const targetRoute = hashRoute && hashRoute !== '' ? hashRoute : 'home';
+            Router.loadPage(targetRoute);
+            if (location.hash.includes('modal=language')) {
+                setTimeout(() => {
+                    const btn = document.getElementById('edit-language-btn');
+                    if (btn) btn.click();
+                }, 400);
+            }
         } catch (homeError) {
             console.error('Error in initial routing:', homeError);
             ErrorHandler.show(window.i18n.t('error.initError'), () => window.location.reload());
