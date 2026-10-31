@@ -212,8 +212,10 @@ export async function init(params) {
                 const channels = window.liveTvState.channels;
                 const currentIndex = window.liveTvState.currentIndex || 0;
                 const maxRender = Math.min(channels.length, 60);
+                const startIdx = Math.max(0, Math.min(currentIndex - 20, channels.length - maxRender));
+                const endIdx = startIdx + maxRender;
 
-                for (let i = 0; i < maxRender; i++) {
+                for (let i = startIdx; i < endIdx; i++) {
                     const ch = channels[i];
                     const btn = document.createElement('button');
                     btn.className = 'btn btn--secondary btn--block focusable channel-list-item' + (i === currentIndex ? ' is-active active btn--primary' : '');
@@ -317,9 +319,19 @@ export async function init(params) {
             hlsInstance.loadSource(streamUrl);
             hlsInstance.attachMedia(video);
             hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, (event, data) => {
-                // Prefer highest HD/FHD stream level automatically
+                // Select highest resolution/bitrate HD/FHD stream level immediately on startup
                 if (hlsInstance && Array.isArray(data?.levels) && data.levels.length > 1) {
-                    hlsInstance.nextLevel = data.levels.length - 1;
+                    let bestIdx = data.levels.length - 1;
+                    let bestScore = -1;
+                    data.levels.forEach((lvl, idx) => {
+                        const score = (lvl.height || 0) * 1000000 + (lvl.bitrate || 0);
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestIdx = idx;
+                        }
+                    });
+                    hlsInstance.currentLevel = bestIdx;
+                    hlsInstance.nextLevel = bestIdx;
                 }
                 video.play().catch(e => {
                     if (e.name === 'AbortError') {

@@ -125,7 +125,7 @@ export const SpatialNav = {
             return null;
         }
 
-        const knownPageScrollArea = el.closest('.playlists-container, .livetv-list-column, .livetv-preview-column, .card--panel.epg-card, .epg-card, .details-seasons');
+        const knownPageScrollArea = el.closest('.channels-list, .livetv-categories-column, .playlists-container, .livetv-list-column, .livetv-preview-column, .card--panel.epg-card, .epg-card, .details-seasons');
         if (knownPageScrollArea) return knownPageScrollArea;
 
         return this.getMainView();

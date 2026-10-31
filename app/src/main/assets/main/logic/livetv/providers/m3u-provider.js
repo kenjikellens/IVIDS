@@ -44,7 +44,18 @@ export class M3uProvider extends BaseStreamProvider {
             const rawText = await response.text();
             const parsedItems = M3UParser.parse(rawText);
 
-            return parsedItems.map(item => {
+            return parsedItems
+                .filter(item => {
+                    const rawName = (item.name || '').toLowerCase();
+                    const rawUrl = (item.url || '').toLowerCase();
+                    if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) return false;
+                    // Skip geo-blocked, DRM-encrypted, or known dead hosts
+                    if (/\[geo-?blocked\]|\[drm\]|live_aes\.isml|rabah\.net|ln24\.be|145\.239\.5\.177|artesimulcast\.akamaized\.net/i.test(`${rawName} ${rawUrl}`)) {
+                        return false;
+                    }
+                    return true;
+                })
+                .map(item => {
                 const group = item.group || this.category;
                 const extraTags = this.countryTag ? [this.countryTag] : [];
                 const optimizedUrl = StreamOptimizer.optimizeStreamUrl(item.url);

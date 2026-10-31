@@ -73,7 +73,12 @@ export const M3UParser = {
                 if (logoIdx !== -1) {
                     const start = logoIdx + 10;
                     const end = line.indexOf('"', start);
-                    if (end !== -1) currentChannel.logo = line.substring(start, end);
+                    if (end !== -1) {
+                        const rawLogo = line.substring(start, end).trim();
+                        if (/^https?:\/\//i.test(rawLogo) || rawLogo.startsWith('data:image/')) {
+                            currentChannel.logo = rawLogo;
+                        }
+                    }
                 }
 
                 const commaIndex = line.lastIndexOf(',');

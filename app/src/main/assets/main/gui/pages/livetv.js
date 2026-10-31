@@ -826,6 +826,16 @@ function updateChannelStatus(url, status) {
     const escapedUrl = url.replace(/"/g, '\\"');
     const row = document.querySelector(`.channel-list-item[data-url="${escapedUrl}"], .channel-card[data-url="${escapedUrl}"]`);
     if (row) {
+        if (status === 'offline') {
+            const norm = normalizeUrl(url);
+            if (norm) brokenChannelsSet.add(norm);
+            fetch(BROKEN_CHANNELS_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) }).catch(() => {});
+            const wasFocused = row.classList.contains('focused') || document.activeElement === row;
+            const nextRow = row.nextElementSibling || row.previousElementSibling;
+            row.remove();
+            if (wasFocused && nextRow) SpatialNav.setFocus(nextRow);
+            return;
+        }
         const dot = row.querySelector('.list-status-dot');
         if (dot) {
             dot.classList.remove('checking', 'online', 'offline');
@@ -859,7 +869,9 @@ function renderNextChunk() {
         item.tabIndex = 0;
         item.dataset.url = channel.url;
 
-        const iconUrl = channel.logo || 'images/livetv.svg';
+        const iconUrl = (channel.logo && (/^https?:\/\//i.test(channel.logo) || channel.logo.startsWith('data:image/')))
+            ? channel.logo
+            : 'images/livetv.svg';
         const status = statusCache.get(channel.url)?.status || 'unknown';
         const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
 

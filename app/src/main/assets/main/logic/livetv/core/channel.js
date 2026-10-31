@@ -58,8 +58,8 @@ export class Channel {
     static cleanChannelName(rawName = '') {
         if (!rawName) return 'Unknown Channel';
         return rawName
-            .replace(/\[(?:geo-?blocked|not\s*24\/7|720p|1080p|576p|480p|360p|sd|hd|fhd|uhd|4k|hevc|h\.?264|ipv6)[^\]]*\]/gi, '')
-            .replace(/\((?:1080p|1080i|720p|576p|480p|360p|240p|2160p|4k|uhd|fhd|hd|sd|not\s*24\/7|geo-?blocked)\)/gi, '')
+            .replace(/\[(?:geo-?blocked|not\s*24\/7|2160p|1080p|1080i|720p|576p|480p|360p|240p|\d+fps|sd|hd|fhd|uhd|4k|hevc|h\.?264|ipv6)[^\]]*\]/gi, '')
+            .replace(/\((?:geo-?blocked|not\s*24\/7|2160p|1080p|1080i|720p|576p|480p|360p|240p|\d+fps|sd|hd|fhd|uhd|4k|hevc|h\.?264|ipv6)[^\)]*\)/gi, '')
             .replace(/\s{2,}/g, ' ')
             .trim() || rawName.trim();
     }

@@ -163,12 +163,16 @@ export const spatialNavLivetv = {
 
             if (direction === 'left') {
                 if (currentIndex > 0) return topControls[currentIndex - 1];
+                const cat = getPreferredCategoryItem();
+                if (cat) return cat;
                 return sidebarTarget(current);
             }
             if (direction === 'right') {
                 if (currentIndex >= 0 && currentIndex < topControls.length - 1) {
                     return topControls[currentIndex + 1];
                 }
+                const previewCard = document.getElementById('livetv-preview-card');
+                if (previewCard && isElementVisible(previewCard)) return previewCard;
                 return current;
             }
             if (direction === 'down') {
@@ -302,7 +306,7 @@ export const spatialNavLivetv = {
             }
         }
 
-        if (current && current.closest('#channels-list')) {
+        if (current && (current.closest('#channels-list') || current.closest('.livetv-list-column'))) {
             const cat = getPreferredCategoryItem();
             if (cat) {
                 SpatialNav.setFocus(cat);
