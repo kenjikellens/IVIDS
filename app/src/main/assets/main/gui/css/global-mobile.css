@@ -423,7 +423,7 @@ html body .modal__dialog--xl, body .modal__dialog--xl {
     max-height: 100%;
     max-width: 100%;
     overflow: hidden;
-    padding: calc(env(safe-area-inset-top, 0px) + 20px) 20px calc(env(safe-area-inset-bottom, 0px) + 20px);
+    padding: calc(env(safe-area-inset-top, 44px) + 16px) 20px calc(env(safe-area-inset-bottom, 28px) + 16px);
     position: relative;
     text-align: left;
     transform: translateX(100%);
@@ -454,7 +454,7 @@ html body .modal__close, .modal__close {
     border-radius: 50%;
     position: absolute;
     right: 16px;
-    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    top: calc(env(safe-area-inset-top, 44px) + 8px);
     z-index: 10;
 }
 
@@ -469,15 +469,15 @@ html body .modal__back-btn, body .modal__back-btn, .modal__back-btn {
     display: inline-flex;
     height: 44px;
     justify-content: center;
-    left: 10px;
+    left: 12px !important;
     min-height: 44px;
     min-width: 44px;
     padding: 0;
-    position: absolute;
-    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    position: absolute !important;
+    top: calc(env(safe-area-inset-top, 44px) + 8px) !important;
     transition: background-color 140ms ease;
     width: 44px;
-    z-index: 20;
+    z-index: 50 !important;
 }
 html body .modal__back-btn:active, body .modal__back-btn:active {
     background: rgba(255, 255, 255, 0.14) !important;
@@ -887,8 +887,8 @@ body .modal .focusable:focus-visible, body .modal .focusable.focused {
 
 /* Dedicated Update Check Modal Styling */
 #update-check-modal .modal__dialog { display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; padding-bottom: 24px; position: relative; }
-#app .modal__close-btn { align-items: center; background: transparent; border: 0; border-radius: 50%; color: #888888; cursor: pointer; display: inline-flex; font-size: 20px; height: 38px; justify-content: center; position: absolute; right: 14px; top: 14px; width: 38px; z-index: 10; }
-#app .modal__close-btn:active { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+body .modal__close-btn { align-items: center; background: transparent; border: 0; border-radius: 50%; color: #888888; cursor: pointer; display: inline-flex; font-size: 20px; height: 38px; justify-content: center; position: absolute; right: 14px; top: 14px; width: 38px; z-index: 10; }
+body .modal__close-btn:active { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
 #update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
 #update-check-modal .update-modal-heading { color: #f1f1f1; font-size: 19px; font-weight: 600; margin: 16px 0 6px; }
 #update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
@@ -904,6 +904,156 @@ body .modal .focusable:focus-visible, body .modal .focusable.focused {
 #app #check-updates-row #check-updates-btn { align-items: center; background: transparent !important; border: 0 !important; box-shadow: none !important; color: transparent !important; display: inline-flex; font-size: 0 !important; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; outline: none !important; padding: 0; width: 14px; }
 #app #check-updates-row #check-updates-btn .setting-edit-icon { display: none !important; }
 #app #check-updates-row #check-updates-btn::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
+
+/* Mobile: Update mode options stacked vertically in full-width single column */
+body #update-mode-modal #update-mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 8px 0;
+    width: 100%;
+}
+/* Mobile: Full-width tap targets for update mode options */
+body #update-mode-modal #update-mode-options .chip--option {
+    align-items: center;
+    border-radius: 12px;
+    box-sizing: border-box;
+    display: flex;
+    font-size: 15.5px;
+    font-weight: 500;
+    justify-content: flex-start;
+    min-height: 52px;
+    padding: 0 18px;
+    width: 100%;
+}
+
+/* Mobile: Centered version fetch error and retry button */
+.version-error-center {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    min-height: 180px;
+    padding: 36px 16px;
+    text-align: center;
+    width: 100%;
+}
+.version-error-center .version-fetch-error {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 320px;
+    text-align: center;
+}
+.version-error-center .btn {
+    min-height: 48px;
+    min-width: 200px;
+    width: auto;
+}
+
+/* Mobile: Version selector refresh button in dialog top-right header */
+html body #version-selector-modal .modal__refresh-btn,
+html body #version-selector-refresh-btn,
+body #version-selector-modal .modal__refresh-btn,
+body #version-selector-refresh-btn,
+body .modal__refresh-btn {
+    align-items: center;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    left: auto !important;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    position: absolute !important;
+    right: 12px !important;
+    top: calc(env(safe-area-inset-top, 44px) + 8px) !important;
+    width: 44px;
+    z-index: 50 !important;
+}
+body .modal__refresh-btn:active {
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+.modal-refresh-icon {
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 22px;
+    pointer-events: none;
+    width: 22px;
+}
+
+/* Mobile: Polished App Info modal dialog layout */
+body #app-info-modal .modal__dialog {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 20px;
+}
+/* Mobile: Centered app brand logo in app info dialog */
+body #app-info-modal .app-info-logo {
+    height: 64px;
+    margin-bottom: 4px;
+    width: 64px;
+}
+/* Mobile: Application title heading in app info dialog */
+body #app-info-modal .app-info-app-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+/* Mobile: Version pill badge in app info dialog */
+body #app-info-modal .app-info-badge {
+    background: rgba(var(--primary-rgb), 0.14);
+    border: 1px solid var(--primary-color);
+    border-radius: 999px;
+    color: var(--primary-color);
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 4px 16px;
+}
+/* Mobile: Information items list inside app info dialog */
+body #app-info-modal .app-info-list {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    gap: 0;
+    margin: 12px 0 16px;
+    overflow: hidden;
+    padding: 0;
+}
+/* Mobile: Information item row with divider lines */
+body #app-info-modal .app-info-item {
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0;
+    padding: 14px 16px;
+}
+/* Mobile: Remove bottom border on the last info item */
+body #app-info-modal .app-info-item:last-child {
+    border-bottom: 0;
+}
+/* Mobile: Full-width action button to view changelog */
+body #app-info-modal #app-info-changes-btn {
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    min-height: 48px;
+    width: 100%;
+}
+/* Mobile: Modal footer close button */
+body #app-info-modal .modal__footer .btn {
+    border-radius: 12px;
+    font-size: 15px;
+    min-height: 48px;
+    width: 100%;
+}
 
 
 
@@ -948,12 +1098,12 @@ body .modal .focusable:focus-visible, body .modal .focusable.focused {
 
 /* Mobile sub-pages use YouTube-like neutral surfaces and reachable bottom actions. */
 html body .modal__dialog { background: #0f0f0f; }
-html body .modal__title { color: #f5f5f5; font-size: 19px; font-weight: 650; letter-spacing: 0; padding-left: 52px; text-align: left; }
+html body .modal__title { color: #f5f5f5; font-size: 19px; font-weight: 650; letter-spacing: 0; padding-left: 52px; padding-right: 52px; text-align: left; }
 body .modal__footer { background: #0f0f0f; }
 body .modal__footer .btn--primary { background: #ffffff; border-color: #ffffff; color: #111111; }
 body .modal__footer .btn--secondary { background: transparent; border-color: #444444; color: #f5f5f5; }
-/* Zero border-radius across all buttons, options, chips, and controls in all popups/modals (excluding circular back chevron). */
-body .modal .btn:not(.modal__back-btn), body .modal button:not(.modal__back-btn), body .modal .modal-option, body .modal .language-card, body .modal .chip, body .modal .form-input, body .modal .playlist-item, body .modal__footer .btn { border-radius: 0 !important; }
+/* Zero border-radius across all buttons, options, chips, and controls in all popups/modals (excluding circular back and refresh buttons). */
+body .modal .btn:not(.modal__back-btn):not(.modal__refresh-btn), body .modal button:not(.modal__back-btn):not(.modal__refresh-btn), body .modal .modal-option, body .modal .language-card, body .modal .chip, body .modal .form-input, body .modal .playlist-item, body .modal__footer .btn { border-radius: 0 !important; }
 body .modal .modal-option, body .modal .playlist-item { border: 0; border-bottom: 1px solid #222222; }
 body .modal .modal-option:first-child, body .modal .playlist-item:first-child { border-top: 1px solid #222222; }
 body .modal .modal-options-list, body .modal .playlist-selection-list { gap: 0; }

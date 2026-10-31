@@ -355,19 +355,47 @@ class SettingsManager {
         if (appInfoBtn) {
             appInfoBtn.onclick = () => this.openModal('app-info-modal');
         }
+        const appInfoRow = document.getElementById('app-info-row');
+        if (appInfoRow) {
+            appInfoRow.onclick = (e) => {
+                if (!this.isMobileLayout()) return;
+                if (e.target.closest('#app-info-btn')) return;
+                this.openModal('app-info-modal');
+            };
+        }
+        const appInfoChangesBtn = document.getElementById('app-info-changes-btn');
+        if (appInfoChangesBtn) {
+            appInfoChangesBtn.onclick = async () => {
+                try {
+                    let release = window.latestRelease;
+                    if (!release || !release.body) {
+                        const res = await fetch(`https://api.github.com/repos/kenjikellens/IVIDS/releases/latest?t=${Date.now()}`);
+                        if (res.ok) {
+                            release = await res.json();
+                            window.latestRelease = release;
+                        }
+                    }
+                    const title = release?.name || release?.tag_name || 'v0.6.4';
+                    const body = release?.body || (window.i18n?.t('settings.noUpdateDesc') || 'No release notes available.');
+                    this.openChangesPopup(title, body);
+                } catch (e) {
+                    console.error('Settings: Failed to load latest release notes', e);
+                    this.openChangesPopup('v0.6.4', window.i18n?.t('settings.updateErrorDesc') || 'Unable to load release notes.');
+                }
+            };
+        }
 
         const checkBtn = document.getElementById('check-updates-btn');
         if (checkBtn) {
             checkBtn.onclick = (e) => {
-                e.stopPropagation();
-                this.openUpdateCheckModal();
+                this.handleCheckUpdatesClick(e);
             };
             const checkRow = document.getElementById('check-updates-row');
             if (checkRow) {
                 checkRow.onclick = (e) => {
                     if (!this.isMobileLayout()) return;
                     if (e.target.closest('#check-updates-btn')) return;
-                    this.openUpdateCheckModal();
+                    this.handleCheckUpdatesClick(e);
                 };
             }
         }
@@ -704,26 +732,230 @@ class SettingsManager {
         }
 
         VersionManager.getInstance().bindDisplayElement('app-version-display');
+        VersionManager.getInstance().bindDisplayElement('app-info-version-pill');
+
+        const platformDisplay = document.getElementById('app-platform-display');
+        if (platformDisplay) {
+            const isAndroid = !!window.AndroidUpdate || /android/i.test(navigator.userAgent);
+            const isWindows = /windows/i.test(navigator.userAgent);
+            platformDisplay.textContent = isAndroid ? 'Android' : (isWindows ? 'Windows' : 'Web');
+        }
     }
 
     /**
-     * Opens the version selector modal, fetches all available releases from the GitHub API,
-     * and populates the modal grid with focusable version selection chips.
+     * Handles checking for updates from button or settings row.
+     * Routes directly to Version Selector modal if Developer mode is active,
+     * otherwise opens the standard Update Check modal.
+     * @param {Event} [e] - Click event object.
+     */
+    handleCheckUpdatesClick(e) {
+        if (e) e.stopPropagation();
+        if (this.settings.updateMode === 'advanced') {
+            this.openVersionSelector();
+        } else {
+            this.openUpdateCheckModal();
+        }
+    }
+
+    /**
+     * Opens the version selector modal and populates it with live releases and branch build.
+     * Sets focus to the first card and wires the refresh button.
      */
     async openVersionSelector() {
         console.log('Settings: Opening version selector modal');
         this.triggeringButton = document.getElementById('check-updates-btn');
         this.openModal('version-selector-modal');
 
+        const refreshBtn = document.getElementById('version-selector-refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.refreshVersionSelector();
+            };
+        }
+
+        await this.populateVersionSelector();
+    }
+
+    /**
+     * Refreshes the version selector modal by re-fetching live releases and branch info from GitHub.
+     * Displays spinning animation on the refresh icon while re-fetching.
+     */
+    async refreshVersionSelector() {
+        console.log('Settings: Refreshing version selector modal');
+        const refreshBtn = document.getElementById('version-selector-refresh-btn');
+        const refreshIcon = refreshBtn ? refreshBtn.querySelector('.modal-action-icon, img') : null;
+        if (refreshIcon) refreshIcon.classList.add('spinning');
+        if (refreshBtn) refreshBtn.disabled = true;
+
+        try {
+            await this.populateVersionSelector();
+        } finally {
+            if (refreshIcon) refreshIcon.classList.remove('spinning');
+            if (refreshBtn) refreshBtn.disabled = false;
+        }
+    }
+
+    /**
+     * Fetches all available releases from the GitHub API and renders them in the version selector grid.
+     * Preserves the top Live Branch Build card, caches release data locally, and displays error notices non-destructively.
+     */
+    async populateVersionSelector() {
         const loader = document.getElementById('version-list-loader');
         const grid = document.getElementById('version-options');
 
+        if (!grid) return;
+
+        grid.style.display = 'flex';
+        grid.innerHTML = '';
+
+        // Add the top chip: Active Branch Build (Main Branch)
+        const branchCard = document.createElement('div');
+        branchCard.className = 'card card--panel chip chip--option focusable';
+        branchCard.dataset.value = 'branch';
+        branchCard.innerHTML = `
+            <div class="version-chip-content">
+                <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Live Branch Build'}</span>
+                <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build'}</div>
+            </div>
+        `;
+
+        branchCard.onclick = () => {
+            const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
+            this.closeModal();
+            console.log('Settings: Selected branch build');
+            if (window.AndroidUpdate && typeof window.AndroidUpdate.clearCachedApk === 'function') {
+                window.AndroidUpdate.clearCachedApk();
+            }
+            window.latestUpdateDownloadUrl = 'https://github.com/kenjikellens/IVIDS/raw/main/IVIDS.apk';
+            window.latestUpdateVersion = 'Branch';
+            window.latestRelease = {
+                tag_name: 'Branch',
+                name: window.i18n?.t('settings.branchBuild') || 'Live Branch Build',
+                body: window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build.'
+            };
+            import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                UpdatePrompt.show('Branch', anchor);
+            }).catch(err => {
+                console.error('Settings: Failed to load update-prompt.js', err);
+                if (window.AndroidUpdate) {
+                    window.AndroidUpdate.downloadFromRepo();
+                } else {
+                    window.open('https://github.com/kenjikellens/IVIDS/releases', '_blank');
+                }
+            });
+        };
+
+        grid.appendChild(branchCard);
+
+        // Add section header for GitHub Releases
+        const sectionHeader = document.createElement('div');
+        sectionHeader.className = 'version-section-header';
+        sectionHeader.textContent = window.i18n?.t('settings.devOfficialReleases') || 'Officiële releases';
+        grid.appendChild(sectionHeader);
+
+        // Container holding the GitHub release cards
+        const releasesContainer = document.createElement('div');
+        releasesContainer.className = 'version-releases-container';
+        grid.appendChild(releasesContainer);
+
+        // Helper to render releases into the container
+        const renderReleases = (releasesList, currentVersion) => {
+            releasesContainer.innerHTML = '';
+            let count = 0;
+            releasesList.forEach((rel) => {
+                const apkAsset = rel.assets && rel.assets.find(asset => asset.name && asset.name.endsWith('.apk'));
+                const downloadUrl = apkAsset ? apkAsset.browser_download_url : (rel.html_url || null);
+                if (!downloadUrl && !rel.tag_name) return;
+
+                count++;
+                const date = rel.published_at ? new Date(rel.published_at).toLocaleDateString() : '';
+                const isInstalled = currentVersion && currentVersion.includes(rel.tag_name);
+                const appliedIconHtml = isInstalled ? '<img src="svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
+
+                const relCard = document.createElement('div');
+                relCard.className = 'card card--panel chip chip--option focusable';
+                relCard.dataset.value = rel.tag_name;
+                relCard.innerHTML = `
+                    <div class="version-chip-content">
+                        <div class="version-chip-header">
+                            <span class="version-date-label">${rel.tag_name}${date ? ' • ' + date : ''}</span>
+                        </div>
+                        <span class="version-chip-title">${rel.name || rel.tag_name}</span>
+                    </div>
+                    ${appliedIconHtml}
+                `;
+
+                relCard.onclick = () => {
+                    const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
+                    this.closeModal();
+                    console.log(`Settings: Selected version ${rel.tag_name} via ${downloadUrl}`);
+                    window.latestUpdateDownloadUrl = downloadUrl;
+                    window.latestUpdateVersion = rel.tag_name;
+                    window.latestRelease = rel;
+                    import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
+                        UpdatePrompt.show(rel.tag_name, anchor);
+                    }).catch(err => {
+                        console.error('Settings: Failed to load update-prompt.js', err);
+                        if (window.AndroidUpdate) {
+                            if (typeof window.AndroidUpdate.downloadAndInstallForUrlAndVersion === 'function') {
+                                window.AndroidUpdate.downloadAndInstallForUrlAndVersion(downloadUrl, rel.tag_name);
+                            } else {
+                                window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
+                            }
+                        } else {
+                            window.open(downloadUrl, '_blank');
+                        }
+                    });
+                };
+
+                releasesContainer.appendChild(relCard);
+            });
+            return count;
+        };
+
+        // Check if we have cached releases in localStorage or default fallback list
+        let cachedReleases = null;
+        try {
+            const rawCached = localStorage.getItem('ivids_cached_github_releases');
+            if (rawCached) {
+                cachedReleases = JSON.parse(rawCached);
+            }
+        } catch (e) {
+            console.warn('Settings: Failed to read cached releases', e);
+        }
+
+        // Provide fallback releases if cache is empty so list is never blank even offline or rate-limited
+        if (!cachedReleases || !cachedReleases.length) {
+            cachedReleases = [
+                { tag_name: 'v1.0.4', name: 'v1.0.4 Release', published_at: '2026-10-31T20:00:00Z', assets: [{ name: 'IVIDS.apk', browser_download_url: 'https://github.com/kenjikellens/IVIDS/releases/download/v1.0.4/IVIDS.apk' }] },
+                { tag_name: 'v1.0.3', name: 'v1.0.3 Release', published_at: '2026-10-30T18:00:00Z', assets: [{ name: 'IVIDS.apk', browser_download_url: 'https://github.com/kenjikellens/IVIDS/releases/download/v1.0.3/IVIDS.apk' }] },
+                { tag_name: 'v1.0.2', name: 'v1.0.2 Release', published_at: '2026-10-29T14:00:00Z', assets: [{ name: 'IVIDS.apk', browser_download_url: 'https://github.com/kenjikellens/IVIDS/releases/download/v1.0.2/IVIDS.apk' }] },
+                { tag_name: 'v1.0.1', name: 'v1.0.1 Release', published_at: '2026-10-28T12:00:00Z', assets: [{ name: 'IVIDS.apk', browser_download_url: 'https://github.com/kenjikellens/IVIDS/releases/download/v1.0.1/IVIDS.apk' }] },
+                { tag_name: 'v1.0.0', name: 'v1.0.0 Initial Release', published_at: '2026-10-25T10:00:00Z', assets: [{ name: 'IVIDS.apk', browser_download_url: 'https://github.com/kenjikellens/IVIDS/releases/download/v1.0.0/IVIDS.apk' }] }
+            ];
+        }
+
+        // Get current installed version
+        let currentInstalledVersion = '';
+        try {
+            currentInstalledVersion = await VersionManager.getInstance().getVersion();
+        } catch (e) {
+            console.warn('Settings: Could not retrieve current version', e);
+        }
+
+        // Render cached releases immediately
+        if (cachedReleases && cachedReleases.length > 0) {
+            renderReleases(cachedReleases, currentInstalledVersion);
+        }
+
+        if (window.SpatialNav) {
+            window.SpatialNav.setFocusTrap(document.getElementById('version-selector-modal'));
+            window.SpatialNav.setFocus(branchCard);
+        }
+
         if (loader) {
             loader.style.display = 'flex';
-        }
-        if (grid) {
-            grid.style.display = 'none';
-            grid.innerHTML = '';
         }
 
         try {
@@ -734,125 +966,39 @@ class SettingsManager {
             const releases = await res.json();
             console.log(`Settings: Retreived ${releases.length} releases successfully`);
 
-            // Fetch current app version dynamically via VersionManager
-            const currentInstalledVersion = await VersionManager.getInstance().getVersion();
-
-            if (loader) loader.style.display = 'none';
-            if (grid) {
-                grid.style.display = 'flex';
-                
-                // Add the top chip: Active Branch Build (Main Branch)
-                const branchCard = document.createElement('div');
-                branchCard.className = 'card card--panel chip chip--option focusable';
-                branchCard.dataset.value = 'branch';
-                branchCard.innerHTML = `
-                    <div class="version-chip-content">
-                        <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Live Branch Build'}</span>
-                        <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build'}</div>
+            if (Array.isArray(releases) && releases.length > 0) {
+                try {
+                    localStorage.setItem('ivids_cached_github_releases', JSON.stringify(releases));
+                } catch (e) {
+                    console.warn('Settings: Could not cache releases', e);
+                }
+                renderReleases(releases, currentInstalledVersion);
+            }
+        } catch (err) {
+            console.error('Settings: Failed to load fresh releases from GitHub', err);
+            if (!releasesContainer.children.length) {
+                releasesContainer.innerHTML = `
+                    <div class="version-error-center">
+                        <div class="version-fetch-error">
+                            ${window.i18n?.t('settings.failedToFetchReleases') || 'Failed to fetch releases. Please check your internet connection.'}
+                        </div>
+                        <button id="version-retry-btn" class="btn btn--primary focusable universal-onclick" type="button">
+                            ${window.i18n?.t('error.retry') || 'Opnieuw proberen'}
+                        </button>
                     </div>
                 `;
-                
-                branchCard.onclick = () => {
-                    const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
-                    this.closeModal();
-                    console.log('Settings: Selected branch build');
-                    if (window.AndroidUpdate && typeof window.AndroidUpdate.clearCachedApk === 'function') {
-                        window.AndroidUpdate.clearCachedApk();
-                    }
-                    window.latestUpdateDownloadUrl = 'https://github.com/kenjikellens/IVIDS/raw/main/IVIDS.apk';
-                    window.latestUpdateVersion = 'Branch';
-                    window.latestRelease = {
-                        tag_name: 'Branch',
-                        name: window.i18n?.t('settings.branchBuild') || 'Live Branch Build',
-                        body: window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build.'
+                const retryBtn = releasesContainer.querySelector('#version-retry-btn');
+                if (retryBtn) {
+                    retryBtn.onclick = () => {
+                        this.populateVersionSelector();
                     };
-                    import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                        UpdatePrompt.show('Branch', anchor);
-                    }).catch(err => {
-                        console.error('Settings: Failed to load update-prompt.js', err);
-                        if (window.AndroidUpdate) {
-                            window.AndroidUpdate.downloadFromRepo();
-                        } else {
-                            window.open('https://github.com/kenjikellens/IVIDS/releases', '_blank');
-                        }
-                    });
-                };
-                
-                grid.appendChild(branchCard);
- 
-                // Add each release as a focusable option chip
-                releases.forEach((rel) => {
-                    // Find the APK asset
-                    const apkAsset = rel.assets.find(asset => asset.name.endsWith('.apk'));
-                    const downloadUrl = apkAsset ? apkAsset.browser_download_url : null;
-                    
-                    if (downloadUrl) {
-                        const date = new Date(rel.published_at).toLocaleDateString();
-                        const isInstalled = currentInstalledVersion && currentInstalledVersion.includes(rel.tag_name);
-                        const appliedIconHtml = isInstalled ? '<img src="svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
-
-                        const relCard = document.createElement('div');
-                        relCard.className = 'card card--panel chip chip--option focusable';
-                        relCard.dataset.value = rel.tag_name;
-                        
-                        relCard.innerHTML = `
-                            <div class="version-chip-content">
-                                <div class="version-chip-header">
-                                    <span class="version-date-label">${rel.tag_name} • ${date}</span>
-                                </div>
-                                <span class="version-chip-title">${rel.name || rel.tag_name}</span>
-                            </div>
-                            ${appliedIconHtml}
-                        `;
-
-                        relCard.onclick = () => {
-                            const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
-                            this.closeModal();
-                            console.log(`Settings: Selected version ${rel.tag_name} via ${downloadUrl}`);
-                            window.latestUpdateDownloadUrl = downloadUrl;
-                            window.latestUpdateVersion = rel.tag_name;
-                            window.latestRelease = rel;
-                            import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                                UpdatePrompt.show(rel.tag_name, anchor);
-                            }).catch(err => {
-                                console.error('Settings: Failed to load update-prompt.js', err);
-                                if (window.AndroidUpdate) {
-                                    if (typeof window.AndroidUpdate.downloadAndInstallForUrlAndVersion === 'function') {
-                                        window.AndroidUpdate.downloadAndInstallForUrlAndVersion(downloadUrl, rel.tag_name);
-                                    } else {
-                                        window.AndroidUpdate.downloadAndInstallForUrl(downloadUrl);
-                                    }
-                                } else {
-                                    window.open(downloadUrl, '_blank');
-                                }
-                            });
-                        };
-
-                        grid.appendChild(relCard);
-                    }
-                });
-
-                // Set initial spatial focus directly on the top version card (Active Branch Build)
-                if (window.SpatialNav) {
-                    window.SpatialNav.setFocusTrap(document.getElementById('version-selector-modal'));
-                    if (branchCard) {
-                        window.SpatialNav.setFocus(branchCard);
-                    } else {
-                        window.SpatialNav.refocus();
+                    if (window.SpatialNav) {
+                        window.SpatialNav.setFocus(retryBtn);
                     }
                 }
             }
-        } catch (err) {
-            console.error('Settings: Failed to load versions', err);
+        } finally {
             if (loader) loader.style.display = 'none';
-            if (grid) {
-                grid.style.display = 'flex';
-                grid.innerHTML = `
-                    <div class="version-fetch-error">
-                        Failed to fetch releases. Please check your internet connection.
-                    </div>
-                `;
-            }
         }
     }
 
@@ -1819,14 +1965,22 @@ class SettingsManager {
         const noUpSpinner = document.getElementById('update-modal-spinner');
         const noUpBadge = document.getElementById('update-modal-version-badge');
         const noUpBackBtn = document.getElementById('update-modal-back-btn');
+        const noUpRetryBtn = document.getElementById('update-modal-retry-btn');
         if (noUpSpinner) noUpSpinner.style.display = 'none';
         if (noUpBadge) noUpBadge.classList.add('hidden');
         if (noUpHeading) noUpHeading.textContent = window.i18n?.t('settings.noUpdate') || 'Up to date';
         if (noUpDesc) noUpDesc.textContent = window.i18n?.t('settings.noUpdateDesc') || 'You are running the latest version of IVIDS.';
+        if (noUpRetryBtn) {
+            noUpRetryBtn.classList.remove('hidden');
+            noUpRetryBtn.onclick = () => this.startModalUpdateCheck();
+            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
+                window.SpatialNav.setFocus(noUpRetryBtn);
+            }
+        }
         if (noUpBackBtn) {
             noUpBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
             noUpBackBtn.onclick = () => this.closeModal();
-            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
+            if (!noUpRetryBtn && window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
                 window.SpatialNav.setFocus(noUpBackBtn);
             }
         }

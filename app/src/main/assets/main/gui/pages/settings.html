@@ -270,11 +270,11 @@
 <!-- Version Selector Modal -->
 <div id="version-selector-modal" class="modal">
     <div class="modal__dialog modal__dialog--lg">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
-        <button id="version-selector-refresh-btn" class="modal__action-btn btn btn--ghost btn--circle focusable universal-onclick" aria-label="Refresh" type="button" title="Vernieuwen">
-            <img src="svg/retry.svg" class="modal-action-icon" alt="Refresh">
+        <button id="version-selector-refresh-btn" class="modal__refresh-btn btn btn--ghost btn--circle focusable" aria-label="Refresh" type="button" title="Vernieuwen">
+            <img src="svg/retry.svg" class="modal-refresh-icon" alt="Refresh">
         </button>
         <h2 class="modal__title" data-i18n="settings.selectVersion">Select Version</h2>
         <div class="modal__body modal__body--scroll">
@@ -285,8 +285,8 @@
                 <!-- Dynamically populated version chips -->
             </div>
         </div>
-        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
-            <button class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
+        <div class="modal__footer">
+            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -337,7 +337,6 @@
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
-        <button class="modal__close-btn btn btn--ghost btn--circle focusable universal-onclick" aria-label="Close" type="button">✕</button>
         <h2 class="modal__title" data-i18n="settings.appInfo">App Info</h2>
         <div class="modal__body app-info-body">
             <div class="app-info-header">
