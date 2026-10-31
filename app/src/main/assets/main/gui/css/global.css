@@ -1014,7 +1014,7 @@ input, textarea, select { font: inherit; }
 
 /* Ambient dark-grey and theme-accent overlay when no backdrop image is available. */
 .media-backdrop--empty .media-backdrop__overlay, .backdrop-overlay-empty {
-    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.22) 0%, rgba(var(--primary-rgb), 0.06) 46%, transparent 76%), linear-gradient(180deg, rgba(20, 22, 28, 0.4) 0%, var(--background-color) 100%);
+    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 46%, transparent 76%), linear-gradient(180deg, rgba(8, 8, 8, 0.65) 0%, var(--background-color) 100%);
 }
 
 /* Centered circular media action play indicator on trailers and cards. */

@@ -123,7 +123,14 @@
 .filter-main-grid { gap: 12px; grid-template-columns: 1fr; }
 
 /* Mobile details page root container with safe-area spacing and bottom nav rail clearance. */
-#app .details-page { box-sizing: border-box; min-height: 100vh; padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px)); }
+#app .details-page {
+    background-color: var(--background-color);
+    background: radial-gradient(circle at 50% 0%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 35%, transparent 70%), linear-gradient(180deg, rgba(8, 8, 8, 0.6) 0%, var(--background-color) 100%);
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding-top: calc(8px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px));
+}
 #app .details-layout { gap: 12px; margin: 0 auto; max-width: 600px; padding: 0 16px; position: relative; z-index: 1; }
 
 /* Mobile circular floating back button pinned to top-left with safe-area spacing. */
@@ -159,9 +166,11 @@
     width: 18px;
 }
 
-/* Sleek background backdrop for mobile hero. */
-#app .details-backdrop { height: 24vh; min-height: 160px; position: absolute; top: 0; left: 0; right: 0; width: 100%; }
-#app .details-backdrop-overlay { background: linear-gradient(180deg, rgba(5, 5, 5, 0) 0%, rgba(5, 5, 5, 0.45) 55%, #050505 100%); }
+/* Mobile: Details backdrop image hidden completely as requested. */
+#app .details-backdrop,
+#app .details-backdrop-overlay {
+    display: none !important;
+}
 
 /* Compact mobile hero layout centering the poster, title and metadata. */
 #app .details-top { align-items: center; display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; padding-top: 0; text-align: center; }
@@ -182,18 +191,73 @@
 #app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 16px; height: 16px; pointer-events: none; width: 16px; }
 #app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* Unified dark glassmorphic tab bar for mobile. */
-#app #details-tabs { align-items: stretch; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; box-sizing: border-box; display: flex; gap: 6px; justify-content: center; margin: 4px auto 12px; max-width: 500px; padding: 4px; width: 100%; }
-#app #details-tabs .btn { background: transparent; border: 1px solid transparent; border-radius: 8px; color: #aaaaaa; flex: 1 1 0; font-size: 13.5px; font-weight: 600; height: 40px; min-height: 40px; min-width: 0; padding: 0 8px; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
-#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .btn.btn--primary { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.28); color: #ffffff; font-weight: 700; }
+/* Tabs header bar copied from landscape */
+#app .tab-bar,
+#app #details-tabs {
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    width: 100%;
+}
+#app #details-tabs .btn,
+#app .tab-bar .btn {
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    justify-content: center;
+    min-height: 44px;
+    outline: none;
+    padding: 0 20px;
+    position: relative;
+    text-align: center;
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, color 150ms ease;
+    user-select: none;
+    white-space: nowrap;
+    width: auto;
+}
+#app #details-tabs .btn.btn--secondary,
+#app .tab-bar .btn.btn--secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+}
+#app #details-tabs .btn.btn--primary,
+#app #details-tabs .btn.is-active,
+#app #details-tabs .btn.active,
+#app .tab-bar .btn.btn--primary,
+#app .tab-bar .btn.is-active,
+#app .tab-bar .btn.active {
+    background: rgba(var(--primary-rgb), 0.25);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-weight: 800;
+}
 
-/* Tab panels and About section on mobile details view. */
+/* Tab Panel Over: copied from landscape mode */
 #app .tab-panel.hidden, #app .details-bottom.hidden { display: none; }
-#app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-#app .disney-about-content { flex-direction: column; gap: 20px; padding-bottom: 40px; width: 100%; }
+#app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+#app .disney-about-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; width: 100%; }
 #app .disney-about-left, #app .disney-about-right { width: 100%; }
-#app .media-grid--cast, #app .disney-cast-grid { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
-#app .disney-cast-img { aspect-ratio: 1; border: 2px solid rgba(255, 255, 255, 0.12); border-radius: 50%; margin: 0 auto; max-width: 88px; overflow: hidden; }
+#app .disney-about-description { color: #dddddd; font-size: 16px; line-height: 1.6; }
+#app .media-grid--cast, #app .disney-cast-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); width: 100%; }
+#app .card--compact { background: rgba(255, 255, 255, 0.02); border: 2px solid transparent; border-radius: var(--radius-sm); overflow: hidden; padding-bottom: 0.5rem; text-align: center; }
+#app .disney-cast-img { aspect-ratio: 2 / 3; background-color: #1a1c22; background-image: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.25) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #16181e 100%); background-position: center; background-size: cover; border: none; border-radius: 0; margin: 0; position: relative; width: 100%; }
+#app .disney-cast-name { color: var(--text-color); font-size: 0.9rem; font-weight: 700; overflow: hidden; padding: 0.35rem 0.25rem 0.1rem; text-overflow: ellipsis; white-space: nowrap; }
+#app .disney-cast-character { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Touch-friendly compact season selector pill. */
 #app .details-seasons { align-items: center; backdrop-filter: none; background: transparent; border: none; display: flex; justify-content: flex-start; margin: 2px 0 8px; max-height: none; padding: 0; width: 100%; }
@@ -202,35 +266,30 @@
 #app .seasons-dropdown-wrapper::after { border-bottom: 2px solid rgba(255, 255, 255, 0.7); border-right: 2px solid rgba(255, 255, 255, 0.7); content: ''; height: 5px; pointer-events: none; position: absolute; right: 14px; top: calc(50% - 4px); transform: rotate(45deg); width: 5px; }
 #app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: 13.5px; font-weight: 700; height: 100%; min-height: 36px; outline: none; padding: 0 32px 0 16px; width: 100%; }
 
-/* Compact horizontal streaming episode and extra trailer row cards on mobile. */
+/* Tab Panel Extra: copied from landscape mode card--row */
 #app .disney-episode-item,
 #app .card--row.disney-episode-item,
 #app .disney-extra-item,
-#app .card--row.disney-extra-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-sm); box-sizing: border-box; display: flex; flex-direction: row; gap: 12px; margin-bottom: 8px; padding: 8px 10px; width: 100%; }
+#app .card--row.disney-extra-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid transparent; border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; gap: 16px; margin-bottom: 12px; overflow: hidden; padding: 12px 16px; transition: border-color 150ms ease, background-color 150ms ease; width: 100%; }
 #app .disney-episode-item:active, #app .disney-extra-item:active { background: rgba(255, 255, 255, 0.08); }
-#app .disney-episode-item.watched { border-left: 3px solid var(--primary-color); }
+#app .disney-episode-item.watched { border-bottom: 3px solid var(--primary-color); }
 
-/* Compact 16:9 thumbnail on the left. */
+/* 16:9 thumbnail copied from landscape card__thumb */
 #app .disney-episode-item .card__thumb,
-#app .disney-extra-item .card__thumb { aspect-ratio: 16 / 9; border-radius: var(--radius-sm); flex: 0 0 clamp(118px, 32vw, 130px); height: auto; overflow: hidden; position: relative; width: clamp(118px, 32vw, 130px); }
+#app .disney-extra-item .card__thumb { aspect-ratio: 16 / 9; background-color: #1a1c22; background-image: radial-gradient(circle at 80% 25%, rgba(var(--primary-rgb), 0.26) 0%, transparent 65%), linear-gradient(135deg, #262932 0%, #17191f 100%); background-position: center; background-size: cover; border-radius: var(--radius-sm); flex-shrink: 0; overflow: hidden; position: relative; width: clamp(120px, 36vw, 180px); }
 
-/* Episode and extra card body with vertical alignment. */
+/* Play icon copied from landscape .disney-extra-play-icon */
+#app .disney-extra-item .disney-extra-play-icon { align-items: center; background: rgba(0, 0, 0, 0.65); border: 2px solid rgba(255, 255, 255, 0.85); border-radius: 50%; color: #ffffff; display: flex; font-size: 16px; height: 42px; justify-content: center; left: calc(50% - 21px); position: absolute; top: calc(50% - 21px); width: 42px; }
+
+/* Card body typography copied from landscape */
 #app .disney-episode-item .card__body,
 #app .disney-extra-item .card__body { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: center; min-width: 0; width: auto; }
-
-/* Episode and extra title typography. */
 #app .disney-episode-item .card__title,
 #app .disney-extra-item .card__title { color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* Extra trailer category badge and publish metadata. */
 #app .disney-extra-item .card__meta { color: var(--primary-color, #46d369); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 2px; text-transform: uppercase; }
 #app .disney-extra-item .card__desc { color: #888888; font-size: 12px; line-height: 1.3; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* Episode metadata (duration & year). */
 #app .disney-episode-item .episode-meta { align-items: center; color: #888888; display: flex; font-size: 11.5px; font-weight: 600; gap: 6px; margin-bottom: 3px; }
 #app .disney-episode-item .episode-meta__item:not(:last-child)::after { color: rgba(255, 255, 255, 0.3); content: "•"; margin-left: 6px; }
-
-/* Episode 2-line truncated description. */
 #app .disney-episode-item .card__desc { -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: #999999; display: -webkit-box; font-size: 12px; line-clamp: 2; line-height: 1.35; margin: 0; overflow: hidden; }
 
 /* Extra scroll padding at bottom of episodes and extras containers. */
@@ -824,7 +883,6 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .details-actions { align-items: center; gap: 10px; }
 #app #details-play { border-radius: 12px; height: 48px; min-height: 48px; }
 #app #details-trailer, #app #details-playlist { background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; height: 48px; min-height: 48px; }
-#app #details-tabs .btn.is-active, #app #details-tabs .btn.active, #app #details-tabs .tab-btn.is-active, #app #details-tabs .tab-btn.active { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.28); color: #ffffff; }
 
 /* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */
 #app .settings-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
@@ -1066,20 +1124,21 @@ body #app-info-modal .modal__footer .btn {
 
 
 
-/* Account screen styled as YouTube Account / Menu view (Screen 2). */
-#app .account-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
-#app .account-header { margin-bottom: 12px; padding: 12px 18px 4px; text-align: left; }
-#app .account-header h1 { color: #f1f1f1; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
-#app .account-section { background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; }
-#app .account-section .section-title { border: 0; color: #888888; font-size: 12px; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
-#app .profile-display { align-items: center; border-bottom: 1px solid #1c1c1c; display: flex; gap: 16px; padding: 12px 18px 18px; text-align: left; }
-#app .profile-avatar.large { align-items: center; background: #1c1c1c; border: 2px solid var(--primary-color); border-radius: 50%; box-shadow: none; color: var(--primary-color); display: flex; flex: 0 0 54px; font-size: 22px; font-weight: 700; height: 54px; justify-content: center; width: 54px; }
-#app .profile-details { flex: 1 1 auto; min-width: 0; }
-#app .profile-name-text { color: #f1f1f1; font-size: 18px; font-weight: 600; margin: 0 0 4px; text-align: left; }
-#app .profile-actions { align-items: center; display: flex; flex-direction: row; gap: 10px; margin-top: 10px; width: 100%; }
-#app .profile-actions .btn { border-radius: 18px; flex: 0 0 auto; font-size: 13.5px; font-weight: 600; min-height: 38px; min-width: 0; padding: 0 16px; width: auto; }
-#app .profile-actions .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: #000000; font-weight: 700; }
-#app .profile-actions .btn--secondary { background: transparent; border: 1px solid #444444; color: #f1f1f1; }
+/* Mobile: Account screen styled consistently with IVIDS card architecture. */
+#app .account-container { box-sizing: border-box; margin: 0 auto; max-width: 600px; padding: calc(16px + env(safe-area-inset-top, 24px)) 16px calc(84px + env(safe-area-inset-bottom, 16px)); width: 100%; }
+#app .account-header { margin-bottom: 16px; padding: 0 4px; text-align: left; }
+#app .account-header h1 { color: #ffffff; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+#app .account-section { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); box-sizing: border-box; box-shadow: none; margin-bottom: 20px; padding: 20px 18px; width: 100%; }
+#app .account-section .section-title { border: none; color: #ffffff; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 16px; padding: 0; text-transform: none; }
+#app .profile-display { align-items: center; border: none; display: flex; gap: 18px; padding: 0; text-align: left; width: 100%; }
+#app .profile-avatar.large { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.25); border-radius: var(--radius-md); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); color: #ffffff; display: flex; flex: 0 0 68px; font-size: 28px; font-weight: 800; height: 68px; justify-content: center; width: 68px; }
+#app .profile-details { display: flex; flex: 1 1 auto; flex-direction: column; gap: 6px; min-width: 0; }
+#app .profile-name-text { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+#app .profile-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; width: 100%; }
+#app .profile-actions .btn { align-items: center; border-radius: var(--radius-sm); box-sizing: border-box; display: inline-flex; font-size: 14.5px; font-weight: 700; justify-content: center; min-height: 46px; padding: 0 18px; width: 100%; }
+#app .profile-actions .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: #000000; }
+#app .profile-actions .btn--secondary { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
+#app .profile-actions .btn--danger { background: #e63946; border: 1px solid #e63946; color: #ffffff; }
 
 /* Login screen keeps its form within the phone width and uses a single clear primary action. */
 #app .login-page-wrapper { align-items: flex-start; background: #0f0f0f; box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
