@@ -151,12 +151,39 @@
 
 /* Live TV mobile layout overrides. */
 #app .livetv-top-bar { align-items: stretch; flex-direction: column; gap: 10px; padding: 4% var(--app-content-padding-x) 0; }
-#app .livetv-top-actions { justify-content: space-between; width: 100%; }
-#app .form-select-wrapper { flex: 1; height: 48px; }
+/* Live TV top actions container on mobile. */
+#app .livetv-top-actions { justify-content: flex-end; width: 100%; }
+/* Quick filter row horizontal scroll on mobile. */
+#app .livetv-quick-filters-row { overflow-x: auto; padding: 4px var(--app-content-padding-x) 0; }
+
+/* Quick filter pills flex row container on mobile. */
+#app .livetv-quick-filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+
+/* Quick filter touch targets on mobile. */
+#app .livetv-quick-filters .chip { flex-shrink: 0; min-height: 44px; padding: 10px 16px; }
 #app .livetv-two-column-layout { flex-direction: column-reverse; gap: 15px; padding: 4% var(--app-content-padding-x); }
 #app .livetv-list-column { height: 40vh; width: 100%; }
 #app .livetv-preview-column { height: auto; width: 100%; }
-#app .preview-card-video { height: 30vh; }
+/* Responsive preview video card sizing on mobile. */
+#app .preview-card, #app .preview-card-video { height: 28vh; min-height: 180px; }
+
+/* Responsive preview card title sizing on mobile. */
+#app .preview-card__title { font-size: 18px; }
+
+/* Responsive preview actions touch layout on mobile. */
+#app .preview-card__actions { gap: 8px; }
+
+/* Responsive preview action buttons touch sizing on mobile. */
+#app .preview-card__actions .btn { font-size: 13px; min-height: 44px; padding: 8px 14px; }
+
+/* Touch-friendly channel cards on mobile. */
+#app .channel-card, #app .channel-list-item { min-height: 52px; padding: 10px 12px; }
+
+/* Touch-friendly favorite toggle button target on mobile. */
+#app .channel-card__fav-btn { height: 44px; width: 44px; }
+
+/* Compact EPG schedule panel padding on mobile. */
+#app .epg-panel, #app .epg-card { padding: 16px; }
 
 /* Single column grid flow for custom playlists grid on mobile. */
 #app .media-grid--widescreen, #app .playlists-grid { gap: 12px; grid-template-columns: 1fr; }

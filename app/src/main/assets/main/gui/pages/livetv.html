@@ -6,28 +6,35 @@
                 <img src="images/search.svg" class="search-icon" alt="Search">
                 <input type="text" id="search-input" class="form-input focusable" placeholder="Search for channels..."
                     data-i18n="livetv.searchPlaceholder" readonly>
-                <button id="search-clear" class="search-clear-btn focusable hidden">&times;</button>
+                <button id="search-clear" class="search-clear-btn focusable hidden" aria-label="Clear Search">&times;</button>
             </div>
         </div>
 
-        <div class="top-bar__actions livetv-top-actions">
-            <!-- Genre Select -->
-            <div class="form-select-wrapper focusable-container">
-                <select id="filter-genre" class="filter-select focusable">
-                    <option value="" data-i18n="livetv.allGenres">All Genres</option>
-                </select>
-            </div>
-            <!-- Country Select -->
-            <div class="form-select-wrapper focusable-container">
-                <select id="filter-country" class="filter-select focusable">
-                    <option value="" data-i18n="livetv.allCountries">All Countries</option>
-                </select>
-            </div>
-
+        <div class="top-bar__actions livetv-top-actions btn-group">
+            <button id="livetv-filter-btn" class="btn btn--secondary focusable" title="Filters">
+                <img src="images/filter.svg" class="filter-icon" alt="Filters">
+                <span data-i18n="livetv.filters">Filters</span>
+                <span id="active-filter-badge" class="badge badge--primary hidden">0</span>
+            </button>
         </div>
     </div>
 
-
+    <!-- Quick Filter Pills Row -->
+    <div class="livetv-quick-filters-row">
+        <div class="livetv-quick-filters chip-grid" id="livetv-quick-filters">
+            <button id="pill-all" class="chip chip--filter focusable active" data-filter="all">
+                <span data-i18n="livetv.all">All</span>
+            </button>
+            <button id="pill-sports" class="chip chip--filter focusable" data-filter="sports">
+                <img src="images/sports.svg" class="chip__icon" alt="Sports">
+                <span data-i18n="livetv.sportsFilter">Voetbal / Live Sports</span>
+            </button>
+            <button id="pill-favorites" class="chip chip--filter focusable" data-filter="favorites">
+                <img src="images/star.svg" class="chip__icon" alt="Favorites">
+                <span data-i18n="livetv.favorites">Favorites</span>
+            </button>
+        </div>
+    </div>
 
     <!-- Two-Column Layout Body -->
     <div class="livetv-two-column-layout">
@@ -53,17 +60,36 @@
 
             <!-- Active Channel Details -->
             <div id="hero-active-content" class="hero-active-content hidden">
-                <!-- Top Card: Video Preview / Channel info & Watch button -->
-                <!-- Top Card: Video Preview -->
-                <div class="card card--panel preview-card-video">
-                    <video id="livetv-preview-video" autoplay muted playsinline></video>
-                    <div id="preview-video-loading" class="preview-video-loading hidden">
-                        <div class="ivids-loader"></div>
+                <!-- Top Card: 16:9 Widescreen Video Preview -->
+                <div class="card card--panel card--widescreen preview-card preview-card-video">
+                    <div class="preview-card__video-wrap">
+                        <video id="livetv-preview-video" autoplay muted playsinline></video>
+                        <div id="preview-video-loading" class="preview-video-loading hidden">
+                            <div class="ivids-loader"></div>
+                        </div>
+                        <div class="preview-card__overlay">
+                            <div class="preview-card__header">
+                                <div class="preview-card__meta">
+                                    <span id="preview-channel-badge" class="badge badge--glass preview-card__badge">LIVE</span>
+                                    <h2 id="preview-channel-name" class="preview-card__title">Channel Name</h2>
+                                    <span id="preview-channel-group" class="preview-card__group">Category</span>
+                                </div>
+                            </div>
+                            <div class="preview-card__actions btn-group">
+                                <button id="preview-watch-btn" class="btn btn--primary focusable" title="Watch Fullscreen">
+                                    <img src="images/play.svg" class="btn__icon" alt="Play">
+                                    <span data-i18n="livetv.watchFullscreen">Watch Fullscreen</span>
+                                </button>
+                                <button id="preview-fav-btn" class="btn btn--secondary focusable" title="Toggle Favorite">
+                                    <img id="preview-fav-icon" src="images/star.svg" class="btn__icon" alt="Favorite">
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Bottom Card: Current & Upcoming Program EPG Schedules -->
-                <div class="card card--panel epg-card">
+                <div class="card card--panel epg-panel epg-card">
                     <!-- Current Program Schedule -->
                     <div id="hero-epg-container" class="details-epg-section hidden">
                         <h3 class="section-title">
@@ -90,6 +116,43 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Filter Modal -->
+    <div id="livetv-filter-modal" class="modal">
+        <div class="modal__dialog modal__dialog--xl">
+            <h2 class="modal__title" data-i18n="livetv.filterDialog">Filter Channels</h2>
+
+            <div class="modal__body modal__body--scroll">
+                <!-- Genre Section -->
+                <div class="form-group">
+                    <div class="group-header">
+                        <h3 data-i18n="livetv.genre">Genre</h3>
+                        <span id="genre-filter-count" class="badge"></span>
+                    </div>
+                    <div id="filter-genre-chips" class="chip-grid chip-grid--3col">
+                        <!-- Genre chips injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Country Section -->
+                <div class="form-group">
+                    <div class="group-header">
+                        <h3 data-i18n="livetv.country">Country</h3>
+                        <span id="country-filter-count" class="badge"></span>
+                    </div>
+                    <div id="filter-country-chips" class="chip-grid chip-grid--3col">
+                        <!-- Country chips injected dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
+                <button id="filter-apply-btn" class="btn btn--primary focusable" data-i18n="livetv.apply">Apply</button>
+                <button id="filter-clear-btn" class="btn btn--danger focusable" data-i18n="livetv.clearFilters">Clear All</button>
+                <button id="filter-cancel-btn" class="btn btn--secondary focusable" data-i18n="livetv.cancel">Cancel</button>
             </div>
         </div>
     </div>

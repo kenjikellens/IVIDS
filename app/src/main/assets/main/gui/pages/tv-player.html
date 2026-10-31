@@ -1,4 +1,4 @@
-<div class="tv-player-container">
+<div class="tv-player-container tv-player-page">
     <!-- Clean video stream without native browser controls -->
     <video id="tv-video" class="tv-video" autoplay></video>
 
@@ -10,33 +10,25 @@
 
     <!-- Custom Player Overlay (Auto Hides) -->
     <div class="tv-overlay" id="tv-overlay">
-        <div class="tv-overlay-top">
-            <button class="btn btn--secondary btn--circle-xl focusable" id="tv-back" title="Back">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-                    <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
+        <!-- Glassmorphic Top Bar -->
+        <div class="tv-overlay-top tv-top-bar">
+            <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-back" title="Back">
+                <img src="images/back.svg" alt="Back" class="btn__icon">
             </button>
+            <div class="tv-top-status">
+                <span class="status-dot online"></span>
+                <span class="tv-quality-badge">LIVE HD</span>
+            </div>
         </div>
 
-        <div class="tv-overlay-bottom">
+        <!-- Glassmorphic Bottom Control Bar -->
+        <div class="tv-overlay-bottom tv-bottom-bar">
             <div class="tv-controls-left">
-                <!-- Play/Pause Toggle -->
-                <button class="btn btn--primary btn--circle-xl play-pause-btn focusable" id="tv-play-pause" title="Play/Pause">
-                    <!-- Pause Icon (default since it autoplays) -->
-                    <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                    </svg>
-                    <!-- Play Icon -->
-                    <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor" width="28" height="28" class="hidden">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </button>
-
                 <!-- Channel Metadata -->
                 <div class="tv-info">
                     <h1 id="tv-title">Channel Name</h1>
                     <div class="tv-meta-row">
-                        <span id="tv-group" class="tv-group-badge">Group Name</span>
+                        <span id="tv-group" class="tv-group-badge">Live TV</span>
                         <span class="tv-epg-info" id="tv-epg" data-i18n="livetv.epgNoInfo">No Program Info</span>
                     </div>
                 </div>
@@ -44,41 +36,43 @@
 
             <div class="tv-controls-right">
                 <div class="btn-group tv-extra-controls">
-                    <!-- Aspect Ratio Switcher -->
-                    <button class="btn btn--secondary btn--circle-md focusable" id="tv-aspect-ratio" title="Aspect Ratio">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"/>
-                            <polyline points="17 2 12 7 7 2"/>
-                        </svg>
+                    <!-- Favorite Toggle Button -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-fav-btn" title="Toggle Favorite">
+                        <img id="tv-fav-icon" src="images/star.svg" alt="Favorite" class="btn__icon">
                     </button>
-                    <!-- Quick Channel Guide / EPG Trigger -->
-                    <button class="btn btn--secondary btn--circle-md focusable" id="tv-epg-btn" title="Channel Guide">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="8" y1="6" x2="21" y2="6"/>
-                            <line x1="8" y1="12" x2="21" y2="12"/>
-                            <line x1="8" y1="18" x2="21" y2="18"/>
-                            <line x1="3" y1="6" x2="3.01" y2="6"/>
-                            <line x1="3" y1="12" x2="3.01" y2="12"/>
-                            <line x1="3" y1="18" x2="3.01" y2="18"/>
-                        </svg>
+                    <!-- Previous Channel Button -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-prev-btn" title="Previous Channel">
+                        <img src="images/chevron-up.svg" alt="Previous Channel" class="btn__icon">
+                    </button>
+                    <!-- Next Channel Button -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-next-btn" title="Next Channel">
+                        <img src="images/chevron-down.svg" alt="Next Channel" class="btn__icon">
+                    </button>
+                    <!-- Subtitles Toggle Button -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-subtitles-btn" title="Subtitles">
+                        <img src="images/subtitles.svg" alt="Subtitles" class="btn__icon">
+                    </button>
+                    <!-- Audio Track Toggle Button -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-audio-btn" title="Audio Track">
+                        <img src="images/audio-track.svg" alt="Audio" class="btn__icon">
+                    </button>
+                    <!-- Channel Guide / EPG Trigger Button -->
+                    <button class="btn btn--secondary btn--circle-md tv-control-btn focusable" id="tv-channels-btn" title="Channel Guide">
+                        <img src="images/channel-list.svg" alt="Channels" class="btn__icon">
                     </button>
                 </div>
 
                 <!-- Channel Zap Guide Indicators -->
                 <div class="tv-zap-guide">
-                    <span class="guide-key">▲/▼</span>
+                    <span class="guide-key">&#9650;/&#9660;</span>
                     <span class="guide-label" data-i18n="livetv.zapChannel">Zap Channel</span>
-                </div>
-                <div class="tv-status-badge">
-                    <span class="status-dot online"></span>
-                    <span class="tv-quality-badge">LIVE HD</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Quick EPG / Channel Guide Modal Overlay -->
-    <div class="modal tv-quick-epg" id="tv-quick-epg" style="display: none;">
+    <!-- Quick EPG / Channel Guide Modal Overlay (Zero inline styles, uses .hidden) -->
+    <div class="modal tv-quick-epg hidden" id="tv-quick-epg">
         <div class="modal__dialog modal__dialog--md">
             <div class="modal__header">
                 <h3 class="modal__title" data-i18n="livetv.title">Live TV Guide</h3>
@@ -91,7 +85,7 @@
     </div>
 
     <!-- Buffering/Loading Indicator -->
-    <div id="tv-loading" class="tv-loading">
+    <div id="tv-loading" class="tv-loading hidden">
         <div class="ivids-loader"></div>
     </div>
 </div>

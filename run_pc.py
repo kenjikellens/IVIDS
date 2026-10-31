@@ -45,13 +45,14 @@ def resolve_url(base_url, relative_url):
     return urllib.parse.urljoin(base_url, relative_url)
 
 
-def rewrite_m3u8(content, base_url, proxy_prefix):
+def rewrite_m3u8(content, base_url, proxy_prefix, extra_query=''):
     """
     Rewrites relative and absolute URLs inside .m3u8 manifest content so that
     sub-playlists and .ts segment requests also route through the local CORS proxy.
     """
     lines = content.split('\n')
     rewritten = []
+    suffix = extra_query if extra_query else ''
     for line in lines:
         stripped = line.strip()
         if not stripped or stripped.startswith('#'):
@@ -61,13 +62,13 @@ def rewrite_m3u8(content, base_url, proxy_prefix):
                     """Replaces URI attribute values with proxied equivalents."""
                     uri = match.group(1)
                     absolute = resolve_url(base_url, uri)
-                    return f'URI="{proxy_prefix}{urllib.parse.quote(absolute, safe="")}"'
+                    return f'URI="{proxy_prefix}{urllib.parse.quote(absolute, safe="")}{suffix}"'
                 stripped = re.sub(r'URI="([^"]*)"', replace_uri, stripped)
             rewritten.append(stripped)
         else:
             # This is a URL line (playlist or segment)
             absolute = resolve_url(base_url, stripped)
-            rewritten.append(f'{proxy_prefix}{urllib.parse.quote(absolute, safe="")}')
+            rewritten.append(f'{proxy_prefix}{urllib.parse.quote(absolute, safe="")}{suffix}')
     return '\n'.join(rewritten)
 
 
@@ -516,7 +517,33 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             req = urllib.request.Request(target_url)
-            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+            referer = query.get('referer', [None])[0]
+            origin = query.get('origin', [None])[0]
+            user_agent = query.get('user-agent', query.get('userAgent', [None]))[0]
+
+            target_lower = target_url.lower()
+            if not referer or not origin:
+                if any(k in target_lower for k in ('daddylive', 'dlhd', 'daddyhd')):
+                    referer = referer or 'https://daddylive.mp/'
+                    origin = origin or 'https://daddylive.mp'
+                elif 'sportshub' in target_lower:
+                    referer = referer or 'https://sportshub.stream/'
+                    origin = origin or 'https://sportshub.stream'
+                elif '1stream' in target_lower:
+                    referer = referer or 'https://1stream.top/'
+                    origin = origin or 'https://1stream.top'
+                elif 'canal' in target_lower or 'mycanal' in target_lower:
+                    referer = referer or 'https://www.canalplus.com/'
+                    origin = origin or 'https://www.canalplus.com'
+
+            if not user_agent:
+                user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+
+            req.add_header('User-Agent', user_agent)
+            if referer:
+                req.add_header('Referer', referer)
+            if origin:
+                req.add_header('Origin', origin)
             req.add_header('Accept', '*/*')
 
             with urllib.request.urlopen(req, timeout=15) as response:
@@ -567,7 +594,14 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     if is_m3u8:
                         text = body.decode('utf-8', errors='replace')
                         proxy_prefix = f'/proxy?url='
-                        text = rewrite_m3u8(text, target_url, proxy_prefix)
+                        extra_params = ''
+                        if referer:
+                            extra_params += f'&referer={urllib.parse.quote(referer, safe="")}'
+                        if origin:
+                            extra_params += f'&origin={urllib.parse.quote(origin, safe="")}'
+                        if user_agent:
+                            extra_params += f'&user-agent={urllib.parse.quote(user_agent, safe="")}'
+                        text = rewrite_m3u8(text, target_url, proxy_prefix, extra_params)
                         body = text.encode('utf-8')
                         content_type = 'application/vnd.apple.mpegurl'
 

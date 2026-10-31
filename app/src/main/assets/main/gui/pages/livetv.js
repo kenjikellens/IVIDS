@@ -1,5 +1,7 @@
 import { M3UParser } from '../../logic/m3u-parser.js';
 import { PRESET_SOURCES } from '../../logic/livetv/sources.js';
+import { sourceManager } from '../../logic/livetv/core/source-manager.js';
+import { StreamOptimizer } from '../../logic/livetv/core/stream-optimizer.js';
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
@@ -7,6 +9,11 @@ import { proxyUrl } from '../js/utils/proxy.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
 import { XtreamApi } from '../../logic/livetv/xtream-api.js';
 
+/**
+ * Loads merged global and user-specific application settings from localStorage.
+ * 
+ * @returns {object} Combined settings object.
+ */
 function loadMergedSettings() {
     try {
         const globalSaved = localStorage.getItem('ivids-settings');
@@ -29,16 +36,34 @@ let searchQuery = '';
 let selectedChannel = null;
 let activeGenre = '';
 let activeCountry = '';
+let activeQuickFilter = 'all'; // 'all', 'sports', 'favorites'
 let genres = [];
 let countries = [];
 const statusCache = new Map(); // Store channel status results: url -> {status, timestamp}
+const favoritesSet = new Set(); // Store favorite channel identifiers
 let previewHls = null;
 let previewTimeout = null;
 let searchDebounceTimer = null;
 let loadSourcesPromise = null;
+let filterModalBackHandler = null;
+let liveTvPageBackHandler = null;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const LIVE_TV_FAVORITES_KEY = 'ivids-live-tv-favorites';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Extracts and formats the primary category label from a compound group string.
+ * Splits semicolon-delimited or pipe-delimited category tags (e.g. 'Sports;Voetbal;Canal+')
+ * and returns the first clean, human-readable segment (e.g. 'Sports').
+ * @param {string|null|undefined} groupStr - Raw compound group or category string.
+ * @returns {string} Clean single primary category name, or 'Live TV' if unassigned.
+ */
+export function formatPrimaryCategory(groupStr) {
+    if (!groupStr || typeof groupStr !== 'string') return 'Live TV';
+    const segments = groupStr.split(/[;|]/).map(s => s.trim()).filter(Boolean);
+    return segments.length > 0 ? segments[0] : 'Live TV';
+}
+window.formatPrimaryCategory = formatPrimaryCategory;
 const BROKEN_CHANNELS_API_URL = '/api/broken-channels';
 const brokenChannelsSet = new Set(); // Persistent broken channel URLs loaded from project file
 
@@ -76,18 +101,56 @@ function saveFavorites() {
 }
 
 /**
- * Toggles favorite status for a channel.
- * @param {object} channel
+ * Checks whether a channel is currently marked as favorite.
+ * 
+ * @param {object} channel - The channel object to test.
+ * @returns {boolean} True if the channel is favorited.
+ */
+function isChannelFavorite(channel) {
+    if (!channel) return false;
+    const id = channel.id || channel.url;
+    return favoritesSet.has(id) || (channel.id && favoritesSet.has(channel.id)) || (channel.url && favoritesSet.has(channel.url));
+}
+
+/**
+ * Toggles favorite status for a channel and updates UI state.
+ * 
+ * @param {object} channel - The channel object to toggle.
  */
 function toggleFavorite(channel) {
-    if (!channel || !channel.id) return;
-    if (favoritesSet.has(channel.id)) {
-        favoritesSet.delete(channel.id);
+    if (!channel) return;
+    const id = channel.id || channel.url;
+    if (!id) return;
+
+    if (isChannelFavorite(channel)) {
+        if (channel.id) favoritesSet.delete(channel.id);
+        if (channel.url) favoritesSet.delete(channel.url);
     } else {
-        favoritesSet.add(channel.id);
+        favoritesSet.add(id);
     }
     saveFavorites();
-    filterAndRenderChannels(false);
+
+    // Update active channel favorite icon in preview if matching
+    if (selectedChannel && (selectedChannel.id === channel.id || selectedChannel.url === channel.url)) {
+        updatePreviewFavoriteButton(channel);
+    }
+
+    // If currently filtering by favorites, re-filter list
+    if (activeQuickFilter === 'favorites') {
+        filterAndRenderChannels(false);
+    } else {
+        // Update favorite button inside existing card in DOM
+        const escapedUrl = channel.url ? channel.url.replace(/"/g, '\\"') : '';
+        const card = document.querySelector(`.channel-card[data-url="${escapedUrl}"]`);
+        if (card) {
+            const favImg = card.querySelector('.channel-card__fav-btn img');
+            const isFav = isChannelFavorite(channel);
+            if (favImg) {
+                favImg.src = isFav ? 'images/star-filled.svg' : 'images/star.svg';
+            }
+            card.classList.toggle('is-favorite', isFav);
+        }
+    }
 }
 
 let renderedCount = 0;
@@ -123,7 +186,9 @@ export async function init(params) {
     searchQuery = '';
     activeGenre = '';
     activeCountry = '';
+    activeQuickFilter = 'all';
     selectedChannel = null;
+    loadFavorites();
     loadStatusCache();
 
     // Reset any active preview player resource from a previous page session
@@ -140,6 +205,15 @@ export async function init(params) {
     const restoreRouter = () => {
         Router.loadPage = originalLoadPage;
         Router.goBack = originalGoBack;
+        if (filterModalBackHandler) {
+            SpatialNav.popBackHandler(filterModalBackHandler);
+            filterModalBackHandler = null;
+        }
+        if (liveTvPageBackHandler) {
+            SpatialNav.popBackHandler(liveTvPageBackHandler);
+            liveTvPageBackHandler = null;
+        }
+        window.removeEventListener('keydown', handleKeyDown);
     };
 
     /**
@@ -168,7 +242,7 @@ export async function init(params) {
     }
     const clearBtn = document.getElementById('search-clear');
     if (clearBtn) {
-        clearBtn.style.display = 'none';
+        clearBtn.classList.add('hidden');
     }
 
     if (window.i18n) window.i18n.applyTranslations();
@@ -178,16 +252,20 @@ export async function init(params) {
     if (allChannels.length > 0) {
         const statsInfo = document.getElementById('hero-stats-info');
         const countEl = document.getElementById('hero-total-channels');
+        let settings;
+
         const totalSrcEl = document.getElementById('hero-total-sources');
         if (statsInfo && countEl && totalSrcEl) {
             countEl.textContent = `${allChannels.length} channels`;
-            const sourceEntries = Object.entries(PRESET_SOURCES);
-            const settings = loadMergedSettings();
-            const totalSources = sourceEntries.length + (settings.m3uUrl ? 1 : 0);
+            settings = loadMergedSettings();
+            sourceManager.registerDefaultProviders(settings);
+            allChannels = await sourceManager.loadAllChannels(brokenChannelsSet);
+            settings = loadMergedSettings();
+            const totalSources = sourceManager.getProviderCount();
             totalSrcEl.textContent = `${totalSources} sources`;
             statsInfo.style.display = 'flex';
         }
-        populateFilters();
+        populateFilterModal();
         filterAndRenderChannels(true);
         setupEventListeners();
         SpatialNav.focusFirst();
@@ -222,16 +300,16 @@ function renderLoadingSkeletons() {
     const list = document.getElementById('channels-list');
     if (list) {
         list.innerHTML = '';
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
             const skeleton = document.createElement('div');
-            skeleton.className = 'channel-list-item focusable is-skeleton';
-            skeleton.tabIndex = 0;
+            skeleton.className = 'channel-card card is-skeleton';
             skeleton.innerHTML = `
+                <span class="channel-card__index">-</span>
                 <span class="list-status-dot checking"></span>
-                <div class="channel-list-logo-container">
+                <div class="channel-card__logo-wrap">
                     <div class="skeleton-logo-placeholder"></div>
                 </div>
-                <div class="channel-list-meta-container">
+                <div class="channel-card__meta">
                     <div class="skeleton-text skeleton-name"></div>
                 </div>
             `;
@@ -246,76 +324,18 @@ function renderLoadingSkeletons() {
  */
 async function loadAllSources() {
     const empty = document.getElementById('no-channels-message');
-    const list = document.getElementById('channels-list');
     const countEl = document.getElementById('hero-total-channels');
+    let settings;
 
     try {
-        if (empty) empty.style.display = 'none';
+        if (empty) empty.classList.add('hidden');
 
         // Load the broken channels database first
         await loadBrokenChannelsDb();
 
-        const sourceEntries = Object.entries(PRESET_SOURCES);
-        const settings = loadMergedSettings();
-        const customPlaylists = settings.m3uPlaylists || [];
-        if (customPlaylists.length > 0) {
-            customPlaylists.forEach((playlist, idx) => {
-                let name = 'Custom Playlist';
-                try {
-                    const host = new URL(playlist.url).hostname;
-                    name = host ? `${host} (M3U)` : `Custom Playlist ${idx + 1}`;
-                } catch (e) {
-                    name = `Custom Playlist ${idx + 1}`;
-                }
-                sourceEntries.push([`custom_${playlist.id || idx}`, { name: name, url: playlist.url }]);
-            });
-        } else if (settings.m3uUrl) {
-            sourceEntries.push(['custom', { name: 'Custom Playlist', url: settings.m3uUrl }]);
-        }
-
-        allChannels = [];
-        const seenUrls = new Set();
-
-        // Fetch all playlist sources in parallel to prevent sequential network blocking
-        const fetchPromises = sourceEntries.map(async ([id, source]) => {
-            try {
-                const playlistChannels = await M3UParser.fetchPlaylist(proxyUrl(source.url));
-                return { source, playlistChannels };
-            } catch (err) {
-                console.warn(`Failed to load source ${source.name}:`, err);
-                return { source, playlistChannels: [] };
-            }
-        });
-
-        const results = await Promise.all(fetchPromises);
-
-        // Process and merge all parsed channels
-        results.forEach(({ source, playlistChannels }) => {
-            if (playlistChannels && playlistChannels.length > 0) {
-                playlistChannels.forEach(c => {
-                    if (!c.group) c.group = source.name;
-                    c.sourceName = source.name;
-                    c.sourcePriority = source.priority || 50;
-
-                    const normalized = normalizeUrl(c.url);
-                    if (!seenUrls.has(normalized) && !brokenChannelsSet.has(normalized)) {
-                        seenUrls.add(normalized);
-                        c.normalizedUrl = normalized;
-                        c.searchNameLower = (c.name || '').toLowerCase();
-                        c.groupTags = c.group ? c.group.split(';').map(t => t.trim().toLowerCase()).filter(Boolean) : [];
-                        allChannels.push(c);
-                    }
-                });
-            }
-        });
-
-        allChannels.sort((a, b) => {
-            const streamScoreDiff = getStreamScore(b.url) - getStreamScore(a.url);
-            if (streamScoreDiff !== 0) return streamScoreDiff;
-            const priorityDiff = (a.sourcePriority || 50) - (b.sourcePriority || 50);
-            if (priorityDiff !== 0) return priorityDiff;
-            return (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: 'base' });
-        });
+        settings = loadMergedSettings();
+        sourceManager.registerDefaultProviders(settings);
+        allChannels = await sourceManager.loadAllChannels(brokenChannelsSet);
 
         // Extract unique genres and countries
         const genresSet = new Set();
@@ -335,66 +355,203 @@ async function loadAllSources() {
         genres = Array.from(genresSet).sort();
         countries = Array.from(countriesSet).sort();
 
-        // Populate select filters in UI
-        populateFilters();
+        // Populate modern filter dialog chips
+        populateFilterModal();
 
-        // Show stats banner
+        // Show stats banner if present
         const statsInfo = document.getElementById('hero-stats-info');
         const totalSrcEl = document.getElementById('hero-total-sources');
         if (statsInfo && countEl && totalSrcEl) {
             countEl.textContent = `${allChannels.length} channels`;
-            totalSrcEl.textContent = `${sourceEntries.length} sources`;
+            totalSrcEl.textContent = `${sourceManager.getProviderCount()} sources`;
             statsInfo.style.display = 'flex';
         }
 
         if (allChannels.length === 0) {
-            if (empty) empty.style.display = 'flex';
+            if (empty) empty.classList.remove('hidden');
         } else {
             const currentFocused = document.querySelector('.focused');
             filterAndRenderChannels(!currentFocused);
         }
     } catch (error) {
         console.error('Error loading sources:', error);
-        if (empty) empty.style.display = 'flex';
+        if (empty) empty.classList.remove('hidden');
     }
 }
 
 /**
- * populateFilters function
- * ========================
- * Explains: Fills the dropdown selectors for Genre and Country with unique options 
- * parsed from IPTV channels, preserving previous selection states.
+ * Populates modern filter modal chips for genres and countries.
  */
-function populateFilters() {
-    const genreSelect = document.getElementById('filter-genre');
-    const countrySelect = document.getElementById('filter-country');
-    if (!genreSelect || !countrySelect) return;
+function populateFilterModal() {
+    const genreContainer = document.getElementById('filter-genre-chips');
+    const countryContainer = document.getElementById('filter-country-chips');
+    const genreCountEl = document.getElementById('genre-filter-count');
+    const countryCountEl = document.getElementById('country-filter-count');
 
-    const prevGenre = genreSelect.value;
-    const prevCountry = countrySelect.value;
+    if (genreCountEl) {
+        genreCountEl.textContent = genres.length ? `${genres.length}` : '';
+    }
+    if (countryCountEl) {
+        countryCountEl.textContent = countries.length ? `${countries.length}` : '';
+    }
 
-    genreSelect.innerHTML = `<option value="">${window.i18n?.t('livetv.allGenres') || 'All Genres'}</option>`;
-    countrySelect.innerHTML = `<option value="">${window.i18n?.t('livetv.allCountries') || 'All Countries'}</option>`;
+    if (genreContainer) {
+        genreContainer.innerHTML = '';
+        genres.forEach(g => {
+            const chip = document.createElement('button');
+            chip.className = `chip chip--filter focusable ${g.toLowerCase() === activeGenre.toLowerCase() ? 'active' : ''}`;
+            chip.tabIndex = 0;
+            chip.dataset.genre = g;
+            chip.textContent = g;
+            chip.onclick = () => {
+                if (chip.classList.contains('active')) {
+                    chip.classList.remove('active');
+                } else {
+                    genreContainer.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                }
+            };
+            genreContainer.appendChild(chip);
+        });
+    }
 
-    genres.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g;
-        opt.textContent = g;
-        if (g === prevGenre) opt.selected = true;
-        genreSelect.appendChild(opt);
-    });
+    if (countryContainer) {
+        countryContainer.innerHTML = '';
+        countries.forEach(c => {
+            const chip = document.createElement('button');
+            chip.className = `chip chip--filter focusable ${c.toLowerCase() === activeCountry.toLowerCase() ? 'active' : ''}`;
+            chip.tabIndex = 0;
+            chip.dataset.country = c;
+            chip.textContent = c;
+            chip.onclick = () => {
+                if (chip.classList.contains('active')) {
+                    chip.classList.remove('active');
+                } else {
+                    countryContainer.querySelectorAll('.chip').forEach(ch => ch.classList.remove('active'));
+                    chip.classList.add('active');
+                }
+            };
+            countryContainer.appendChild(chip);
+        });
+    }
 
-    countries.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c;
-        opt.textContent = c;
-        if (c === prevCountry) opt.selected = true;
-        countrySelect.appendChild(opt);
-    });
+    updateActiveFilterBadge();
 }
 
 /**
- * Filters the list of channels based on search query and category/country tags, then starts rendering.
+ * Updates the filter button badge count indicating applied filters.
+ */
+function updateActiveFilterBadge() {
+    const badge = document.getElementById('active-filter-badge');
+    if (!badge) return;
+
+    let count = 0;
+    if (activeGenre) count++;
+    if (activeCountry) count++;
+
+    if (count > 0) {
+        badge.textContent = count.toString();
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+/**
+ * Opens the modern Live TV filter modal, pushes modal back handler to SpatialNav, and focuses on apply button.
+ */
+function openFilterModal() {
+    const modal = document.getElementById('livetv-filter-modal');
+    if (!modal) return;
+
+    populateFilterModal();
+    modal.classList.add('active');
+
+    if (!filterModalBackHandler) {
+        filterModalBackHandler = () => {
+            closeFilterModal();
+            return true;
+        };
+        SpatialNav.pushBackHandler(filterModalBackHandler);
+    }
+
+    const firstTarget = modal.querySelector('.chip.active') || document.getElementById('filter-apply-btn');
+    if (firstTarget) {
+        SpatialNav.setFocus(firstTarget);
+    }
+}
+
+/**
+ * Closes the Live TV filter modal, pops the modal back handler, and restores focus to filter button.
+ */
+function closeFilterModal() {
+    const modal = document.getElementById('livetv-filter-modal');
+    if (!modal) return;
+
+    modal.classList.remove('active');
+    if (filterModalBackHandler) {
+        SpatialNav.popBackHandler(filterModalBackHandler);
+        filterModalBackHandler = null;
+    }
+    const filterBtn = document.getElementById('livetv-filter-btn');
+    if (filterBtn) {
+        SpatialNav.setFocus(filterBtn);
+    }
+}
+window.livetvCloseFilterModal = closeFilterModal;
+
+/**
+ * Applies selected filter chips from the modal and refreshes channel list.
+ */
+function applyFilters() {
+    const genreActive = document.querySelector('#filter-genre-chips .chip.active');
+    const countryActive = document.querySelector('#filter-country-chips .chip.active');
+
+    activeGenre = genreActive ? genreActive.dataset.genre : '';
+    activeCountry = countryActive ? countryActive.dataset.country : '';
+
+    updateActiveFilterBadge();
+    closeFilterModal();
+    filterAndRenderChannels(true);
+}
+
+/**
+ * Clears all active filters in the modal and resets channel list.
+ */
+function clearFilters() {
+    const modal = document.getElementById('livetv-filter-modal');
+    if (modal) {
+        modal.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+    }
+    activeGenre = '';
+    activeCountry = '';
+    updateActiveFilterBadge();
+    closeFilterModal();
+    filterAndRenderChannels(true);
+}
+
+/**
+ * Sets the active quick filter pill and refreshes the channel list.
+ * 
+ * @param {'all' | 'sports' | 'favorites'} filterType - Active quick filter category.
+ */
+function setQuickFilter(filterType) {
+    activeQuickFilter = filterType;
+
+    const pills = document.querySelectorAll('.livetv-quick-filters .chip');
+    pills.forEach(pill => {
+        if (pill.dataset.filter === filterType) {
+            pill.classList.add('active');
+        } else {
+            pill.classList.remove('active');
+        }
+    });
+
+    filterAndRenderChannels(true);
+}
+
+/**
+ * Filters the list of channels based on search query, quick filter, and genre/country tags, then renders.
  * Affects the global filteredChannels array and the active channels list DOM container.
  * 
  * @param {boolean} resetFocus - Resets navigation focus to the first card if true.
@@ -411,9 +568,21 @@ function filterAndRenderChannels(resetFocus = false) {
         // Channels in the persistent broken DB are always excluded
         if (brokenChannelsSet.has(c.normalizedUrl)) return false;
 
-        const matchesSearch = !searchQuery || c.searchNameLower.includes(searchLower);
-        const matchesGenre = !activeGenre || c.groupTags.includes(activeGenreLower);
-        const matchesCountry = !activeCountry || c.groupTags.includes(activeCountryLower);
+        // Quick filter conditions
+        if (activeQuickFilter === 'favorites') {
+            if (!isChannelFavorite(c)) return false;
+        } else if (activeQuickFilter === 'sports') {
+            const isSportsChannel = Boolean(
+                c.isSports || 
+                (c.groupTags && (c.groupTags.includes('sports') || c.groupTags.includes('football') || c.groupTags.includes('voetbal') || c.groupTags.includes('canal+'))) ||
+                (c.name && /sport|canal\+|voetbal|football|live match/i.test(c.name))
+            );
+            if (!isSportsChannel) return false;
+        }
+
+        const matchesSearch = !searchQuery || (c.searchNameLower && c.searchNameLower.includes(searchLower)) || (c.name && c.name.toLowerCase().includes(searchLower));
+        const matchesGenre = !activeGenre || (c.groupTags && c.groupTags.includes(activeGenreLower)) || (c.group && c.group.toLowerCase().includes(activeGenreLower));
+        const matchesCountry = !activeCountry || (c.groupTags && c.groupTags.includes(activeCountryLower)) || (c.group && c.group.toLowerCase().includes(activeCountryLower));
         
         return matchesSearch && matchesGenre && matchesCountry;
     });
@@ -427,7 +596,7 @@ function filterAndRenderChannels(resetFocus = false) {
     // Toggle search clear button visibility
     const clearBtn = document.getElementById('search-clear');
     if (clearBtn) {
-        clearBtn.style.display = searchQuery ? 'block' : 'none';
+        clearBtn.classList.toggle('hidden', !searchQuery);
     }
 
     container.innerHTML = '';
@@ -435,9 +604,9 @@ function filterAndRenderChannels(resetFocus = false) {
 
     const empty = document.getElementById('no-channels-message');
     if (filteredChannels.length === 0) {
-        if (empty) empty.style.display = 'flex';
+        if (empty) empty.classList.remove('hidden');
     } else {
-        if (empty) empty.style.display = 'none';
+        if (empty) empty.classList.add('hidden');
 
         renderNextChunk();
 
@@ -459,7 +628,28 @@ async function showChannelDetail(channel) {
     const content = document.getElementById('hero-active-content');
 
     if (placeholder) placeholder.style.display = 'none';
-    if (content) content.style.display = 'flex';
+    if (content) content.classList.remove('hidden');
+
+    // Update Preview Card Header metadata
+    const nameEl = document.getElementById('preview-channel-name');
+    const groupEl = document.getElementById('preview-channel-group');
+    if (nameEl) nameEl.textContent = channel.name;
+    if (groupEl) groupEl.textContent = formatPrimaryCategory(channel.group);
+
+    // Update Favorite Button in Preview Card
+    updatePreviewFavoriteButton(channel);
+
+    // Bind Watch Fullscreen CTA
+    const watchBtn = document.getElementById('preview-watch-btn');
+    if (watchBtn) {
+        watchBtn.onclick = () => playChannel(channel);
+    }
+
+    // Bind Preview Favorite Button
+    const favBtn = document.getElementById('preview-fav-btn');
+    if (favBtn) {
+        favBtn.onclick = () => toggleFavorite(channel);
+    }
 
     const epgContainer = document.getElementById('hero-epg-container');
     const epgTitleEl = document.getElementById('hero-epg-title');
@@ -469,7 +659,7 @@ async function showChannelDetail(channel) {
     const noEpgText = window.i18n?.t('livetv.noEpgInfo') || 'No program info available';
 
     if (epgContainer) {
-        epgContainer.style.display = 'block';
+        epgContainer.classList.remove('hidden');
         if (epgTitleEl) epgTitleEl.textContent = window.i18n?.t('livetv.loading') || 'Loading channels...';
         if (epgStartEl) epgStartEl.textContent = '--:--';
         if (epgEndEl) epgEndEl.textContent = '--:--';
@@ -493,7 +683,7 @@ async function showChannelDetail(channel) {
     }
     previewTimeout = setTimeout(() => {
         if (selectedChannel && selectedChannel.url === channel.url) {
-            loadPreviewStream(channel.url);
+            loadPreviewStream(channel);
         }
     }, 450);
 
@@ -533,36 +723,52 @@ async function showChannelDetail(channel) {
 }
 
 /**
- * Asynchronously loads the selected IPTV channel stream into the 16:9 preview video element.
- * Utilizes HLS.js for HLS (.m3u8) playback support, falling back to native HTML5 playback.
+ * Updates the favorite icon inside the preview card.
  * 
- * @param {string} url - The live stream URL of the selected channel.
+ * @param {object} channel - The channel object to reflect.
  */
-function loadPreviewStream(url) {
+function updatePreviewFavoriteButton(channel) {
+    const favIcon = document.getElementById('preview-fav-icon');
+    if (favIcon) {
+        const isFav = isChannelFavorite(channel);
+        favIcon.src = isFav ? 'images/star-filled.svg' : 'images/star.svg';
+    }
+}
+
+/**
+ * Asynchronously loads the selected IPTV channel stream into the 16:9 preview video element.
+ * Utilizes StreamOptimizer for URL normalization, header spoofing, and HLS.js for playback.
+ * 
+ * @param {object|string} channel - Channel object or stream URL.
+ */
+function loadPreviewStream(channel) {
+    const url = typeof channel === 'string' ? channel : channel?.url;
+    const headers = typeof channel === 'object' ? channel?.headers : {};
     const video = document.getElementById('livetv-preview-video');
     const loader = document.getElementById('preview-video-loading');
-    if (!video) return;
+    if (!video || !url) return;
 
     if (previewHls) {
         previewHls.destroy();
         previewHls = null;
     }
 
-    if (loader) loader.style.display = 'flex';
+    if (loader) loader.classList.remove('hidden');
 
     video.onloadstart = () => {
-        if (loader) loader.style.display = 'flex';
+        if (loader) loader.classList.remove('hidden');
     };
     video.onplaying = () => {
-        if (loader) loader.style.display = 'none';
+        if (loader) loader.classList.add('hidden');
         updateChannelStatus(url, 'online');
     };
     video.onerror = () => {
-        if (loader) loader.style.display = 'none';
+        if (loader) loader.classList.add('hidden');
         console.warn('Preview video playback failed for URL:', url);
         updateChannelStatus(url, 'offline');
     };
-    const streamUrl = proxyUrl(url);
+
+    const streamUrl = StreamOptimizer.getProxiedStreamUrl ? StreamOptimizer.getProxiedStreamUrl(url, headers) : proxyUrl(url);
 
     if (window.Hls && window.Hls.isSupported()) {
         previewHls = new window.Hls({
@@ -580,7 +786,7 @@ function loadPreviewStream(url) {
         });
         previewHls.on(window.Hls.Events.ERROR, (event, data) => {
             if (data.fatal) {
-                if (loader) loader.style.display = 'none';
+                if (loader) loader.classList.add('hidden');
                 updateChannelStatus(url, 'offline');
                 if (previewHls) {
                     previewHls.destroy();
@@ -592,7 +798,7 @@ function loadPreviewStream(url) {
         video.src = streamUrl;
         video.play().catch(e => console.warn('Error starting native preview video:', e));
     } else {
-        if (loader) loader.style.display = 'none';
+        if (loader) loader.classList.add('hidden');
         console.error('HLS playback is not supported in this browser environment.');
     }
 }
@@ -622,18 +828,17 @@ function cleanupPreview() {
     }
     const loader = document.getElementById('preview-video-loading');
     if (loader) {
-        loader.style.display = 'none';
+        loader.classList.add('hidden');
     }
 }
 
 /**
- * playChannel function
- * ====================
- * Explains: Records the channel zapping index state variables and routes the app to the TV player.
+ * Records the channel zapping index state variables and routes the app to the TV player.
  * 
  * @param {object} channel - Target channel item.
  */
 function playChannel(channel) {
+    if (!channel || !channel.url) return;
     const index = filteredChannels.findIndex(c => c.url === channel.url);
     window.liveTvState = {
         channels: filteredChannels,
@@ -649,24 +854,60 @@ function playChannel(channel) {
 }
 
 /**
- * Hooks up event listeners for search input, clear button, genre/country selectors, and handles SpatialNav back actions.
+ * Hooks up event listeners for search input, clear button, quick filters, modal triggers, and spatial nav.
  * Affects search queries, category filters, and active keyboard navigation states.
  */
 function setupEventListeners() {
     const searchInput = document.getElementById('search-input');
     const clearBtn = document.getElementById('search-clear');
+    const filterBtn = document.getElementById('livetv-filter-btn');
+    const applyBtn = document.getElementById('filter-apply-btn');
+    const clearFiltersBtn = document.getElementById('filter-clear-btn');
+    const cancelBtn = document.getElementById('filter-cancel-btn');
 
-    const originalBack = SpatialNav.onBack;
-    SpatialNav.onBack = () => {
-        const current = document.querySelector('.focused');
-        const list = document.getElementById('channels-list');
+    if (!liveTvPageBackHandler) {
+        liveTvPageBackHandler = () => {
+            const modal = document.getElementById('livetv-filter-modal');
+            if (modal && modal.classList.contains('active')) {
+                closeFilterModal();
+                return true;
+            }
 
-        if (current && list && list.contains(current) && searchInput) {
-            SpatialNav.setFocus(searchInput);
-        } else if (originalBack) {
-            originalBack();
-        }
-    };
+            const current = document.querySelector('.focused');
+            const list = document.getElementById('channels-list');
+
+            if (current && list && list.contains(current) && searchInput) {
+                SpatialNav.setFocus(searchInput);
+                return true;
+            }
+            return false;
+        };
+        SpatialNav.pushBackHandler(liveTvPageBackHandler);
+    }
+
+    window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+
+    if (filterBtn) {
+        filterBtn.onclick = () => openFilterModal();
+    }
+    if (applyBtn) {
+        applyBtn.onclick = () => applyFilters();
+    }
+    if (clearFiltersBtn) {
+        clearFiltersBtn.onclick = () => clearFilters();
+    }
+    if (cancelBtn) {
+        cancelBtn.onclick = () => closeFilterModal();
+    }
+
+    // Quick filter pills setup
+    const pillAll = document.getElementById('pill-all');
+    const pillSports = document.getElementById('pill-sports');
+    const pillFavs = document.getElementById('pill-favorites');
+    if (pillAll) pillAll.onclick = () => setQuickFilter('all');
+    if (pillSports) pillSports.onclick = () => setQuickFilter('sports');
+    if (pillFavs) pillFavs.onclick = () => setQuickFilter('favorites');
 
     if (searchInput) {
         /**
@@ -701,23 +942,6 @@ function setupEventListeners() {
             if (searchInput) {
                 SpatialNav.setFocus(searchInput);
             }
-        };
-    }
-
-    const genreSelect = document.getElementById('filter-genre');
-    const countrySelect = document.getElementById('filter-country');
-
-    if (genreSelect) {
-        genreSelect.onchange = (e) => {
-            activeGenre = e.target.value;
-            filterAndRenderChannels(true);
-        };
-    }
-
-    if (countrySelect) {
-        countrySelect.onchange = (e) => {
-            activeCountry = e.target.value;
-            filterAndRenderChannels(true);
         };
     }
 
@@ -781,8 +1005,8 @@ function updateChannelStatus(url, status) {
     statusCache.set(url, { status, timestamp: Date.now() });
     scheduleSaveStatusCache();
 
-    const row = Array.from(document.querySelectorAll('.channel-list-item'))
-        .find(item => item.dataset.url === url);
+    const escapedUrl = url.replace(/"/g, '\\"');
+    const row = document.querySelector(`.channel-card[data-url="${escapedUrl}"], .channel-list-item[data-url="${escapedUrl}"]`);
     
     if (row) {
         const dot = row.querySelector('.list-status-dot');
@@ -797,7 +1021,7 @@ function updateChannelStatus(url, status) {
  * Scores streams so HLS/HTTPS candidates appear before weaker UDP or opaque URLs.
  *
  * @param {string} url - Stream URL.
- * @returns {number}
+ * @returns {number} Stream score weight.
  */
 function getStreamScore(url) {
     const value = (url || '').toLowerCase();
@@ -810,18 +1034,13 @@ function getStreamScore(url) {
 
 /**
  * Renders the next batch of channels and updates the list pagination state.
- * Affects the channels list container DOM and spatial navigation.
+ * Uses OOCSS .channel-card markup and binds spatial navigation and favorite triggers.
  */
 function renderNextChunk() {
     if (renderedCount >= filteredChannels.length) return;
 
     const container = document.getElementById('channels-list');
     if (!container) return;
-
-    const existingSentinel = document.getElementById('channels-sentinel');
-    if (existingSentinel) {
-        existingSentinel.remove();
-    }
 
     const currentFocused = document.querySelector('.focused');
     const focusedUrl = currentFocused && currentFocused.dataset.url;
@@ -835,24 +1054,44 @@ function renderNextChunk() {
 
     for (let i = start; i < end; i++) {
         const channel = filteredChannels[i];
+        const isFav = isChannelFavorite(channel);
         const item = document.createElement('div');
-        item.className = 'channel-list-item focusable';
+        item.className = `channel-card card card--interactive focusable ${isFav ? 'is-favorite' : ''}`;
         item.tabIndex = 0;
         item.dataset.url = channel.url;
 
         const iconUrl = channel.logo || 'images/livetv.svg';
         const status = statusCache.get(channel.url)?.status || 'unknown';
         const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
+        const category = channel.group || 'Live TV';
+        const isSports = Boolean(
+            channel.isSports || 
+            (channel.groupTags && (channel.groupTags.includes('sports') || channel.groupTags.includes('voetbal'))) ||
+            (channel.name && /sport|canal\+|voetbal|football|live match/i.test(channel.name))
+        );
 
         item.innerHTML = `
+            <span class="channel-card__index">${i + 1}</span>
             <span class="list-status-dot ${statusClass}"></span>
-            <div class="channel-list-logo-container">
-                <img src="${iconUrl}" class="channel-list-logo" loading="lazy" onerror="this.src='images/livetv.svg'">
+            <div class="channel-card__logo-wrap">
+                <img src="${iconUrl}" class="channel-card__logo" loading="lazy" onerror="this.src='images/livetv.svg'">
             </div>
-            <div class="channel-list-meta-container">
-                <span class="channel-list-name">${channel.name}</span>
+            <div class="channel-card__meta">
+                <span class="channel-card__title">${channel.name}</span>
             </div>
+            ${isSports ? '<span class="channel-card__badge badge badge--primary">SPORT</span>' : ''}
+            <button class="channel-card__fav-btn" title="Toggle Favorite" aria-label="Favorite" tabindex="-1">
+                <img src="${isFav ? 'images/star-filled.svg' : 'images/star.svg'}" class="fav-icon" alt="Favorite">
+            </button>
         `;
+
+        item.onkeydown = (e) => {
+            if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleFavorite(channel);
+            }
+        };
 
         /**
          * Triggers loading channel EPG details on focus.
@@ -864,7 +1103,23 @@ function renderNextChunk() {
                 renderNextChunk();
             }
         };
-        item.onclick = () => playChannel(channel);
+
+        item.onclick = (e) => {
+            if (e.target.closest('.channel-card__fav-btn')) {
+                e.stopPropagation();
+                toggleFavorite(channel);
+                return;
+            }
+            playChannel(channel);
+        };
+
+        const favBtn = item.querySelector('.channel-card__fav-btn');
+        if (favBtn) {
+            favBtn.onclick = (e) => {
+                e.stopPropagation();
+                toggleFavorite(channel);
+            };
+        }
 
         fragment.appendChild(item);
 
@@ -882,11 +1137,8 @@ function renderNextChunk() {
     renderedCount = end;
 }
 
-
-
 /**
  * Normalizes a URL by stripping its scheme (http/https), trailing slashes, and leading/trailing whitespace.
- * This ensures uniform channel matching regardless of minor URL formatting differences.
  * 
  * @param {string} url - The URL to normalize.
  * @returns {string} The normalized URL.
