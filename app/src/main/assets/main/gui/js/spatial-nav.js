@@ -742,6 +742,9 @@ export const SpatialNav = {
                 // Let browser handle select natively
             } else {
                 e.preventDefault();
+                if (window.RippleEffect && typeof window.RippleEffect.createRipple === 'function') {
+                    window.RippleEffect.createRipple(current);
+                }
                 current.click();
             }
             return;

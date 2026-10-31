@@ -50,7 +50,7 @@ function render() {
  */
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
-    card.className = 'card card--widescreen card--interactive playlist-card focusable focusable-card';
+    card.className = 'card card--widescreen card--interactive playlist-card focusable focusable-card universal-onclick';
     card.dataset.id = playlist.id;
 
     // Get cover image from first item or use placeholder

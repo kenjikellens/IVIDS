@@ -1172,7 +1172,7 @@ class SettingsManager {
             const match = name.match(/^([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])\s+(.*)$/);
             const card = document.createElement('button');
             card.type = 'button';
-            card.className = 'language-card focusable';
+            card.className = 'language-card focusable universal-onclick';
             card.dataset.language = code;
             card.setAttribute('aria-pressed', String((this.pendingSettings.language || 'en') === code));
 

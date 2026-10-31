@@ -228,11 +228,12 @@ export function createPosterElement(item, defaultType = null, sizeContainerWidth
     if (btn) {
         btn.innerHTML = '';
         btn.classList.remove('is-skeleton');
+        btn.classList.add('universal-onclick');
         btn.removeAttribute('aria-hidden');
     } else {
         btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'card card--poster card--interactive poster-wrapper focusable focusable-card';
+        btn.className = 'card card--poster card--interactive poster-wrapper focusable focusable-card universal-onclick';
     }
 
     const img = document.createElement('img');

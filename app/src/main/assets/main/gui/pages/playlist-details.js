@@ -258,7 +258,7 @@ function createItemElement(item, index, total) {
     cardWrapper.className = 'playlist-item-card-wrapper';
 
     const itemCard = document.createElement('div');
-    itemCard.className = 'card card--row card--interactive episode-item focusable';
+    itemCard.className = 'card card--row card--interactive episode-item focusable universal-onclick';
     itemCard.tabIndex = 0;
     itemCard.dataset.id = item.id;
     itemCard.dataset.type = item.media_type;

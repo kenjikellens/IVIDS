@@ -28,7 +28,7 @@ export function renderSkeletonRow(elementId, count = 20, cardType = 'poster') {
         skeleton.type = 'button';
         skeleton.className = cardType === 'collection'
             ? 'collection-card focusable is-skeleton'
-            : 'card card--poster card--interactive poster-wrapper focusable focusable-card is-skeleton';
+            : 'card card--poster card--interactive poster-wrapper focusable focusable-card is-skeleton universal-onclick';
         skeleton.setAttribute('aria-hidden', 'true'); // Placeholder only
 
         // We use a CSS-only shimmer effect instead of injecting multiple loader dots

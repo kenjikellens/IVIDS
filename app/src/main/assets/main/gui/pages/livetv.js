@@ -301,7 +301,7 @@ function renderCategoriesList() {
     items.forEach(cat => {
         const isActive = cat.key === activeCategoryKey;
         const row = document.createElement('div');
-        row.className = `category-list-item card card--interactive focusable ${isActive ? 'active is-selected' : ''}`;
+        row.className = `category-list-item card card--interactive focusable universal-onclick ${isActive ? 'active is-selected' : ''}`;
         row.tabIndex = 0;
         row.dataset.categoryKey = cat.key;
         row.innerHTML = `
@@ -738,7 +738,7 @@ function renderNextChunk(preserveFocusedUrl = null) {
     for (let i = start; i < end; i++) {
         const channel = filteredChannels[i];
         const item = document.createElement('div');
-        item.className = 'channel-list-item channel-card card card--interactive focusable';
+        item.className = 'channel-list-item channel-card card card--interactive focusable universal-onclick';
         item.tabIndex = 0;
         item.dataset.url = channel.url;
 

@@ -403,7 +403,7 @@ async function renderAllFilters(filtersObj) {
             countryList.innerHTML = '';
 
             const allOpt = document.createElement('div');
-            allOpt.className = 'chip chip--option focusable ' + (!filtersObj.originCountry ? 'is-selected selected' : '');
+            allOpt.className = 'chip chip--option focusable universal-onclick ' + (!filtersObj.originCountry ? 'is-selected selected' : '');
             allOpt.dataset.value = '';
             allOpt.dataset.i18n = 'search.allCountries';
             allOpt.textContent = window.i18n.t('search.allCountries');
@@ -411,7 +411,7 @@ async function renderAllFilters(filtersObj) {
 
             countries.forEach(c => {
                 const opt = document.createElement('div');
-                opt.className = 'chip chip--option focusable ' + (filtersObj.originCountry === c.iso_3166_1 ? 'is-selected selected' : '');
+                opt.className = 'chip chip--option focusable universal-onclick ' + (filtersObj.originCountry === c.iso_3166_1 ? 'is-selected selected' : '');
                 opt.dataset.value = c.iso_3166_1;
                 opt.textContent = c.english_name;
                 countryList.appendChild(opt);
@@ -697,7 +697,7 @@ function renderRecentSearches() {
     }
     row.classList.remove('hidden');
     list.innerHTML = recent.map(q => `
-        <div class="chip chip--recent recent-item focusable" tabindex="0" data-query="${q}">
+        <div class="chip chip--recent recent-item focusable universal-onclick" tabindex="0" data-query="${q}">
             <span class="recent-item-text">${q}</span>
             <span class="recent-delete-btn" title="Delete search">&times;</span>
         </div>

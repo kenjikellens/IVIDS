@@ -2090,3 +2090,47 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 @media (max-width: 1024px) {
     .chip-grid, .chip-grid--2col { gap: 12px; grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   Universal Material Design Ink Ripple System (.universal-onclick)
+   ========================================================================== */
+
+/* Universal container class providing ink ripple boundary containment. */
+.universal-onclick {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Material Design circular ink ripple wave element. */
+.ripple-wave {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.22) 60%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    transform: scale(0);
+    animation: material-ripple 450ms cubic-bezier(0.1, 0, 0.2, 1) forwards;
+    z-index: 10;
+}
+
+/* Inverts ink ripple contrast to dark grey on white button surfaces for high visibility. */
+.btn--primary .ripple-wave,
+#play-btn .ripple-wave,
+#play-all-btn .ripple-wave,
+.tab-btn.is-active .ripple-wave {
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.16) 60%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Keyframe animation expanding the ink circle outward before fading out smoothly. */
+@keyframes material-ripple {
+    0% {
+        transform: scale(0);
+        opacity: 0.42;
+    }
+    50% {
+        opacity: 0.28;
+    }
+    100% {
+        transform: scale(1.05);
+        opacity: 0;
+    }
+}

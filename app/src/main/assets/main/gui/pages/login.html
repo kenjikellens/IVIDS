@@ -1,7 +1,7 @@
 <div class="login-page-wrapper">
     <div class="login-card-container">
         <div class="card card--panel login-panel">
-            <button id="login-circle-back" class="btn btn--secondary btn--circle focusable" title="Back">
+            <button id="login-circle-back" class="btn btn--secondary btn--circle focusable universal-onclick" title="Back">
                 <img src="images/back.svg" class="login-back-icon" alt="Back">
             </button>
             <header class="login-header">
@@ -13,9 +13,9 @@
 
             <div class="form-container">
                 <div class="tab-bar tab-bar--fill btn-group btn-group--fill">
-                    <button id="login-signin-tab" class="btn btn--secondary focusable is-active" type="button" data-mode="signin"
+                    <button id="login-signin-tab" class="btn btn--secondary focusable is-active universal-onclick" type="button" data-mode="signin"
                         data-i18n="login.signInTab">Sign In</button>
-                    <button id="login-register-tab" class="btn btn--secondary focusable" type="button" data-mode="register"
+                    <button id="login-register-tab" class="btn btn--secondary focusable universal-onclick" type="button" data-mode="register"
                         data-i18n="login.registerTab">Register</button>
                 </div>
 
@@ -45,9 +45,9 @@
                     <div id="login-message" class="form-message" aria-live="polite"></div>
 
                     <div class="login-footer btn-group btn-group--vertical">
-                        <button id="login-submit" class="btn btn--primary btn--block btn--fixed-min focusable" type="submit"
+                        <button id="login-submit" class="btn btn--primary btn--block btn--fixed-min focusable universal-onclick" type="submit"
                             data-i18n="login.signInBtn">Sign In</button>
-                        <button id="login-back" class="btn btn--secondary btn--sm btn--block btn--fixed-min focusable" type="button"
+                        <button id="login-back" class="btn btn--secondary btn--sm btn--block btn--fixed-min focusable universal-onclick" type="button"
                             data-i18n="common.cancel">Back</button>
                     </div>
                 </form>

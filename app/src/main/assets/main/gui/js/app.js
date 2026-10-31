@@ -11,6 +11,7 @@ import { manageModal } from './utils/ui-helper.js';
 import { NETWORK_CONFIG } from '../../logic/constants.js';
 import { imageCache } from '../../logic/image-cache.js';
 import { cacheManager } from '../../logic/cache-manager.js';
+import { RippleEffect } from './ripple.js';
 import './loader.js';
 import './i18n.js';
 
@@ -498,6 +499,13 @@ function initUpdateCheck() {
 }
 
 function initUI() {
+    // Initialize Universal Ink Ripple engine
+    try {
+        RippleEffect.init();
+    } catch (rippleErr) {
+        console.error('App: Failed to initialize RippleEffect:', rippleErr);
+    }
+
     // Initialize Splash Screen
     Splash.init();
 

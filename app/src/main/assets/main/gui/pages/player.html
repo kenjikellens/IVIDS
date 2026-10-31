@@ -7,7 +7,7 @@
         <div id="player-hud" class="player-hud hidden">
             <!-- Top Bar: Back button, Title, Episode selector -->
             <div class="hud-top-bar" id="hud-top-bar">
-                <button class="btn btn--secondary btn--circle-md focusable" id="player-back" title="Back">
+                <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-back" title="Back">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
@@ -15,7 +15,7 @@
                 </button>
                 <div class="player-title" id="player-title"></div>
                 <div class="hud-top-actions">
-                    <button class="btn btn--secondary focusable hidden" id="player-episodes-btn" title="Episodes" data-i18n="details.tabSeasons">
+                    <button class="btn btn--secondary focusable hidden universal-onclick" id="player-episodes-btn" title="Episodes" data-i18n="details.tabSeasons">
                         Episodes
                     </button>
                 </div>
@@ -35,17 +35,17 @@
 
                 <!-- Control Bar layer -->
                 <div class="hud-control-bar btn-group" id="hud-control-bar">
-                    <button class="btn btn--secondary btn--circle-md focusable" id="player-prev" title="Previous Track" data-action="prev">
+                    <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-prev" title="Previous Track" data-action="prev">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
                         </svg>
                     </button>
-                    <button class="btn btn--secondary btn--circle-md focusable" id="player-rewind" title="Rewind 10s" data-action="rewind">
+                    <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-rewind" title="Rewind 10s" data-action="rewind">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/>
                         </svg>
                     </button>
-                    <button class="btn btn--primary btn--circle-xl play-pause-btn focusable" id="play-pause-btn" title="Play/Pause">
+                    <button class="btn btn--primary btn--circle-xl play-pause-btn focusable universal-onclick" id="play-pause-btn" title="Play/Pause">
                         <svg id="player-icon-pause" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
                             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                         </svg>
@@ -53,28 +53,28 @@
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                     </button>
-                    <button class="btn btn--secondary btn--circle-md focusable" id="player-forward" title="Fast Forward 10s" data-action="forward">
+                    <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-forward" title="Fast Forward 10s" data-action="forward">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
                         </svg>
                     </button>
-                    <button class="btn btn--secondary btn--circle-md focusable" id="player-next" title="Next Track" data-action="next">
+                    <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-next" title="Next Track" data-action="next">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                         </svg>
                     </button>
-                    <button class="btn btn--secondary btn--circle-md focusable" id="player-audio-sub" title="Audio &amp; Subtitles" data-action="tracks">
+                    <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-audio-sub" title="Audio &amp; Subtitles" data-action="tracks">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                         </svg>
                     </button>
-                    <button class="btn btn--secondary btn--circle-md focusable" id="player-settings" title="Settings &amp; Quality" data-action="settings">
+                    <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-settings" title="Settings &amp; Quality" data-action="settings">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="3"/>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                         </svg>
                     </button>
-                    <button class="btn btn--secondary btn--circle-md focusable" id="player-fullscreen" title="Fullscreen" data-action="fullscreen">
+                    <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-fullscreen" title="Fullscreen" data-action="fullscreen">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
                         </svg>
@@ -88,7 +88,7 @@
 
                 <!-- Next Episode Container -->
                 <div id="next-episode-container" class="hidden">
-                    <button class="btn btn--primary focusable" id="player-next-ep-btn">
+                    <button class="btn btn--primary focusable universal-onclick" id="player-next-ep-btn">
                         <span data-i18n="player.nextEpisode">Next Episode</span>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M5 12h14M12 5l7 7-7 7" />
@@ -103,11 +103,11 @@
             <div class="modal__dialog modal__dialog--sm">
                 <div class="modal__header">
                     <h3 class="modal__title" id="player-modal-title" data-i18n="player.tracksTitle">Audio &amp; Subtitles</h3>
-                    <button class="btn modal__close focusable" id="player-modal-close" aria-label="Close">&times;</button>
+                    <button class="btn modal__close focusable universal-onclick" id="player-modal-close" aria-label="Close">&times;</button>
                 </div>
                 <div class="modal__body modal__body--scroll" id="player-modal-body">
                     <div class="modal-options-list" id="player-modal-options">
-                        <button class="btn btn--secondary btn--block focusable modal-option is-active" data-value="default">Default Track</button>
+                        <button class="btn btn--secondary btn--block focusable modal-option is-active universal-onclick" data-value="default">Default Track</button>
                     </div>
                 </div>
             </div>
@@ -124,8 +124,8 @@
             <h2 id="player-status-title" data-i18n="player.statusTitle">Player is taking too long</h2>
             <p id="player-status-message" data-i18n="player.statusMessage">The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.</p>
             <div class="player-status-actions btn-group">
-                <button id="player-status-back" class="btn btn--secondary focusable" data-i18n="details.back">Back</button>
-                <button id="player-status-settings" class="btn btn--primary focusable" data-i18n="nav.settings">Settings</button>
+                <button id="player-status-back" class="btn btn--secondary focusable universal-onclick" data-i18n="details.back">Back</button>
+                <button id="player-status-settings" class="btn btn--primary focusable universal-onclick" data-i18n="nav.settings">Settings</button>
             </div>
         </div>
     </div>

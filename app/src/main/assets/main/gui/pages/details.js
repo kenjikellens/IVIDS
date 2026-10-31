@@ -443,7 +443,7 @@ function openPlaylistModal(item, type) {
                 try {
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'btn btn--secondary focusable';
+                    btn.className = 'btn btn--secondary focusable universal-onclick';
                     btn.textContent = playlist.name || I18n.t('details.unnamedPlaylist');
 
                     const exists = playlist.items && playlist.items.some(i => i.id === item.id && i.media_type === type);
@@ -532,7 +532,7 @@ function renderSeasons(seasons, seriesId) {
         seasons.forEach(season => {
             try {
                 const btn = document.createElement('button');
-                btn.className = 'btn btn--secondary season-btn focusable';
+                btn.className = 'btn btn--secondary season-btn focusable universal-onclick';
                 btn.textContent = season.name || `${I18n.t('details.season')} ${season.season_number || '?'}`; // e.g. "Season 1"
                 btn.dataset.seasonNumber = season.season_number || 0;
 
@@ -702,7 +702,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
         episodes.forEach(episode => {
             try {
                 const el = document.createElement('div');
-                el.className = 'card card--row card--interactive disney-episode-item focusable';
+                el.className = 'card card--row card--interactive disney-episode-item focusable universal-onclick';
                 el.tabIndex = 0; // Make focusable
 
                 // Check if this episode was watched
@@ -923,7 +923,7 @@ function renderExtrasEmptyState(container, contentId, mediaType) {
     emptyState.className = 'extras-empty-state';
     emptyState.innerHTML = `
         <p class="extras-empty-text">${I18n.t('details.noExtras')}</p>
-        <button type="button" class="btn btn--secondary btn--circle extras-retry-btn focusable" id="extras-retry-btn" title="${I18n.t('common.retry') || 'Retry'}" aria-label="${I18n.t('common.retry') || 'Retry'}">
+        <button type="button" class="btn btn--secondary btn--circle extras-retry-btn focusable universal-onclick" id="extras-retry-btn" title="${I18n.t('common.retry') || 'Retry'}" aria-label="${I18n.t('common.retry') || 'Retry'}">
             <img src="svg/retry.svg" class="extras-retry-icon" alt="">
         </button>
     `;
@@ -991,7 +991,7 @@ function renderExtras(videos, contentId, mediaType) {
             if ((video.site || '').toLowerCase() !== 'youtube') return;
             
             const card = document.createElement('div');
-            card.className = 'card card--row card--interactive disney-extra-item focusable';
+            card.className = 'card card--row card--interactive disney-extra-item focusable universal-onclick';
             card.tabIndex = 0;
             card.onclick = () => Router.loadPage('player', { id: contentId, type: 'trailer', ytKey: video.key, mediaType: mediaType });
             
@@ -1057,7 +1057,7 @@ function renderAbout(overview, credits) {
         const topCast = credits.cast.slice(0, 12);
         topCast.forEach(actor => {
             const card = document.createElement('div');
-            card.className = 'card card--compact disney-cast-card focusable';
+            card.className = 'card card--compact disney-cast-card focusable universal-onclick';
             card.tabIndex = 0;
             
             card.innerHTML = `
