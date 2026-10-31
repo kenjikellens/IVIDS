@@ -111,7 +111,7 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "什么是新的：",
         "later": "之后",
-        "changes": "变化",
+        "changes": "更新日志",
         "branch": "Branch",
         "contentSettings": "Content",
         "adultContent": "Adult Content",
@@ -129,7 +129,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "刷新",
+        "viewChangelog": "查看更新日志",
+        "appPlatform": "平台",
+        "appPlatformDesc": "目标操作系统与客户端"
     },
     "common": {
         "close": "关闭",

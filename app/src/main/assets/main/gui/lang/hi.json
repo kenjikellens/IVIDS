@@ -111,7 +111,7 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "नया क्या है:",
         "later": "बाद में",
-        "changes": "परिवर्तन",
+        "changes": "Changes",
         "branch": "Branch",
         "contentSettings": "Content",
         "adultContent": "Adult Content",
@@ -129,7 +129,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "Refresh",
+        "viewChangelog": "View Changelog",
+        "appPlatform": "Platform",
+        "appPlatformDesc": "Target operating system & client"
     },
     "common": {
         "close": "बंद करें",

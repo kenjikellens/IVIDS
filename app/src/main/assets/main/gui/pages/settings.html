@@ -273,6 +273,9 @@
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
+        <button id="version-selector-refresh-btn" class="modal__action-btn btn btn--ghost btn--circle focusable universal-onclick" aria-label="Refresh" type="button" title="Vernieuwen">
+            <img src="svg/retry.svg" class="modal-action-icon" alt="Refresh">
+        </button>
         <h2 class="modal__title" data-i18n="settings.selectVersion">Select Version</h2>
         <div class="modal__body modal__body--scroll">
             <div id="version-list-loader" class="loader-center-container hidden">
@@ -334,29 +337,53 @@
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
+        <button class="modal__close-btn btn btn--ghost btn--circle focusable universal-onclick" aria-label="Close" type="button">✕</button>
         <h2 class="modal__title" data-i18n="settings.appInfo">App Info</h2>
-        <div class="modal__body">
-            <div class="setting-item universal-onclick">
-                <div class="setting-info">
-                    <div class="setting-label" data-i18n="settings.appVersion">App Version</div>
-                    <div class="setting-description" data-i18n="settings.appVersionDesc">The currently installed release version of IVIDS</div>
-                </div>
-                <div class="setting-control">
-                    <div id="app-version-display" class="current-value-display">--</div>
+        <div class="modal__body app-info-body">
+            <div class="app-info-header">
+                <img src="images/icon.svg" class="app-info-logo" alt="IVIDS">
+                <div class="app-info-header-meta">
+                    <h3 class="app-info-app-title">IVIDS</h3>
+                    <div id="app-info-version-pill" class="badge badge--primary app-info-badge">v0.6.4</div>
                 </div>
             </div>
-            <div class="setting-item universal-onclick">
-                <div class="setting-info">
-                    <div class="setting-label" data-i18n="settings.appDeveloper">Developer</div>
-                    <div class="setting-description" data-i18n="settings.appDeveloperDesc">Created by the IVIDS Development Team</div>
+            <div class="app-info-list">
+                <div class="setting-item app-info-item universal-onclick">
+                    <div class="setting-info">
+                        <div class="setting-label" data-i18n="settings.appVersion">App Version</div>
+                        <div class="setting-description" data-i18n="settings.appVersionDesc">The currently installed release version of IVIDS</div>
+                    </div>
+                    <div class="setting-control">
+                        <div id="app-version-display" class="current-value-display">--</div>
+                    </div>
                 </div>
-                <div class="setting-control">
-                    <div class="current-value-display">Kenji Games</div>
+                <div class="setting-item app-info-item universal-onclick">
+                    <div class="setting-info">
+                        <div class="setting-label" data-i18n="settings.appDeveloper">Developer</div>
+                        <div class="setting-description" data-i18n="settings.appDeveloperDesc">Created by the IVIDS Development Team</div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="current-value-display">Kenji Games</div>
+                    </div>
                 </div>
+                <div class="setting-item app-info-item universal-onclick">
+                    <div class="setting-info">
+                        <div class="setting-label" data-i18n="settings.appPlatform">Platform</div>
+                        <div class="setting-description" data-i18n="settings.appPlatformDesc">Target operating system & client</div>
+                    </div>
+                    <div class="setting-control">
+                        <div id="app-platform-display" class="current-value-display">--</div>
+                    </div>
+                </div>
+            </div>
+            <div class="app-info-actions">
+                <button id="app-info-changes-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button" data-i18n="settings.viewChangelog">
+                    Bekijk wijzigingen
+                </button>
             </div>
         </div>
         <div class="modal__footer">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.close">Close</button>
+            <button class="btn btn--secondary btn--block focusable universal-onclick" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>

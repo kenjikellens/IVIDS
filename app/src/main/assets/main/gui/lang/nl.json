@@ -124,7 +124,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "U gebruikt de nieuwste versie van IVIDS.",
         "updateFoundDesc": "Er is een nieuwe versie van IVIDS beschikbaar om te installeren.",
-        "updateErrorDesc": "Kan updateserver niet bereiken. Controleer uw verbinding."
+        "updateErrorDesc": "Kan updateserver niet bereiken. Controleer uw verbinding.",
+        "refresh": "Vernieuwen",
+        "viewChangelog": "Bekijk wijzigingen",
+        "appPlatform": "Platform",
+        "appPlatformDesc": "Ondersteund besturingssysteem & client"
     },
     "common": {
         "close": "Sluiten",

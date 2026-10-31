@@ -111,7 +111,7 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "Cosa c'è di nuovo:",
         "later": "Dopo",
-        "changes": "Cambiamenti",
+        "changes": "Modifiche",
         "branch": "Branch",
         "contentSettings": "Content",
         "adultContent": "Adult Content",
@@ -129,7 +129,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "Aggiorna",
+        "viewChangelog": "Visualizza modifiche",
+        "appPlatform": "Piattaforma",
+        "appPlatformDesc": "Sistema operativo di destinazione & client"
     },
     "common": {
         "close": "Chiudi",

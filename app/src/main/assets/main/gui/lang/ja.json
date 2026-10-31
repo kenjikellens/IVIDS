@@ -111,7 +111,7 @@
         "accentColorSelect": "Select Color",
         "whatsNew": "新着情報：",
         "later": "後で",
-        "changes": "変更点",
+        "changes": "変更履歴",
         "branch": "Branch",
         "contentSettings": "Content",
         "adultContent": "Adult Content",
@@ -129,7 +129,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "更新",
+        "viewChangelog": "変更履歴を見る",
+        "appPlatform": "プラットフォーム",
+        "appPlatformDesc": "対象OSおよびクライアント"
     },
     "common": {
         "close": "閉じる",

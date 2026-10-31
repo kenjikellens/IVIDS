@@ -106,7 +106,7 @@
         "playerProviderDesc": "Configurer le point de terminaison d'intégration utilisé par le lecteur de films et de séries",
         "whatsNew": "Quoi de neuf:",
         "later": "Plus tard",
-        "changes": "Changements",
+        "changes": "Modifications",
         "branch": "Branch",
         "contentSettings": "Content",
         "adultContent": "Adult Content",
@@ -124,7 +124,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "Actualiser",
+        "viewChangelog": "Voir les modifications",
+        "appPlatform": "Plateforme",
+        "appPlatformDesc": "Système d'exploitation cible & client"
     },
     "common": {
         "close": "Fermer",

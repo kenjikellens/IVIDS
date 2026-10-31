@@ -122,7 +122,12 @@
         "dataSaverDesc": "Carregueu fotos de menor qualitat i reduïu l'activitat de la xarxa",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "Refresh",
+        "changes": "Changes",
+        "viewChangelog": "View Changelog",
+        "appPlatform": "Platform",
+        "appPlatformDesc": "Target operating system & client"
     },
     "common": {
         "close": "Tancar",

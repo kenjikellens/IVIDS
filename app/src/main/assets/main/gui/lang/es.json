@@ -124,7 +124,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "Actualizar",
+        "viewChangelog": "Ver cambios",
+        "appPlatform": "Plataforma",
+        "appPlatformDesc": "Sistema operativo de destino y cliente"
     },
     "common": {
         "close": "Cerrar",

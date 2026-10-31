@@ -129,7 +129,11 @@
         "activeTag": "Active",
         "noUpdateDesc": "You are running the latest version of IVIDS.",
         "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection."
+        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "refresh": "새로고침",
+        "viewChangelog": "변경 사항 보기",
+        "appPlatform": "플랫폼",
+        "appPlatformDesc": "대상 운영체제 및 클라이언트"
     },
     "common": {
         "close": "닫기",
