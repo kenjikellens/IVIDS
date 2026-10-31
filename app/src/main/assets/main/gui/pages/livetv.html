@@ -19,23 +19,6 @@
         </div>
     </div>
 
-    <!-- Quick Filter Pills Row -->
-    <div class="livetv-quick-filters-row">
-        <div class="livetv-quick-filters chip-grid" id="livetv-quick-filters">
-            <button id="pill-all" class="chip chip--filter focusable active" data-filter="all">
-                <span data-i18n="livetv.all">All</span>
-            </button>
-            <button id="pill-sports" class="chip chip--filter focusable" data-filter="sports">
-                <img src="images/sports.svg" class="chip__icon" alt="Sports">
-                <span data-i18n="livetv.sportsFilter">Voetbal / Live Sports</span>
-            </button>
-            <button id="pill-favorites" class="chip chip--filter focusable" data-filter="favorites">
-                <img src="images/star.svg" class="chip__icon" alt="Favorites">
-                <span data-i18n="livetv.favorites">Favorites</span>
-            </button>
-        </div>
-    </div>
-
     <!-- Two-Column Layout Body -->
     <div class="livetv-two-column-layout">
         <!-- Left Column: Scrollable list of channels -->
@@ -62,29 +45,9 @@
             <div id="hero-active-content" class="hero-active-content hidden">
                 <!-- Top Card: 16:9 Widescreen Video Preview -->
                 <div class="card card--panel card--widescreen preview-card preview-card-video">
-                    <div class="preview-card__video-wrap">
-                        <video id="livetv-preview-video" autoplay muted playsinline></video>
-                        <div id="preview-video-loading" class="preview-video-loading hidden">
-                            <div class="ivids-loader"></div>
-                        </div>
-                        <div class="preview-card__overlay">
-                            <div class="preview-card__header">
-                                <div class="preview-card__meta">
-                                    <span id="preview-channel-badge" class="badge badge--glass preview-card__badge">LIVE</span>
-                                    <h2 id="preview-channel-name" class="preview-card__title">Channel Name</h2>
-                                    <span id="preview-channel-group" class="preview-card__group">Category</span>
-                                </div>
-                            </div>
-                            <div class="preview-card__actions btn-group">
-                                <button id="preview-watch-btn" class="btn btn--primary focusable" title="Watch Fullscreen">
-                                    <img src="images/play.svg" class="btn__icon" alt="Play">
-                                    <span data-i18n="livetv.watchFullscreen">Watch Fullscreen</span>
-                                </button>
-                                <button id="preview-fav-btn" class="btn btn--secondary focusable" title="Toggle Favorite">
-                                    <img id="preview-fav-icon" src="images/star.svg" class="btn__icon" alt="Favorite">
-                                </button>
-                            </div>
-                        </div>
+                    <video id="livetv-preview-video" autoplay muted playsinline></video>
+                    <div id="preview-video-loading" class="preview-video-loading hidden">
+                        <div class="ivids-loader"></div>
                     </div>
                 </div>
 

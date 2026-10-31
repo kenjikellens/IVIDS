@@ -81,7 +81,10 @@ def _is_safe_hostname(hostname_lower):
     try:
         if hostname_lower in ('localhost', '0.0.0.0', '127.0.0.1', '::1'):
             return False
-        ip = socket.gethostbyname(hostname_lower)
+        try:
+            ip = socket.gethostbyname(hostname_lower)
+        except socket.gaierror:
+            return True
         ip_obj = ipaddress.ip_address(ip)
         return not (ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_unspecified)
     except Exception:
