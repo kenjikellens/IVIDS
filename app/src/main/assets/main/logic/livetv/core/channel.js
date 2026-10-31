@@ -184,6 +184,7 @@ export class Channel {
         return rawName
             .replace(/\[(?:geo-?blocked|not\s*24\/7|2160p|1080p|1080i|720p|576p|480p|360p|240p|\d+fps|sd|hd|fhd|uhd|4k|hevc|h\.?264|ipv6)[^\]]*\]/gi, '')
             .replace(/\((?:geo-?blocked|not\s*24\/7|2160p|1080p|1080i|720p|576p|480p|360p|240p|\d+fps|sd|hd|fhd|uhd|4k|hevc|h\.?264|ipv6)[^\)]*\)/gi, '')
+            .replace(/[\u24B6-\u24E9\u2460-\u2473]/g, '')
             .replace(/\s{2,}/g, ' ')
             .trim() || rawName.trim();
     }
