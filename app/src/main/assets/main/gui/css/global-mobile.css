@@ -109,7 +109,6 @@
 /* Scrolling and gap adjustments for media rails. */
 #app .media-rail, #app .row-posters { gap: 10px; padding: 2% 4% 4%; }
 
-
 /* Search main view area padding override with safe area inset for top status bar. */
 #app .search-main { box-sizing: border-box; height: 100%; padding: calc(16px + env(safe-area-inset-top, 24px)) 4% 2%; }
 #app .search-container-wrapper { margin: 10px auto 2%; max-width: 100%; width: 92%; }
@@ -310,19 +309,6 @@
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb, #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__body { width: 100%; }
-
-/* Live TV mobile layout overrides. */
-#app .livetv-top-bar { align-items: stretch; flex-direction: column; gap: 10px; padding: 4% var(--app-content-padding-x) 0; }
-/* Live TV top actions container on mobile. */
-#app .livetv-top-actions { justify-content: flex-end; width: 100%; }
-/* Quick filter row horizontal scroll on mobile. */
-#app .livetv-quick-filters-row { overflow-x: auto; padding: 4px var(--app-content-padding-x) 0; }
-
-/* Quick filter pills flex row container on mobile. */
-#app .livetv-quick-filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
-
-/* Quick filter touch targets on mobile. */
-#app .livetv-quick-filters .chip { flex-shrink: 0; min-height: 44px; padding: 10px 16px; }
 #app .livetv-two-column-layout { flex-direction: column; gap: 12px; padding: 4% var(--app-content-padding-x); }
 /* Vertical category and country list column on mobile viewports. */
 #app .livetv-categories-column { height: 22vh; width: 100%; }
@@ -331,20 +317,8 @@
 /* Responsive preview video card sizing on mobile. */
 #app .preview-card, #app .preview-card-video { height: 28vh; min-height: 180px; }
 
-/* Responsive preview card title sizing on mobile. */
-#app .preview-card__title { font-size: 18px; }
-
-/* Responsive preview actions touch layout on mobile. */
-#app .preview-card__actions { gap: 8px; }
-
-/* Responsive preview action buttons touch sizing on mobile. */
-#app .preview-card__actions .btn { font-size: 13px; min-height: 44px; padding: 8px 14px; }
-
 /* Touch-friendly channel cards on mobile. */
 #app .channel-card, #app .channel-list-item { min-height: 52px; padding: 10px 12px; }
-
-/* Touch-friendly favorite toggle button target on mobile. */
-#app .channel-card__fav-btn { height: 44px; width: 44px; }
 
 /* Compact EPG schedule panel padding on mobile. */
 #app .epg-panel, #app .epg-card { padding: 16px; }
@@ -366,7 +340,6 @@
 #app .settings-section .section-title { font-size: 15px; gap: 10px; margin-bottom: 4px; }
 #app .setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: row; gap: 12px; justify-content: space-between; padding: 12px 0; }
 #app .setting-item:first-of-type { border-top: none; }
-#app .setting-item.centered-setting { justify-content: center; padding: 16px 0; }
 #app .setting-info { flex: 1 1 auto; min-width: 0; }
 #app .setting-label { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
 #app .setting-description { color: var(--text-muted); font-size: 12.5px; line-height: 1.35; }
@@ -376,59 +349,6 @@
 #app .current-value-display { border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; height: 40px; max-width: 150px; overflow: hidden; padding: 0 12px; text-overflow: ellipsis; white-space: nowrap; }
 #app .btn--square, #app .edit-trigger { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
 #app .setting-edit-icon { height: 18px; width: 18px; }
-#app .scale-control-container {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: var(--radius-sm);
-    box-sizing: border-box;
-    display: inline-flex;
-    flex-direction: row;
-    flex-shrink: 0;
-    gap: 0;
-    height: 36px;
-    padding: 2px;
-    width: auto;
-}
-#app .scale-control-container .scale-adjust-btn,
-#app .scale-control-container .btn--square-sm {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: #ffffff;
-    display: inline-flex;
-    font-size: 18px;
-    font-weight: 700;
-    height: 30px;
-    justify-content: center;
-    min-height: 30px;
-    min-width: 32px;
-    padding: 0;
-    width: 32px;
-}
-#app .scale-control-container .centered-value,
-#app .scale-control-container .current-value-display {
-    align-items: center;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    box-sizing: border-box;
-    color: #ffffff;
-    display: inline-flex;
-    flex: none;
-    font-size: 14px;
-    font-weight: 700;
-    height: 30px;
-    justify-content: center;
-    line-height: 30px;
-    min-width: 48px;
-    overflow: visible;
-    padding: 0 4px;
-    text-align: center;
-    width: auto;
-}
 #app .form-toggle { border-radius: 999px; cursor: pointer; flex-shrink: 0; height: 32px; width: 58px; }
 #app .form-toggle__slider { height: 22px; left: 2px; top: 2px; transition: left 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease; width: 22px; }
 #app .form-toggle:has(input:checked) .form-toggle__slider { left: 28px; }
@@ -783,13 +703,16 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 #app .media-grid--posters > .poster-wrapper, #app .search-results-grid > .poster-wrapper { min-width: 0; width: 100%; }
 #app .card__badge, #app .poster-badge { backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 4px; font-size: 11px; padding: 2px 6px; position: absolute; right: 6px; top: 6px; }
 
-
 body #changes-modal .modal__close { display: none; }
 
 /* Language selection list with simple divider lines and zero border-radius. */
 body .language-selection-grid { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
 body .language-stepper-container { display: none; }
-body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px !important; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0 0 16px; padding: 0 18px; position: sticky; top: 0; width: 100%; z-index: 2; }
+/* Opaque sticky wrapper ensuring scrolling language cards slide behind search bar cleanly without bleed-through */
+body .language-search-wrapper { background: #050505; box-sizing: border-box; padding: 4px 0 12px; position: sticky; top: 0; width: 100%; z-index: 10; }
+body .language-search-wrapper:has(> .hidden) { display: none; }
+/* Input field for filtering available languages */
+body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px !important; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0; padding: 0 18px; position: static; width: 100%; }
 body .language-search:focus { border-color: var(--primary-color); outline: none; }
 body .language-card { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1c1c1c; border-radius: 0 !important; color: #ffffff; cursor: pointer; display: flex; gap: 14px; min-height: 52px; min-width: 0; padding: 14px 12px; text-align: left; width: 100%; box-sizing: border-box; }
 body .language-card:first-child { border-top: 1px solid #1c1c1c; }
@@ -843,13 +766,6 @@ body .chip--color.is-active, body .chip--color.active { box-shadow: 0 0 0 2px #f
 :root { --mobile-surface: #0f0f0f; --mobile-panel: #181818; --mobile-border: #303030; --mobile-muted: #a1a1a1; --mobile-ink: #111111; }
 html, body, #app { background-color: var(--mobile-surface); }
 #main-view { height: 100dvh; overscroll-behavior-y: contain; }
-#app .btn { -webkit-tap-highlight-color: transparent; align-items: center; border-radius: 12px; box-shadow: none; font-size: 15px; font-weight: 600; justify-content: center; min-height: 48px; padding: 0 18px; transition: background-color 140ms ease, border-color 140ms ease, opacity 140ms ease, transform 120ms cubic-bezier(0.2, 0, 0, 1); user-select: none; }
-#app .btn--primary { background: #ffffff; border: 1px solid #ffffff; color: var(--mobile-ink); }
-#app .btn--secondary { background: transparent; border: 1px solid #484848; color: #f5f5f5; }
-#app .btn--ghost { background: transparent; border-color: transparent; color: #e8e8e8; }
-#app .btn--danger { background: #2a1717; border: 1px solid #593232; color: #ffdddd; }
-#app .btn:active { opacity: 0.88; transform: none; }
-#app .btn:disabled, #app .btn[aria-disabled="true"] { cursor: default; opacity: 0.48; }
 #app .nav-rail, #app .navbar { background: #0f0f0f; border-top-color: #2a2a2a; display: flex; gap: 0; justify-content: space-around; padding-left: calc(6px + env(safe-area-inset-left, 0px)); padding-right: calc(6px + env(safe-area-inset-right, 0px)); }
 #app #sidebar-container .nav-rail #nav-links > .nav-item { -webkit-tap-highlight-color: transparent; background: transparent; border: 2px solid transparent; border-radius: 10px; box-shadow: none; box-sizing: border-box; flex: initial; height: 48px; margin: 0; max-width: none; min-height: 48px; min-width: 0; outline: none; padding: 0; touch-action: manipulation; transition: background-color 140ms ease, opacity 140ms ease, transform 160ms cubic-bezier(0.2, 0, 0, 1); width: 100%; }
 /* YouTube-style bottom navigation without grey background boxes. */
@@ -880,9 +796,6 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .hero-buttons #play-btn, #app #play-all-btn, body #context-play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
 #app .hero-buttons #play-btn .mobile-play-icon, #app #play-all-btn .mobile-play-icon, body #context-play-btn .mobile-play-icon { display: inline-block !important; fill: #111111; height: 18px; pointer-events: none; width: 18px; }
 #app .hero-buttons #play-btn .play-button-label, #app #play-all-btn .play-button-label, body #context-play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
-#app .details-actions { align-items: center; gap: 10px; }
-#app #details-play { border-radius: 12px; height: 48px; min-height: 48px; }
-#app #details-trailer, #app #details-playlist { background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; height: 48px; min-height: 48px; }
 
 /* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */
 #app .settings-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
@@ -939,6 +852,10 @@ body .modal .focusable:focus-visible, body .modal .focusable.focused {
 #app .settings-container #app-info-btn:active { background: rgba(255, 255, 255, 0.08); }
 #app .settings-container #app-info-btn .btn__icon { display: none; }
 #app .settings-container #app-info-btn .btn__chevron { color: #666666; font-size: 18px; display: inline-block; }
+
+/* Mobile layout: hide desktop collapsible section and show mobile entry row */
+#app #advanced-settings-section { display: none !important; }
+#app #mobile-advanced-item { display: flex !important; }
 
 /* Prevent floating network status icon from colliding on mobile */
 .network-status-overlay { display: none !important; }
@@ -1122,8 +1039,6 @@ body #app-info-modal .modal__footer .btn {
     width: 100%;
 }
 
-
-
 /* Mobile: Account screen styled consistently with IVIDS card architecture. */
 #app .account-container { box-sizing: border-box; margin: 0 auto; max-width: 600px; padding: calc(16px + env(safe-area-inset-top, 24px)) 16px calc(84px + env(safe-area-inset-bottom, 16px)); width: 100%; }
 #app .account-header { margin-bottom: 16px; padding: 0 4px; text-align: left; }
@@ -1163,20 +1078,6 @@ body #app-info-modal .modal__footer .btn {
     #app .settings-container .setting-item--ui-scale { align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
     #app .settings-container .ui-scale-control { gap: 4px; }
 }
-
-/* Mobile sub-pages use YouTube-like neutral surfaces and reachable bottom actions. */
-html body .modal__dialog { background: #0f0f0f; }
-html body .modal__title { color: #f5f5f5; font-size: 19px; font-weight: 650; letter-spacing: 0; padding-left: 52px; padding-right: 52px; text-align: left; }
-body .modal__footer { background: #0f0f0f; }
-body .modal__footer .btn--primary { background: #ffffff; border-color: #ffffff; color: #111111; }
-body .modal__footer .btn--secondary { background: transparent; border-color: #444444; color: #f5f5f5; }
-/* Zero border-radius across all buttons, options, chips, and controls in all popups/modals (excluding circular back and refresh buttons). */
-body .modal .btn:not(.modal__back-btn):not(.modal__refresh-btn), body .modal button:not(.modal__back-btn):not(.modal__refresh-btn), body .modal .modal-option, body .modal .language-card, body .modal .chip, body .modal .form-input, body .modal .playlist-item, body .modal__footer .btn { border-radius: 0 !important; }
-body .modal .modal-option, body .modal .playlist-item { border: 0; border-bottom: 1px solid #222222; }
-body .modal .modal-option:first-child, body .modal .playlist-item:first-child { border-top: 1px solid #222222; }
-body .modal .modal-options-list, body .modal .playlist-selection-list { gap: 0; }
-body .modal .chip.is-selected, body .modal .chip.is-active, body .modal .chip.selected, body .modal .chip.active { background: #222222; border-color: #ffffff; border-radius: 0 !important; box-shadow: none; color: #ffffff; }
-body .modal .chip--color.is-active, body .modal .chip--color.active { border-radius: 0 !important; box-shadow: 0 0 0 2px #ffffff; }
 
 /* Avoid motion when the system asks for reduced animations. */
 @media (prefers-reduced-motion: reduce) {

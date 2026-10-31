@@ -168,9 +168,6 @@ input, textarea, select { font: inherit; }
 /* Square icon action button modifier (46px) for settings triggers and list item actions. */
 .btn--square { border-radius: var(--radius-sm); flex-shrink: 0; height: 46px; min-height: 46px; min-width: 46px; padding: 0; width: 46px; }
 
-/* Compact square icon/stepper button modifier (36px) for inline scale adjustments. */
-.btn--square-sm { border-radius: var(--radius-sm); flex-shrink: 0; font-size: 20px; font-weight: 800; height: 36px; min-height: 36px; min-width: 36px; padding: 0; width: 36px; }
-
 /* Full-width block button modifier stretching across parent container width. */
 .btn--block, .btn-full-center { display: flex; justify-content: center; width: 100%; }
 
@@ -889,9 +886,6 @@ input, textarea, select { font: inherit; }
 }
 .badge--primary { background-color: var(--primary-color); color: #050505; }
 .badge--outline, .version-badge { background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; }
-.badge--success { background-color: #2ec4b6; color: #050505; }
-.badge--warning { background-color: #ff9f1c; color: #050505; }
-.badge--danger { background-color: #e71d36; color: #ffffff; }
 
 /* ==========================================================================
    SECTION 5: OOCSS TABS, TOP-BAR & TYPOGRAPHY SYSTEM
@@ -1205,10 +1199,10 @@ input, textarea, select { font: inherit; }
 .app-info-label { color: rgba(255, 255, 255, 0.7); font-size: 15px; font-weight: 500; }
 /* Value for info item */
 .app-info-value { color: #ffffff; font-size: 15px; font-weight: 600; }
-/* Legacy aliases for backward compatibility */
-.app-info-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-.app-info-item { background: rgba(255, 255, 255, 0.03); border-radius: 10px; padding: 12px 14px; }
-.app-info-card { width: 100%; }
+
+/* Sticky container for language search input matching modal dialog surface */
+.language-search-wrapper { background: #161616; box-sizing: border-box; padding: 4px 0 12px; position: sticky; top: 0; width: 100%; z-index: 10; }
+.language-search-wrapper:has(> .hidden) { display: none; }
 
 /* Clean zero-gap list containers for modal selections with divider lines. */
 .modal-options-list, .playlist-selection-list, .language-selection-grid { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
@@ -1497,6 +1491,21 @@ input, textarea, select { font: inherit; }
 }
 .account-section { padding: 32px 36px; }
 
+/* Centered container for the small desktop advanced settings dropdown button */
+.advanced-dropdown-wrapper { display: flex; justify-content: center; margin: 8px 0 24px; width: 100%; }
+
+/* Small pill-shaped dropdown toggle button under Live TV */
+.advanced-dropdown-btn { border-radius: 999px; font-size: 14.5px; font-weight: 600; gap: 8px; padding: 10px 22px; }
+
+/* Rotating dropdown arrow inside toggle button */
+.dropdown-chevron { display: inline-block; font-size: 11px; margin-left: 6px; transition: transform 0.2s ease; }
+
+/* Inverted chevron when dropdown container is open */
+.advanced-dropdown-btn[aria-expanded="true"] .dropdown-chevron { transform: rotate(180deg); }
+
+/* Desktop-only: hide mobile advanced settings entry row */
+#mobile-advanced-item { display: none; }
+
 /* ==========================================================================
    SECTION 8: DETAILS, PLAYLISTS & SEARCH PAGE LAYOUTS
    ========================================================================== */
@@ -1631,22 +1640,6 @@ input, textarea, select { font: inherit; }
 
 /* Live TV guide two-column layout and channel list items. */
 .livetv-page-layout { box-sizing: border-box; color: #ffffff; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-.top-bar.livetv-top-bar { align-items: center; display: flex; justify-content: space-between; padding: 2% var(--app-content-padding-x) 0; }
-/* Search control container for channel search. */
-.top-bar.livetv-top-bar .search-box { width: 40%; }
-/* Quick filter pills row below top bar. */
-.livetv-quick-filters-row { box-sizing: border-box; display: flex; padding: 12px var(--app-content-padding-x) 0; width: 100%; }
-
-/* Quick filter chips container. */
-.livetv-quick-filters { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; width: 100%; }
-
-/* Quick filter chip item icon. */
-.livetv-quick-filters .chip__icon { height: 16px; width: 16px; }
-
-/* Quick filter chip active category highlight. */
-.livetv-quick-filters .chip.active { background: var(--primary-color); border-color: var(--primary-color); color: #ffffff; }
-/* Live TV top action button group. */
-.top-bar__actions.livetv-top-actions { align-items: center; display: flex; gap: 10px; }
 
 /* Clear button nested inside Live TV search input wrapper (consistent 2px border prevents focus shift). */
 .search-clear-btn {
@@ -1744,9 +1737,6 @@ input, textarea, select { font: inherit; }
 .channel-card:hover, .channel-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
 /* Channel card focused spatial navigation state. */
 .channel-card:focus, .channel-card.focused, .channel-list-item:focus, .channel-list-item.focused { background: rgba(255, 255, 255, 0.1); border-color: #ffffff; outline: none; }
-
-/* Channel index numeric indicator badge. */
-.channel-card__index { color: var(--text-muted); flex-shrink: 0; font-size: 0.82rem; font-weight: 600; min-width: 28px; text-align: right; }
 /* Channel playback health status dot indicator. */
 .list-status-dot { border-radius: 50%; flex-shrink: 0; height: 8px; width: 8px; }
 .list-status-dot.checking { background: #f1c84c; }
@@ -1761,24 +1751,6 @@ input, textarea, select { font: inherit; }
 /* Channel title label. */
 .channel-card__name, .channel-card__title, .channel-list-name { color: #ffffff; font-size: 0.9rem; font-weight: 700; line-height: 1.2; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 
-/* Channel category subtitle label. */
-.channel-card__category { color: var(--text-muted); font-size: 12px; font-weight: 500; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
-
-/* Sports badge inside channel card. */
-.channel-card__badge { align-self: center; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; padding: 2px 8px; }
-
-/* Favorite toggle button in channel card row. */
-.channel-card__fav-btn { align-items: center; background: transparent; border: none; border-radius: 50%; cursor: pointer; display: flex; flex-shrink: 0; height: 32px; justify-content: center; opacity: 0.75; padding: 0; transition: opacity 150ms ease, background-color 150ms ease; width: 32px; }
-
-/* Favorite toggle button hover state. */
-.channel-card__fav-btn:hover { background: rgba(255, 255, 255, 0.1); opacity: 1; }
-
-/* Favorite toggle button focused state. */
-.channel-card__fav-btn:focus, .channel-card__fav-btn.focused { background: rgba(255, 255, 255, 0.15); border: 2px solid #ffffff; opacity: 1; outline: none; }
-
-/* Favorite icon inside toggle button. */
-.channel-card__fav-btn .fav-icon, .channel-card__fav-btn img { display: block; height: 16px; object-fit: contain; width: 16px; }
-
 /* Live TV EPG and preview video panel. */
 .hero-active-content { display: flex; flex-direction: column; gap: 10px; height: 100%; min-height: 0; width: 100%; }
 /* 16:9 Widescreen video preview card. */
@@ -1786,35 +1758,8 @@ input, textarea, select { font: inherit; }
 /* Widescreen video preview card spatial navigation focus state. */
 .preview-card:focus, .preview-card.focused, .preview-card-video:focus, .preview-card-video.focused { border-color: #ffffff; outline: none; }
 
-/* Video container wrapper inside preview card. */
-.preview-card__video-wrap { height: 100%; position: relative; width: 100%; }
-
 /* Video element inside preview card. */
 .preview-card-video video, .preview-card__video-wrap video { background: #000000; display: block; height: 100%; object-fit: cover; width: 100%; }
-
-/* Cinematic gradient overlay across video preview. */
-.preview-card__overlay { background: linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.85) 100%); box-sizing: border-box; display: flex; flex-direction: column; inset: 0; justify-content: space-between; padding: 20px 24px; pointer-events: none; position: absolute; z-index: 3; }
-
-/* Header area of preview overlay. */
-.preview-card__header { align-items: flex-start; display: flex; justify-content: space-between; width: 100%; }
-
-/* Metadata block in preview overlay. */
-.preview-card__meta { display: flex; flex-direction: column; gap: 4px; max-width: 80%; }
-
-/* Live status badge on preview card. */
-.preview-card__badge { align-self: flex-start; background: #e24a4a; color: #ffffff; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; padding: 3px 8px; }
-
-/* Channel title heading on preview card. */
-.preview-card__title { color: #ffffff; font-size: 22px; font-weight: 800; margin: 0; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7); white-space: nowrap; }
-
-/* Channel category badge on preview card. */
-.preview-card__group { color: rgba(255, 255, 255, 0.7); font-size: 13px; font-weight: 600; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
-
-/* Interactive button action bar on preview card. */
-.preview-card__actions { display: flex; gap: 12px; pointer-events: auto; }
-
-/* Icon inside preview action button. */
-.preview-card__actions .btn__icon { height: 18px; width: 18px; }
 .preview-video-loading { align-items: center; background: rgba(0, 0, 0, 0.5); display: flex; height: 100%; justify-content: center; left: 0; position: absolute; top: 0; width: 100%; z-index: 2; }
 /* EPG Schedule panel card surface. */
 .epg-panel, .epg-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 0 0 auto; flex-direction: column; gap: 6px; max-height: 29%; min-height: 0; overflow: hidden; padding: 10px 14px; }
@@ -1877,7 +1822,6 @@ input, textarea, select { font: inherit; }
 .tv-group-badge { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); border-radius: var(--radius-xs); color: var(--primary-color); font-size: 12px; font-weight: 900; letter-spacing: 0.05em; padding: 4px 10px; text-transform: uppercase; }
 .tv-epg-info { color: rgba(255, 255, 255, 0.6); font-size: 14px; font-weight: 700; }
 .tv-controls-right { align-items: center; display: flex; gap: 28px; }
-.tv-zap-guide { align-items: flex-end; display: flex; flex-direction: column; }
 .guide-key { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-xs); color: #ffffff; font-size: 15px; font-weight: 900; padding: 2px 10px; }
 .guide-label { color: rgba(255, 255, 255, 0.55); font-size: 11px; font-weight: 800; letter-spacing: 0.05em; margin-top: 5px; text-transform: uppercase; }
 .tv-status-badge { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 5px; display: flex; gap: 8px; padding: 6px 14px; }
@@ -1898,11 +1842,6 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .player-status-actions { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
 .player-hud { display: flex; flex-direction: column; height: 100%; justify-content: space-between; left: 0; opacity: 0; pointer-events: none; position: absolute; top: 0; transition: opacity 0.4s ease, visibility 0.4s ease; visibility: hidden; width: 100%; z-index: 100; }
 .player-hud.visible { opacity: 1; pointer-events: auto; visibility: visible; }
-.hud-bottom-panel { align-items: center; background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 60%, transparent 100%); bottom: 0; box-sizing: border-box; display: grid; grid-template-columns: 20% 60% 20%; height: auto; left: 0; padding: 3% 4%; pointer-events: auto; position: absolute; width: 100%; }
-.hud-control-slot { align-items: center; display: flex; }
-.hud-slot-left { justify-content: flex-start; }
-.hud-slot-middle { justify-content: center; width: 100%; }
-.hud-slot-right { justify-content: flex-end; }
 .server-selection-overlay { display: flex; justify-content: center; width: 100%; }
 .server-list { display: flex; gap: 12px; justify-content: center; overflow-x: auto; padding: 4px 0; scrollbar-width: none; width: 100%; }
 
@@ -1913,15 +1852,12 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 /* Settings item rows, value badges, and stepper controls. */
 .setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.04); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
 .setting-item:first-of-type { border-top: 0; }
-.setting-item.centered-setting { justify-content: center; padding: 16px 0; }
 .setting-info { min-width: 0; }
 .setting-label { color: #ffffff; font-size: 19px; font-weight: 700; margin-bottom: 4px; }
 .setting-description { color: var(--text-muted); font-size: 15px; line-height: 1.45; }
 .setting-control { align-items: center; display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; }
 .current-value-display { align-items: center; background: rgba(255, 255, 255, 0.08); border: none; border-radius: var(--radius-sm); color: #ffffff; display: inline-flex; font-size: 16px; font-weight: 700; height: 46px; justify-content: center; min-width: 0; padding: 0 18px; text-align: center; }
 .color-preview-circle, #current-color-display { background: var(--primary-color); border: none; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); display: inline-block; flex-shrink: 0; font-size: 0; height: 36px; padding: 0; width: 36px; }
-.scale-control-container { align-items: center; background: rgba(255, 255, 255, 0.06); border: none; border-radius: var(--radius-sm); display: inline-flex; gap: 6px; height: 46px; padding: 4px 6px; }
-.scale-control-container .centered-value { background: transparent; border: none; color: #ffffff; font-size: 17px; font-weight: 700; min-width: 60px; padding: 0 4px; text-align: center; }
 .setting-item--ui-scale { align-items: center; }
 /* UI scale control container with aligned stepper buttons and output display. */
 .ui-scale-control { align-items: center; background: transparent; border: 0; display: inline-flex; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
@@ -1931,7 +1867,6 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .btn__chevron { color: #a8a8a8; font-size: 26px; font-weight: 300; line-height: 1; margin-left: auto; }
 .setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
 .setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
-.update-status-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
 .loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
 
 /* Streaming providers and M3U playlists reorderable rows. */
@@ -2000,8 +1935,6 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .update-experimental-warning .warning-content { display: flex; flex: 1; flex-direction: column; gap: 4px; }
 .update-experimental-warning .warning-title { color: #fbbf24; font-size: 0.9rem; font-weight: 700; }
 .update-experimental-warning .warning-text { color: rgba(255, 255, 255, 0.85); font-size: 0.82rem; line-height: 1.45; margin: 0; }
-.update-changelog-title { align-self: flex-start; color: rgba(255, 255, 255, 0.5); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; margin-top: 8px; text-transform: uppercase; }
-.update-changelog-body { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 5px; box-sizing: border-box; color: rgba(255, 255, 255, 0.75); font-size: 0.88rem; line-height: 1.6; max-height: 140px; overflow-y: auto; padding: 12px; text-align: left; width: 100%; }
 .update-footer-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; width: 100%; }
 .update-progress-container { align-items: center; display: none; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%; }
 .update-progress-bar-bg { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 5px; height: 10px; overflow: hidden; position: relative; width: 100%; }
@@ -2012,7 +1945,6 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .version-option-list { display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 4px 0 8px; width: 100%; }
 .version-option-list .chip--option { justify-content: flex-start; min-height: 60px; padding: 12px 18px; text-align: left; width: 100%; }
 .version-chip-content { align-items: flex-start; display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; width: 100%; }
-.version-tag-badge { background: var(--primary-color, #46d369); border-radius: 5px; color: #050505; font-size: 9px; font-weight: 900; padding: 2px 6px; text-transform: uppercase; }
 .version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
 .version-chip-title { color: #ffffff; font-size: 14px; font-weight: 700; margin-top: 2px; text-align: left; }
 .version-chip-desc { color: rgba(255, 255, 255, 0.65); font-size: 12px; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }

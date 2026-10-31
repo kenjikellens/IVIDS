@@ -120,7 +120,8 @@ class SettingsManager {
             ],
             m3uPlaylists: [],
             includeAdult: false,
-            dataSaver: false
+            dataSaver: false,
+            delayAction: 100
         };
         try {
             const globalSaved = PersistentStorage.getItem('ivids-settings');
@@ -208,7 +209,8 @@ class SettingsManager {
         const globalSettings = {
             language: this.settings.language,
             updateMode: this.settings.updateMode,
-            uiScale: this.settings.uiScale
+            uiScale: this.settings.uiScale,
+            delayAction: this.settings.delayAction !== undefined ? this.settings.delayAction : 100
         };
         const userSettings = {
             uiScale: this.settings.uiScale,
@@ -338,6 +340,67 @@ class SettingsManager {
         if (editUpdateModeBtn) {
             editUpdateModeBtn.onclick = () => this.openModal('update-mode-modal');
         }
+
+        // Desktop Advanced Settings accordion toggle
+        const advancedToggle = document.getElementById('advanced-settings-toggle');
+        const advancedSection = document.getElementById('advanced-settings-section');
+        if (advancedToggle && advancedSection) {
+            advancedToggle.onclick = () => {
+                const isOpen = advancedSection.classList.toggle('is-open');
+                advancedToggle.setAttribute('aria-expanded', String(isOpen));
+            };
+        }
+
+        // Mobile Advanced Settings modal trigger
+        const openAdvancedBtn = document.getElementById('open-advanced-modal-btn');
+        if (openAdvancedBtn) {
+            openAdvancedBtn.onclick = () => this.openModal('advanced-settings-modal');
+        }
+        const mobileAdvancedItem = document.getElementById('mobile-advanced-item');
+        if (mobileAdvancedItem) {
+            mobileAdvancedItem.onclick = (e) => {
+                if (!this.isMobileLayout()) return;
+                if (e.target.closest('#open-advanced-modal-btn')) return;
+                this.openModal('advanced-settings-modal');
+            };
+        }
+
+        // Delay Action buttons
+        const editDelayBtn = document.getElementById('edit-delay-action-btn');
+        if (editDelayBtn) {
+            editDelayBtn.onclick = () => this.openModal('delay-action-modal');
+        }
+        const mobileEditDelayBtn = document.getElementById('mobile-edit-delay-action-btn');
+        if (mobileEditDelayBtn) {
+            mobileEditDelayBtn.onclick = () => this.openModal('delay-action-modal');
+        }
+
+        // Mobile inner advanced buttons
+        const mobileEditUpdateBtn = document.getElementById('mobile-edit-update-mode-btn');
+        if (mobileEditUpdateBtn) {
+            mobileEditUpdateBtn.onclick = () => this.openModal('update-mode-modal');
+        }
+        const mobileCheckUpdatesBtn = document.getElementById('mobile-check-updates-btn');
+        if (mobileCheckUpdatesBtn) {
+            mobileCheckUpdatesBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.handleCheckUpdatesClick(e);
+            };
+        }
+        const mobileAppInfoBtn = document.getElementById('mobile-app-info-btn');
+        if (mobileAppInfoBtn) {
+            mobileAppInfoBtn.onclick = () => this.openModal('app-info-modal');
+        }
+
+        // Handle full-row touch clicks inside #advanced-settings-modal on mobile
+        document.querySelectorAll('#advanced-settings-modal .setting-item').forEach(row => {
+            row.onclick = (event) => {
+                if (!this.isMobileLayout()) return;
+                if (event.target.closest('button, input, select, a, .form-toggle')) return;
+                const action = row.querySelector('.edit-trigger, .btn');
+                if (action) action.click();
+            };
+        });
 
         document.querySelectorAll('.settings-container .setting-item').forEach(row => {
             row.onclick = (event) => {

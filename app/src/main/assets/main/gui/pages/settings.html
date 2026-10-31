@@ -128,47 +128,92 @@
         </div>
     </div>
 
-    <!-- App Updates Settings -->
-    <div id="app-updates-section" class="settings-section">
-        <h2 class="section-title">
-            <img src="images/info.svg" class="section-title__icon" alt="">
-            <span data-i18n="settings.updates">App Updates</span>
-        </h2>
+    <!-- Landscape / PC Dropdown Trigger (small dropdown centered under Live TV) -->
+    <div id="advanced-dropdown-wrapper" class="advanced-dropdown-wrapper">
+        <button id="advanced-dropdown-btn" class="btn btn--secondary focusable universal-onclick advanced-dropdown-btn" type="button" aria-expanded="false" aria-controls="advanced-dropdown-container">
+            <img src="images/settings.svg" class="btn__icon" alt="">
+            <span data-i18n="settings.advancedSettings">Advanced Settings</span>
+            <span class="dropdown-chevron" aria-hidden="true">▼</span>
+        </button>
+    </div>
 
-        <div class="setting-item universal-onclick">
-            <div class="setting-info">
-                <div class="setting-label" data-i18n="settings.updateMode">Update Mode</div>
-                <div class="setting-description" data-i18n="settings.updateModeDesc">Choose how the app handles updates
+    <!-- Landscape / PC Collapsible Containers (App Updates, Delay Action, App Info) -->
+    <div id="advanced-dropdown-container" class="advanced-dropdown-container hidden">
+        <!-- App Updates Settings Container -->
+        <div id="app-updates-section" class="settings-section">
+            <h2 class="section-title">
+                <img src="images/info.svg" class="section-title__icon" alt="">
+                <span data-i18n="settings.updates">App Updates</span>
+            </h2>
+
+            <div class="setting-item universal-onclick">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.updateMode">Update Mode</div>
+                    <div class="setting-description" data-i18n="settings.updateModeDesc">Choose how the app handles updates</div>
+                </div>
+                <div class="setting-control">
+                    <div id="current-update-mode-display" class="current-value-display">Manual</div>
+                    <button id="edit-update-mode-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Update Mode" type="button">
+                        <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
+                    </button>
                 </div>
             </div>
-            <div class="setting-control">
-                <div id="current-update-mode-display" class="current-value-display">Manual</div>
-                <button id="edit-update-mode-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Update Mode">
-                    <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
-                </button>
+
+            <div id="check-updates-row" class="setting-item universal-onclick">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.checkNow">Controleren op updates</div>
+                    <div class="setting-description" id="check-updates-subtitle" data-i18n="settings.checkNowDesc">Handmatig zoeken naar nieuwe app-versies</div>
+                </div>
+                <div class="setting-control">
+                    <button id="check-updates-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Controleren op updates" aria-label="Controleren op updates" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div id="check-updates-row" class="setting-item universal-onclick">
-            <div class="setting-info">
-                <div class="setting-label" data-i18n="settings.checkNow">Controleren op updates</div>
-                <div class="setting-description" id="check-updates-subtitle" data-i18n="settings.checkNowDesc">Handmatig zoeken naar nieuwe app-versies</div>
+        <!-- Delay Action Settings Container -->
+        <div id="delay-action-section" class="settings-section">
+            <h2 class="section-title">
+                <img src="images/settings.svg" class="section-title__icon" alt="">
+                <span data-i18n="settings.delayAction">Response Delay</span>
+            </h2>
+
+            <div class="setting-item universal-onclick">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.delayAction">Response Delay</div>
+                    <div class="setting-description" data-i18n="settings.delayActionDesc">Add a delay to button and navigation press actions</div>
+                </div>
+                <div class="setting-control">
+                    <div id="current-delay-action-display" class="current-value-display">100ms</div>
+                    <button id="edit-delay-action-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Response Delay" type="button">
+                        <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
+                    </button>
+                </div>
             </div>
-            <div class="setting-control">
-                <button id="check-updates-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Controleren op updates" aria-label="Controleren op updates" type="button">
-                    <img src="images/arrow.svg" class="setting-edit-icon" alt="">
-                </button>
-            </div>
+        </div>
+
+        <!-- App Info Settings Container -->
+        <div id="app-info-section" class="settings-section settings-section--app-info">
+            <button id="app-info-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button">
+                <img src="images/info.svg" class="btn__icon" alt="">
+                <span data-i18n="settings.appInfo">App Info</span>
+                <span class="btn__chevron" aria-hidden="true">›</span>
+            </button>
         </div>
     </div>
 
-    <!-- App Info Settings -->
-    <div id="app-info-section" class="settings-section settings-section--app-info">
-        <button id="app-info-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button">
-            <img src="images/info.svg" class="btn__icon" alt="">
-            <span data-i18n="settings.appInfo">App Info</span>
-            <span class="btn__chevron" aria-hidden="true">›</span>
-        </button>
+    <!-- Mobile-Only Entry Row for Advanced Settings Popup -->
+    <div id="mobile-advanced-item" class="setting-item universal-onclick">
+        <div class="setting-info">
+            <div class="setting-label" data-i18n="settings.advancedSettings">Advanced Settings</div>
+            <div class="setting-description" data-i18n="settings.advancedSettingsDesc">Updates, app info & response delay</div>
+        </div>
+        <div class="setting-control">
+            <button id="open-advanced-modal-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Advanced Settings" type="button">
+                <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+            </button>
+        </div>
     </div>
 </div>
 
@@ -180,8 +225,10 @@
         </button>
         <h2 id="language-modal-title" class="modal__title" data-i18n="settings.language">Language</h2>
         <div class="modal__body">
-            <input id="language-search" class="form-input language-search focusable hidden" type="search"
-                autocomplete="off" data-i18n="nav.search" placeholder="Search...">
+            <div class="language-search-wrapper">
+                <input id="language-search" class="form-input language-search focusable hidden" type="search"
+                    autocomplete="off" data-i18n="nav.search" placeholder="Search...">
+            </div>
             <div id="language-selection-grid" class="language-selection-grid" aria-labelledby="language-modal-title"></div>
             <div class="language-stepper-container">
                 <button id="lang-prev-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn universal-onclick" aria-label="Previous Language">
@@ -407,6 +454,98 @@
             <button id="update-modal-install-btn" class="btn btn--primary focusable hidden universal-onclick" type="button" data-i18n="settings.updateNow">Nu Installeren</button>
             <button id="update-modal-retry-btn" class="btn btn--secondary focusable hidden universal-onclick" type="button" data-i18n="settings.checkNow">Opnieuw controleren</button>
             <button id="update-modal-back-btn" class="btn btn--secondary focusable universal-onclick" type="button">✕ <span data-i18n="common.close">Sluiten</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Settings Modal (Mobile Popup Sub-page) -->
+<div id="advanced-settings-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
+        <h2 id="advanced-settings-modal-title" class="modal__title" data-i18n="settings.advancedSettings">Advanced Settings</h2>
+        <div class="modal__body" id="advanced-modal-body">
+            <!-- App Updates Group -->
+            <h2 class="section-title" data-i18n="settings.updates">App Updates</h2>
+
+            <div class="setting-item universal-onclick" id="mobile-update-mode-item">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.updateMode">Update Mode</div>
+                    <div class="setting-description" data-i18n="settings.updateModeDesc">Choose how the app handles updates</div>
+                </div>
+                <div class="setting-control">
+                    <div id="mobile-update-mode-display" class="current-value-display">Manual</div>
+                    <button id="mobile-edit-update-mode-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Update Mode" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
+            <div id="mobile-check-updates-row" class="setting-item universal-onclick">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.checkNow">Controleren op updates</div>
+                    <div class="setting-description" id="mobile-check-updates-subtitle" data-i18n="settings.checkNowDesc">Handmatig zoeken naar nieuwe app-versies</div>
+                </div>
+                <div class="setting-control">
+                    <button id="mobile-check-updates-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Controleren op updates" aria-label="Controleren op updates" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Response Delay Group -->
+            <h2 class="section-title" data-i18n="settings.delayAction">Response Delay</h2>
+
+            <div class="setting-item universal-onclick" id="mobile-delay-action-item">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.delayAction">Response Delay</div>
+                    <div class="setting-description" data-i18n="settings.delayActionDesc">Add a delay to button and navigation press actions</div>
+                </div>
+                <div class="setting-control">
+                    <div id="mobile-delay-action-display" class="current-value-display">100ms</div>
+                    <button id="mobile-edit-delay-action-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Response Delay" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
+            <!-- App Info Group -->
+            <h2 class="section-title" data-i18n="settings.appInfo">App Info</h2>
+
+            <div class="setting-item universal-onclick" id="mobile-app-info-item">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.appInfo">App Info</div>
+                    <div class="setting-description" data-i18n="settings.appInfoDesc">View app version, system info, and changelog</div>
+                </div>
+                <div class="setting-control">
+                    <button id="mobile-app-info-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="App Info" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Response Delay Modal -->
+<div id="delay-action-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
+        <h2 class="modal__title" data-i18n="settings.delayAction">Response Delay</h2>
+        <div class="modal__body">
+            <div id="delay-action-options" class="chip-grid chip-grid--2col">
+                <div class="chip chip--option focusable universal-onclick" data-value="0" data-i18n="settings.delay0">0ms (Instant)</div>
+                <div class="chip chip--option focusable universal-onclick" data-value="100" data-i18n="settings.delay100">100ms (Default)</div>
+                <div class="chip chip--option focusable universal-onclick" data-value="250" data-i18n="settings.delay250">250ms</div>
+                <div class="chip chip--option focusable universal-onclick" data-value="500" data-i18n="settings.delay500">500ms</div>
+            </div>
+        </div>
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
+            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
+            <button class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
