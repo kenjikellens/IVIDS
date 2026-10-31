@@ -4,78 +4,100 @@ description: Standardized step-by-step protocol to build Windows EXE and Android
 
 # Build and Push to Main Workflow
 
-This document defines the strict, standardized protocol for compiling the Windows Portable Executable (`IVIDS.exe`) and Android package (`IVIDS.apk`), validating build outputs, and pushing commits directly to `main` without creating a Git tag or publishing a GitHub Release.
+Dit document definieert het gestandaardiseerde protocol voor het compileren van de Windows Portable Executable (`IVIDS.exe`) en de Android APK (`IVIDS.apk`), het verifiëren van de bijgewerkte configuratiebestanden, en het direct pushen van de commits naar `main` zonder een Git-tag of GitHub Release aan te maken.
+
+---
+
+## 📋 Welke bestanden worden bijgewerkt? (File Update Checklist)
+
+Bij het uitvoeren van deze workflow worden de volgende bestanden bijgewerkt en moeten worden gecontroleerd/gestaged:
+
+1. **`app/build.gradle.kts`**:
+   - **`versionCode`**: Wordt bij **elke** build-uitvoering automatisch met 1 opgehoogd via `increment-version-code.js`.
+   - **`versionName`**: Wordt bijgewerkt indien er een optionele versiebump wordt meegegeven.
+2. **Optioneel bij versiebump (`.\build.bat version vX.Y.Z`)**:
+   - **`package.json` & `package-lock.json`**: Versiestring voor Electron en Windows Settings.
+   - **`app/src/main/config.xml` & `app/src/main/assets/main/config.xml`**: Versieattribuut voor Tizen TV.
+   - **`CHANGELOG.md`**: Versie- en datumlog entry.
+3. **Gewijzigde applicatiebronbestanden**:
+   - Alle gewijzigde features, fixes of stijlen onder `app/src/main/assets/main/` (bijv. JS, CSS, HTML).
+4. **Binaire uitvoerbestanden (gegenereerd in de projectroot)**:
+   - **`IVIDS.exe`**: De gecompileerde Windows Portable Executable (staat in `.gitignore`, wordt **niet** gecommit in git).
+   - **`IVIDS.apk`**: De gecompileerde Android installatie-APK (staat in `.gitignore`, wordt **niet** gecommit in git).
 
 ---
 
 ## 🛠️ Step-by-Step Protocol
 
 ### 1. Pre-Build Validation & Status Check
-- **ACTION**: Check the current git status to verify what files have been modified or need to be committed:
+- **ACTION**: Controleer de huidige git-status en controleer welke bestanden zijn gewijzigd:
   ```powershell
   git status
   ```
-- **Integrity Validation**: Validate that project configuration files and version identifiers are intact:
+- **Integrity Validation**: Valideer dat de projectconfiguratie en versie-identifiers synchroon zijn:
   ```powershell
   node validate-build-integrity.js
   ```
-- **Code Syntax Check**: Ensure all JavaScript/TypeScript files touched during development pass syntax checks with zero errors (e.g. `node -c <file>`).
+- **Code Syntax Check**: Controleer dat alle gewijzigde JS/TS-bestanden foutloos compileren:
+  ```powershell
+  node -c <bestand.js>
+  ```
 
 ---
 
-### 2. Compile and Package Applications (APK and EXE)
-- **ACTION**: Run the automated build script to compile the packages:
-  - For **Debug Build** (standard development build):
+### 2. Compileer en Package de Applicaties (Verplichte EXE & APK Generatie)
+- **ACTION**: Start het geautomatiseerde buildscript om **BEIDE** binaries tegelijkertijd te bouwen:
+  - Voor **Debug Build** (standaard debug-pakketten):
     ```powershell
     .\build.bat
     ```
-  - For **Release Build** (optimized, signed production binaries):
+  - Voor **Release Build** (geoptimaliseerde, met `keystore.jks` gesigneerde productie-pakketten):
     ```powershell
     .\build.bat release
     ```
-- **Automated Actions & What `build.bat` Does**:
-  1. **Auto-Increments Build Number**: Automatically runs `increment-version-code.js` to increment `versionCode` in `app/build.gradle.kts`.
-  2. **Compiles Windows Portable Executable**: Builds the Electron application using `npm run dist`.
-  3. **Compiles Android APK**: Invokes `gradlew.bat assembleDebug` or `assembleRelease` using the workspace keystore (`keystore.jks`).
-  4. **Copies and Names Binaries**: Places the resulting `IVIDS.exe` and `IVIDS.apk` directly in the workspace root.
-  5. **Cleans Up Temporary Artifacts**: Deletes temporary build directories (e.g. `dist/`).
+- **Wat `build.bat` automatisch doet**:
+  1. **Hoogt `versionCode` op**: Draait `increment-version-code.js` en werkt `app/build.gradle.kts` bij.
+  2. **Compileert Windows EXE**: Bouwt de Electron portable executable via `npm run dist`.
+  3. **Compileert Android APK**: Bouwt de Android APK via `gradlew.bat assembleDebug` of `assembleRelease`.
+  4. **Kopieert en hernoemt naar root**: Plaatst `IVIDS.exe` en `IVIDS.apk` direct in de workspace root.
+  5. **Ruimt tijdelijke mappen op**: Verwijdert de `dist/` buildmap.
 
 ---
 
-### 3. Verify Output Binaries
-- **ACTION**: Confirm that both binaries were successfully compiled in the workspace root and are non-empty:
+### 3. Verifieer de Binaire Bestanden (EXE & APK)
+- **ACTION**: Verifieer dat zowel `IVIDS.exe` als `IVIDS.apk` succesvol zijn aangemaakt in de workspace root en niet 0 bytes zijn:
   ```powershell
   Get-Item "IVIDS.exe", "IVIDS.apk" | Select-Object Name, Length, LastWriteTime
   ```
-- **Note on Git Ignore**: `IVIDS.exe` and `IVIDS.apk` are tracked in `.gitignore` and are NOT committed to the git repository.
+- **Let op**: `IVIDS.exe` en `IVIDS.apk` staan in `.gitignore` en worden niet in git opgeslagen, maar dienen voor lokale distributie en testing.
 
 ---
 
-### 4. Stage and Commit Changes
-- **ACTION**: Stage the modified application files and the auto-incremented `app/build.gradle.kts`:
+### 4. Stage en Commit de Gewijzigde Bestanden
+- **ACTION**: Stage de gewijzigde bronbestanden en de automatisch opgehoogde `app/build.gradle.kts`:
   ```powershell
   git add app/build.gradle.kts
   git add app/src/
-  # Add other modified files as needed
+  # Voeg overige gewijzigde bestanden toe
   ```
-- **Commit with Clear Message**: Author a high-quality commit with a concise title and detailed bullet points explaining the changes and features:
+- **Commit met duidelijke boodschap**:
   ```powershell
-  git commit -m "feat/fix: <summary of changes>" -m "- <detail 1>`n- <detail 2>`n- <detail 3>"
+  git commit -m "feat/fix: <korte samenvatting>" -m "- <detail 1>`n- <detail 2>`n- <detail 3>"
   ```
 
 ---
 
-### 5. Push to Main Branch (No Release / No Tag)
-- **ACTION**: Fetch remote changes and push the local commits directly to the remote `main` branch:
+### 5. Push naar de Main Branch (ZONDER Release of Tag)
+- **ACTION**: Haal eventuele externe wijzigingen op en push direct naar de `main` branch:
   ```powershell
   git fetch origin main
   git push origin main
   ```
-- **BRANCH SAFETY & DISTINCTION FROM RELEASE WORKFLOW**:
-  - ❌ **DO NOT** create a Git tag (`git tag -a ...`).
-  - ❌ **DO NOT** push tags (`git push origin v...`).
-  - ❌ **DO NOT** publish a GitHub Release (`gh release create ...`).
-  - ✅ **DO** verify that the push to `origin/main` was successful:
+- **VEILIGHEIDSREGELS & VERSCHIL MET RELEASE WORKFLOW**:
+  - ❌ **GEEN Git-tag aanmaken** (`git tag -a ...`).
+  - ❌ **GEEN tags pushen** (`git push origin v...`).
+  - ❌ **GEEN GitHub Release publiceren** (`gh release create ...`).
+  - ✅ **WEL** controleren dat de push naar `origin/main` geslaagd is:
     ```powershell
     git status
     ```
