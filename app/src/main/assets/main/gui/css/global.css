@@ -84,7 +84,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Utility rule hiding hidden elements, scrollbars, and inactive fullscreen chrome. */
-#app.fullscreen-layout #sidebar-container, .hidden, [hidden], .btn.hidden, #main-view::-webkit-scrollbar, *::-webkit-scrollbar, .hero::after, .details-page::after, .details-page::before, .episodes-list:empty, .recent-searches-row.hidden, .server-list::-webkit-scrollbar { display: none !important; }
+#app.fullscreen-layout #sidebar-container, .hidden, [hidden], .btn.hidden, .mobile-back-btn, #main-view::-webkit-scrollbar, *::-webkit-scrollbar, .hero::after, .details-page::after, .details-page::before, .episodes-list:empty, .recent-searches-row.hidden, .server-list::-webkit-scrollbar { display: none !important; }
 
 /* Fullscreen content viewport occupying full screen width without fade masks. */
 #app.fullscreen-layout #main-view { -webkit-mask-image: none; margin-left: 0; mask-image: none; padding: 0; width: 100%; }

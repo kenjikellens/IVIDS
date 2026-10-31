@@ -348,7 +348,12 @@ class SettingsManager {
 
         const checkBtn = document.getElementById('check-updates-btn');
         if (checkBtn) {
-            checkBtn.onclick = () => this.handleMainUpdateAction();
+            checkBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.openUpdateCheckModal();
+            };
+            const checkRow = document.getElementById('check-updates-row');
+            if (checkRow) checkRow.onclick = () => this.openUpdateCheckModal();
         }
 
         const cancelBtn = document.getElementById('cancel-update-btn');

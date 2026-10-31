@@ -149,17 +149,15 @@
             </div>
         </div>
 
-        <div id="manual-check-container" class="setting-item hidden">
+        <div id="check-updates-row" class="setting-item focusable">
             <div class="setting-info">
                 <div class="setting-label" data-i18n="settings.checkNow">Check for Updates</div>
-                <div class="setting-description" data-i18n="settings.checkNowDesc">Manually search for updates</div>
+                <div class="setting-description" id="check-updates-subtitle" data-i18n="settings.checkNowDesc">Manually search for new app versions</div>
             </div>
-            <div class="setting-control update-control">
-                <div id="update-loader-container" class="loader-inline-container"></div>
-                <span id="update-status-text" class="update-status-label"></span>
-                <button id="check-updates-btn" class="btn btn--secondary focusable" data-i18n="settings.checkButton">Check
-                    Now</button>
-                <button id="cancel-update-btn" class="btn btn--secondary btn--sm focusable hidden" data-i18n="common.cancel">Cancel</button>
+            <div class="setting-control">
+                <button id="check-updates-btn" class="btn btn--secondary btn--square edit-trigger focusable" title="Check for Updates">
+                    <img src="images/edit.svg" class="setting-edit-icon" alt="Check">
+                </button>
             </div>
         </div>
     </div>
@@ -378,6 +376,30 @@
         </div>
         <div class="modal__footer modal__footer--center">
             <button class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Update Check Modal -->
+<div id="update-check-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
+        <h2 class="modal__title" data-i18n="settings.checkNow">Check for Updates</h2>
+        <div class="modal__body update-modal-body">
+            <div id="update-modal-spinner" class="loader-inline-container"></div>
+            <div id="update-modal-icon-container" class="update-modal-icon hidden">
+                <img id="update-modal-status-icon" src="images/info.svg" alt="">
+            </div>
+            <h3 id="update-modal-status-heading" class="update-modal-heading" data-i18n="settings.updateStatus.connecting-api">Connecting...</h3>
+            <p id="update-modal-status-desc" class="update-modal-desc"></p>
+            <div id="update-modal-version-badge" class="update-version-badge hidden"></div>
+        </div>
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
+            <button id="update-modal-install-btn" class="btn btn--primary focusable hidden" data-i18n="settings.updateNow">Install Now</button>
+            <button id="update-modal-retry-btn" class="btn btn--secondary focusable hidden" data-i18n="settings.checkNow">Check Again</button>
+            <button id="update-modal-back-btn" class="btn btn--secondary focusable" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>
