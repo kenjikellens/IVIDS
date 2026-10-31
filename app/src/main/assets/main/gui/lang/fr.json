@@ -128,7 +128,12 @@
         "refresh": "Actualiser",
         "viewChangelog": "Voir les modifications",
         "appPlatform": "Plateforme",
-        "appPlatformDesc": "Système d'exploitation cible & client"
+        "appPlatformDesc": "Système d'exploitation cible & client",
+        "branchWarningTitle": "Version de développement expérimentale",
+        "branchWarningDesc": "Attention : Il s'agit d'une version de développement en direct de la branche 'main'. Elle peut être instable ou contenir des bugs.",
+        "installBranchTitle": "Installer le build de la branche",
+        "installVersionTitle": "Installer la version",
+        "installNow": "Installer maintenant"
     },
     "common": {
         "close": "Fermer",

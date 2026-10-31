@@ -133,7 +133,12 @@
         "refresh": "Atualizar",
         "viewChangelog": "Ver alterações",
         "appPlatform": "Plataforma",
-        "appPlatformDesc": "Sistema operativo de destino e cliente"
+        "appPlatformDesc": "Sistema operativo de destino e cliente",
+        "branchWarningTitle": "Experimental Development Build",
+        "branchWarningDesc": "Warning: This is a live development build directly from the 'main' branch. It may be unstable or contain unfinished features.",
+        "installBranchTitle": "Install Live Branch Build",
+        "installVersionTitle": "Install Version",
+        "installNow": "Install Now"
     },
     "common": {
         "close": "Fechar",

@@ -43,8 +43,19 @@ export class UpdatePrompt {
                         <div class="update-branch-title"></div>
                         <div class="update-release-name"></div>
                     </div>
-                    <div class="update-changelog-title"></div>
-                    <div class="update-changelog-body"></div>
+                    <div id="update-experimental-warning" class="update-experimental-warning" style="display: none;">
+                        <span class="warning-icon">⚠️</span>
+                        <div class="warning-content">
+                            <span class="warning-title"></span>
+                            <p class="warning-text"></p>
+                        </div>
+                    </div>
+                    <div class="update-more-info-container" id="update-more-info-container">
+                        <button id="update-more-info-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button">
+                            <span>Meer informatie</span>
+                        </button>
+                    </div>
+
                 </div>
                 <div class="update-progress-container" id="update-progress-container">
                     <div class="update-progress-bar-bg">
@@ -60,6 +71,28 @@ export class UpdatePrompt {
         `;
 
         document.body.appendChild(this.modalElement);
+
+        if (!this.changelogModalElement) {
+            this.changelogModalElement = document.createElement('div');
+            this.changelogModalElement.id = 'update-changelog-modal';
+            this.changelogModalElement.className = 'modal update-changelog-modal-overlay';
+            this.changelogModalElement.style.cssText = 'display: none; z-index: 100005;';
+            this.changelogModalElement.innerHTML = `
+                <div class="modal__dialog modal__dialog--lg">
+                    <button id="update-changelog-back-btn" class="modal__back-btn btn btn--ghost btn--circle focusable universal-onclick" aria-label="Back" type="button">
+                        <img src="images/back.svg" class="modal-back-icon" alt="Back">
+                    </button>
+                    <h2 id="update-changelog-modal-title" class="modal__title"></h2>
+                    <div class="modal__body modal__body--scroll update-changelog-scroll">
+                        <div id="update-changelog-modal-content" class="markdown-body"></div>
+                    </div>
+                    <div class="modal__footer modal__footer--center">
+                        <button id="update-changelog-close-btn" class="btn btn--secondary focusable universal-onclick" type="button"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(this.changelogModalElement);
+        }
     }
 
     /**
@@ -93,9 +126,19 @@ export class UpdatePrompt {
      * @param {HTMLElement} [returnFocusElement] - Explicit element to receive focus when update prompt is dismissed.
      * @returns {Promise<void>}
      */
-    static async show(version, returnFocusElement = null) {
+    static async show(version, returnFocusElement = null, options = {}) {
         // Initialize HTML if not already mounted
         this.init();
+
+        // Ensure version selector or any open modal overlay is completely hidden so modals are never stacked
+        const openModals = document.querySelectorAll('.modal.is-open, .modal.show, #version-selector-modal');
+        openModals.forEach(m => {
+            if (m.id !== 'update-overlay') {
+                m.classList.remove('show', 'is-open', 'active');
+                m.style.setProperty('display', 'none', 'important');
+                m.style.setProperty('visibility', 'hidden', 'important');
+            }
+        });
 
         // Remember what was previously focused to allow seamless recovery upon dismissal
         const currentFocused = document.querySelector('.focused');
@@ -148,18 +191,49 @@ export class UpdatePrompt {
             ? parseMarkdown(release.body) 
             : '<p>Performance and core interface enhancements.</p>';
 
-        titleEl.textContent = this.translate('settings.updateNotification', 'New Version Available!');
+        const isBranch = version === 'Branch' || (release && release.tag_name === 'Branch') || (options && options.isBranch);
+        const isManual = (options && options.isManualSelection) || isBranch;
+
+        const warningBox = this.modalElement.querySelector('#update-experimental-warning');
+        if (warningBox) {
+            if (isBranch) {
+                const wTitle = warningBox.querySelector('.warning-title');
+                const wText = warningBox.querySelector('.warning-text');
+                if (wTitle) wTitle.textContent = this.translate('settings.branchWarningTitle', 'Experimentele Ontwikkelingsversie');
+                if (wText) wText.textContent = this.translate('settings.branchWarningDesc', "Let op: Dit is een live ontwikkelingsversie rechtstreeks vanaf de 'main' branch. Deze build kan onstabiel zijn of onvoltooide functies bevatten.");
+                warningBox.style.display = 'flex';
+            } else {
+                warningBox.style.display = 'none';
+            }
+        }
+
+        if (isBranch) {
+            titleEl.textContent = this.translate('settings.branchBuild', 'Live Branch Build');
+        } else if (isManual) {
+            titleEl.textContent = `${this.translate('settings.installVersionTitle', 'Versie')} ${version} ${this.translate('common.install', 'installeren')}`;
+        } else {
+            titleEl.textContent = this.translate('settings.updateNotification', 'New Version Available!');
+        }
         if (branchTitleEl) {
             branchTitleEl.textContent = this.translate('settings.branch', 'Branch');
         }
-        changelogTitleEl.textContent = this.translate('settings.whatsNew', "What's New:");
-        dismissBtn.textContent = this.translate('settings.later', 'Later');
-        confirmBtn.textContent = this.translate('settings.updateNow', 'Install Now');
+        if (changelogTitleEl) changelogTitleEl.textContent = this.translate('settings.whatsNew', "What's New:");
+        const moreInfoBtn = document.getElementById('update-more-info-btn');
+        if (moreInfoBtn) {
+            const moreInfoSpan = moreInfoBtn.querySelector('span');
+            if (moreInfoSpan) moreInfoSpan.textContent = this.translate('settings.moreInfo', 'Meer informatie');
+            moreInfoBtn.onclick = () => {
+                this.openChangelog(release, parsedBody);
+            };
+        }
+        dismissBtn.textContent = isManual ? this.translate('common.cancel', 'Annuleren') : this.translate('settings.later', 'Later');
+        confirmBtn.textContent = isManual ? this.translate('settings.installNow', 'Nu installeren') : this.translate('settings.updateNow', 'Install Now');
+
         
         currentBadgeEl.textContent = currentVer;
         remoteBadgeEl.textContent = release.tag_name;
         releaseNameEl.textContent = release.name || 'Prerelease Update';
-        changelogBodyEl.innerHTML = parsedBody;
+        if (changelogBodyEl) changelogBodyEl.innerHTML = parsedBody;
 
         // Reset progress bar visibility and reset visual states
         progressContainer.style.display = 'none';
@@ -190,6 +264,60 @@ export class UpdatePrompt {
 
         dismissBtn.onclick = () => {
             this.dismiss();
+        };
+    }
+
+    /**
+     * Opens dedicated full Markdown modal for release notes.
+     * @param {Object} release - GitHub release object.
+     * @param {string} parsedBody - Parsed Markdown HTML.
+     */
+    static openChangelog(release, parsedBody) {
+        if (!this.changelogModalElement) return;
+
+        this.modalElement.style.display = 'none';
+        this.changelogModalElement.style.display = 'flex';
+        this.changelogModalElement.classList.add('visible', 'is-open');
+
+        const titleEl = document.getElementById('update-changelog-modal-title');
+        const contentEl = document.getElementById('update-changelog-modal-content');
+        const closeBtn = document.getElementById('update-changelog-close-btn');
+        const backBtn = document.getElementById('update-changelog-back-btn');
+
+        if (titleEl) {
+            titleEl.textContent = release.name || `${this.translate('settings.changes', 'Changes')} (${release.tag_name})`;
+        }
+        if (contentEl) {
+            contentEl.innerHTML = parsedBody;
+        }
+        if (closeBtn) {
+            closeBtn.textContent = this.translate('common.close', 'Sluiten');
+            closeBtn.onclick = () => this.closeChangelog();
+        }
+        if (backBtn) {
+            backBtn.onclick = () => this.closeChangelog();
+        }
+
+        SpatialNav.setFocusTrap(this.changelogModalElement);
+        const focusTarget = backBtn || closeBtn;
+        if (focusTarget) SpatialNav.setFocus(focusTarget);
+    }
+
+    /**
+     * Closes dedicated Markdown modal and restores the main update prompt.
+     */
+    static closeChangelog() {
+        if (!this.changelogModalElement) return;
+
+        this.changelogModalElement.classList.remove('visible', 'is-open');
+        this.changelogModalElement.style.display = 'none';
+
+        this.modalElement.style.display = 'flex';
+        this.modalElement.classList.add('visible', 'is-open');
+
+        SpatialNav.setFocusTrap(this.modalElement);
+        const moreInfoBtn = document.getElementById('update-more-info-btn');
+        if (moreInfoBtn) SpatialNav.setFocus(moreInfoBtn);
         };
     }
 
@@ -321,6 +449,60 @@ export class UpdatePrompt {
             }
             window.open(window.latestUpdateDownloadUrl, '_blank');
             this.dismiss();
+        };
+    }
+
+    /**
+     * Opens dedicated full Markdown modal for release notes.
+     * @param {Object} release - GitHub release object.
+     * @param {string} parsedBody - Parsed Markdown HTML.
+     */
+    static openChangelog(release, parsedBody) {
+        if (!this.changelogModalElement) return;
+
+        this.modalElement.style.display = 'none';
+        this.changelogModalElement.style.display = 'flex';
+        this.changelogModalElement.classList.add('visible', 'is-open');
+
+        const titleEl = document.getElementById('update-changelog-modal-title');
+        const contentEl = document.getElementById('update-changelog-modal-content');
+        const closeBtn = document.getElementById('update-changelog-close-btn');
+        const backBtn = document.getElementById('update-changelog-back-btn');
+
+        if (titleEl) {
+            titleEl.textContent = release.name || `${this.translate('settings.changes', 'Changes')} (${release.tag_name})`;
+        }
+        if (contentEl) {
+            contentEl.innerHTML = parsedBody;
+        }
+        if (closeBtn) {
+            closeBtn.textContent = this.translate('common.close', 'Sluiten');
+            closeBtn.onclick = () => this.closeChangelog();
+        }
+        if (backBtn) {
+            backBtn.onclick = () => this.closeChangelog();
+        }
+
+        SpatialNav.setFocusTrap(this.changelogModalElement);
+        const focusTarget = backBtn || closeBtn;
+        if (focusTarget) SpatialNav.setFocus(focusTarget);
+    }
+
+    /**
+     * Closes dedicated Markdown modal and restores the main update prompt.
+     */
+    static closeChangelog() {
+        if (!this.changelogModalElement) return;
+
+        this.changelogModalElement.classList.remove('visible', 'is-open');
+        this.changelogModalElement.style.display = 'none';
+
+        this.modalElement.style.display = 'flex';
+        this.modalElement.classList.add('visible', 'is-open');
+
+        SpatialNav.setFocusTrap(this.modalElement);
+        const moreInfoBtn = document.getElementById('update-more-info-btn');
+        if (moreInfoBtn) SpatialNav.setFocus(moreInfoBtn);
         } else {
             console.warn('UpdatePrompt: No native bridge or update download link found.');
             this.handleError();

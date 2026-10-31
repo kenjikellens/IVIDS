@@ -133,7 +133,12 @@
         "refresh": "새로고침",
         "viewChangelog": "변경 사항 보기",
         "appPlatform": "플랫폼",
-        "appPlatformDesc": "대상 운영체제 및 클라이언트"
+        "appPlatformDesc": "대상 운영체제 및 클라이언트",
+        "branchWarningTitle": "Experimental Development Build",
+        "branchWarningDesc": "Warning: This is a live development build directly from the 'main' branch. It may be unstable or contain unfinished features.",
+        "installBranchTitle": "Install Live Branch Build",
+        "installVersionTitle": "Install Version",
+        "installNow": "Install Now"
     },
     "common": {
         "close": "닫기",

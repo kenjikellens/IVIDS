@@ -128,7 +128,12 @@
         "refresh": "Vernieuwen",
         "viewChangelog": "Bekijk wijzigingen",
         "appPlatform": "Platform",
-        "appPlatformDesc": "Ondersteund besturingssysteem & client"
+        "appPlatformDesc": "Ondersteund besturingssysteem & client",
+        "branchWarningTitle": "Experimentele Ontwikkelingsversie",
+        "branchWarningDesc": "Let op: Dit is een live ontwikkelingsversie rechtstreeks vanaf de 'main' branch. Deze build kan onstabiel zijn of onvoltooide functies bevatten.",
+        "installBranchTitle": "Live Branch Build Installeren",
+        "installVersionTitle": "Versie installeren",
+        "installNow": "Nu installeren"
     },
     "common": {
         "close": "Sluiten",

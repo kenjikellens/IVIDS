@@ -128,7 +128,12 @@
         "refresh": "Actualizar",
         "viewChangelog": "Ver cambios",
         "appPlatform": "Plataforma",
-        "appPlatformDesc": "Sistema operativo de destino y cliente"
+        "appPlatformDesc": "Sistema operativo de destino y cliente",
+        "branchWarningTitle": "Versión de desarrollo experimental",
+        "branchWarningDesc": "Atención: Esta es una compilación de desarrollo en vivo directamente de la rama 'main'. Puede ser inestable o contener errores.",
+        "installBranchTitle": "Instalar versión de la rama principal",
+        "installVersionTitle": "Instalar versión",
+        "installNow": "Instalar ahora"
     },
     "common": {
         "close": "Cerrar",

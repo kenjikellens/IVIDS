@@ -128,7 +128,12 @@
         "refresh": "Aktualisieren",
         "viewChangelog": "Änderungen anzeigen",
         "appPlatform": "Plattform",
-        "appPlatformDesc": "Ziel-Betriebssystem & Client"
+        "appPlatformDesc": "Ziel-Betriebssystem & Client",
+        "branchWarningTitle": "Experimentelle Entwicklungsversion",
+        "branchWarningDesc": "Achtung: Dies ist eine Live-Entwicklungsversion direkt aus dem 'main'-Branch. Sie kann instabil sein oder unfertige Funktionen enthalten.",
+        "installBranchTitle": "Live-Branch-Build installieren",
+        "installVersionTitle": "Version installieren",
+        "installNow": "Jetzt installieren"
     },
     "common": {
         "close": "Schließen",

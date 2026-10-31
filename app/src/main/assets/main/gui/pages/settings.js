@@ -822,7 +822,13 @@ class SettingsManager {
 
         branchCard.onclick = () => {
             const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
-            this.closeModal();
+            const vModal = document.getElementById('version-selector-modal');
+            if (vModal) {
+                vModal.classList.remove('show', 'is-open', 'active');
+                vModal.style.setProperty('display', 'none', 'important');
+                vModal.style.setProperty('visibility', 'hidden', 'important');
+            }
+            this.closeModal(false);
             console.log('Settings: Selected branch build');
             if (window.AndroidUpdate && typeof window.AndroidUpdate.clearCachedApk === 'function') {
                 window.AndroidUpdate.clearCachedApk();
@@ -835,7 +841,7 @@ class SettingsManager {
                 body: window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build.'
             };
             import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                UpdatePrompt.show('Branch', anchor);
+                UpdatePrompt.show('Branch', anchor, { isManualSelection: true, isBranch: true });
             }).catch(err => {
                 console.error('Settings: Failed to load update-prompt.js', err);
                 if (window.AndroidUpdate) {
@@ -888,13 +894,19 @@ class SettingsManager {
 
                 relCard.onclick = () => {
                     const anchor = this.triggeringButton || document.getElementById('check-updates-btn');
-                    this.closeModal();
+                    const vModal = document.getElementById('version-selector-modal');
+                    if (vModal) {
+                        vModal.classList.remove('show', 'is-open', 'active');
+                        vModal.style.setProperty('display', 'none', 'important');
+                        vModal.style.setProperty('visibility', 'hidden', 'important');
+                    }
+                    this.closeModal(false);
                     console.log(`Settings: Selected version ${rel.tag_name} via ${downloadUrl}`);
                     window.latestUpdateDownloadUrl = downloadUrl;
                     window.latestUpdateVersion = rel.tag_name;
                     window.latestRelease = rel;
                     import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                        UpdatePrompt.show(rel.tag_name, anchor);
+                        UpdatePrompt.show(rel.tag_name, anchor, { isManualSelection: true, isBranch: false });
                     }).catch(err => {
                         console.error('Settings: Failed to load update-prompt.js', err);
                         if (window.AndroidUpdate) {

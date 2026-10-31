@@ -133,7 +133,12 @@
         "refresh": "Refresh",
         "viewChangelog": "View Changelog",
         "appPlatform": "Platform",
-        "appPlatformDesc": "Target operating system & client"
+        "appPlatformDesc": "Target operating system & client",
+        "branchWarningTitle": "Experimental Development Build",
+        "branchWarningDesc": "Warning: This is a live development build directly from the 'main' branch. It may be unstable or contain unfinished features.",
+        "installBranchTitle": "Install Live Branch Build",
+        "installVersionTitle": "Install Version",
+        "installNow": "Install Now"
     },
     "common": {
         "close": "Đóng",
