@@ -285,6 +285,48 @@ function findNextInModal(current, direction, modal) {
         return current;
     }
 
+    // 8. Update Check Modal (Top buttons: back chevron & close x; Footer buttons: install, retry, close/back)
+    if (modal.id === 'update-check-modal') {
+        const backBtn = modal.querySelector('.modal__back-btn.focusable');
+        const closeX = document.getElementById('update-modal-close-x');
+        const installBtn = document.getElementById('update-modal-install-btn');
+        const retryBtn = document.getElementById('update-modal-retry-btn');
+        const modalBackBtn = document.getElementById('update-modal-back-btn');
+
+        const visibleFooterButtons = [installBtn, retryBtn, modalBackBtn].filter(isElementVisible);
+        const firstFooterBtn = visibleFooterButtons[0] || modalBackBtn;
+
+        if (current === backBtn) {
+            if (direction === 'right') return (closeX && isElementVisible(closeX)) ? closeX : current;
+            if (direction === 'down') return firstFooterBtn || current;
+            return current;
+        }
+
+        if (current === closeX) {
+            if (direction === 'left') return (backBtn && isElementVisible(backBtn)) ? backBtn : current;
+            if (direction === 'down') return firstFooterBtn || current;
+            return current;
+        }
+
+        // Inside footer buttons:
+        const footerIdx = visibleFooterButtons.indexOf(current);
+        if (footerIdx !== -1) {
+            if (direction === 'down') {
+                return footerIdx < visibleFooterButtons.length - 1 ? visibleFooterButtons[footerIdx + 1] : current;
+            }
+            if (direction === 'up') {
+                if (footerIdx > 0) return visibleFooterButtons[footerIdx - 1];
+                if (closeX && isElementVisible(closeX)) return closeX;
+                if (backBtn && isElementVisible(backBtn)) return backBtn;
+                return current;
+            }
+            if (direction === 'left' || direction === 'right') {
+                return current;
+            }
+        }
+        return current;
+    }
+
     // Generic fallback: preserve strict focus trap inside the modal
     const idx = focusables.indexOf(current);
     if (idx !== -1) {

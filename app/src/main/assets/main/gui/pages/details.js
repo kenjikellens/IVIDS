@@ -937,12 +937,21 @@ function renderExtrasEmptyState(container, contentId, mediaType) {
                 const refreshed = await Api.getDetails(contentId, mediaType);
                 if (refreshed && refreshed.videos) {
                     renderExtras(refreshed.videos, contentId, mediaType);
+                    const firstItem = container.querySelector('.disney-extra-item.focusable');
+                    if (firstItem) SpatialNav.setFocus(firstItem);
                 } else {
                     renderExtrasEmptyState(container, contentId, mediaType);
+                const retryEl = container.querySelector('#extras-retry-btn');
+                if (retryEl) SpatialNav.setFocus(retryEl);
+
+
                 }
             } catch (err) {
                 console.error('Error retrying extras:', err);
                 renderExtrasEmptyState(container, contentId, mediaType);
+                const retryEl = container.querySelector('#extras-retry-btn');
+                if (retryEl) SpatialNav.setFocus(retryEl);
+
             }
         };
     }

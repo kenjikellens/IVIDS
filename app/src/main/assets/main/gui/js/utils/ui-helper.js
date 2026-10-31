@@ -194,9 +194,9 @@ export function manageModal(modal, focusTarget = null, onClose = null) {
     };
     SpatialNav.pushBackHandler(modalBackHandler);
 
+    modal.classList.add('is-open', 'active', 'show');
     setTimeout(() => {
         modal.style.setProperty('opacity', '1', 'important');
-        modal.classList.add('is-open', 'active', 'show');
     }, 10);
     SpatialNav.setFocusTrap(modal);
     if (focusTarget) {

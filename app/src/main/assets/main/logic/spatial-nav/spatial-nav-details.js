@@ -72,6 +72,8 @@ function getFirstFocusableInPanel(panel) {
     } else if (panel.id === 'panel-extra') {
         const firstExtra = panel.querySelector('.disney-extra-item.focusable');
         if (firstExtra && isElementVisible(firstExtra)) return firstExtra;
+        const retryBtn = panel.querySelector('#extras-retry-btn.focusable');
+        if (retryBtn && isElementVisible(retryBtn)) return retryBtn;
     } else if (panel.id === 'panel-about') {
         const firstCast = panel.querySelector('.disney-cast-card.focusable');
         if (firstCast && isElementVisible(firstCast)) return firstCast;
@@ -163,13 +165,34 @@ export const spatialNavDetails = {
             return null;
         }
 
+        // 1b. Details Back Button (Top-left fixed circular back button)
+        if (current.id === 'details-back-btn') {
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
+            if (direction === 'down' || direction === 'right') {
+                const firstGenre = document.querySelector('#details-genres .chip--genre.focusable');
+                if (firstGenre && isElementVisible(firstGenre)) return firstGenre;
+                const playBtn = document.getElementById('details-play');
+                if (playBtn && isElementVisible(playBtn)) return playBtn;
+                return getActiveTabBtn();
+            }
+            if (direction === 'left') {
+                return isMobilePortrait ? null : getActiveSidebarItem();
+            }
+            if (direction === 'up') {
+                return null;
+            }
+        }
+
         // 2. Genre Chips: Traversal across genre chips above the overview
         const inGenres = current.closest('#details-genres') !== null;
         if (inGenres) {
+            const backBtn = document.getElementById('details-back-btn');
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
             if (direction === 'left') {
                 const prev = current.previousElementSibling;
                 if (prev && prev.classList.contains('chip--genre') && isElementVisible(prev)) return prev;
-                return getActiveSidebarItem();
+                if (backBtn && isElementVisible(backBtn)) return backBtn;
+                return isMobilePortrait ? null : getActiveSidebarItem();
             }
             if (direction === 'right') {
                 const next = current.nextElementSibling;
@@ -179,9 +202,10 @@ export const spatialNavDetails = {
             if (direction === 'down') {
                 const playBtn = document.getElementById('details-play');
                 if (playBtn && isElementVisible(playBtn)) return playBtn;
-                return null;
+                return getActiveTabBtn();
             }
             if (direction === 'up') {
+                if (backBtn && isElementVisible(backBtn)) return backBtn;
                 return null;
             }
         }
@@ -192,6 +216,8 @@ export const spatialNavDetails = {
             const actions = Array.from(document.querySelectorAll('.details-actions .btn.focusable')).filter(isElementVisible);
             const currentIndex = actions.indexOf(current);
             const isVertical = actions.length > 1 && Math.abs(actions[0].getBoundingClientRect().left - actions[1].getBoundingClientRect().left) < 15;
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
+            const backBtn = document.getElementById('details-back-btn');
 
             if (isVertical) {
                 // Mobile stacked layout: Up/Down moves between buttons, Left goes to sidebar
@@ -199,6 +225,7 @@ export const spatialNavDetails = {
                     if (currentIndex > 0) return actions[currentIndex - 1];
                     const firstGenre = document.querySelector('#details-genres .chip--genre.focusable');
                     if (firstGenre && isElementVisible(firstGenre)) return firstGenre;
+                    if (backBtn && isElementVisible(backBtn)) return backBtn;
                     return null;
                 }
                 if (direction === 'down') {
@@ -206,7 +233,7 @@ export const spatialNavDetails = {
                     return getActiveTabBtn();
                 }
                 if (direction === 'left') {
-                    return getActiveSidebarItem();
+                    return isMobilePortrait ? null : getActiveSidebarItem();
                 }
                 if (direction === 'right') {
                     return null;
@@ -215,7 +242,7 @@ export const spatialNavDetails = {
                 // Desktop horizontal row layout: Left/Right moves between buttons, Down moves to tabs
                 if (direction === 'left') {
                     if (currentIndex > 0) return actions[currentIndex - 1];
-                    return getActiveSidebarItem();
+                    return isMobilePortrait ? null : getActiveSidebarItem();
                 }
                 if (direction === 'right') {
                     if (currentIndex >= 0 && currentIndex < actions.length - 1) return actions[currentIndex + 1];
@@ -224,6 +251,7 @@ export const spatialNavDetails = {
                 if (direction === 'up') {
                     const firstGenre = document.querySelector('#details-genres .chip--genre.focusable');
                     if (firstGenre && isElementVisible(firstGenre)) return firstGenre;
+                    if (backBtn && isElementVisible(backBtn)) return backBtn;
                     return null;
                 }
                 if (direction === 'down') {
@@ -237,6 +265,7 @@ export const spatialNavDetails = {
         if (inTabs) {
             const visibleTabs = getVisibleTabs();
             const currentIndex = visibleTabs.indexOf(current);
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
 
             if (direction === 'left') {
                 if (currentIndex > 0) {
@@ -244,7 +273,7 @@ export const spatialNavDetails = {
                     try { prevTab.click(); } catch (e) { /* ignore */ }
                     return prevTab;
                 }
-                return getActiveSidebarItem();
+                return isMobilePortrait ? null : getActiveSidebarItem();
             }
             if (direction === 'right') {
                 if (currentIndex >= 0 && currentIndex < visibleTabs.length - 1) {
@@ -278,6 +307,7 @@ export const spatialNavDetails = {
         // 5a. Seasons Panel: Mobile Seasons Dropdown (<select id="seasons-dropdown">)
         const isSeasonsDropdown = current.id === 'seasons-dropdown' || current.closest('.seasons-dropdown-wrapper') !== null;
         if (isSeasonsDropdown) {
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
             if (direction === 'up') {
                 return document.getElementById('tab-seasons') || getActiveTabBtn();
             }
@@ -287,7 +317,7 @@ export const spatialNavDetails = {
                 return null;
             }
             if (direction === 'left') {
-                return getActiveSidebarItem();
+                return isMobilePortrait ? null : getActiveSidebarItem();
             }
             if (direction === 'right') {
                 return null;
@@ -299,6 +329,7 @@ export const spatialNavDetails = {
         if (inSeasonsList) {
             const seasons = Array.from(document.querySelectorAll('#seasons-list .season-btn.focusable')).filter(isElementVisible);
             const currentIndex = seasons.indexOf(current);
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
 
             if (direction === 'up') {
                 if (currentIndex > 0) return seasons[currentIndex - 1];
@@ -316,7 +347,7 @@ export const spatialNavDetails = {
                 return null;
             }
             if (direction === 'left') {
-                return getActiveSidebarItem();
+                return isMobilePortrait ? null : getActiveSidebarItem();
             }
         }
 
@@ -325,6 +356,7 @@ export const spatialNavDetails = {
         if (inEpisodesList) {
             const episodes = Array.from(document.querySelectorAll('#details-episodes .disney-episode-item.focusable')).filter(isElementVisible);
             const currentIndex = episodes.indexOf(current);
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
 
             if (direction === 'up') {
                 if (currentIndex > 0) return episodes[currentIndex - 1];
@@ -343,16 +375,23 @@ export const spatialNavDetails = {
                     const activeSeason = seasonsList.querySelector('.season-btn.btn--primary') || seasonsList.querySelector('.season-btn.focusable');
                     if (activeSeason && isElementVisible(activeSeason)) return activeSeason;
                 }
-                return getActiveSidebarItem();
+                return isMobilePortrait ? null : getActiveSidebarItem();
             }
             if (direction === 'right') {
                 return null;
             }
         }
 
-        // 7. Extras Panel: Trailers & featurettes vertical list
-        const inExtrasList = current.closest('#extras-list') !== null;
+        // 7. Extras Panel: Trailers & featurettes vertical list or empty retry button
+        const inExtrasList = current.closest('#extras-list, #panel-extra') !== null;
         if (inExtrasList) {
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
+            if (current.id === 'extras-retry-btn' || current.closest('#extras-retry-btn')) {
+                if (direction === 'up') return document.getElementById('tab-extra') || getActiveTabBtn();
+                if (direction === 'left') return isMobilePortrait ? null : getActiveSidebarItem();
+                return null;
+            }
+
             const extras = Array.from(document.querySelectorAll('#extras-list .disney-extra-item.focusable')).filter(isElementVisible);
             const currentIndex = extras.indexOf(current);
 
@@ -365,7 +404,7 @@ export const spatialNavDetails = {
                 return null;
             }
             if (direction === 'left') {
-                return getActiveSidebarItem();
+                return isMobilePortrait ? null : getActiveSidebarItem();
             }
             if (direction === 'right') {
                 return null;
@@ -377,6 +416,7 @@ export const spatialNavDetails = {
         if (inCastGrid) {
             const castCards = Array.from(document.querySelectorAll('#about-cast .disney-cast-card.focusable')).filter(isElementVisible);
             const currentIndex = castCards.indexOf(current);
+            const isMobilePortrait = SpatialNav.isPortrait && SpatialNav.isPortrait();
 
             if (direction === 'left') {
                 if (currentIndex > 0) {
@@ -385,7 +425,7 @@ export const spatialNavDetails = {
                     const prevRect = prev.getBoundingClientRect();
                     if (Math.abs(currentRect.top - prevRect.top) < 25) return prev;
                 }
-                return getActiveSidebarItem();
+                return isMobilePortrait ? null : getActiveSidebarItem();
             }
             if (direction === 'right') {
                 if (currentIndex >= 0 && currentIndex < castCards.length - 1) {
@@ -412,18 +452,23 @@ export const spatialNavDetails = {
     /**
      * Handles back button navigation on the Details page.
      * Moves focus back to primary play button before triggering router back.
+     * Allows immediate router exit when already focused on the Details back button.
      * @returns {boolean} True if back navigation was handled locally.
      */
     handleBack: () => {
         const modal = document.getElementById('add-to-playlist-modal');
         if (modal && isElementVisible(modal)) {
-            const closeBtn = modal.querySelector('.modal-close, #close-playlist-modal');
+            const closeBtn = modal.querySelector('.modal-close, #close-playlist-modal, #add-to-playlist-cancel');
             if (closeBtn) {
                 closeBtn.click();
                 return true;
             }
         }
         const current = document.querySelector('.focused') || document.activeElement;
+        const backBtn = document.getElementById('details-back-btn');
+        if (current && backBtn && current === backBtn) {
+            return false;
+        }
         const playBtn = document.getElementById('details-play');
         if (current && playBtn && current !== playBtn && !current.closest('#sidebar-container')) {
             SpatialNav.setFocus(playBtn);

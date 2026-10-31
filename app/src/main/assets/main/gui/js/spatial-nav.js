@@ -451,11 +451,12 @@ export const SpatialNav = {
         // FASTEST CHECK: offsetParent is null if display:none or parent is display:none.
         // For fixed elements (sidebar or modals), check container directly instead of walking 12 DOM levels
         if (el.offsetParent === null && el.parentElement !== null) {
+            const isFixed = window.getComputedStyle(el).position === 'fixed' || Boolean(el.closest('#sidebar-container, .modal, .modal-overlay, .update-modal-overlay, .details-back-btn, #details-back-btn'));
             const fixedContainer = el.closest('#sidebar-container, .modal, .modal-overlay, .update-modal-overlay');
-            if (!fixedContainer) {
+            if (!isFixed && !fixedContainer) {
                 return false;
             }
-            if (fixedContainer.style.display === 'none' || fixedContainer.style.visibility === 'hidden') {
+            if (fixedContainer && (fixedContainer.style.display === 'none' || fixedContainer.style.visibility === 'hidden')) {
                 return false;
             }
         }

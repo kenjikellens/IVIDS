@@ -500,6 +500,9 @@ class SettingsManager {
         if (installBtn) {
             installBtn.classList.remove('hidden');
             installBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
+            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
+                window.SpatialNav.setFocus(installBtn);
+            }
             installBtn.onclick = () => {
                 import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
                     this.closeModal();
@@ -591,6 +594,9 @@ class SettingsManager {
         if (backBtn) {
             backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.cancel') || 'Annuleren');
             backBtn.onclick = () => this.closeModal();
+            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
+                window.SpatialNav.setFocus(backBtn);
+            }
         }
 
         if (spinner) {
@@ -1024,6 +1030,8 @@ class SettingsManager {
             focusTarget = modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary, .modal-footer .btn-secondary');
         } else if (modalId === 'changes-modal') {
             focusTarget = modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary, .modal-footer .btn-secondary') || modal.querySelector('.modal__close, .modal-close-x');
+        } else if (modalId === 'update-check-modal') {
+            focusTarget = document.getElementById('update-modal-back-btn') || document.getElementById('update-modal-close-x') || modal.querySelector('.modal__back-btn');
         }
 
         const innerClose = manageModal(modal, focusTarget, () => this.closeModal());
@@ -1754,6 +1762,9 @@ class SettingsManager {
         if (installBtn) {
             installBtn.classList.remove('hidden');
             installBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
+            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
+                window.SpatialNav.setFocus(installBtn);
+            }
             installBtn.onclick = () => {
                 import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
                     this.closeModal();
@@ -1815,6 +1826,9 @@ class SettingsManager {
         if (noUpBackBtn) {
             noUpBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
             noUpBackBtn.onclick = () => this.closeModal();
+            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
+                window.SpatialNav.setFocus(noUpBackBtn);
+            }
         }
         if (loaderContainer) loaderContainer.style.display = 'none';
         if (cancelBtn) cancelBtn.style.display = 'none';
@@ -1854,6 +1868,9 @@ class SettingsManager {
         if (errRetryBtn) {
             errRetryBtn.classList.remove('hidden');
             errRetryBtn.onclick = () => this.startModalUpdateCheck();
+            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
+                window.SpatialNav.setFocus(errRetryBtn);
+            }
         }
         if (errBackBtn) {
             errBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
