@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "הגדרות מתקדמות",
+        "advancedSettingsDesc": "עדכונים, מידע על האפליקציה והשהיית תגובה",
+        "delayAction": "השהיית תגובה",
+        "delayActionDesc": "הוסף השהיה לאחר לחיצה על כפתורים",
+        "delay0": "0ms (מיידי)",
+        "delay100": "100ms (ברירת מחדל)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "הצג גרסת אפליקציה, פרטי מערכת ויומן שינויים"
     },
     "common": {
         "close": "סגור",

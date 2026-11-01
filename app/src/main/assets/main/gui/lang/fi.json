@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Lisäasetukset",
+        "advancedSettingsDesc": "Päivitykset, sovellustiedot ja vastausviive",
+        "delayAction": "Vastausviive",
+        "delayActionDesc": "Lisää viive painikkeiden painalluksen jälkeen",
+        "delay0": "0ms (Välitön)",
+        "delay100": "100ms (Oletus)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Näytä sovelluksen versio, järjestelmätiedot ja muutosloki"
     },
     "common": {
         "close": "Close",

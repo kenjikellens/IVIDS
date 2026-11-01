@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Tetapan Lanjutan",
+        "advancedSettingsDesc": "Kemas kini, maklumat aplikasi dan kelewatan tindak balas",
+        "delayAction": "Kelewatan Tindak Balas",
+        "delayActionDesc": "Tambah kelewatan selepas menekan butang",
+        "delay0": "0ms (Serta-merta)",
+        "delay100": "100ms (Lalai)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Lihat versi aplikasi, maklumat sistem dan log perubahan"
     },
     "common": {
         "close": "Close",

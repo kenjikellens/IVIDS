@@ -18,4 +18,26 @@ Step-by-step procedural runbooks invoked via slash commands or recommended when 
 4. **[/oocss-refactor](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/oocss-refactor.md)**: Phased protocol for refactoring CSS components to Object-Oriented CSS (OOCSS), updating HTML/JS templates in synchronized batches, and purging redundant container overrides.
 5. **[/build-and-push-main](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/.agents/workflows/build-and-push-main.md)**: Protocol for compiling Windows EXE and Android APK binaries, verifying packaging, and pushing commit history directly to main without creating releases or tags.
 
-You MUST always update the Task.md artifact when the user asks for something or criticizes something you did, so that you don't forget what you need to change.
+## 3. General Agent Discipline & Self-Critique Guardrails (CRITICAL)
+
+### Anti-Patterns to Strictly Avoid
+1. **No Repetitive Analysis Paralysis**:
+   - NEVER loop repeatedly through read or diff commands without taking action. If a problem or user critique is raised, identify the root cause logically in a single step, make the targeted edit, and verify immediately.
+   - Stop reading unrelated backend, server, or script files (`run_pc.py`, etc.) when the issue is in GUI templates or stylesheets.
+
+2. **No Unrequested Class Removal or Ad-Hoc Renaming**:
+   - NEVER strip, alter, or rename existing structural classes (e.g. `edit-trigger`, `btn`, `btn--square`, `modal__back-btn`) across working HTML components unless explicitly instructed with a fully coordinated CSS migration plan.
+   - Stripping established classes causes catastrophic styling regressions across responsive viewports where media queries rely on those exact selectors.
+
+3. **Strict Separation of Viewport Styling Domains**:
+   - "Unified styling" means internal consistency **within that specific viewport environment**:
+     - **Mobile Viewport (`global-mobile.css`)**: Edge-to-edge touch rows, subtle border dividers, instant auto-apply on tap, hidden dialog footers, and native YouTube-style arrow chevrons.
+     - **Landscape / Desktop / TV Viewport (`global.css`)**: Standalone rounded cards (`var(--radius-md)`), 10px spacing, tactile hover states, and thick white D-pad focus outlines (`outline: 2px solid #ffffff`).
+   - NEVER copy, merge, or force mobile flat list styling into desktop/TV dialogs, and NEVER bleed desktop button sizing or square triggers into mobile viewports.
+
+4. **Listen Immediately & Execute Directly**:
+   - When the user asks for a specific correction (e.g. vertical layout instead of a grid, fixing broken icon geometry), execute that exact task immediately.
+   - Do NOT procrastinate, do NOT start refactoring unrelated code, and do NOT require the user to repeat or shout instructions before acting.
+
+5. **Task Tracking Discipline**:
+   - You MUST always update the `task.md` artifact whenever the user requests a task, gives feedback, or criticizes an action, so progress and pending items are never lost.

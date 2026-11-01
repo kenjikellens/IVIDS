@@ -760,7 +760,12 @@ export const SpatialNav = {
             }
 
             e.preventDefault();
-            this.back();
+            const delay = window.ActionDelayManager ? window.ActionDelayManager.getInstance().getDelay() : 0;
+            if (delay > 0) {
+                setTimeout(() => this.back(), delay);
+            } else {
+                this.back();
+            }
             return;
         }
 

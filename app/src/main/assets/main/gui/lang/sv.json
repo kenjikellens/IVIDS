@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Avancerade inställningar",
+        "advancedSettingsDesc": "Uppdateringar, appinformation och svarsfördröjning",
+        "delayAction": "Svarsfördröjning",
+        "delayActionDesc": "Lägg till en fördröjning vid knapptryckningar",
+        "delay0": "0ms (Direkt)",
+        "delay100": "100ms (Standard)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Visa appversion, systeminformation och ändringslogg"
     },
     "common": {
         "close": "Stäng",

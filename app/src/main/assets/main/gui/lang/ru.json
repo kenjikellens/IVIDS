@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Расширенные настройки",
+        "advancedSettingsDesc": "Обновления, информация о приложении и задержка отклика",
+        "delayAction": "Задержка отклика",
+        "delayActionDesc": "Добавить задержку после нажатия кнопок",
+        "delay0": "0мс (Мгновенно)",
+        "delay100": "100мс (По умолчанию)",
+        "delay250": "250мс",
+        "delay500": "500мс",
+        "appInfoDesc": "Версия приложения, системная информация и список изменений"
     },
     "common": {
         "close": "Закрыть",

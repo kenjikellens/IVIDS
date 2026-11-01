@@ -258,25 +258,37 @@
         </button>
         <h2 class="modal__title" data-i18n="settings.accentColor">Accent Color</h2>
         <div class="modal__body">
-            <div id="color-options" class="chip-grid chip-grid--color">
-                <div class="chip chip--option chip--color focusable universal-onclick" data-value="#46d369">
-                    <div class="color-dot green"></div>
-                </div>
-                <div class="chip chip--option chip--color focusable universal-onclick" data-value="#e50914">
-                    <div class="color-dot red"></div>
-                </div>
-                <div class="chip chip--option chip--color focusable universal-onclick" data-value="#00d4ff">
-                    <div class="color-dot blue"></div>
-                </div>
-                <div class="chip chip--option chip--color focusable universal-onclick" data-value="#9146ff">
-                    <div class="color-dot purple"></div>
-                </div>
-                <div class="chip chip--option chip--color focusable universal-onclick" data-value="#ff6b35">
-                    <div class="color-dot orange"></div>
-                </div>
-                <div class="chip chip--option chip--color focusable universal-onclick" data-value="#ffd700">
-                    <div class="color-dot yellow"></div>
-                </div>
+            <div id="color-options" class="language-selection-grid">
+                <button type="button" class="language-card focusable universal-onclick" data-value="#46d369">
+                    <span class="color-dot green"></span>
+                    <span class="language-card__name" data-i18n="settings.colors.green">Green</span>
+                    <span class="language-card__check" aria-hidden="true">✓</span>
+                </button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="#e50914">
+                    <span class="color-dot red"></span>
+                    <span class="language-card__name" data-i18n="settings.colors.red">Red</span>
+                    <span class="language-card__check" aria-hidden="true">✓</span>
+                </button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="#00d4ff">
+                    <span class="color-dot blue"></span>
+                    <span class="language-card__name" data-i18n="settings.colors.blue">Blue</span>
+                    <span class="language-card__check" aria-hidden="true">✓</span>
+                </button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="#9146ff">
+                    <span class="color-dot purple"></span>
+                    <span class="language-card__name" data-i18n="settings.colors.purple">Purple</span>
+                    <span class="language-card__check" aria-hidden="true">✓</span>
+                </button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="#ff6b35">
+                    <span class="color-dot orange"></span>
+                    <span class="language-card__name" data-i18n="settings.colors.orange">Orange</span>
+                    <span class="language-card__check" aria-hidden="true">✓</span>
+                </button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="#ffd700">
+                    <span class="color-dot yellow"></span>
+                    <span class="language-card__name" data-i18n="settings.colors.yellow">Yellow</span>
+                    <span class="language-card__check" aria-hidden="true">✓</span>
+                </button>
             </div>
         </div>
         <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
@@ -295,11 +307,11 @@
         </button>
         <h2 class="modal__title" data-i18n="settings.updateMode">Update Mode</h2>
         <div class="modal__body">
-            <div id="update-mode-options" class="chip-grid chip-grid--2col">
-                <div class="chip chip--option focusable universal-onclick" data-value="auto" data-i18n="settings.mode.auto">Auto</div>
-                <div class="chip chip--option focusable universal-onclick" data-value="manual" data-i18n="settings.mode.manual">Manual</div>
-                <div class="chip chip--option focusable universal-onclick" data-value="advanced" data-i18n="settings.mode.advanced">Developer</div>
-                <div class="chip chip--option focusable universal-onclick" data-value="none" data-i18n="settings.mode.none">Off</div>
+            <div id="update-mode-options" class="language-selection-grid">
+                <button type="button" class="language-card focusable universal-onclick" data-value="auto"><span class="language-card__name" data-i18n="settings.mode.auto">Auto</span><span class="language-card__check" aria-hidden="true">✓</span></button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="manual"><span class="language-card__name" data-i18n="settings.mode.manual">Manual</span><span class="language-card__check" aria-hidden="true">✓</span></button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="advanced"><span class="language-card__name" data-i18n="settings.mode.advanced">Developer</span><span class="language-card__check" aria-hidden="true">✓</span></button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="none"><span class="language-card__name" data-i18n="settings.mode.none">Off</span><span class="language-card__check" aria-hidden="true">✓</span></button>
             </div>
             <div id="advanced-warning" class="warning-container hidden"
                 data-i18n="settings.advancedWarning">
@@ -536,11 +548,11 @@
         </button>
         <h2 class="modal__title" data-i18n="settings.delayAction">Response Delay</h2>
         <div class="modal__body">
-            <div id="delay-action-options" class="chip-grid chip-grid--2col">
-                <div class="chip chip--option focusable universal-onclick" data-value="0" data-i18n="settings.delay0">0ms (Instant)</div>
-                <div class="chip chip--option focusable universal-onclick" data-value="100" data-i18n="settings.delay100">100ms (Default)</div>
-                <div class="chip chip--option focusable universal-onclick" data-value="250" data-i18n="settings.delay250">250ms</div>
-                <div class="chip chip--option focusable universal-onclick" data-value="500" data-i18n="settings.delay500">500ms</div>
+            <div id="delay-action-options" class="language-selection-grid">
+                <button type="button" class="language-card focusable universal-onclick" data-value="0"><span class="language-card__name" data-i18n="settings.delay0">0ms (Instant)</span><span class="language-card__check" aria-hidden="true">✓</span></button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="100"><span class="language-card__name" data-i18n="settings.delay100">100ms (Default)</span><span class="language-card__check" aria-hidden="true">✓</span></button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="250"><span class="language-card__name" data-i18n="settings.delay250">250ms</span><span class="language-card__check" aria-hidden="true">✓</span></button>
+                <button type="button" class="language-card focusable universal-onclick" data-value="500"><span class="language-card__name" data-i18n="settings.delay500">500ms</span><span class="language-card__check" aria-hidden="true">✓</span></button>
             </div>
         </div>
         <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">

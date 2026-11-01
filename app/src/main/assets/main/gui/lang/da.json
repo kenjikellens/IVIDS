@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Avancerede indstillinger",
+        "advancedSettingsDesc": "Opdateringer, appoplysninger og svarforsinkelse",
+        "delayAction": "Svarforsinkelse",
+        "delayActionDesc": "Tilføj en forsinkelse efter tryk på knapper",
+        "delay0": "0ms (Øjeblikkelig)",
+        "delay100": "100ms (Standard)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Se appversion, systemoplysninger og ændringslog"
     },
     "common": {
         "close": "Luk",

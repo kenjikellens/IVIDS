@@ -347,7 +347,7 @@
 #app #manual-check-container { align-items: center; text-align: center; }
 #app #manual-check-container .setting-control { justify-content: center; }
 #app .current-value-display { border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; height: 40px; max-width: 150px; overflow: hidden; padding: 0 12px; text-overflow: ellipsis; white-space: nowrap; }
-#app .btn--square, #app .edit-trigger { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
+#app .btn--square, #app .edit-trigger, #app .setting-btn { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
 #app .setting-edit-icon { height: 18px; width: 18px; }
 #app .form-toggle { border-radius: 999px; cursor: pointer; flex-shrink: 0; height: 32px; width: 58px; }
 #app .form-toggle__slider { height: 22px; left: 2px; top: 2px; transition: left 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease; width: 22px; }
@@ -519,28 +519,16 @@ body .modal__footer .btn--secondary { background: rgba(255, 255, 255, 0.04); bor
 body .modal__footer .btn, body .modal__back-btn { transition: background-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); }
 body .modal__footer .btn:active, body .modal__back-btn:active { filter: brightness(0.92); transform: scale(0.96); }
 
-/* Hide bottom action footer in Language sub-page on mobile for auto-apply navigation */
-html body #language-modal .modal__footer, body #language-modal .modal__footer, #language-modal .modal__footer {
+/* Hide bottom action footer in sub-pages on mobile for auto-apply/back navigation */
+html body #language-modal .modal__footer, body #language-modal .modal__footer, #language-modal .modal__footer,
+html body #color-modal .modal__footer, body #color-modal .modal__footer, #color-modal .modal__footer,
+html body #update-mode-modal .modal__footer, body #update-mode-modal .modal__footer, #update-mode-modal .modal__footer,
+html body #delay-action-modal .modal__footer, body #delay-action-modal .modal__footer, #delay-action-modal .modal__footer,
+html body #app-info-modal .modal__footer, body #app-info-modal .modal__footer, #app-info-modal .modal__footer,
+html body #version-selector-modal .modal__footer, body #version-selector-modal .modal__footer, #version-selector-modal .modal__footer {
     display: none !important;
 }
 
-/* Chip grids, provider items, and language stepper inside full-screen mobile sub-pages */
-.chip-grid--color {
-    gap: 12px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    padding: 8px 0;
-    width: 100%;
-}
-.chip--color {
-    min-height: 76px;
-    padding: 12px;
-}
-.chip-grid--2col {
-    gap: 12px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    padding: 8px 0;
-    width: 100%;
-}
 /* Provider item container inside mobile sub-page */
 .provider-item {
     align-items: stretch;
@@ -703,10 +691,10 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 #app .media-grid--posters > .poster-wrapper, #app .search-results-grid > .poster-wrapper { min-width: 0; width: 100%; }
 #app .card__badge, #app .poster-badge { backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 4px; font-size: 11px; padding: 2px 6px; position: absolute; right: 6px; top: 6px; }
 
-body #changes-modal .modal__close { display: none; }
+body #changes-modal .modal__close, body .modal__close-btn { display: none !important; }
 
-/* Language selection list with simple divider lines and zero border-radius. */
-body .language-selection-grid { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
+/* Language selection and modal options list with simple divider lines and zero border-radius. */
+body .language-selection-grid { display: flex !important; flex-direction: column !important; gap: 0 !important; grid-template-columns: none !important; padding: 0 !important; width: 100% !important; }
 body .language-stepper-container { display: none; }
 /* Opaque sticky wrapper ensuring scrolling language cards slide behind search bar cleanly without bleed-through */
 body .language-search-wrapper { background: #050505; box-sizing: border-box; padding: 4px 0 12px; position: sticky; top: 0; width: 100%; z-index: 10; }
@@ -714,20 +702,18 @@ body .language-search-wrapper:has(> .hidden) { display: none; }
 /* Input field for filtering available languages */
 body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px !important; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0; padding: 0 18px; position: static; width: 100%; }
 body .language-search:focus { border-color: var(--primary-color); outline: none; }
-body .language-card { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1c1c1c; border-radius: 0 !important; color: #ffffff; cursor: pointer; display: flex; gap: 14px; min-height: 52px; min-width: 0; padding: 14px 12px; text-align: left; width: 100%; box-sizing: border-box; }
-body .language-card:first-child { border-top: 1px solid #1c1c1c; }
-body .language-card:active { background: rgba(255, 255, 255, 0.08); }
-body .language-card.is-active { background: transparent; color: var(--primary-color); }
-body .language-card.is-active .language-card__name { color: var(--primary-color); font-weight: 700; }
-body .language-card:focus-visible, body .language-card.focused { background: transparent; border-color: transparent !important; border-radius: 0 !important; outline: none !important; }
+body .language-card { align-items: center; background: transparent !important; border: 0 !important; border-bottom: 1px solid #1c1c1c !important; border-radius: 0 !important; box-shadow: none !important; color: #ffffff; cursor: pointer; display: flex !important; gap: 14px; justify-content: space-between; min-height: 52px; min-width: 0; padding: 14px 12px !important; text-align: left; width: 100% !important; box-sizing: border-box; }
+body .language-card:first-child { border-top: 1px solid #1c1c1c !important; }
+body .language-card:active { background: rgba(255, 255, 255, 0.08) !important; }
+body .language-card.is-active { background: transparent !important; color: var(--primary-color) !important; }
+body .language-card.is-active .language-card__name { color: var(--primary-color) !important; font-weight: 700; }
+body .language-card:focus-visible, body .language-card.focused { background: transparent !important; border-color: transparent !important; border-radius: 0 !important; outline: none !important; }
 body .language-card__flag { flex: 0 0 auto; font-size: 22px; width: 30px; }
 body .language-card__name { flex: 1; font-size: 15.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-body .language-card__check { color: var(--primary-color); flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
-body .language-card.is-active .language-card__check { opacity: 1; }
+body .language-card__check { color: var(--primary-color); display: inline-block !important; flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
+body .language-card.is-active .language-card__check { opacity: 1 !important; }
 
-/* Color swatches use one clean active ring without generated radio-dot decoration. */
-body .chip--color::after, body .chip-grid--color .chip::after { content: none; display: none; }
-body .chip--color.is-active, body .chip--color.active { box-shadow: 0 0 0 2px #ffffff, 0 0 16px var(--primary-color); }
+body .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; flex-shrink: 0; height: 22px; margin-right: 14px; width: 22px; }
 
 /* Mobile landscape optimizations: keep sleek bottom navigation bar on landscape phones. */
 @media (orientation: landscape) and (max-height: 500px) {
@@ -809,7 +795,9 @@ html, body, #app { background-color: var(--mobile-surface); }
 body #advanced-settings-modal .section-title { border: 0; color: #888888; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
 #app .settings-section .section-title__icon,
 body #advanced-settings-modal .section-title__icon { display: none; }
-body #advanced-settings-modal .modal__body { padding: 0; }
+body #advanced-settings-modal .modal__dialog { padding-left: 0; padding-right: 0; }
+body #advanced-settings-modal .modal__title { box-sizing: border-box; margin: 0 0 8px; padding-left: 52px; padding-right: 52px; width: 100%; }
+body #advanced-settings-modal .modal__body { padding: 0; width: 100%; }
 
 /* Suppress TV spatial-nav persistent focus outlines on mobile touch viewports. */
 #app .btn:focus-visible, #app .btn.focused,
@@ -876,47 +864,12 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 /* Prevent floating network status icon from colliding on mobile */
 .network-status-overlay { display: none !important; }
 
-/* Dedicated Update Check Modal Styling */
-#update-check-modal .modal__dialog { display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; padding-bottom: 24px; position: relative; }
-body .modal__close-btn { align-items: center; background: transparent; border: 0; border-radius: 50%; color: #888888; cursor: pointer; display: inline-flex; font-size: 20px; height: 38px; justify-content: center; position: absolute; right: 14px; top: 14px; width: 38px; z-index: 10; }
-body .modal__close-btn:active { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+/* Dedicated Update Check Modal status alignment */
 #update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
 #update-check-modal .update-modal-heading { color: #f1f1f1; font-size: 19px; font-weight: 600; margin: 16px 0 6px; }
 #update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
 #update-check-modal .update-version-badge { background: rgba(70, 211, 105, 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
-#update-check-modal .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: #000000; font-weight: 700; border-radius: 12px; }
-#update-check-modal .btn--secondary { background: transparent; border: 1px solid #383838; color: #f1f1f1; border-radius: 12px; }
-#update-check-modal #update-modal-back-btn { align-items: center; background: transparent; border: 1px solid #383838; border-radius: 12px; color: #f1f1f1; display: inline-flex; font-size: 14.5px; gap: 6px; justify-content: center; }
-#update-check-modal #update-modal-back-btn:active { background: rgba(255, 255, 255, 0.08); }
 
-/* Check updates row formatted as a clean YouTube settings tap surface without an action button. */
-#app #check-updates-row { cursor: pointer; }
-#app #check-updates-row .setting-control { align-items: center; display: inline-flex; }
-#app #check-updates-row #check-updates-btn { align-items: center; background: transparent !important; border: 0 !important; box-shadow: none !important; color: transparent !important; display: inline-flex; font-size: 0 !important; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; outline: none !important; padding: 0; width: 14px; }
-#app #check-updates-row #check-updates-btn .setting-edit-icon { display: none !important; }
-#app #check-updates-row #check-updates-btn::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
-
-/* Mobile: Update mode options stacked vertically in full-width single column */
-body #update-mode-modal #update-mode-options, body #delay-action-modal #delay-action-options, body .modal .chip-grid--2col {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 8px 0;
-    width: 100%;
-}
-/* Mobile: Full-width tap targets for update mode options */
-body #update-mode-modal #update-mode-options .chip--option, body #delay-action-modal #delay-action-options .chip--option, body .modal .chip-grid--2col .chip--option {
-    align-items: center;
-    border-radius: 12px;
-    box-sizing: border-box;
-    display: flex;
-    font-size: 15.5px;
-    font-weight: 500;
-    justify-content: flex-start;
-    min-height: 52px;
-    padding: 0 18px;
-    width: 100%;
-}
 
 /* Mobile: Centered version fetch error and retry button */
 .version-error-center {

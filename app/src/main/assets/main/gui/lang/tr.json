@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Gelişmiş Ayarlar",
+        "advancedSettingsDesc": "Güncellemeler, uygulama bilgileri ve yanıt gecikmesi",
+        "delayAction": "Yanıt Gecikmesi",
+        "delayActionDesc": "Tuşlara basıldığında bir gecikme ekleyin",
+        "delay0": "0ms (Anında)",
+        "delay100": "100ms (Varsayılan)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Uygulama sürümü, sistem bilgileri ve değişiklik günlüğünü görüntüle"
     },
     "common": {
         "close": "Kapat",

@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Розширені налаштування",
+        "advancedSettingsDesc": "Оновлення, інформація про додаток та затримка відгуку",
+        "delayAction": "Затримка відгуку",
+        "delayActionDesc": "Додати затримку після натискання кнопок",
+        "delay0": "0мс (Миттєво)",
+        "delay100": "100мс (За замовчуванням)",
+        "delay250": "250мс",
+        "delay500": "500мс",
+        "appInfoDesc": "Переглянути версію додатка, системну інформацію та історію змін"
     },
     "common": {
         "close": "Close",

@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "高级设置",
+        "advancedSettingsDesc": "更新、应用信息与按键响应延迟",
+        "delayAction": "按键响应延迟",
+        "delayActionDesc": "在按钮按下后添加响应延迟",
+        "delay0": "0毫秒 (即时)",
+        "delay100": "100毫秒 (默认)",
+        "delay250": "250毫秒",
+        "delay500": "500毫秒",
+        "appInfoDesc": "查看应用版本、系统信息及更新日志"
     },
     "common": {
         "close": "关闭",

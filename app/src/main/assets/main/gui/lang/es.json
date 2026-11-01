@@ -134,7 +134,16 @@
         "installBranchTitle": "Instalar versión de la rama principal",
         "installVersionTitle": "Instalar versión",
         "installNow": "Instalar ahora",
-        "moreInfo": "Más información"
+        "moreInfo": "Más información",
+        "advancedSettings": "Ajustes avanzados",
+        "advancedSettingsDesc": "Actualizaciones, información de la aplicación y retardo de respuesta",
+        "delayAction": "Retardo de respuesta",
+        "delayActionDesc": "Añadir un retardo tras pulsar botones o navegar",
+        "delay0": "0ms (Instantáneo)",
+        "delay100": "100ms (Predeterminado)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Ver versión de la aplicación, información del sistema y cambios"
     },
     "common": {
         "close": "Cerrar",

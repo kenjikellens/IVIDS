@@ -50,6 +50,14 @@
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
         "accentColorSelect": "Select Color",
+        "colors": {
+            "green": "Green",
+            "red": "Red",
+            "blue": "Blue",
+            "purple": "Purple",
+            "orange": "Orange",
+            "yellow": "Yellow"
+        },
         "updates": "App Updates",
         "advancedSettings": "Advanced Settings",
         "advancedSettingsDesc": "Updates, app info & response delay",

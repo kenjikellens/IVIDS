@@ -134,7 +134,16 @@
         "installBranchTitle": "Installer le build de la branche",
         "installVersionTitle": "Installer la version",
         "installNow": "Installer maintenant",
-        "moreInfo": "Plus d'informations"
+        "moreInfo": "Plus d'informations",
+        "advancedSettings": "Paramètres avancés",
+        "advancedSettingsDesc": "Mises à jour, infos de l'application et délai de réponse",
+        "delayAction": "Délai de réponse",
+        "delayActionDesc": "Ajouter un délai après l'appui sur un bouton",
+        "delay0": "0ms (Instantané)",
+        "delay100": "100ms (Par défaut)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Voir la version de l'application, les infos système et le journal des modifications"
     },
     "common": {
         "close": "Fermer",

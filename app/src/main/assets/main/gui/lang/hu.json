@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Speciális beállítások",
+        "advancedSettingsDesc": "Frissítések, alkalmazásinfó és válaszkésleltetés",
+        "delayAction": "Válaszkésleltetés",
+        "delayActionDesc": "Késleltetés hozzáadása gombnyomások után",
+        "delay0": "0ms (Azonnali)",
+        "delay100": "100ms (Alapértelmezett)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Alkalmazásverzió, rendszerinformációk és változásnapló megtekintése"
     },
     "common": {
         "close": "Close",

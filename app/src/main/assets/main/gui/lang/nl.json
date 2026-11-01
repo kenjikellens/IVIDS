@@ -134,7 +134,16 @@
         "installBranchTitle": "Live Branch Build Installeren",
         "installVersionTitle": "Versie installeren",
         "installNow": "Nu installeren",
-        "moreInfo": "Meer informatie"
+        "moreInfo": "Meer informatie",
+        "advancedSettings": "Geavanceerde instellingen",
+        "advancedSettingsDesc": "Updates, app-informatie en reactievertraging",
+        "delayAction": "Reactievertraging",
+        "delayActionDesc": "Voeg een vertraging toe na het indrukken van knoppen",
+        "delay0": "0ms (Direct)",
+        "delay100": "100ms (Standaard)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Bekijk app-versie, systeeminformatie en wijzigingen"
     },
     "common": {
         "close": "Sluiten",

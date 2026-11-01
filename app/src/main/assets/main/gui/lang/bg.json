@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Разширени настройки",
+        "advancedSettingsDesc": "Актуализации, информация за приложението и забавяне на реакцията",
+        "delayAction": "Забавяне на реакцията",
+        "delayActionDesc": "Добавяне на забавяне след натискане на бутони",
+        "delay0": "0ms (Незабавно)",
+        "delay100": "100ms (По подразбиране)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Преглед на версията на приложението, системна информация и дневник на промените"
     },
     "common": {
         "close": "затвори",

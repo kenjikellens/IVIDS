@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "고급 설정",
+        "advancedSettingsDesc": "업데이트, 앱 정보 및 응답 지연",
+        "delayAction": "응답 지연",
+        "delayActionDesc": "버튼 클릭 후 동작 지연 시간 추가",
+        "delay0": "0ms (즉시)",
+        "delay100": "100ms (기본값)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "앱 버전, 시스템 정보 및 변경 내역 확인"
     },
     "common": {
         "close": "닫기",

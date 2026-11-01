@@ -134,7 +134,16 @@
         "installBranchTitle": "Live-Branch-Build installieren",
         "installVersionTitle": "Version installieren",
         "installNow": "Jetzt installieren",
-        "moreInfo": "Mehr Informationen"
+        "moreInfo": "Mehr Informationen",
+        "advancedSettings": "Erweiterte Einstellungen",
+        "advancedSettingsDesc": "Updates, App-Informationen und Reaktionsverzögerung",
+        "delayAction": "Reaktionsverzögerung",
+        "delayActionDesc": "Verzögerung nach Tastendruck hinzufügen",
+        "delay0": "0ms (Sofort)",
+        "delay100": "100ms (Standard)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "App-Version, Systeminformationen und Changelog anzeigen"
     },
     "common": {
         "close": "Schließen",

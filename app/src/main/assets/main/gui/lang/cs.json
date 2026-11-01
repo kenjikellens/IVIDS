@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Pokročilá nastavení",
+        "advancedSettingsDesc": "Aktualizace, informace o aplikaci a zpoždění odezvy",
+        "delayAction": "Zpoždění odezvy",
+        "delayActionDesc": "Přidat zpoždění po stisknutí tlačítek",
+        "delay0": "0ms (Okamžitě)",
+        "delay100": "100ms (Výchozí)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Zobrazit verzi aplikace, informace o systému a protokol změn"
     },
     "common": {
         "close": "Zavřít",

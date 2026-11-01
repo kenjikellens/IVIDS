@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Σύνθετες ρυθμίσεις",
+        "advancedSettingsDesc": "Ενημερώσεις, πληροφορίες εφαρμογής και καθυστέρηση απόκρισης",
+        "delayAction": "Καθυστέρηση απόκρισης",
+        "delayActionDesc": "Προσθήκη καθυστέρησης μετά το πάτημα κουμπιών",
+        "delay0": "0ms (Άμεσα)",
+        "delay100": "100ms (Προεπιλογή)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Προβολή έκδοσης εφαρμογής, πληροφοριών συστήματος και αρχείου καταγραφής αλλαγών"
     },
     "common": {
         "close": "Κοντά",

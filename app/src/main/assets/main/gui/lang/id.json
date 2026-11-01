@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Pengaturan Lanjutan",
+        "advancedSettingsDesc": "Pembaruan, info aplikasi, dan penundaan respons",
+        "delayAction": "Penundaan Respons",
+        "delayActionDesc": "Tambahkan penundaan setelah menekan tombol",
+        "delay0": "0ms (Instan)",
+        "delay100": "100ms (Default)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Lihat versi aplikasi, info sistem, dan catatan perubahan"
     },
     "common": {
         "close": "Tutup",

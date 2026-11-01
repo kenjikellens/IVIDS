@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Mga Advanced na Setting",
+        "advancedSettingsDesc": "Mga update, impormasyon ng app at pagkaantala ng tugon",
+        "delayAction": "Pagkaantala ng Tugon",
+        "delayActionDesc": "Magdagdag ng pagkaantala pagkatapos pindutin ang mga pindutan",
+        "delay0": "0ms (Agad-agad)",
+        "delay100": "100ms (Default)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Tingnan ang bersyon ng app, impormasyon ng system at changelog"
     },
     "common": {
         "close": "Close",

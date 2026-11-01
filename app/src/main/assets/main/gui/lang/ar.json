@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "الإعدادات المتقدمة",
+        "advancedSettingsDesc": "التحديثات، معلومات التطبيق وتأخير الاستجابة",
+        "delayAction": "تأخير الاستجابة",
+        "delayActionDesc": "إضافة تأخير بعد الضغط على الأزرار",
+        "delay0": "0 مللي ثانية (فوري)",
+        "delay100": "100 مللي ثانية (افتراضي)",
+        "delay250": "250 مللي ثانية",
+        "delay500": "500 مللي ثانية",
+        "appInfoDesc": "عرض إصدار التطبيق ومعلومات النظام وسجل التغييرات"
     },
     "common": {
         "close": "إغلاق",

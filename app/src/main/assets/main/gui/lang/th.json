@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "การตั้งค่าขั้นสูง",
+        "advancedSettingsDesc": "การอัปเดต ข้อมูลแอป และการหน่วงเวลาการตอบสนอง",
+        "delayAction": "การหน่วงเวลาการตอบสนอง",
+        "delayActionDesc": "เพิ่มการหน่วงเวลาหลังจากกดปุ่ม",
+        "delay0": "0ms (ทันที)",
+        "delay100": "100ms (ค่าเริ่มต้น)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "ดูเวอร์ชันแอป ข้อมูลระบบ และบันทึกการเปลี่ยนแปลง"
     },
     "common": {
         "close": "Close",

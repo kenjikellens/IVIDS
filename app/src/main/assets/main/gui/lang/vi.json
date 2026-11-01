@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Cài đặt nâng cao",
+        "advancedSettingsDesc": "Cập nhật, thông tin ứng dụng và độ trễ phản hồi",
+        "delayAction": "Độ trễ phản hồi",
+        "delayActionDesc": "Thêm độ trễ sau khi nhấn nút hoặc điều hướng",
+        "delay0": "0ms (Tức thì)",
+        "delay100": "100ms (Mặc định)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Xem phiên bản ứng dụng, thông tin hệ thống và nhật ký thay đổi"
     },
     "common": {
         "close": "Đóng",

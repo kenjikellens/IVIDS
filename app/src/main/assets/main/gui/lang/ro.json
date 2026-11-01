@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Setări avansate",
+        "advancedSettingsDesc": "Actualizări, informații despre aplicație și întârziere răspuns",
+        "delayAction": "Întârziere răspuns",
+        "delayActionDesc": "Adăugați o întârziere după apăsarea butoanelor",
+        "delay0": "0ms (Instant)",
+        "delay100": "100ms (Implicit)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Vizualizați versiunea aplicației, informațiile despre sistem și jurnalul de modificări"
     },
     "common": {
         "close": "Închide",

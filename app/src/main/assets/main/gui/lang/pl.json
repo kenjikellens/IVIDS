@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "Zaawansowane ustawienia",
+        "advancedSettingsDesc": "Aktualizacje, informacje o aplikacji i opóźnienie reakcji",
+        "delayAction": "Opóźnienie reakcji",
+        "delayActionDesc": "Dodaj opóźnienie po naciśnięciu przycisków",
+        "delay0": "0ms (Natychmiast)",
+        "delay100": "100ms (Domyślnie)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "Zobacz wersję aplikacji, informacje o systemie i listę zmian"
     },
     "common": {
         "close": "Zamknij",

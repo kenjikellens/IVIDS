@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "उन्नत सेटिंग्स",
+        "advancedSettingsDesc": "अपडेट, ऐप जानकारी और प्रतिक्रिया विलंब",
+        "delayAction": "प्रतिक्रिया विलंब",
+        "delayActionDesc": "बटन दबाने के बाद विलंब जोड़ें",
+        "delay0": "0ms (तत्काल)",
+        "delay100": "100ms (डिफ़ॉल्ट)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "ऐप संस्करण, सिस्टम जानकारी और परिवर्तन लॉग देखें"
     },
     "common": {
         "close": "बंद करें",

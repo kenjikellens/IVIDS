@@ -891,14 +891,16 @@ class SettingsManager {
         grid.innerHTML = '';
 
         // Add the top chip: Active Branch Build (Main Branch)
-        const branchCard = document.createElement('div');
-        branchCard.className = 'card card--panel chip chip--option focusable';
+        const branchCard = document.createElement('button');
+        branchCard.type = 'button';
+        branchCard.className = 'language-card focusable universal-onclick';
         branchCard.dataset.value = 'branch';
         branchCard.innerHTML = `
             <div class="version-chip-content">
-                <span class="version-chip-title">${window.i18n?.t('settings.branchBuild') || 'Live Branch Build'}</span>
+                <span class="language-card__name">${window.i18n?.t('settings.branchBuild') || 'Live Branch Build'}</span>
                 <div class="version-chip-desc">${window.i18n?.t('settings.branchBuildDesc') || 'Direct main branch IVIDS.apk build'}</div>
             </div>
+            <span class="language-card__check" aria-hidden="true">✓</span>
         `;
 
         branchCard.onclick = () => {
@@ -943,7 +945,7 @@ class SettingsManager {
 
         // Container holding the GitHub release cards
         const releasesContainer = document.createElement('div');
-        releasesContainer.className = 'version-releases-container';
+        releasesContainer.className = 'language-selection-grid version-releases-container';
         grid.appendChild(releasesContainer);
 
         // Helper to render releases into the container
@@ -958,19 +960,19 @@ class SettingsManager {
                 count++;
                 const date = rel.published_at ? new Date(rel.published_at).toLocaleDateString() : '';
                 const isInstalled = currentVersion && currentVersion.includes(rel.tag_name);
-                const appliedIconHtml = isInstalled ? '<img src="svg/check-circle.svg" class="version-applied-icon" alt="Installed" />' : '';
 
-                const relCard = document.createElement('div');
-                relCard.className = 'card card--panel chip chip--option focusable';
+                const relCard = document.createElement('button');
+                relCard.type = 'button';
+                relCard.className = 'language-card focusable universal-onclick' + (isInstalled ? ' is-active' : '');
                 relCard.dataset.value = rel.tag_name;
                 relCard.innerHTML = `
                     <div class="version-chip-content">
                         <div class="version-chip-header">
                             <span class="version-date-label">${rel.tag_name}${date ? ' • ' + date : ''}</span>
                         </div>
-                        <span class="version-chip-title">${rel.name || rel.tag_name}</span>
+                        <span class="language-card__name">${rel.name || rel.tag_name}</span>
                     </div>
-                    ${appliedIconHtml}
+                    <span class="language-card__check" aria-hidden="true">✓</span>
                 `;
 
                 relCard.onclick = () => {
@@ -1252,11 +1254,15 @@ class SettingsManager {
                 };
             }
         } else {
-            modal.querySelectorAll('.chip--option, .option-chip').forEach(chip => {
+            modal.querySelectorAll('.chip--option, .option-chip, .language-card').forEach(chip => {
                 const val = chip.getAttribute('data-value');
-                chip.onclick = (e) => {
+                chip.onclick = async (e) => {
                     e.stopPropagation();
                     this.setPending(key, val, chip);
+                    if (this.isMobileLayout && this.isMobileLayout()) {
+                        await this.applyPending(key);
+                        this.closeModal(false);
+                    }
                 };
             });
         }
@@ -1268,7 +1274,7 @@ class SettingsManager {
             focusTarget = modal.querySelector('#language-selection-grid .language-card') ||
                 document.getElementById('lang-next-btn') || document.getElementById('lang-prev-btn');
         } else if (modalId === 'color-modal' || modalId === 'update-mode-modal' || modalId === 'delay-action-modal') {
-            focusTarget = modal.querySelector('.chip--option.is-active, .chip--option.active, .option-chip.active');
+            focusTarget = modal.querySelector('.language-card.is-active, .chip--option.is-active, .language-card, .chip--option');
         } else if (modalId === 'player-modal') {
             focusTarget = modal.querySelector('.form-input, .provider-url-input') || document.getElementById('add-provider-btn');
         } else if (modalId === 'm3u-modal') {
@@ -1386,14 +1392,13 @@ class SettingsManager {
         const key = keyMap[modalId] || modalId.replace('-modal', '');
         const value = this.pendingSettings[key];
 
-        modal.querySelectorAll('.chip--option, .option-chip').forEach(chip => {
+        modal.querySelectorAll('.chip--option, .option-chip, .language-card').forEach(chip => {
             const chipValue = chip.getAttribute('data-value');
-            const matchValue = typeof value === 'boolean' ? String(value) : value;
-            if (chipValue === matchValue) {
-                chip.classList.add('is-active', 'active');
-            } else {
-                chip.classList.remove('is-active', 'active');
-            }
+            const matchValue = typeof value === 'boolean' ? String(value) : String(value ?? '');
+            const isActive = chipValue === matchValue;
+            chip.classList.toggle('is-active', isActive);
+            chip.classList.toggle('active', isActive);
+            chip.setAttribute('aria-pressed', String(isActive));
         });
 
         if (modalId === 'update-mode-modal') {

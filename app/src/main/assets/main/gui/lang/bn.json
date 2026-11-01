@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "উন্নত সেটিংস",
+        "advancedSettingsDesc": "আপডেট, অ্যাপ তথ্য এবং প্রতিক্রিয়া বিলম্ব",
+        "delayAction": "প্রতিক্রিয়া বিলম্ব",
+        "delayActionDesc": "বোতাম টিপানোর পর বিলম্ব যোগ করুন",
+        "delay0": "0ms (তাত্ক্ষণিক)",
+        "delay100": "100ms (ডিফল্ট)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "অ্যাপ সংস্করণ, সিস্টেম তথ্য এবং পরিবর্তন লগ দেখুন"
     },
     "common": {
         "close": "বন্ধ",

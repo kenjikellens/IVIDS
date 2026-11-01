@@ -139,7 +139,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "詳細設定",
+        "advancedSettingsDesc": "アップデート、アプリ情報、応答遅延",
+        "delayAction": "応答遅延",
+        "delayActionDesc": "ボタン押下時に遅延を追加する",
+        "delay0": "0ms (即時)",
+        "delay100": "100ms (標準)",
+        "delay250": "250ms",
+        "delay500": "500ms",
+        "appInfoDesc": "アプリのバージョン、システム情報、更新履歴を表示"
     },
     "common": {
         "close": "閉じる",

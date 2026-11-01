@@ -133,7 +133,16 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "advancedSettings": "تنظیمات پیشرفته",
+        "advancedSettingsDesc": "به‌روزرسانی‌ها، اطلاعات برنامه و تأخیر پاسخ",
+        "delayAction": "تأخیر پاسخ",
+        "delayActionDesc": "افزودن تأخیر پس از فشردن دکمه‌ها",
+        "delay0": "0 میلی‌ثانیه (فوری)",
+        "delay100": "100 میلی‌ثانیه (پیش‌فرض)",
+        "delay250": "250 میلی‌ثانیه",
+        "delay500": "500 میلی‌ثانیه",
+        "appInfoDesc": "مشاهده نسخه برنامه، اطلاعات سیستم و گزارش تغییرات"
     },
     "common": {
         "close": "بستن",
