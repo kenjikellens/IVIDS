@@ -9,14 +9,14 @@ These rules are active on every turn (`trigger: always_on`) to enforce quality, 
 2. **[Git, Build, APK Signing & Release Rules](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/rules/git-and-releases.md)**: Main branch push prohibition, build autonomy restrictions (`build.bat`), mandatory pre-release builds, APK keystore signing (`keystore.jks`), and SDK target limits (API 35).
 3. **[Development Workflow & Architecture Standards](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/rules/workflow-and-architecture.md)**: OOP architectural plans with mandatory Mermaid diagrams (Class/Sequence), strict i18n policy (no raw text), Windows `py` launcher requirement, method JSDoc documentation, and scratch cleanup.
 
-## 2. Interactive Workflows (`.agents/workflows/`)
+## 2. Interactive Workflows & Skills (`.agents/skills/`)
 Step-by-step procedural runbooks invoked via slash commands or recommended when relevant:
 
-1. **[/version-and-release-update](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/version-and-release-update.md)**: Protocol for bumping semantic versions, running parallel builds (`IVIDS.exe` and `IVIDS.apk`), tagging the commit, pushing tags, and publishing a verified GitHub Release.
-2. **[/add-page](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/add-page.md)**: End-to-end walkthrough for creating new views (HTML template, JS controller, `global.css`, `sidebar.html`, `router.js`, and i18n keys).
-3. **[/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/update-translations.md)**: Batch translation workflow to sync translation keys across all language files in `gui/lang/` using Python scripts in `scratch/`.
-4. **[/oocss-refactor](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/oocss-refactor.md)**: Phased protocol for refactoring CSS components to Object-Oriented CSS (OOCSS), updating HTML/JS templates in synchronized batches, and purging redundant container overrides.
-5. **[/build-and-push-main](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/.agents/workflows/build-and-push-main.md)**: Protocol for compiling Windows EXE and Android APK binaries, verifying packaging, and pushing commit history directly to main without creating releases or tags.
+1. **[/version-and-release-update](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/version-and-release-update/SKILL.md)**: Protocol for bumping semantic versions, running parallel builds (`IVIDS.exe` and `IVIDS.apk`), tagging the commit, pushing tags, and publishing a verified GitHub Release.
+2. **[/add-page](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/add-page/SKILL.md)**: End-to-end walkthrough for creating new views (HTML template, JS controller, `global.css`, `sidebar.html`, `router.js`, and i18n keys).
+3. **[/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/update-translations/SKILL.md)**: Batch translation workflow to sync translation keys across all language files in `gui/lang/` using Python scripts in `scratch/`.
+4. **[/oocss-refactor](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/oocss-refactor/SKILL.md)**: Phased protocol for refactoring CSS components to Object-Oriented CSS (OOCSS), updating HTML/JS templates in synchronized batches, and purging redundant container overrides.
+5. **[/build-and-push-main](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/build-and-push-main/SKILL.md)**: Protocol for compiling Windows EXE and Android APK binaries, verifying packaging, and pushing commit history directly to main without creating releases or tags.
 
 ## 3. General Agent Discipline & Self-Critique Guardrails (CRITICAL)
 

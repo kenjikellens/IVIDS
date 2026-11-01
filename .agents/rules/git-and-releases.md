@@ -12,7 +12,7 @@ trigger: always_on
 ## 2. Build Script & Execution Guardrails
 - **DO NOT RUN BUILD.BAT AUTONOMOUSLY**: NEVER run `build.bat` on your own initiative during normal feature development, debugging, or after standard file edits. `build.bat` MUST ONLY be executed when the user explicitly instructs you to build, or when executing an explicitly requested release flow.
 - **Mandatory Pre-Push/Pre-Release Build**: When authorized to push to `main` or make a release, ALWAYS execute `.\build.bat` (or `.\build.bat release`) first to ensure builds and packaging succeed before pushing.
-- **Dedicated Release Workflow**: All official releases, version bumps, and tag pushes MUST strictly follow the dedicated interactive workflow [version-and-release-update.md](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/workflows/version-and-release-update.md).
+- **Dedicated Release Workflow**: All official releases, version bumps, and tag pushes MUST strictly follow the dedicated interactive workflow [version-and-release-update](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/version-and-release-update/SKILL.md).
 - **Explicit Failure Notification**: If any build step, tag creation, remote push, or GitHub release fails, STOP immediately and notify the user.
 
 ## 3. APK Signing & SDK Target Requirements
