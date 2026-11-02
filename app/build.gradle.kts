@@ -11,7 +11,7 @@ android {
         applicationId = "com.kenjigames.ivids"
         minSdk = 21
         targetSdk = 35
-        versionCode = 106
+        versionCode = 109
         versionName = "v0.6.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -37,7 +37,7 @@ android {
             )
         }
         debug {
-            signingConfig = signingConfigs.getByName("release")
+            // Use Android's default debug keystore; release signing is reserved for release builds.
         }
     }
     compileOptions {
