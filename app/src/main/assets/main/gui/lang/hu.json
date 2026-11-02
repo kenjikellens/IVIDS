@@ -12,7 +12,8 @@
         "playlists": "Playlists",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Nemrég megtekintett"
     },
     "account": {
         "title": "Account",
@@ -49,7 +50,7 @@
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Szín kiválasztása",
         "updates": "App Updates",
         "updateMode": "Update Mode",
         "updateModeDesc": "Choose how the app handles updates",
@@ -106,23 +107,23 @@
         "whatsNew": "What's New:",
         "later": "Later",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Tartalom",
+        "adultContent": "Felnőtt tartalom",
+        "adultContentDesc": "Felnőtt tartalmak megjelenítése a böngészési és keresési találatokban",
+        "adultContentOn": "Bekapcsolva",
+        "adultContentOff": "Kikapcsolva",
+        "adultContentWarning": "Figyelem: Ennek engedélyezése felnőtt tartalmakat jelenít meg. Csak 18 éven felüli felhasználóknak ajánlott.",
+        "dataSaver": "Adattakarékos mód / Lassú internet",
+        "dataSaverDesc": "Alacsonyabb minőségű képek betöltése és a hálózati forgalom csökkentése",
+        "devConsoleTitle": "Fejlesztői konzol",
+        "devConsoleDesc": "Kísérleti ágbeli buildek és kiadási telepítések felfedezése",
+        "devOfficialReleases": "Hivatalos kiadások",
+        "devBleedingEdge": "Kísérleti verzió",
+        "installed": "Telepítve",
+        "activeTag": "Aktív",
+        "noUpdateDesc": "Az IVIDS legújabb verzióját használja.",
+        "updateFoundDesc": "Az IVIDS új verziója készen áll a telepítésre.",
+        "updateErrorDesc": "Nem sikerült elérni a frissítési kiszolgálót. Ellenőrizze a kapcsolatot.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (Alapértelmezett)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Alkalmazásverzió, rendszerinformációk és változásnapló megtekintése"
+        "appInfoDesc": "Alkalmazásverzió, rendszerinformációk és változásnapló megtekintése",
+        "colors": {
+            "green": "Zöld",
+            "red": "Piros",
+            "blue": "Kék",
+            "purple": "Lila",
+            "orange": "Narancssárga",
+            "yellow": "Sárga"
+        },
+        "failedToFetchReleases": "Nem sikerült lekérni a kiadásokat. Kérjük, ellenőrizze az internetkapcsolatot."
     },
     "common": {
         "close": "Close",
@@ -168,7 +178,10 @@
         "criticalInit": "A critical error occurred during initialization.",
         "networkError": "Network connection error. Please check your internet connection.",
         "serverError": "Server error ({status}): Failed to load content.",
-        "contentLoadFailed": "Failed to load content. Please try again later."
+        "contentLoadFailed": "Failed to load content. Please try again later.",
+        "pageTitle": "Hiba az oldal betöltésekor",
+        "retry": "Újrapróbálás",
+        "goHome": "Ugrás a Főoldalra"
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "Connection Lost",
         "connectedTitle": "Connected",
         "slowConnectionTitle": "Slow Connection",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Tárhelykorlát elérve. A módosítások nem menthetők véglegesen.",
+        "storageFullTitle": "Tárhely megtelt"
     },
     "search": {
         "title": "Search",
@@ -238,10 +251,11 @@
         "stop": "Stop",
         "moreInfo": "More Info",
         "nextEpisode": "Next Episode",
-        "selectServer": "Select Server",
+        "selectServer": "Kiszolgáló kiválasztása",
         "loading": "Loading...",
         "statusTitle": "Player is taking too long",
-        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings."
+        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
+        "tracksTitle": "Hang és feliratok"
     },
     "playlists": {
         "title": "My Playlists",
@@ -252,7 +266,7 @@
         "items": "Playlist Items",
         "type_label": "Playlist",
         "delete": "Delete Playlist",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Lejátszási lista törlése",
         "deleteConfirmMessage": "Are you sure you want to delete this playlist?",
         "deleteConfirmMessageNamed": "Are you sure you want to delete",
         "cancel": "Cancel",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "This playlist is empty.",
         "playAll": "Play All",
         "editInfo": "Edit Info",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Elem eltávolítása",
+        "removeItemMessage": "Biztosan el szeretné távolítani ezt az elemet a lejátszási listáról?",
+        "moveItem": "Elem áthelyezése",
+        "deleteItem": "Elem eltávolítása",
         "description_default": "Your personal collection of favorite movies and shows.",
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
@@ -414,14 +428,14 @@
         "world_showcase": "World Showcase"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Gyűjtemények",
+        "searchPlaceholder": "Gyűjtemények keresése (pl. Harry Potter, Marvel...)",
+        "popular": "Népszerű gyűjtemények",
+        "noResults": "Nem találhatók gyűjtemények",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Mentés lejátszási listaként",
+        "savedSuccess": "Gyűjtemény lejátszási listaként elmentve!",
+        "alreadySaved": "Ez a gyűjtemény már el van mentve"
     },
     "details": {
         "play": "Play",
@@ -450,7 +464,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Epizódok"
     },
     "livetv": {
         "title": "Live TV",
@@ -566,6 +581,6 @@
         "confirm": "Exit",
         "cancel": "Cancel"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Engedély szükséges a frissítések telepítéséhez. Engedélyezze a beállításokban, majd koppintson az Újrapróbálkozás gombra.",
+    "update_retry": "Újra"
 }

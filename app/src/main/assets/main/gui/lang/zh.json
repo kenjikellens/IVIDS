@@ -12,7 +12,8 @@
         "playlists": "播放列表",
         "account": "账户",
         "livetv": "电视直播",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "最近观看"
     },
     "account": {
         "title": "账户",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} 服务器",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "选择颜色",
         "whatsNew": "什么是新的：",
         "later": "之后",
         "changes": "更新日志",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "内容",
+        "adultContent": "成人内容",
+        "adultContentDesc": "在浏览和搜索结果中显示成人内容",
+        "adultContentOn": "开启",
+        "adultContentOff": "关闭",
+        "adultContentWarning": "警告：启用此选项将显示成人露骨内容。建议仅限 18 岁以上用户使用。",
+        "dataSaver": "省流量模式 / 慢速网络",
+        "dataSaverDesc": "加载较低质量的图片并减少网络活动",
+        "devConsoleTitle": "开发者控制台",
+        "devConsoleDesc": "探索前沿分支构建和发布部署",
+        "devOfficialReleases": "官方正式版",
+        "devBleedingEdge": "前沿开发版",
+        "installed": "已安装",
+        "activeTag": "当前",
+        "noUpdateDesc": "您正在使用最新版本的 IVIDS。",
+        "updateFoundDesc": "IVIDS 的新版本已就绪，可随时安装。",
+        "updateErrorDesc": "无法连接到更新服务器。请检查您的网络连接。",
         "refresh": "刷新",
         "viewChangelog": "查看更新日志",
         "appPlatform": "平台",
@@ -148,7 +149,16 @@
         "delay100": "100毫秒 (默认)",
         "delay250": "250毫秒",
         "delay500": "500毫秒",
-        "appInfoDesc": "查看应用版本、系统信息及更新日志"
+        "appInfoDesc": "查看应用版本、系统信息及更新日志",
+        "colors": {
+            "green": "绿色",
+            "red": "红色",
+            "blue": "蓝色",
+            "purple": "紫色",
+            "orange": "橙色",
+            "yellow": "黄色"
+        },
+        "failedToFetchReleases": "获取版本失败。请检查您的网络连接。"
     },
     "common": {
         "close": "关闭",
@@ -174,7 +184,10 @@
         "criticalInit": "初始化过程中发生严重错误。",
         "networkError": "网络连接错误。请检查您的互联网连接。",
         "serverError": "服务器错误 ({status})：加载内容失败。",
-        "contentLoadFailed": "加载内容失败。请稍后重试。"
+        "contentLoadFailed": "加载内容失败。请稍后重试。",
+        "pageTitle": "页面加载出错",
+        "retry": "重试",
+        "goHome": "返回首页"
     },
     "splash": {
         "loadingStatus": "正在优化用户体验...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "连接丢失",
         "connectedTitle": "已连接",
         "slowConnectionTitle": "连接缓慢",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "存储空间已满。更改无法永久保存。",
+        "storageFullTitle": "存储已满"
     },
     "search": {
         "title": "搜索",
@@ -247,7 +260,8 @@
         "loading": "加载中...",
         "statusTitle": "播放器响应时间过长",
         "statusMessage": "配置的播放器提供商尚未响应。您可以返回或在设置中更改播放器接口。",
-        "selectServer": "Select Server"
+        "selectServer": "选择服务器",
+        "tracksTitle": "音频与字幕"
     },
     "playlists": {
         "title": "我的播放列表",
@@ -257,7 +271,7 @@
         "empty": "未找到播放列表。创建一个吧！",
         "items": "播放列表项目",
         "delete": "删除播放列表",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "删除播放列表",
         "deleteConfirmMessage": "您确定要删除此播放列表吗？",
         "deleteConfirmMessageNamed": "您确定要删除",
         "cancel": "取消",
@@ -268,10 +282,10 @@
         "playAll": "播放全部",
         "editInfo": "编辑信息",
         "type_label": "播放列表",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "移除项目",
+        "removeItemMessage": "您确定要从播放列表中移除此项目吗？",
+        "moveItem": "移动项目",
+        "deleteItem": "移除项目",
         "description_default": "您最喜欢的电影和节目的个人收藏。",
         "create_new": "创建新的播放列表",
         "moveUp": "上移项目",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "剧集"
     },
     "livetv": {
         "title": "电视直播",
@@ -563,15 +578,15 @@
         "successLoggedIn": "欢迎回来，{name}！"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "合集系列",
+        "searchPlaceholder": "搜索合集（如：哈利波特、漫威...）",
+        "popular": "热门合集",
+        "noResults": "未找到合集",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "保存为播放列表",
+        "savedSuccess": "合集已保存为播放列表！",
+        "alreadySaved": "该合集已保存"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "安装更新需要权限。请在设置中开启并点按重试。",
+    "update_retry": "重试"
 }

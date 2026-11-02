@@ -12,7 +12,8 @@
         "playlists": "Playlists",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Нещодавно переглянуті"
     },
     "account": {
         "title": "Account",
@@ -49,7 +50,7 @@
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Виберіть колір",
         "updates": "App Updates",
         "updateMode": "Update Mode",
         "updateModeDesc": "Choose how the app handles updates",
@@ -106,23 +107,23 @@
         "whatsNew": "What's New:",
         "later": "Later",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Контент",
+        "adultContent": "Контент для дорослих",
+        "adultContentDesc": "Показувати вміст для дорослих під час перегляду та в результатах пошуку",
+        "adultContentOn": "Увімкнено",
+        "adultContentOff": "Вимкнено",
+        "adultContentWarning": "Попередження: увімкнення цього параметра покаже відвертий вміст для дорослих. Рекомендовано лише для користувачів від 18 років.",
+        "dataSaver": "Економія трафіку / Повільний інтернет",
+        "dataSaverDesc": "Завантажувати зображення нижчої якості та зменшувати використання мережі",
+        "devConsoleTitle": "Консоль розробника",
+        "devConsoleDesc": "Експериментальні збірки гілок та розгортання релізів",
+        "devOfficialReleases": "Офіційні випуски",
+        "devBleedingEdge": "Експериментальна збірка",
+        "installed": "Встановлено",
+        "activeTag": "Активний",
+        "noUpdateDesc": "Ви використовуєте останню версію IVIDS.",
+        "updateFoundDesc": "Нова версія IVIDS готова до встановлення.",
+        "updateErrorDesc": "Не вдалося з'єднатися із сервером оновлень. Перевірте з'єднання.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100мс (За замовчуванням)",
         "delay250": "250мс",
         "delay500": "500мс",
-        "appInfoDesc": "Переглянути версію додатка, системну інформацію та історію змін"
+        "appInfoDesc": "Переглянути версію додатка, системну інформацію та історію змін",
+        "colors": {
+            "green": "Зелений",
+            "red": "Червоний",
+            "blue": "Синій",
+            "purple": "Фіолетовий",
+            "orange": "Помаранчевий",
+            "yellow": "Жовтий"
+        },
+        "failedToFetchReleases": "Не вдалося отримати випуски. Перевірте підключення до Інтернету."
     },
     "common": {
         "close": "Close",
@@ -168,7 +178,10 @@
         "criticalInit": "A critical error occurred during initialization.",
         "networkError": "Network connection error. Please check your internet connection.",
         "serverError": "Server error ({status}): Failed to load content.",
-        "contentLoadFailed": "Failed to load content. Please try again later."
+        "contentLoadFailed": "Failed to load content. Please try again later.",
+        "pageTitle": "Помилка завантаження сторінки",
+        "retry": "Повторити",
+        "goHome": "На головну"
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "Connection Lost",
         "connectedTitle": "Connected",
         "slowConnectionTitle": "Slow Connection",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Досягнуто ліміту сховища. Зміни не можуть бути збережені назавжди.",
+        "storageFullTitle": "Сховище переповнене"
     },
     "search": {
         "title": "Search",
@@ -238,10 +251,11 @@
         "stop": "Stop",
         "moreInfo": "More Info",
         "nextEpisode": "Next Episode",
-        "selectServer": "Select Server",
+        "selectServer": "Виберіть сервер",
         "loading": "Loading...",
         "statusTitle": "Player is taking too long",
-        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings."
+        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
+        "tracksTitle": "Аудіо та субтитри"
     },
     "playlists": {
         "title": "My Playlists",
@@ -252,7 +266,7 @@
         "items": "Playlist Items",
         "type_label": "Playlist",
         "delete": "Delete Playlist",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Видалити список відтворення",
         "deleteConfirmMessage": "Are you sure you want to delete this playlist?",
         "deleteConfirmMessageNamed": "Are you sure you want to delete",
         "cancel": "Cancel",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "This playlist is empty.",
         "playAll": "Play All",
         "editInfo": "Edit Info",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Видалити елемент",
+        "removeItemMessage": "Справді видалити цей елемент зі списку відтворення?",
+        "moveItem": "Перемістити елемент",
+        "deleteItem": "Видалити елемент",
         "description_default": "Your personal collection of favorite movies and shows.",
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
@@ -414,14 +428,14 @@
         "world_showcase": "World Showcase"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Колекції",
+        "searchPlaceholder": "Пошук колекцій (наприклад, Гаррі Поттер, Marvel...)",
+        "popular": "Популярні колекції",
+        "noResults": "Колекцій не знайдено",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Зберегти як список відтворення",
+        "savedSuccess": "Колекцію збережено як список відтворення!",
+        "alreadySaved": "Цю колекцію вже збережено"
     },
     "details": {
         "play": "Play",
@@ -450,7 +464,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Епізоди"
     },
     "livetv": {
         "title": "Live TV",
@@ -566,6 +581,6 @@
         "confirm": "Exit",
         "cancel": "Cancel"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Потрібен дозвіл для встановлення оновлень. Увімкніть у налаштуваннях і торкніться Повторити.",
+    "update_retry": "Повторити"
 }

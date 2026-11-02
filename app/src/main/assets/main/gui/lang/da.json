@@ -12,7 +12,8 @@
         "playlists": "Playlister",
         "account": "Konto",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Senest sete"
     },
     "account": {
         "title": "Konto",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Servere",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Vælg farve",
         "whatsNew": "Hvad er nyt:",
         "later": "Senere",
         "changes": "Changes",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Indhold",
+        "adultContent": "Voksenindhold",
+        "adultContentDesc": "Vis voksenindhold i gennemsyn og søgeresultater",
+        "adultContentOn": "Til",
+        "adultContentOff": "Fra",
+        "adultContentWarning": "Advarsel: Aktivering af dette vil vise eksplicit voksenindhold. Anbefales kun til brugere over 18 år.",
+        "dataSaver": "Datasparefunktion / Langsomt internet",
+        "dataSaverDesc": "Indlæs fotos i lavere kvalitet og reducer netværksaktivitet",
+        "devConsoleTitle": "Udviklerkonsol",
+        "devConsoleDesc": "Udforsk eksperimentelle grenbygninger og udgivelsesdistributioner",
+        "devOfficialReleases": "Officielle udgivelser",
+        "devBleedingEdge": "Eksperimentel version",
+        "installed": "Installeret",
+        "activeTag": "Aktiv",
+        "noUpdateDesc": "Du bruger den nyeste version af IVIDS.",
+        "updateFoundDesc": "En ny version af IVIDS er klar til installation.",
+        "updateErrorDesc": "Kunne ikke nå opdateringsserveren. Tjek din forbindelse.",
         "refresh": "Refresh",
         "viewChangelog": "View Changelog",
         "appPlatform": "Platform",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Standard)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Se appversion, systemoplysninger og ændringslog"
+        "appInfoDesc": "Se appversion, systemoplysninger og ændringslog",
+        "colors": {
+            "green": "Grøn",
+            "red": "Rød",
+            "blue": "Blå",
+            "purple": "Lilla",
+            "orange": "Orange",
+            "yellow": "Gul"
+        },
+        "failedToFetchReleases": "Kunne ikke hente udgivelser. Tjek venligst din internetforbindelse."
     },
     "common": {
         "close": "Luk",
@@ -174,7 +184,10 @@
         "criticalInit": "Der opstod en kritisk fejl under initialiseringen.",
         "networkError": "Netværksforbindelsesfejl. Tjek venligst din internetforbindelse.",
         "serverError": "Serverfejl ({status}): Kunne ikke indlæse indhold.",
-        "contentLoadFailed": "Kunne ikke indlæse indhold. Prøv venligst igen senere."
+        "contentLoadFailed": "Kunne ikke indlæse indhold. Prøv venligst igen senere.",
+        "pageTitle": "Fejl ved indlæsning af side",
+        "retry": "Prøv igen",
+        "goHome": "Gå til Hjem"
     },
     "splash": {
         "loadingStatus": "Optimerer brugeroplevelsen...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Forbindelse afbrudt",
         "connectedTitle": "Forbundet",
         "slowConnectionTitle": "Langsom forbindelse",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Lagringsgrænse nået. Ændringer kan ikke gemmes permanent.",
+        "storageFullTitle": "Lager fuldt"
     },
     "search": {
         "title": "Søg",
@@ -247,7 +260,8 @@
         "loading": "Indlæser...",
         "statusTitle": "Afspilleren tager for lang tid",
         "statusMessage": "Den konfigurerede afspillerudbyder har ikke svaret endnu. Du kan gå tilbage eller ændre afspillerens slutpunkt i Indstillinger.",
-        "selectServer": "Select Server"
+        "selectServer": "Vælg server",
+        "tracksTitle": "Lyd og undertekster"
     },
     "playlists": {
         "title": "Mine playlister",
@@ -257,7 +271,7 @@
         "empty": "Ingen playlister fundet. Opret en!",
         "items": "Playliste-elementer",
         "delete": "Slet playliste",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Slet afspilningsliste",
         "deleteConfirmMessage": "Er du sikker på, at du vil slette denne playliste?",
         "deleteConfirmMessageNamed": "Er du sikker på, at du vil slette",
         "cancel": "Annuller",
@@ -268,10 +282,10 @@
         "playAll": "Afspil alle",
         "editInfo": "Rediger info",
         "type_label": "Playliste",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Fjern element",
+        "removeItemMessage": "Er du sikker på, at du vil fjerne dette element fra afspilningslisten?",
+        "moveItem": "Flyt element",
+        "deleteItem": "Fjern element",
         "description_default": "Din personlige samling af yndlingsfilm og -serier.",
         "create_new": "Opret ny afspilningsliste",
         "moveUp": "Flyt element op",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Afsnit"
     },
     "livetv": {
         "title": "Live TV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Velkommen tilbage, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Samlinger",
+        "searchPlaceholder": "Søg i samlinger (f.eks. Harry Potter, Marvel...)",
+        "popular": "Populære samlinger",
+        "noResults": "Ingen samlinger fundet",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Gem som afspilningsliste",
+        "savedSuccess": "Samling gemt som afspilningsliste!",
+        "alreadySaved": "Denne samling er allerede gemt"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Tilladelse påkrævet for at installere opdateringer. Aktiver i indstillinger og tryk på Prøv igen.",
+    "update_retry": "Prøv igen"
 }

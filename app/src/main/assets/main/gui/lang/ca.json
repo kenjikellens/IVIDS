@@ -12,7 +12,8 @@
         "playlists": "Llistes de reproducció",
         "account": "Compte",
         "livetv": "TV en directe",
-        "collections": "Col·leccions"
+        "collections": "Col·leccions",
+        "recently_watched": "Vist recentment"
     },
     "account": {
         "title": "Compte",
@@ -49,7 +50,7 @@
         "saved": "Configuració desada!",
         "reset": "Restableix els valors predeterminats!",
         "cancel": "Cancel·la",
-        "accentColorSelect": "Seleccioneu Color",
+        "accentColorSelect": "Selecciona el color",
         "updates": "Actualitzacions d'aplicacions",
         "updateMode": "Mode d'actualització",
         "updateModeDesc": "Trieu com l'aplicació gestiona les actualitzacions",
@@ -81,12 +82,12 @@
             "installing": "S'està preparant la instal·lació..."
         },
         "selectVersion": "Seleccioneu Versió",
-        "devConsoleTitle": "Consola per a desenvolupadors",
-        "devConsoleDesc": "Exploreu les compilacions de branques d'avantguarda i llançaments de desplegaments",
-        "devOfficialReleases": "Estrenes oficials",
-        "devBleedingEdge": "Bleeding Edge",
+        "devConsoleTitle": "Consola de desenvolupador",
+        "devConsoleDesc": "Explora versions experimentals de branques i desplegaments",
+        "devOfficialReleases": "Versions oficials",
+        "devBleedingEdge": "Versió experimental",
         "installed": "Instal·lat",
-        "activeTag": "Actius",
+        "activeTag": "Actiu",
         "branchBuild": "Construcció de sucursal en viu",
         "branchBuildDesc": "Construcció directa de la branca principal IVIDS.apk",
         "updateNotification": "Actualització disponible",
@@ -114,15 +115,15 @@
         "branch": "Sucursal",
         "contentSettings": "Contingut",
         "adultContent": "Contingut per a adults",
-        "adultContentDesc": "Mostra contingut per a adults als resultats de la cerca i de la navegació",
-        "adultContentOn": "Encès",
-        "adultContentOff": "Apagat",
-        "adultContentWarning": "Avís: si activeu això, es mostrarà contingut explícit per a adults. Aquesta configuració només es recomana per a usuaris majors de 18 anys.",
-        "dataSaver": "Estalvi de dades / Internet lenta",
-        "dataSaverDesc": "Carregueu fotos de menor qualitat i reduïu l'activitat de la xarxa",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "adultContentDesc": "Mostra contingut per a adults a la navegació i resultats de cerca",
+        "adultContentOn": "Activat",
+        "adultContentOff": "Desactivat",
+        "adultContentWarning": "Avís: En activar-ho es mostrarà contingut explícit per a adults. Recomanat només per a usuaris majors de 18 anys.",
+        "dataSaver": "Estalvi de dades / Connexió lenta",
+        "dataSaverDesc": "Carrega imatges de menys qualitat i redueix l'activitat de xarxa",
+        "noUpdateDesc": "Esteu utilitzant l'última versió d'IVIDS.",
+        "updateFoundDesc": "Hi ha una nova versió d'IVIDS a punt per instal·lar.",
+        "updateErrorDesc": "No s'ha pogut contactar amb el servidor d'actualitzacions. Comproveu la connexió.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (Per defecte)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Mostra la versió de l'aplicació, informació del sistema i registre de canvis"
+        "appInfoDesc": "Mostra la versió de l'aplicació, informació del sistema i registre de canvis",
+        "colors": {
+            "green": "Verd",
+            "red": "Vermell",
+            "blue": "Blau",
+            "purple": "Lila",
+            "orange": "Taronja",
+            "yellow": "Groc"
+        },
+        "failedToFetchReleases": "No s'han pogut obtenir les versions. Comproveu la connexió a internet."
     },
     "common": {
         "close": "Tancar",
@@ -168,7 +178,10 @@
         "criticalInit": "S'ha produït un error crític durant la inicialització.",
         "networkError": "Error de connexió de xarxa. Comproveu la vostra connexió a Internet.",
         "serverError": "Error del servidor ({estat}): no s'ha pogut carregar el contingut.",
-        "contentLoadFailed": "No s'ha pogut carregar el contingut. Si us plau, torna-ho a provar més tard."
+        "contentLoadFailed": "No s'ha pogut carregar el contingut. Si us plau, torna-ho a provar més tard.",
+        "pageTitle": "Error en carregar la pàgina",
+        "retry": "Reintentar",
+        "goHome": "Inici"
     },
     "splash": {
         "loadingStatus": "Optimitzant l'experiència de l'usuari...",
@@ -180,7 +193,7 @@
         "connectionLostTitle": "Connexió perduda",
         "connectedTitle": "Connectat",
         "slowConnectionTitle": "Connexió lenta",
-        "storageFull": "S'ha arribat al límit d'emmagatzematge. Els canvis no es poden desar permanentment.",
+        "storageFull": "S'ha assolit el límit d'emmagatzematge. Els canvis no es poden desar de forma permanent.",
         "storageFullTitle": "Emmagatzematge ple"
     },
     "search": {
@@ -238,10 +251,11 @@
         "stop": "Atureu-vos",
         "moreInfo": "Més informació",
         "nextEpisode": "Següent episodi",
-        "selectServer": "Seleccioneu Servidor",
+        "selectServer": "Selecciona el servidor",
         "loading": "Carregant...",
         "statusTitle": "El jugador triga massa",
-        "statusMessage": "El proveïdor de reproductor configurat encara no ha respost. Pots tornar enrere o canviar el punt final del reproductor a Configuració."
+        "statusMessage": "El proveïdor de reproductor configurat encara no ha respost. Pots tornar enrere o canviar el punt final del reproductor a Configuració.",
+        "tracksTitle": "Àudio i subtítols"
     },
     "playlists": {
         "title": "Les meves llistes de reproducció",
@@ -252,7 +266,7 @@
         "items": "Elements de la llista de reproducció",
         "type_label": "Llista de reproducció",
         "delete": "Suprimeix la llista de reproducció",
-        "deleteConfirmTitle": "Suprimeix la llista de reproducció",
+        "deleteConfirmTitle": "Elimina la llista de reproducció",
         "deleteConfirmMessage": "Confirmes que vols suprimir aquesta llista de reproducció?",
         "deleteConfirmMessageNamed": "Esteu segur que voleu suprimir",
         "cancel": "Cancel·la",
@@ -263,7 +277,7 @@
         "playAll": "Juga-ho tot",
         "editInfo": "Edita la informació",
         "removeItemTitle": "Elimina l'element",
-        "removeItemMessage": "Confirmes que vols eliminar aquest element de la llista de reproducció?",
+        "removeItemMessage": "Segur que voleu eliminar aquest element de la llista de reproducció?",
         "moveItem": "Mou l'element",
         "deleteItem": "Elimina l'element",
         "description_default": "La teva col·lecció personal de pel·lícules i programes preferits.",
@@ -415,7 +429,7 @@
     },
     "collections": {
         "title": "Col·leccions",
-        "searchPlaceholder": "Cerca col·leccions (p. ex., Harry Potter, Marvel...)",
+        "searchPlaceholder": "Cerca col·leccions (ex. Harry Potter, Marvel...)",
         "popular": "Col·leccions populars",
         "noResults": "No s'han trobat col·leccions",
         "films": "{count} pel·lícules",
@@ -450,7 +464,8 @@
         "synopsis": "Sinopsi",
         "castAndCrew": "Repartiment i tripulació",
         "noExtras": "No hi ha extres ni tràilers disponibles.",
-        "noCast": "No hi ha informació de repartiment disponible."
+        "noCast": "No hi ha informació de repartiment disponible.",
+        "tabSeasons": "Episodis"
     },
     "livetv": {
         "title": "TV en directe",
@@ -533,8 +548,8 @@
     "update_status_downloading": "S'està baixant l'actualització...",
     "update_status_installing": "S'està instal·lant l'actualització...",
     "update_status_connecting": "S'està connectant al servidor...",
-    "update_status_permission_required": "Cal permís per instal·lar actualitzacions. Activa a la configuració i toca Torna a provar.",
-    "update_retry": "Torna-ho a provar",
+    "update_status_permission_required": "Es requereix permís per instal·lar actualitzacions. Activeu-ho a la configuració i toqueu Reintentar.",
+    "update_retry": "Reintentar",
     "login": {
         "title": "Inicieu la sessió a IVIDS",
         "signInTitle": "Inicieu la sessió",

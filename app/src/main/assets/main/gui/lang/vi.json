@@ -12,7 +12,8 @@
         "playlists": "Danh sách phát",
         "account": "Tài khoản",
         "livetv": "Truyền hình trực tiếp",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Đã xem gần đây"
     },
     "account": {
         "title": "Tài khoản",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Máy chủ",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Chọn màu",
         "whatsNew": "Có gì mới:",
         "later": "Sau đó",
         "changes": "Changes",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Nội dung",
+        "adultContent": "Nội dung người lớn",
+        "adultContentDesc": "Hiển thị nội dung người lớn trong duyệt web và kết quả tìm kiếm",
+        "adultContentOn": "Bật",
+        "adultContentOff": "Tắt",
+        "adultContentWarning": "Cảnh báo: Bật tính năng này sẽ hiển thị nội dung người lớn rõ ràng. Cài đặt này chỉ được khuyến nghị cho người dùng từ 18 tuổi trở lên.",
+        "dataSaver": "Tiết kiệm dữ liệu / Internet chậm",
+        "dataSaverDesc": "Tải ảnh chất lượng thấp hơn và giảm lưu lượng mạng",
+        "devConsoleTitle": "Bảng điều khiển nhà phát triển",
+        "devConsoleDesc": "Khám phá các bản dựng nhánh thử nghiệm và triển khai phát hành",
+        "devOfficialReleases": "Bản phát hành chính thức",
+        "devBleedingEdge": "Bản dựng thử nghiệm",
+        "installed": "Đã cài đặt",
+        "activeTag": "Đang hoạt động",
+        "noUpdateDesc": "Bạn đang chạy phiên bản mới nhất của IVIDS.",
+        "updateFoundDesc": "Phiên bản mới của IVIDS đã sẵn sàng để cài đặt.",
+        "updateErrorDesc": "Không thể kết nối với máy chủ cập nhật. Kiểm tra kết nối của bạn.",
         "refresh": "Refresh",
         "viewChangelog": "View Changelog",
         "appPlatform": "Platform",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Mặc định)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Xem phiên bản ứng dụng, thông tin hệ thống và nhật ký thay đổi"
+        "appInfoDesc": "Xem phiên bản ứng dụng, thông tin hệ thống và nhật ký thay đổi",
+        "colors": {
+            "green": "Xanh lá",
+            "red": "Đỏ",
+            "blue": "Xanh dương",
+            "purple": "Tím",
+            "orange": "Cam",
+            "yellow": "Vàng"
+        },
+        "failedToFetchReleases": "Không thể tải các bản phát hành. Vui lòng kiểm tra kết nối internet của bạn."
     },
     "common": {
         "close": "Đóng",
@@ -174,7 +184,10 @@
         "criticalInit": "Đã xảy ra lỗi nghiêm trọng trong quá trình khởi tạo.",
         "networkError": "Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet của bạn.",
         "serverError": "Lỗi máy chủ ({status}): Không thể tải nội dung.",
-        "contentLoadFailed": "Không thể tải nội dung. Vui lòng thử lại sau."
+        "contentLoadFailed": "Không thể tải nội dung. Vui lòng thử lại sau.",
+        "pageTitle": "Lỗi tải trang",
+        "retry": "Thử lại",
+        "goHome": "Về Trang chủ"
     },
     "splash": {
         "loadingStatus": "Đang tối ưu hóa trải nghiệm...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Mất kết nối",
         "connectedTitle": "Đã kết nối",
         "slowConnectionTitle": "Kết nối chậm",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Đã đạt giới hạn bộ nhớ. Không thể lưu vĩnh viễn các thay đổi.",
+        "storageFullTitle": "Bộ nhớ đầy"
     },
     "search": {
         "title": "Tìm kiếm",
@@ -247,7 +260,8 @@
         "loading": "Đang tải...",
         "statusTitle": "Trình phát mất quá nhiều thời gian",
         "statusMessage": "Nhà cung cấp trình phát được cấu hình vẫn chưa phản hồi. Bạn có thể quay lại hoặc thay đổi điểm cuối của trình phát trong Cài đặt.",
-        "selectServer": "Select Server"
+        "selectServer": "Chọn máy chủ",
+        "tracksTitle": "Âm thanh & Phụ đề"
     },
     "playlists": {
         "title": "Danh sách phát của tôi",
@@ -257,7 +271,7 @@
         "empty": "Không có danh sách phát nào. Hãy tạo một cái!",
         "items": "Mục trong danh sách phát",
         "delete": "Xóa danh sách phát",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Xóa danh sách phát",
         "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa danh sách phát này?",
         "deleteConfirmMessageNamed": "Bạn có chắc chắn muốn xóa",
         "cancel": "Hủy",
@@ -268,10 +282,10 @@
         "playAll": "Phát tất cả",
         "editInfo": "Sửa thông tin",
         "type_label": "Danh sách phát",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Xóa mục",
+        "removeItemMessage": "Bạn có chắc chắn muốn xóa mục này khỏi danh sách phát không?",
+        "moveItem": "Di chuyển mục",
+        "deleteItem": "Xóa mục",
         "description_default": "Bộ sưu tập cá nhân của bạn về các bộ phim và chương trình yêu thích.",
         "create_new": "Tạo danh sách phát mới",
         "moveUp": "Di chuyển mục lên",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Tập"
     },
     "livetv": {
         "title": "Live TV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Chào mừng trở lại, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Bộ sưu tập",
+        "searchPlaceholder": "Tìm kiếm bộ sưu tập (vd: Harry Potter, Marvel...)",
+        "popular": "Bộ sưu tập phổ biến",
+        "noResults": "Không tìm thấy bộ sưu tập nào",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Lưu dưới dạng danh sách phát",
+        "savedSuccess": "Đã lưu bộ sưu tập dưới dạng danh sách phát!",
+        "alreadySaved": "Bộ sưu tập này đã được lưu"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Cần có quyền để cài đặt bản cập nhật. Bật trong cài đặt và nhấn Thử lại.",
+    "update_retry": "Thử lại"
 }

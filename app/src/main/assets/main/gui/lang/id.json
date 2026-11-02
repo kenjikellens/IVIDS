@@ -12,7 +12,8 @@
         "playlists": "Daftar Putar",
         "account": "Akun",
         "livetv": "TV Langsung",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Baru Ditonton"
     },
     "account": {
         "title": "Akun",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Server",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Pilih Warna",
         "whatsNew": "Apa yang Baru:",
         "later": "Nanti",
         "changes": "Changes",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Konten",
+        "adultContent": "Konten Dewasa",
+        "adultContentDesc": "Tampilkan konten dewasa dalam penjelajahan dan hasil pencarian",
+        "adultContentOn": "Aktif",
+        "adultContentOff": "Nonaktif",
+        "adultContentWarning": "Peringatan: Mengaktifkan ini akan menampilkan konten dewasa eksplisit. Pengaturan ini hanya disarankan untuk pengguna berusia 18+.",
+        "dataSaver": "Penghemat Data / Internet Lambat",
+        "dataSaverDesc": "Muat foto berkualitas lebih rendah dan kurangi aktivitas jaringan",
+        "devConsoleTitle": "Konsol Pengembang",
+        "devConsoleDesc": "Jelajahi versi cabang eksperimental dan penerapan rilis",
+        "devOfficialReleases": "Rilis Resmi",
+        "devBleedingEdge": "Versi Eksperimental",
+        "installed": "Terinstal",
+        "activeTag": "Aktif",
+        "noUpdateDesc": "Anda menjalankan versi terbaru IVIDS.",
+        "updateFoundDesc": "Versi baru IVIDS siap untuk diinstal.",
+        "updateErrorDesc": "Tidak dapat menjangkau server pembaruan. Periksa koneksi Anda.",
         "refresh": "Refresh",
         "viewChangelog": "View Changelog",
         "appPlatform": "Platform",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Default)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Lihat versi aplikasi, info sistem, dan catatan perubahan"
+        "appInfoDesc": "Lihat versi aplikasi, info sistem, dan catatan perubahan",
+        "colors": {
+            "green": "Hijau",
+            "red": "Merah",
+            "blue": "Biru",
+            "purple": "Ungu",
+            "orange": "Oranye",
+            "yellow": "Kuning"
+        },
+        "failedToFetchReleases": "Gagal mengambil rilis. Silakan periksa koneksi internet Anda."
     },
     "common": {
         "close": "Tutup",
@@ -174,7 +184,10 @@
         "criticalInit": "Terjadi kesalahan kritis saat inisialisasi.",
         "networkError": "Kesalahan koneksi jaringan. Silakan periksa koneksi internet Anda.",
         "serverError": "Kesalahan server ({status}): Gagal memuat konten.",
-        "contentLoadFailed": "Gagal memuat konten. Silakan coba lagi nanti."
+        "contentLoadFailed": "Gagal memuat konten. Silakan coba lagi nanti.",
+        "pageTitle": "Kesalahan memuat halaman",
+        "retry": "Coba Lagi",
+        "goHome": "Ke Beranda"
     },
     "splash": {
         "loadingStatus": "Mengoptimalkan pengalaman pengguna...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Koneksi Terputus",
         "connectedTitle": "Terhubung",
         "slowConnectionTitle": "Koneksi Lambat",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Batas penyimpanan tercapai. Perubahan tidak dapat disimpan secara permanen.",
+        "storageFullTitle": "Penyimpanan Penuh"
     },
     "search": {
         "title": "Cari",
@@ -247,7 +260,8 @@
         "loading": "Memuat...",
         "statusTitle": "Pemutar memakan waktu terlalu lama",
         "statusMessage": "Penyedia pemutar yang dikonfigurasi belum merespons. Anda dapat kembali atau mengubah endpoint pemutar di Pengaturan.",
-        "selectServer": "Select Server"
+        "selectServer": "Pilih Server",
+        "tracksTitle": "Audio & Terjemahan"
     },
     "playlists": {
         "title": "Daftar Putar Saya",
@@ -257,7 +271,7 @@
         "empty": "Daftar putar tidak ditemukan. Buat sekarang!",
         "items": "Item Playlist",
         "delete": "Hapus Daftar Putar",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Hapus Daftar Putar",
         "deleteConfirmMessage": "Apakah Anda yakin ingin menghapus daftar putar ini?",
         "deleteConfirmMessageNamed": "Apakah Anda yakin ingin menghapus",
         "cancel": "Batal",
@@ -268,10 +282,10 @@
         "playAll": "Putar Semua",
         "editInfo": "Edit Info",
         "type_label": "Playlist",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Hapus Item",
+        "removeItemMessage": "Apakah Anda yakin ingin menghapus item ini dari daftar putar?",
+        "moveItem": "Pindahkan Item",
+        "deleteItem": "Hapus Item",
         "description_default": "Koleksi pribadi film dan acara favorit Anda.",
         "create_new": "Buat Daftar Putar Baru",
         "moveUp": "Pindahkan Barang ke Atas",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Episode"
     },
     "livetv": {
         "title": "TV Langsung",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Selamat datang kembali, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Koleksi",
+        "searchPlaceholder": "Cari koleksi (mis. Harry Potter, Marvel...)",
+        "popular": "Koleksi Populer",
+        "noResults": "Koleksi tidak ditemukan",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Simpan sebagai Daftar Putar",
+        "savedSuccess": "Koleksi disimpan sebagai daftar putar!",
+        "alreadySaved": "Koleksi ini sudah disimpan"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Izin diperlukan untuk menginstal pembaruan. Aktifkan di pengaturan dan ketuk Coba Lagi.",
+    "update_retry": "Ulangi"
 }

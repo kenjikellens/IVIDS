@@ -12,7 +12,8 @@
         "playlists": "Playlist",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Visti di recente"
     },
     "account": {
         "title": "Account",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Aggiungi playlist",
         "playlistsCount": "{count} Playlist",
         "serversCount": "{count} Server",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Seleziona colore",
         "whatsNew": "Cosa c'è di nuovo:",
         "later": "Dopo",
         "changes": "Modifiche",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Contenuto",
+        "adultContent": "Contenuti per adulti",
+        "adultContentDesc": "Mostra contenuti per adulti durante la navigazione e nei risultati di ricerca",
+        "adultContentOn": "Attivo",
+        "adultContentOff": "Disattivo",
+        "adultContentWarning": "Avviso: l'attivazione mostrerà contenuti espliciti per adulti. Questa impostazione è consigliata solo a utenti maggiorenni.",
+        "dataSaver": "Risparmio dati / Connessione lenta",
+        "dataSaverDesc": "Carica immagini a qualità inferiore e riduce l'attività di rete",
+        "devConsoleTitle": "Console sviluppatore",
+        "devConsoleDesc": "Esplora le build di sviluppo sperimentali e le versioni rilasciate",
+        "devOfficialReleases": "Versioni ufficiali",
+        "devBleedingEdge": "Versione sperimentale",
+        "installed": "Installato",
+        "activeTag": "Attivo",
+        "noUpdateDesc": "Stai utilizzando l'ultima versione di IVIDS.",
+        "updateFoundDesc": "Una nuova versione di IVIDS è pronta per essere installata.",
+        "updateErrorDesc": "Impossibile raggiungere il server di aggiornamento. Controlla la connessione.",
         "refresh": "Aggiorna",
         "viewChangelog": "Visualizza modifiche",
         "appPlatform": "Piattaforma",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Predefinito)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Visualizza versione dell'app, informazioni di sistema e cronologia modifiche"
+        "appInfoDesc": "Visualizza versione dell'app, informazioni di sistema e cronologia modifiche",
+        "colors": {
+            "green": "Verde",
+            "red": "Rosso",
+            "blue": "Blu",
+            "purple": "Viola",
+            "orange": "Arancione",
+            "yellow": "Giallo"
+        },
+        "failedToFetchReleases": "Impossibile recuperare le versioni. Controlla la tua connessione Internet."
     },
     "common": {
         "close": "Chiudi",
@@ -174,7 +184,10 @@
         "criticalInit": "Si è verificato un errore critico durante l'inizializzazione.",
         "networkError": "Errore di connessione di rete. Si prega di controllare la connessione internet.",
         "serverError": "Errore del server ({status}): Impossibile caricare il contenuto.",
-        "contentLoadFailed": "Impossibile caricare il contenuto. Si prega di riprovare più tardi."
+        "contentLoadFailed": "Impossibile caricare il contenuto. Si prega di riprovare più tardi.",
+        "pageTitle": "Errore durante il caricamento della pagina",
+        "retry": "Riprova",
+        "goHome": "Vai alla Home"
     },
     "splash": {
         "loadingStatus": "Ottimizzazione dell'esperienza utente...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Connessione Persa",
         "connectedTitle": "Connesso",
         "slowConnectionTitle": "Connessione Lenta",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Limite di archiviazione raggiunto. Le modifiche non possono essere salvate in modo permanente.",
+        "storageFullTitle": "Memoria piena"
     },
     "search": {
         "title": "Cerca",
@@ -247,7 +260,8 @@
         "loading": "Caricamento...",
         "statusTitle": "Il lettore impiega troppo tempo",
         "statusMessage": "Il provider del lettore configurato non ha ancora risposto. Puoi tornare indietro o modificare l'endpoint del lettore nelle Impostazioni.",
-        "selectServer": "Select Server"
+        "selectServer": "Seleziona server",
+        "tracksTitle": "Audio e sottotitoli"
     },
     "playlists": {
         "title": "Le Mie Playlist",
@@ -257,7 +271,7 @@
         "empty": "Nessuna playlist trovata. Creane una!",
         "items": "Elementi della playlist",
         "delete": "Elimina Playlist",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Elimina playlist",
         "deleteConfirmMessage": "Sei sicuro di voler eliminare questa playlist?",
         "deleteConfirmMessageNamed": "Sei sicuro di voler eliminare",
         "cancel": "Annulla",
@@ -268,10 +282,10 @@
         "playAll": "Riproduci Tutto",
         "editInfo": "Modifica Info",
         "type_label": "Playlist",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Rimuovi elemento",
+        "removeItemMessage": "Sei sicuro di voler rimuovere questo elemento dalla playlist?",
+        "moveItem": "Sposta elemento",
+        "deleteItem": "Rimuovi elemento",
         "description_default": "La tua raccolta personale di film e programmi preferiti.",
         "create_new": "Crea nuova playlist",
         "moveUp": "Sposta elemento in alto",
@@ -446,7 +460,8 @@
         "synopsis": "Sinossi",
         "castAndCrew": "Cast e troupe",
         "noExtras": "Nessun extra o trailer disponibile.",
-        "noCast": "Nessuna informazione sul cast disponibile."
+        "noCast": "Nessuna informazione sul cast disponibile.",
+        "tabSeasons": "Episodi"
     },
     "livetv": {
         "title": "Live TV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Bentornato, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Collezioni",
+        "searchPlaceholder": "Cerca collezioni (es. Harry Potter, Marvel...)",
+        "popular": "Collezioni popolari",
+        "noResults": "Nessuna collezione trovata",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Salva come playlist",
+        "savedSuccess": "Collezione salvata come playlist!",
+        "alreadySaved": "Questa collezione è già salvata"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Autorizzazione richiesta per installare gli aggiornamenti. Abilita nelle impostazioni e tocca Riprova.",
+    "update_retry": "Riprova"
 }

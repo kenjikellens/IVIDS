@@ -12,7 +12,8 @@
         "playlists": "Λίστες αναπαραγωγής",
         "account": "Λογαριασμός",
         "livetv": "Ζωντανή τηλεόραση",
-        "collections": "Συλλογές"
+        "collections": "Συλλογές",
+        "recently_watched": "Πρόσφατα παρακολουθημένα"
     },
     "account": {
         "title": "Λογαριασμός",
@@ -49,7 +50,7 @@
         "saved": "Οι ρυθμίσεις αποθηκεύτηκαν!",
         "reset": "Επαναφορά στις προεπιλογές!",
         "cancel": "Ματαίωση",
-        "accentColorSelect": "Επιλέξτε Χρώμα",
+        "accentColorSelect": "Επιλογή χρώματος",
         "updates": "Ενημερώσεις εφαρμογών",
         "updateMode": "Λειτουργία ενημέρωσης",
         "updateModeDesc": "Επιλέξτε πώς χειρίζεται η εφαρμογή τις ενημερώσεις",
@@ -107,22 +108,22 @@
         "later": "Αργότερα",
         "branch": "Υποκατάστημα",
         "contentSettings": "Περιεχόμενο",
-        "adultContent": "Περιεχόμενο για ενήλικες",
-        "adultContentDesc": "Εμφάνιση περιεχομένου για ενηλίκους στα αποτελέσματα περιήγησης και αναζήτησης",
-        "adultContentOn": "Επί",
-        "adultContentOff": "Μακριά από",
-        "adultContentWarning": "Προειδοποίηση: Η ενεργοποίηση αυτής της επιλογής θα εμφανίσει ακατάλληλο περιεχόμενο για ενηλίκους. Αυτή η ρύθμιση συνιστάται μόνο για χρήστες 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "adultContent": "Περιεχόμενο για ενηλίκους",
+        "adultContentDesc": "Εμφάνιση περιεχομένου για ενηλίκους στην περιήγηση και τα αποτελέσματα αναζήτησης",
+        "adultContentOn": "Ενεργό",
+        "adultContentOff": "Ανενεργό",
+        "adultContentWarning": "Προειδοποίηση: Η ενεργοποίηση θα εμφανίσει ακατάλληλο περιεχόμενο για ενηλίκους. Συνιστάται μόνο για χρήστες άνω των 18 ετών.",
+        "dataSaver": "Εξοικονόμηση δεδομένων / Αργό διαδίκτυο",
+        "dataSaverDesc": "Φόρτωση εικόνων χαμηλότερης ποιότητας και μείωση της κίνησης δικτύου",
+        "devConsoleTitle": "Κονσόλα προγραμματιστή",
+        "devConsoleDesc": "Εξερευνήστε πειραματικές εκδόσεις κλάδων και αναπτύξεις",
+        "devOfficialReleases": "Επίσημες εκδόσεις",
+        "devBleedingEdge": "Πειραματική έκδοση",
+        "installed": "Εγκατεστημένο",
+        "activeTag": "Ενεργό",
+        "noUpdateDesc": "Εκτελείτε την πιο πρόσφατη έκδοση του IVIDS.",
+        "updateFoundDesc": "Μια νέα έκδοση του IVIDS είναι έτοιμη για εγκατάσταση.",
+        "updateErrorDesc": "Δεν ήταν δυνατή η επικοινωνία με τον διακομιστή ενημερώσεων. Ελέγξτε τη σύνδεσή σας.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (Προεπιλογή)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Προβολή έκδοσης εφαρμογής, πληροφοριών συστήματος και αρχείου καταγραφής αλλαγών"
+        "appInfoDesc": "Προβολή έκδοσης εφαρμογής, πληροφοριών συστήματος και αρχείου καταγραφής αλλαγών",
+        "colors": {
+            "green": "Πράσινο",
+            "red": "Κόκκινο",
+            "blue": "Μπλε",
+            "purple": "Μοβ",
+            "orange": "Πορτοκαλί",
+            "yellow": "Κίτρινο"
+        },
+        "failedToFetchReleases": "Αποτυχία ανάκτησης εκδόσεων. Ελέγξτε τη σύνδεσή σας στο διαδίκτυο."
     },
     "common": {
         "close": "Κοντά",
@@ -168,7 +178,10 @@
         "criticalInit": "Παρουσιάστηκε ένα κρίσιμο σφάλμα κατά την προετοιμασία.",
         "networkError": "Σφάλμα σύνδεσης δικτύου. Ελέγξτε τη σύνδεσή σας στο Διαδίκτυο.",
         "serverError": "Σφάλμα διακομιστή ({status}): Αποτυχία φόρτωσης περιεχομένου.",
-        "contentLoadFailed": "Αποτυχία φόρτωσης περιεχομένου. Δοκιμάστε ξανά αργότερα."
+        "contentLoadFailed": "Αποτυχία φόρτωσης περιεχομένου. Δοκιμάστε ξανά αργότερα.",
+        "pageTitle": "Σφάλμα φόρτωσης σελίδας",
+        "retry": "Επανάληψη",
+        "goHome": "Αρχική"
     },
     "splash": {
         "loadingStatus": "Βελτιστοποίηση εμπειρίας χρήστη...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "Η σύνδεση χάθηκε",
         "connectedTitle": "Συνδεδεμένος",
         "slowConnectionTitle": "Αργή σύνδεση",
-        "storageFull": "Συμπληρώθηκε το όριο αποθήκευσης. Οι αλλαγές δεν μπορούν να αποθηκευτούν μόνιμα.",
-        "storageFullTitle": "Πλήρης αποθήκευση"
+        "storageFull": "Εξαντλήθηκε το όριο αποθήκευσης. Οι αλλαγές δεν μπορούν να αποθηκευτούν μόνιμα.",
+        "storageFullTitle": "Πλήρης χώρος αποθήκευσης"
     },
     "search": {
         "title": "Ερευνα",
@@ -238,10 +251,11 @@
         "stop": "Στάση",
         "moreInfo": "Περισσότερες Πληροφορίες",
         "nextEpisode": "Επόμενο Επεισόδιο",
-        "selectServer": "Επιλέξτε Διακομιστής",
+        "selectServer": "Επιλογή διακομιστή",
         "loading": "Φόρτωση...",
         "statusTitle": "Ο παίκτης αργεί πολύ",
-        "statusMessage": "Ο πάροχος του διαμορφωμένου προγράμματος αναπαραγωγής δεν απάντησε ακόμη. Μπορείτε να επιστρέψετε ή να αλλάξετε το τελικό σημείο του προγράμματος αναπαραγωγής στις Ρυθμίσεις."
+        "statusMessage": "Ο πάροχος του διαμορφωμένου προγράμματος αναπαραγωγής δεν απάντησε ακόμη. Μπορείτε να επιστρέψετε ή να αλλάξετε το τελικό σημείο του προγράμματος αναπαραγωγής στις Ρυθμίσεις.",
+        "tracksTitle": "Ήχος & Υπότιτλοι"
     },
     "playlists": {
         "title": "Οι λίστες αναπαραγωγής μου",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "Αυτή η λίστα αναπαραγωγής είναι κενή.",
         "playAll": "Παίξτε Όλα",
         "editInfo": "Επεξεργασία πληροφοριών",
-        "removeItemTitle": "Αφαίρεση αντικειμένου",
-        "removeItemMessage": "Είστε βέβαιοι ότι θέλετε να αφαιρέσετε αυτό το στοιχείο από τη λίστα αναπαραγωγής;",
-        "moveItem": "Μετακίνηση αντικειμένου",
-        "deleteItem": "Αφαίρεση αντικειμένου",
+        "removeItemTitle": "Αφαίρεση στοιχείου",
+        "removeItemMessage": "Είστε βέβαιοι ότι θέλετε να καταργήσετε αυτό το στοιχείο από τη λίστα αναπαραγωγής;",
+        "moveItem": "Μετακίνηση στοιχείου",
+        "deleteItem": "Αφαίρεση στοιχείου",
         "description_default": "Η προσωπική σας συλλογή από αγαπημένες ταινίες και εκπομπές.",
         "create_new": "Δημιουργία νέας λίστας αναπαραγωγής",
         "moveUp": "Μετακίνηση αντικειμένου επάνω",
@@ -415,12 +429,12 @@
     },
     "collections": {
         "title": "Συλλογές",
-        "searchPlaceholder": "Αναζήτηση συλλογών (π.χ. Χάρι Πότερ, Marvel...)",
+        "searchPlaceholder": "Αναζήτηση συλλογών (π.χ. Harry Potter, Marvel...)",
         "popular": "Δημοφιλείς συλλογές",
         "noResults": "Δεν βρέθηκαν συλλογές",
         "films": "{count} ταινίες",
         "saveToPlaylist": "Αποθήκευση ως λίστα αναπαραγωγής",
-        "savedSuccess": "Η συλλογή αποθηκεύτηκε ως playlist!",
+        "savedSuccess": "Η συλλογή αποθηκεύτηκε ως λίστα αναπαραγωγής!",
         "alreadySaved": "Αυτή η συλλογή είναι ήδη αποθηκευμένη"
     },
     "details": {
@@ -450,7 +464,8 @@
         "synopsis": "Σύνοψη",
         "castAndCrew": "Cast & Crew",
         "noExtras": "Δεν υπάρχουν πρόσθετα ή τρέιλερ διαθέσιμα.",
-        "noCast": "Δεν υπάρχουν διαθέσιμες πληροφορίες για το καστ."
+        "noCast": "Δεν υπάρχουν διαθέσιμες πληροφορίες για το καστ.",
+        "tabSeasons": "Επεισόδια"
     },
     "livetv": {
         "title": "Ζωντανή τηλεόραση",
@@ -566,6 +581,6 @@
         "confirm": "Εξοδος",
         "cancel": "Ματαίωση"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Απαιτείται άδεια για την εγκατάσταση ενημερώσεων. Ενεργοποιήστε στις ρυθμίσεις και πατήστε Επανάληψη.",
+    "update_retry": "Επανάληψη"
 }

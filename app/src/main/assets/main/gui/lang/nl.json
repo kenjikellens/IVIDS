@@ -12,7 +12,8 @@
         "playlists": "Afspeellijsten",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Onlangs bekeken"
     },
     "account": {
         "title": "Account",
@@ -101,7 +102,7 @@
         "addM3uPlaylist": "Afspeellijst toevoegen",
         "playlistsCount": "{count} Afspeellijsten",
         "serversCount": "{count} Servers",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Selecteer kleur",
         "playerProvider": "Speler provider",
         "playerProviderDesc": "Configureer het embed-eindpunt dat wordt gebruikt door de film- en serie-speler",
         "whatsNew": "Wat is er nieuw:",
@@ -114,16 +115,16 @@
         "adultContentOn": "Aan",
         "adultContentOff": "Uit",
         "adultContentWarning": "Waarschuwing: Als u dit inschakelt, wordt er expliciete inhoud voor volwassenen getoond. Deze instelling wordt alleen aanbevolen voor gebruikers van 18 jaar en ouder.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
+        "dataSaver": "Besparingsmodus / Langzaam internet",
+        "dataSaverDesc": "Laad foto's van lagere kwaliteit en verminder netwerkactiviteit",
+        "devConsoleTitle": "Ontwikkelaarsconsole",
+        "devConsoleDesc": "Verken geavanceerde branch-builds en release-implementaties",
+        "devOfficialReleases": "Officiële releases",
+        "devBleedingEdge": "Experimentele build",
+        "installed": "Geïnstalleerd",
+        "activeTag": "Actief",
         "noUpdateDesc": "U gebruikt de nieuwste versie van IVIDS.",
-        "updateFoundDesc": "Er is een nieuwe versie van IVIDS beschikbaar om te installeren.",
+        "updateFoundDesc": "Er is een nieuwe versie van IVIDS gereed om te installeren.",
         "updateErrorDesc": "Kan updateserver niet bereiken. Controleer uw verbinding.",
         "refresh": "Vernieuwen",
         "viewChangelog": "Bekijk wijzigingen",
@@ -143,7 +144,16 @@
         "delay100": "100ms (Standaard)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Bekijk app-versie, systeeminformatie en wijzigingen"
+        "appInfoDesc": "Bekijk app-versie, systeeminformatie en wijzigingen",
+        "colors": {
+            "green": "Groen",
+            "red": "Rood",
+            "blue": "Blauw",
+            "purple": "Paars",
+            "orange": "Oranje",
+            "yellow": "Geel"
+        },
+        "failedToFetchReleases": "Kon releases niet ophalen. Controleer uw internetverbinding."
     },
     "common": {
         "close": "Sluiten",
@@ -169,7 +179,10 @@
         "criticalInit": "Er is een kritieke fout opgetreden tijdens de initialisatie.",
         "networkError": "Netwerkverbindingsfout. Controleer uw internetverbinding.",
         "serverError": "Serverfout ({status}): Laden van inhoud mislukt.",
-        "contentLoadFailed": "Laden van inhoud mislukt. Probeer het later opnieuw."
+        "contentLoadFailed": "Laden van inhoud mislukt. Probeer het later opnieuw.",
+        "pageTitle": "Fout bij laden van pagina",
+        "retry": "Opnieuw proberen",
+        "goHome": "Naar startpagina"
     },
     "splash": {
         "loadingStatus": "Gebruikerservaring optimaliseren...",
@@ -181,8 +194,8 @@
         "connectionLostTitle": "Verbinding verbroken",
         "connectedTitle": "Verbonden",
         "slowConnectionTitle": "Trage verbinding",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Opslaglimiet bereikt. Wijzigingen kunnen niet permanent worden opgeslagen.",
+        "storageFullTitle": "Opslag vol"
     },
     "search": {
         "title": "Zoeken",
@@ -239,10 +252,11 @@
         "stop": "Stoppen",
         "moreInfo": "Meer Info",
         "nextEpisode": "Volgende Aflevering",
-        "selectServer": "Selecteer Server",
+        "selectServer": "Selecteer server",
         "loading": "Laden...",
         "statusTitle": "Speler duurt te lang",
-        "statusMessage": "De geconfigureerde spelerprovider heeft nog niet gereageerd. U kunt teruggaan of het speler-eindpunt wijzigen in Instellingen."
+        "statusMessage": "De geconfigureerde spelerprovider heeft nog niet gereageerd. U kunt teruggaan of het speler-eindpunt wijzigen in Instellingen.",
+        "tracksTitle": "Audio & Ondertitels"
     },
     "playlists": {
         "title": "Mijn Afspeellijsten",
@@ -252,7 +266,7 @@
         "empty": "Geen afspeellijsten gevonden. Maak er een!",
         "items": "Afspeellijst items",
         "delete": "Verwijder Afspeellijst",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Afspeellijst verwijderen",
         "deleteConfirmMessage": "Weet u zeker dat u deze afspeellijst wilt verwijderen?",
         "deleteConfirmMessageNamed": "Weet u zeker dat u wilt verwijderen",
         "cancel": "Annuleren",
@@ -263,10 +277,10 @@
         "playAll": "Alles afspelen",
         "editInfo": "Info bewerken",
         "type_label": "Afspeellijst",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Item verwijderen",
+        "removeItemMessage": "Weet u zeker dat u dit item uit de afspeellijst wilt verwijderen?",
+        "moveItem": "Item verplaatsen",
+        "deleteItem": "Item verwijderen",
         "description_default": "Je persoonlijke verzameling van favoriete films en series.",
         "create_new": "Nieuwe afspeellijst maken",
         "moveUp": "Item omhoog verplaatsen",
@@ -441,7 +455,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "Geen extra's of trailers beschikbaar.",
-        "noCast": "Geen castinformatie beschikbaar."
+        "noCast": "Geen castinformatie beschikbaar.",
+        "tabSeasons": "Afleveringen"
     },
     "livetv": {
         "title": "Live TV",
@@ -558,15 +573,15 @@
         "successLoggedIn": "Welkom terug, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Collecties",
+        "searchPlaceholder": "Zoek collecties (bijv. Harry Potter, Marvel...)",
+        "popular": "Populaire collecties",
+        "noResults": "Geen collecties gevonden",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Opslaan als afspeellijst",
+        "savedSuccess": "Collectie opgeslagen als afspeellijst!",
+        "alreadySaved": "Deze collectie is al opgeslagen"
     },
-    "update_status_permission_required": "Machtiging vereist om updates te installeren. Schakel dit in bij instellingen en druk op Opnieuw.",
+    "update_status_permission_required": "Machtiging vereist om updates te installeren. Schakel dit in bij instellingen en tik op Opnieuw.",
     "update_retry": "Opnieuw"
 }

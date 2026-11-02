@@ -12,7 +12,8 @@
         "playlists": "Плейлисти",
         "account": "акаунт",
         "livetv": "Телевизия на живо",
-        "collections": "Колекции"
+        "collections": "Колекции",
+        "recently_watched": "Наскоро гледани"
     },
     "account": {
         "title": "акаунт",
@@ -108,21 +109,21 @@
         "branch": "Клон",
         "contentSettings": "Съдържание",
         "adultContent": "Съдържание за възрастни",
-        "adultContentDesc": "Показване на съдържание за възрастни в резултатите от сърфирането и търсенето",
-        "adultContentOn": "включено",
-        "adultContentOff": "Изкл",
-        "adultContentWarning": "Предупреждение: Активирането на това ще покаже изрично съдържание за възрастни. Тази настройка се препоръчва само за потребители над 18 години.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "adultContentDesc": "Показване на съдържание за възрастни при преглед и в резултатите от търсенето",
+        "adultContentOn": "Вкл.",
+        "adultContentOff": "Изкл.",
+        "adultContentWarning": "Предупреждение: Активирането ще показва съдържание за възрастни. Препоръчва се само за потребители над 18 години.",
+        "dataSaver": "Пестене на данни / Бавен интернет",
+        "dataSaverDesc": "Зареждане на снимки с по-ниско качество и намаляване на трафика",
+        "devConsoleTitle": "Конзола за разработчици",
+        "devConsoleDesc": "Разглеждане на експериментални компилации на клонове и внедрявания",
+        "devOfficialReleases": "Официални версии",
+        "devBleedingEdge": "Експериментална версия",
+        "installed": "Инсталирано",
+        "activeTag": "Активен",
+        "noUpdateDesc": "Използвате най-новата версия на IVIDS.",
+        "updateFoundDesc": "Нова версия на IVIDS е готова за инсталиране.",
+        "updateErrorDesc": "Няма връзка със сървъра за актуализации. Проверете връзката си.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (По подразбиране)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Преглед на версията на приложението, системна информация и дневник на промените"
+        "appInfoDesc": "Преглед на версията на приложението, системна информация и дневник на промените",
+        "colors": {
+            "green": "Зелен",
+            "red": "Червен",
+            "blue": "Син",
+            "purple": "Лилав",
+            "orange": "Оранжев",
+            "yellow": "Жълт"
+        },
+        "failedToFetchReleases": "Неуспешно изтегляне на версиите. Моля, проверете връзката си с интернет."
     },
     "common": {
         "close": "затвори",
@@ -168,7 +178,10 @@
         "criticalInit": "Възникна критична грешка по време на инициализацията.",
         "networkError": "Грешка в мрежовата връзка. Моля, проверете вашата интернет връзка.",
         "serverError": "Грешка в сървъра ({статус}): Неуспешно зареждане на съдържание.",
-        "contentLoadFailed": "Failed to load content. Моля, опитайте отново по-късно."
+        "contentLoadFailed": "Failed to load content. Моля, опитайте отново по-късно.",
+        "pageTitle": "Грешка при зареждане на страницата",
+        "retry": "Опитай пак",
+        "goHome": "Към началото"
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",
@@ -180,7 +193,7 @@
         "connectionLostTitle": "Загубена връзка",
         "connectedTitle": "Свързан",
         "slowConnectionTitle": "Бавна връзка",
-        "storageFull": "Лимитът на хранилището е достигнат. Промените не могат да бъдат запазени за постоянно.",
+        "storageFull": "Достигнат лимит на хранилището. Промените не могат да бъдат запазени за постоянно.",
         "storageFullTitle": "Хранилището е пълно"
     },
     "search": {
@@ -238,10 +251,11 @@
         "stop": "Спрете",
         "moreInfo": "Повече информация",
         "nextEpisode": "Следващ епизод",
-        "selectServer": "Изберете Сървър",
+        "selectServer": "Изберете сървър",
         "loading": "Зареждане...",
         "statusTitle": "Играчът отнема твърде много време",
-        "statusMessage": "Конфигурираният доставчик на плейър все още не е отговорил. Можете да се върнете назад или да промените крайната точка на плейъра в Настройки."
+        "statusMessage": "Конфигурираният доставчик на плейър все още не е отговорил. Можете да се върнете назад или да промените крайната точка на плейъра в Настройки.",
+        "tracksTitle": "Аудио и субтитри"
     },
     "playlists": {
         "title": "Моите плейлисти",
@@ -252,7 +266,7 @@
         "items": "Елементи от плейлист",
         "type_label": "Плейлист",
         "delete": "Изтриване на плейлист",
-        "deleteConfirmTitle": "Изтриване на плейлист",
+        "deleteConfirmTitle": "Изтриване на плейлистата",
         "deleteConfirmMessage": "Сигурни ли сте, че искате да изтриете този плейлист?",
         "deleteConfirmMessageNamed": "Сигурни ли сте, че искате да изтриете",
         "cancel": "Отказ",
@@ -263,7 +277,7 @@
         "playAll": "Възпроизвеждане на всички",
         "editInfo": "Редактиране на информация",
         "removeItemTitle": "Премахване на елемент",
-        "removeItemMessage": "Сигурни ли сте, че искате да премахнете този елемент от плейлиста?",
+        "removeItemMessage": "Сигурни ли сте, че искате да премахнете този елемент от плейлистата?",
         "moveItem": "Преместване на елемент",
         "deleteItem": "Премахване на елемент",
         "description_default": "Вашата лична колекция от любими филми и предавания.",
@@ -415,12 +429,12 @@
     },
     "collections": {
         "title": "Колекции",
-        "searchPlaceholder": "Търсене в колекции (напр. Хари Потър, Marvel...)",
+        "searchPlaceholder": "Търсене на колекции (напр. Хари Потър, Марвел...)",
         "popular": "Популярни колекции",
         "noResults": "Няма намерени колекции",
         "films": "{count} филма",
-        "saveToPlaylist": "Запазване като плейлист",
-        "savedSuccess": "Колекцията е запазена като плейлист!",
+        "saveToPlaylist": "Запази като плейлиста",
+        "savedSuccess": "Колекцията е запазена като плейлиста!",
         "alreadySaved": "Тази колекция вече е запазена"
     },
     "details": {
@@ -450,7 +464,8 @@
         "synopsis": "Синопсис",
         "castAndCrew": "Актьори и екип",
         "noExtras": "Няма налични екстри или трейлъри.",
-        "noCast": "Няма налична информация за актьорския състав."
+        "noCast": "Няма налична информация за актьорския състав.",
+        "tabSeasons": "Епизоди"
     },
     "livetv": {
         "title": "Телевизия на живо",
@@ -566,6 +581,6 @@
         "confirm": "Изход",
         "cancel": "Отказ"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Изисква се разрешение за инсталиране на актуализации. Разрешете в настройките и натиснете Опитай пак.",
+    "update_retry": "Опитай пак"
 }

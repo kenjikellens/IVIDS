@@ -12,7 +12,8 @@
         "playlists": "רשימות השמעה",
         "account": "חשבון",
         "livetv": "טלוויזיה בשידור חי",
-        "collections": "אוספים"
+        "collections": "אוספים",
+        "recently_watched": "נצפו לאחרונה"
     },
     "account": {
         "title": "חשבון",
@@ -82,9 +83,9 @@
         },
         "selectVersion": "בחר גרסה",
         "devConsoleTitle": "קונסולת מפתחים",
-        "devConsoleDesc": "חקור בניית ענפים בקצה המדמם ופריסות שחרור",
-        "devOfficialReleases": "מהדורות רשמיות",
-        "devBleedingEdge": "Bleeding Edge",
+        "devConsoleDesc": "חקור גרסאות ניסיוניות של ענפים ופריסות מהדורה",
+        "devOfficialReleases": "גרסאות רשמיות",
+        "devBleedingEdge": "גרסה ניסיונית",
         "installed": "מותקן",
         "activeTag": "פעיל",
         "branchBuild": "בניית סניפים חיה",
@@ -114,15 +115,15 @@
         "branch": "סניף",
         "contentSettings": "תוכן",
         "adultContent": "תוכן למבוגרים",
-        "adultContentDesc": "הצג תוכן למבוגרים בתוצאות הגלישה והחיפוש",
-        "adultContentOn": "פועל",
+        "adultContentDesc": "הצג תוכן למבוגרים בעיון ובתוצאות חיפוש",
+        "adultContentOn": "מופעל",
         "adultContentOff": "כבוי",
-        "adultContentWarning": "אזהרה: הפעלה זו תציג תוכן למבוגרים בלבד. הגדרה זו מומלצת רק למשתמשים בני 18 ומעלה.",
-        "dataSaver": "חוסך נתונים / אינטרנט איטי",
-        "dataSaverDesc": "טען תמונות באיכות נמוכה יותר והפחת את פעילות הרשת",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "adultContentWarning": "אזהרה: הפעלה תציג תוכן מפורש למבוגרים. הגדרה זו מומלצת למשתמשים בני 18 ומעלה בלבד.",
+        "dataSaver": "חיסכון בנתונים / אינטרנט איטי",
+        "dataSaverDesc": "טען תמונות באיכות נמוכה יותר והפחת את עומס הרשת",
+        "noUpdateDesc": "אתה משתמש בגרסה העדכנית ביותר של IVIDS.",
+        "updateFoundDesc": "גרסה חדשה של IVIDS מוכנה להתקנה.",
+        "updateErrorDesc": "לא ניתן להתחבר לשרת העדכונים. בדוק את החיבור שלך.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (ברירת מחדל)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "הצג גרסת אפליקציה, פרטי מערכת ויומן שינויים"
+        "appInfoDesc": "הצג גרסת אפליקציה, פרטי מערכת ויומן שינויים",
+        "colors": {
+            "green": "ירוק",
+            "red": "אדום",
+            "blue": "כחול",
+            "purple": "סגול",
+            "orange": "כתום",
+            "yellow": "צהוב"
+        },
+        "failedToFetchReleases": "נכשל באחזור גרסאות. אנא בדוק את חיבור האינטרנט שלך."
     },
     "common": {
         "close": "סגור",
@@ -168,7 +178,10 @@
         "criticalInit": "אירעה שגיאה קריטית במהלך האתחול.",
         "networkError": "שגיאת חיבור לרשת. אנא בדוק את חיבור האינטרנט שלך.",
         "serverError": "שגיאת שרת ({status}): טעינת התוכן נכשלה.",
-        "contentLoadFailed": "טעינת התוכן נכשלה. אנא נסה שוב מאוחר יותר."
+        "contentLoadFailed": "טעינת התוכן נכשלה. אנא נסה שוב מאוחר יותר.",
+        "pageTitle": "שגיאה בטעינת הדף",
+        "retry": "נסה שוב",
+        "goHome": "לדף הבית"
     },
     "splash": {
         "loadingStatus": "מיטוב חווית משתמש...",
@@ -180,7 +193,7 @@
         "connectionLostTitle": "החיבור אבד",
         "connectedTitle": "מחובר",
         "slowConnectionTitle": "חיבור איטי",
-        "storageFull": "הגעת למגבלת האחסון. לא ניתן לשמור שינויים לצמיתות.",
+        "storageFull": "מגבלת האחסון הושגה. לא ניתן לשמור שינויים לצמיתות.",
         "storageFullTitle": "אחסון מלא"
     },
     "search": {
@@ -241,7 +254,8 @@
         "selectServer": "בחר שרת",
         "loading": "טוען...",
         "statusTitle": "לשחקן לוקח יותר מדי זמן",
-        "statusMessage": "ספק הנגן שהוגדר לא הגיב עדיין. אתה יכול לחזור אחורה או לשנות את נקודת הקצה של הנגן בהגדרות."
+        "statusMessage": "ספק הנגן שהוגדר לא הגיב עדיין. אתה יכול לחזור אחורה או לשנות את נקודת הקצה של הנגן בהגדרות.",
+        "tracksTitle": "שמע וכתוביות"
     },
     "playlists": {
         "title": "הפלייליסטים שלי",
@@ -252,7 +266,7 @@
         "items": "פריטי רשימת השמעה",
         "type_label": "רשימת השמעה",
         "delete": "מחק רשימת השמעה",
-        "deleteConfirmTitle": "מחק רשימת השמעה",
+        "deleteConfirmTitle": "מחק פלייליסט",
         "deleteConfirmMessage": "האם אתה בטוח שברצונך למחוק את הפלייליסט הזה?",
         "deleteConfirmMessageNamed": "האם אתה בטוח שאתה רוצה למחוק",
         "cancel": "בטל",
@@ -263,7 +277,7 @@
         "playAll": "שחק הכל",
         "editInfo": "ערוך מידע",
         "removeItemTitle": "הסר פריט",
-        "removeItemMessage": "האם אתה בטוח שברצונך להסיר פריט זה מרשימת ההשמעה?",
+        "removeItemMessage": "האם אתה בטוח שברצונך להסיר פריט זה מהפלייליסט?",
         "moveItem": "העבר פריט",
         "deleteItem": "הסר פריט",
         "description_default": "האוסף האישי שלך של סרטים ותוכניות אהובים.",
@@ -415,13 +429,13 @@
     },
     "collections": {
         "title": "אוספים",
-        "searchPlaceholder": "חיפוש באוספים (למשל הארי פוטר, מארוול...)",
+        "searchPlaceholder": "חיפוש אוספים (למשל הארי פוטר, מארוול...)",
         "popular": "אוספים פופולריים",
         "noResults": "לא נמצאו אוספים",
         "films": "{count} סרטים",
         "saveToPlaylist": "שמור כפלייליסט",
         "savedSuccess": "האוסף נשמר כפלייליסט!",
-        "alreadySaved": "האוסף הזה כבר שמור"
+        "alreadySaved": "אוסף זה כבר שמור"
     },
     "details": {
         "play": "שחק",
@@ -450,7 +464,8 @@
         "synopsis": "תקציר",
         "castAndCrew": "שחקנים וצוות",
         "noExtras": "אין תוספות או נגררים זמינים.",
-        "noCast": "אין מידע זמין על השחקנים."
+        "noCast": "אין מידע זמין על השחקנים.",
+        "tabSeasons": "פרקים"
     },
     "livetv": {
         "title": "טלוויזיה בשידור חי",

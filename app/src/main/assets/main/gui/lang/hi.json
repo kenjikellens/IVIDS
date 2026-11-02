@@ -12,7 +12,8 @@
         "playlists": "प्लेलिस्ट",
         "account": "अकाउंट",
         "livetv": "लाइव टीवी",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "हाल ही में देखा गया"
     },
     "account": {
         "title": "अकाउंट",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} सर्वर",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "रंग चुनें",
         "whatsNew": "नया क्या है:",
         "later": "बाद में",
         "changes": "Changes",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "सामग्री",
+        "adultContent": "वयस्क सामग्री",
+        "adultContentDesc": "ब्राउज़िंग और खोज परिणामों में वयस्क सामग्री दिखाएं",
+        "adultContentOn": "चालू",
+        "adultContentOff": "बंद",
+        "adultContentWarning": "चेतावनी: इसे सक्षम करने पर स्पष्ट वयस्क सामग्री दिखाई देगी। यह सेटिंग केवल 18+ आयु वर्ग के उपयोगकर्ताओं के लिए अनुशंसित है।",
+        "dataSaver": "डेटा सेवर / धीमा इंटरनेट",
+        "dataSaverDesc": "कम गुणवत्ता वाले फ़ोटो लोड करें और नेटवर्क गतिविधि कम करें",
+        "devConsoleTitle": "डेवलपर कंसोल",
+        "devConsoleDesc": "अग्रणी शाखा निर्माण और रिलीज़ परिनियोजन देखें",
+        "devOfficialReleases": "आधिकारिक रिलीज़",
+        "devBleedingEdge": "प्रायोगिक संस्करण",
+        "installed": "स्थापित",
+        "activeTag": "सक्रिय",
+        "noUpdateDesc": "आप IVIDS का नवीनतम संस्करण चला रहे हैं।",
+        "updateFoundDesc": "IVIDS का एक नया संस्करण स्थापित करने के लिए तैयार है।",
+        "updateErrorDesc": "अपडेट सर्वर तक नहीं पहुंचा जा सका। अपना कनेक्शन जांचें।",
         "refresh": "Refresh",
         "viewChangelog": "View Changelog",
         "appPlatform": "Platform",
@@ -148,7 +149,16 @@
         "delay100": "100ms (डिफ़ॉल्ट)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "ऐप संस्करण, सिस्टम जानकारी और परिवर्तन लॉग देखें"
+        "appInfoDesc": "ऐप संस्करण, सिस्टम जानकारी और परिवर्तन लॉग देखें",
+        "colors": {
+            "green": "हरा",
+            "red": "लाल",
+            "blue": "नीला",
+            "purple": "बैंगनी",
+            "orange": "नारंगी",
+            "yellow": "पीला"
+        },
+        "failedToFetchReleases": "रिलीज़ प्राप्त करने में विफल। कृपया अपना इंटरनेट कनेक्शन जांचें।"
     },
     "common": {
         "close": "बंद करें",
@@ -174,7 +184,10 @@
         "criticalInit": "इनिशियलाइज़ेशन के दौरान एक गंभीर त्रुटि हुई।",
         "networkError": "नेटवर्क कनेक्शन त्रुटि। कृपया अपना इंटरनेट कनेक्शन जांचें।",
         "serverError": "सर्वर त्रुटि ({status}): सामग्री लोड करने में विफल।",
-        "contentLoadFailed": "सामग्री लोड करने में विफल। कृपया बाद में पुनः प्रयास करें।"
+        "contentLoadFailed": "सामग्री लोड करने में विफल। कृपया बाद में पुनः प्रयास करें।",
+        "pageTitle": "पेज लोड करने में त्रुटि",
+        "retry": "पुनः प्रयास करें",
+        "goHome": "होम पर जाएं"
     },
     "splash": {
         "loadingStatus": "अनुभव को ऑप्टिमाइज़ कर रहे हैं...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "कनेक्शन टूट गया",
         "connectedTitle": "कनेक्टेड",
         "slowConnectionTitle": "धीमा कनेक्शन",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "संग्रहण सीमा समाप्त हो गई है। परिवर्तन स्थायी रूप से सहेजे नहीं जा सकते।",
+        "storageFullTitle": "संग्रहण भर गया"
     },
     "search": {
         "title": "खोजें",
@@ -247,7 +260,8 @@
         "loading": "लोड हो रहा है...",
         "statusTitle": "प्लेयर बहुत अधिक समय ले रहा है",
         "statusMessage": "कॉन्फ़िगर किया गया प्लेयर प्रदाता अभी तक प्रतिक्रिया नहीं दे रहा है। आप वापस जा सकते हैं या सेटिंग्स में प्लेयर एंडपॉइंट बदल सकते हैं।",
-        "selectServer": "Select Server"
+        "selectServer": "सर्वर चुनें",
+        "tracksTitle": "ऑडियो और उपशीर्षक"
     },
     "playlists": {
         "title": "मेरी प्लेलिस्ट",
@@ -257,7 +271,7 @@
         "empty": "कोई प्लेलिस्ट नहीं मिली। एक बनाएं!",
         "items": "प्लेलिस्ट आइटम",
         "delete": "प्लेलिस्ट हटाएं",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "प्लेलिस्ट हटाएं",
         "deleteConfirmMessage": "क्या आप वाकई इस प्लेलिस्ट को हटाना चाहते हैं?",
         "deleteConfirmMessageNamed": "क्या आप वाकई इसे हटाना चाहते हैं",
         "cancel": "रद्द करें",
@@ -268,10 +282,10 @@
         "playAll": "सब चलाएं",
         "editInfo": "जानकारी संपादित करें",
         "type_label": "प्लेलिस्ट",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "आइटम हटाएं",
+        "removeItemMessage": "क्या आप वाकई इस आइटम को प्लेलिस्ट से हटाना चाहते हैं?",
+        "moveItem": "आइटम स्थानांतरित करें",
+        "deleteItem": "आइटम हटाएं",
         "description_default": "पसंदीदा फिल्मों और शो का आपका निजी संग्रह।",
         "create_new": "नई प्लेलिस्ट बनाएं",
         "moveUp": "आइटम को ऊपर ले जाएं",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "एपیسোড"
     },
     "livetv": {
         "title": "लाइव टीवी",
@@ -563,15 +578,15 @@
         "successLoggedIn": "पुनः स्वागत है, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "संग्रह",
+        "searchPlaceholder": "संग्रह खोजें (उदा. हैरी पॉटर, मार्वल...)",
+        "popular": "लोकप्रिय संग्रह",
+        "noResults": "कोई संग्रह नहीं मिला",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "प्लेलिस्ट के रूप में सहेजें",
+        "savedSuccess": "संग्रह प्लेलिस्ट के रूप में सहेजा गया!",
+        "alreadySaved": "यह संग्रह पहले से सहेजा गया है"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "अपडेट स्थापित करने के लिए अनुमति आवश्यक है। सेटिंग्स में सक्षम करें और पुनः प्रयास पर टैप करें।",
+    "update_retry": "पुनः प्रयास"
 }

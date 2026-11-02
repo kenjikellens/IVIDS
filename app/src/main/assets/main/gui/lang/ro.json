@@ -12,7 +12,8 @@
         "playlists": "Liste de redare",
         "account": "Cont",
         "livetv": "TV în direct",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Vizionat recent"
     },
     "account": {
         "title": "Cont",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Servere",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Selectați culoarea",
         "whatsNew": "Ce este nou:",
         "later": "Mai târziu",
         "changes": "Changes",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Conținut",
+        "adultContent": "Conținut pentru adulți",
+        "adultContentDesc": "Afișează conținutul pentru adulți în navigare și în rezultatele căutării",
+        "adultContentOn": "Activat",
+        "adultContentOff": "Dezactivat",
+        "adultContentWarning": "Avertisment: Activarea acestei opțiuni va afișa conținut explicit pentru adulți. Recomandat doar utilizatorilor peste 18 ani.",
+        "dataSaver": "Economizor de date / Conexiune lentă",
+        "dataSaverDesc": "Încarcă fotografii de calitate mai redusă și reduce activitatea de rețea",
+        "devConsoleTitle": "Consola dezvoltatorului",
+        "devConsoleDesc": "Explorează versiunile experimentale de ramură și implementările",
+        "devOfficialReleases": "Versiuni oficiale",
+        "devBleedingEdge": "Versiune experimentală",
+        "installed": "Instalat",
+        "activeTag": "Activ",
+        "noUpdateDesc": "Rulați cea mai recentă versiune de IVIDS.",
+        "updateFoundDesc": "O nouă versiune de IVIDS este gata de instalare.",
+        "updateErrorDesc": "Nu s-a putut contacta serverul de actualizare. Verificați conexiunea.",
         "refresh": "Refresh",
         "viewChangelog": "View Changelog",
         "appPlatform": "Platform",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Implicit)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Vizualizați versiunea aplicației, informațiile despre sistem și jurnalul de modificări"
+        "appInfoDesc": "Vizualizați versiunea aplicației, informațiile despre sistem și jurnalul de modificări",
+        "colors": {
+            "green": "Verde",
+            "red": "Roșu",
+            "blue": "Albastru",
+            "purple": "Violet",
+            "orange": "Portocaliu",
+            "yellow": "Galben"
+        },
+        "failedToFetchReleases": "Eșec la preluarea versiunilor. Vă rugăm să verificați conexiunea la internet."
     },
     "common": {
         "close": "Închide",
@@ -174,7 +184,10 @@
         "criticalInit": "A apărut o eroare critică în timpul inițializării.",
         "networkError": "Eroare de conexiune la rețea. Vă rugăm să verificați conexiunea la internet.",
         "serverError": "Eroare de server ({status}): Eșec la încărcarea conținutului.",
-        "contentLoadFailed": "Eșec la încărcarea conținutului. Vă rugăm să încercați din nou mai târziu."
+        "contentLoadFailed": "Eșec la încărcarea conținutului. Vă rugăm să încercați din nou mai târziu.",
+        "pageTitle": "Eroare la încărcarea paginii",
+        "retry": "Reîncearcă",
+        "goHome": "Mergi Acasă"
     },
     "splash": {
         "loadingStatus": "Se optimizează experiența utilizatorului...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Conexiune pierdută",
         "connectedTitle": "Conectat",
         "slowConnectionTitle": "Conexiune lentă",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Limita de stocare a fost atinsă. Modificările nu pot fi salvate permanent.",
+        "storageFullTitle": "Stocare plină"
     },
     "search": {
         "title": "Căutare",
@@ -247,7 +260,8 @@
         "loading": "Se încarcă...",
         "statusTitle": "Redarea durează prea mult",
         "statusMessage": "Furnizorul de redare configurat nu a răspuns încă. Puteți reveni sau modifica adresa de redare în Setări.",
-        "selectServer": "Select Server"
+        "selectServer": "Selectați serverul",
+        "tracksTitle": "Audio și subtitrări"
     },
     "playlists": {
         "title": "Listele mele",
@@ -257,7 +271,7 @@
         "empty": "Nu s-au găsit liste. Creează una!",
         "items": "Elemente playlist",
         "delete": "Șterge lista",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Șterge lista de redare",
         "deleteConfirmMessage": "Ești sigur că vrei să ștergi această listă?",
         "deleteConfirmMessageNamed": "Ești sigur că vrei să ștergi",
         "cancel": "Anulează",
@@ -268,10 +282,10 @@
         "playAll": "Redă tot",
         "editInfo": "Editează informațiile",
         "type_label": "Playlist",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Elimină elementul",
+        "removeItemMessage": "Sigur doriți să eliminați acest element din lista de redare?",
+        "moveItem": "Mută elementul",
+        "deleteItem": "Elimină elementul",
         "description_default": "Colecția ta personală de filme și emisiuni preferate.",
         "create_new": "Creați o listă de redare nouă",
         "moveUp": "Mutați articolul în sus",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Episoade"
     },
     "livetv": {
         "title": "TV în direct",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Bine ai revenit, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Colecții",
+        "searchPlaceholder": "Caută colecții (ex. Harry Potter, Marvel...)",
+        "popular": "Colecții populare",
+        "noResults": "Nu s-au găsit colecții",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Salvează ca listă de redare",
+        "savedSuccess": "Colecția a fost salvată ca listă de redare!",
+        "alreadySaved": "Această colecție este deja salvată"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Permisiune necesară pentru instalarea actualizărilor. Activați în setări și atingeți Reîncearcă.",
+    "update_retry": "Reîncearcă"
 }

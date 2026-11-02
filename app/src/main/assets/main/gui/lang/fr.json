@@ -12,7 +12,8 @@
         "playlists": "Listes",
         "account": "Compte",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Récemment regardés"
     },
     "account": {
         "title": "Compte",
@@ -101,30 +102,30 @@
         "addM3uPlaylist": "Ajouter une liste",
         "playlistsCount": "{count} listes de lecture",
         "serversCount": "{count} Serveurs",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Sélectionner la couleur",
         "playerProvider": "Fournisseur de joueurs",
         "playerProviderDesc": "Configurer le point de terminaison d'intégration utilisé par le lecteur de films et de séries",
         "whatsNew": "Quoi de neuf:",
         "later": "Plus tard",
         "changes": "Modifications",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Contenu",
+        "adultContent": "Contenu adulte",
+        "adultContentDesc": "Afficher le contenu adulte dans la navigation et les résultats de recherche",
+        "adultContentOn": "Activé",
+        "adultContentOff": "Désactivé",
+        "adultContentWarning": "Avertissement : L'activation de cette option affichera du contenu adulte explicite. Ce paramètre est réservé aux utilisateurs de 18 ans et plus.",
+        "dataSaver": "Économiseur de données / Connexion lente",
+        "dataSaverDesc": "Charger des photos de qualité inférieure et réduire l'activité réseau",
+        "devConsoleTitle": "Console développeur",
+        "devConsoleDesc": "Explorer les versions préliminaires de branches et les déploiements",
+        "devOfficialReleases": "Versions officielles",
+        "devBleedingEdge": "Version expérimentale",
+        "installed": "Installé",
+        "activeTag": "Actif",
+        "noUpdateDesc": "Vous utilisez la dernière version d'IVIDS.",
+        "updateFoundDesc": "Une nouvelle version d'IVIDS est prête à être installée.",
+        "updateErrorDesc": "Impossible de joindre le serveur de mise à jour. Vérifiez votre connexion.",
         "refresh": "Actualiser",
         "viewChangelog": "Voir les modifications",
         "appPlatform": "Plateforme",
@@ -143,7 +144,16 @@
         "delay100": "100ms (Par défaut)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Voir la version de l'application, les infos système et le journal des modifications"
+        "appInfoDesc": "Voir la version de l'application, les infos système et le journal des modifications",
+        "colors": {
+            "green": "Vert",
+            "red": "Rouge",
+            "blue": "Bleu",
+            "purple": "Violet",
+            "orange": "Orange",
+            "yellow": "Jaune"
+        },
+        "failedToFetchReleases": "Échec de la récupération des versions. Veuillez vérifier votre connexion Internet."
     },
     "common": {
         "close": "Fermer",
@@ -169,7 +179,10 @@
         "criticalInit": "Une erreur critique s'est produite lors de l'initialisation.",
         "networkError": "Erreur de connexion réseau. Veuillez vérifier votre connexion internet.",
         "serverError": "Erreur du serveur ({status}): Échec du chargement du contenu.",
-        "contentLoadFailed": "Échec du chargement du contenu. Veuillez réessayer plus tard."
+        "contentLoadFailed": "Échec du chargement du contenu. Veuillez réessayer plus tard.",
+        "pageTitle": "Erreur de chargement de la page",
+        "retry": "Réessayer",
+        "goHome": "Accueil"
     },
     "splash": {
         "loadingStatus": "Optimisation de l'expérience utilisateur...",
@@ -181,8 +194,8 @@
         "connectionLostTitle": "Connexion Perdue",
         "connectedTitle": "Connecté",
         "slowConnectionTitle": "Connexion Lente",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Limite de stockage atteinte. Les modifications ne peuvent pas être enregistrées de façon permanente.",
+        "storageFullTitle": "Stockage plein"
     },
     "search": {
         "title": "Recherche",
@@ -242,7 +255,8 @@
         "loading": "Chargement...",
         "statusTitle": "Le lecteur met trop de temps",
         "statusMessage": "Le fournisseur de lecture configuré n'a pas encore répondu. Vous pouvez revenir en arrière ou modifier le point de terminaison du lecteur dans les Paramètres.",
-        "selectServer": "Select Server"
+        "selectServer": "Sélectionner le serveur",
+        "tracksTitle": "Audio & Sous-titres"
     },
     "playlists": {
         "title": "Mes Listes",
@@ -252,7 +266,7 @@
         "empty": "Aucune liste trouvée. Créez-en une !",
         "items": "Éléments de la playlist",
         "delete": "Supprimer la liste",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Supprimer la playlist",
         "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer cette liste ?",
         "deleteConfirmMessageNamed": "Êtes-vous sûr de vouloir supprimer",
         "cancel": "Annuler",
@@ -263,10 +277,10 @@
         "playAll": "Tout lire",
         "editInfo": "Modifier les infos",
         "type_label": "Playlist",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Supprimer l'élément",
+        "removeItemMessage": "Voulez-vous vraiment retirer cet élément de la playlist ?",
+        "moveItem": "Déplacer l'élément",
+        "deleteItem": "Supprimer l'élément",
         "description_default": "Votre collection personnelle de films et d'émissions préférés.",
         "create_new": "Créer une nouvelle liste de lecture",
         "moveUp": "Déplacer l'élément vers le haut",
@@ -441,7 +455,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Distribution",
         "noExtras": "Aucun extra ou bande-annonce disponible.",
-        "noCast": "Aucune information sur les acteurs disponible."
+        "noCast": "Aucune information sur les acteurs disponible.",
+        "tabSeasons": "Épisodes"
     },
     "livetv": {
         "title": "Live TV",
@@ -559,14 +574,14 @@
     },
     "collections": {
         "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "searchPlaceholder": "Rechercher des collections (ex. Harry Potter, Marvel...)",
+        "popular": "Collections populaires",
+        "noResults": "Aucune collection trouvée",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Enregistrer comme playlist",
+        "savedSuccess": "Collection enregistrée comme playlist !",
+        "alreadySaved": "Cette collection est déjà enregistrée"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Autorisation requise pour installer les mises à jour. Activez-la dans les paramètres et appuyez sur Réessayer.",
+    "update_retry": "Réessayer"
 }

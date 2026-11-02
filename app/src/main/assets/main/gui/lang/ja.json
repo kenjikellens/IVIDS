@@ -12,7 +12,8 @@
         "playlists": "プレイリスト",
         "account": "アカウント",
         "livetv": "ライブTV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "最近視聴した項目"
     },
     "account": {
         "title": "アカウント",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} サーバー",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "色を選択",
         "whatsNew": "新着情報：",
         "later": "後で",
         "changes": "変更履歴",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "コンテンツ",
+        "adultContent": "成人向けコンテンツ",
+        "adultContentDesc": "ブラウズや検索結果に成人向けコンテンツを表示する",
+        "adultContentOn": "オン",
+        "adultContentOff": "オフ",
+        "adultContentWarning": "警告：これを有効にすると成人向けコンテンツが表示されます。18歳以上のユーザーにのみ推奨されます。",
+        "dataSaver": "データ節約 / 低速インターネット",
+        "dataSaverDesc": "低解像度の画像を読み込みネットワークトラフィックを削減する",
+        "devConsoleTitle": "開発者コンソール",
+        "devConsoleDesc": "最先端のブランチビルドとリリースデプロイを探索",
+        "devOfficialReleases": "公式リリース",
+        "devBleedingEdge": "最先端ビルド",
+        "installed": "インストール済み",
+        "activeTag": "有効",
+        "noUpdateDesc": "最新バージョンの IVIDS を使用しています。",
+        "updateFoundDesc": "IVIDS の新しいバージョンがインストール可能です。",
+        "updateErrorDesc": "更新サーバーに接続できませんでした。接続を確認してください。",
         "refresh": "更新",
         "viewChangelog": "変更履歴を見る",
         "appPlatform": "プラットフォーム",
@@ -148,7 +149,16 @@
         "delay100": "100ms (標準)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "アプリのバージョン、システム情報、更新履歴を表示"
+        "appInfoDesc": "アプリのバージョン、システム情報、更新履歴を表示",
+        "colors": {
+            "green": "緑",
+            "red": "赤",
+            "blue": "青",
+            "purple": "紫",
+            "orange": "オレンジ",
+            "yellow": "黄"
+        },
+        "failedToFetchReleases": "リリースの取得に失敗しました。インターネット接続を確認してください。"
     },
     "common": {
         "close": "閉じる",
@@ -174,7 +184,10 @@
         "criticalInit": "初期化中に重大なエラーが発生しました。",
         "networkError": "ネットワーク接続エラー。インターネット接続を確認してください。",
         "serverError": "サーバーエラー（{status}）：コンテンツの読み込みに失敗しました。",
-        "contentLoadFailed": "コンテンツの読み込みに失敗しました。後でもう一度お試しください。"
+        "contentLoadFailed": "コンテンツの読み込みに失敗しました。後でもう一度お試しください。",
+        "pageTitle": "ページの読み込みエラー",
+        "retry": "再試行",
+        "goHome": "ホームに戻る"
     },
     "splash": {
         "loadingStatus": "ユーザー体験を最適化中...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "接続が切れました",
         "connectedTitle": "接続完了",
         "slowConnectionTitle": "接続が遅いです",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "ストレージ制限に達しました。変更を完全に保存することはできません。",
+        "storageFullTitle": "ストレージがいっぱいです"
     },
     "search": {
         "title": "検索",
@@ -247,7 +260,8 @@
         "loading": "読み込み中...",
         "statusTitle": "再生プレイヤーの応答に時間がかかっています",
         "statusMessage": "設定された再生プロバイダーがまだ応答していません。戻るか、設定でプレイヤーのエンドポイントを変更できます。",
-        "selectServer": "Select Server"
+        "selectServer": "サーバーを選択",
+        "tracksTitle": "音声と字幕"
     },
     "playlists": {
         "title": "マイプレイリスト",
@@ -257,7 +271,7 @@
         "empty": "プレイリストがありません。作成しましょう！",
         "items": "プレイリストの項目",
         "delete": "プレイリストを削除",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "プレイリストを削除",
         "deleteConfirmMessage": "このプレイリストを削除してもよろしいですか？",
         "deleteConfirmMessageNamed": "次を削除してもよろしいですか：",
         "cancel": "キャンセル",
@@ -268,10 +282,10 @@
         "playAll": "すべて再生",
         "editInfo": "情報を編集",
         "type_label": "プレイリスト",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "アイテムを削除",
+        "removeItemMessage": "このアイテムをプレイリストから削除してもよろしいですか？",
+        "moveItem": "アイテムを移動",
+        "deleteItem": "アイテムを削除",
         "description_default": "お気に入りの映画や番組の個人的なコレクション。",
         "create_new": "新しいプレイリストを作成する",
         "moveUp": "項目を上に移動",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "エピソード"
     },
     "livetv": {
         "title": "ライブTV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "おかえりなさい、{name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "コレクション",
+        "searchPlaceholder": "コレクションを検索（例: ハリー・ポッター、マーベル...）",
+        "popular": "人気のコレクション",
+        "noResults": "コレクションが見つかりません",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "プレイリストとして保存",
+        "savedSuccess": "コレクションがプレイリストとして保存されました！",
+        "alreadySaved": "このコレクションは既に保存されています"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "更新をインストールするには権限が必要です。設定で有効にして再試行をタップしてください。",
+    "update_retry": "再試行"
 }

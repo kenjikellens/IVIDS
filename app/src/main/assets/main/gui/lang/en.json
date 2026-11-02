@@ -12,7 +12,8 @@
         "playlists": "Playlists",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Recently Watched"
     },
     "account": {
         "title": "Account",
@@ -150,7 +151,8 @@
         "installBranchTitle": "Install Live Branch Build",
         "installVersionTitle": "Install Version",
         "installNow": "Install Now",
-        "moreInfo": "More Information"
+        "moreInfo": "More Information",
+        "failedToFetchReleases": "Failed to fetch releases. Please check your internet connection."
     },
     "common": {
         "close": "Close",
@@ -176,7 +178,10 @@
         "criticalInit": "A critical error occurred during initialization.",
         "networkError": "Network connection error. Please check your internet connection.",
         "serverError": "Server error ({status}): Failed to load content.",
-        "contentLoadFailed": "Failed to load content. Please try again later."
+        "contentLoadFailed": "Failed to load content. Please try again later.",
+        "pageTitle": "Error loading page",
+        "retry": "Retry",
+        "goHome": "Go Home"
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",
@@ -249,7 +254,8 @@
         "selectServer": "Select Server",
         "loading": "Loading...",
         "statusTitle": "Player is taking too long",
-        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings."
+        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
+        "tracksTitle": "Audio & Subtitles"
     },
     "playlists": {
         "title": "My Playlists",
@@ -458,7 +464,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Episodes"
     },
     "livetv": {
         "title": "Live TV",

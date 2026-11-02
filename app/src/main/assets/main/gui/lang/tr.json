@@ -12,7 +12,8 @@
         "playlists": "Oynatma Listeleri",
         "account": "Hesap",
         "livetv": "Canlı TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Son İzlenenler"
     },
     "account": {
         "title": "Hesap",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Sunucu",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Renk Seç",
         "whatsNew": "Ne var ne yok:",
         "later": "Daha sonra",
         "changes": "Değişiklikler",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "İçerik",
+        "adultContent": "Yetişkin İçerik",
+        "adultContentDesc": "Göz atma ve arama sonuçlarında yetişkinlere uygun içeriği göster",
+        "adultContentOn": "Açık",
+        "adultContentOff": "Kapalı",
+        "adultContentWarning": "Uyarı: Bunu etkinleştirmek müstehcen yetişkin içeriklerini gösterir. Bu ayar yalnızca 18 yaşından büyük kullanıcılar için önerilir.",
+        "dataSaver": "Veri Tasarrufu / Yavaş İnternet",
+        "dataSaverDesc": "Daha düşük kaliteli resimler yükleyin ve ağ etkinliğini azaltın",
+        "devConsoleTitle": "Geliştirici Konsolu",
+        "devConsoleDesc": "Deneysel dal yapılarını ve sürüm dağıtımlarını keşfedin",
+        "devOfficialReleases": "Resmi Sürümler",
+        "devBleedingEdge": "Deneysel Sürüm",
+        "installed": "Yüklendi",
+        "activeTag": "Etkin",
+        "noUpdateDesc": "IVIDS uygulamasının en son sürümünü kullanıyorsunuz.",
+        "updateFoundDesc": "IVIDS uygulamasının yeni bir sürümü yüklenmeye hazır.",
+        "updateErrorDesc": "Güncelleme sunucusuna ulaşılamadı. Bağlantınızı kontrol edin.",
         "refresh": "Yenile",
         "viewChangelog": "Değişiklikleri Görüntüle",
         "appPlatform": "Platform",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Varsayılan)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Uygulama sürümü, sistem bilgileri ve değişiklik günlüğünü görüntüle"
+        "appInfoDesc": "Uygulama sürümü, sistem bilgileri ve değişiklik günlüğünü görüntüle",
+        "colors": {
+            "green": "Yeşil",
+            "red": "Kırmızı",
+            "blue": "Mavi",
+            "purple": "Mor",
+            "orange": "Turuncu",
+            "yellow": "Sarı"
+        },
+        "failedToFetchReleases": "Sürümler alınamadı. Lütfen internet bağlantınızı kontrol edin."
     },
     "common": {
         "close": "Kapat",
@@ -174,7 +184,10 @@
         "criticalInit": "Başlatma sırasında kritik bir hata oluştu.",
         "networkError": "Ağ bağlantısı hatası. Lütfen internet bağlantınızı kontrol edin.",
         "serverError": "Sunucu hatası ({status}): İçerik yüklenemedi.",
-        "contentLoadFailed": "İçerik yüklenemedi. Lütfen daha sonra tekrar deneyin."
+        "contentLoadFailed": "İçerik yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+        "pageTitle": "Sayfa yüklenirken hata oluştu",
+        "retry": "Yeniden Dene",
+        "goHome": "Ana Sayfaya Git"
     },
     "splash": {
         "loadingStatus": "Deneyim optimize ediliyor...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Bağlantı Kesildi",
         "connectedTitle": "Bağlandı",
         "slowConnectionTitle": "Yavaş Bağlantı",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Depolama sınırına ulaşıldı. Değişiklikler kalıcı olarak kaydedilemez.",
+        "storageFullTitle": "Depolama Dolu"
     },
     "search": {
         "title": "Ara",
@@ -247,7 +260,8 @@
         "loading": "Yükleniyor...",
         "statusTitle": "Oynatıcı çok uzun sürüyor",
         "statusMessage": "Yapılandırılmış oynatıcı sağlayıcısı henüz yanıt vermedi. Geri dönebilir veya Ayarlar'da oynatıcı uç noktasını değiştirebilirsiniz.",
-        "selectServer": "Select Server"
+        "selectServer": "Sunucu Seç",
+        "tracksTitle": "Ses ve Altyazı"
     },
     "playlists": {
         "title": "Oynatma Listelerim",
@@ -257,7 +271,7 @@
         "empty": "Oynatma listesi bulunamadı. Bir tane oluşturun!",
         "items": "Oynatma Listesi Öğeleri",
         "delete": "Listeyi Sil",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Çalma Listesini Sil",
         "deleteConfirmMessage": "Bu oynatma listesini silmek istediğinizden emin misiniz?",
         "deleteConfirmMessageNamed": "Silmek istediğinizden emin misiniz:",
         "cancel": "İptal",
@@ -268,10 +282,10 @@
         "playAll": "Tümünü Oynat",
         "editInfo": "Bilgileri Düzenle",
         "type_label": "Oynatma listesi",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Öğeyi Kaldır",
+        "removeItemMessage": "Bu öğeyi çalma listesinden kaldırmak istediğinizden emin misiniz?",
+        "moveItem": "Öğeyi Taşı",
+        "deleteItem": "Öğeyi Kaldır",
         "description_default": "Favori film ve şovlardan oluşan kişisel koleksiyonunuz.",
         "create_new": "Yeni Çalma Listesi Oluştur",
         "moveUp": "Öğeyi Yukarı Taşı",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Bölümler"
     },
     "livetv": {
         "title": "Canlı TV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Tekrar hoş geldiniz, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Koleksiyonlar",
+        "searchPlaceholder": "Koleksiyon ara (örn. Harry Potter, Marvel...)",
+        "popular": "Popüler Koleksiyonlar",
+        "noResults": "Koleksiyon bulunamadı",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Çalma Listesi Olarak Kaydet",
+        "savedSuccess": "Koleksiyon çalma listesi olarak kaydedildi!",
+        "alreadySaved": "Bu koleksiyon zaten kaydedildi"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Güncellemeleri yüklemek için izin gerekli. Ayarlardan etkinleştirin ve Yeniden Dene'ye dokunun.",
+    "update_retry": "Yeniden Dene"
 }

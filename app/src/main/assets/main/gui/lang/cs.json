@@ -12,7 +12,8 @@
         "playlists": "Playlisty",
         "account": "Účet",
         "livetv": "Živé TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Nedávno sledované"
     },
     "account": {
         "title": "Účet",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Servery",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Vybrat barvu",
         "whatsNew": "Co je nového:",
         "later": "Později",
         "changes": "Changes",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Obsah",
+        "adultContent": "Obsah pro dospělé",
+        "adultContentDesc": "Zobrazovat obsah pro dospělé v procházení a výsledcích vyhledávání",
+        "adultContentOn": "Zapnuto",
+        "adultContentOff": "Vypnuto",
+        "adultContentWarning": "Upozornění: Povolení této funkce zobrazí explicitní obsah pro dospělé. Doporučeno pouze pro uživatele starší 18 let.",
+        "dataSaver": "Spořič dat / Pomalý internet",
+        "dataSaverDesc": "Načítat obrázky v nižší kvalitě a snížit zatížení sítě",
+        "devConsoleTitle": "Konzole pro vývojáře",
+        "devConsoleDesc": "Prozkoumejte experimentální sestavení větví a nasazení vydání",
+        "devOfficialReleases": "Oficiální verze",
+        "devBleedingEdge": "Experimentální verze",
+        "installed": "Nainstalováno",
+        "activeTag": "Aktivní",
+        "noUpdateDesc": "Používáte nejnovější verzi IVIDS.",
+        "updateFoundDesc": "Nová verze IVIDS je připravena k instalaci.",
+        "updateErrorDesc": "Nelze se spojit se serverem aktualizací. Zkontrolujte připojení.",
         "refresh": "Refresh",
         "viewChangelog": "View Changelog",
         "appPlatform": "Platform",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Výchozí)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Zobrazit verzi aplikace, informace o systému a protokol změn"
+        "appInfoDesc": "Zobrazit verzi aplikace, informace o systému a protokol změn",
+        "colors": {
+            "green": "Zelená",
+            "red": "Červená",
+            "blue": "Modrá",
+            "purple": "Fialová",
+            "orange": "Oranžová",
+            "yellow": "Žlutá"
+        },
+        "failedToFetchReleases": "Nepodařilo se načíst verze. Zkontrolujte připojení k internetu."
     },
     "common": {
         "close": "Zavřít",
@@ -174,7 +184,10 @@
         "criticalInit": "Během inicializace došlo ke kritické chybě.",
         "networkError": "Chyba síťového připojení. Zkontrolujte prosím své připojení k internetu.",
         "serverError": "Chyba serveru ({status}): Nepodařilo se načíst obsah.",
-        "contentLoadFailed": "Nepodařilo se načíst obsah. Zkuste to prosím později."
+        "contentLoadFailed": "Nepodařilo se načíst obsah. Zkuste to prosím později.",
+        "pageTitle": "Chyba při načítání stránky",
+        "retry": "Opakovat",
+        "goHome": "Přejít na Domů"
     },
     "splash": {
         "loadingStatus": "Optimalizace uživatelského zážitku...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Připojení ztraceno",
         "connectedTitle": "Připojeno",
         "slowConnectionTitle": "Pomalé připojení",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Dosažen limit úložiště. Změny nelze trvale uložit.",
+        "storageFullTitle": "Úložiště plné"
     },
     "search": {
         "title": "Hledat",
@@ -247,7 +260,8 @@
         "loading": "Načítání...",
         "statusTitle": "Přehrávač trvá příliš dlouho",
         "statusMessage": "Nakonfigurovaný poskytovatel přehrávače dosud neodpověděl. Můžete se vrátit zpět nebo změnit koncový bod přehrávače v Nastavení.",
-        "selectServer": "Select Server"
+        "selectServer": "Vybrat server",
+        "tracksTitle": "Zvuk a titulky"
     },
     "playlists": {
         "title": "Moje playlisty",
@@ -257,7 +271,7 @@
         "empty": "Nebyly nalezeny žádné playlisty. Vytvořte jeden!",
         "items": "Položky playlistu",
         "delete": "Odstranit playlist",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Smazat playlist",
         "deleteConfirmMessage": "Opravdu chcete tento playlist odstranit?",
         "deleteConfirmMessageNamed": "Opravdu chcete odstranit",
         "cancel": "Zrušit",
@@ -268,10 +282,10 @@
         "playAll": "Přehrát vše",
         "editInfo": "Upravit informace",
         "type_label": "Playlist",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Odebrat položku",
+        "removeItemMessage": "Opravdu chcete odebrat tuto položku z playlistu?",
+        "moveItem": "Přesunout položku",
+        "deleteItem": "Odebrat položku",
         "description_default": "Vaše osobní sbírka oblíbených filmů a pořadů.",
         "create_new": "Vytvořit nový seznam skladeb",
         "moveUp": "Přesunout položku nahoru",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Epizody"
     },
     "livetv": {
         "title": "Živé TV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Vítejte zpět, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Kolekce",
+        "searchPlaceholder": "Hledat kolekce (např. Harry Potter, Marvel...)",
+        "popular": "Populární kolekce",
+        "noResults": "Nebyly nalezeny žádné kolekce",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Uložit jako playlist",
+        "savedSuccess": "Kolekce byla uložena jako playlist!",
+        "alreadySaved": "Tato kolekce je již uložena"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "K instalaci aktualizací je vyžadováno oprávnění. Povolte v nastavení a klepněte na Opakovat.",
+    "update_retry": "Opakovat"
 }

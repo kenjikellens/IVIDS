@@ -12,7 +12,8 @@
         "playlists": "Playlisty",
         "account": "Konto",
         "livetv": "TV na żywo",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Niedawno oglądane"
     },
     "account": {
         "title": "Konto",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Serwerów",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Wybierz kolor",
         "whatsNew": "Co nowego:",
         "later": "Później",
         "changes": "Zmiany",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Treść",
+        "adultContent": "Treści dla dorosłych",
+        "adultContentDesc": "Pokazuj treści dla dorosłych podczas przeglądania i w wynikach wyszukiwania",
+        "adultContentOn": "Wł.",
+        "adultContentOff": "Wył.",
+        "adultContentWarning": "Ostrzeżenie: włączenie tej opcji spowoduje wyświetlanie treści dla dorosłych. Ustawienie zalecane wyłącznie dla osób pełnoletnich (18+).",
+        "dataSaver": "Oszczędzanie danych / Wolny internet",
+        "dataSaverDesc": "Wczytuj zdjęcia w niższej jakości i ogranicz aktywność sieciową",
+        "devConsoleTitle": "Konsola deweloperska",
+        "devConsoleDesc": "Przeglądaj eksperymentalne kompilacje gałęzi i wdrożenia wydań",
+        "devOfficialReleases": "Oficjalne wydania",
+        "devBleedingEdge": "Wersja eksperymentalna",
+        "installed": "Zainstalowano",
+        "activeTag": "Aktywny",
+        "noUpdateDesc": "Używasz najnowszej wersji IVIDS.",
+        "updateFoundDesc": "Nowa wersja IVIDS jest gotowa do zainstalowania.",
+        "updateErrorDesc": "Nie można połączyć się z serwerem aktualizacji. Sprawdź połączenie.",
         "refresh": "Odśwież",
         "viewChangelog": "Zobacz zmiany",
         "appPlatform": "Platforma",
@@ -148,7 +149,16 @@
         "delay100": "100ms (Domyślnie)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Zobacz wersję aplikacji, informacje o systemie i listę zmian"
+        "appInfoDesc": "Zobacz wersję aplikacji, informacje o systemie i listę zmian",
+        "colors": {
+            "green": "Zielony",
+            "red": "Czerwony",
+            "blue": "Niebieski",
+            "purple": "Fioletowy",
+            "orange": "Pomarańczowy",
+            "yellow": "Żółty"
+        },
+        "failedToFetchReleases": "Nie udało się pobrać wydań. Sprawdź połączenie z internetem."
     },
     "common": {
         "close": "Zamknij",
@@ -174,7 +184,10 @@
         "criticalInit": "Wystąpił krytyczny błąd podczas inicjalizacji.",
         "networkError": "Błąd połączenia sieciowego. Sprawdź swoje połączenie internetowe.",
         "serverError": "Błąd serwera ({status}): Nie udało się załadować zawartości.",
-        "contentLoadFailed": "Nie udało się załadować zawartości. Spróbuj ponownie później."
+        "contentLoadFailed": "Nie udało się załadować zawartości. Spróbuj ponownie później.",
+        "pageTitle": "Błąd podczas ładowania strony",
+        "retry": "Spróbuj ponownie",
+        "goHome": "Strona główna"
     },
     "splash": {
         "loadingStatus": "Optymalizacja doświadczenia użytkownika...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Połączenie utracone",
         "connectedTitle": "Połączono",
         "slowConnectionTitle": "Wolne połączenie",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Osiągnięto limit pamięci. Zmiany nie mogą zostać trwale zapisane.",
+        "storageFullTitle": "Pamięć pełna"
     },
     "search": {
         "title": "Szukaj",
@@ -247,7 +260,8 @@
         "loading": "Ładowanie...",
         "statusTitle": "Odtwarzacz zbyt długo nie odpowiada",
         "statusMessage": "Skonfigurowany dostawca odtwarzacza jeszcze nie odpowiedział. Możesz wrócić lub zmienić punkt końcowy odtwarzacza w Ustawieniach.",
-        "selectServer": "Select Server"
+        "selectServer": "Wybierz serwer",
+        "tracksTitle": "Dźwięk i napisy"
     },
     "playlists": {
         "title": "Moje playlisty",
@@ -257,7 +271,7 @@
         "empty": "Nie znaleziono playlist. Utwórz jedną!",
         "items": "Elementy playlisty",
         "delete": "Usuń playlistę",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Usuń playlistę",
         "deleteConfirmMessage": "Czy na pewno chcesz usunąć tę playlistę?",
         "deleteConfirmMessageNamed": "Czy na pewno chcesz usunąć",
         "cancel": "Anuluj",
@@ -268,10 +282,10 @@
         "playAll": "Odtwórz wszystko",
         "editInfo": "Edytuj informacje",
         "type_label": "Playlista",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Usuń element",
+        "removeItemMessage": "Czy na pewno chcesz usunąć ten element z playlisty?",
+        "moveItem": "Przenieś element",
+        "deleteItem": "Usuń element",
         "description_default": "Twoja osobista kolekcja ulubionych filmów i programów.",
         "create_new": "Utwórz nową listę odtwarzania",
         "moveUp": "Przesuń element w górę",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Odcinki"
     },
     "livetv": {
         "title": "TV na żywo",
@@ -563,15 +578,15 @@
         "successLoggedIn": "Witamy ponownie, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Kolekcje",
+        "searchPlaceholder": "Szukaj kolekcji (np. Harry Potter, Marvel...)",
+        "popular": "Popularne kolekcje",
+        "noResults": "Nie znaleziono kolekcji",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Zapisz jako playlistę",
+        "savedSuccess": "Kolekcja została zapisana jako playlista!",
+        "alreadySaved": "Ta kolekcja jest już zapisana"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Wymagane uprawnienie do instalowania aktualizacji. Włącz w ustawieniach i dotknij Ponów.",
+    "update_retry": "Ponów"
 }

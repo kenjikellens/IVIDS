@@ -12,7 +12,8 @@
         "playlists": "Плейлисты",
         "account": "Аккаунт",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Недавно просмотренные"
     },
     "account": {
         "title": "Аккаунт",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} Серверов",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Выбрать цвет",
         "whatsNew": "Что нового:",
         "later": "Позже",
         "changes": "Изменения",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Контент",
+        "adultContent": "Контент для взрослых",
+        "adultContentDesc": "Показывать контент для взрослых при просмотре и в результатах поиска",
+        "adultContentOn": "Вкл",
+        "adultContentOff": "Выкл",
+        "adultContentWarning": "Предупреждение: включение этого параметра отобразит откровенный контент для взрослых. Рекомендуется только для пользователей 18+.",
+        "dataSaver": "Экономия трафика / Медленный интернет",
+        "dataSaverDesc": "Загружать фото низкого качества и снижать нагрузку на сеть",
+        "devConsoleTitle": "Консоль разработчика",
+        "devConsoleDesc": "Экспериментальные сборки веток и развертывания релизов",
+        "devOfficialReleases": "Официальные релизы",
+        "devBleedingEdge": "Экспериментальная сборка",
+        "installed": "Установлено",
+        "activeTag": "Активно",
+        "noUpdateDesc": "Вы используете последнюю версию IVIDS.",
+        "updateFoundDesc": "Новая версия IVIDS готова к установке.",
+        "updateErrorDesc": "Не удалось связаться с сервером обновлений. Проверьте подключение.",
         "refresh": "Обновить",
         "viewChangelog": "Посмотреть изменения",
         "appPlatform": "Платформа",
@@ -148,7 +149,16 @@
         "delay100": "100мс (По умолчанию)",
         "delay250": "250мс",
         "delay500": "500мс",
-        "appInfoDesc": "Версия приложения, системная информация и список изменений"
+        "appInfoDesc": "Версия приложения, системная информация и список изменений",
+        "colors": {
+            "green": "Зеленый",
+            "red": "Красный",
+            "blue": "Синий",
+            "purple": "Фиолетовый",
+            "orange": "Оранжевый",
+            "yellow": "Желтый"
+        },
+        "failedToFetchReleases": "Не удалось получить выпуски. Пожалуйста, проверьте подключение к интернету."
     },
     "common": {
         "close": "Закрыть",
@@ -174,7 +184,10 @@
         "criticalInit": "Критическая ошибка инициализации.",
         "networkError": "Ошибка сетевого соединения. Пожалуйста, проверьте подключение к интернету.",
         "serverError": "Ошибка сервера ({status}): Не удалось загрузить контент.",
-        "contentLoadFailed": "Не удалось загрузить контент. Пожалуйста, попробуйте позже."
+        "contentLoadFailed": "Не удалось загрузить контент. Пожалуйста, попробуйте позже.",
+        "pageTitle": "Ошибка загрузки страницы",
+        "retry": "Повторить",
+        "goHome": "На главную"
     },
     "splash": {
         "loadingStatus": "Оптимизация...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "Соединение потеряно",
         "connectedTitle": "Подключено",
         "slowConnectionTitle": "Медленное соединение",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Лимит хранилища исчерпан. Изменения не могут быть сохранены навсегда.",
+        "storageFullTitle": "Хранилище заполнено"
     },
     "search": {
         "title": "Поиск",
@@ -247,7 +260,8 @@
         "loading": "Загрузка...",
         "statusTitle": "Плеер загружается слишком долго",
         "statusMessage": "Настроенный провайдер плеера еще не ответил. Вы можете вернуться назад или изменить конечную точку плеера в Настройках.",
-        "selectServer": "Select Server"
+        "selectServer": "Выбрать сервер",
+        "tracksTitle": "Аудио и субтитры"
     },
     "playlists": {
         "title": "Мои плейлисты",
@@ -257,7 +271,7 @@
         "empty": "Плейлисты не найдены. Создайте один!",
         "items": "Элементы плейлиста",
         "delete": "Удалить плейлист",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Удалить плейлист",
         "deleteConfirmMessage": "Вы уверены, что хотите удалить этот плейлист?",
         "deleteConfirmMessageNamed": "Вы уверены, что хотите удалить",
         "cancel": "Отмена",
@@ -268,10 +282,10 @@
         "playAll": "Смотреть все",
         "editInfo": "Изменить инфо",
         "type_label": "Плейлист",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Удалить элемент",
+        "removeItemMessage": "Вы уверены, что хотите удалить этот элемент из плейлиста?",
+        "moveItem": "Переместить элемент",
+        "deleteItem": "Удалить элемент",
         "description_default": "Ваша личная коллекция любимых фильмов и сериалов.",
         "create_new": "Создать новый плейлист",
         "moveUp": "Переместить элемент вверх",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Эпизоды"
     },
     "livetv": {
         "title": "Live TV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "С возвращением, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Коллекции",
+        "searchPlaceholder": "Поиск коллекций (например, Гарри Поттер, Марвел...)",
+        "popular": "Популярные коллекции",
+        "noResults": "Коллекции не найдены",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Сохранить как плейлист",
+        "savedSuccess": "Коллекция сохранена как плейлист!",
+        "alreadySaved": "Эта коллекция уже сохранена"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Требуется разрешение для установки обновлений. Включите в настройках и нажмите Повторить.",
+    "update_retry": "Повторить"
 }

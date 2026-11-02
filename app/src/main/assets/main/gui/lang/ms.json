@@ -12,7 +12,8 @@
         "playlists": "Playlists",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Ditonton Baru-baru Ini"
     },
     "account": {
         "title": "Account",
@@ -49,7 +50,7 @@
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Pilih Warna",
         "updates": "App Updates",
         "updateMode": "Update Mode",
         "updateModeDesc": "Choose how the app handles updates",
@@ -106,23 +107,23 @@
         "whatsNew": "What's New:",
         "later": "Later",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Kandungan",
+        "adultContent": "Kandungan Dewasa",
+        "adultContentDesc": "Tunjukkan kandungan dewasa dalam pelayaran dan hasil carian",
+        "adultContentOn": "Hidup",
+        "adultContentOff": "Mati",
+        "adultContentWarning": "Amaran: Membolehkan ini akan memaparkan kandungan dewasa yang eksplisit. Disyorkan hanya untuk pengguna 18+.",
+        "dataSaver": "Penjimat Data / Internet Perlahan",
+        "dataSaverDesc": "Muat foto berkualiti lebih rendah dan kurangkan aktiviti rangkaian",
+        "devConsoleTitle": "Konsol Pembangun",
+        "devConsoleDesc": "Terokai binaan cawangan terkini dan penggunaan keluaran",
+        "devOfficialReleases": "Keluaran Rasmi",
+        "devBleedingEdge": "Binaan Eksperimen",
+        "installed": "Dipasang",
+        "activeTag": "Aktif",
+        "noUpdateDesc": "Anda sedang menggunakan versi terkini IVIDS.",
+        "updateFoundDesc": "Versi baharu IVIDS sedia untuk dipasang.",
+        "updateErrorDesc": "Tidak dapat menghubungi pelayan kemas kini. Semak sambungan anda.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (Lalai)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Lihat versi aplikasi, maklumat sistem dan log perubahan"
+        "appInfoDesc": "Lihat versi aplikasi, maklumat sistem dan log perubahan",
+        "colors": {
+            "green": "Hijau",
+            "red": "Merah",
+            "blue": "Biru",
+            "purple": "Ungu",
+            "orange": "Oren",
+            "yellow": "Kuning"
+        },
+        "failedToFetchReleases": "Gagal mengambil keluaran. Sila semak sambungan internet anda."
     },
     "common": {
         "close": "Close",
@@ -168,7 +178,10 @@
         "criticalInit": "A critical error occurred during initialization.",
         "networkError": "Network connection error. Please check your internet connection.",
         "serverError": "Server error ({status}): Failed to load content.",
-        "contentLoadFailed": "Failed to load content. Please try again later."
+        "contentLoadFailed": "Failed to load content. Please try again later.",
+        "pageTitle": "Ralat memuatkan halaman",
+        "retry": "Cuba Lagi",
+        "goHome": "Pergi ke Laman Utama"
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "Connection Lost",
         "connectedTitle": "Connected",
         "slowConnectionTitle": "Slow Connection",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Had storan dicapai. Perubahan tidak dapat disimpan secara kekal.",
+        "storageFullTitle": "Storan Penuh"
     },
     "search": {
         "title": "Search",
@@ -238,10 +251,11 @@
         "stop": "Stop",
         "moreInfo": "More Info",
         "nextEpisode": "Next Episode",
-        "selectServer": "Select Server",
+        "selectServer": "Pilih Pelayan",
         "loading": "Loading...",
         "statusTitle": "Player is taking too long",
-        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings."
+        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
+        "tracksTitle": "Audio & Sari Kata"
     },
     "playlists": {
         "title": "My Playlists",
@@ -252,7 +266,7 @@
         "items": "Playlist Items",
         "type_label": "Playlist",
         "delete": "Delete Playlist",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Padam Senarai Main",
         "deleteConfirmMessage": "Are you sure you want to delete this playlist?",
         "deleteConfirmMessageNamed": "Are you sure you want to delete",
         "cancel": "Cancel",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "This playlist is empty.",
         "playAll": "Play All",
         "editInfo": "Edit Info",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Alih Keluar Item",
+        "removeItemMessage": "Adakah anda pasti mahu mengalih keluar item ini daripada senarai main?",
+        "moveItem": "Alihkan Item",
+        "deleteItem": "Alih Keluar Item",
         "description_default": "Your personal collection of favorite movies and shows.",
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
@@ -414,14 +428,14 @@
         "world_showcase": "World Showcase"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Koleksi",
+        "searchPlaceholder": "Cari koleksi (cth. Harry Potter, Marvel...)",
+        "popular": "Koleksi Popular",
+        "noResults": "Tiada koleksi ditemui",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Simpan sebagai Senarai Main",
+        "savedSuccess": "Koleksi disimpan sebagai senarai main!",
+        "alreadySaved": "Koleksi ini sudah disimpan"
     },
     "details": {
         "play": "Play",
@@ -450,7 +464,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Episod"
     },
     "livetv": {
         "title": "Live TV",
@@ -566,6 +581,6 @@
         "confirm": "Exit",
         "cancel": "Cancel"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Kebenaran diperlukan untuk memasang kemas kini. Dayakan dalam tetapan dan ketik Cuba Lagi.",
+    "update_retry": "Ulang"
 }

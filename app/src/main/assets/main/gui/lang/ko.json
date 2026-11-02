@@ -12,7 +12,8 @@
         "playlists": "플레이리스트",
         "account": "계정",
         "livetv": "라이브 TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "최근 시청한 항목"
     },
     "account": {
         "title": "계정",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} 서버",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "색상 선택",
         "whatsNew": "새로운 기능:",
         "later": "나중에",
         "changes": "변경 사항",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "콘텐츠",
+        "adultContent": "성인용 콘텐츠",
+        "adultContentDesc": "탐색 및 검색 결과에 성인용 콘텐츠 표시",
+        "adultContentOn": "켜짐",
+        "adultContentOff": "꺼짐",
+        "adultContentWarning": "경고: 이를 활성화하면 노골적인 성인용 콘텐츠가 표시됩니다. 18세 이상 사용자에게만 권장됩니다.",
+        "dataSaver": "데이터 절약 / 느린 인터넷",
+        "dataSaverDesc": "낮은 화질의 이미지를 로드하여 네트워크 사용량 감소",
+        "devConsoleTitle": "개발자 콘솔",
+        "devConsoleDesc": "최신 브랜치 빌드 및 릴리스 배포 탐색",
+        "devOfficialReleases": "공식 릴리스",
+        "devBleedingEdge": "최신 개발 빌드",
+        "installed": "설치됨",
+        "activeTag": "활성",
+        "noUpdateDesc": "최신 버전의 IVIDS를 사용 중입니다.",
+        "updateFoundDesc": "새로운 버전의 IVIDS를 설치할 준비가 되었습니다.",
+        "updateErrorDesc": "업데이트 서버에 연결할 수 없습니다. 연결 상태를 확인하세요.",
         "refresh": "새로고침",
         "viewChangelog": "변경 사항 보기",
         "appPlatform": "플랫폼",
@@ -148,7 +149,16 @@
         "delay100": "100ms (기본값)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "앱 버전, 시스템 정보 및 변경 내역 확인"
+        "appInfoDesc": "앱 버전, 시스템 정보 및 변경 내역 확인",
+        "colors": {
+            "green": "초록",
+            "red": "빨강",
+            "blue": "파랑",
+            "purple": "보라",
+            "orange": "주황",
+            "yellow": "노랑"
+        },
+        "failedToFetchReleases": "릴리스를 가져오지 못했습니다. 인터넷 연결을 확인하세요."
     },
     "common": {
         "close": "닫기",
@@ -174,7 +184,10 @@
         "criticalInit": "초기화 중 심각한 오류가 발생했습니다.",
         "networkError": "네트워크 연결 오류. 인터넷 연결을 확인하십시오.",
         "serverError": "서버 오류 ({status}): 콘텐츠를 로드하지 못했습니다.",
-        "contentLoadFailed": "콘텐츠를 로드하지 못했습니다. 나중에 다시 시도하십시오."
+        "contentLoadFailed": "콘텐츠를 로드하지 못했습니다. 나중에 다시 시도하십시오.",
+        "pageTitle": "페이지 로드 오류",
+        "retry": "다시 시도",
+        "goHome": "홈으로 이동"
     },
     "splash": {
         "loadingStatus": "사용자 경험 최적화 중...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "연결 유실",
         "connectedTitle": "연결됨",
         "slowConnectionTitle": "연결이 느림",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "저장 공간 한도에 도달했습니다. 변경사항이 영구적으로 저장되지 않습니다.",
+        "storageFullTitle": "저장 공간 가득 참"
     },
     "search": {
         "title": "검색",
@@ -247,7 +260,8 @@
         "loading": "로딩 중...",
         "statusTitle": "플레이어가 응답하는 데 시간이 너무 오래 걸립니다",
         "statusMessage": "설정된 플레이어 제공업체가 아직 응답하지 않았습니다. 돌아가거나 설정에서 플레이어 엔드포인트를 변경할 수 있습니다.",
-        "selectServer": "Select Server"
+        "selectServer": "서버 선택",
+        "tracksTitle": "오디오 및 자막"
     },
     "playlists": {
         "title": "내 플레이리스트",
@@ -257,7 +271,7 @@
         "empty": "플레이리스트가 없습니다. 하나 만들어보세요!",
         "items": "재생목록 항목",
         "delete": "플레이리스트 삭제",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "재생목록 삭제",
         "deleteConfirmMessage": "이 플레이리스트를 삭제하시겠습니까?",
         "deleteConfirmMessageNamed": "삭제하시겠습니까:",
         "cancel": "취소",
@@ -268,10 +282,10 @@
         "playAll": "전체 재생",
         "editInfo": "정보 수정",
         "type_label": "재생목록",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "항목 제거",
+        "removeItemMessage": "이 항목을 재생목록에서 제거하시겠습니까?",
+        "moveItem": "항목 이동",
+        "deleteItem": "항목 제거",
         "description_default": "좋아하는 영화와 프로그램의 개인 컬렉션입니다.",
         "create_new": "새 재생목록 만들기",
         "moveUp": "항목을 위로 이동",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "에피소드"
     },
     "livetv": {
         "title": "라이브 TV",
@@ -563,15 +578,15 @@
         "successLoggedIn": "돌아온 걸 환영해요, {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "컬렉션",
+        "searchPlaceholder": "컬렉션 검색 (예: 해리 포터, 마블...)",
+        "popular": "인기 컬렉션",
+        "noResults": "컬렉션을 찾을 수 없습니다",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "재생목록으로 저장",
+        "savedSuccess": "컬렉션이 재생목록으로 저장되었습니다!",
+        "alreadySaved": "이 컬렉션은 이미 저장되어 있습니다"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "업데이트를 설치하려면 권한이 필요합니다. 설정에서 활성화한 후 다시 시도를 탭하세요.",
+    "update_retry": "다시 시도"
 }

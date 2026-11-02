@@ -12,7 +12,8 @@
         "playlists": "لیست های پخش",
         "account": "حساب",
         "livetv": "تلویزیون زنده",
-        "collections": "مجموعه ها"
+        "collections": "مجموعه ها",
+        "recently_watched": "اخیراً تماشا شده"
     },
     "account": {
         "title": "حساب",
@@ -49,7 +50,7 @@
         "saved": "تنظیمات ذخیره شد!",
         "reset": "بازنشانی به حالت پیش فرض!",
         "cancel": "لغو کنید",
-        "accentColorSelect": "رنگ را انتخاب کنید",
+        "accentColorSelect": "انتخاب رنگ",
         "updates": "به روز رسانی برنامه",
         "updateMode": "به روز رسانی حالت",
         "updateModeDesc": "نحوه مدیریت برنامه به‌روزرسانی‌ها را انتخاب کنید",
@@ -81,11 +82,11 @@
             "installing": "در حال آماده سازی نصب..."
         },
         "selectVersion": "نسخه را انتخاب کنید",
-        "devConsoleTitle": "کنسول توسعه دهنده",
-        "devConsoleDesc": "کاوش در ساخت شاخه های لبه خونریزی و استقرار آزاد",
-        "devOfficialReleases": "انتشارات رسمی",
-        "devBleedingEdge": "لبه خونریزی",
-        "installed": "نصب شده است",
+        "devConsoleTitle": "کنسول توسعه‌دهنده",
+        "devConsoleDesc": "بررسی نسخه‌های آزمایشی شاخه‌ها و استقرار انتشارها",
+        "devOfficialReleases": "انتشارهای رسمی",
+        "devBleedingEdge": "نسخه آزمایشی پیشرفته",
+        "installed": "نصب شده",
         "activeTag": "فعال",
         "branchBuild": "ساخت شعبه زنده",
         "branchBuildDesc": "شعبه اصلی مستقیم ساخت IVIDS.apk",
@@ -117,12 +118,12 @@
         "adultContentDesc": "نمایش محتوای بزرگسالان در مرور و نتایج جستجو",
         "adultContentOn": "روشن",
         "adultContentOff": "خاموش",
-        "adultContentWarning": "هشدار: با فعال کردن این، محتوای صریح برای بزرگسالان نشان داده می‌شود. این تنظیم فقط برای کاربران بالای ۱۸ سال توصیه می شود.",
-        "dataSaver": "ذخیره داده / اینترنت کند",
-        "dataSaverDesc": "عکس‌های با کیفیت پایین‌تر را بارگیری کنید و فعالیت شبکه را کاهش دهید",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "adultContentWarning": "هشدار: فعال کردن این گزینه محتوای صریح بزرگسالان را نمایش می‌دهد. این تنظیم فقط برای افراد بالای ۱۸ سال توصیه می‌شود.",
+        "dataSaver": "صرفه‌جویی در مصرف داده / اینترنت ضعیف",
+        "dataSaverDesc": "تصاویر با کیفیت پایین‌تر بارگیری شده و مصرف شبکه کاهش یابد",
+        "noUpdateDesc": "شما از آخرین نسخه IVIDS استفاده می‌کنید.",
+        "updateFoundDesc": "نسخه جدید IVIDS آماده نصب است.",
+        "updateErrorDesc": "امکان دسترسی به سرور به‌روزرسانی وجود ندارد. اتصال خود را بررسی کنید.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100 میلی‌ثانیه (پیش‌فرض)",
         "delay250": "250 میلی‌ثانیه",
         "delay500": "500 میلی‌ثانیه",
-        "appInfoDesc": "مشاهده نسخه برنامه، اطلاعات سیستم و گزارش تغییرات"
+        "appInfoDesc": "مشاهده نسخه برنامه، اطلاعات سیستم و گزارش تغییرات",
+        "colors": {
+            "green": "سبز",
+            "red": "قرمز",
+            "blue": "آبی",
+            "purple": "بنفش",
+            "orange": "نارنجی",
+            "yellow": "زرد"
+        },
+        "failedToFetchReleases": "دریافت نسخه‌ها ناموفق بود. لطفاً اتصال اینترنت خود را بررسی کنید."
     },
     "common": {
         "close": "بستن",
@@ -168,7 +178,10 @@
         "criticalInit": "یک خطای حیاتی در حین راه اندازی اولیه رخ داد.",
         "networkError": "خطای اتصال به شبکه لطفا اتصال اینترنت خود را بررسی کنید.",
         "serverError": "خطای سرور ({وضع}): محتوا بارگیری نشد.",
-        "contentLoadFailed": "محتوا بارگیری نشد. لطفاً بعداً دوباره امتحان کنید."
+        "contentLoadFailed": "محتوا بارگیری نشد. لطفاً بعداً دوباره امتحان کنید.",
+        "pageTitle": "خطا در بارگیری صفحه",
+        "retry": "تلاش مجدد",
+        "goHome": "رفتن به خانه"
     },
     "splash": {
         "loadingStatus": "بهینه سازی تجربه کاربری...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "اتصال قطع شد",
         "connectedTitle": "متصل شد",
         "slowConnectionTitle": "اتصال آهسته",
-        "storageFull": "به حد مجاز ذخیره سازی رسیده است. تغییرات را نمی توان به طور دائم ذخیره کرد.",
-        "storageFullTitle": "ذخیره سازی کامل"
+        "storageFull": "فضای ذخیره‌سازی پر شده است. تغییرات به صورت دائمی ذخیره نمی‌شوند.",
+        "storageFullTitle": "حافظه پر است"
     },
     "search": {
         "title": "جستجو کنید",
@@ -238,10 +251,11 @@
         "stop": "توقف کنید",
         "moreInfo": "اطلاعات بیشتر",
         "nextEpisode": "قسمت بعدی",
-        "selectServer": "سرور را انتخاب کنید",
+        "selectServer": "انتخاب سرور",
         "loading": "در حال بارگیری...",
         "statusTitle": "پخش کننده خیلی طول می کشد",
-        "statusMessage": "ارائه دهنده پخش کننده پیکربندی شده هنوز پاسخی نداده است. می‌توانید به عقب برگردید یا نقطه پایان پخش‌کننده را در تنظیمات تغییر دهید."
+        "statusMessage": "ارائه دهنده پخش کننده پیکربندی شده هنوز پاسخی نداده است. می‌توانید به عقب برگردید یا نقطه پایان پخش‌کننده را در تنظیمات تغییر دهید.",
+        "tracksTitle": "صدا و زیرنویس"
     },
     "playlists": {
         "title": "لیست های پخش من",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "این لیست پخش خالی است.",
         "playAll": "پخش همه",
         "editInfo": "ویرایش اطلاعات",
-        "removeItemTitle": "حذف آیتم",
-        "removeItemMessage": "آیا مطمئن هستید که می خواهید این مورد را از لیست پخش حذف کنید؟",
-        "moveItem": "انتقال آیتم",
-        "deleteItem": "حذف آیتم",
+        "removeItemTitle": "حذف مورد",
+        "removeItemMessage": "آیا مطمئن هستید که می‌خواهید این مورد را از لیست پخش حذف کنید؟",
+        "moveItem": "انتقال مورد",
+        "deleteItem": "حذف مورد",
         "description_default": "مجموعه شخصی شما از فیلم ها و نمایش های مورد علاقه.",
         "create_new": "ایجاد لیست پخش جدید",
         "moveUp": "انتقال آیتم به بالا",
@@ -414,10 +428,10 @@
         "world_showcase": "نمایشگاه جهانی"
     },
     "collections": {
-        "title": "مجموعه ها",
-        "searchPlaceholder": "جستجوی مجموعه‌ها (مانند هری پاتر، مارول...)",
-        "popular": "مجموعه های محبوب",
-        "noResults": "هیچ مجموعه ای یافت نشد",
+        "title": "مجموعه‌ها",
+        "searchPlaceholder": "جستجوی مجموعه‌ها (مثلاً هری پاتر، مارول...)",
+        "popular": "مجموعه‌های محبوب",
+        "noResults": "مجموعه‌ای یافت نشد",
         "films": "{count} فیلم",
         "saveToPlaylist": "ذخیره به عنوان لیست پخش",
         "savedSuccess": "مجموعه به عنوان لیست پخش ذخیره شد!",
@@ -450,7 +464,8 @@
         "synopsis": "خلاصه داستان",
         "castAndCrew": "بازیگران و خدمه",
         "noExtras": "هیچ وسیله اضافی یا تریلر موجود نیست.",
-        "noCast": "اطلاعات بازیگران در دسترس نیست."
+        "noCast": "اطلاعات بازیگران در دسترس نیست.",
+        "tabSeasons": "قسمت‌ها"
     },
     "livetv": {
         "title": "تلویزیون زنده",
@@ -533,8 +548,8 @@
     "update_status_downloading": "در حال دانلود به روز رسانی...",
     "update_status_installing": "در حال نصب به روز رسانی...",
     "update_status_connecting": "در حال اتصال به سرور...",
-    "update_status_permission_required": "برای نصب به‌روزرسانی‌ها مجوز لازم است. در تنظیمات فعال کنید و روی سعی مجدد ضربه بزنید.",
-    "update_retry": "دوباره امتحان کنید",
+    "update_status_permission_required": "برای نصب به‌روزرسانی‌ها مجوز لازم است. در تنظیمات فعال کنید و روی تلاش مجدد ضربه بزنید.",
+    "update_retry": "تلاش مجدد",
     "login": {
         "title": "وارد سیستم IVIDS شوید",
         "signInTitle": "وارد شوید",

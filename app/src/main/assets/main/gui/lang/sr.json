@@ -12,7 +12,8 @@
         "playlists": "Плаyлистс",
         "account": "Аццоунт",
         "livetv": "Ливе ТВ",
-        "collections": "Цоллецтионс"
+        "collections": "Цоллецтионс",
+        "recently_watched": "Недавно гледано"
     },
     "account": {
         "title": "Аццоунт",
@@ -49,7 +50,7 @@
         "saved": "Сеттингс савед!",
         "reset": "Ресет то дефаултс!",
         "cancel": "Цанцел",
-        "accentColorSelect": "Селецт Цолор",
+        "accentColorSelect": "Изабери боју",
         "updates": "Апп Упдатес",
         "updateMode": "Упдате Моде",
         "updateModeDesc": "Цхоосе хоw тхе апп хандлес упдатес",
@@ -106,23 +107,23 @@
         "whatsNew": "Wхат'с Неw:",
         "later": "Латер",
         "branch": "Бранцх",
-        "contentSettings": "Цонтент",
-        "adultContent": "Адулт Цонтент",
-        "adultContentDesc": "Схоw адулт цонтент ин броwсинг анд сеарцх ресултс",
-        "adultContentOn": "Он",
-        "adultContentOff": "Офф",
-        "adultContentWarning": "Wарнинг: Енаблинг тхис wилл схоw еxплицит адулт цонтент. Тхис сеттинг ис онлy рецоммендед фор усерс 18+.",
-        "dataSaver": "Дата Савер / Слоw Интернет",
-        "dataSaverDesc": "Лоад лоwер qуалитy пхотос анд редуце нетwорк ацтивитy",
-        "devConsoleTitle": "Девелопер Цонсоле",
-        "devConsoleDesc": "Еxплоре блеединг-едге бранцх буилдс анд релеасе деплоyментс",
-        "devOfficialReleases": "Оффициал Релеасес",
-        "devBleedingEdge": "Блеединг Едге",
-        "installed": "Инсталлед",
-        "activeTag": "Ацтиве",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Садржај",
+        "adultContent": "Садржај за одрасле",
+        "adultContentDesc": "Прикажи садржај за одрасле у прегледању и резултатима претраге",
+        "adultContentOn": "Укључено",
+        "adultContentOff": "Искључено",
+        "adultContentWarning": "Упозорење: Омогућавање овога ће приказати експлицитан садржај за одрасле. Препоручује се само за кориснике старије од 18 година.",
+        "dataSaver": "Штедња података / Спор интернет",
+        "dataSaverDesc": "Учитавај слике нижег квалитета и смањи коришћење мреже",
+        "devConsoleTitle": "Развојна конзола",
+        "devConsoleDesc": "Истражите експерименталне верзије грана и издања",
+        "devOfficialReleases": "Званична издања",
+        "devBleedingEdge": "Експериментална верзија",
+        "installed": "Инсталирано",
+        "activeTag": "Активно",
+        "noUpdateDesc": "Користите најновију верзију IVIDS-а.",
+        "updateFoundDesc": "Нова верзија IVIDS-а је спремна за инсталацију.",
+        "updateErrorDesc": "Није могуће доћи до сервера ажурирања. Проверите везу.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (Подразумевано)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Погледајте верзију апликације, системске информације и списак измена"
+        "appInfoDesc": "Погледајте верзију апликације, системске информације и списак измена",
+        "colors": {
+            "green": "Зелена",
+            "red": "Црвена",
+            "blue": "Плава",
+            "purple": "Љубичаста",
+            "orange": "Наранџаста",
+            "yellow": "Жута"
+        },
+        "failedToFetchReleases": "Није успело преузимање издања. Проверите интернет везу."
     },
     "common": {
         "close": "Цлосе",
@@ -168,7 +178,10 @@
         "criticalInit": "А цритицал еррор оццурред дуринг инитиализатион.",
         "networkError": "Нетwорк цоннецтион еррор. Плеасе цхецк yоур интернет цоннецтион.",
         "serverError": "Сервер еррор ({status}): Фаилед то лоад цонтент.",
-        "contentLoadFailed": "Фаилед то лоад цонтент. Плеасе трy агаин латер."
+        "contentLoadFailed": "Фаилед то лоад цонтент. Плеасе трy агаин латер.",
+        "pageTitle": "Грешка при учитавању странице",
+        "retry": "Покушај поново",
+        "goHome": "Иди на почетну"
     },
     "splash": {
         "loadingStatus": "Оптимизинг усер еxпериенце...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "Цоннецтион Лост",
         "connectedTitle": "Цоннецтед",
         "slowConnectionTitle": "Слоw Цоннецтион",
-        "storageFull": "Стораге лимит реацхед. Цхангес цаннот бе савед перманентлy.",
-        "storageFullTitle": "Стораге Фулл"
+        "storageFull": "Достигнуто је ограничење простора. Промене се не могу трајно сачувати.",
+        "storageFullTitle": "Простор је пун"
     },
     "search": {
         "title": "Сеарцх",
@@ -238,10 +251,11 @@
         "stop": "Стоп",
         "moreInfo": "Море Инфо",
         "nextEpisode": "Неxт Еписоде",
-        "selectServer": "Селецт Сервер",
+        "selectServer": "Изабери сервер",
         "loading": "Лоадинг...",
         "statusTitle": "Плаyер ис такинг тоо лонг",
-        "statusMessage": "Тхе цонфигуред плаyер провидер дид нот респонд yет. Yоу цан го бацк ор цханге тхе плаyер ендпоинт ин Сеттингс."
+        "statusMessage": "Тхе цонфигуред плаyер провидер дид нот респонд yет. Yоу цан го бацк ор цханге тхе плаyер ендпоинт ин Сеттингс.",
+        "tracksTitle": "Аудио и титлови"
     },
     "playlists": {
         "title": "Мy Плаyлистс",
@@ -252,7 +266,7 @@
         "items": "Плаyлист Итемс",
         "type_label": "Плаyлист",
         "delete": "Делете Плаyлист",
-        "deleteConfirmTitle": "Делете Плаyлист",
+        "deleteConfirmTitle": "Обриши плејлисту",
         "deleteConfirmMessage": "Аре yоу суре yоу wант то делете тхис плаyлист?",
         "deleteConfirmMessageNamed": "Аре yоу суре yоу wант то делете",
         "cancel": "Цанцел",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "Тхис плаyлист ис емптy.",
         "playAll": "Плаy Алл",
         "editInfo": "Едит Инфо",
-        "removeItemTitle": "Ремове Итем",
-        "removeItemMessage": "Аре yоу суре yоу wант то ремове тхис итем фром тхе плаyлист?",
-        "moveItem": "Мове Итем",
-        "deleteItem": "Ремове Итем",
+        "removeItemTitle": "Уклони ставку",
+        "removeItemMessage": "Да ли сте сигурни да желите да уклоните ову ставку са плејлисте?",
+        "moveItem": "Премести ставку",
+        "deleteItem": "Уклони ставку",
         "description_default": "Yоур персонал цоллецтион оф фаворите мовиес анд схоwс.",
         "create_new": "Цреате Неw Плаyлист",
         "moveUp": "Мове Итем Уп",
@@ -414,14 +428,14 @@
         "world_showcase": "Wорлд Схоwцасе"
     },
     "collections": {
-        "title": "Цоллецтионс",
-        "searchPlaceholder": "Сеарцх цоллецтионс (е.г. Харрy Поттер, Марвел...)",
-        "popular": "Популар Цоллецтионс",
-        "noResults": "Но цоллецтионс фоунд",
+        "title": "Колекције",
+        "searchPlaceholder": "Претражи колекције (нпр. Хари Потер, Марвел...)",
+        "popular": "Популарне колекције",
+        "noResults": "Није пронађена ниједна колекција",
         "films": "{count} филмс",
-        "saveToPlaylist": "Саве ас Плаyлист",
-        "savedSuccess": "Цоллецтион савед ас плаyлист!",
-        "alreadySaved": "Тхис цоллецтион ис алреадy савед"
+        "saveToPlaylist": "Сачувај као плејлисту",
+        "savedSuccess": "Колекција је сачувана као плејлиста!",
+        "alreadySaved": "Ова колекција је већ сачувана"
     },
     "details": {
         "play": "Плаy",
@@ -450,7 +464,8 @@
         "synopsis": "Сyнопсис",
         "castAndCrew": "Цаст & Цреw",
         "noExtras": "Но еxтрас ор траилерс аваилабле.",
-        "noCast": "Но цаст информатион аваилабле."
+        "noCast": "Но цаст информатион аваилабле.",
+        "tabSeasons": "Епизоде"
     },
     "livetv": {
         "title": "Ливе ТВ",
@@ -566,6 +581,6 @@
         "confirm": "Еxит",
         "cancel": "Цанцел"
     },
-    "update_status_permission_required": "Пермиссион реqуиред то инсталл упдатес. Енабле ин сеттингс анд тап Ретрy.",
-    "update_retry": "Ретрy"
+    "update_status_permission_required": "Потребна је дозвола за инсталацију ажурирања. Омогућите у подешавањима и додирните Покушај поново.",
+    "update_retry": "Понови"
 }

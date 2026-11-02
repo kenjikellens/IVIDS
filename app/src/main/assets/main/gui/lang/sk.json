@@ -12,7 +12,8 @@
         "playlists": "Playlists",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "Nedávno sledované"
     },
     "account": {
         "title": "Account",
@@ -49,7 +50,7 @@
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "Vybrať farbu",
         "updates": "App Updates",
         "updateMode": "Update Mode",
         "updateModeDesc": "Choose how the app handles updates",
@@ -106,23 +107,23 @@
         "whatsNew": "What's New:",
         "later": "Later",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "Obsah",
+        "adultContent": "Obsah pre dospelých",
+        "adultContentDesc": "Zobraziť obsah pre dospelých pri prehliadaní a výsledkoch vyhľadávania",
+        "adultContentOn": "Zapnuté",
+        "adultContentOff": "Vypnuté",
+        "adultContentWarning": "Varovanie: Povolenie tejto možnosti zobrazí explicitný obsah pre dospelých. Odporúčané len pre používateľov od 18 rokov.",
+        "dataSaver": "Šetrič dát / Pomalý internet",
+        "dataSaverDesc": "Načítať obrázky v nižšej kvalite a znížiť využitie siete",
+        "devConsoleTitle": "Konzola pre vývojárov",
+        "devConsoleDesc": "Preskúmajte experimentálne zostavy vetiev a nasadenia vydaní",
+        "devOfficialReleases": "Oficiálne vydania",
+        "devBleedingEdge": "Experimentálna verzia",
+        "installed": "Nainštalované",
+        "activeTag": "Aktívne",
+        "noUpdateDesc": "Používate najnovšiu verziu IVIDS.",
+        "updateFoundDesc": "Nová verzia IVIDS je pripravená na inštaláciu.",
+        "updateErrorDesc": "Nepodarilo sa spojiť so serverom aktualizácií. Skontrolujte pripojenie.",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (Predvolené)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "Zobraziť verziu aplikácie, systémové informácie a zoznam zmien"
+        "appInfoDesc": "Zobraziť verziu aplikácie, systémové informácie a zoznam zmien",
+        "colors": {
+            "green": "Zelená",
+            "red": "Červená",
+            "blue": "Modrá",
+            "purple": "Fialová",
+            "orange": "Oranžová",
+            "yellow": "Žltá"
+        },
+        "failedToFetchReleases": "Nepodarilo sa načítať vydania. Skontrolujte internetové pripojenie."
     },
     "common": {
         "close": "Close",
@@ -168,7 +178,10 @@
         "criticalInit": "A critical error occurred during initialization.",
         "networkError": "Network connection error. Please check your internet connection.",
         "serverError": "Server error ({status}): Failed to load content.",
-        "contentLoadFailed": "Failed to load content. Please try again later."
+        "contentLoadFailed": "Failed to load content. Please try again later.",
+        "pageTitle": "Chyba pri načítaní stránky",
+        "retry": "Skúsiť znova",
+        "goHome": "Prejsť na Domov"
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "Connection Lost",
         "connectedTitle": "Connected",
         "slowConnectionTitle": "Slow Connection",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "Limit úložiska bol dosiahnutý. Zmeny nie je možné natrvalo uložiť.",
+        "storageFullTitle": "Úložisko je plné"
     },
     "search": {
         "title": "Search",
@@ -238,10 +251,11 @@
         "stop": "Stop",
         "moreInfo": "More Info",
         "nextEpisode": "Next Episode",
-        "selectServer": "Select Server",
+        "selectServer": "Vybrať server",
         "loading": "Loading...",
         "statusTitle": "Player is taking too long",
-        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings."
+        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
+        "tracksTitle": "Zvuk a titulky"
     },
     "playlists": {
         "title": "My Playlists",
@@ -252,7 +266,7 @@
         "items": "Playlist Items",
         "type_label": "Playlist",
         "delete": "Delete Playlist",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "Vymazať zoznam skladieb",
         "deleteConfirmMessage": "Are you sure you want to delete this playlist?",
         "deleteConfirmMessageNamed": "Are you sure you want to delete",
         "cancel": "Cancel",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "This playlist is empty.",
         "playAll": "Play All",
         "editInfo": "Edit Info",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "Odstrániť položku",
+        "removeItemMessage": "Naozaj chcete odstrániť túto položku zo zoznamu skladieb?",
+        "moveItem": "Presunúť položku",
+        "deleteItem": "Odstrániť položku",
         "description_default": "Your personal collection of favorite movies and shows.",
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
@@ -414,14 +428,14 @@
         "world_showcase": "World Showcase"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "Kolekcie",
+        "searchPlaceholder": "Hľadať kolekcie (napr. Harry Potter, Marvel...)",
+        "popular": "Populárne kolekcie",
+        "noResults": "Nenašli sa žiadne kolekcie",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "Uložiť ako zoznam skladieb",
+        "savedSuccess": "Kolekcia bola uložená ako zoznam skladieb!",
+        "alreadySaved": "Táto kolekcia je už uložená"
     },
     "details": {
         "play": "Play",
@@ -450,7 +464,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "Epizódy"
     },
     "livetv": {
         "title": "Live TV",
@@ -566,6 +581,6 @@
         "confirm": "Exit",
         "cancel": "Cancel"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "Na inštaláciu aktualizácií sa vyžaduje povolenie. Povoľte v nastaveniach a klepnite na Skúsiť znova.",
+    "update_retry": "Znova"
 }

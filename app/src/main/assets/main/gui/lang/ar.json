@@ -12,7 +12,8 @@
         "playlists": "قوائم التشغيل",
         "account": "الحساب",
         "livetv": "البث المباشر",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "شوهدت مؤخراً"
     },
     "account": {
         "title": "الحساب",
@@ -108,28 +109,28 @@
         "addM3uPlaylist": "Add Playlist",
         "playlistsCount": "{count} Playlists",
         "serversCount": "{count} خوادم",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "اختر اللون",
         "whatsNew": "ما هو الجديد:",
         "later": "لاحقاً",
         "changes": "التغييرات",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "المحتوى",
+        "adultContent": "محتوى للبالغين",
+        "adultContentDesc": "عرض محتوى البالغين في التصفح ونتائج البحث",
+        "adultContentOn": "مفعل",
+        "adultContentOff": "معطل",
+        "adultContentWarning": "تحذير: سيؤدي تمكين هذا إلى إظهار محتوى صريح للبالغين. يُوصى بهذا الإعداد فقط للمستخدمين بعمر 18 عامًا فما فوق.",
+        "dataSaver": "توفير البيانات / اتصال بطيء",
+        "dataSaverDesc": "تحميل صور بجودة أقل وتقليل استخدام الشبكة",
+        "devConsoleTitle": "لوحة تحكم المطور",
+        "devConsoleDesc": "استكشاف إصدارات الفروع التجريبية وعمليات النشر",
+        "devOfficialReleases": "الإصدارات الرسمية",
+        "devBleedingEdge": "إصدار تجريبي متقدم",
+        "installed": "مثبت",
+        "activeTag": "نشط",
+        "noUpdateDesc": "أنت تستخدم أحدث إصدار من IVIDS.",
+        "updateFoundDesc": "إصدار جديد من IVIDS جاهز للتثبيت.",
+        "updateErrorDesc": "تعذر الاتصال بخادم التحديث. تحقق من اتصالك.",
         "refresh": "تحديث",
         "viewChangelog": "عرض سجل التغييرات",
         "appPlatform": "المنصة",
@@ -148,7 +149,16 @@
         "delay100": "100 مللي ثانية (افتراضي)",
         "delay250": "250 مللي ثانية",
         "delay500": "500 مللي ثانية",
-        "appInfoDesc": "عرض إصدار التطبيق ومعلومات النظام وسجل التغييرات"
+        "appInfoDesc": "عرض إصدار التطبيق ومعلومات النظام وسجل التغييرات",
+        "colors": {
+            "green": "أخضر",
+            "red": "أحمر",
+            "blue": "أزرق",
+            "purple": "بنفسجي",
+            "orange": "برتقالي",
+            "yellow": "أصفر"
+        },
+        "failedToFetchReleases": "فشل في جلب الإصدارات. يرجى التحقق من اتصالك بالإنترنت."
     },
     "common": {
         "close": "إغلاق",
@@ -174,7 +184,10 @@
         "criticalInit": "حدث خطأ فادح أثناء التهيئة.",
         "networkError": "خطأ في الاتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت.",
         "serverError": "خطأ في الخادم ({status}): فشل تحميل المحتوى.",
-        "contentLoadFailed": "فشل تحميل المحتوى. يرجى المحاولة مرة أخرى لاحقًا."
+        "contentLoadFailed": "فشل تحميل المحتوى. يرجى المحاولة مرة أخرى لاحقًا.",
+        "pageTitle": "خطأ في تحميل الصفحة",
+        "retry": "إعادة المحاولة",
+        "goHome": "الرئيسية"
     },
     "splash": {
         "loadingStatus": "جاري تحسين تجربة المستخدم...",
@@ -186,8 +199,8 @@
         "connectionLostTitle": "فقد الاتصال",
         "connectedTitle": "متصل",
         "slowConnectionTitle": "اتصال بطيء",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "تم الوصول إلى الحد الأقصى للمساحة. لا يمكن حفظ التغييرات بشكل دائم.",
+        "storageFullTitle": "المساحة ممتلئة"
     },
     "search": {
         "title": "بحث",
@@ -247,7 +260,8 @@
         "loading": "جاري التحميل...",
         "statusTitle": "المشغل يستغرق وقتاً طويلاً",
         "statusMessage": "مزود المشغل الذي تم تكوينه لم يستجب بعد. يمكنك العودة أو تغيير رابط المشغل في الإعدادات.",
-        "selectServer": "Select Server"
+        "selectServer": "اختر الخادم",
+        "tracksTitle": "الصوت والترجمة"
     },
     "playlists": {
         "title": "قوائم التشغيل الخاصة بي",
@@ -257,7 +271,7 @@
         "empty": "لم يتم العثور على قوائم تشغيل. أنشئ واحدة!",
         "items": "عناصر قائمة التشغيل",
         "delete": "حذف قائمة التشغيل",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "حذف قائمة التشغيل",
         "deleteConfirmMessage": "هل أنت متأكد أنك تريد حذف هذه القائمة؟",
         "deleteConfirmMessageNamed": "هل أنت متأكد أنك تريد حذف",
         "cancel": "إلغاء",
@@ -268,10 +282,10 @@
         "playAll": "تشغيل الكل",
         "editInfo": "تعديل المعلومات",
         "type_label": "قائمة تشغيل",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "إزالة العنصر",
+        "removeItemMessage": "هل أنت متأكد من رغبتك في إزالة هذا العنصر من قائمة التشغيل؟",
+        "moveItem": "نقل العنصر",
+        "deleteItem": "إزالة العنصر",
         "description_default": "مجموعتك الشخصية من الأفلام والعروض المفضلة.",
         "create_new": "إنشاء قائمة تشغيل جديدة",
         "moveUp": "نقل العنصر لأعلى",
@@ -446,7 +460,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "الحلقات"
     },
     "livetv": {
         "title": "البث المباشر",
@@ -563,15 +578,15 @@
         "successLoggedIn": "مرحبًا بك مرة أخرى، {name}!"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "المجموعات",
+        "searchPlaceholder": "البحث في المجموعات (مثل هاري بوتر، مارفل...)",
+        "popular": "مجموعات شائعة",
+        "noResults": "لم يتم العثور على مجموعات",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "حفظ كقائمة تشغيل",
+        "savedSuccess": "تم حفظ المجموعة كقائمة تشغيل!",
+        "alreadySaved": "هذه المجموعة محفوظة بالفعل"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "الإذن مطلوب لتثبيت التحديثات. قم بتمكينه في الإعدادات واضغط على إعادة المحاولة.",
+    "update_retry": "إعادة المحاولة"
 }

@@ -12,7 +12,8 @@
         "playlists": "Playlists",
         "account": "Account",
         "livetv": "Live TV",
-        "collections": "Collections"
+        "collections": "Collections",
+        "recently_watched": "รับชมล่าสุด"
     },
     "account": {
         "title": "Account",
@@ -49,7 +50,7 @@
         "saved": "Settings saved!",
         "reset": "Reset to defaults!",
         "cancel": "Cancel",
-        "accentColorSelect": "Select Color",
+        "accentColorSelect": "เลือกสี",
         "updates": "App Updates",
         "updateMode": "Update Mode",
         "updateModeDesc": "Choose how the app handles updates",
@@ -106,23 +107,23 @@
         "whatsNew": "What's New:",
         "later": "Later",
         "branch": "Branch",
-        "contentSettings": "Content",
-        "adultContent": "Adult Content",
-        "adultContentDesc": "Show adult content in browsing and search results",
-        "adultContentOn": "On",
-        "adultContentOff": "Off",
-        "adultContentWarning": "Warning: Enabling this will show explicit adult content. This setting is only recommended for users 18+.",
-        "dataSaver": "Data Saver / Slow Internet",
-        "dataSaverDesc": "Load lower quality photos and reduce network activity",
-        "devConsoleTitle": "Developer Console",
-        "devConsoleDesc": "Explore bleeding-edge branch builds and release deployments",
-        "devOfficialReleases": "Official Releases",
-        "devBleedingEdge": "Bleeding Edge",
-        "installed": "Installed",
-        "activeTag": "Active",
-        "noUpdateDesc": "You are running the latest version of IVIDS.",
-        "updateFoundDesc": "A new version of IVIDS is ready to install.",
-        "updateErrorDesc": "Could not reach update server. Check your connection.",
+        "contentSettings": "เนื้อหา",
+        "adultContent": "เนื้อหาสำหรับผู้ใหญ่",
+        "adultContentDesc": "แสดงเนื้อหาสำหรับผู้ใหญ่ในการเรียกดูและผลการค้นหา",
+        "adultContentOn": "เปิด",
+        "adultContentOff": "ปิด",
+        "adultContentWarning": "คำเตือน: การเปิดใช้งานจะแสดงเนื้อหาสำหรับผู้ใหญ่ที่ชัดเจน แนะนำสำหรับผู้ใช้ที่มีอายุ 18 ปีขึ้นไปเท่านั้น",
+        "dataSaver": "โหมดประหยัดข้อมูล / อินเทอร์เน็ตช้า",
+        "dataSaverDesc": "โหลดรูปภาพคุณภาพต่ำลงและลดการใช้งานเครือข่าย",
+        "devConsoleTitle": "คอนโซลนักพัฒนา",
+        "devConsoleDesc": "สำรวจบิลด์สาขาที่ล้ำสมัยและการปรับใช้รีลีส",
+        "devOfficialReleases": "รีลีสอย่างเป็นทางการ",
+        "devBleedingEdge": "บิลด์ทดลอง",
+        "installed": "ติดตั้งแล้ว",
+        "activeTag": "ใช้งานอยู่",
+        "noUpdateDesc": "คุณกำลังใช้งาน IVIDS เวอร์ชันล่าสุด",
+        "updateFoundDesc": "IVIDS เวอร์ชันใหม่พร้อมติดตั้งแล้ว",
+        "updateErrorDesc": "ไม่สามารถติดต่อเซิร์ฟเวอร์อัปเดตได้ ตรวจสอบการเชื่อมต่อของคุณ",
         "refresh": "Refresh",
         "changes": "Changes",
         "viewChangelog": "View Changelog",
@@ -142,7 +143,16 @@
         "delay100": "100ms (ค่าเริ่มต้น)",
         "delay250": "250ms",
         "delay500": "500ms",
-        "appInfoDesc": "ดูเวอร์ชันแอป ข้อมูลระบบ และบันทึกการเปลี่ยนแปลง"
+        "appInfoDesc": "ดูเวอร์ชันแอป ข้อมูลระบบ และบันทึกการเปลี่ยนแปลง",
+        "colors": {
+            "green": "เขียว",
+            "red": "แดง",
+            "blue": "น้ำเงิน",
+            "purple": "ม่วง",
+            "orange": "ส้ม",
+            "yellow": "เหลือง"
+        },
+        "failedToFetchReleases": "ไม่สามารถดึงข้อมูลเวอร์ชันได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ"
     },
     "common": {
         "close": "Close",
@@ -168,7 +178,10 @@
         "criticalInit": "A critical error occurred during initialization.",
         "networkError": "Network connection error. Please check your internet connection.",
         "serverError": "Server error ({status}): Failed to load content.",
-        "contentLoadFailed": "Failed to load content. Please try again later."
+        "contentLoadFailed": "Failed to load content. Please try again later.",
+        "pageTitle": "เกิดข้อผิดพลาดในการโหลดหน้าเว็บ",
+        "retry": "ลองอีกครั้ง",
+        "goHome": "ไปหน้าแรก"
     },
     "splash": {
         "loadingStatus": "Optimizing user experience...",
@@ -180,8 +193,8 @@
         "connectionLostTitle": "Connection Lost",
         "connectedTitle": "Connected",
         "slowConnectionTitle": "Slow Connection",
-        "storageFull": "Storage limit reached. Changes cannot be saved permanently.",
-        "storageFullTitle": "Storage Full"
+        "storageFull": "ถึงขีดจำกัดพื้นที่เก็บข้อมูลแล้ว ไม่สามารถบันทึกการเปลี่ยนแปลงได้อย่างถาวร",
+        "storageFullTitle": "พื้นที่จัดเก็บเต็ม"
     },
     "search": {
         "title": "Search",
@@ -238,10 +251,11 @@
         "stop": "Stop",
         "moreInfo": "More Info",
         "nextEpisode": "Next Episode",
-        "selectServer": "Select Server",
+        "selectServer": "เลือกเซิร์ฟเวอร์",
         "loading": "Loading...",
         "statusTitle": "Player is taking too long",
-        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings."
+        "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
+        "tracksTitle": "เสียงและคำบรรยาย"
     },
     "playlists": {
         "title": "My Playlists",
@@ -252,7 +266,7 @@
         "items": "Playlist Items",
         "type_label": "Playlist",
         "delete": "Delete Playlist",
-        "deleteConfirmTitle": "Delete Playlist",
+        "deleteConfirmTitle": "ลบเพลย์ลิสต์",
         "deleteConfirmMessage": "Are you sure you want to delete this playlist?",
         "deleteConfirmMessageNamed": "Are you sure you want to delete",
         "cancel": "Cancel",
@@ -262,10 +276,10 @@
         "emptyPlaylist": "This playlist is empty.",
         "playAll": "Play All",
         "editInfo": "Edit Info",
-        "removeItemTitle": "Remove Item",
-        "removeItemMessage": "Are you sure you want to remove this item from the playlist?",
-        "moveItem": "Move Item",
-        "deleteItem": "Remove Item",
+        "removeItemTitle": "ลบรายการ",
+        "removeItemMessage": "คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้ออกจากเพลย์ลิสต์?",
+        "moveItem": "ย้ายรายการ",
+        "deleteItem": "ลบรายการ",
         "description_default": "Your personal collection of favorite movies and shows.",
         "create_new": "Create New Playlist",
         "moveUp": "Move Item Up",
@@ -414,14 +428,14 @@
         "world_showcase": "World Showcase"
     },
     "collections": {
-        "title": "Collections",
-        "searchPlaceholder": "Search collections (e.g. Harry Potter, Marvel...)",
-        "popular": "Popular Collections",
-        "noResults": "No collections found",
+        "title": "คอลเลกชัน",
+        "searchPlaceholder": "ค้นหาคอลเลกชัน (เช่น แฮร์รี่ พอตเตอร์, มาร์เวล...)",
+        "popular": "คอลเลกชันยอดนิยม",
+        "noResults": "ไม่พบคอลเลกชัน",
         "films": "{count} films",
-        "saveToPlaylist": "Save as Playlist",
-        "savedSuccess": "Collection saved as playlist!",
-        "alreadySaved": "This collection is already saved"
+        "saveToPlaylist": "บันทึกเป็นเพลย์ลิสต์",
+        "savedSuccess": "บันทึกคอลเลกชันเป็นเพลย์ลิสต์แล้ว!",
+        "alreadySaved": "คอลเลกชันนี้ถูกบันทึกไว้แล้ว"
     },
     "details": {
         "play": "Play",
@@ -450,7 +464,8 @@
         "synopsis": "Synopsis",
         "castAndCrew": "Cast & Crew",
         "noExtras": "No extras or trailers available.",
-        "noCast": "No cast information available."
+        "noCast": "No cast information available.",
+        "tabSeasons": "ตอน"
     },
     "livetv": {
         "title": "Live TV",
@@ -566,6 +581,6 @@
         "confirm": "Exit",
         "cancel": "Cancel"
     },
-    "update_status_permission_required": "Permission required to install updates. Enable in settings and tap Retry.",
-    "update_retry": "Retry"
+    "update_status_permission_required": "ต้องได้รับอนุญาตเพื่อติดตั้งการอัปเดต เปิดใช้งานในการตั้งค่าแล้วแตะลองอีกครั้ง",
+    "update_retry": "ลองใหม่"
 }
