@@ -1210,18 +1210,49 @@ input, textarea, select { font: inherit; }
 .playlist-selection-list .playlist-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0 !important; box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 500; justify-content: space-between; min-height: 52px; padding: 14px 18px; text-align: left; width: 100%; }
 /* Top border for first option in modal lists. */
 .playlist-selection-list .playlist-item:first-child { border-top: 1px solid #222222; }
-/* Landscape/TV vertical modal options stack with rounded tactile cards. */
+/* Landscape/TV Language modal dialog container - Expands width for 3-column remote navigation grid */
+#language-modal .modal__dialog { max-width: 880px; width: 90vw; }
+/* Landscape/TV Language modal body - Scrollable container for TV remote spatial navigation */
+#language-modal .modal__body { box-sizing: border-box; max-height: min(62vh, 480px); overflow-y: auto; padding: 12px 14px 18px; scroll-behavior: smooth; scroll-padding-top: 10px; scroll-padding-bottom: 10px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; }
+/* Landscape/TV Language modal body scrollbar track */
+#language-modal .modal__body::-webkit-scrollbar { display: block !important; width: 6px; }
+/* Landscape/TV Language modal body scrollbar thumb */
+#language-modal .modal__body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); border-radius: 4px; }
+/* Landscape/TV Language selection grid - 3-column structured grid for deterministic D-pad vectors */
+#language-modal .language-selection-grid { box-sizing: border-box; display: grid; gap: 12px; grid-template-columns: repeat(3, 1fr); padding: 4px 2px; width: 100%; }
+/* Landscape/TV Language selection grid - 2-column fallback for compact landscape viewports */
+@media (max-width: 1024px) {
+    #language-modal .language-selection-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* Landscape/TV Language stepper container - Hidden in landscape mode in favor of the full 3-column grid */
+#language-modal .language-stepper-container { display: none !important; }
+/* Landscape/TV Language modal footer - Horizontal button alignment for TV navigation */
+#language-modal .modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex !important; flex-direction: row !important; gap: 12px !important; justify-content: flex-end !important; align-items: center !important; margin-top: 16px !important; padding-top: 14px !important; width: 100% !important; }
+/* Landscape/TV Language modal footer buttons - Consistent button sizing for TV remote confirmation */
+#language-modal .modal__footer .btn { flex: 0 0 auto !important; min-width: 140px !important; width: auto !important; }
+/* Landscape/TV vertical modal options stack fallback for non-language selectors like colors */
 .language-selection-grid { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; width: 100%; }
-/* Landscape/TV modal option card with subtle surface, border, and focus outline. */
+/* Landscape/TV modal option card with subtle surface, border, and focus outline */
 .language-card { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md); box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 600; gap: 14px; justify-content: space-between; min-height: 52px; padding: 12px 18px; text-align: left; transition: background-color 150ms ease, border-color 150ms ease; width: 100%; }
+/* Landscape/TV modal option card hover highlight */
 .language-card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.25); }
-.language-card:focus, .language-card:focus-visible, .language-card.focused { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; outline: none; }
+/* Landscape/TV modal option card remote D-pad focus indicator */
+.language-card:focus, .language-card:focus-visible, .language-card.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: 2px solid #ffffff; }
+/* Landscape/TV modal option card active selection state */
 .language-card.is-active { background: rgba(var(--primary-rgb), 0.14); border-color: var(--primary-color); color: var(--primary-color); font-weight: 700; }
-.language-card.is-active:focus, .language-card.is-active.focused { border-color: #ffffff; }
+/* Landscape/TV modal option card active state with remote D-pad focus */
+.language-card.is-active:focus, .language-card.is-active.focused { border-color: #ffffff; outline: 2px solid #ffffff; }
+/* Landscape/TV modal option card active text label color */
 .language-card.is-active .language-card__name { color: var(--primary-color); font-weight: 700; }
+/* Landscape/TV modal option card text label truncation */
 .language-card__name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Landscape/TV modal option card checkmark icon indicator */
 .language-card__check { color: var(--primary-color); font-size: 18px; font-weight: 800; opacity: 0; }
+/* Landscape/TV modal option card active checkmark visibility */
 .language-card.is-active .language-card__check { opacity: 1; }
+/* Landscape/TV modal option card flag emoji display */
+.language-card__flag { flex-shrink: 0; font-family: "Twemoji Country Flags", inherit; font-size: 22px; line-height: 1; margin-right: 2px; }
+/* Landscape/TV modal option card circular color dot */
 .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; flex-shrink: 0; height: 22px; margin-right: 14px; width: 22px; }
 
 

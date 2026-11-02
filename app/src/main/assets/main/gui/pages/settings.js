@@ -1271,8 +1271,12 @@ class SettingsManager {
 
         let focusTarget = null;
         if (modalId === 'language-modal') {
-            focusTarget = modal.querySelector('#language-selection-grid .language-card') ||
+            focusTarget = modal.querySelector('#language-selection-grid .language-card.is-active') ||
+                modal.querySelector('#language-selection-grid .language-card') ||
                 document.getElementById('lang-next-btn') || document.getElementById('lang-prev-btn');
+            if (focusTarget && typeof focusTarget.scrollIntoView === 'function') {
+                focusTarget.scrollIntoView({ block: 'center', behavior: 'auto' });
+            }
         } else if (modalId === 'color-modal' || modalId === 'update-mode-modal' || modalId === 'delay-action-modal') {
             focusTarget = modal.querySelector('.language-card.is-active, .chip--option.is-active, .language-card, .chip--option');
         } else if (modalId === 'player-modal') {
@@ -1416,8 +1420,8 @@ class SettingsManager {
     }
 
     /**
-     * Renders the available language choices as searchable native-name rows with flags.
-     * Each choice updates the pending language and commits it immediately.
+     * Populates all language options as focusable cards for spatial navigation in landscape and touch rows in mobile.
+     * Updates #language-selection-grid DOM elements and mutates pendingSettings.language upon user selection.
      */
     renderLanguageOptions() {
         const grid = document.getElementById('language-selection-grid');
@@ -1425,17 +1429,16 @@ class SettingsManager {
         const searchInput = document.getElementById('language-search');
 
         const mobileLayout = window.matchMedia?.('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)').matches;
-        if (!mobileLayout) {
-            grid.replaceChildren();
+        if (mobileLayout) {
+            searchInput?.classList.remove('hidden');
+            if (searchInput) {
+                searchInput.value = '';
+                searchInput.oninput = () => this.filterLanguageOptions(searchInput.value);
+            }
+        } else {
             searchInput?.classList.add('hidden');
-            return;
         }
 
-        searchInput?.classList.remove('hidden');
-        if (searchInput) {
-            searchInput.value = '';
-            searchInput.oninput = () => this.filterLanguageOptions(searchInput.value);
-        }
         grid.replaceChildren();
         LANGUAGE_OPTIONS.forEach(({ code, name }) => {
             const match = name.match(/^([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])\s+(.*)$/);
@@ -1443,6 +1446,7 @@ class SettingsManager {
             card.type = 'button';
             card.className = 'language-card focusable universal-onclick';
             card.dataset.language = code;
+            card.dataset.value = code;
             card.setAttribute('aria-pressed', String((this.pendingSettings.language || 'en') === code));
 
             const flag = document.createElement('span');
@@ -1456,11 +1460,15 @@ class SettingsManager {
             check.setAttribute('aria-hidden', 'true');
             check.textContent = '✓';
             card.append(flag, label, check);
-            card.onclick = async () => {
+            card.onclick = async (e) => {
+                e.stopPropagation();
+                const wasActive = (this.pendingSettings.language === code);
                 this.pendingSettings.language = code;
                 this.syncLanguageOptions();
-                if (window.i18n) await window.i18n.setLanguage(code);
-                await this.applyPending('language');
+                if (mobileLayout || wasActive) {
+                    if (window.i18n) await window.i18n.setLanguage(code);
+                    await this.applyPending('language');
+                }
             };
             grid.appendChild(card);
         });
