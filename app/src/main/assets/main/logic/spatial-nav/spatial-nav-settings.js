@@ -49,30 +49,23 @@ function findNextInModal(current, direction, modal) {
     const focusables = Array.from(modal.querySelectorAll('.focusable')).filter(isElementVisible);
     if (focusables.length === 0) return current;
 
-    // 1. Language Stepper Modal
-    if (modal.id === 'language-modal') {
-        const prevBtn = document.getElementById('lang-prev-btn');
-        const nextBtn = document.getElementById('lang-next-btn');
-        const applyBtn = modal.querySelector('.modal__footer .btn--primary');
-        const cancelBtn = modal.querySelector('.modal__footer .btn--secondary');
+    // 1. TV language list and stacked footer actions
+    if (modal.id === 'language-modal' && !SpatialNav.isPortrait()) {
+        const grid = modal.querySelector('#language-selection-grid');
+        const cards = Array.from(grid?.querySelectorAll('.language-card.focusable') || []).filter(isElementVisible);
+        const backBtn = modal.querySelector('.modal__back-btn.focusable');
+        const cardIndex = cards.indexOf(current);
 
-        if (current === prevBtn) {
-            if (direction === 'right') return nextBtn;
-            if (direction === 'down') return applyBtn || cancelBtn;
+        if (cardIndex !== -1) {
+            if (direction === 'up') return cardIndex > 0 ? cards[cardIndex - 1] : (backBtn || current);
+            if (direction === 'left') return backBtn || current;
+            if (direction === 'down') return cardIndex < cards.length - 1 ? cards[cardIndex + 1] : current;
             return current;
         }
-        if (current === nextBtn) {
-            if (direction === 'left') return prevBtn;
-            if (direction === 'down') return applyBtn || cancelBtn;
-            return current;
-        }
-        if (current === applyBtn) {
-            if (direction === 'up') return nextBtn || prevBtn;
-            if (direction === 'down') return cancelBtn;
-            return current;
-        }
-        if (current === cancelBtn) {
-            if (direction === 'up') return applyBtn || nextBtn;
+
+        if (current === backBtn) {
+            if (direction === 'right') return cards.find(card => card.classList.contains('is-active')) || cards[0] || current;
+            if (direction === 'down') return cards[0] || current;
             return current;
         }
     }

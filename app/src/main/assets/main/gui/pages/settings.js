@@ -86,6 +86,8 @@ class SettingsManager {
         this.settings = this.loadSettings();
         this.pendingSettings = {};
         this.currentModal = null;
+        this.languageModalCopyCache = new Map();
+        this.languageModalPreviewToken = 0;
         this.isCheckingUpdates = false;
         this.movingProviderId = null;
         this.movingM3uId = null;
@@ -1352,7 +1354,7 @@ class SettingsManager {
                     e.stopPropagation();
                 }
                 if (modalId === 'language-modal') {
-                    this.applyPending('language');
+                    this.closeModal();
                 } else if (['color-modal', 'update-mode-modal', 'player-modal', 'm3u-modal', 'delay-action-modal'].includes(modalId)) {
                     this.applyPending(key);
                 } else {
@@ -1423,6 +1425,41 @@ class SettingsManager {
      * Populates all language options as focusable cards for spatial navigation in landscape and touch rows in mobile.
      * Updates #language-selection-grid DOM elements and mutates pendingSettings.language upon user selection.
      */
+    async previewLanguageModalHeading(languageCode, focusTarget) {
+        const title = document.getElementById('language-modal-title');
+        const subtitle = document.getElementById('language-modal-subtitle');
+        if (!title || !subtitle || !languageCode || !focusTarget) return;
+
+        const token = ++this.languageModalPreviewToken;
+        let copyPromise = this.languageModalCopyCache.get(languageCode);
+        if (!copyPromise) {
+            copyPromise = fetch(`lang/${languageCode}.json?t=${Date.now()}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`Unable to load ${languageCode} translations`);
+                    return response.json();
+                })
+                .then(data => ({
+                    title: data.settings?.language || 'Language',
+                    subtitle: data.settings?.selectLanguage || 'Select your language'
+                }));
+            this.languageModalCopyCache.set(languageCode, copyPromise);
+        }
+
+        try {
+            const copy = await copyPromise;
+            const stillFocused = document.activeElement === focusTarget || focusTarget.classList.contains('focused');
+            if (token !== this.languageModalPreviewToken || !stillFocused) return;
+            title.textContent = copy.title;
+            subtitle.textContent = copy.subtitle;
+        } catch (error) {
+            console.warn(`Could not preview ${languageCode} language heading:`, error);
+        }
+    }
+
+    /**
+     * Populates all language options as focusable cards for spatial navigation in landscape and touch rows in mobile.
+     * Updates #language-selection-grid DOM elements and commits the focused choice on TV selection.
+     */
     renderLanguageOptions() {
         const grid = document.getElementById('language-selection-grid');
         if (!grid) return;
@@ -1440,6 +1477,13 @@ class SettingsManager {
         }
 
         grid.replaceChildren();
+        const modal = document.getElementById('language-modal');
+        const tvLandscape = window.matchMedia?.('(orientation: landscape) and (min-width: 1024px) and (min-height: 501px)').matches;
+        const backButton = modal?.querySelector('.modal__back-btn');
+        if (tvLandscape && backButton) {
+            backButton.addEventListener('focus', () => this.previewLanguageModalHeading(this.settings.language || 'en', backButton));
+        }
+
         LANGUAGE_OPTIONS.forEach(({ code, name }) => {
             const match = name.match(/^([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])\s+(.*)$/);
             const card = document.createElement('button');
@@ -1448,6 +1492,9 @@ class SettingsManager {
             card.dataset.language = code;
             card.dataset.value = code;
             card.setAttribute('aria-pressed', String((this.pendingSettings.language || 'en') === code));
+            if (tvLandscape) {
+                card.addEventListener('focus', () => this.previewLanguageModalHeading(code, card));
+            }
 
             const flag = document.createElement('span');
             flag.className = 'language-card__flag';
@@ -1462,13 +1509,9 @@ class SettingsManager {
             card.append(flag, label, check);
             card.onclick = async (e) => {
                 e.stopPropagation();
-                const wasActive = (this.pendingSettings.language === code);
                 this.pendingSettings.language = code;
                 this.syncLanguageOptions();
-                if (mobileLayout || wasActive) {
-                    if (window.i18n) await window.i18n.setLanguage(code);
-                    await this.applyPending('language');
-                }
+                await this.applyPending('language');
             };
             grid.appendChild(card);
         });

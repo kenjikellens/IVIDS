@@ -220,10 +220,15 @@
 <!-- Language Modal -->
 <div id="language-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
-        </button>
-        <h2 id="language-modal-title" class="modal__title" data-i18n="settings.language">Language</h2>
+        <div class="language-modal__heading">
+            <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+                <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            </button>
+            <div class="language-modal__heading-copy">
+                <h2 id="language-modal-title" class="modal__title" data-i18n="settings.language">Language</h2>
+                <p id="language-modal-subtitle" class="language-modal__subtitle" data-i18n="settings.selectLanguage">Select your language</p>
+            </div>
+        </div>
         <div class="modal__body">
             <div class="language-search-wrapper">
                 <input id="language-search" class="form-input language-search focusable hidden" type="search"
@@ -242,10 +247,6 @@
                     <img src="images/arrow.svg" class="setting-stepper-icon" alt="Next">
                 </button>
             </div>
-        </div>
-        <div class="modal__footer btn-group btn-group--end">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
-            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
