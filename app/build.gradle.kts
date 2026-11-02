@@ -37,7 +37,7 @@ android {
             )
         }
         debug {
-            // Use Android's default debug keystore; release signing is reserved for release builds.
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
