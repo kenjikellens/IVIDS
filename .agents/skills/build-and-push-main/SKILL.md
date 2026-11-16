@@ -23,8 +23,8 @@ Bij het uitvoeren van deze workflow worden de volgende bestanden bijgewerkt en m
 3. **Gewijzigde applicatiebronbestanden**:
    - Alle gewijzigde features, fixes of stijlen onder `app/src/main/assets/main/` (bijv. JS, CSS, HTML).
 4. **Binaire uitvoerbestanden (gegenereerd in de projectroot)**:
-   - **`IVIDS.exe`**: De gecompileerde Windows Portable Executable (staat in `.gitignore`, wordt **niet** gecommit in git).
-   - **`IVIDS.apk`**: De gecompileerde Android installatie-APK (staat in `.gitignore`, wordt **niet** gecommit in git).
+   - **`IVIDS.exe`**: De gecompileerde Windows Portable Executable (getracked via Git LFS, **wel** stagen, committen en pushen).
+   - **`IVIDS.apk`**: De gecompileerde Android installatie-APK (getracked in git, **wel** stagen, committen en pushen).
 
 ---
 
@@ -70,15 +70,16 @@ Bij het uitvoeren van deze workflow worden de volgende bestanden bijgewerkt en m
   ```powershell
   Get-Item "IVIDS.exe", "IVIDS.apk" | Select-Object Name, Length, LastWriteTime
   ```
-- **Let op**: `IVIDS.exe` en `IVIDS.apk` staan in `.gitignore` en worden niet in git opgeslagen, maar dienen voor lokale distributie en testing.
+- **Let op**: `IVIDS.exe` (via Git LFS) en `IVIDS.apk` zijn getracked in git en **moeten** samen met `app/build.gradle.kts` gecommit en naar `main` gepusht worden.
 
 ---
 
 ### 4. Stage en Commit de Gewijzigde Bestanden
-- **ACTION**: Stage de gewijzigde bronbestanden en de automatisch opgehoogde `app/build.gradle.kts`:
+- **ACTION**: Stage de gewijzigde bronbestanden, de automatisch opgehoogde `app/build.gradle.kts`, én de gebouwde binaries (`IVIDS.exe` en `IVIDS.apk`):
   ```powershell
   git add app/build.gradle.kts
   git add app/src/
+  git add IVIDS.exe IVIDS.apk
   # Voeg overige gewijzigde bestanden toe
   ```
 - **Commit met duidelijke boodschap**:
