@@ -196,10 +196,12 @@ export async function init(params) {
         renderCategoriesList();
         filterAndRenderChannels(true);
         SpatialNav.focusFirst();
-        return;
+        if (sourceManager.isCacheComplete) {
+            return;
+        }
+    } else {
+        renderLoadingSkeletons();
     }
-
-    renderLoadingSkeletons();
 
     if (!loadSourcesPromise) {
         loadSourcesPromise = loadAllSources().then(() => {
@@ -217,12 +219,14 @@ export async function init(params) {
 }
 
 /**
- * Instantiates the unified LiveStreamEngine bound to #livetv-preview-video and syncs the minimal preview prompt visibility.
+ * Instantiates the unified LiveStreamEngine bound to #livetv-preview-video and toggles
+ * loading spinner or unavailable error text without middle overlay buttons.
  */
 function initPreviewEngine() {
     const video = document.getElementById('livetv-preview-video');
     const loader = document.getElementById('preview-video-loading');
     const previewCard = document.getElementById('livetv-preview-card');
+    const offlineMsg = document.getElementById('preview-offline-message');
     if (!video) return;
 
     if (previewEngine) {
@@ -233,15 +237,21 @@ function initPreviewEngine() {
         isPreview: true,
         onLoading: () => {
             if (previewCard) previewCard.classList.remove('is-playing');
+            if (offlineMsg) offlineMsg.classList.add('hidden');
             if (loader) loader.classList.remove('hidden');
         },
         onPlaying: () => {
             if (loader) loader.classList.add('hidden');
+            if (offlineMsg) offlineMsg.classList.add('hidden');
             if (previewCard) previewCard.classList.add('is-playing');
         },
         onOffline: () => {
             if (loader) loader.classList.add('hidden');
             if (previewCard) previewCard.classList.remove('is-playing');
+            if (offlineMsg) {
+                offlineMsg.textContent = I18n.t('livetv.previewUnavailable');
+                offlineMsg.classList.remove('hidden');
+            }
         }
     });
 }
@@ -405,9 +415,11 @@ async function loadAllSources() {
         if (empty) empty.classList.add('hidden');
 
         const settings = loadMergedSettings();
-        sourceManager.registerDefaultProviders(settings);
+        if (!sourceManager._inFlightPromise) {
+            sourceManager.registerDefaultProviders(settings);
+        }
 
-        let initialRenderDone = false;
+        let initialRenderDone = sourceManager.cachedChannels.length > 0;
         allChannels = await sourceManager.loadAllChannels(null, false, (progressChannels) => {
             allChannels = progressChannels;
             if (!initialRenderDone && allChannels.length > 0) {
@@ -415,14 +427,20 @@ async function loadAllSources() {
                 renderCategoriesList();
                 const currentFocused = document.querySelector('.focused');
                 filterAndRenderChannels(!currentFocused);
-            } else if (initialRenderDone) {
-                if (progressiveRenderTimer) clearTimeout(progressiveRenderTimer);
+            } else if (initialRenderDone && !progressiveRenderTimer) {
                 progressiveRenderTimer = setTimeout(() => {
+                    progressiveRenderTimer = null;
                     renderCategoriesList();
-                    if (renderedCount < CHUNK_SIZE) {
-                        filterAndRenderChannels(false);
+                    updateFilteredChannelsArray();
+                    if (renderedCount < CHUNK_SIZE && filteredChannels.length > renderedCount) {
+                        const container = document.getElementById('channels-list');
+                        if (container && container.querySelector('.is-skeleton')) {
+                            filterAndRenderChannels(false);
+                        } else {
+                            renderNextChunk();
+                        }
                     }
-                }, 1000);
+                }, 350);
             }
         });
 
@@ -542,12 +560,9 @@ async function showChannelDetail(channel) {
             previewChannelName.textContent = channel.name || '';
         }
 
-        const previewWatchBtn = document.getElementById('preview-watch-btn');
-        if (previewWatchBtn) {
-            previewWatchBtn.onclick = (e) => {
-                e.stopPropagation();
-                playChannel(channel);
-            };
+        const offlineMsg = document.getElementById('preview-offline-message');
+        if (offlineMsg) {
+            offlineMsg.classList.add('hidden');
         }
 
         const epgContainer = document.getElementById('hero-epg-container');
@@ -666,6 +681,10 @@ function cleanupPreview() {
     const loader = document.getElementById('preview-video-loading');
     if (loader) {
         loader.classList.add('hidden');
+    }
+    const offlineMsg = document.getElementById('preview-offline-message');
+    if (offlineMsg) {
+        offlineMsg.classList.add('hidden');
     }
 }
 

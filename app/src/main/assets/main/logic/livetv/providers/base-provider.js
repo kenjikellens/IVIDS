@@ -24,7 +24,7 @@ export class BaseStreamProvider {
         this.category = options.category || 'General';
         this.priority = typeof options.priority === 'number' ? options.priority : 50;
         this.enabled = options.enabled !== false;
-        this.timeoutMs = options.timeoutMs || 30000;
+        this.timeoutMs = options.timeoutMs || 10000;
     }
 
     /**

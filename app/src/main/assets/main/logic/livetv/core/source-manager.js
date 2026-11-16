@@ -27,6 +27,9 @@ export class SourceManager {
         this.cachedChannels = [];
         this.categoryIndex = new Map();
         this.lastFetchTimestamp = 0;
+        this.isCacheComplete = false;
+        this._inFlightPromise = null;
+        this._progressSubscribers = new Set();
         this.cacheTtlMs = 15 * 60 * 1000; // 15 minutes
     }
 
@@ -226,82 +229,111 @@ export class SourceManager {
      */
     async loadAllChannels(_deprecatedBrokenSet = null, forceRefresh = false, onProgress = null) {
         const now = Date.now();
-        if (!forceRefresh && this.cachedChannels.length > 0 && (now - this.lastFetchTimestamp < this.cacheTtlMs)) {
+        if (!forceRefresh && this.isCacheComplete && this.cachedChannels.length > 0 && (now - this.lastFetchTimestamp < this.cacheTtlMs)) {
             if (typeof onProgress === 'function') {
                 onProgress(this.cachedChannels);
             }
             return this.cachedChannels;
         }
 
+        if (typeof onProgress === 'function') {
+            this._progressSubscribers.add(onProgress);
+            if (this.cachedChannels.length > 0) {
+                onProgress(this.cachedChannels);
+            }
+        }
+
+        if (this._inFlightPromise && !forceRefresh) {
+            return this._inFlightPromise;
+        }
+
         const providerList = Array.from(this.providers.values()).filter(p => p.enabled);
         if (providerList.length === 0) return [];
 
+        this.isCacheComplete = false;
         const merged = [];
         const byNormalizedUrl = new Map();
         let lastProgressNotify = 0;
 
-        const fetchPromises = providerList.map(async provider => {
-            try {
-                const channels = await provider.fetchChannels();
-                if (Array.isArray(channels) && channels.length > 0) {
-                    let changed = false;
-                    channels.forEach(channel => {
-                        if (!(channel instanceof Channel)) {
-                            channel = new Channel(channel);
-                        }
-                        const normalized = channel.normalizedUrl;
-                        if (!normalized) return;
+        const notifySubscribers = (list) => {
+            this._progressSubscribers.forEach(cb => {
+                try {
+                    cb(list);
+                } catch (_) {
+                    // Ignore subscriber callback errors
+                }
+            });
+        };
 
-                        const existing = byNormalizedUrl.get(normalized);
-                        if (existing) {
-                            // Enrich existing channel if this regional provider supplies a concrete country tag
-                            if (!existing.country && channel.country) {
-                                existing.country = channel.country;
-                                changed = true;
+        this._inFlightPromise = (async () => {
+            const fetchPromises = providerList.map(async provider => {
+                try {
+                    const channels = await provider.fetchChannels();
+                    if (Array.isArray(channels) && channels.length > 0) {
+                        let changed = false;
+                        channels.forEach(channel => {
+                            if (!(channel instanceof Channel)) {
+                                channel = new Channel(channel);
                             }
-                            if (!existing.tvgId && channel.tvgId) {
-                                existing.tvgId = channel.tvgId;
-                            }
-                            if (!existing.logo && channel.logo) {
-                                existing.logo = channel.logo;
-                            }
-                            return;
-                        }
+                            const normalized = channel.normalizedUrl;
+                            if (!normalized) return;
 
-                        byNormalizedUrl.set(normalized, channel);
-                        merged.push(channel);
-                        changed = true;
-                    });
+                            const existing = byNormalizedUrl.get(normalized);
+                            if (existing) {
+                                // Enrich existing channel if this regional provider supplies a concrete country tag
+                                if (!existing.country && channel.country) {
+                                    existing.country = channel.country;
+                                    changed = true;
+                                }
+                                if (!existing.tvgId && channel.tvgId) {
+                                    existing.tvgId = channel.tvgId;
+                                }
+                                if (!existing.logo && channel.logo) {
+                                    existing.logo = channel.logo;
+                                }
+                                return;
+                            }
 
-                    if (changed) {
-                        this.cachedChannels = merged;
-                        const ts = Date.now();
-                        if (typeof onProgress === 'function' && (lastProgressNotify === 0 || (ts - lastProgressNotify) >= 400)) {
-                            lastProgressNotify = ts;
-                            this._rebuildCategoryIndex(merged, false);
-                            onProgress(merged);
+                            byNormalizedUrl.set(normalized, channel);
+                            merged.push(channel);
+                            changed = true;
+                        });
+
+                        if (changed) {
+                            this.cachedChannels = merged;
+                            const ts = Date.now();
+                            if (lastProgressNotify === 0 || (ts - lastProgressNotify) >= 350) {
+                                lastProgressNotify = ts;
+                                this._rebuildCategoryIndex(merged, false);
+                                notifySubscribers(merged);
+                            }
                         }
                     }
+                    return channels;
+                } catch (err) {
+                    console.warn(`[SourceManager] Provider ${provider.name} failed:`, err);
+                    return [];
                 }
-                return channels;
-            } catch (err) {
-                console.warn(`[SourceManager] Provider ${provider.name} failed:`, err);
-                return [];
-            }
-        });
+            });
 
-        await Promise.allSettled(fetchPromises);
-        this._sortChannels(merged);
+            await Promise.allSettled(fetchPromises);
+            this._sortChannels(merged);
 
-        this.cachedChannels = merged;
-        this._rebuildCategoryIndex(merged, true);
-        this.lastFetchTimestamp = now;
-        return this.cachedChannels;
+            this.cachedChannels = merged;
+            this._rebuildCategoryIndex(merged, true);
+            this.lastFetchTimestamp = Date.now();
+            this.isCacheComplete = true;
+            this._inFlightPromise = null;
+            this._progressSubscribers.clear();
+            return this.cachedChannels;
+        })();
+
+        return this._inFlightPromise;
     }
 
     /**
      * Returns the count of registered providers.
-     * 
+     *
      * @returns {number}
      */
     getProviderCount() {
@@ -315,6 +347,9 @@ export class SourceManager {
         this.cachedChannels = [];
         this.categoryIndex.clear();
         this.lastFetchTimestamp = 0;
+        this.isCacheComplete = false;
+        this._inFlightPromise = null;
+        this._progressSubscribers.clear();
     }
 }
 

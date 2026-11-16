@@ -327,8 +327,8 @@
 #app .search-clear-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 /* Touch-friendly channel cards (>=44px tap target) on mobile. */
 #app .channel-card, #app .channel-list-item { height: auto; min-height: 46px; padding: 8px 12px; }
-/* Compact EPG strip padding on mobile. */
-#app .epg-panel, #app .epg-card { max-height: 74px; padding: 8px 12px; }
+/* Compact EPG and channel title strip padding on mobile. */
+#app .epg-panel, #app .epg-card { max-height: 92px; padding: 8px 12px; }
 /* Mobile fullscreen Live TV player compact 4-item OSD and 360px overflow safety. */
 #app .tv-overlay { padding: calc(12px + env(safe-area-inset-top, 12px)) 14px calc(16px + env(safe-area-inset-bottom, 12px)); }
 /* Touch-friendly >=44px top Back and Settings buttons on mobile. */
