@@ -16,10 +16,15 @@
             </button>
         </div>
 
+        <!-- Minimal Inline Offline Retry Fallback -->
+        <div id="tv-offline-fallback" class="tv-offline-fallback hidden">
+            <button class="btn btn--secondary btn--sm tv-retry-btn focusable universal-onclick" id="tv-retry-btn" type="button" data-i18n="livetv.retry">Retry</button>
+        </div>
+
         <div class="tv-overlay-bottom tv-bottom-bar">
             <div class="tv-controls-left">
                 <!-- Play/Pause Toggle -->
-                <button class="btn btn--primary btn--circle-xl play-pause-btn focusable universal-onclick" id="tv-play-pause" title="Play/Pause">
+                <button class="btn btn--primary btn--circle-lg play-pause-btn focusable universal-onclick" id="tv-play-pause" title="Play/Pause">
                     <img id="icon-pause" src="images/pause.svg" alt="Pause" class="btn__icon">
                     <img id="icon-play" src="images/play.svg" alt="Play" class="btn__icon hidden">
                 </button>

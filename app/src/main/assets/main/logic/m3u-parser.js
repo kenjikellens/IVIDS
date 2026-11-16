@@ -1,6 +1,7 @@
 /**
  * Simple M3U Parser for IVIDS
  */
+import { isSafeMediaUrl } from '../gui/js/utils/sanitize.js';
 
 export const M3UParser = {
     /**
@@ -75,7 +76,7 @@ export const M3UParser = {
                     const end = line.indexOf('"', start);
                     if (end !== -1) {
                         const rawLogo = line.substring(start, end).trim();
-                        if (/^https?:\/\//i.test(rawLogo) || rawLogo.startsWith('data:image/')) {
+                        if (isSafeMediaUrl(rawLogo)) {
                             currentChannel.logo = rawLogo;
                         }
                     }

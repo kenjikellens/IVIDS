@@ -6,6 +6,10 @@ const CONFIG = {
     HIDE_TRANSITION_DELAY: 600    // Animation transition removal delay (ms)
 };
 
+const ALLOWED_TOAST_TAGS = new Set(['SPAN', 'DIV', 'BUTTON', 'P', 'B', 'I', 'STRONG', 'EM', 'BR', 'SMALL']);
+const DROPPED_TOAST_TAGS = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'SVG', 'OBJECT', 'EMBED', 'NOSCRIPT', 'TEMPLATE']);
+const ALLOWED_TOAST_ATTRS = new Set(['class', 'id', 'type', 'data-i18n']);
+
 /**
  * Toast Notification Utility
  * Provides non-intrusive queued feedback in the corner of the screen.
@@ -31,9 +35,62 @@ export class Toast {
     }
 
     /**
+     * Sanitizes optional HTML toast markup using a strict tag and attribute allowlist.
+     * Preserves safe action elements (e.g., update buttons) while stripping scripts, SVGs, and event handlers.
+     * @param {string} rawHtml - Candidate HTML string for toast body rendering.
+     * @returns {DocumentFragment} Sanitized DOM fragment ready for safe insertion.
+     */
+    static sanitizeToastHtml(rawHtml) {
+        const fragment = document.createDocumentFragment();
+        if (typeof document === 'undefined') {
+            return fragment;
+        }
+        const template = document.createElement('template');
+        template.innerHTML = rawHtml === null || rawHtml === undefined ? '' : String(rawHtml);
+
+        const sanitizeNode = (node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                return document.createTextNode(node.textContent || '');
+            }
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+                return null;
+            }
+            const tagName = node.tagName.toUpperCase();
+            if (DROPPED_TOAST_TAGS.has(tagName)) {
+                return null;
+            }
+            if (!ALLOWED_TOAST_TAGS.has(tagName)) {
+                return document.createTextNode(node.textContent || '');
+            }
+            const cleanEl = document.createElement(tagName.toLowerCase());
+            for (const attr of Array.from(node.attributes)) {
+                const attrName = attr.name.toLowerCase();
+                if (ALLOWED_TOAST_ATTRS.has(attrName)) {
+                    cleanEl.setAttribute(attrName, attr.value);
+                }
+            }
+            for (const child of Array.from(node.childNodes)) {
+                const cleanChild = sanitizeNode(child);
+                if (cleanChild) {
+                    cleanEl.appendChild(cleanChild);
+                }
+            }
+            return cleanEl;
+        };
+
+        for (const child of Array.from(template.content.childNodes)) {
+            const cleanChild = sanitizeNode(child);
+            if (cleanChild) {
+                fragment.appendChild(cleanChild);
+            }
+        }
+        return fragment;
+    }
+
+    /**
      * Enqueues or displays a toast notification in the designated screen position.
      * Configures the DOM element synchronously to return it to callers, but defers display if max limit is reached.
-     * @param {string} message - Content message string (or HTML if options.isHtml is true).
+     * @param {string} message - Content message string (or sanitized HTML if options.isHtml is true).
      * @param {object} options - Custom render settings including title and duration.
      * @returns {HTMLElement} The created toast element.
      */
@@ -44,17 +101,18 @@ export class Toast {
             duration = CONFIG.DEFAULT_DURATION,
             position = 'bottom-right'
         } = options;
+        const safeType = String(type || 'success').replace(/[^a-zA-Z0-9_-]/g, '') || 'success';
 
         if (!this.containers[position]) this.init(position);
 
         const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
+        toast.className = `toast toast-${safeType}`;
 
         // Dynamic Icon generation based on type
         let iconHtml = '';
-        if (type === 'error' || type === 'warning') {
+        if (safeType === 'error' || safeType === 'warning') {
             iconHtml = '<div class="toast-icon-mask"></div>';
-        } else if (type === 'info') {
+        } else if (safeType === 'info') {
             iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
         } else {
             iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
@@ -70,14 +128,14 @@ export class Toast {
 
         if (title) {
             const titleEl = toast.querySelector('.toast-title');
-            if (titleEl) titleEl.textContent = title;
+            if (titleEl) titleEl.textContent = String(title);
         }
         const messageEl = toast.querySelector('.toast-message');
         if (messageEl) {
             if (options.isHtml) {
-                messageEl.innerHTML = message;
+                messageEl.replaceChildren(this.sanitizeToastHtml(message));
             } else {
-                messageEl.textContent = message;
+                messageEl.textContent = message === null || message === undefined ? '' : String(message);
             }
         }
 

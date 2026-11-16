@@ -1,5 +1,7 @@
 package com.kenjigames.ivids;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,14 +19,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
@@ -316,23 +321,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * A custom WebViewClient that aggressively blocks known advertisement domains and tracking scripts.
-     * It intercepts every network request made by the WebView and compares the host against a predefined blacklist.
-     * It also injects a simulated click when a known video provider page finishes loading to trigger autoplay.
+     * A custom WebViewClient that aggressively blocks known advertisement domains, serves bundled
+     * android_asset files with CORS/MIME headers for ES modules, and enforces local-app & SSRF
+     * guards on the /proxy endpoint.
      */
     private static class AdBlockingWebViewClient extends WebViewClient {
+        private final Context mAppContext;
+        private volatile String mCurrentMainFrameUrl = "file:///android_asset/main/gui/index.html";
+
         /**
-         * Intercepts individual resource requests made by the WebView.
-         * If the requested URL matches a known ad-serving host, it returns an empty response to block the ad.
-         * 
-         * @param view The WebView that is requesting the resource.
-         * @param request The WebResourceRequest containing the URL and headers.
-         * @return A WebResourceResponse containing empty data if blocked, or null to let the WebView load the resource normally.
+         * Initializes the WebViewClient with the application context for safe asset loading on WebView IO threads.
+         *
+         * @param context Activity or application context.
+         */
+        AdBlockingWebViewClient(Context context) {
+            this.mAppContext = context.getApplicationContext();
+        }
+
+        /**
+         * Intercepts bundled android_asset requests, local /proxy requests, and known ad hosts.
+         * Serves local assets safely without file:// universal access and enforces caller/SSRF checks on /proxy.
+         *
+         * @param view The WebView requesting the resource.
+         * @param request The WebResourceRequest containing URL, method, and headers.
+         * @return A WebResourceResponse when handled/blocked, or null to let WebView proceed normally.
          */
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             Uri url = request.getUrl();
+            if (url != null && "file".equalsIgnoreCase(url.getScheme())) {
+                String path = url.getPath();
+                if (path != null && path.startsWith("/android_asset/")) {
+                    return handleAssetRequest(url);
+                }
+            }
             if (url != null && ("localhost".equalsIgnoreCase(url.getHost()) || "127.0.0.1".equals(url.getHost())) && "/proxy".equals(url.getPath())) {
+                if (!isLocalAppProxyCaller(request)) {
+                    return buildErrorResponse(403, "Forbidden", createCorsHeaders());
+                }
+                if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                    return new WebResourceResponse("text/plain", "UTF-8", 200, "OK", createCorsHeaders(), new ByteArrayInputStream(new byte[0]));
+                }
                 return handleStreamProxyRequest(url);
             }
             if (url != null && isAd(url.getHost())) {
@@ -343,16 +372,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
+         * Updates the tracked main-frame URL when navigation starts so proxy caller checks stay thread-safe.
+         *
+         * @param view The WebView starting page load.
+         * @param url The URL being loaded in the main frame.
+         * @param favicon The page favicon if available.
+         */
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            mCurrentMainFrameUrl = url != null ? url : "";
+        }
+
+        /**
          * Triggered when a page finishes loading in the WebView.
-         * Checks if the loaded URL belongs to a known video player provider and schedules an automated click 
-         * in the center of the screen to force the video to autoplay without user interaction.
-         * 
+         * Updates tracked main-frame URL and triggers delayed autoplay clicks on supported embed providers.
+         *
          * @param view The WebView that finished loading.
          * @param url The URL of the loaded page.
          */
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            mCurrentMainFrameUrl = url != null ? url : "";
             if (url != null && (url.contains("vidsrc") || url.contains("vidlink") || url.contains("videasy") || url.contains("embed"))) {
                 // Auto-click the center after a delay to simulate autoplay
                 view.postDelayed(() -> {
@@ -402,29 +444,218 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
-         * Checks if a given URL host is present in the static blacklist of ad domains.
-         * 
-         * @param host The hostname to verify (e.g., "admob.com").
-         * @return true if the host is a known ad provider, false otherwise.
+         * Creates standard permissive CORS headers for internal proxy and bundled asset responses.
+         *
+         * @return Mutable header map with CORS and no-store cache headers.
          */
+        private Map<String, String> createCorsHeaders() {
+            Map<String, String> corsHeaders = new HashMap<>();
+            corsHeaders.put("Access-Control-Allow-Origin", "*");
+            corsHeaders.put("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+            corsHeaders.put("Access-Control-Allow-Headers", "*");
+            corsHeaders.put("Cache-Control", "no-store");
+            return corsHeaders;
+        }
+
+        /**
+         * Builds an empty HTTP error WebResourceResponse with CORS headers.
+         *
+         * @param statusCode HTTP status code to return.
+         * @param reasonPhrase HTTP status reason text.
+         * @param headers Response headers map.
+         * @return WebResourceResponse representing the error.
+         */
+        private WebResourceResponse buildErrorResponse(int statusCode, String reasonPhrase, Map<String, String> headers) {
+            return new WebResourceResponse("text/plain", "UTF-8", statusCode, reasonPhrase, headers, new ByteArrayInputStream(new byte[0]));
+        }
+
+        /**
+         * Serves bundled android_asset files over WebView interception with accurate MIME types and CORS headers.
+         * Rejects path traversal segments so ES module imports function safely with file URL access disabled.
+         *
+         * @param assetUri Requested file:///android_asset/... URI.
+         * @return WebResourceResponse containing asset stream or 403/404 response.
+         */
+        private WebResourceResponse handleAssetRequest(Uri assetUri) {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Access-Control-Allow-Origin", "*");
+
+            String rawPath = assetUri.getPath();
+            if (rawPath == null || !rawPath.startsWith("/android_asset/")) {
+                return buildErrorResponse(403, "Forbidden", headers);
+            }
+            String assetPath = rawPath.substring("/android_asset/".length());
+            if (assetPath.isEmpty() || assetPath.contains("\\") || assetPath.contains("\0") || rawPath.contains("..")) {
+                return buildErrorResponse(403, "Forbidden", headers);
+            }
+            String[] segments = assetPath.split("/", -1);
+            for (String segment : segments) {
+                if (segment.isEmpty() || ".".equals(segment) || "..".equals(segment)) {
+                    return buildErrorResponse(403, "Forbidden", headers);
+                }
+            }
+
+            try {
+                InputStream is = mAppContext.getAssets().open(assetPath);
+                String mimeType = getAssetMimeType(assetPath);
+                String encoding = isTextMimeType(mimeType) ? "UTF-8" : null;
+                return new WebResourceResponse(mimeType, encoding, 200, "OK", headers, is);
+            } catch (IOException e) {
+                return buildErrorResponse(404, "Not Found", headers);
+            }
+        }
+
+        /**
+         * Maps bundled asset file extensions to accurate MIME types required by Chromium ES module loading.
+         *
+         * @param assetPath Normalized relative path within Android assets.
+         * @return MIME type string.
+         */
+        private String getAssetMimeType(String assetPath) {
+            String lower = assetPath.toLowerCase(Locale.ROOT);
+            if (lower.endsWith(".js") || lower.endsWith(".mjs")) return "application/javascript";
+            if (lower.endsWith(".css")) return "text/css";
+            if (lower.endsWith(".html") || lower.endsWith(".htm")) return "text/html";
+            if (lower.endsWith(".json")) return "application/json";
+            if (lower.endsWith(".svg")) return "image/svg+xml";
+            if (lower.endsWith(".png")) return "image/png";
+            if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
+            if (lower.endsWith(".webp")) return "image/webp";
+            if (lower.endsWith(".gif")) return "image/gif";
+            if (lower.endsWith(".ico")) return "image/x-icon";
+            if (lower.endsWith(".woff2")) return "font/woff2";
+            if (lower.endsWith(".woff")) return "font/woff";
+            if (lower.endsWith(".ttf")) return "font/ttf";
+            if (lower.endsWith(".otf")) return "font/otf";
+            if (lower.endsWith(".xml")) return "application/xml";
+            if (lower.endsWith(".m3u") || lower.endsWith(".m3u8")) return "application/vnd.apple.mpegurl";
+            if (lower.endsWith(".txt")) return "text/plain";
+            return "application/octet-stream";
+        }
+
+        /**
+         * Determines whether a MIME type represents UTF-8 text content rather than binary asset bytes.
+         *
+         * @param mimeType MIME type string.
+         * @return true for text/script/markup MIME types, false for binary formats.
+         */
+        private boolean isTextMimeType(String mimeType) {
+            return mimeType.startsWith("text/")
+                    || "application/javascript".equals(mimeType)
+                    || "application/json".equals(mimeType)
+                    || "image/svg+xml".equals(mimeType)
+                    || "application/xml".equals(mimeType)
+                    || "application/vnd.apple.mpegurl".equals(mimeType);
+        }
+
+        /**
+         * Verifies that a /proxy request originates from the bundled file:///android_asset/ app rather than external pages or iframes.
+         *
+         * @param request Intercepted WebResourceRequest targeting /proxy.
+         * @return true if main frame and request headers match the local application origin.
+         */
+        private boolean isLocalAppProxyCaller(WebResourceRequest request) {
+            if (request.isForMainFrame()) {
+                return false;
+            }
+            String mainUrl = mCurrentMainFrameUrl;
+            if (mainUrl == null || !mainUrl.startsWith("file:///android_asset/")) {
+                return false;
+            }
+            Map<String, String> reqHeaders = request.getRequestHeaders();
+            if (reqHeaders != null) {
+                for (Map.Entry<String, String> entry : reqHeaders.entrySet()) {
+                    if (entry.getKey() == null || entry.getValue() == null) continue;
+                    String keyLower = entry.getKey().toLowerCase(Locale.ROOT);
+                    String val = entry.getValue().trim();
+                    if (val.isEmpty()) continue;
+                    if ("referer".equals(keyLower) && !val.startsWith("file:///android_asset/")) {
+                        return false;
+                    }
+                    if ("origin".equals(keyLower) && !"null".equalsIgnoreCase(val) && !val.startsWith("file://")) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Validates that a proxy target URL uses http/https and does not resolve to loopback, link-local/metadata,
+         * unspecified (0.0.0.0/8), or multicast addresses while preserving private LAN IPTV access.
+         *
+         * @param rawUrl Candidate upstream URL.
+         * @return true if safe to connect, false otherwise (fails closed on DNS errors).
+         */
+        private boolean isSafeProxyUrl(String rawUrl) {
+            if (rawUrl == null || rawUrl.trim().isEmpty()) {
+                return false;
+            }
+            try {
+                URI uri = new URI(rawUrl.trim());
+                String scheme = uri.getScheme();
+                if (scheme == null || (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme))) {
+                    return false;
+                }
+                String host = uri.getHost();
+                if (host == null || host.trim().isEmpty()) {
+                    return false;
+                }
+                String hostLower = host.trim().toLowerCase(Locale.ROOT);
+                if (hostLower.startsWith("[") && hostLower.endsWith("]")) {
+                    hostLower = hostLower.substring(1, hostLower.length() - 1);
+                }
+                if ("localhost".equals(hostLower)
+                        || hostLower.endsWith(".localhost")
+                        || "0.0.0.0".equals(hostLower)
+                        || "metadata".equals(hostLower)
+                        || "metadata.google.internal".equals(hostLower)) {
+                    return false;
+                }
+
+                InetAddress[] addresses = InetAddress.getAllByName(hostLower);
+                if (addresses == null || addresses.length == 0) {
+                    return false;
+                }
+                for (InetAddress addr : addresses) {
+                    if (addr.isAnyLocalAddress()
+                            || addr.isLoopbackAddress()
+                            || addr.isLinkLocalAddress()
+                            || addr.isMulticastAddress()) {
+                        return false;
+                    }
+                    byte[] rawBytes = addr.getAddress();
+                    if (rawBytes.length == 4) {
+                        int b0 = rawBytes[0] & 0xFF;
+                        int b1 = rawBytes[1] & 0xFF;
+                        if (b0 == 127 || b0 == 0 || (b0 == 169 && b1 == 254)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
         /**
          * Native Android stream proxy handler for http://localhost/proxy?url=... requests.
-         * Bypasses WebView CORS restrictions, spoofs anti-403 headers (VLC / Referer / Origin),
+         * Bypasses WebView CORS restrictions, enforces SSRF protections across redirects, uses strict TLS hostname verification,
          * and rewrites .m3u8 manifest sub-links for seamless Live TV playback in the APK.
          *
          * @param proxyUri Intercepted proxy URI containing target 'url' and optional header params.
          * @return WebResourceResponse with permissive CORS headers.
          */
         private WebResourceResponse handleStreamProxyRequest(Uri proxyUri) {
-            Map<String, String> corsHeaders = new HashMap<>();
-            corsHeaders.put("Access-Control-Allow-Origin", "*");
-            corsHeaders.put("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
-            corsHeaders.put("Access-Control-Allow-Headers", "*");
-            corsHeaders.put("Cache-Control", "no-store");
+            Map<String, String> corsHeaders = createCorsHeaders();
 
             String targetUrl = proxyUri.getQueryParameter("url");
             if (targetUrl == null || targetUrl.isEmpty()) {
-                return new WebResourceResponse("text/plain", "UTF-8", 400, "Bad Request", corsHeaders, new ByteArrayInputStream(new byte[0]));
+                return buildErrorResponse(400, "Bad Request", corsHeaders);
+            }
+            if (!isSafeProxyUrl(targetUrl)) {
+                return buildErrorResponse(403, "Forbidden", corsHeaders);
             }
 
             String referer = proxyUri.getQueryParameter("referer");
@@ -433,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
 
             String chromeUa = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
             String vlcUa = "VLC/3.0.20 LibVLC/3.0.20";
-            String lowerUrl = targetUrl.toLowerCase();
+            String lowerUrl = targetUrl.toLowerCase(Locale.ROOT);
             boolean isRawIptv = lowerUrl.matches("^https?://\\d+\\.\\d+\\.\\d+\\.\\d+.*") || lowerUrl.contains(":8008/") || lowerUrl.contains(":8080/") || lowerUrl.contains("/play/");
 
             String targetOrigin = null;
@@ -456,16 +687,19 @@ public class MainActivity extends AppCompatActivity {
             String winningRef = referer;
             String winningOrig = origin;
             int statusCode = 502;
+            boolean blockedRedirectSsrf = false;
 
             for (String[] prof : profiles) {
                 try {
                     String currentUrl = targetUrl;
+                    boolean completedNonRedirect = false;
                     for (int hop = 0; hop < 5; hop++) {
+                        if (!isSafeProxyUrl(currentUrl)) {
+                            blockedRedirectSsrf = true;
+                            break;
+                        }
                         URL u = new URL(currentUrl);
                         conn = (HttpURLConnection) u.openConnection();
-                        if (conn instanceof javax.net.ssl.HttpsURLConnection) {
-                            ((javax.net.ssl.HttpsURLConnection) conn).setHostnameVerifier((hostname, session) -> true);
-                        }
                         conn.setInstanceFollowRedirects(false);
                         conn.setConnectTimeout(3000);
                         conn.setReadTimeout(4500);
@@ -481,19 +715,38 @@ public class MainActivity extends AppCompatActivity {
                             conn.disconnect();
                             conn = null;
                             if (location == null || location.isEmpty()) break;
-                            currentUrl = new URI(currentUrl).resolve(location).toString();
+                            String nextUrl = new URI(currentUrl).resolve(location).toString();
+                            if (!isSafeProxyUrl(nextUrl)) {
+                                blockedRedirectSsrf = true;
+                                break;
+                            }
+                            currentUrl = nextUrl;
                             continue;
+                        }
+                        completedNonRedirect = true;
+                        break;
+                    }
+                    if (blockedRedirectSsrf) {
+                        if (conn != null) {
+                            conn.disconnect();
+                            conn = null;
                         }
                         break;
                     }
-                    if (conn == null) continue;
+                    if (!completedNonRedirect || conn == null) {
+                        if (conn != null) {
+                            conn.disconnect();
+                            conn = null;
+                        }
+                        continue;
+                    }
                     if (statusCode == 401 || statusCode == 403 || statusCode == 406) {
                         conn.disconnect();
                         conn = null;
                         continue;
                     }
                     targetUrl = currentUrl;
-                    lowerUrl = targetUrl.toLowerCase();
+                    lowerUrl = targetUrl.toLowerCase(Locale.ROOT);
                     winningUa = prof[0];
                     winningRef = prof[1];
                     winningOrig = prof[2];
@@ -506,9 +759,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            if (blockedRedirectSsrf) {
+                return buildErrorResponse(403, "Forbidden", corsHeaders);
+            }
+
             if (conn == null || statusCode >= 400) {
                 if (conn != null) conn.disconnect();
-                return new WebResourceResponse("text/plain", "UTF-8", statusCode >= 400 ? statusCode : 502, "Upstream Error", corsHeaders, new ByteArrayInputStream(new byte[0]));
+                return buildErrorResponse(statusCode >= 400 ? statusCode : 502, "Upstream Error", corsHeaders);
             }
 
             try {
@@ -613,10 +870,10 @@ public class MainActivity extends AppCompatActivity {
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
-        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowFileAccess(false);
         webSettings.setAllowContentAccess(true);
-        webSettings.setAllowFileAccessFromFileURLs(true);
-        webSettings.setAllowUniversalAccessFromFileURLs(true);
+        webSettings.setAllowFileAccessFromFileURLs(false);
+        webSettings.setAllowUniversalAccessFromFileURLs(false);
         webSettings.setDatabaseEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
@@ -630,7 +887,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
         webSettings.setSupportMultipleWindows(false);
 
-        mWebView.setWebViewClient(new AdBlockingWebViewClient());
+        mWebView.setWebViewClient(new AdBlockingWebViewClient(this));
 
         mUpdateManager = new UpdateManager(this, mWebView);
         mWebView.addJavascriptInterface(mUpdateManager, "AndroidUpdate");

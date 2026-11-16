@@ -9,16 +9,24 @@ export function isLocalhost() {
 }
 
 /**
- * Wraps a remote stream URL with the local CORS proxy prefix when running on localhost.
- * On non-localhost environments (Smart TVs, Electron, production), returns the URL unchanged.
+ * Wraps a remote stream URL with the local CORS proxy prefix when running on localhost or Android WebView.
+ * On Smart TVs, Electron, or already-proxied localhost URLs, returns the URL unchanged.
  *
  * @param {string} url - The original remote stream URL.
- * @returns {string} The proxied URL if on localhost, otherwise the original URL.
+ * @returns {string} The proxied URL if on localhost or Android WebView, otherwise the original URL.
  */
 export function proxyUrl(url) {
-    if (!url) return url;
-    if (isLocalhost() && (url.startsWith('http://') || url.startsWith('https://'))) {
-        return `/proxy?url=${encodeURIComponent(url)}`;
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('/proxy?url=') || url.startsWith('http://localhost/proxy') || url.startsWith('http://127.0.0.1/proxy')) {
+        return url;
+    }
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        if (isLocalhost()) {
+            return `/proxy?url=${encodeURIComponent(url)}`;
+        }
+        if (typeof window !== 'undefined' && (window.AndroidUpdate || window.AndroidSettings)) {
+            return `http://localhost/proxy?url=${encodeURIComponent(url)}`;
+        }
     }
     return url;
 }

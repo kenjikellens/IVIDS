@@ -29,6 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -128,9 +129,13 @@ public class UpdateManager {
                         
                         for (int i = 0; i < assets.length(); i++) {
                             JSONObject asset = assets.getJSONObject(i);
-                            String assetName = asset.getString("name").toLowerCase();
+                            String assetName = asset.getString("name").toLowerCase(Locale.ROOT);
                             if (assetName.endsWith(".apk")) {
                                 String downloadUrl = asset.getString("browser_download_url");
+                                if (!isAllowedUpdateUrl(downloadUrl)) {
+                                    Log.w(TAG, "Skipping disallowed release asset URL: " + downloadUrl);
+                                    continue;
+                                }
                                 if (assetName.contains(targetKeyword)) {
                                     mDownloadUrl = downloadUrl;
                                     Log.d(TAG, "Selected asset matched target keyword '" + targetKeyword + "': " + assetName);
@@ -378,43 +383,117 @@ public class UpdateManager {
     }
 
     /**
-     * Directs the native downloader to download and install a package from a custom URL.
+     * Validates that an OTA update URL uses HTTPS and points exclusively to official IVIDS GitHub release hosts.
+     * Rejects non-HTTPS schemes, embedded credentials, and untrusted third-party domains.
+     *
+     * @param rawUrl Candidate download URL.
+     * @return true if the URL belongs to the official GitHub/CDN allowlist, false otherwise.
+     */
+    private boolean isAllowedUpdateUrl(String rawUrl) {
+        if (rawUrl == null || rawUrl.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            URI uri = new URI(rawUrl.trim());
+            if (!"https".equalsIgnoreCase(uri.getScheme()) || uri.getRawUserInfo() != null) {
+                return false;
+            }
+            String host = uri.getHost();
+            if (host == null || host.trim().isEmpty()) {
+                return false;
+            }
+            String hostLower = host.toLowerCase(Locale.ROOT);
+            if ("github.com".equals(hostLower)) {
+                String path = uri.getPath();
+                return path != null
+                        && path.toLowerCase(Locale.ROOT).startsWith("/kenjikellens/ivids/")
+                        && !path.contains("..");
+            }
+            return "objects.githubusercontent.com".equals(hostLower)
+                    || "release-assets.githubusercontent.com".equals(hostLower);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sanitizes a version identifier to safe alphanumeric/dot/dash/underscore/plus characters.
+     *
+     * @param version Raw version string.
+     * @return Sanitized version string, or "unknown" if empty.
+     */
+    private String sanitizeVersionString(String version) {
+        if (version == null) {
+            return "unknown";
+        }
+        String cleaned = version.replaceAll("[^a-zA-Z0-9._+-]", "");
+        return cleaned.isEmpty() ? "unknown" : cleaned;
+    }
+
+    /**
+     * Encodes a Java string as a safe double-quoted JavaScript string literal for evaluateJavascript calls.
+     * Prevents JavaScript injection via crafted version tags or status values.
+     *
+     * @param value Raw string value to encode.
+     * @return Escaped JavaScript string literal including surrounding quotes.
+     */
+    private String escapeJsString(String value) {
+        String quoted = JSONObject.quote(value == null ? "" : value);
+        return quoted
+                .replace("<", "\\u003c")
+                .replace(">", "\\u003e")
+                .replace("\u2028", "\\u2028")
+                .replace("\u2029", "\\u2029");
+    }
+
+    /**
+     * Directs the native downloader to download and install a package from a validated official URL.
      * This method is exposed to JavaScript via the @JavascriptInterface annotation.
      * 
-     * @param url The custom HTTP/HTTPS download link to the APK file.
+     * @param url The HTTPS download link to the APK file on official GitHub release hosts.
      */
     @JavascriptInterface
     public void downloadAndInstallForUrl(String url) {
+        if (!isAllowedUpdateUrl(url)) {
+            Log.e(TAG, "Blocked disallowed custom download URL: " + url);
+            notifyWebUpdateError();
+            return;
+        }
         Log.d(TAG, "Requesting custom download URL: " + url);
         mDownloadUrl = url;
         downloadAndInstall();
     }
 
     /**
-     * Directs the native downloader to download and install a package from a custom URL with explicit version tagging.
+     * Directs the native downloader to download and install a package from a validated official URL with explicit version tagging.
      * Guarantees that the saved cache version marker matches the exact target release.
      * 
-     * @param url The custom HTTP/HTTPS download link to the APK file.
+     * @param url The HTTPS download link to the APK file on official GitHub release hosts.
      * @param version The target version string (e.g. "v0.6.4").
      */
     @JavascriptInterface
     public void downloadAndInstallForUrlAndVersion(String url, String version) {
+        if (!isAllowedUpdateUrl(url)) {
+            Log.e(TAG, "Blocked disallowed custom download URL: " + url);
+            notifyWebUpdateError();
+            return;
+        }
         Log.d(TAG, "Requesting custom download URL: " + url + " for version: " + version);
         mDownloadUrl = url;
-        mLatestVersion = version;
+        mLatestVersion = sanitizeVersionString(version);
         downloadAndInstall();
     }
 
     /**
-     * Begins the background download of the latest APK file.
-     * Automatically handles HTTP redirects, writes the stream to the device's external cache directory,
+     * Begins the background download of the latest APK file from a validated official URL.
+     * Enforces URL allowlist checks across all HTTP redirects, writes the stream to external cache,
      * and publishes progress updates back to the WebView interface.
      * This method is exposed to JavaScript via the @JavascriptInterface annotation.
      */
     @JavascriptInterface
     public void downloadAndInstall() {
-        if (mDownloadUrl == null) {
-            Log.e(TAG, "No download URL available");
+        if (!isAllowedUpdateUrl(mDownloadUrl)) {
+            Log.e(TAG, "No valid download URL available");
             notifyWebUpdateError();
             return;
         }
@@ -425,15 +504,19 @@ public class UpdateManager {
             InputStream is = null;
             FileOutputStream fos = null;
             try {
-                URL url = URI.create(mDownloadUrl).toURL();
                 notifyWebUpdateStatus("downloading");
 
-                // Follow redirects manually (GitHub redirects to CDN)
+                // Follow redirects manually while enforcing the official URL allowlist on every hop
                 String finalUrl = mDownloadUrl;
                 int redirectCount = 0;
                 final int MAX_REDIRECTS = 5;
 
                 while (redirectCount < MAX_REDIRECTS) {
+                    if (!isAllowedUpdateUrl(finalUrl)) {
+                        Log.e(TAG, "Blocked disallowed redirect target: " + finalUrl);
+                        notifyWebUpdateError();
+                        return;
+                    }
                     conn = (HttpURLConnection) URI.create(finalUrl).toURL().openConnection();
                     conn.setRequestProperty("User-Agent", "IVIDS-Android-App");
                     conn.setInstanceFollowRedirects(false);
@@ -448,14 +531,21 @@ public class UpdateManager {
                             responseCode == HttpURLConnection.HTTP_MOVED_TEMP ||
                             responseCode == 307 || responseCode == 308) {
                         String location = conn.getHeaderField("Location");
-                        if (location == null) {
+                        conn.disconnect();
+                        conn = null;
+                        if (location == null || location.isEmpty()) {
                             Log.e(TAG, "Redirect with no Location header");
                             notifyWebUpdateError();
                             return;
                         }
-                        Log.d(TAG, "Redirecting to: " + location);
-                        finalUrl = location;
-                        conn.disconnect();
+                        String nextUrl = URI.create(finalUrl).resolve(location).toString();
+                        if (!isAllowedUpdateUrl(nextUrl)) {
+                            Log.e(TAG, "Blocked disallowed redirect destination: " + nextUrl);
+                            notifyWebUpdateError();
+                            return;
+                        }
+                        Log.d(TAG, "Redirecting to: " + nextUrl);
+                        finalUrl = nextUrl;
                         redirectCount++;
                     } else if (responseCode == HttpURLConnection.HTTP_OK) {
                         break;
@@ -466,7 +556,7 @@ public class UpdateManager {
                     }
                 }
 
-                if (redirectCount >= MAX_REDIRECTS) {
+                if (redirectCount >= MAX_REDIRECTS || conn == null) {
                     Log.e(TAG, "Too many redirects");
                     notifyWebUpdateError();
                     return;
@@ -493,7 +583,7 @@ public class UpdateManager {
                     total += count;
                     // publishing the progress....
                     if (fileLength > 0) {
-                        final int progress = (int) (total * 100 / fileLength);
+                        final int progress = Math.max(0, Math.min(100, (int) (total * 100 / fileLength)));
                         mActivity.runOnUiThread(() -> {
                             mWebView.evaluateJavascript(
                                     "if(typeof onUpdateProgress === 'function') onUpdateProgress(" + progress + ");",
@@ -600,12 +690,14 @@ public class UpdateManager {
 
     /**
      * Sends a JavaScript callback to the WebView notifying that a new update is available.
+     * Escapes the version string as a safe JS literal before evaluating.
      * 
      * @param version The version string of the new update.
      */
     private void notifyWebFoundUpdate(String version) {
+        final String jsVersion = escapeJsString(version);
         mActivity.runOnUiThread(() -> mWebView
-                .evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound('" + version + "');", null));
+                .evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound(" + jsVersion + ");", null));
     }
 
     /**
@@ -618,12 +710,14 @@ public class UpdateManager {
 
     /**
      * Sends a JavaScript callback to the WebView to update the UI on the current stage of the update process.
+     * Escapes the status key as a safe JS literal before evaluating.
      * 
      * @param statusKey A string representing the current status (e.g., "downloading", "installing").
      */
     private void notifyWebUpdateStatus(String statusKey) {
+        final String jsStatus = escapeJsString(statusKey);
         mActivity.runOnUiThread(() -> mWebView.evaluateJavascript(
-                "if(typeof onUpdateStatus === 'function') onUpdateStatus('" + statusKey + "');", null));
+                "if(typeof onUpdateStatus === 'function') onUpdateStatus(" + jsStatus + ");", null));
     }
 
     /**

@@ -12,7 +12,7 @@ import json
 import mimetypes
 import socket
 import ipaddress
-import functools
+import threading
 from http.server import ThreadingHTTPServer
 import ssl
 import time
@@ -80,33 +80,108 @@ def rewrite_m3u8(content, base_url, proxy_prefix, extra_query=''):
     return '\n'.join(rewritten)
 
 
-@functools.lru_cache(maxsize=1024)
+# Thread-safe TTL cache for validated hostnames: {hostname_lower: (is_safe, expires_at)}
+_SAFE_HOST_CACHE = {}
+_SAFE_HOST_CACHE_LOCK = threading.Lock()
+_CGNAT_NETWORK = ipaddress.ip_network('100.64.0.0/10')
+_ZERO_NETWORK = ipaddress.ip_network('0.0.0.0/8')
+MAX_BROKEN_CHANNEL_BODY_BYTES = 16384
+MAX_BROKEN_CHANNEL_URL_LENGTH = 2048
+MAX_BROKEN_CHANNELS = 5000
+
+
+def _is_public_ip(ip_obj):
+    """
+    Checks whether an IPv4 or IPv6 address object is a globally routable public address.
+    Rejects private, loopback, link-local (metadata), multicast, reserved, unspecified, and CGNAT ranges.
+    """
+    if isinstance(ip_obj, ipaddress.IPv6Address) and ip_obj.ipv4_mapped is not None:
+        return _is_public_ip(ip_obj.ipv4_mapped)
+    if (
+        ip_obj.is_private
+        or ip_obj.is_loopback
+        or ip_obj.is_link_local
+        or ip_obj.is_multicast
+        or ip_obj.is_reserved
+        or ip_obj.is_unspecified
+    ):
+        return False
+    if isinstance(ip_obj, ipaddress.IPv4Address):
+        if ip_obj in _CGNAT_NETWORK or ip_obj in _ZERO_NETWORK:
+            return False
+    return True
+
+
 def _is_safe_hostname(hostname_lower):
     """
-    Validates if a hostname resolves to a public, non-loopback, non-private IP address.
-    Caches DNS lookup results in memory to eliminate repeated network DNS latency during video streaming.
+    Validates if a hostname resolves exclusively to public, non-loopback, non-private IP addresses.
+    Fails closed on DNS resolution errors and caches decisions briefly to reduce streaming latency.
     """
     try:
-        if hostname_lower in ('localhost', '0.0.0.0', '127.0.0.1', '::1'):
+        if (
+            not hostname_lower
+            or hostname_lower in ('localhost', '0.0.0.0', '127.0.0.1', '::1', 'metadata', 'metadata.google.internal')
+            or hostname_lower.endswith('.localhost')
+        ):
             return False
+
+        now = time.time()
+        with _SAFE_HOST_CACHE_LOCK:
+            cached = _SAFE_HOST_CACHE.get(hostname_lower)
+            if cached and cached[1] > now:
+                return cached[0]
+
+        stripped = hostname_lower.strip('[]')
         try:
-            ip = socket.gethostbyname(hostname_lower)
+            ip_obj = ipaddress.ip_address(stripped)
+            safe = _is_public_ip(ip_obj)
+            with _SAFE_HOST_CACHE_LOCK:
+                _SAFE_HOST_CACHE[hostname_lower] = (safe, now + 60.0)
+            return safe
+        except ValueError:
+            pass
+
+        try:
+            addr_infos = socket.getaddrinfo(hostname_lower, None)
         except socket.gaierror:
-            return True
-        ip_obj = ipaddress.ip_address(ip)
-        return not (ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_unspecified)
+            with _SAFE_HOST_CACHE_LOCK:
+                _SAFE_HOST_CACHE[hostname_lower] = (False, now + 10.0)
+            return False
+
+        if not addr_infos:
+            with _SAFE_HOST_CACHE_LOCK:
+                _SAFE_HOST_CACHE[hostname_lower] = (False, now + 10.0)
+            return False
+
+        for info in addr_infos:
+            ip_str = info[4][0]
+            if '%' in ip_str:
+                return False
+            ip_obj = ipaddress.ip_address(ip_str)
+            if not _is_public_ip(ip_obj):
+                with _SAFE_HOST_CACHE_LOCK:
+                    _SAFE_HOST_CACHE[hostname_lower] = (False, now + 60.0)
+                return False
+
+        with _SAFE_HOST_CACHE_LOCK:
+            if len(_SAFE_HOST_CACHE) > 2048:
+                _SAFE_HOST_CACHE.clear()
+            _SAFE_HOST_CACHE[hostname_lower] = (True, now + 60.0)
+        return True
     except Exception:
         return False
 
 
 def is_safe_url(url):
     """
-    Validates if the target URL has a safe http/https scheme and resolves to a public, non-loopback IP address.
-    Uses _is_safe_hostname with LRU memory caching to accelerate proxy segment validation.
+    Validates if the target URL has a safe http/https scheme and resolves to public IP addresses only.
+    Fails closed on malformed URLs, non-HTTP schemes, or unresolved/internal hostnames.
     """
     try:
+        if not isinstance(url, str):
+            return False
         parsed = urllib.parse.urlparse(url)
-        if parsed.scheme not in ('http', 'https'):
+        if parsed.scheme.lower() not in ('http', 'https'):
             return False
         hostname = parsed.hostname
         if not hostname:
@@ -114,6 +189,31 @@ def is_safe_url(url):
         return _is_safe_hostname(hostname.lower())
     except Exception:
         return False
+
+
+class ForbiddenRedirectError(urllib.error.HTTPError):
+    """Raised when an upstream HTTP redirect attempts to target a forbidden or unsafe SSRF URL."""
+    pass
+
+
+class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """
+    Custom HTTP redirect handler that validates every redirect Location URL with is_safe_url.
+    Prevents SSRF bypasses via 301/302/307/308 redirects to loopback, private, or metadata targets.
+    """
+    max_redirections = 5
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        """Validates the resolved redirect destination before allowing urllib to follow it."""
+        if not is_safe_url(newurl):
+            raise ForbiddenRedirectError(newurl, 403, 'Forbidden redirect target', headers, None)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_PROXY_OPENER = urllib.request.build_opener(
+    SafeRedirectHandler(),
+    urllib.request.HTTPSHandler(context=_UNVERIFIED_SSL_CTX)
+)
 
 
 class StaticFileCache:
@@ -398,28 +498,67 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def _handle_post_broken_channels(self):
         """
-        Accepts a JSON body with a 'url' field, appends it to the broken-channels.json file.
-        Prevents duplicate entries. Affects the broken-channels.json project file on disk.
+        Accepts a bounded JSON body with a valid http/https 'url' field and records it in broken-channels.json.
+        Validates payload size, JSON structure, URL format, and list capacity before persisting to disk.
         """
         try:
-            content_length = int(self.headers.get('Content-Length', 0))
-            raw_body = self.rfile.read(content_length)
-            payload = json.loads(raw_body.decode('utf-8'))
-            url = payload.get('url')
+            raw_len = self.headers.get('Content-Length')
+            if raw_len is None:
+                self.send_error(400, 'Missing Content-Length')
+                return
+            try:
+                content_length = int(raw_len)
+            except ValueError:
+                self.send_error(400, 'Invalid Content-Length')
+                return
 
-            if not url:
-                self.send_error(400, 'Missing url field')
+            if content_length <= 0:
+                self.send_error(400, 'Empty request body')
+                return
+            if content_length > MAX_BROKEN_CHANNEL_BODY_BYTES:
+                self.send_error(413, 'Request body too large')
+                return
+
+            raw_body = self.rfile.read(content_length)
+            try:
+                payload = json.loads(raw_body.decode('utf-8'))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                self.send_error(400, 'Invalid JSON payload')
+                return
+
+            if not isinstance(payload, dict):
+                self.send_error(400, 'JSON payload must be an object')
+                return
+
+            url = payload.get('url')
+            if not isinstance(url, str):
+                self.send_error(400, 'Invalid url field')
+                return
+
+            url = url.strip()
+            if not url or len(url) > MAX_BROKEN_CHANNEL_URL_LENGTH or any(ord(c) < 32 or c.isspace() for c in url):
+                self.send_error(400, 'Invalid url format')
+                return
+
+            parsed_url = urllib.parse.urlparse(url)
+            if parsed_url.scheme.lower() not in ('http', 'https') or not parsed_url.hostname:
+                self.send_error(400, 'URL must use http or https scheme with a valid host')
                 return
 
             # Read current list
             try:
                 with open(BROKEN_CHANNELS_PATH, 'r', encoding='utf-8') as f:
                     broken_list = json.load(f)
+                if not isinstance(broken_list, list):
+                    broken_list = []
             except (FileNotFoundError, json.JSONDecodeError):
                 broken_list = []
 
-            # Only append if not already present
+            # Only append if not already present and within max bounds
             if url not in broken_list:
+                if len(broken_list) >= MAX_BROKEN_CHANNELS:
+                    self.send_error(400, 'Broken channels list limit reached')
+                    return
                 broken_list.append(url)
                 with open(BROKEN_CHANNELS_PATH, 'w', encoding='utf-8') as f:
                     json.dump(broken_list, f, indent=2)
@@ -593,9 +732,11 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     req.add_header('Origin', prof_orig)
                 req.add_header('Accept', '*/*')
                 try:
-                    response = urllib.request.urlopen(req, timeout=4, context=_UNVERIFIED_SSL_CTX)
+                    response = _PROXY_OPENER.open(req, timeout=4)
                     user_agent, referer, origin = prof_ua, prof_ref, prof_orig
                     break
+                except ForbiddenRedirectError:
+                    raise
                 except urllib.error.HTTPError as he:
                     last_http_err = he
                     if he.code in (401, 403, 406):
@@ -781,7 +922,7 @@ def start_server():
     QuietThreadingHTTPServer.allow_reuse_address = True
     while True:
         try:
-            server = QuietThreadingHTTPServer(("", port), IVIDSHTTPRequestHandler)
+            server = QuietThreadingHTTPServer(("127.0.0.1", port), IVIDSHTTPRequestHandler)
             break
         except OSError:
             if port >= PORT + 40:

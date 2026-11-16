@@ -3,6 +3,7 @@ import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { Toast } from '../js/toast.js';
 import { LiveStreamEngine } from '../../logic/livetv/core/live-stream-engine.js';
+import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 
 let overlayTimeout;
 let zappingHudTimeout;
@@ -50,6 +51,7 @@ export async function init(params) {
     const prevBtn = document.getElementById('tv-prev-btn');
     const nextBtn = document.getElementById('tv-next-btn');
     const retryBtn = document.getElementById('tv-retry-btn');
+    const offlineFallback = document.getElementById('tv-offline-fallback');
     const qualityBadgeEl = document.querySelector('.tv-quality-badge');
     const statusDotEl = document.querySelector('.tv-status-badge .status-dot');
 

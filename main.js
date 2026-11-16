@@ -1,9 +1,9 @@
 const { app, BrowserWindow, ipcMain, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const http = require('http');
 const https = require('https');
 const { spawn } = require('child_process');
+const { fileURLToPath } = require('url');
 
 // Enable GPU rasterization for smoother CSS animations and scrolling
 app.commandLine.appendSwitch('enable-gpu-rasterization');
@@ -15,6 +15,7 @@ app.commandLine.appendSwitch('enable-hardware-overlays');
 app.commandLine.appendSwitch('enable-features', 'WebAssemblyThreads,SharedArrayBuffer');
 
 const GITHUB_RELEASE_API_URL = 'https://api.github.com/repos/kenjikellens/IVIDS/releases/latest';
+const GUI_ROOT_DIR = path.resolve(__dirname, 'app/src/main/assets/main/gui');
 
 // Determine local directories for cached/downloaded files inside User Data
 const updateDir = path.join(app.getPath('userData'), 'updates');
@@ -23,28 +24,118 @@ if (!fs.existsSync(updateDir)) {
 }
 
 /**
+ * Validates that an update download URL uses HTTPS and points exclusively to official IVIDS GitHub release hosts.
+ * Rejects non-HTTPS schemes, embedded credentials, and third-party origins.
+ *
+ * @param {string} rawUrl - Candidate update download URL.
+ * @returns {boolean} True if the URL matches the official GitHub/CDN allowlist.
+ */
+function isAllowedUpdateUrl(rawUrl) {
+    if (typeof rawUrl !== 'string' || !rawUrl.trim()) return false;
+    try {
+        const parsed = new URL(rawUrl);
+        if (parsed.protocol !== 'https:' || parsed.username || parsed.password) {
+            return false;
+        }
+        const host = parsed.hostname.toLowerCase();
+        if (host === 'github.com') {
+            return /^\/kenjikellens\/IVIDS\//i.test(parsed.pathname);
+        }
+        return host === 'objects.githubusercontent.com' || host === 'release-assets.githubusercontent.com';
+    } catch (e) {
+        return false;
+    }
+}
+
+/**
+ * Validates that an update metadata API request targets the official IVIDS GitHub repository API over HTTPS.
+ *
+ * @param {string} rawUrl - Candidate API URL.
+ * @returns {boolean} True if the URL points to the official GitHub API endpoint.
+ */
+function isAllowedApiUrl(rawUrl) {
+    if (typeof rawUrl !== 'string' || !rawUrl.trim()) return false;
+    try {
+        const parsed = new URL(rawUrl);
+        if (parsed.protocol !== 'https:' || parsed.username || parsed.password) {
+            return false;
+        }
+        return parsed.hostname.toLowerCase() === 'api.github.com' &&
+            /^\/repos\/kenjikellens\/IVIDS\//i.test(parsed.pathname);
+    } catch (e) {
+        return false;
+    }
+}
+
+/**
+ * Validates whether a top-level Electron navigation URL stays within the local bundled GUI directory.
+ * Prevents top-level navigation to external origins or arbitrary local filesystem paths.
+ *
+ * @param {string} navigationUrl - Target navigation URL.
+ * @returns {boolean} True if navigation stays inside the local GUI directory.
+ */
+function isAllowedLocalNavigation(navigationUrl) {
+    try {
+        const parsed = new URL(navigationUrl);
+        if (parsed.protocol !== 'file:') {
+            return false;
+        }
+        const targetPath = path.resolve(fileURLToPath(parsed));
+        return targetPath === GUI_ROOT_DIR || targetPath.startsWith(GUI_ROOT_DIR + path.sep);
+    } catch (e) {
+        return false;
+    }
+}
+
+/**
  * requestUrl Function
  * ===================
- * Performs a HTTP or HTTPS GET request with support for handling redirects.
- * Used internally for checking and downloading updates.
+ * Performs an HTTPS GET request with strict URL validation on the initial target and every redirect hop.
+ * Used internally for checking and downloading official updates.
  *
- * @param {string} url - The URL to make the request to.
+ * @param {string} url - The HTTPS URL to make the request to.
  * @param {number} redirects - Recursion tracker for redirect count.
+ * @param {function} validator - URL allowlist predicate applied before every request and redirect.
  * @returns {Promise<http.IncomingMessage>} Resolve with response object.
  */
-function requestUrl(url, redirects = 0) {
+function requestUrl(url, redirects = 0, validator = isAllowedUpdateUrl) {
     return new Promise((resolve, reject) => {
-        const client = url.startsWith('https:') ? https : http;
-        const request = client.get(url, {
+        if (typeof validator === 'function' && !validator(url)) {
+            reject(new Error('Blocked disallowed update URL.'));
+            return;
+        }
+        let parsed;
+        try {
+            parsed = new URL(url);
+        } catch (err) {
+            reject(err);
+            return;
+        }
+        if (parsed.protocol !== 'https:') {
+            reject(new Error('Only HTTPS update URLs are allowed.'));
+            return;
+        }
+
+        const request = https.get(url, {
             headers: {
                 'Accept': 'application/vnd.github.v3+json',
                 'User-Agent': 'IVIDS-PC-App'
             }
         }, (response) => {
-            if (response.statusCode >= 300 && response.statusCode <= 308 && response.headers.location && redirects < 5) {
+            if (response.statusCode >= 300 && response.statusCode <= 308 && response.headers.location) {
                 response.resume();
-                const nextUrl = new URL(response.headers.location, url).toString();
-                requestUrl(nextUrl, redirects + 1).then(resolve).catch(reject);
+                if (redirects >= 5) {
+                    reject(new Error('Too many redirects while fetching update.'));
+                    return;
+                }
+                let nextUrl;
+                try {
+                    nextUrl = new URL(response.headers.location, url).toString();
+                } catch (err) {
+                    reject(err);
+                    return;
+                }
+                requestUrl(nextUrl, redirects + 1, validator).then(resolve).catch(reject);
                 return;
             }
             resolve(response);
@@ -56,14 +147,14 @@ function requestUrl(url, redirects = 0) {
 /**
  * fetchJson Function
  * ==================
- * Fetches and parses a JSON response from a URL.
+ * Fetches and parses a JSON response from the official GitHub release API URL.
  * Used for fetching latest release details from GitHub API.
  *
  * @param {string} url - The URL of the API endpoint.
  * @returns {Promise<object>} Resolved JSON payload.
  */
 async function fetchJson(url) {
-    const response = await requestUrl(url);
+    const response = await requestUrl(url, 0, isAllowedApiUrl);
     if (response.statusCode < 200 || response.statusCode >= 300) {
         response.resume();
         throw new Error(`HTTP ${response.statusCode}`);
@@ -86,8 +177,8 @@ async function fetchJson(url) {
 /**
  * downloadFile Function
  * =====================
- * Downloads a file to disk and reports progress via callback function.
- * Used to download update installer binaries.
+ * Downloads a verified official update file to disk and reports progress via callback function.
+ * Validates download URLs and redirects against the official GitHub/CDN allowlist.
  *
  * @param {string} url - Remote file download URL.
  * @param {string} outputPath - Local output path.
@@ -95,7 +186,10 @@ async function fetchJson(url) {
  * @returns {Promise<string>} Resolved with local output path upon completion.
  */
 async function downloadFile(url, outputPath, onProgress) {
-    const response = await requestUrl(url);
+    if (!isAllowedUpdateUrl(url)) {
+        throw new Error('Blocked update download from untrusted URL.');
+    }
+    const response = await requestUrl(url, 0, isAllowedUpdateUrl);
     if (response.statusCode < 200 || response.statusCode >= 300) {
         response.resume();
         throw new Error(`HTTP ${response.statusCode}`);
@@ -104,6 +198,10 @@ async function downloadFile(url, outputPath, onProgress) {
     let downloadedBytes = 0;
     return new Promise((resolve, reject) => {
         const output = fs.createWriteStream(outputPath);
+        const cleanupAndReject = (err) => {
+            output.destroy();
+            fs.unlink(outputPath, () => reject(err));
+        };
         response.on('data', chunk => {
             downloadedBytes += chunk.length;
             if (totalBytes > 0 && onProgress) {
@@ -117,8 +215,8 @@ async function downloadFile(url, outputPath, onProgress) {
                 resolve(outputPath);
             });
         });
-        output.on('error', reject);
-        response.on('error', reject);
+        output.on('error', cleanupAndReject);
+        response.on('error', cleanupAndReject);
     });
 }
 
@@ -149,8 +247,22 @@ function createWindow() {
     mainWindow.setMenuBarVisibility(false);
 
     // Load local index.html
-    const indexPath = path.join(__dirname, 'app/src/main/assets/main/gui/index.html');
+    const indexPath = path.join(GUI_ROOT_DIR, 'index.html');
     mainWindow.loadFile(indexPath);
+
+    // Block top-level navigation to external origins or paths outside the bundled GUI directory
+    mainWindow.webContents.on('will-navigate', (event, navigationUrl) => {
+        if (!isAllowedLocalNavigation(navigationUrl)) {
+            console.warn(`[SECURITY] Blocked top-level navigation to: ${navigationUrl}`);
+            event.preventDefault();
+        }
+    });
+
+    // Block popup windows and target="_blank" external window creation
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        console.warn(`[SECURITY] Blocked new window request to: ${url}`);
+        return { action: 'deny' };
+    });
 
     // Injects a console event listener to print renderer process logs directly to the terminal for debugging.
     mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
@@ -289,12 +401,20 @@ ipcMain.handle('get-app-version', () => {
 /**
  * download-pc-update IPC Handler
  * =============================
- * Handles request to download the update executable and sends progress events to the renderer.
+ * Validates the update URL against the official GitHub/CDN allowlist, downloads the update executable,
+ * and sends progress events to the renderer.
  */
 ipcMain.handle('download-pc-update', async (event, downloadUrl, version) => {
     try {
-        const safeVersion = String(version || 'latest').replace(/[^a-zA-Z0-9._-]/g, '');
-        const outputPath = path.join(updateDir, `IVIDS_PC_${safeVersion}.exe`);
+        if (!isAllowedUpdateUrl(downloadUrl)) {
+            throw new Error('Blocked disallowed PC update download URL.');
+        }
+        const safeVersion = String(version || 'latest').replace(/[^a-zA-Z0-9._-]/g, '') || 'latest';
+        const resolvedUpdateDir = path.resolve(updateDir);
+        const outputPath = path.resolve(updateDir, `IVIDS_PC_${safeVersion}.exe`);
+        if (!outputPath.startsWith(resolvedUpdateDir + path.sep)) {
+            throw new Error('Invalid update output path.');
+        }
         await downloadFile(downloadUrl, outputPath, (progress) => {
             event.sender.send('pc-update-progress', progress);
         });
@@ -308,13 +428,21 @@ ipcMain.handle('download-pc-update', async (event, downloadUrl, version) => {
 /**
  * install-pc-update IPC Handler
  * ============================
- * Spawns the downloaded update executable and terminates the running instance.
+ * Verifies the downloaded file is a regular .exe inside updateDir, spawns it, and exits the app.
  */
 ipcMain.handle('install-pc-update', async (event, filePath) => {
     try {
+        if (typeof filePath !== 'string' || !filePath.trim()) {
+            throw new Error('Invalid update executable path.');
+        }
         const resolvedUpdateDir = path.resolve(updateDir);
         const resolvedFilePath = path.resolve(filePath);
-        if (!resolvedFilePath.startsWith(resolvedUpdateDir + path.sep) || !fs.existsSync(resolvedFilePath)) {
+        if (
+            !resolvedFilePath.startsWith(resolvedUpdateDir + path.sep) ||
+            path.extname(resolvedFilePath).toLowerCase() !== '.exe' ||
+            !fs.existsSync(resolvedFilePath) ||
+            !fs.statSync(resolvedFilePath).isFile()
+        ) {
             throw new Error('Invalid update executable path.');
         }
         const child = spawn(resolvedFilePath, [], {

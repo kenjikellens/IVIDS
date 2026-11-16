@@ -4,6 +4,7 @@ import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
+import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 
 /**
  * Loads merged global and user-specific application settings from localStorage.
@@ -198,11 +199,12 @@ export async function init(params) {
 }
 
 /**
- * Instantiates the unified LiveStreamEngine bound to #livetv-preview-video.
+ * Instantiates the unified LiveStreamEngine bound to #livetv-preview-video and syncs the minimal preview prompt visibility.
  */
 function initPreviewEngine() {
     const video = document.getElementById('livetv-preview-video');
     const loader = document.getElementById('preview-video-loading');
+    const previewCard = document.getElementById('livetv-preview-card');
     if (!video) return;
 
     if (previewEngine) {
@@ -212,15 +214,18 @@ function initPreviewEngine() {
     previewEngine = new LiveStreamEngine(video, {
         isPreview: true,
         onLoading: (channel) => {
+            if (previewCard) previewCard.classList.remove('is-playing');
             if (loader) loader.classList.remove('hidden');
             if (channel?.url) updateChannelStatus(channel.url, 'checking');
         },
         onPlaying: (channel) => {
             if (loader) loader.classList.add('hidden');
+            if (previewCard) previewCard.classList.add('is-playing');
             if (channel?.url) updateChannelStatus(channel.url, 'online');
         },
         onOffline: (channel) => {
             if (loader) loader.classList.add('hidden');
+            if (previewCard) previewCard.classList.remove('is-playing');
             if (channel?.url) updateChannelStatus(channel.url, 'offline');
         }
     });
@@ -325,8 +330,8 @@ function renderCategoriesList() {
         row.tabIndex = 0;
         row.dataset.categoryKey = cat.key;
         row.innerHTML = `
-            <span class="category-list-name">${cat.label}</span>
-            <span class="category-list-count">${cat.count}</span>
+            <span class="category-list-name">${escapeHtml(cat.label)}</span>
+            <span class="category-list-count">${Number(cat.count) || 0}</span>
         `;
 
         const activateCategory = (moveFocusToChannels = false) => {
@@ -481,8 +486,8 @@ function filterAndRenderChannels(resetFocus = false) {
 }
 
 /**
- * Updates the right-hand preview column with the selected channel's EPG details and triggers
- * debounced Multi-Stage Smart HLS preview playback via LiveStreamEngine.
+ * Updates the right-hand preview column with the selected channel's minimal prompt and EPG details,
+ * and triggers debounced Multi-Stage Smart HLS preview playback via LiveStreamEngine.
  * 
  * @param {object} channel - The selected channel object to preview.
  */
@@ -493,7 +498,21 @@ async function showChannelDetail(channel) {
 
     const previewCard = document.getElementById('livetv-preview-card');
     if (previewCard) {
+        previewCard.classList.remove('is-playing');
         previewCard.onclick = () => playChannel(channel);
+    }
+
+    const previewChannelName = document.getElementById('preview-channel-name');
+    if (previewChannelName) {
+        previewChannelName.textContent = channel.name || '';
+    }
+
+    const previewWatchBtn = document.getElementById('preview-watch-btn');
+    if (previewWatchBtn) {
+        previewWatchBtn.onclick = (e) => {
+            e.stopPropagation();
+            playChannel(channel);
+        };
     }
 
     const epgContainer = document.getElementById('hero-epg-container');
@@ -513,7 +532,7 @@ async function showChannelDetail(channel) {
 
     const upcomingListEl = document.getElementById('upcoming-programs-list');
     if (upcomingListEl) {
-        upcomingListEl.innerHTML = `<div class="upcoming-program-row"><span class="upcoming-program-title">${noEpgText}</span></div>`;
+        upcomingListEl.innerHTML = `<div class="upcoming-program-row"><span class="upcoming-program-title">${escapeHtml(noEpgText)}</span></div>`;
     }
 
     const reqId = ++detailRequestId;
@@ -558,15 +577,15 @@ async function showChannelDetail(channel) {
             if (upcomingShows.length === 0) {
                 const row = document.createElement('div');
                 row.className = 'upcoming-program-row';
-                row.innerHTML = `<span class="upcoming-program-title">${noEpgText}</span>`;
+                row.innerHTML = `<span class="upcoming-program-title">${escapeHtml(noEpgText)}</span>`;
                 upcomingListEl.appendChild(row);
             } else {
                 upcomingShows.forEach(show => {
                     const row = document.createElement('div');
                     row.className = 'upcoming-program-row';
                     row.innerHTML = `
-                        <span class="upcoming-program-time">${show.start} - ${show.end}</span>
-                        <span class="upcoming-program-title">${show.title}</span>
+                        <span class="upcoming-program-time">${escapeHtml(show.start)} - ${escapeHtml(show.end)}</span>
+                        <span class="upcoming-program-title">${escapeHtml(show.title)}</span>
                     `;
                     upcomingListEl.appendChild(row);
                 });
@@ -576,7 +595,7 @@ async function showChannelDetail(channel) {
 }
 
 /**
- * Stops active preview playback and hides the loading spinner.
+ * Stops active preview playback, resets the preview card playing state, and hides the loading spinner.
  */
 function cleanupPreview() {
     if (previewTimeout) {
@@ -585,6 +604,10 @@ function cleanupPreview() {
     }
     if (previewEngine) {
         previewEngine.stop();
+    }
+    const previewCard = document.getElementById('livetv-preview-card');
+    if (previewCard) {
+        previewCard.classList.remove('is-playing');
     }
     const loader = document.getElementById('preview-video-loading');
     if (loader) {
@@ -730,7 +753,7 @@ function updateChannelStatus(url, status) {
         scheduleSaveStatusCache();
     }
 
-    const escapedUrl = url.replace(/"/g, '\\"');
+    const escapedUrl = CSS.escape(url);
     const row = document.querySelector(`.channel-list-item[data-url="${escapedUrl}"], .channel-card[data-url="${escapedUrl}"]`);
     if (row) {
         const dot = row.querySelector('.list-status-dot');
@@ -768,21 +791,26 @@ function renderNextChunk(preserveFocusedUrl = null) {
         item.tabIndex = 0;
         item.dataset.url = channel.url;
 
-        const iconUrl = (channel.logo && (/^https?:\/\//i.test(channel.logo) || channel.logo.startsWith('data:image/')))
-            ? channel.logo
-            : 'images/livetv.svg';
+        const iconUrl = isSafeMediaUrl(channel.logo) ? channel.logo : 'images/livetv.svg';
         const status = statusCache.get(channel.url)?.status || 'unknown';
         const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
 
         item.innerHTML = `
             <span class="list-status-dot ${statusClass}"></span>
             <div class="channel-card__logo-wrap channel-list-logo-container">
-                <img src="${iconUrl}" class="channel-card__logo channel-list-logo" loading="lazy" onerror="this.src='images/livetv.svg'">
+                <img src="${escapeHtml(iconUrl)}" class="channel-card__logo channel-list-logo" loading="lazy">
             </div>
             <div class="channel-card__meta channel-list-meta-container">
-                <span class="channel-card__title channel-list-name">${channel.name}</span>
+                <span class="channel-card__title channel-list-name">${escapeHtml(channel.name)}</span>
             </div>
         `;
+        const logoImg = item.querySelector('.channel-list-logo');
+        if (logoImg) {
+            logoImg.onerror = () => {
+                logoImg.onerror = null;
+                logoImg.src = 'images/livetv.svg';
+            };
+        }
 
         item.onfocus = () => {
             showChannelDetail(channel);
