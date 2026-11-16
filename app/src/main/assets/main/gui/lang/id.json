@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Pengaturan Lanjutan",
-    "advancedSettingsDesc": "Pembaruan, info aplikasi, dan penundaan respons",
-    "delayAction": "Penundaan Respons",
-    "delayActionDesc": "Tambahkan penundaan setelah menekan tombol",
-    "delay0": "0ms (Instan)",
-    "delay100": "100ms (Default)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Lihat versi aplikasi, info sistem, dan catatan perubahan",
     "colors": {
       "green": "Hijau",
@@ -153,7 +146,13 @@
       "orange": "Oranye",
       "yellow": "Kuning"
     },
-    "failedToFetchReleases": "Gagal mengambil rilis. Silakan periksa koneksi internet Anda."
+    "failedToFetchReleases": "Gagal mengambil rilis. Silakan periksa koneksi internet Anda.",
+    "delayAction": "Penundaan Respons",
+    "delayActionDesc": "Tambahkan penundaan setelah menekan tombol",
+    "delay0": "0ms (Instan)",
+    "delay100": "100ms (Default)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Tutup",

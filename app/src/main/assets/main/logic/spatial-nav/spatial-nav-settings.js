@@ -426,6 +426,8 @@ function findNextInSettingsPage(current, direction) {
         'edit-color-btn',
         'toggle-adult-btn',
         'toggle-datasaver-btn',
+        'edit-delay-action-btn',
+        'advanced-dropdown-btn',
         'edit-player-btn',
         'edit-m3u-btn',
         'edit-update-mode-btn',

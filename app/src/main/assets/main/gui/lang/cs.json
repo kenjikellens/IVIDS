@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Pokročilá nastavení",
-    "advancedSettingsDesc": "Aktualizace, informace o aplikaci a zpoždění odezvy",
-    "delayAction": "Zpoždění odezvy",
-    "delayActionDesc": "Přidat zpoždění po stisknutí tlačítek",
-    "delay0": "0ms (Okamžitě)",
-    "delay100": "100ms (Výchozí)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Zobrazit verzi aplikace, informace o systému a protokol změn",
     "colors": {
       "green": "Zelená",
@@ -153,7 +146,13 @@
       "orange": "Oranžová",
       "yellow": "Žlutá"
     },
-    "failedToFetchReleases": "Nepodařilo se načíst verze. Zkontrolujte připojení k internetu."
+    "failedToFetchReleases": "Nepodařilo se načíst verze. Zkontrolujte připojení k internetu.",
+    "delayAction": "Zpoždění odezvy",
+    "delayActionDesc": "Přidat zpoždění po stisknutí tlačítek",
+    "delay0": "0ms (Okamžitě)",
+    "delay100": "100ms (Výchozí)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Zavřít",

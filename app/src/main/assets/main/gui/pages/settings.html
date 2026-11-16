@@ -81,49 +81,28 @@
         </div>
     </div>
 
-    <!-- Player Settings -->
-    <div id="player-settings-section" class="settings-section">
+    <!-- Response Delay Settings (Main Settings) -->
+    <div id="delay-action-section" class="settings-section">
         <h2 class="section-title">
-            <img src="images/play.svg" class="section-title__icon" alt="">
-            <span data-i18n="settings.playerProvider">Player</span>
+            <img src="images/settings.svg" class="section-title__icon" alt="">
+            <span data-i18n="settings.delayAction">Response Delay</span>
         </h2>
 
         <div class="setting-item universal-onclick">
             <div class="setting-info">
-                <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
-                <div class="setting-description" data-i18n="settings.playerProviderDesc">Configure the embed endpoint used by the movie and series player</div>
+                <div class="setting-label" data-i18n="settings.delayAction">Response Delay</div>
+                <div class="setting-description" data-i18n="settings.delayActionDesc">Add a delay to button and navigation press actions</div>
             </div>
             <div class="setting-control">
-                <div id="current-player-display" class="current-value-display">—</div>
-                <button id="edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Provider">
+                <div id="current-delay-action-display" class="current-value-display">100ms</div>
+                <button id="edit-delay-action-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Response Delay" type="button">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Live TV Settings -->
-    <div id="livetv-settings-section" class="settings-section">
-        <h2 class="section-title">
-            <img src="images/livetv.svg" class="section-title__icon" alt="">
-            <span data-i18n="settings_livetv.title">Live TV Configuration</span>
-        </h2>
-
-        <div class="setting-item universal-onclick">
-            <div class="setting-info">
-                <div class="setting-label" data-i18n="settings_livetv.m3uUrl">M3U Playlist URL</div>
-                <div class="setting-description" data-i18n="settings_livetv.m3uUrlDesc">Enter the URL for your IPTV playlist (.m3u)</div>
-            </div>
-            <div class="setting-control">
-                <div id="current-m3u-display" class="current-value-display">0 Playlists</div>
-                <button id="edit-m3u-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Playlists">
-                    <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Landscape / PC Dropdown Trigger (small dropdown centered under Live TV) -->
+    <!-- Landscape / PC Dropdown Trigger (small dropdown centered below main settings) -->
     <div id="advanced-dropdown-wrapper" class="advanced-dropdown-wrapper">
         <button id="advanced-dropdown-btn" class="btn btn--secondary focusable universal-onclick advanced-dropdown-btn" type="button" aria-expanded="false" aria-controls="advanced-dropdown-container">
             <img src="images/settings.svg" class="btn__icon" alt="">
@@ -132,8 +111,50 @@
         </button>
     </div>
 
-    <!-- Landscape / PC Collapsible Containers (App Updates, Delay Action, App Info) -->
+    <!-- Landscape / PC Collapsible Containers (Player Providers, Live TV Configuration, App Updates, App Info) -->
     <div id="advanced-dropdown-container" class="advanced-dropdown-container hidden">
+        <!-- Player Settings -->
+        <div id="player-settings-section" class="settings-section">
+            <h2 class="section-title">
+                <img src="images/play.svg" class="section-title__icon" alt="">
+                <span data-i18n="settings.playerProviders">Player Providers</span>
+            </h2>
+
+            <div class="setting-item universal-onclick">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
+                    <div class="setting-description" data-i18n="settings.playerProviderDesc">Configure the embed endpoint used by the movie and series player</div>
+                </div>
+                <div class="setting-control">
+                    <div id="current-player-display" class="current-value-display">—</div>
+                    <button id="edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Provider">
+                        <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live TV Settings -->
+        <div id="livetv-settings-section" class="settings-section">
+            <h2 class="section-title">
+                <img src="images/livetv.svg" class="section-title__icon" alt="">
+                <span data-i18n="settings_livetv.title">Live TV Configuration</span>
+            </h2>
+
+            <div class="setting-item universal-onclick">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings_livetv.m3uUrl">M3U Playlist URL</div>
+                    <div class="setting-description" data-i18n="settings_livetv.m3uUrlDesc">Enter the URL for your IPTV playlist (.m3u)</div>
+                </div>
+                <div class="setting-control">
+                    <div id="current-m3u-display" class="current-value-display">0 Playlists</div>
+                    <button id="edit-m3u-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Playlists">
+                        <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- App Updates Settings Container -->
         <div id="app-updates-section" class="settings-section">
             <h2 class="section-title">
@@ -166,27 +187,6 @@
             </div>
         </div>
 
-        <!-- Delay Action Settings Container -->
-        <div id="delay-action-section" class="settings-section">
-            <h2 class="section-title">
-                <img src="images/settings.svg" class="section-title__icon" alt="">
-                <span data-i18n="settings.delayAction">Response Delay</span>
-            </h2>
-
-            <div class="setting-item universal-onclick">
-                <div class="setting-info">
-                    <div class="setting-label" data-i18n="settings.delayAction">Response Delay</div>
-                    <div class="setting-description" data-i18n="settings.delayActionDesc">Add a delay to button and navigation press actions</div>
-                </div>
-                <div class="setting-control">
-                    <div id="current-delay-action-display" class="current-value-display">100ms</div>
-                    <button id="edit-delay-action-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Response Delay" type="button">
-                        <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <!-- App Info Settings Container -->
         <div id="app-info-section" class="settings-section settings-section--app-info">
             <button id="app-info-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button">
@@ -201,7 +201,6 @@
     <div id="mobile-advanced-item" class="setting-item universal-onclick">
         <div class="setting-info">
             <div class="setting-label" data-i18n="settings.advancedSettings">Advanced Settings</div>
-            <div class="setting-description" data-i18n="settings.advancedSettingsDesc">Updates, app info & response delay</div>
         </div>
         <div class="setting-control">
             <button id="open-advanced-modal-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Advanced Settings" type="button">
@@ -472,6 +471,38 @@
         </button>
         <h2 id="advanced-settings-modal-title" class="modal__title" data-i18n="settings.advancedSettings">Advanced Settings</h2>
         <div class="modal__body" id="advanced-modal-body">
+            <!-- Player Providers Group -->
+            <h2 class="section-title" data-i18n="settings.playerProviders">Player Providers</h2>
+
+            <div class="setting-item universal-onclick" id="mobile-player-provider-item">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
+                    <div class="setting-description" data-i18n="settings.playerProviderDesc">Configure the embed endpoint used by the movie and series player</div>
+                </div>
+                <div class="setting-control">
+                    <div id="mobile-player-display" class="current-value-display">—</div>
+                    <button id="mobile-edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Provider" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live TV Configuration Group -->
+            <h2 class="section-title" data-i18n="settings_livetv.title">Live TV Configuration</h2>
+
+            <div class="setting-item universal-onclick" id="mobile-m3u-item">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings_livetv.m3uUrl">M3U Playlist URL</div>
+                    <div class="setting-description" data-i18n="settings_livetv.m3uUrlDesc">Enter the URL for your IPTV playlist (.m3u)</div>
+                </div>
+                <div class="setting-control">
+                    <div id="mobile-m3u-display" class="current-value-display">0 Playlists</div>
+                    <button id="mobile-edit-m3u-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Playlists" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
             <!-- App Updates Group -->
             <h2 class="section-title" data-i18n="settings.updates">App Updates</h2>
 
@@ -494,22 +525,6 @@
                 </div>
                 <div class="setting-control">
                     <button id="mobile-check-updates-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Controleren op updates" aria-label="Controleren op updates" type="button">
-                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
-                    </button>
-                </div>
-            </div>
-
-            <!-- Response Delay Group -->
-            <h2 class="section-title" data-i18n="settings.delayAction">Response Delay</h2>
-
-            <div class="setting-item universal-onclick" id="mobile-delay-action-item">
-                <div class="setting-info">
-                    <div class="setting-label" data-i18n="settings.delayAction">Response Delay</div>
-                    <div class="setting-description" data-i18n="settings.delayActionDesc">Add a delay to button and navigation press actions</div>
-                </div>
-                <div class="setting-control">
-                    <div id="mobile-delay-action-display" class="current-value-display">100ms</div>
-                    <button id="mobile-edit-delay-action-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Response Delay" type="button">
                         <img src="images/arrow.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>

@@ -131,13 +131,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Speciális beállítások",
-    "advancedSettingsDesc": "Frissítések, alkalmazásinfó és válaszkésleltetés",
-    "delayAction": "Válaszkésleltetés",
-    "delayActionDesc": "Késleltetés hozzáadása gombnyomások után",
-    "delay0": "0ms (Azonnali)",
-    "delay100": "100ms (Alapértelmezett)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Alkalmazásverzió, rendszerinformációk és változásnapló megtekintése",
     "colors": {
       "green": "Zöld",
@@ -147,7 +140,13 @@
       "orange": "Narancssárga",
       "yellow": "Sárga"
     },
-    "failedToFetchReleases": "Nem sikerült lekérni a kiadásokat. Kérjük, ellenőrizze az internetkapcsolatot."
+    "failedToFetchReleases": "Nem sikerült lekérni a kiadásokat. Kérjük, ellenőrizze az internetkapcsolatot.",
+    "delayAction": "Válaszkésleltetés",
+    "delayActionDesc": "Késleltetés hozzáadása gombnyomások után",
+    "delay0": "0ms (Azonnali)",
+    "delay100": "100ms (Alapértelmezett)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Close",

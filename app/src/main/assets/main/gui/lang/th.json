@@ -131,13 +131,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "การตั้งค่าขั้นสูง",
-    "advancedSettingsDesc": "การอัปเดต ข้อมูลแอป และการหน่วงเวลาการตอบสนอง",
-    "delayAction": "การหน่วงเวลาการตอบสนอง",
-    "delayActionDesc": "เพิ่มการหน่วงเวลาหลังจากกดปุ่ม",
-    "delay0": "0ms (ทันที)",
-    "delay100": "100ms (ค่าเริ่มต้น)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "ดูเวอร์ชันแอป ข้อมูลระบบ และบันทึกการเปลี่ยนแปลง",
     "colors": {
       "green": "เขียว",
@@ -147,7 +140,13 @@
       "orange": "ส้ม",
       "yellow": "เหลือง"
     },
-    "failedToFetchReleases": "ไม่สามารถดึงข้อมูลเวอร์ชันได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ"
+    "failedToFetchReleases": "ไม่สามารถดึงข้อมูลเวอร์ชันได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ",
+    "delayAction": "การหน่วงเวลาการตอบสนอง",
+    "delayActionDesc": "เพิ่มการหน่วงเวลาหลังจากกดปุ่ม",
+    "delay0": "0ms (ทันที)",
+    "delay100": "100ms (ค่าเริ่มต้น)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Close",

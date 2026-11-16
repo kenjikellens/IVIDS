@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "उन्नत सेटिंग्स",
-    "advancedSettingsDesc": "अपडेट, ऐप जानकारी और प्रतिक्रिया विलंब",
-    "delayAction": "प्रतिक्रिया विलंब",
-    "delayActionDesc": "बटन दबाने के बाद विलंब जोड़ें",
-    "delay0": "0ms (तत्काल)",
-    "delay100": "100ms (डिफ़ॉल्ट)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "ऐप संस्करण, सिस्टम जानकारी और परिवर्तन लॉग देखें",
     "colors": {
       "green": "हरा",
@@ -153,7 +146,13 @@
       "orange": "नारंगी",
       "yellow": "पीला"
     },
-    "failedToFetchReleases": "रिलीज़ प्राप्त करने में विफल। कृपया अपना इंटरनेट कनेक्शन जांचें।"
+    "failedToFetchReleases": "रिलीज़ प्राप्त करने में विफल। कृपया अपना इंटरनेट कनेक्शन जांचें।",
+    "delayAction": "प्रतिक्रिया विलंब",
+    "delayActionDesc": "बटन दबाने के बाद विलंब जोड़ें",
+    "delay0": "0ms (तत्काल)",
+    "delay100": "100ms (डिफ़ॉल्ट)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "बंद करें",

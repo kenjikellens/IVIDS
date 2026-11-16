@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Avancerede indstillinger",
-    "advancedSettingsDesc": "Opdateringer, appoplysninger og svarforsinkelse",
-    "delayAction": "Svarforsinkelse",
-    "delayActionDesc": "Tilføj en forsinkelse efter tryk på knapper",
-    "delay0": "0ms (Øjeblikkelig)",
-    "delay100": "100ms (Standard)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Se appversion, systemoplysninger og ændringslog",
     "colors": {
       "green": "Grøn",
@@ -153,7 +146,13 @@
       "orange": "Orange",
       "yellow": "Gul"
     },
-    "failedToFetchReleases": "Kunne ikke hente udgivelser. Tjek venligst din internetforbindelse."
+    "failedToFetchReleases": "Kunne ikke hente udgivelser. Tjek venligst din internetforbindelse.",
+    "delayAction": "Svarforsinkelse",
+    "delayActionDesc": "Tilføj en forsinkelse efter tryk på knapper",
+    "delay0": "0ms (Øjeblikkelig)",
+    "delay100": "100ms (Standard)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Luk",

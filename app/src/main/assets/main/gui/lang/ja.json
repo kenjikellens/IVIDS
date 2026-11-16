@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "詳細設定",
-    "advancedSettingsDesc": "アップデート、アプリ情報、応答遅延",
-    "delayAction": "応答遅延",
-    "delayActionDesc": "ボタン押下時に遅延を追加する",
-    "delay0": "0ms (即時)",
-    "delay100": "100ms (標準)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "アプリのバージョン、システム情報、更新履歴を表示",
     "colors": {
       "green": "緑",
@@ -153,7 +146,13 @@
       "orange": "オレンジ",
       "yellow": "黄"
     },
-    "failedToFetchReleases": "リリースの取得に失敗しました。インターネット接続を確認してください。"
+    "failedToFetchReleases": "リリースの取得に失敗しました。インターネット接続を確認してください。",
+    "delayAction": "応答遅延",
+    "delayActionDesc": "ボタン押下時に遅延を追加する",
+    "delay0": "0ms (即時)",
+    "delay100": "100ms (標準)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "閉じる",

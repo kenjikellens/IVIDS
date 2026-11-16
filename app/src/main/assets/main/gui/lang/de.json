@@ -132,13 +132,6 @@
     "installNow": "Jetzt installieren",
     "moreInfo": "Mehr Informationen",
     "advancedSettings": "Erweiterte Einstellungen",
-    "advancedSettingsDesc": "Updates, App-Informationen und Reaktionsverzögerung",
-    "delayAction": "Reaktionsverzögerung",
-    "delayActionDesc": "Verzögerung nach Tastendruck hinzufügen",
-    "delay0": "0ms (Sofort)",
-    "delay100": "100ms (Standard)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "App-Version, Systeminformationen und Changelog anzeigen",
     "colors": {
       "green": "Grün",
@@ -148,7 +141,13 @@
       "orange": "Orange",
       "yellow": "Gelb"
     },
-    "failedToFetchReleases": "Releases konnten nicht abgerufen werden. Bitte überprüfen Sie Ihre Internetverbindung."
+    "failedToFetchReleases": "Releases konnten nicht abgerufen werden. Bitte überprüfen Sie Ihre Internetverbindung.",
+    "delayAction": "Reaktionsverzögerung",
+    "delayActionDesc": "Verzögerung nach Tastendruck hinzufügen",
+    "delay0": "0ms (Sofort)",
+    "delay100": "100ms (Standard)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Schließen",

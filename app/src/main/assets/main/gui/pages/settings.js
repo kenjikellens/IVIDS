@@ -367,17 +367,21 @@ class SettingsManager {
             };
         }
 
-        // Delay Action buttons
+        // Delay Action button (main Settings section)
         const editDelayBtn = document.getElementById('edit-delay-action-btn');
         if (editDelayBtn) {
             editDelayBtn.onclick = () => this.openModal('delay-action-modal');
         }
-        const mobileEditDelayBtn = document.getElementById('mobile-edit-delay-action-btn');
-        if (mobileEditDelayBtn) {
-            mobileEditDelayBtn.onclick = () => this.openModal('delay-action-modal');
-        }
 
         // Mobile inner advanced buttons
+        const mobileEditPlayerBtn = document.getElementById('mobile-edit-player-btn');
+        if (mobileEditPlayerBtn) {
+            mobileEditPlayerBtn.onclick = () => this.openModal('player-modal');
+        }
+        const mobileEditM3uBtn = document.getElementById('mobile-edit-m3u-btn');
+        if (mobileEditM3uBtn) {
+            mobileEditM3uBtn.onclick = () => this.openModal('m3u-modal');
+        }
         const mobileEditUpdateBtn = document.getElementById('mobile-edit-update-mode-btn');
         if (mobileEditUpdateBtn) {
             mobileEditUpdateBtn.onclick = () => this.openModal('update-mode-modal');
@@ -754,16 +758,16 @@ class SettingsManager {
         }
 
         const playerDisplay = document.getElementById('current-player-display');
-        if (playerDisplay) {
-            const providers = this.settings.playerProviders || [];
-            playerDisplay.textContent = (window.i18n?.t('settings.serversCount') || '{count} Servers').replace('{count}', providers.length);
-        }
+        const mobilePlayerDisplay = document.getElementById('mobile-player-display');
+        const serversText = (window.i18n?.t('settings.serversCount') || '{count} Servers').replace('{count}', (this.settings.playerProviders || []).length);
+        if (playerDisplay) playerDisplay.textContent = serversText;
+        if (mobilePlayerDisplay) mobilePlayerDisplay.textContent = serversText;
 
         const m3uDisplay = document.getElementById('current-m3u-display');
-        if (m3uDisplay) {
-            const playlists = this.settings.m3uPlaylists || [];
-            m3uDisplay.textContent = (window.i18n?.t('settings.playlistsCount') || '{count} Playlists').replace('{count}', playlists.length);
-        }
+        const mobileM3uDisplay = document.getElementById('mobile-m3u-display');
+        const playlistsText = (window.i18n?.t('settings.playlistsCount') || '{count} Playlists').replace('{count}', (this.settings.m3uPlaylists || []).length);
+        if (m3uDisplay) m3uDisplay.textContent = playlistsText;
+        if (mobileM3uDisplay) mobileM3uDisplay.textContent = playlistsText;
 
         const modeDisplay = document.getElementById('current-update-mode-display');
         if (modeDisplay) {
@@ -810,8 +814,6 @@ class SettingsManager {
         const delayText = delayVal === 0 || delayVal === '0' ? '0ms' : `${delayVal}ms`;
         const delayDisplay = document.getElementById('current-delay-action-display');
         if (delayDisplay) delayDisplay.textContent = delayText;
-        const mobileDelayDisplay = document.getElementById('mobile-delay-action-display');
-        if (mobileDelayDisplay) mobileDelayDisplay.textContent = delayText;
 
         const mobileModeDisplay = document.getElementById('mobile-update-mode-display');
         if (mobileModeDisplay) {

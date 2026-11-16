@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Impostazioni avanzate",
-    "advancedSettingsDesc": "Aggiornamenti, informazioni sull'app e ritardo di risposta",
-    "delayAction": "Ritardo di risposta",
-    "delayActionDesc": "Aggiungi un ritardo dopo aver premuto i pulsanti",
-    "delay0": "0ms (Istantaneo)",
-    "delay100": "100ms (Predefinito)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Visualizza versione dell'app, informazioni di sistema e cronologia modifiche",
     "colors": {
       "green": "Verde",
@@ -153,7 +146,13 @@
       "orange": "Arancione",
       "yellow": "Giallo"
     },
-    "failedToFetchReleases": "Impossibile recuperare le versioni. Controlla la tua connessione Internet."
+    "failedToFetchReleases": "Impossibile recuperare le versioni. Controlla la tua connessione Internet.",
+    "delayAction": "Ritardo di risposta",
+    "delayActionDesc": "Aggiungi un ritardo dopo aver premuto i pulsanti",
+    "delay0": "0ms (Istantaneo)",
+    "delay100": "100ms (Predefinito)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Chiudi",

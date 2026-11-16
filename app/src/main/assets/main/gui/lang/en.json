@@ -57,13 +57,6 @@
     },
     "updates": "App Updates",
     "advancedSettings": "Advanced Settings",
-    "advancedSettingsDesc": "Updates, app info & response delay",
-    "delayAction": "Response Delay",
-    "delayActionDesc": "Add a delay to button and navigation press actions",
-    "delay0": "0ms (Instant)",
-    "delay100": "100ms (Default)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "View app version, system info, and changelog",
     "updateMode": "Update Mode",
     "checkNow": "Check for Updates",
@@ -147,7 +140,13 @@
     "installVersionTitle": "Install Version",
     "installNow": "Install Now",
     "moreInfo": "More Information",
-    "failedToFetchReleases": "Failed to fetch releases. Please check your internet connection."
+    "failedToFetchReleases": "Failed to fetch releases. Please check your internet connection.",
+    "delayAction": "Response Delay",
+    "delayActionDesc": "Add a delay to button and navigation press actions",
+    "delay0": "0ms (Instant)",
+    "delay100": "100ms (Default)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Close",

@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Setări avansate",
-    "advancedSettingsDesc": "Actualizări, informații despre aplicație și întârziere răspuns",
-    "delayAction": "Întârziere răspuns",
-    "delayActionDesc": "Adăugați o întârziere după apăsarea butoanelor",
-    "delay0": "0ms (Instant)",
-    "delay100": "100ms (Implicit)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Vizualizați versiunea aplicației, informațiile despre sistem și jurnalul de modificări",
     "colors": {
       "green": "Verde",
@@ -153,7 +146,13 @@
       "orange": "Portocaliu",
       "yellow": "Galben"
     },
-    "failedToFetchReleases": "Eșec la preluarea versiunilor. Vă rugăm să verificați conexiunea la internet."
+    "failedToFetchReleases": "Eșec la preluarea versiunilor. Vă rugăm să verificați conexiunea la internet.",
+    "delayAction": "Întârziere răspuns",
+    "delayActionDesc": "Adăugați o întârziere după apăsarea butoanelor",
+    "delay0": "0ms (Instant)",
+    "delay100": "100ms (Implicit)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Închide",

@@ -131,13 +131,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Lisäasetukset",
-    "advancedSettingsDesc": "Päivitykset, sovellustiedot ja vastausviive",
-    "delayAction": "Vastausviive",
-    "delayActionDesc": "Lisää viive painikkeiden painalluksen jälkeen",
-    "delay0": "0ms (Välitön)",
-    "delay100": "100ms (Oletus)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Näytä sovelluksen versio, järjestelmätiedot ja muutosloki",
     "colors": {
       "green": "Vihreä",
@@ -147,7 +140,13 @@
       "orange": "Oranssi",
       "yellow": "Keltainen"
     },
-    "failedToFetchReleases": "Julkaisujen nouto epäonnistui. Tarkista internetyhteytesi."
+    "failedToFetchReleases": "Julkaisujen nouto epäonnistui. Tarkista internetyhteytesi.",
+    "delayAction": "Vastausviive",
+    "delayActionDesc": "Lisää viive painikkeiden painalluksen jälkeen",
+    "delay0": "0ms (Välitön)",
+    "delay100": "100ms (Oletus)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Close",

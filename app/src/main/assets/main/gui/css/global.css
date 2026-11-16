@@ -1213,7 +1213,6 @@ input, textarea, select { font: inherit; }
 .playlist-selection-list .playlist-item:first-child { border-top: 1px solid #222222; }
 /* Keeps language heading wrapper layout-neutral outside TV landscape presentation. */
 .language-modal__heading, .language-modal__heading-copy { display: contents; }
-.language-modal__subtitle { display: none; }
 /* Two-column landscape language popup: title on the left beside scrollable language rows, back button pinned top-left. */
 @media (orientation: landscape) and (min-width: 1024px) and (min-height: 501px) {
     /* Two-column modal layout keeping title on left beside the scrollable language list. */

@@ -137,13 +137,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Definições avançadas",
-    "advancedSettingsDesc": "Atualizações, informações da app e atraso de resposta",
-    "delayAction": "Atraso de resposta",
-    "delayActionDesc": "Adicionar atraso ao pressionar botões ou navegar",
-    "delay0": "0ms (Instantâneo)",
-    "delay100": "100ms (Padrão)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Ver versão da app, informações do sistema e histórico de alterações",
     "colors": {
       "green": "Verde",
@@ -153,7 +146,13 @@
       "orange": "Laranja",
       "yellow": "Amarelo"
     },
-    "failedToFetchReleases": "Falha ao buscar lançamentos. Verifique sua conexão com a internet."
+    "failedToFetchReleases": "Falha ao buscar lançamentos. Verifique sua conexão com a internet.",
+    "delayAction": "Atraso de resposta",
+    "delayActionDesc": "Adicionar atraso ao pressionar botões ou navegar",
+    "delay0": "0ms (Instantâneo)",
+    "delay100": "100ms (Padrão)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Fechar",

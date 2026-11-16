@@ -131,13 +131,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Napredne postavke",
-    "advancedSettingsDesc": "Ažuriranja, informacije o aplikaciji i odgoda odgovora",
-    "delayAction": "Odgoda odgovora",
-    "delayActionDesc": "Dodajte odgodu nakon pritiska gumba",
-    "delay0": "0ms (Trenutno)",
-    "delay100": "100ms (Zadano)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Prikaz verzije aplikacije, informacija o sustavu i zapisa promjena",
     "colors": {
       "green": "Zelena",
@@ -147,7 +140,13 @@
       "orange": "Narančasta",
       "yellow": "Žuta"
     },
-    "failedToFetchReleases": "Dohvaćanje izdanja nije uspjelo. Provjerite internetsku vezu."
+    "failedToFetchReleases": "Dohvaćanje izdanja nije uspjelo. Provjerite internetsku vezu.",
+    "delayAction": "Odgoda odgovora",
+    "delayActionDesc": "Dodajte odgodu nakon pritiska gumba",
+    "delay0": "0ms (Trenutno)",
+    "delay100": "100ms (Zadano)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Close",

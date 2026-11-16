@@ -131,13 +131,6 @@
     "installNow": "Install Now",
     "moreInfo": "More Information",
     "advancedSettings": "Configuració avançada",
-    "advancedSettingsDesc": "Actualitzacions, informació de l'aplicació i retard de resposta",
-    "delayAction": "Retard de resposta",
-    "delayActionDesc": "Afegeix un retard després de prémer botons",
-    "delay0": "0ms (Instantani)",
-    "delay100": "100ms (Per defecte)",
-    "delay250": "250ms",
-    "delay500": "500ms",
     "appInfoDesc": "Mostra la versió de l'aplicació, informació del sistema i registre de canvis",
     "colors": {
       "green": "Verd",
@@ -147,7 +140,13 @@
       "orange": "Taronja",
       "yellow": "Groc"
     },
-    "failedToFetchReleases": "No s'han pogut obtenir les versions. Comproveu la connexió a internet."
+    "failedToFetchReleases": "No s'han pogut obtenir les versions. Comproveu la connexió a internet.",
+    "delayAction": "Retard de resposta",
+    "delayActionDesc": "Afegeix un retard després de prémer botons",
+    "delay0": "0ms (Instantani)",
+    "delay100": "100ms (Per defecte)",
+    "delay250": "250ms",
+    "delay500": "500ms"
   },
   "common": {
     "close": "Tancar",
