@@ -10,26 +10,26 @@
     <!-- Custom Player Overlay (Auto Hides) -->
     <div class="tv-overlay" id="tv-overlay">
         <div class="tv-overlay-top tv-top-bar">
-            <button class="btn btn--secondary btn--circle-md focusable tv-back-btn universal-onclick" id="tv-back" type="button" title="Back">
-                <img src="images/back.svg" alt="Back" class="btn__icon">
+            <button class="btn btn--secondary btn--circle-md focusable tv-back-btn universal-onclick" id="tv-back" type="button">
+                <img src="images/back.svg" alt="" class="btn__icon">
             </button>
-            <button class="btn btn--secondary btn--circle-md focusable tv-settings-btn universal-onclick" id="tv-settings-btn" type="button" title="Stream Options">
-                <img src="images/settings.svg" alt="Settings" class="btn__icon">
+            <button class="btn btn--secondary btn--circle-md focusable tv-settings-btn universal-onclick" id="tv-settings-btn" type="button">
+                <img src="images/settings.svg" alt="" class="btn__icon">
             </button>
         </div>
 
-        <!-- Docked Right Stream Options Sidebar (Opened by Settings Button) -->
-        <aside id="tv-settings-panel" class="tv-settings-panel hidden" aria-label="Stream Options">
-            <div class="tv-settings-header">
-                <span class="tv-settings-title" data-i18n="livetv.streamOptions">Stream Options</span>
-                <button id="tv-settings-close" type="button" class="tv-settings-close focusable universal-onclick" aria-label="Close">&times;</button>
-            </div>
+        <!-- Minimal Right-Edge 2-Level Stream Options Sidebar -->
+        <aside id="tv-settings-panel" class="tv-settings-panel hidden">
+            <button id="tv-settings-back" type="button" class="tv-settings-header focusable universal-onclick">
+                <img src="images/back.svg" alt="" class="btn__icon">
+                <span id="tv-settings-title" class="tv-settings-title" data-i18n="livetv.streamOptions"></span>
+            </button>
             <div id="tv-settings-options" class="tv-settings-options"></div>
         </aside>
 
         <!-- Minimal Inline Offline Retry Fallback -->
         <div id="tv-offline-fallback" class="tv-offline-fallback hidden">
-            <button class="btn btn--secondary btn--sm tv-retry-btn focusable universal-onclick" id="tv-retry-btn" type="button" data-i18n="livetv.retry">Retry</button>
+            <button class="btn btn--secondary btn--sm tv-retry-btn focusable universal-onclick" id="tv-retry-btn" type="button" data-i18n="livetv.retry"></button>
         </div>
 
         <!-- Strictly Channel Icon + Channel Name + Optional Program Name -->

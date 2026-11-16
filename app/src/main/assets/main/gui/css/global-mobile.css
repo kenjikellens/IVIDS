@@ -334,10 +334,9 @@
 /* Touch-friendly >=44px top Back and Settings buttons on mobile. */
 #app .tv-back-btn, #app .tv-settings-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 /* Docked right-edge Stream Options sidebar with safe-area padding on mobile. */
-#app .tv-settings-panel { bottom: 0; height: 100%; left: auto; max-height: 100%; padding: calc(16px + env(safe-area-inset-top, 12px)) 14px calc(20px + env(safe-area-inset-bottom, 12px)); right: 0; top: 0; width: min(290px, 84vw); }
-/* Touch-friendly >=44px Stream Options sidebar rows and close trigger on mobile. */
-#app .tv-opt-btn { min-height: 44px; padding: 10px 14px; }
-#app .tv-settings-close { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
+#app .tv-settings-panel { bottom: 0; height: 100%; left: auto; max-height: 100%; padding: calc(14px + env(safe-area-inset-top, 12px)) 12px calc(18px + env(safe-area-inset-bottom, 12px)); right: 0; top: 0; width: min(270px, 80vw); }
+/* Touch-friendly >=44px Stream Options sidebar rows and back header on mobile. */
+#app .tv-opt-btn, #app .tv-settings-header { min-height: 44px; padding: 10px 12px; }
 /* Compact channel info typography on narrow mobile screens. */
 #app .tv-info { max-width: calc(100% - 54px); }
 #app .tv-info h1 { font-size: 17px; }

@@ -438,14 +438,20 @@ export class LiveStreamEngine {
             if (Array.isArray(this.hls.audioTracks) && this.hls.audioTracks.length > 1) {
                 result.audioTracks = this.hls.audioTracks.map((t, idx) => ({
                     index: idx,
-                    label: t.name || t.lang || `Audio ${idx + 1}`
+                    label: t.name || '',
+                    lang: t.lang || '',
+                    fallbackKind: 'audio',
+                    trackNumber: idx + 1
                 }));
                 result.currentAudioTrack = typeof this.hls.audioTrack === 'number' ? this.hls.audioTrack : 0;
             }
             if (Array.isArray(this.hls.subtitleTracks) && this.hls.subtitleTracks.length > 0) {
                 result.subtitleTracks = this.hls.subtitleTracks.map((t, idx) => ({
                     index: idx,
-                    label: t.name || t.lang || `Subtitle ${idx + 1}`
+                    label: t.name || '',
+                    lang: t.lang || '',
+                    fallbackKind: 'subtitle',
+                    trackNumber: idx + 1
                 }));
                 result.currentSubtitleTrack = typeof this.hls.subtitleTrack === 'number' ? this.hls.subtitleTrack : -1;
             }
@@ -453,7 +459,10 @@ export class LiveStreamEngine {
             const tracks = Array.from(this.video.textTracks);
             result.subtitleTracks = tracks.map((t, idx) => ({
                 index: idx,
-                label: t.label || t.language || `Subtitle ${idx + 1}`
+                label: t.label || '',
+                lang: t.language || '',
+                fallbackKind: 'subtitle',
+                trackNumber: idx + 1
             }));
             result.currentSubtitleTrack = tracks.findIndex(t => t.mode === 'showing');
         }

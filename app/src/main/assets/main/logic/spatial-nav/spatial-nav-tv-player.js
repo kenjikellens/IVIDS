@@ -75,10 +75,10 @@ function getSettingsOptions() {
 function getSettingsSidebarItems() {
     const panel = document.getElementById('tv-settings-panel');
     if (!panel || !isElementVisible(panel)) return [];
-    const closeBtn = document.getElementById('tv-settings-close');
+    const backBtn = document.getElementById('tv-settings-back');
     const opts = Array.from(panel.querySelectorAll('.tv-opt-btn.focusable')).filter(isElementVisible);
-    if (closeBtn && isElementVisible(closeBtn)) {
-        return [closeBtn, ...opts];
+    if (backBtn && isElementVisible(backBtn)) {
+        return [backBtn, ...opts];
     }
     return opts;
 }
@@ -206,12 +206,14 @@ export const spatialNavTvPlayer = {
 
             if (!isInsideSidebar && (isUp || isDown || isLeft || isRight)) {
                 const opts = getSettingsOptions();
-                const target = opts[0] || document.getElementById('tv-settings-close');
+                const target = opts[0] || document.getElementById('tv-settings-back');
                 if (target && isElementVisible(target)) SpatialNav.setFocus(target);
                 return true;
             }
             if (isInsideSidebar && isLeft) {
-                if (typeof window !== 'undefined' && typeof window.tvCloseSettingsPanel === 'function') {
+                if (typeof window !== 'undefined' && typeof window.tvSettingsBack === 'function') {
+                    window.tvSettingsBack();
+                } else if (typeof window !== 'undefined' && typeof window.tvCloseSettingsPanel === 'function') {
                     window.tvCloseSettingsPanel(true);
                 } else if (panel) {
                     panel.classList.add('hidden');
@@ -219,6 +221,9 @@ export const spatialNavTvPlayer = {
                 return true;
             }
             if (isInsideSidebar && isRight) {
+                if (focusedEl && focusedEl.dataset.submenu) {
+                    focusedEl.click();
+                }
                 return true;
             }
             return false;
@@ -276,7 +281,9 @@ export const spatialNavTvPlayer = {
      */
     handleBack() {
         if (isSettingsPanelOpen()) {
-            if (typeof window !== 'undefined' && typeof window.tvCloseSettingsPanel === 'function') {
+            if (typeof window !== 'undefined' && typeof window.tvSettingsBack === 'function') {
+                window.tvSettingsBack();
+            } else if (typeof window !== 'undefined' && typeof window.tvCloseSettingsPanel === 'function') {
                 window.tvCloseSettingsPanel(true);
             } else {
                 const panel = document.getElementById('tv-settings-panel');

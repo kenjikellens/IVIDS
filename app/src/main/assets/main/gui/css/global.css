@@ -1849,34 +1849,29 @@ input, textarea, select { font: inherit; }
 }
 .tv-back-btn:hover, .tv-settings-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.45); }
 .tv-back-btn:focus, .tv-back-btn.focused, .tv-settings-btn:focus, .tv-settings-btn.focused { background: rgba(255, 255, 255, 0.24); border-color: #ffffff; outline: none; }
-/* Full-height docked right-edge Stream Options sidebar panel. */
-.tv-settings-panel { backdrop-filter: blur(20px); background: rgba(12, 12, 14, 0.96); border-left: 1px solid rgba(255, 255, 255, 0.12); border-radius: 0; bottom: 0; box-shadow: -12px 0 36px rgba(0, 0, 0, 0.65); box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; height: 100%; overflow-y: auto; padding: 20px 16px; pointer-events: auto; position: absolute; right: 0; top: 0; width: clamp(270px, 24vw, 340px); z-index: 30; }
-/* Stream Options sidebar header bar containing title and close button. */
-.tv-settings-header { align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-shrink: 0; justify-content: space-between; padding-bottom: 12px; }
+/* Minimal right-edge docked Stream Options sidebar matching app flat bordered list aesthetic. */
+.tv-settings-panel { background: rgba(10, 10, 10, 0.94); border-left: 1px solid rgba(255, 255, 255, 0.14); border-radius: 0; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-y: auto; padding: 16px 12px; pointer-events: auto; position: absolute; right: 0; top: 0; width: clamp(240px, 22vw, 300px); z-index: 30; }
+/* Minimal sidebar header/back button switching from submenu to root or closing sidebar. */
+.tv-settings-header { align-items: center; background: transparent; border: 2px solid transparent; border-radius: var(--radius-md); color: #ffffff; cursor: pointer; display: flex; flex-shrink: 0; gap: 10px; min-height: 40px; padding: 6px 10px; text-align: left; width: 100%; }
+.tv-settings-header:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+.tv-settings-header:focus, .tv-settings-header.focused { background: rgba(255, 255, 255, 0.1); border-color: #ffffff; outline: none; }
+/* Sidebar header icon sizing matching standard small icons. */
+.tv-settings-header .btn__icon { height: 15px; opacity: 0.85; width: 15px; }
 /* Stream Options sidebar title text. */
-.tv-settings-title { color: #ffffff; font-size: 16px; font-weight: 800; letter-spacing: 0.2px; }
-/* Circular close button inside Stream Options sidebar header. */
-.tv-settings-close { align-items: center; background: rgba(255, 255, 255, 0.08); border: 2px solid transparent; border-radius: 50%; color: #ffffff; cursor: pointer; display: inline-flex; flex-shrink: 0; font-size: 20px; height: 34px; justify-content: center; line-height: 1; padding: 0; width: 34px; }
-.tv-settings-close:hover { background: rgba(255, 255, 255, 0.18); }
-.tv-settings-close:focus, .tv-settings-close.focused { background: rgba(255, 255, 255, 0.22); border-color: #ffffff; outline: none; }
-/* Vertical stack of available stream option groups inside sidebar. */
-.tv-settings-options { display: flex; flex-direction: column; gap: 18px; }
-/* Individual option group inside Stream Options sidebar. */
-.tv-settings-group { display: flex; flex-direction: column; gap: 6px; }
-/* Section label above a Stream Options group. */
-.tv-settings-label { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: 0.8px; padding: 0 4px; text-transform: uppercase; }
-/* Single-column vertical option row stack inside each sidebar group. */
-.tv-settings-choices { display: flex; flex-direction: column; gap: 4px; width: 100%; }
-/* Full-width interactive option row button inside Stream Options sidebar. */
-.tv-opt-btn { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid transparent; border-radius: var(--radius-md); box-sizing: border-box; color: rgba(255, 255, 255, 0.88); cursor: pointer; display: flex; font-size: 14px; font-weight: 600; gap: 12px; justify-content: space-between; min-height: 40px; padding: 9px 12px; text-align: left; width: 100%; }
-.tv-opt-btn:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
-.tv-opt-btn.is-active { background: rgba(var(--primary-rgb), 0.16); color: #ffffff; font-weight: 700; }
-.tv-opt-btn:focus, .tv-opt-btn.focused { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; color: #ffffff; outline: none; }
-/* Truncated left-aligned label text inside a Stream Options sidebar row. */
+.tv-settings-title { color: #ffffff; font-size: 14px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Single-column vertical stack of menu rows inside Stream Options sidebar. */
+.tv-settings-options { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+/* Minimal bordered list row inside Stream Options sidebar matching category/channel items. */
+.tv-opt-btn { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 0.88rem; font-weight: 700; gap: 10px; justify-content: space-between; min-height: 42px; padding: 8px 12px; text-align: left; width: 100%; }
+.tv-opt-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+.tv-opt-btn.is-active { background: rgba(var(--primary-rgb), 0.18); border-color: var(--primary-color); }
+.tv-opt-btn:focus, .tv-opt-btn.focused { background: rgba(255, 255, 255, 0.1); border-color: #ffffff; outline: none; }
+/* Left-aligned option label inside Stream Options sidebar row. */
 .tv-opt-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Dedicated right-aligned active dot slot preventing overlap with option text. */
-.tv-opt-check { background: transparent; border-radius: 50%; flex-shrink: 0; height: 9px; width: 9px; }
-.tv-opt-btn.is-active .tv-opt-check { background: var(--primary-color); }
+/* Right-aligned subtle current value hint inside Root category rows. */
+.tv-opt-value { color: var(--text-muted); flex-shrink: 0; font-size: 0.8rem; font-weight: 600; max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Right-aligned drill-down chevron inside Root category rows. */
+.tv-opt-chevron { color: var(--text-muted); flex-shrink: 0; font-size: 16px; line-height: 1; }
 /* Centered minimal Retry button wrapper shown only when stream is offline. */
 .tv-offline-fallback { align-items: center; display: flex; justify-content: center; margin: auto; pointer-events: auto; }
 .tv-retry-btn { min-height: 40px; padding: 8px 18px; }
