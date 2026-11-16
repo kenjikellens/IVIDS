@@ -14,7 +14,55 @@ export class RealDebridClient {
      */
     constructor(userApiKey = '') {
         this.userApiKey = (userApiKey || '').trim();
-        this._envConfiguredCache = null;
+        this._envStatusCache = null;
+    }
+
+    /**
+     * Checks whether the local PC dev server exposes a .env Real-Debrid backup token
+     * and whether the active credential has an active Real-Debrid Premium subscription.
+     *
+     * @returns {Promise<{envConfigured: boolean, hasPremium: boolean}>} Debrid credential status.
+     */
+    async getStatus() {
+        if (this._envStatusCache !== null) return this._envStatusCache;
+        if (isLocalhostEnv()) {
+            try {
+                const res = await fetch(`/api/debrid/status?token=${encodeURIComponent(this.userApiKey)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    this._envStatusCache = {
+                        envConfigured: Boolean(data?.envConfigured),
+                        hasPremium: Boolean(data?.hasPremium)
+                    };
+                    return this._envStatusCache;
+                }
+            } catch {
+                // Fall through to unconfigured status
+            }
+            this._envStatusCache = { envConfigured: false, hasPremium: false };
+            return this._envStatusCache;
+        }
+
+        if (!this.userApiKey) {
+            this._envStatusCache = { envConfigured: false, hasPremium: false };
+            return this._envStatusCache;
+        }
+
+        try {
+            const res = await fetch('https://api.real-debrid.com/rest/1.0/user', {
+                headers: { Authorization: `Bearer ${this.userApiKey}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                const isPrem = Boolean(data?.type === 'premium' || Number(data?.premium || 0) > 0);
+                this._envStatusCache = { envConfigured: false, hasPremium: isPrem };
+                return this._envStatusCache;
+            }
+        } catch {
+            // Network/API check failed cleanly
+        }
+        this._envStatusCache = { envConfigured: false, hasPremium: false };
+        return this._envStatusCache;
     }
 
     /**
@@ -23,21 +71,18 @@ export class RealDebridClient {
      * @returns {Promise<boolean>} True if /api/debrid/status confirms a local backup token exists.
      */
     async isEnvBackupAvailable() {
-        if (!isLocalhostEnv()) return false;
-        if (this._envConfiguredCache !== null) return this._envConfiguredCache;
-        try {
-            const res = await fetch('/api/debrid/status');
-            if (!res.ok) {
-                this._envConfiguredCache = false;
-                return false;
-            }
-            const data = await res.json();
-            this._envConfiguredCache = Boolean(data && data.envConfigured);
-            return this._envConfiguredCache;
-        } catch {
-            this._envConfiguredCache = false;
-            return false;
-        }
+        const status = await this.getStatus();
+        return status.envConfigured;
+    }
+
+    /**
+     * Checks whether the active Real-Debrid token belongs to a paid Premium account.
+     *
+     * @returns {Promise<boolean>} True when the token has active Premium days remaining.
+     */
+    async isPremiumActive() {
+        const status = await this.getStatus();
+        return status.hasPremium;
     }
 
     /**

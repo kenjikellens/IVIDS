@@ -324,6 +324,33 @@ def get_app_version():
         return '0.4.1'
 
 
+_RD_USER_CACHE = {}
+
+def _check_rd_account_premium(token):
+    """
+    Checks /rest/1.0/user on api.real-debrid.com with a 120s in-memory cache
+    so expired/free Real-Debrid keys can be skipped before loading error MP4s.
+    """
+    if not token:
+        return False
+    now = time.time()
+    cached = _RD_USER_CACHE.get(token)
+    if cached and cached[1] > now:
+        return cached[0]
+    try:
+        req = urllib.request.Request(
+            'https://api.real-debrid.com/rest/1.0/user',
+            headers={'Authorization': f'Bearer {token}', 'User-Agent': 'IVIDS/1.0'}
+        )
+        with _PROXY_OPENER.open(req, timeout=5) as resp:
+            info = json.loads(resp.read().decode('utf-8', errors='replace'))
+            is_prem = bool(info.get('type') == 'premium' or (info.get('premium') or 0) > 0)
+            _RD_USER_CACHE[token] = (is_prem, now + 120.0)
+            return is_prem
+    except Exception:
+        _RD_USER_CACHE[token] = (False, now + 30.0)
+        return False
+
 class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     """
     Custom request handler that serves static files from the assets directory,
@@ -577,16 +604,22 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def _handle_debrid_status(self):
         """
-        Reports whether a local .env Real-Debrid backup token exists without exposing the secret.
+        Reports whether a local .env Real-Debrid backup token exists and has active Premium status.
         """
-        has_env = bool(_get_debrid_backup_token())
-        body = json.dumps({'envConfigured': has_env}).encode('utf-8')
+        parsed = urllib.parse.urlparse(self.path)
+        qs = urllib.parse.parse_qs(parsed.query)
+        user_token = (qs.get('token', [''])[0] or '').strip()
+        env_token = _get_debrid_backup_token()
+        has_env = bool(env_token)
+        active_token = user_token or env_token
+        has_premium = _check_rd_account_premium(active_token) if active_token else False
+        body = json.dumps({'envConfigured': has_env, 'hasPremium': has_premium}).encode('utf-8')
         self._send_json_response(body, 200)
 
     def _handle_debrid_streams(self):
         """
         Queries a Stremio addon manifest stream endpoint server-side using either the supplied token
-        or the local .env Real-Debrid backup token.
+        or the local .env Real-Debrid backup token (unless noToken=1 for free HTTP addons).
         """
         try:
             parsed = urllib.parse.urlparse(self.path)
@@ -594,8 +627,9 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             addon_base = (qs.get('addonBase', [''])[0] or '').strip()
             media_type = (qs.get('type', ['movie'])[0] or 'movie').strip()
             stream_id = (qs.get('id', [''])[0] or '').strip()
+            no_token = (qs.get('noToken', ['0'])[0] or '0').strip() == '1'
             user_token = (qs.get('token', [''])[0] or '').strip()
-            token = user_token or _get_debrid_backup_token()
+            token = '' if no_token else (user_token or _get_debrid_backup_token())
 
             if not addon_base or not stream_id:
                 self._send_json_response(json.dumps({'streams': [], 'error': 'Missing addonBase or id'}).encode('utf-8'), 400)
@@ -1034,7 +1068,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                             extra_params += f'&origin={urllib.parse.quote(origin, safe="")}'
                         if user_agent:
                             extra_params += f'&user-agent={urllib.parse.quote(user_agent, safe="")}'
-                        text = rewrite_m3u8(text, target_url, proxy_prefix, extra_params)
+                        text = rewrite_m3u8(text, final_url or target_url, proxy_prefix, extra_params)
                         body = text.encode('utf-8')
                         content_type = 'application/vnd.apple.mpegurl'
 

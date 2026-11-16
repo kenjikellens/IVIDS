@@ -25,11 +25,11 @@ let _cachedTodayDate = null;
 let _cachedPlayerConfig = null;
 let _configOwnerId = null;
 const DEFAULT_PLAYER_PROVIDERS = [...PLAYER_CONFIG.DEFAULT_PROVIDERS];
-export const DEFAULT_PLAYBACK_SOURCE_ORDER = ['debrid_primary', 'debrid_backup', 'embed_servers'];
+export const DEFAULT_PLAYBACK_SOURCE_ORDER = ['debrid_primary', 'direct_http', 'embed_servers'];
 export const DEFAULT_DEBRID_CONFIG = Object.freeze({
     apiKey: '',
     primaryAddonUrl: 'https://torrentio.strem.fun',
-    backupAddonUrl: 'https://comet.elfhosted.com'
+    httpAddonUrl: 'https://addon.notorrent2.workers.dev'
 });
 
 /** Cached slow connection evaluation state. */
@@ -997,13 +997,21 @@ export const Api = {
             }
 
             const rawOrder = Array.isArray(saved.playbackSourceOrder) ? saved.playbackSourceOrder : [];
-            const normalizedOrder = rawOrder.filter(id => DEFAULT_PLAYBACK_SOURCE_ORDER.includes(id));
+            const mappedOrder = rawOrder.map(id => (id === 'debrid_backup' ? 'direct_http' : id));
+            const normalizedOrder = [];
+            mappedOrder.forEach(id => {
+                if (DEFAULT_PLAYBACK_SOURCE_ORDER.includes(id) && !normalizedOrder.includes(id)) {
+                    normalizedOrder.push(id);
+                }
+            });
             DEFAULT_PLAYBACK_SOURCE_ORDER.forEach(id => {
                 if (!normalizedOrder.includes(id)) normalizedOrder.push(id);
             });
+            const rawDebrid = (saved.debridConfig && typeof saved.debridConfig === 'object') ? saved.debridConfig : {};
             const normalizedDebrid = {
                 ...DEFAULT_DEBRID_CONFIG,
-                ...(saved.debridConfig && typeof saved.debridConfig === 'object' ? saved.debridConfig : {})
+                ...rawDebrid,
+                httpAddonUrl: (rawDebrid.httpAddonUrl || DEFAULT_DEBRID_CONFIG.httpAddonUrl).trim()
             };
 
             _cachedPlayerConfig = {

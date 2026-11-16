@@ -5,30 +5,27 @@ import { ErrorHandler } from '../js/error-handler.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { VodStreamResolver } from '../../logic/vod/vod-stream-resolver.js';
 import { proxyUrl } from '../js/utils/proxy.js';
+import { escapeHtml } from '../js/utils/sanitize.js';
 
 let hudTimeout = null;
-let providerTimeout = null;
 let mouseMoveHandler = null;
-let clickHandler = null;
-let keydownHandler = null;
-let globalKeydownHandler = null;
 let popstateHandler = null;
 let playerBackHandler = null;
-let progressInterval = null;
 
 let activeHls = null;
-let activePlaybackMode = 'embed'; // 'native' | 'embed' | 'live' | 'trailer'
+let activePlaybackMode = 'native'; // 'native' | 'embed' | 'live' | 'trailer'
 let playbackGeneration = 0;
 let activeSubtitleBlobUrls = [];
 let cachedStremioSubtitles = [];
 let activeExternalSubId = 'off';
 let activeAudioTrackId = null;
+let activeHlsQualityLevel = -1;
 
 /**
- * Formats a duration in seconds into MM:SS or HH:MM:SS format.
+ * Formats seconds as MM:SS or HH:MM:SS for the bottom timeline display.
  *
- * @param {number} seconds - Playback timestamp in seconds.
- * @returns {string} Formatted timestamp string.
+ * @param {number} seconds - Timestamp in seconds.
+ * @returns {string} Formatted duration label.
  */
 function formatTime(seconds) {
     if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
@@ -37,16 +34,25 @@ function formatTime(seconds) {
     const mins = Math.floor((totalSecs % 3600) / 60);
     const secs = totalSecs % 60;
     const pad = (n) => (n < 10 ? `0${n}` : `${n}`);
-    if (hrs > 0) {
-        return `${hrs}:${pad(mins)}:${pad(secs)}`;
-    }
-    return `${pad(mins)}:${pad(secs)}`;
+    return hrs > 0 ? `${hrs}:${pad(mins)}:${pad(secs)}` : `${pad(mins)}:${pad(secs)}`;
 }
 
 /**
- * Updates the Play/Pause HUD button icons to reflect the active playback state.
+ * Translates an i18n key with a readable fallback string.
  *
- * @param {boolean} isPaused - True when playback is paused, false when playing.
+ * @param {string} key - Dot-delimited i18n key.
+ * @param {string} fallback - Fallback display label.
+ * @returns {string} Localized or fallback text.
+ */
+function t(key, fallback) {
+    const val = window.i18n?.t(key);
+    return (val && val !== key) ? val : fallback;
+}
+
+/**
+ * Syncs the Play / Pause button SVG icon visibility with playback state.
+ *
+ * @param {boolean} isPaused - True when media is paused.
  */
 function syncPlayPauseIcons(isPaused) {
     const iconPause = document.getElementById('player-icon-pause');
@@ -62,8 +68,7 @@ function syncPlayPauseIcons(isPaused) {
 }
 
 /**
- * Safely tears down any active Hls.js instance, native `<video>` source, and dynamically
- * attached subtitle `<track>` elements without leaving leaked blob URLs behind.
+ * Tears down any active Hls.js decoder, native video source, and external subtitle blob URLs.
  */
 function teardownNativeMedia() {
     playbackGeneration += 1;
@@ -110,7 +115,7 @@ function teardownNativeMedia() {
 }
 
 /**
- * Binds playback logging, progress synchronization, and smart icon updates to `#native-video-player`.
+ * Attaches progress tracking, play/pause state synchronization, and console logs to `#native-video-player`.
  *
  * @param {HTMLVideoElement} videoEl - The native HTML5 video element.
  */
@@ -130,15 +135,14 @@ function bindNativeVideoListeners(videoEl) {
         console.log('[IVIDS Player] Native Video: Paused');
         syncPlayPauseIcons(true);
         if (typeof window.playerShowHud === 'function') {
-            window.playerShowHud();
+            window.playerShowHud(false);
         }
     });
 
     videoEl.addEventListener('ended', () => {
-        console.log('[IVIDS Player] Native Video: Completed');
         syncPlayPauseIcons(true);
         if (typeof window.playerShowHud === 'function') {
-            window.playerShowHud();
+            window.playerShowHud(true);
         }
     });
 
@@ -157,13 +161,12 @@ function bindNativeVideoListeners(videoEl) {
     videoEl.addEventListener('loadedmetadata', syncProgress);
     videoEl.addEventListener('timeupdate', syncProgress);
     videoEl.addEventListener('seeked', syncProgress);
-    videoEl.addEventListener('waiting', () => console.log('[IVIDS Player] Native Video: Buffering...'));
 }
 
 /**
- * Cleans up player resources, restores global UI layout elements, and navigates back.
+ * Cleanly exits the player, tears down media decoders, restores layout chrome, and returns.
  *
- * @param {Object} params - Current player route parameters.
+ * @param {Object} params - Active player route parameters.
  */
 function exitPlayer(params) {
     try {
@@ -196,36 +199,16 @@ function exitPlayer(params) {
 }
 
 /**
- * Removes all global event listeners, media decoders, blob URLs, and timers on player exit.
+ * Releases all event listeners, decoders, subtitle blobs, and global player window hooks.
  */
 window.playerCleanups = function() {
     if (hudTimeout) {
         clearTimeout(hudTimeout);
         hudTimeout = null;
     }
-    if (providerTimeout) {
-        clearTimeout(providerTimeout);
-        providerTimeout = null;
-    }
-    if (progressInterval) {
-        clearInterval(progressInterval);
-        progressInterval = null;
-    }
     if (mouseMoveHandler) {
         window.removeEventListener('mousemove', mouseMoveHandler);
         mouseMoveHandler = null;
-    }
-    if (clickHandler) {
-        window.removeEventListener('click', clickHandler);
-        clickHandler = null;
-    }
-    if (keydownHandler) {
-        window.removeEventListener('keydown', keydownHandler);
-        keydownHandler = null;
-    }
-    if (globalKeydownHandler) {
-        window.removeEventListener('keydown', globalKeydownHandler);
-        globalKeydownHandler = null;
     }
     if (popstateHandler) {
         window.removeEventListener('popstate', popstateHandler);
@@ -245,101 +228,53 @@ window.playerCleanups = function() {
     cachedStremioSubtitles = [];
     activeExternalSubId = 'off';
     activeAudioTrackId = null;
+    activeHlsQualityLevel = -1;
 
     delete window.playerShowHud;
     delete window.playerHideHud;
     delete window.playerResetHudTimer;
     delete window.playerTogglePlayPause;
     delete window.playerSeek;
-    delete window.playerOpenModal;
-    delete window.playerCloseModal;
+    delete window.playerSettingsBack;
 };
 
 /**
- * Toggles Play/Pause on the active native `<video>` player or falls back to iframe postMessage.
+ * Toggles Play/Pause directly on `#native-video-player`.
  */
 function togglePlayPause() {
     const videoEl = document.getElementById('native-video-player');
+    if (!videoEl || activePlaybackMode === 'embed') return;
 
-    if (videoEl && activePlaybackMode === 'native' && (videoEl.currentSrc || videoEl.src || activeHls)) {
-        if (videoEl.paused) {
-            videoEl.play().catch(e => console.warn('[IVIDS Player] Play error:', e));
-            syncPlayPauseIcons(false);
-        } else {
-            videoEl.pause();
-            syncPlayPauseIcons(true);
-        }
-        return;
-    }
-
-    if (videoEl && !videoEl.classList.contains('hidden') && videoEl.style.display !== 'none' && videoEl.src) {
-        if (videoEl.paused) {
-            videoEl.play().catch(e => console.warn('[IVIDS Player] Play error:', e));
-            syncPlayPauseIcons(false);
-        } else {
-            videoEl.pause();
-            syncPlayPauseIcons(true);
-        }
-        return;
-    }
-
-    const iframe = document.getElementById('player-iframe');
-    if (iframe && iframe.contentWindow) {
-        try {
-            iframe.contentWindow.postMessage({ type: 'play', action: 'toggle' }, '*');
-        } catch (e) {
-            console.warn('[IVIDS Player] Iframe postMessage notice:', e);
-        }
-    }
-    const iconPause = document.getElementById('player-icon-pause');
-    if (iconPause) {
-        const currentlyPaused = iconPause.classList.contains('hidden');
-        syncPlayPauseIcons(!currentlyPaused);
+    if (videoEl.paused) {
+        videoEl.play().catch(e => console.warn('[IVIDS Player] Play error:', e));
+        syncPlayPauseIcons(false);
+    } else {
+        videoEl.pause();
+        syncPlayPauseIcons(true);
     }
 }
 
 /**
- * Seeks playback forward or backward by a relative number of seconds.
+ * Seeks native playback forward or backward by `deltaSeconds` (-30, -10, +10, +30).
  *
  * @param {number} deltaSeconds - Signed seek delta in seconds.
  */
 function seekBy(deltaSeconds) {
     const videoEl = document.getElementById('native-video-player');
-    if (videoEl && (activePlaybackMode === 'native' || (!videoEl.classList.contains('hidden') && videoEl.style.display !== 'none')) && (videoEl.currentSrc || videoEl.src || activeHls)) {
-        const target = Math.max(0, Math.min(videoEl.duration || Infinity, (videoEl.currentTime || 0) + deltaSeconds));
-        videoEl.currentTime = target;
-        if (typeof window.playerShowHud === 'function') {
-            window.playerShowHud();
-        }
-        return;
-    }
+    if (!videoEl || activePlaybackMode === 'embed') return;
+    if (!(videoEl.currentSrc || videoEl.src || activeHls)) return;
 
-    const iframe = document.getElementById('player-iframe');
-    if (iframe && iframe.contentWindow) {
-        try {
-            iframe.contentWindow.postMessage({ type: 'seek', delta: deltaSeconds }, '*');
-        } catch (e) {
-            console.warn('[IVIDS Player] Iframe postMessage notice:', e);
-        }
+    const target = Math.max(0, Math.min(videoEl.duration || Infinity, (videoEl.currentTime || 0) + deltaSeconds));
+    videoEl.currentTime = target;
+    if (typeof window.playerShowHud === 'function') {
+        window.playerShowHud(false);
     }
 }
 
 /**
- * Translates an i18n key with a guaranteed readable fallback string.
+ * Fetches community subtitles from Stremio OpenSubtitles v3 in the background.
  *
- * @param {string} key - Dot-delimited i18n key.
- * @param {string} fallback - Fallback display label.
- * @returns {string} Localized or fallback text.
- */
-function t(key, fallback) {
-    const val = window.i18n?.t(key);
-    return (val && val !== key) ? val : fallback;
-}
-
-/**
- * Fetches community subtitles from the Stremio OpenSubtitles v3 addon in the background.
- *
- * @param {Object} mediaMeta - Media metadata containing `imdbId`, `type`, `season`, `episode`.
+ * @param {Object} mediaMeta - Media metadata with `imdbId`, `type`, `season`, `episode`.
  */
 async function loadStremioSubtitles(mediaMeta) {
     if (!mediaMeta?.imdbId) return;
@@ -368,7 +303,6 @@ async function loadStremioSubtitles(mediaMeta) {
                 return aLang.localeCompare(bLang);
             });
 
-        // Deduplicate to max 3 variants per language to keep the HUD menu compact
         const langCounts = {};
         cachedStremioSubtitles = normalized.filter(item => {
             const code = String(item.lang || 'und').toLowerCase();
@@ -381,10 +315,10 @@ async function loadStremioSubtitles(mediaMeta) {
 }
 
 /**
- * Converts SRT subtitle text into standard WebVTT markup so Chromium HTML5 `<track>` renders it.
+ * Converts SRT text to WebVTT markup for Chromium HTML5 `<track>` rendering.
  *
- * @param {string} rawText - Raw SRT or VTT subtitle text.
- * @returns {string} Valid WebVTT formatted subtitle string.
+ * @param {string} rawText - Raw SRT/VTT text.
+ * @returns {string} WebVTT formatted text.
  */
 function convertSrtToVtt(rawText) {
     const clean = String(rawText || '').replace(/^\uFEFF/, '').replace(/\r+/g, '');
@@ -394,9 +328,9 @@ function convertSrtToVtt(rawText) {
 }
 
 /**
- * Downloads a Stremio subtitle file, converts it to WebVTT, and activates it on `#native-video-player`.
+ * Downloads an external Stremio `.srt` subtitle, converts it to WebVTT, and activates it.
  *
- * @param {Object} sub - Subtitle descriptor containing `id`, `lang`, and `url`.
+ * @param {Object} sub - Subtitle entry (`id`, `lang`, `url`).
  */
 async function activateStremioSubtitle(sub) {
     const videoEl = document.getElementById('native-video-player');
@@ -405,16 +339,12 @@ async function activateStremioSubtitle(sub) {
     try {
         const res = await fetch(proxyUrl(sub.url));
         if (!res.ok) return;
-        const raw = await res.text();
-        const vtt = convertSrtToVtt(raw);
-        const blob = new Blob([vtt], { type: 'text/vtt' });
-        const blobUrl = URL.createObjectURL(blob);
+        const vtt = convertSrtToVtt(await res.text());
+        const blobUrl = URL.createObjectURL(new Blob([vtt], { type: 'text/vtt' }));
         activeSubtitleBlobUrls.push(blobUrl);
 
         videoEl.querySelectorAll('track[data-stremio-sub="true"]').forEach(el => el.remove());
-        Array.from(videoEl.textTracks || []).forEach(track => {
-            track.mode = 'disabled';
-        });
+        Array.from(videoEl.textTracks || []).forEach(track => { track.mode = 'disabled'; });
 
         const trackEl = document.createElement('track');
         trackEl.kind = 'subtitles';
@@ -438,370 +368,52 @@ async function activateStremioSubtitle(sub) {
 }
 
 /**
- * Disables all active HLS, native `<track>`, and external Stremio subtitle tracks.
+ * Disables all HLS, native `<track>`, and Stremio subtitles.
  */
 function disableAllSubtitles() {
     const videoEl = document.getElementById('native-video-player');
-    if (activeHls) {
-        activeHls.subtitleTrack = -1;
-    }
+    if (activeHls) activeHls.subtitleTrack = -1;
     if (videoEl) {
-        Array.from(videoEl.textTracks || []).forEach(track => {
-            track.mode = 'disabled';
-        });
+        Array.from(videoEl.textTracks || []).forEach(track => { track.mode = 'disabled'; });
     }
     activeExternalSubId = 'off';
 }
 
 /**
- * Displays the audio / subtitle / quality modal sheet and populates selectable options
- * (supporting optional section dividers).
+ * Switches the overlay bottom visibility cleanly between Native VOD controls and Embed mode.
  *
- * @param {string} title - Modal header title.
- * @param {Array<Object>} options - Items (`{ isHeader, label, value, active, onSelect }`).
- * @param {Function} [fallbackOnSelect] - Fallback click handler if item has no own callback.
+ * @param {string} mode - 'native' | 'embed' | 'live' | 'trailer'.
  */
-function openModalSheet(title, options = [], fallbackOnSelect = null) {
-    const modal = document.getElementById('player-modal-sheet');
-    const modalTitle = document.getElementById('player-modal-title');
-    const modalOptions = document.getElementById('player-modal-options');
-    if (!modal) return;
-
-    if (modalTitle) modalTitle.textContent = title || t('player.tracksTitle', 'Audio & Subtitles');
-    if (modalOptions) {
-        modalOptions.innerHTML = '';
-        const items = (options && options.length > 0) ? options : [
-            { label: t('livetv.auto', 'Auto'), value: 'auto', active: true }
-        ];
-
-        items.forEach(opt => {
-            if (opt.isHeader) {
-                const header = document.createElement('div');
-                header.className = 'modal-options-section';
-                header.textContent = opt.label;
-                modalOptions.appendChild(header);
-                return;
-            }
-            const btn = document.createElement('button');
-            btn.className = 'btn btn--secondary btn--block focusable modal-option' + (opt.active ? ' is-active' : '');
-            btn.textContent = opt.label;
-            btn.dataset.value = opt.value;
-            btn.onclick = () => {
-                if (typeof opt.onSelect === 'function') {
-                    opt.onSelect(opt);
-                } else if (fallbackOnSelect) {
-                    fallbackOnSelect(opt);
-                }
-                closeModalSheet();
-            };
-            modalOptions.appendChild(btn);
-        });
+function setOverlayPlaybackMode(mode) {
+    activePlaybackMode = mode;
+    const overlay = document.getElementById('player-hud');
+    const bottomControls = document.getElementById('vod-overlay-bottom');
+    if (overlay) {
+        overlay.classList.toggle('vod-embed-mode', mode === 'embed' || mode === 'trailer');
     }
-
-    modal.style.display = 'flex';
-    modal.classList.add('is-open');
-    modal.classList.remove('hidden');
-
-    const activeOpt = modal.querySelector('.modal-option.is-active.focusable') || modal.querySelector('.modal-option.focusable');
-    if (activeOpt) SpatialNav.setFocus(activeOpt);
+    if (bottomControls) {
+        bottomControls.classList.toggle('hidden', mode === 'embed' || mode === 'trailer');
+    }
 }
 
 /**
- * Opens the unified Audio & Subtitles track modal using live HLS tracks, HTML5 tracks,
- * and Stremio community subtitles when playing native VOD media.
- */
-function openAudioSubtitlesModal() {
-    const videoEl = document.getElementById('native-video-player');
-    const items = [];
-
-    // 1. Audio Tracks
-    const audioItems = [];
-    if (activeHls && Array.isArray(activeHls.audioTracks) && activeHls.audioTracks.length > 0) {
-        activeHls.audioTracks.forEach((track, idx) => {
-            const label = track.name || track.lang || `Audio ${idx + 1}`;
-            audioItems.push({
-                label,
-                value: `hls-audio-${idx}`,
-                active: activeHls.audioTrack === idx,
-                onSelect: () => {
-                    activeHls.audioTrack = idx;
-                    activeAudioTrackId = `hls-${idx}`;
-                }
-            });
-        });
-    } else if (videoEl && videoEl.audioTracks && videoEl.audioTracks.length > 0) {
-        Array.from(videoEl.audioTracks).forEach((track, idx) => {
-            const label = track.label || track.language || `Audio ${idx + 1}`;
-            audioItems.push({
-                label,
-                value: `native-audio-${idx}`,
-                active: Boolean(track.enabled),
-                onSelect: () => {
-                    Array.from(videoEl.audioTracks).forEach((tObj, i) => {
-                        tObj.enabled = (i === idx);
-                    });
-                    activeAudioTrackId = `native-${idx}`;
-                }
-            });
-        });
-    } else {
-        audioItems.push({
-            label: t('livetv.auto', 'Auto'),
-            value: 'audio-auto',
-            active: !activeAudioTrackId
-        });
-    }
-
-    items.push({ isHeader: true, label: t('livetv.audioTrack', 'Audio') });
-    items.push(...audioItems);
-
-    // 2. Subtitle Tracks
-    const subItems = [
-        {
-            label: t('livetv.off', 'Off'),
-            value: 'sub-off',
-            active: activeExternalSubId === 'off',
-            onSelect: () => disableAllSubtitles()
-        }
-    ];
-
-    if (activeHls && Array.isArray(activeHls.subtitleTracks) && activeHls.subtitleTracks.length > 0) {
-        activeHls.subtitleTracks.forEach((track, idx) => {
-            const val = `hls-sub-${idx}`;
-            subItems.push({
-                label: track.name || track.lang || `Subtitle ${idx + 1}`,
-                value: val,
-                active: activeExternalSubId === val || activeHls.subtitleTrack === idx,
-                onSelect: () => {
-                    disableAllSubtitles();
-                    activeHls.subtitleTrack = idx;
-                    activeExternalSubId = val;
-                }
-            });
-        });
-    }
-
-    if (videoEl && videoEl.textTracks && videoEl.textTracks.length > 0) {
-        Array.from(videoEl.textTracks).forEach((track, idx) => {
-            if (track.kind !== 'subtitles' && track.kind !== 'captions') return;
-            const val = `native-sub-${idx}`;
-            subItems.push({
-                label: track.label || track.language || `Track ${idx + 1}`,
-                value: val,
-                active: track.mode === 'showing' && activeExternalSubId !== 'off',
-                onSelect: () => {
-                    disableAllSubtitles();
-                    track.mode = 'showing';
-                    activeExternalSubId = val;
-                }
-            });
-        });
-    }
-
-    if (cachedStremioSubtitles.length > 0) {
-        cachedStremioSubtitles.forEach((sub, idx) => {
-            const subKey = `stremio:${sub.id || sub.url}`;
-            const langLabel = String(sub.lang || 'SUB').toUpperCase();
-            subItems.push({
-                label: `${langLabel} (OpenSubtitles #${idx + 1})`,
-                value: subKey,
-                active: activeExternalSubId === subKey,
-                onSelect: () => activateStremioSubtitle(sub)
-            });
-        });
-    }
-
-    items.push({ isHeader: true, label: t('livetv.subtitles', 'Subtitles') });
-    items.push(...subItems);
-
-    openModalSheet(t('player.tracksTitle', 'Audio & Subtitles'), items);
-}
-
-/**
- * Closes the active audio / subtitle / quality modal sheet and restores focus to OSD trigger.
- */
-function closeModalSheet() {
-    const modal = document.getElementById('player-modal-sheet');
-    if (!modal) return;
-    modal.classList.remove('is-open');
-    modal.classList.add('hidden');
-    modal.style.display = 'none';
-
-    const trigger = document.getElementById('player-audio-sub') || document.getElementById('player-settings') || document.getElementById('play-pause-btn');
-    if (trigger) SpatialNav.setFocus(trigger);
-}
-
-/**
- * Binds click listeners, drag scrubbing, and actions to all OSD controls.
+ * Starts native HTML5 / Hls.js playback for a direct Debrid stream URL.
  *
- * @param {Object} params - Active route parameters.
- */
-function setupMediaControls(params) {
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    if (playPauseBtn) {
-        playPauseBtn.onclick = () => togglePlayPause();
-    }
-
-    const rewindBtn = document.getElementById('player-rewind');
-    if (rewindBtn) {
-        rewindBtn.onclick = () => seekBy(-10);
-    }
-
-    const forwardBtn = document.getElementById('player-forward');
-    if (forwardBtn) {
-        forwardBtn.onclick = () => seekBy(10);
-    }
-
-    const prevBtn = document.getElementById('player-prev');
-    if (prevBtn) {
-        prevBtn.onclick = () => {
-            if (params.type === 'tv' && params.season && params.episode && parseInt(params.episode, 10) > 1) {
-                Router.loadPage('player', {
-                    id: params.id,
-                    type: 'tv',
-                    season: params.season,
-                    episode: parseInt(params.episode, 10) - 1
-                });
-            } else {
-                seekBy(-9999);
-            }
-        };
-    }
-
-    const nextBtn = document.getElementById('player-next');
-    if (nextBtn) {
-        nextBtn.onclick = () => {
-            if (params.type === 'tv' && params.season && params.episode) {
-                Router.loadPage('player', {
-                    id: params.id,
-                    type: 'tv',
-                    season: params.season,
-                    episode: parseInt(params.episode, 10) + 1
-                });
-            } else {
-                seekBy(30);
-            }
-        };
-    }
-
-    const audioSubBtn = document.getElementById('player-audio-sub');
-    if (audioSubBtn) {
-        audioSubBtn.onclick = () => openAudioSubtitlesModal();
-    }
-
-    const settingsBtn = document.getElementById('player-settings');
-    if (settingsBtn) {
-        settingsBtn.onclick = () => {
-            const serverOverlay = document.getElementById('server-selection-overlay');
-            if (serverOverlay) {
-                const isHidden = serverOverlay.style.display === 'none';
-                serverOverlay.style.display = isHidden ? 'flex' : 'none';
-                if (isHidden) {
-                    const activeServer = serverOverlay.querySelector('.server-btn.active') || serverOverlay.querySelector('.server-btn.focusable');
-                    if (activeServer) SpatialNav.setFocus(activeServer);
-                }
-            }
-        };
-    }
-
-    const fullscreenBtn = document.getElementById('player-fullscreen');
-    if (fullscreenBtn) {
-        fullscreenBtn.onclick = () => {
-            try {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(e => console.warn(e));
-                } else {
-                    document.exitFullscreen().catch(e => console.warn(e));
-                }
-            } catch (err) {
-                console.warn('Fullscreen toggle failed:', err);
-            }
-        };
-    }
-
-    const progressBar = document.getElementById('player-progress-bar');
-    if (progressBar) {
-        const scrubToPointer = (clientX) => {
-            const rect = progressBar.getBoundingClientRect();
-            if (!rect.width) return;
-            const pos = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-            const videoEl = document.getElementById('native-video-player');
-            if (videoEl && Number.isFinite(videoEl.duration) && videoEl.duration > 0) {
-                videoEl.currentTime = pos * videoEl.duration;
-                const fill = document.getElementById('player-progress-fill');
-                if (fill) fill.style.width = `${pos * 100}%`;
-            }
-        };
-
-        let isScrubbing = false;
-        progressBar.onpointerdown = (e) => {
-            isScrubbing = true;
-            scrubToPointer(e.clientX);
-        };
-        progressBar.onpointermove = (e) => {
-            if (isScrubbing) scrubToPointer(e.clientX);
-        };
-        progressBar.onpointerup = () => { isScrubbing = false; };
-        progressBar.onpointercancel = () => { isScrubbing = false; };
-        progressBar.onclick = (e) => scrubToPointer(e.clientX);
-    }
-
-    const modalClose = document.getElementById('player-modal-close');
-    if (modalClose) {
-        modalClose.onclick = () => closeModalSheet();
-    }
-
-    const statusBack = document.getElementById('player-status-back');
-    if (statusBack) {
-        statusBack.onclick = () => exitPlayer(params);
-    }
-
-    const statusSettings = document.getElementById('player-status-settings');
-    if (statusSettings) {
-        statusSettings.onclick = () => {
-            try { window.playerCleanups(); } catch {}
-            Router.loadPage('settings');
-        };
-    }
-
-    const nativeVideo = document.getElementById('native-video-player');
-    if (nativeVideo) {
-        bindNativeVideoListeners(nativeVideo);
-    }
-
-    // Set title display
-    const titleEl = document.getElementById('player-title');
-    if (titleEl) {
-        if (params.title) {
-            titleEl.textContent = params.title;
-        } else if (params.id) {
-            Api.getDetails(params.id, params.type || 'movie').then(details => {
-                if (details && titleEl) {
-                    const name = details.title || details.name || 'IVIDS Player';
-                    const epInfo = (params.season && params.episode) ? ` - S${params.season} E${params.episode}` : '';
-                    titleEl.textContent = `${name}${epInfo}`;
-                }
-            }).catch(() => {});
-        }
-    }
-}
-
-/**
- * Starts native HTML5 / Hls.js playback for a direct Debrid stream URL inside `#native-video-player`.
- * Invokes `onPlaybackFailed` automatically if the container or codec fails to decode in WebView/browser.
- *
- * @param {string} streamUrl - Direct playable `.mp4`/`.m3u8`/`.mkv` URL.
- * @param {Function} [onPlaybackFailed] - Callback executed if this stream fails fatally.
+ * @param {string} streamUrl - Playable `.mp4`/`.m3u8`/`.mkv` URL.
+ * @param {Function} [onPlaybackFailed] - Failure fallback callback.
  */
 function startNativePlayback(streamUrl, onPlaybackFailed = null) {
     const gen = playbackGeneration + 1;
     teardownNativeMedia();
     playbackGeneration = gen;
-    activePlaybackMode = 'native';
+    setOverlayPlaybackMode('native');
 
     const loadingOverlay = document.getElementById('player-loading-overlay');
     const statusPanel = document.getElementById('player-status-panel');
-    if (statusPanel) statusPanel.style.display = 'none';
+    if (statusPanel) {
+        statusPanel.classList.add('hidden');
+        statusPanel.style.display = 'none';
+    }
     if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
     const iframe = document.getElementById('player-iframe');
@@ -828,12 +440,14 @@ function startNativePlayback(streamUrl, onPlaybackFailed = null) {
             handleFatalFailure('Native stream metadata timeout (12s)');
         }
     }, 12000);
+
     const clearLoadTimer = () => {
         if (loadTimer) {
             clearTimeout(loadTimer);
             loadTimer = null;
         }
     };
+
     const handleFatalFailure = (reason) => {
         clearLoadTimer();
         if (failedTriggered || playbackGeneration !== gen) return;
@@ -885,23 +499,26 @@ function startNativePlayback(streamUrl, onPlaybackFailed = null) {
     }
 
     if (typeof window.playerShowHud === 'function') {
-        window.playerShowHud();
+        window.playerShowHud(false);
     }
 }
 
 /**
- * Loads or updates an embed server iframe inside `#video-container` as fallback or primary choice.
+ * Loads one of the 7 embed servers (or a YouTube trailer) inside `#player-iframe`.
  *
  * @param {string} url - Embed player URL.
- * @returns {HTMLIFrameElement} The active iframe element.
+ * @returns {HTMLIFrameElement|null} The active iframe element.
  */
 function startEmbedPlayback(url) {
     teardownNativeMedia();
-    activePlaybackMode = 'embed';
+    setOverlayPlaybackMode('embed');
 
     const loadingOverlay = document.getElementById('player-loading-overlay');
     const statusPanel = document.getElementById('player-status-panel');
-    if (statusPanel) statusPanel.style.display = 'none';
+    if (statusPanel) {
+        statusPanel.classList.add('hidden');
+        statusPanel.style.display = 'none';
+    }
     if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
     const container = document.getElementById('video-container');
@@ -927,21 +544,7 @@ function startEmbedPlayback(url) {
         iframe.style.display = 'block';
         iframe.onload = () => {
             console.log(`[IVIDS Player] Embed loaded (src: ${iframe.src})`);
-            if (statusPanel) {
-                statusPanel.style.display = 'none';
-                statusPanel.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
-            }
             if (loadingOverlay) loadingOverlay.style.display = 'none';
-            SpatialNav.setFocus(iframe);
-
-            setTimeout(() => {
-                try {
-                    iframe.focus();
-                    iframe.contentWindow?.postMessage({ type: 'play', action: 'play' }, '*');
-                } catch {
-                    // Cross-origin postMessage fallback is best-effort
-                }
-            }, 1500);
         };
         iframe.src = url;
     }
@@ -950,16 +553,15 @@ function startEmbedPlayback(url) {
 }
 
 /**
- * Initializes the hybrid VOD video player, resolving Debrid/Stremio streams and the 7 embed
- * servers according to user-defined playback priority, and attaching `#player-hud` controls.
+ * Initializes the Live TV-matched VOD player with top-left Back, top-right Settings sidebar
+ * (Quality, Subtitles, Audio, Server Settings), and minimal bottom transport controls.
  *
- * @param {Object} params - Route parameters containing `id`, `type`, `season`, and `episode`.
+ * @param {Object} params - Route parameters containing `id`, `type`, `season`, `episode`, `title`.
  */
 export async function init(params) {
     try {
         console.log('[IVIDS Player] Initializing Player with params:', params);
         if (!params || (!params.id && params.type !== 'live')) {
-            console.error('[IVIDS Player] Invalid or missing parameters provided for player');
             Router.loadPage('home');
             return;
         }
@@ -970,31 +572,15 @@ export async function init(params) {
             console.error('Error in initial cleanup:', e);
         }
 
-        try {
-            const app = document.getElementById('app');
-            if (app) app.classList.add('fullscreen-layout');
-            const header = document.getElementById('header');
-            if (header) header.style.display = 'none';
-        } catch (headerError) {
-            console.error('Error hiding header:', headerError);
-        }
-
-        globalKeydownHandler = (event) => {
-            const key = event.key || '';
-            const code = event.keyCode || event.which;
-            if (key === 'Escape' || key === 'Backspace' || code === 27 || code === 8 || code === 4 || code === 10009 || code === 461 || key === 'GoBack' || key === 'Back') {
-                event.preventDefault();
-                SpatialNav.back();
-            }
-        };
-        window.addEventListener('keydown', globalKeydownHandler);
+        const app = document.getElementById('app');
+        if (app) app.classList.add('fullscreen-layout');
+        const header = document.getElementById('header');
+        if (header) header.style.display = 'none';
 
         popstateHandler = () => {
             try {
                 window.playerCleanups();
-                const app = document.getElementById('app');
                 if (app) app.classList.remove('fullscreen-layout');
-                const header = document.getElementById('header');
                 if (header) header.style.display = '';
             } catch (e) {
                 console.error('Error on popstate cleanup:', e);
@@ -1002,9 +588,6 @@ export async function init(params) {
         };
         window.addEventListener('popstate', popstateHandler);
 
-        if (playerBackHandler) {
-            SpatialNav.popBackHandler(playerBackHandler);
-        }
         playerBackHandler = () => {
             if (SpatialNav.currentPageLogic && typeof SpatialNav.currentPageLogic.handleBack === 'function') {
                 if (SpatialNav.currentPageLogic.handleBack()) return true;
@@ -1014,15 +597,491 @@ export async function init(params) {
         };
         SpatialNav.pushBackHandler(playerBackHandler);
 
+        const overlay = document.getElementById('player-hud');
         const backBtn = document.getElementById('player-back');
+        const settingsBtn = document.getElementById('player-settings');
+        const settingsPanel = document.getElementById('player-settings-panel');
+        const settingsBackBtn = document.getElementById('player-settings-back');
+        const settingsTitleEl = document.getElementById('player-settings-title');
+        const settingsOptionsEl = document.getElementById('player-settings-options');
+        const videoEl = document.getElementById('native-video-player');
+
+        let activeSubmenu = null;
+        let lastCategoryKey = null;
+        let nextEpisodeTarget = null;
+        let vodState = null;
+
+        /** Checks whether the right-edge Settings drawer is open. */
+        const isSettingsOpen = () => Boolean(settingsPanel && !settingsPanel.classList.contains('hidden'));
+
+        /** Resets the 4s overlay auto-hide timer (stays open when paused or drawer open). */
+        const resetOverlayTimer = () => {
+            if (hudTimeout) clearTimeout(hudTimeout);
+            if (isSettingsOpen()) return;
+            hudTimeout = setTimeout(() => {
+                const isPausedNative = activePlaybackMode === 'native' && videoEl && videoEl.paused;
+                if (isSettingsOpen() || isPausedNative || activePlaybackMode === 'embed') {
+                    return;
+                }
+                hideOverlay();
+            }, 4000);
+        };
+
+        /** Reveals the HUD overlay and focuses Play/Pause or Settings when requested. */
+        const showOverlay = (shouldFocus = false) => {
+            if (overlay) overlay.classList.add('show');
+            if (shouldFocus) {
+                const playPause = document.getElementById('play-pause-btn');
+                const focusTarget = (playPause && !document.getElementById('vod-overlay-bottom')?.classList.contains('hidden'))
+                    ? playPause
+                    : settingsBtn;
+                if (focusTarget) SpatialNav.setFocus(focusTarget);
+            }
+            resetOverlayTimer();
+        };
+
+        /** Hides the HUD overlay and returns keyboard focus safely off buttons. */
+        const hideOverlay = () => {
+            if (isSettingsOpen() || activePlaybackMode === 'embed') return;
+            if (overlay) overlay.classList.remove('show');
+            if (document.activeElement && overlay?.contains(document.activeElement)) {
+                document.activeElement.blur();
+            }
+        };
+
+        /** Closes the Settings sidebar cleanly. */
+        const closeSettingsPanel = (restoreFocus = false) => {
+            if (!settingsPanel) return;
+            activeSubmenu = null;
+            settingsPanel.classList.add('hidden');
+            if (restoreFocus && settingsBtn) SpatialNav.setFocus(settingsBtn);
+            resetOverlayTimer();
+        };
+
+        /** Steps up one level inside Settings or closes the drawer if already at root. */
+        const navigateSettingsBack = () => {
+            if (!isSettingsOpen()) return false;
+            if (activeSubmenu) {
+                const prevCat = activeSubmenu;
+                activeSubmenu = null;
+                renderSettingsPanel();
+                const catBtn = settingsOptionsEl?.querySelector(`.tv-opt-btn[data-submenu="${prevCat}"]`)
+                    || settingsOptionsEl?.querySelector('.tv-opt-btn.focusable');
+                if (catBtn) SpatialNav.setFocus(catBtn);
+                resetOverlayTimer();
+                return true;
+            }
+            closeSettingsPanel(true);
+            return true;
+        };
+
+        /** Collects dynamic categories for Quality, Subtitles, Audio, Server Settings, and Next Episode. */
+        const getSidebarCategories = () => {
+            const categories = [];
+
+            // 1. Quality / Candidate Stream selector
+            const qualityOpts = [];
+            if (activeHls && Array.isArray(activeHls.levels) && activeHls.levels.length > 0) {
+                qualityOpts.push({
+                    value: 'hls-auto',
+                    label: t('livetv.auto', 'Auto'),
+                    isActive: activeHlsQualityLevel === -1,
+                    onPick: () => {
+                        activeHlsQualityLevel = -1;
+                        if (activeHls) activeHls.currentLevel = -1;
+                    }
+                });
+                activeHls.levels.forEach((lvl, idx) => {
+                    const label = lvl.height ? `${lvl.height}p` : `Level ${idx + 1}`;
+                    qualityOpts.push({
+                        value: `hls-${idx}`,
+                        label,
+                        isActive: activeHlsQualityLevel === idx,
+                        onPick: () => {
+                            activeHlsQualityLevel = idx;
+                            if (activeHls) activeHls.currentLevel = idx;
+                        }
+                    });
+                });
+            } else if (vodState && vodState.activeTierId !== 'embed_servers') {
+                const tierRes = vodState.tierResults[vodState.activeTierId];
+                if (tierRes?.streams?.length) {
+                    tierRes.streams.slice(0, 8).forEach((s, idx) => {
+                        qualityOpts.push({
+                            value: `cand-${idx}`,
+                            label: s.label || `Stream ${idx + 1}`,
+                            isActive: vodState.activeStreamIndex === idx,
+                            onPick: () => vodState.handlers.onSelectDebridCandidate(vodState.activeTierId, idx)
+                        });
+                    });
+                }
+            }
+            if (qualityOpts.length > 0) {
+                const activeQ = qualityOpts.find(o => o.isActive) || qualityOpts[0];
+                categories.push({
+                    key: 'quality',
+                    label: t('livetv.quality', 'Quality'),
+                    currentValue: activeQ.label,
+                    options: qualityOpts
+                });
+            }
+
+            // 2. Subtitles selector (Off + native/HLS + Stremio OpenSubtitles)
+            const subOpts = [
+                {
+                    value: 'off',
+                    label: t('livetv.off', 'Off'),
+                    isActive: activeExternalSubId === 'off',
+                    onPick: () => disableAllSubtitles()
+                }
+            ];
+            if (activeHls && Array.isArray(activeHls.subtitleTracks)) {
+                activeHls.subtitleTracks.forEach((tr, idx) => {
+                    const val = `hls-sub-${idx}`;
+                    subOpts.push({
+                        value: val,
+                        label: tr.name || tr.lang || `Subtitle ${idx + 1}`,
+                        isActive: activeExternalSubId === val,
+                        onPick: () => {
+                            disableAllSubtitles();
+                            if (activeHls) activeHls.subtitleTrack = idx;
+                            activeExternalSubId = val;
+                        }
+                    });
+                });
+            }
+            if (videoEl && videoEl.textTracks) {
+                Array.from(videoEl.textTracks).forEach((tr, idx) => {
+                    if (tr.kind !== 'subtitles' && tr.kind !== 'captions') return;
+                    const val = `native-sub-${idx}`;
+                    subOpts.push({
+                        value: val,
+                        label: tr.label || tr.language || `Track ${idx + 1}`,
+                        isActive: tr.mode === 'showing' && activeExternalSubId !== 'off',
+                        onPick: () => {
+                            disableAllSubtitles();
+                            tr.mode = 'showing';
+                            activeExternalSubId = val;
+                        }
+                    });
+                });
+            }
+            cachedStremioSubtitles.forEach((sub, idx) => {
+                const subKey = `stremio:${sub.id || sub.url}`;
+                subOpts.push({
+                    value: subKey,
+                    label: `${String(sub.lang || 'SUB').toUpperCase()} #${idx + 1}`,
+                    isActive: activeExternalSubId === subKey,
+                    onPick: () => activateStremioSubtitle(sub)
+                });
+            });
+            const activeSub = subOpts.find(s => s.isActive) || subOpts[0];
+            categories.push({
+                key: 'subtitle',
+                label: t('livetv.subtitles', 'Subtitles'),
+                currentValue: activeSub.label,
+                options: subOpts
+            });
+
+            // 3. Audio tracks selector (when multi-audio available)
+            const audioOpts = [];
+            if (activeHls && Array.isArray(activeHls.audioTracks) && activeHls.audioTracks.length > 1) {
+                activeHls.audioTracks.forEach((tr, idx) => {
+                    audioOpts.push({
+                        value: `hls-aud-${idx}`,
+                        label: tr.name || tr.lang || `Audio ${idx + 1}`,
+                        isActive: activeHls.audioTrack === idx,
+                        onPick: () => {
+                            if (activeHls) activeHls.audioTrack = idx;
+                            activeAudioTrackId = `hls-aud-${idx}`;
+                        }
+                    });
+                });
+            } else if (videoEl && videoEl.audioTracks && videoEl.audioTracks.length > 1) {
+                Array.from(videoEl.audioTracks).forEach((tr, idx) => {
+                    audioOpts.push({
+                        value: `nat-aud-${idx}`,
+                        label: tr.label || tr.language || `Audio ${idx + 1}`,
+                        isActive: Boolean(tr.enabled),
+                        onPick: () => {
+                            Array.from(videoEl.audioTracks).forEach((o, i) => { o.enabled = (i === idx); });
+                            activeAudioTrackId = `nat-aud-${idx}`;
+                        }
+                    });
+                });
+            }
+            if (audioOpts.length > 0) {
+                const activeAud = audioOpts.find(a => a.isActive) || audioOpts[0];
+                categories.push({
+                    key: 'audio',
+                    label: t('livetv.audioTrack', 'Audio'),
+                    currentValue: activeAud.label,
+                    options: audioOpts
+                });
+            }
+
+            // 4. Server Settings (Primary Debrid, Backup Debrid, and the 7 original Embed Servers)
+            if (vodState && params.type !== 'trailer' && params.type !== 'live') {
+                const serverOpts = [];
+                const tierLabels = {
+                    debrid_primary: t('settings.tierDebridPrimary', 'Primary Debrid'),
+                    debrid_backup: t('settings.tierDebridBackup', 'Backup Debrid')
+                };
+
+                vodState.order.forEach(tierId => {
+                    if (tierId === 'embed_servers') {
+                        Api.SERVERS.forEach(srv => {
+                            const isCur = vodState.activeTierId === 'embed_servers' && vodState.activeServerId === srv.id;
+                            serverOpts.push({
+                                value: `srv:${srv.id}`,
+                                label: srv.name,
+                                isActive: isCur,
+                                onPick: () => vodState.handlers.onSelectEmbedServer(srv.id)
+                            });
+                        });
+                    } else {
+                        const isCur = vodState.activeTierId === tierId;
+                        serverOpts.push({
+                            value: `tier:${tierId}`,
+                            label: tierLabels[tierId] || tierId,
+                            isActive: isCur,
+                            onPick: () => vodState.handlers.onTriggerDebridTier(tierId)
+                        });
+                    }
+                });
+
+                const activeSrv = serverOpts.find(s => s.isActive) || serverOpts[0];
+                categories.push({
+                    key: 'server',
+                    label: t('player.selectServer', 'Server Settings'),
+                    currentValue: activeSrv ? activeSrv.label : '',
+                    options: serverOpts
+                });
+            }
+
+            // 5. Optional Next Episode shortcut row
+            if (nextEpisodeTarget) {
+                categories.push({
+                    key: 'next_episode',
+                    label: t('player.nextEpisode', 'Next Episode'),
+                    currentValue: `S${nextEpisodeTarget.season} E${nextEpisodeTarget.episode}`,
+                    isDirectAction: true,
+                    onPick: () => Router.loadPage('player', nextEpisodeTarget)
+                });
+            }
+
+            return categories;
+        };
+
+        /** Renders either the root category list or selected submenu inside `#player-settings-panel`. */
+        const renderSettingsPanel = () => {
+            if (!settingsOptionsEl) return;
+            const categories = getSidebarCategories();
+            if (activeSubmenu && !categories.some(c => c.key === activeSubmenu && !c.isDirectAction)) {
+                activeSubmenu = null;
+            }
+            const activeCategory = activeSubmenu ? categories.find(c => c.key === activeSubmenu) : null;
+
+            if (settingsTitleEl) {
+                settingsTitleEl.textContent = activeCategory
+                    ? activeCategory.label
+                    : t('livetv.streamOptions', 'Stream Options');
+            }
+
+            if (!activeCategory) {
+                settingsOptionsEl.innerHTML = categories.map(cat => (
+                    `<button type="button" class="tv-opt-btn tv-opt-btn--category focusable universal-onclick" data-submenu="${escapeHtml(cat.key)}">` +
+                        `<span class="tv-opt-label">${escapeHtml(cat.label)}</span>` +
+                        `<span class="tv-opt-value">${escapeHtml(cat.currentValue || '')}</span>` +
+                        `<span class="tv-opt-chevron" aria-hidden="true">&#8250;</span>` +
+                    `</button>`
+                )).join('');
+
+                if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
+
+                settingsOptionsEl.querySelectorAll('.tv-opt-btn--category').forEach(btn => {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        const key = btn.dataset.submenu;
+                        const match = categories.find(c => c.key === key);
+                        if (match?.isDirectAction && typeof match.onPick === 'function') {
+                            match.onPick();
+                            return;
+                        }
+                        activeSubmenu = key;
+                        lastCategoryKey = key;
+                        renderSettingsPanel();
+                        const target = settingsOptionsEl.querySelector('.tv-opt-btn.is-active')
+                            || settingsOptionsEl.querySelector('.tv-opt-btn.focusable');
+                        if (target) SpatialNav.setFocus(target);
+                    };
+                });
+                return;
+            }
+
+            settingsOptionsEl.innerHTML = activeCategory.options.map((opt, idx) => (
+                `<button type="button" class="tv-opt-btn focusable universal-onclick ${opt.isActive ? 'is-active' : ''}" data-opt-idx="${idx}">` +
+                    `<span class="tv-opt-label">${escapeHtml(opt.label)}</span>` +
+                    (opt.isActive ? `<span class="tv-opt-checkmark" aria-hidden="true">&#10003;</span>` : '') +
+                `</button>`
+            )).join('');
+
+            if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
+
+            settingsOptionsEl.querySelectorAll('.tv-opt-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    const idx = Number(btn.dataset.optIdx);
+                    const picked = activeCategory.options[idx];
+                    if (picked && typeof picked.onPick === 'function') {
+                        picked.onPick();
+                    }
+                    renderSettingsPanel();
+                    const refBtn = settingsOptionsEl.querySelector(`[data-opt-idx="${idx}"]`);
+                    if (refBtn) SpatialNav.setFocus(refBtn);
+                };
+            });
+        };
+
+        /** Toggles the right-edge Settings drawer open/closed. */
+        const toggleSettingsPanel = () => {
+            if (!settingsPanel) return;
+            if (isSettingsOpen()) {
+                closeSettingsPanel(true);
+                return;
+            }
+            if (hudTimeout) clearTimeout(hudTimeout);
+            if (overlay) overlay.classList.add('show');
+            activeSubmenu = null;
+            renderSettingsPanel();
+            settingsPanel.classList.remove('hidden');
+            const firstOpt = (lastCategoryKey && settingsPanel.querySelector(`.tv-opt-btn[data-submenu="${lastCategoryKey}"]`))
+                || settingsPanel.querySelector('.tv-opt-btn.focusable');
+            if (firstOpt) SpatialNav.setFocus(firstOpt);
+        };
+
+        // Bind guaranteed non-bubbling Back button -> direct player exit
         if (backBtn) {
-            backBtn.onclick = () => SpatialNav.back();
+            backBtn.onclick = (e) => {
+                e.stopPropagation();
+                exitPlayer(params);
+            };
         }
 
-        setupMediaControls(params);
-        setupOverlayVisibility(params);
+        // Bind Settings gear + drawer back arrow
+        if (settingsBtn) {
+            settingsBtn.onclick = (e) => {
+                e.stopPropagation();
+                toggleSettingsPanel();
+            };
+        }
+        if (settingsBackBtn) {
+            settingsBackBtn.onclick = (e) => {
+                e.stopPropagation();
+                navigateSettingsBack();
+            };
+        }
+        if (settingsPanel) {
+            settingsPanel.onclick = (e) => e.stopPropagation();
+        }
 
-        // 1. Live TV standalone direct mode
+        // Bind bottom transport bar: strictly -30s, -10s, Play/Pause, +10s, +30s
+        const bindTransport = (id, fn) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.onclick = (e) => {
+                e.stopPropagation();
+                fn();
+                resetOverlayTimer();
+            };
+        };
+        bindTransport('player-rewind-30', () => seekBy(-30));
+        bindTransport('player-rewind-10', () => seekBy(-10));
+        bindTransport('play-pause-btn', () => togglePlayPause());
+        bindTransport('player-forward-10', () => seekBy(10));
+        bindTransport('player-forward-30', () => seekBy(30));
+
+        // Bind thin scrub timeline pointer scrubbing
+        const progressBar = document.getElementById('player-progress-bar');
+        if (progressBar) {
+            const scrubToX = (clientX) => {
+                const rect = progressBar.getBoundingClientRect();
+                if (!rect.width || !videoEl || !Number.isFinite(videoEl.duration) || videoEl.duration <= 0) return;
+                const pos = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+                videoEl.currentTime = pos * videoEl.duration;
+                const fill = document.getElementById('player-progress-fill');
+                if (fill) fill.style.width = `${pos * 100}%`;
+            };
+            let scrubbing = false;
+            progressBar.onpointerdown = (e) => { e.stopPropagation(); scrubbing = true; scrubToX(e.clientX); };
+            progressBar.onpointermove = (e) => { if (scrubbing) scrubToX(e.clientX); };
+            progressBar.onpointerup = () => { scrubbing = false; };
+            progressBar.onpointercancel = () => { scrubbing = false; };
+            progressBar.onclick = (e) => { e.stopPropagation(); scrubToX(e.clientX); resetOverlayTimer(); };
+        }
+
+        // Status error panel actions
+        const statusBack = document.getElementById('player-status-back');
+        if (statusBack) statusBack.onclick = (e) => { e.stopPropagation(); exitPlayer(params); };
+        const statusSettings = document.getElementById('player-status-settings');
+        if (statusSettings) {
+            statusSettings.onclick = (e) => {
+                e.stopPropagation();
+                try { window.playerCleanups(); } catch {}
+                Router.loadPage('settings');
+            };
+        }
+
+        // Overlay backdrop tap + mousemove behavior matching tv-player.js
+        const surfaceTapHandler = () => {
+            if (isSettingsOpen()) {
+                closeSettingsPanel(false);
+                return;
+            }
+            if (activePlaybackMode === 'embed') return;
+            if (overlay && overlay.classList.contains('show')) {
+                hideOverlay();
+            } else {
+                showOverlay(false);
+            }
+        };
+        if (videoEl) {
+            videoEl.onclick = surfaceTapHandler;
+        }
+        if (overlay) {
+            overlay.onclick = (e) => {
+                if (e.target === overlay) surfaceTapHandler();
+            };
+        }
+        mouseMoveHandler = () => showOverlay(false);
+        window.addEventListener('mousemove', mouseMoveHandler);
+
+        // Expose window hooks for spatialNavPlayer
+        window.playerShowHud = showOverlay;
+        window.playerHideHud = hideOverlay;
+        window.playerResetHudTimer = resetOverlayTimer;
+        window.playerTogglePlayPause = togglePlayPause;
+        window.playerSeek = seekBy;
+        window.playerSettingsBack = navigateSettingsBack;
+
+        // Populate top title
+        const titleEl = document.getElementById('player-title');
+        if (titleEl) {
+            if (params.title) {
+                titleEl.textContent = params.title;
+            } else if (params.id) {
+                Api.getDetails(params.id, params.type || 'movie').then(details => {
+                    if (details && titleEl) {
+                        const name = details.title || details.name || 'IVIDS Player';
+                        const epInfo = (params.season && params.episode) ? ` - S${params.season} E${params.episode}` : '';
+                        titleEl.textContent = `${name}${epInfo}`;
+                    }
+                }).catch(() => {});
+            }
+        }
+
+        showOverlay(false);
+
         if (params.type === 'live') {
             startNativePlayback(params.url);
             activePlaybackMode = 'live';
@@ -1035,26 +1094,19 @@ export async function init(params) {
             Router.loadPage('home');
             return;
         }
-
         container.style.position = 'fixed';
-        container.style.top = '0';
-        container.style.left = '0';
+        container.style.inset = '0';
         container.style.width = '100vw';
         container.style.height = '100vh';
         container.style.background = '#000';
-        container.style.overflow = 'hidden';
 
-        // 2. YouTube trailer embed mode
         if (params.type === 'trailer') {
-            const trailerUrl = `https://www.youtube.com/embed/${params.ytKey}?autoplay=1&enablejsapi=1`;
-            startEmbedPlayback(trailerUrl);
+            startEmbedPlayback(`https://www.youtube.com/embed/${params.ytKey}?autoplay=1&enablejsapi=1`);
             activePlaybackMode = 'trailer';
-            const overlay = document.getElementById('server-selection-overlay');
-            if (overlay) overlay.style.display = 'none';
             return;
         }
 
-        // Background metadata tracking & next-episode check
+        // Background recently-watched + next episode check
         Api.getDetails(params.id, params.type).then(details => {
             if (details) {
                 try {
@@ -1064,23 +1116,22 @@ export async function init(params) {
                         season: params.season,
                         episode: params.episode
                     });
-                } catch (watchedError) {
-                    console.error('Error adding to recently watched:', watchedError);
-                }
+                } catch {}
             }
         }).catch(() => {});
 
         if (params.type === 'tv' && params.season && params.episode) {
-            checkForNextEpisode(params.id, parseInt(params.season, 10), parseInt(params.episode, 10));
+            checkForNextEpisode(params.id, parseInt(params.season, 10), parseInt(params.episode, 10))
+                .then(next => { nextEpisodeTarget = next; });
         }
 
-        // 3. Hybrid VOD resolution across configured priority tiers (Debrid / Backup Debrid / 7 Embed Servers)
         const loadingOverlay = document.getElementById('player-loading-overlay');
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
         const resolver = new VodStreamResolver();
         const plan = await resolver.resolveInitialPlayback(params);
         console.log('[IVIDS Player] Resolved plan:', plan.active.tierId, plan.active.kind, plan.mediaMeta?.imdbId || 'no-imdb', resolver.lastError || '');
+
         if (plan.mediaMeta?.imdbId) {
             loadStremioSubtitles(plan.mediaMeta);
         }
@@ -1088,51 +1139,46 @@ export async function init(params) {
         const playerConfig = Api.getPlayerConfig();
         const configuredEmbedServer = Api.SERVERS.find(s => s.url === playerConfig.playerBaseUrl) || Api.SERVERS[0];
 
-        const state = {
+        vodState = {
             resolver,
             mediaMeta: plan.mediaMeta,
             order: plan.order,
             tierResults: { [plan.active.tierId]: plan.active },
             activeTierId: plan.active.tierId,
             activeStreamIndex: plan.active.kind === 'native' ? (plan.active.selectedStreamIndex || 0) : -1,
-            activeServerId: plan.active.kind === 'embed' ? (configuredEmbedServer?.id || 'vidlink') : null
+            activeServerId: plan.active.kind === 'embed' ? (configuredEmbedServer?.id || 'vidlink') : null,
+            handlers: null
         };
 
-        /**
-         * Attempts playback of the active tier's next candidate stream or advances down `state.order`.
-         *
-         * @param {string} fromTierId - Tier whose stream just failed.
-         * @param {number} failedIndex - Index in `streams` that failed.
-         */
         const advanceFallbackPlayback = async (fromTierId, failedIndex) => {
-            const tierRes = state.tierResults[fromTierId];
+            const tierRes = vodState.tierResults[fromTierId];
             if (tierRes && tierRes.kind === 'native' && Array.isArray(tierRes.streams)) {
                 const maxTries = Math.min(tierRes.streams.length, 4);
                 for (let nextIdx = failedIndex + 1; nextIdx < maxTries; nextIdx++) {
                     const resolvedUrl = await resolver.resolveCandidateUrl(tierRes.streams[nextIdx]);
                     if (resolvedUrl) {
-                        state.activeTierId = fromTierId;
-                        state.activeStreamIndex = nextIdx;
-                        state.activeServerId = null;
-                        refreshServerButtons();
+                        vodState.activeTierId = fromTierId;
+                        vodState.activeStreamIndex = nextIdx;
+                        vodState.activeServerId = null;
+                        if (isSettingsOpen()) renderSettingsPanel();
                         startNativePlayback(resolvedUrl, () => advanceFallbackPlayback(fromTierId, nextIdx));
                         return;
                     }
                 }
             }
 
-            const startTierPos = Math.max(0, state.order.indexOf(fromTierId) + 1);
-            for (let tIdx = startTierPos; tIdx < state.order.length; tIdx++) {
-                const nextTierId = state.order[tIdx];
-                const resolvedTier = state.tierResults[nextTierId] || await resolver.resolveTier(nextTierId, state.mediaMeta);
+            const startTierPos = Math.max(0, vodState.order.indexOf(fromTierId) + 1);
+            for (let tIdx = startTierPos; tIdx < vodState.order.length; tIdx++) {
+                const nextTierId = vodState.order[tIdx];
+                const resolvedTier = vodState.tierResults[nextTierId] || await resolver.resolveTier(nextTierId, vodState.mediaMeta);
                 if (!resolvedTier) continue;
-                state.tierResults[nextTierId] = resolvedTier;
+                vodState.tierResults[nextTierId] = resolvedTier;
                 if (resolvedTier.kind === 'native' && resolvedTier.url) {
-                    state.activeTierId = nextTierId;
-                    state.activeStreamIndex = resolvedTier.selectedStreamIndex || 0;
-                    state.activeServerId = null;
-                    refreshServerButtons();
-                    startNativePlayback(resolvedTier.url, () => advanceFallbackPlayback(nextTierId, state.activeStreamIndex));
+                    vodState.activeTierId = nextTierId;
+                    vodState.activeStreamIndex = resolvedTier.selectedStreamIndex || 0;
+                    vodState.activeServerId = null;
+                    if (isSettingsOpen()) renderSettingsPanel();
+                    startNativePlayback(resolvedTier.url, () => advanceFallbackPlayback(nextTierId, vodState.activeStreamIndex));
                     return;
                 }
                 if (resolvedTier.kind === 'embed') {
@@ -1144,79 +1190,65 @@ export async function init(params) {
             activateEmbedServer(configuredEmbedServer?.id || 'vidlink');
         };
 
-        /**
-         * Switches playback to one of the 7 Embed Servers (or custom embed servers).
-         *
-         * @param {string} serverId - ID of the target server in `Api.SERVERS`.
-         */
         const activateEmbedServer = (serverId) => {
-            state.activeTierId = 'embed_servers';
-            state.activeStreamIndex = -1;
-            state.activeServerId = serverId;
-            refreshServerButtons();
-            const embedUrl = Api.getVideoUrl(params.id, params.type, params.season, params.episode, serverId);
-            startEmbedPlayback(embedUrl);
+            vodState.activeTierId = 'embed_servers';
+            vodState.activeStreamIndex = -1;
+            vodState.activeServerId = serverId;
+            if (isSettingsOpen()) renderSettingsPanel();
+            startEmbedPlayback(Api.getVideoUrl(params.id, params.type, params.season, params.episode, serverId));
         };
 
-        /**
-         * Renders unified `#player-server-list` buttons containing Debrid stream candidates
-         * alongside all 7 original Embed Servers in the user's preferred priority order.
-         */
-        const refreshServerButtons = () => {
-            renderHybridServerList(state, params, {
-                onSelectDebridCandidate: async (tierId, idx) => {
-                    const tierRes = state.tierResults[tierId];
-                    const candidate = tierRes?.streams?.[idx];
-                    if (!candidate) return;
-                    const loadingEl = document.getElementById('player-loading-overlay');
-                    if (loadingEl) loadingEl.style.display = 'flex';
-                    const resolvedUrl = await resolver.resolveCandidateUrl(candidate);
-                    if (resolvedUrl) {
-                        state.activeTierId = tierId;
-                        state.activeStreamIndex = idx;
-                        state.activeServerId = null;
-                        refreshServerButtons();
-                        startNativePlayback(resolvedUrl, () => advanceFallbackPlayback(tierId, idx));
-                    } else {
-                        advanceFallbackPlayback(tierId, idx);
+        vodState.handlers = {
+            onSelectDebridCandidate: async (tierId, idx) => {
+                const tierRes = vodState.tierResults[tierId];
+                const candidate = tierRes?.streams?.[idx];
+                if (!candidate) return;
+                if (loadingOverlay) loadingOverlay.style.display = 'flex';
+                const resolvedUrl = await resolver.resolveCandidateUrl(candidate);
+                if (resolvedUrl) {
+                    vodState.activeTierId = tierId;
+                    vodState.activeStreamIndex = idx;
+                    vodState.activeServerId = null;
+                    if (isSettingsOpen()) renderSettingsPanel();
+                    startNativePlayback(resolvedUrl, () => advanceFallbackPlayback(tierId, idx));
+                } else {
+                    advanceFallbackPlayback(tierId, idx);
+                }
+            },
+            onTriggerDebridTier: async (tierId) => {
+                if (loadingOverlay) loadingOverlay.style.display = 'flex';
+                const resolvedTier = vodState.tierResults[tierId]?.url
+                    ? vodState.tierResults[tierId]
+                    : await resolver.resolveTier(tierId, vodState.mediaMeta);
+                if (resolvedTier && resolvedTier.url) {
+                    vodState.tierResults[tierId] = resolvedTier;
+                    vodState.activeTierId = tierId;
+                    vodState.activeStreamIndex = resolvedTier.selectedStreamIndex || 0;
+                    vodState.activeServerId = null;
+                    if (isSettingsOpen()) renderSettingsPanel();
+                    startNativePlayback(resolvedTier.url, () => advanceFallbackPlayback(tierId, vodState.activeStreamIndex));
+                } else {
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                    const reason = resolver.lastError || 'No playable Debrid stream found for this title.';
+                    console.warn(`[IVIDS Player] Manual Debrid switch failed (${tierId}):`, reason);
+                    const statusPanel = document.getElementById('player-status-panel');
+                    const statusTitle = document.getElementById('player-status-title');
+                    const statusMsg = document.getElementById('player-status-message');
+                    if (statusTitle) statusTitle.textContent = t(`settings.${tierId === 'debrid_backup' ? 'tierDebridBackup' : 'tierDebridPrimary'}`, tierId);
+                    if (statusMsg) statusMsg.textContent = reason;
+                    if (statusPanel) {
+                        statusPanel.classList.remove('hidden');
+                        statusPanel.style.display = 'flex';
+                        const backEl = document.getElementById('player-status-back');
+                        if (backEl) SpatialNav.setFocus(backEl);
                     }
-                },
-                onTriggerDebridTier: async (tierId) => {
-                    const loadingEl = document.getElementById('player-loading-overlay');
-                    if (loadingEl) loadingEl.style.display = 'flex';
-                    const resolvedTier = await resolver.resolveTier(tierId, state.mediaMeta);
-                    if (resolvedTier && resolvedTier.url) {
-                        state.tierResults[tierId] = resolvedTier;
-                        state.activeTierId = tierId;
-                        state.activeStreamIndex = resolvedTier.selectedStreamIndex || 0;
-                        state.activeServerId = null;
-                        refreshServerButtons();
-                        startNativePlayback(resolvedTier.url, () => advanceFallbackPlayback(tierId, state.activeStreamIndex));
-                    } else {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        const reason = resolver.lastError || 'No playable Debrid stream found for this title.';
-                        console.warn(`[IVIDS Player] Manual Debrid switch failed (${tierId}):`, reason);
-                        const statusPanel = document.getElementById('player-status-panel');
-                        const statusTitle = document.getElementById('player-status-title');
-                        const statusMsg = document.getElementById('player-status-message');
-                        if (statusTitle) statusTitle.textContent = t(`settings.${tierId === 'debrid_backup' ? 'tierDebridBackup' : 'tierDebridPrimary'}`, tierId);
-                        if (statusMsg) statusMsg.textContent = reason;
-                        if (statusPanel) {
-                            statusPanel.classList.remove('hidden');
-                            statusPanel.style.display = 'flex';
-                            const backBtnEl = document.getElementById('player-status-back');
-                            if (backBtnEl) SpatialNav.setFocus(backBtnEl);
-                        }
-                    }
-                },
-                onSelectEmbedServer: (serverId) => activateEmbedServer(serverId)
-            });
+                }
+            },
+            onSelectEmbedServer: (serverId) => activateEmbedServer(serverId)
         };
-
-        refreshServerButtons();
 
         if (plan.active.kind === 'native' && plan.active.url) {
-            startNativePlayback(plan.active.url, () => advanceFallbackPlayback(plan.active.tierId, state.activeStreamIndex));
+            startNativePlayback(plan.active.url, () => advanceFallbackPlayback(plan.active.tierId, vodState.activeStreamIndex));
         } else {
             activateEmbedServer(configuredEmbedServer?.id || 'vidlink');
         }
@@ -1227,254 +1259,25 @@ export async function init(params) {
 }
 
 /**
- * Checks TMDB to determine if a subsequent episode or season exists for the active TV series.
+ * Checks TMDB to see if a following episode or next season exists for the active TV series.
  *
- * @param {string} seriesId - The TMDB ID of the TV show.
+ * @param {string} seriesId - TMDB series ID.
  * @param {number} currentSeason - Current season number.
  * @param {number} currentEpisode - Current episode number.
+ * @returns {Promise<Object|null>} Route params object for the next episode, or null.
  */
 async function checkForNextEpisode(seriesId, currentSeason, currentEpisode) {
     try {
-        const nextBtnContainer = document.getElementById('next-episode-container');
-        const nextBtn = document.getElementById('player-next-ep-btn') || document.getElementById('player-next');
-        if (!nextBtnContainer || !nextBtn) return;
-
         const seasonDetails = await Api.getSeasonDetails(seriesId, currentSeason);
-        if (seasonDetails && seasonDetails.episodes) {
-            const nextEpisode = seasonDetails.episodes.find(e => e.episode_number === currentEpisode + 1);
-            if (nextEpisode) {
-                showNextButton(seriesId, currentSeason, currentEpisode + 1);
-                return;
-            }
+        if (seasonDetails?.episodes?.some(e => e.episode_number === currentEpisode + 1)) {
+            return { id: seriesId, type: 'tv', season: currentSeason, episode: currentEpisode + 1 };
         }
-
         const seriesDetails = await Api.getDetails(seriesId, 'tv');
-        if (seriesDetails && seriesDetails.seasons) {
-            const nextSeason = seriesDetails.seasons.find(s => s.season_number === currentSeason + 1);
-            if (nextSeason) {
-                showNextButton(seriesId, currentSeason + 1, 1);
-            }
+        if (seriesDetails?.seasons?.some(s => s.season_number === currentSeason + 1)) {
+            return { id: seriesId, type: 'tv', season: currentSeason + 1, episode: 1 };
         }
-    } catch (error) {
-        console.error('Error checking for next episode:', error);
+    } catch {
+        // Ignore next-episode lookup failures
     }
-}
-
-/**
- * Configures and displays the "Next Episode" button on the HUD.
- *
- * @param {string} seriesId - TMDB TV show ID.
- * @param {number} nextSeason - Next season number.
- * @param {number} nextEpisode - Next episode number.
- */
-function showNextButton(seriesId, nextSeason, nextEpisode) {
-    const container = document.getElementById('next-episode-container');
-    const btn = document.getElementById('player-next-ep-btn') || document.getElementById('player-next');
-
-    if (container && btn) {
-        container.style.display = 'block';
-        container.classList.remove('hidden');
-        btn.onclick = () => {
-            Router.loadPage('player', {
-                id: seriesId,
-                type: 'tv',
-                season: nextSeason,
-                episode: nextEpisode
-            });
-        };
-    }
-}
-
-/**
- * Renders unified hybrid source selector buttons inside `#player-server-list`:
- * Debrid stream candidates (resolved or on-demand trigger) AND all 7 original Embed Servers.
- *
- * @param {Object} state - Active VOD resolution state.
- * @param {Object} params - Route parameters.
- * @param {Object} handlers - Selection callbacks (`onSelectDebridCandidate`, `onTriggerDebridTier`, `onSelectEmbedServer`).
- */
-function renderHybridServerList(state, params, handlers) {
-    const overlay = document.getElementById('server-selection-overlay');
-    const serverList = document.getElementById('player-server-list');
-
-    if (params.type === 'trailer') {
-        if (overlay) overlay.style.display = 'none';
-        return;
-    }
-    if (overlay) overlay.style.display = 'flex';
-    if (!serverList) return;
-
-    serverList.innerHTML = '';
-
-    const debridBadge = {
-        debrid_primary: t('settings.tierDebridPrimary', 'Primary Debrid'),
-        debrid_backup: t('settings.tierDebridBackup', 'Backup Debrid')
-    };
-
-    state.order.forEach(tierId => {
-        if (tierId === 'embed_servers') {
-            Api.SERVERS.forEach(server => {
-                const isSelected = state.activeTierId === 'embed_servers' && state.activeServerId === server.id;
-                const btn = document.createElement('button');
-                btn.className = `btn server-btn focusable ${isSelected ? 'active is-active btn--primary' : 'btn--secondary'}`;
-                btn.textContent = server.name;
-                btn.dataset.serverId = server.id;
-                btn.onclick = () => handlers.onSelectEmbedServer(server.id);
-                serverList.appendChild(btn);
-            });
-            return;
-        }
-
-        const tierRes = state.tierResults[tierId];
-        if (tierRes && tierRes.kind === 'native' && Array.isArray(tierRes.streams) && tierRes.streams.length > 0) {
-            const topStreams = tierRes.streams.slice(0, 4);
-            topStreams.forEach((stream, idx) => {
-                const isSelected = state.activeTierId === tierId && state.activeStreamIndex === idx;
-                const btn = document.createElement('button');
-                btn.className = `btn server-btn focusable ${isSelected ? 'active is-active btn--primary' : 'btn--secondary'}`;
-                const prefix = tierId === 'debrid_backup' ? 'Backup' : 'Debrid';
-                btn.textContent = `${prefix} · ${stream.label || `Stream ${idx + 1}`}`;
-                btn.title = stream.rawTitle || btn.textContent;
-                btn.dataset.tierId = tierId;
-                btn.dataset.streamIdx = String(idx);
-                btn.onclick = () => handlers.onSelectDebridCandidate(tierId, idx);
-                serverList.appendChild(btn);
-            });
-            return;
-        }
-
-        const cfg = Api.getPlayerConfig().debridConfig;
-        const addonUrl = tierId === 'debrid_primary' ? cfg?.primaryAddonUrl : cfg?.backupAddonUrl;
-        if (addonUrl && state.mediaMeta?.imdbId && !tierRes) {
-            const btn = document.createElement('button');
-            btn.className = 'btn server-btn focusable btn--secondary';
-            btn.textContent = debridBadge[tierId] || tierId;
-            btn.dataset.tierId = tierId;
-            btn.onclick = () => handlers.onTriggerDebridTier(tierId);
-            serverList.appendChild(btn);
-        }
-    });
-}
-
-/**
- * Configures activity and pointer listeners to manage `#player-hud` visibility,
- * smart auto-hide (stays open when native video is paused), and click-to-toggle playback.
- *
- * @param {Object} _params - Route parameters of the player.
- */
-function setupOverlayVisibility(_params) {
-    const playerHud = document.getElementById('player-hud');
-    if (!playerHud) return;
-
-    const resetTimer = () => {
-        if (hudTimeout) clearTimeout(hudTimeout);
-        hudTimeout = setTimeout(() => {
-            const modal = document.getElementById('player-modal-sheet');
-            const modalOpen = modal && (modal.classList.contains('is-open') || modal.style.display !== 'none');
-            const videoEl = document.getElementById('native-video-player');
-            const isPausedNative = activePlaybackMode === 'native' && videoEl && videoEl.paused;
-            const focused = document.activeElement;
-            const hasFocusInside = focused && playerHud.contains(focused);
-
-            if (modalOpen || isPausedNative || hasFocusInside) {
-                resetTimer();
-            } else {
-                hideHUD();
-            }
-        }, 4000);
-    };
-
-    /**
-     * Reveals the HUD overlay, schedules auto-hide, and places focus on Play/Pause if newly shown.
-     */
-    const showHUD = () => {
-        const wasHidden = !playerHud.classList.contains('visible');
-        playerHud.style.display = 'flex';
-        playerHud.classList.remove('hidden');
-
-        requestAnimationFrame(() => {
-            playerHud.classList.add('visible');
-            if (wasHidden) {
-                const playPause = document.getElementById('play-pause-btn');
-                if (playPause && SpatialNav.isVisible(playPause)) {
-                    SpatialNav.setFocus(playPause);
-                } else {
-                    const activeServer = playerHud.querySelector('.server-btn.active');
-                    if (activeServer) {
-                        SpatialNav.setFocus(activeServer);
-                    } else {
-                        const backBtn = document.getElementById('player-back');
-                        if (backBtn) SpatialNav.setFocus(backBtn);
-                    }
-                }
-            }
-        });
-
-        resetTimer();
-    };
-
-    /**
-     * Hides the HUD overlay and shifts focus back to the underlying video or embed element.
-     */
-    const hideHUD = () => {
-        const modal = document.getElementById('player-modal-sheet');
-        if (modal && (modal.classList.contains('is-open') || modal.style.display !== 'none')) {
-            return;
-        }
-
-        playerHud.classList.remove('visible');
-        playerHud.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
-
-        if (document.activeElement && playerHud.contains(document.activeElement)) {
-            document.activeElement.blur();
-            const iframe = document.getElementById('player-iframe');
-            if (iframe && iframe.style.display !== 'none') {
-                SpatialNav.setFocus(iframe);
-            } else {
-                const nativeVideo = document.getElementById('native-video-player');
-                if (nativeVideo) {
-                    nativeVideo.tabIndex = -1;
-                    nativeVideo.focus();
-                }
-            }
-        }
-
-        setTimeout(() => {
-            if (!playerHud.classList.contains('visible')) {
-                playerHud.style.display = 'none';
-            }
-        }, 400);
-    };
-
-    mouseMoveHandler = showHUD;
-    clickHandler = (e) => {
-        const wasVisible = playerHud.classList.contains('visible');
-        const clickedVideoSurface = e.target && (e.target.id === 'native-video-player' || e.target.id === 'player-hud');
-        if (wasVisible && activePlaybackMode === 'native' && clickedVideoSurface) {
-            togglePlayPause();
-        }
-        showHUD();
-    };
-    keydownHandler = (e) => {
-        const key = e.key || '';
-        const code = e.keyCode || e.which;
-        if (key === 'Escape' || key === 'Backspace' || code === 27 || code === 8 || code === 4 || code === 10009 || code === 461 || key === 'GoBack' || key === 'Back') {
-            return;
-        }
-        showHUD();
-    };
-
-    window.addEventListener('mousemove', mouseMoveHandler);
-    window.addEventListener('click', clickHandler);
-    window.addEventListener('keydown', keydownHandler);
-
-    window.playerShowHud = showHUD;
-    window.playerHideHud = hideHUD;
-    window.playerResetHudTimer = resetTimer;
-    window.playerTogglePlayPause = togglePlayPause;
-    window.playerSeek = seekBy;
-    window.playerOpenModal = openModalSheet;
-    window.playerCloseModal = closeModalSheet;
-
-    showHUD();
+    return null;
 }
