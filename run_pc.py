@@ -39,7 +39,7 @@ VENDOR_PATTERNS = {'hls.min.js', 'hls.js'}
 
 # Define preferred port and target assets directory
 PORT = 8000
-ASSETS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'web'))
+ASSETS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app', 'src', 'main', 'assets', 'main'))
 BROKEN_CHANNELS_PATH = os.path.join(ASSETS_DIR, 'logic', 'livetv', 'broken-channels.json')
 
 

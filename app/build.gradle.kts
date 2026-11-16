@@ -49,17 +49,6 @@ android {
     }
 }
 
-// Sync shared i18n JSON files from web/gui/lang into Android assets/lang before build
-tasks.register<Copy>("syncTranslations") {
-    from("../web/gui/lang")
-    into("src/main/assets/lang")
-    include("*.json")
-}
-
-tasks.named("preBuild") {
-    dependsOn("syncTranslations")
-}
-
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

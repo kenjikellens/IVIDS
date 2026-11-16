@@ -134,7 +134,7 @@ function writeChangelog(versionName, versionCode) {
 function updateTizenConfig(version) {
     const configPaths = [
         path.join(__dirname, 'app', 'src', 'main', 'config.xml'),
-        path.join(__dirname, 'web', 'config.xml')
+        path.join(__dirname, 'app', 'src', 'main', 'assets', 'main', 'config.xml')
     ];
 
     configPaths.forEach(configPath => {

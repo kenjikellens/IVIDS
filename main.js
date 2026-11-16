@@ -149,7 +149,7 @@ function createWindow() {
     mainWindow.setMenuBarVisibility(false);
 
     // Load local index.html
-    const indexPath = path.join(__dirname, 'web/gui/index.html');
+    const indexPath = path.join(__dirname, 'app/src/main/assets/main/gui/index.html');
     mainWindow.loadFile(indexPath);
 
     // Injects a console event listener to print renderer process logs directly to the terminal for debugging.
