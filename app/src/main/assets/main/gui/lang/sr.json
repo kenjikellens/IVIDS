@@ -146,7 +146,21 @@
     "delay0": "0ms (Трентутно)",
     "delay100": "100ms (Подразумевано)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Redosled izvora",
+    "sourceOrderDesc": "Izaberite prioritet između servera i Debrida",
+    "tierEmbedServers": "Serveri (1–7)",
+    "tierDebridPrimary": "Primarni Debrid",
+    "tierDebridBackup": "Rezervni Debrid",
+    "debridConfig": "Debrid i Stremio",
+    "debridConfigDesc": "Podesite Real-Debrid API ključ i Stremio URL-ove",
+    "debridApiKey": "Real-Debrid API ključ",
+    "debridPrimaryAddon": "Primarni Stremio addon URL",
+    "debridBackupAddon": "Rezervni Stremio addon URL",
+    "debridEnvBackup": ".env rezerva aktivna (ostavite prazno)",
+    "debridConfigured": "Podešeno",
+    "debridEnvReady": ".env rezerva",
+    "debridNotConfigured": "Nije podešeno"
   },
   "common": {
     "close": "Цлосе",

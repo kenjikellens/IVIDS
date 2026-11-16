@@ -152,7 +152,21 @@
     "delay0": "0 مللي ثانية (فوري)",
     "delay100": "100 مللي ثانية (افتراضي)",
     "delay250": "250 مللي ثانية",
-    "delay500": "500 مللي ثانية"
+    "delay500": "500 مللي ثانية",
+    "sourceOrder": "ترتيب المصادر",
+    "sourceOrderDesc": "اختر أولوية الخوادم وDebrid",
+    "tierEmbedServers": "الخوادم (1–7)",
+    "tierDebridPrimary": "Debrid الأساسي",
+    "tierDebridBackup": "Debrid الاحتياطي",
+    "debridConfig": "Debrid وStremio",
+    "debridConfigDesc": "إعداد مفتاح Real-Debrid وروابط إضافات Stremio",
+    "debridApiKey": "مفتاح Real-Debrid API",
+    "debridPrimaryAddon": "رابط إضافة Stremio الأساسية",
+    "debridBackupAddon": "رابط إضافة Stremio الاحتياطية",
+    "debridEnvBackup": "نسخة .env نشطة (اتركه فارغاً للاستخدام)",
+    "debridConfigured": "مُعدّ",
+    "debridEnvReady": "نسخة .env",
+    "debridNotConfigured": "غير مُعدّ"
   },
   "common": {
     "close": "إغلاق",

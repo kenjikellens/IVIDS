@@ -146,7 +146,21 @@
     "delay0": "0ms (Serta-merta)",
     "delay100": "100ms (Lalai)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Susunan Sumber",
+    "sourceOrderDesc": "Pilih susunan keutamaan antara pelayan dan Debrid",
+    "tierEmbedServers": "Pelayan (1–7)",
+    "tierDebridPrimary": "Debrid Utama",
+    "tierDebridBackup": "Debrid Sandaran",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Tetapkan kunci API Real-Debrid dan URL Stremio",
+    "debridApiKey": "Kunci API Real-Debrid",
+    "debridPrimaryAddon": "URL Addon Stremio Utama",
+    "debridBackupAddon": "URL Addon Stremio Sandaran",
+    "debridEnvBackup": "Sandaran .env aktif (biar kosong)",
+    "debridConfigured": "Ditetapkan",
+    "debridEnvReady": "Sandaran .env",
+    "debridNotConfigured": "Tiada"
   },
   "common": {
     "close": "Close",

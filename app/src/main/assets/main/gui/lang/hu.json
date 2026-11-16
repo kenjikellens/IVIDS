@@ -146,7 +146,21 @@
     "delay0": "0ms (Azonnali)",
     "delay100": "100ms (Alapértelmezett)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Források sorrendje",
+    "sourceOrderDesc": "Válassza ki a szerverek és a Debrid prioritását",
+    "tierEmbedServers": "Szerverek (1–7)",
+    "tierDebridPrimary": "Elsődleges Debrid",
+    "tierDebridBackup": "Tartalék Debrid",
+    "debridConfig": "Debrid és Stremio",
+    "debridConfigDesc": "Real-Debrid API-kulcs és Stremio addon URL-ek beállítása",
+    "debridApiKey": "Real-Debrid API-kulcs",
+    "debridPrimaryAddon": "Elsődleges Stremio addon URL",
+    "debridBackupAddon": "Tartalék Stremio addon URL",
+    "debridEnvBackup": ".env mentés aktív (hagyja üresen)",
+    "debridConfigured": "Beállítva",
+    "debridEnvReady": ".env mentés",
+    "debridNotConfigured": "Nincs beállítva"
   },
   "common": {
     "close": "Close",

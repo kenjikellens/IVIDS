@@ -152,7 +152,21 @@
     "delay0": "0ms (Anında)",
     "delay100": "100ms (Varsayılan)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Kaynak Sırası",
+    "sourceOrderDesc": "Sunucular ve Debrid arasındaki önceliği seçin",
+    "tierEmbedServers": "Sunucular (1–7)",
+    "tierDebridPrimary": "Birincil Debrid",
+    "tierDebridBackup": "Yedek Debrid",
+    "debridConfig": "Debrid ve Stremio",
+    "debridConfigDesc": "Real-Debrid API anahtarı ve Stremio eklenti URL'lerini ayarlayın",
+    "debridApiKey": "Real-Debrid API Anahtarı",
+    "debridPrimaryAddon": "Birincil Stremio Eklenti URL",
+    "debridBackupAddon": "Yedek Stremio Eklenti URL",
+    "debridEnvBackup": ".env yedeği etkin (boş bırakın)",
+    "debridConfigured": "Ayarlandı",
+    "debridEnvReady": ".env Yedeği",
+    "debridNotConfigured": "Ayarlı değil"
   },
   "common": {
     "close": "Kapat",

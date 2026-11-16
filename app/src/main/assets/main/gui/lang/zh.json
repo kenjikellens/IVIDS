@@ -152,7 +152,21 @@
     "delay0": "0毫秒 (即时)",
     "delay100": "100毫秒 (默认)",
     "delay250": "250毫秒",
-    "delay500": "500毫秒"
+    "delay500": "500毫秒",
+    "sourceOrder": "播放源顺序",
+    "sourceOrderDesc": "选择服务器与 Debrid 的优先级",
+    "tierEmbedServers": "内置服务器 (1–7)",
+    "tierDebridPrimary": "主 Debrid",
+    "tierDebridBackup": "备用 Debrid",
+    "debridConfig": "Debrid 与 Stremio",
+    "debridConfigDesc": "配置 Real-Debrid API 密钥和 Stremio 插件网址",
+    "debridApiKey": "Real-Debrid API 密钥",
+    "debridPrimaryAddon": "主 Stremio 插件 URL",
+    "debridBackupAddon": "备用 Stremio 插件 URL",
+    "debridEnvBackup": ".env 备份已启用（留空即可使用）",
+    "debridConfigured": "已配置",
+    "debridEnvReady": ".env 备份",
+    "debridNotConfigured": "未设置"
   },
   "common": {
     "close": "关闭",

@@ -39,8 +39,40 @@ VENDOR_PATTERNS = {'hls.min.js', 'hls.js'}
 
 # Define preferred port and target assets directory
 PORT = 8000
-ASSETS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app', 'src', 'main', 'assets', 'main'))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ASSETS_DIR = os.path.abspath(os.path.join(BASE_DIR, 'app', 'src', 'main', 'assets', 'main'))
 BROKEN_CHANNELS_PATH = os.path.join(ASSETS_DIR, 'logic', 'livetv', 'broken-channels.json')
+ENV_FILE_PATH = os.path.join(BASE_DIR, '.env')
+
+
+def _load_local_env():
+    """
+    Loads key=value pairs from the local gitignored .env file without modifying global logs.
+    """
+    env_map = {}
+    if not os.path.isfile(ENV_FILE_PATH):
+        return env_map
+    try:
+        with open(ENV_FILE_PATH, 'r', encoding='utf-8') as f:
+            for line in f:
+                stripped = line.strip()
+                if not stripped or stripped.startswith('#') or '=' not in stripped:
+                    continue
+                k, v = stripped.split('=', 1)
+                k = k.strip()
+                v = v.strip().strip('"').strip("'")
+                if k:
+                    env_map[k] = v
+    except Exception:
+        pass
+    return env_map
+
+
+def _get_debrid_backup_token():
+    """
+    Returns the Real-Debrid API token from environment or local .env backup file.
+    """
+    return (os.environ.get('REAL_DEBRID_API_KEY') or _load_local_env().get('REAL_DEBRID_API_KEY') or '').strip()
 
 
 def resolve_url(base_url, relative_url):
@@ -361,6 +393,10 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_get_broken_channels()
         elif parsed_path == '/api/version':
             self._handle_get_version()
+        elif parsed_path == '/api/debrid/status':
+            self._handle_debrid_status()
+        elif parsed_path == '/api/debrid/streams':
+            self._handle_debrid_streams()
         elif '$WEBAPIS/webapis/webapis.js' in decoded_path:
             self._handle_webapis_stub()
         elif parsed_path.startswith('/proxy'):
@@ -372,11 +408,13 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         """
-        Handles HTTP POST requests. Routes /api/broken-channels to the broken channel persistence handler.
+        Handles HTTP POST requests. Routes broken channel persistence and Debrid link resolution.
         """
         parsed_path = urllib.parse.urlparse(self.path).path
         if parsed_path == '/api/broken-channels':
             self._handle_post_broken_channels()
+        elif parsed_path == '/api/debrid/resolve':
+            self._handle_debrid_resolve()
         else:
             self.send_error(404, 'Not Found')
 
@@ -499,6 +537,173 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             body = json.dumps({'status': 'error', 'message': str(e)}).encode('utf-8')
             self._send_json_response(body, 500)
+
+    def _rd_api_request(self, path, token, method='GET', form_data=None):
+        """
+        Executes a strict HTTPS call to api.real-debrid.com/rest/1.0 using the provided Bearer token.
+        """
+        url = f'https://api.real-debrid.com/rest/1.0{path}'
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'User-Agent': 'IVIDS/1.0'
+        }
+        data_bytes = urllib.parse.urlencode(form_data).encode('utf-8') if form_data is not None else None
+        req = urllib.request.Request(url, data=data_bytes, headers=headers, method=method)
+        with _PROXY_OPENER.open(req, timeout=10) as resp:
+            raw = resp.read().decode('utf-8', errors='replace')
+            return json.loads(raw) if raw else {}
+
+    def _build_stremio_addon_stream_url(self, addon_base, media_type, stream_id, token):
+        """
+        Constructs a Stremio addon /stream/{type}/{id}.json URL, encoding Real-Debrid config
+        when bare public addon origins (e.g. torrentio.strem.fun) are supplied without manifest config.
+        """
+        cleaned = (addon_base or '').strip().rstrip('/')
+        if cleaned.endswith('/manifest.json'):
+            cleaned = cleaned[:-len('/manifest.json')].rstrip('/')
+        parsed = urllib.parse.urlparse(cleaned)
+        host = (parsed.hostname or '').lower()
+        path_only = (parsed.path or '').strip('/')
+        if token and not path_only:
+            if 'torrentio' in host:
+                cfg = f'sort=qualitysize|realdebrid={token}'
+                cleaned = f'{cleaned}/{urllib.parse.quote(cfg, safe="|=,")}'
+            elif 'comet' in host:
+                import base64
+                cfg_obj = {'debridService': 'realdebrid', 'debridApiKey': token}
+                b64 = base64.b64encode(json.dumps(cfg_obj, separators=(',', ':')).encode('utf-8')).decode('ascii')
+                cleaned = f'{cleaned}/{b64}'
+        return f'{cleaned}/stream/{urllib.parse.quote(media_type)}/{urllib.parse.quote(stream_id)}.json'
+
+    def _handle_debrid_status(self):
+        """
+        Reports whether a local .env Real-Debrid backup token exists without exposing the secret.
+        """
+        has_env = bool(_get_debrid_backup_token())
+        body = json.dumps({'envConfigured': has_env}).encode('utf-8')
+        self._send_json_response(body, 200)
+
+    def _handle_debrid_streams(self):
+        """
+        Queries a Stremio addon manifest stream endpoint server-side using either the supplied token
+        or the local .env Real-Debrid backup token.
+        """
+        try:
+            parsed = urllib.parse.urlparse(self.path)
+            qs = urllib.parse.parse_qs(parsed.query)
+            addon_base = (qs.get('addonBase', [''])[0] or '').strip()
+            media_type = (qs.get('type', ['movie'])[0] or 'movie').strip()
+            stream_id = (qs.get('id', [''])[0] or '').strip()
+            user_token = (qs.get('token', [''])[0] or '').strip()
+            token = user_token or _get_debrid_backup_token()
+
+            if not addon_base or not stream_id:
+                self._send_json_response(json.dumps({'streams': [], 'error': 'Missing addonBase or id'}).encode('utf-8'), 400)
+                return
+
+            if media_type not in ('movie', 'series'):
+                media_type = 'series' if media_type == 'tv' else 'movie'
+
+            target_url = self._build_stremio_addon_stream_url(addon_base, media_type, stream_id, token)
+            if _classify_proxy_url(target_url) != 'ok':
+                self._send_json_response(json.dumps({'streams': [], 'error': 'Forbidden addon URL'}).encode('utf-8'), 403)
+                return
+
+            req = urllib.request.Request(target_url, headers={'User-Agent': 'IVIDS/1.0', 'Accept': 'application/json'})
+            with _PROXY_OPENER.open(req, timeout=8) as resp:
+                raw = resp.read(4 * 1024 * 1024).decode('utf-8', errors='replace')
+                data = json.loads(raw)
+                streams = data.get('streams', []) if isinstance(data, dict) else []
+                self._send_json_response(json.dumps({'streams': streams}).encode('utf-8'), 200)
+        except Exception as e:
+            self._send_json_response(json.dumps({'streams': [], 'error': str(e)}).encode('utf-8'), 200)
+
+    def _handle_debrid_resolve(self):
+        """
+        Resolves a direct Real-Debrid link or cached torrent infoHash to a playable direct HTTPS URL
+        via api.real-debrid.com using the Settings token or local .env backup token.
+        """
+        try:
+            raw_len = self.headers.get('Content-Length')
+            content_length = int(raw_len) if raw_len else 0
+            if content_length <= 0 or content_length > 65536:
+                self._send_json_response(json.dumps({'status': 'error', 'message': 'Invalid body size'}).encode('utf-8'), 400)
+                return
+
+            payload = json.loads(self.rfile.read(content_length).decode('utf-8'))
+            action = (payload.get('action') or 'unrestrict').strip()
+            token = (payload.get('token') or '').strip() or _get_debrid_backup_token()
+            if not token:
+                self._send_json_response(json.dumps({'status': 'error', 'message': 'No Real-Debrid API key configured'}).encode('utf-8'), 400)
+                return
+
+            if action == 'unrestrict':
+                link = (payload.get('link') or '').strip()
+                if not link or not link.startswith(('http://', 'https://')):
+                    self._send_json_response(json.dumps({'status': 'error', 'message': 'Invalid link'}).encode('utf-8'), 400)
+                    return
+                res = self._rd_api_request('/unrestrict/link', token, method='POST', form_data={'link': link})
+                download_url = res.get('download')
+                if download_url:
+                    self._send_json_response(json.dumps({'status': 'success', 'url': download_url, 'filename': res.get('filename', '')}).encode('utf-8'), 200)
+                    return
+                self._send_json_response(json.dumps({'status': 'error', 'message': res.get('error', 'Failed to unrestrict')}).encode('utf-8'), 200)
+                return
+
+            if action == 'magnet':
+                info_hash = (payload.get('infoHash') or '').strip().lower()
+                file_idx = payload.get('fileIdx')
+                if not re.match(r'^[a-f0-9]{40}$', info_hash):
+                    self._send_json_response(json.dumps({'status': 'error', 'message': 'Invalid infoHash'}).encode('utf-8'), 400)
+                    return
+
+                magnet = f'magnet:?xt=urn:btih:{info_hash}'
+                added = self._rd_api_request('/torrents/addMagnet', token, method='POST', form_data={'magnet': magnet})
+                torrent_id = added.get('id')
+                if not torrent_id:
+                    self._send_json_response(json.dumps({'status': 'error', 'message': 'addMagnet failed'}).encode('utf-8'), 200)
+                    return
+
+                info = self._rd_api_request(f'/torrents/info/{torrent_id}', token)
+                files = info.get('files') or []
+                video_exts = ('.mp4', '.mkv', '.webm', '.avi', '.mov', '.m4v')
+                selected_id = None
+                if file_idx is not None:
+                    try:
+                        target_idx = int(file_idx)
+                        if 0 <= target_idx < len(files):
+                            selected_id = files[target_idx].get('id')
+                    except (TypeError, ValueError):
+                        selected_id = None
+                if not selected_id:
+                    video_files = [f for f in files if str(f.get('path', '')).lower().endswith(video_exts)]
+                    pick_pool = video_files or files
+                    if pick_pool:
+                        best_file = max(pick_pool, key=lambda f: f.get('bytes', 0))
+                        selected_id = best_file.get('id')
+
+                if not selected_id:
+                    self._send_json_response(json.dumps({'status': 'error', 'message': 'No video file in torrent'}).encode('utf-8'), 200)
+                    return
+
+                self._rd_api_request(f'/torrents/selectFiles/{torrent_id}', token, method='POST', form_data={'files': str(selected_id)})
+                info_after = self._rd_api_request(f'/torrents/info/{torrent_id}', token)
+                links = info_after.get('links') or []
+                if not links:
+                    self._send_json_response(json.dumps({'status': 'error', 'message': 'Torrent not instantly cached on Real-Debrid'}).encode('utf-8'), 200)
+                    return
+
+                unrestricted = self._rd_api_request('/unrestrict/link', token, method='POST', form_data={'link': links[0]})
+                download_url = unrestricted.get('download')
+                if download_url:
+                    self._send_json_response(json.dumps({'status': 'success', 'url': download_url, 'filename': unrestricted.get('filename', '')}).encode('utf-8'), 200)
+                    return
+                self._send_json_response(json.dumps({'status': 'error', 'message': 'Unrestrict failed'}).encode('utf-8'), 200)
+                return
+
+            self._send_json_response(json.dumps({'status': 'error', 'message': 'Unsupported action'}).encode('utf-8'), 400)
+        except Exception as e:
+            self._send_json_response(json.dumps({'status': 'error', 'message': str(e)}).encode('utf-8'), 200)
 
     def _send_json_response(self, body, status_code=200):
         """Helper to send JSON response with standard CORS headers."""

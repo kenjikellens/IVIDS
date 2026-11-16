@@ -146,7 +146,21 @@
     "delay0": "0мс (Миттєво)",
     "delay100": "100мс (За замовчуванням)",
     "delay250": "250мс",
-    "delay500": "500мс"
+    "delay500": "500мс",
+    "sourceOrder": "Порядок джерел",
+    "sourceOrderDesc": "Оберіть пріоритет між серверами та Debrid",
+    "tierEmbedServers": "Сервери (1–7)",
+    "tierDebridPrimary": "Основний Debrid",
+    "tierDebridBackup": "Резервний Debrid",
+    "debridConfig": "Debrid і Stremio",
+    "debridConfigDesc": "Налаштуйте ключ Real-Debrid і посилання Stremio",
+    "debridApiKey": "API-ключ Real-Debrid",
+    "debridPrimaryAddon": "Основний URL аддона Stremio",
+    "debridBackupAddon": "Резервний URL аддона Stremio",
+    "debridEnvBackup": "Резерв .env активний (залиште порожнім)",
+    "debridConfigured": "Налаштовано",
+    "debridEnvReady": "Резерв .env",
+    "debridNotConfigured": "Не задано"
   },
   "common": {
     "close": "Close",

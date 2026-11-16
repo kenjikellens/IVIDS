@@ -152,7 +152,21 @@
     "delay0": "0ms (즉시)",
     "delay100": "100ms (기본값)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "재생 소스 순서",
+    "sourceOrderDesc": "서버와 Debrid 간의 우선순위 설정",
+    "tierEmbedServers": "임베드 서버 (1–7)",
+    "tierDebridPrimary": "기본 Debrid",
+    "tierDebridBackup": "백업 Debrid",
+    "debridConfig": "Debrid 및 Stremio",
+    "debridConfigDesc": "Real-Debrid API 키 및 Stremio 애드온 URL 설정",
+    "debridApiKey": "Real-Debrid API 키",
+    "debridPrimaryAddon": "기본 Stremio 애드온 URL",
+    "debridBackupAddon": "백업 Stremio 애드온 URL",
+    "debridEnvBackup": ".env 백업 활성화됨 (비워두면 사용)",
+    "debridConfigured": "설정됨",
+    "debridEnvReady": ".env 백업",
+    "debridNotConfigured": "미설정"
   },
   "common": {
     "close": "닫기",

@@ -152,7 +152,21 @@
     "delay0": "0ms (Tức thì)",
     "delay100": "100ms (Mặc định)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Thứ tự nguồn phát",
+    "sourceOrderDesc": "Chọn mức ưu tiên giữa máy chủ và Debrid",
+    "tierEmbedServers": "Máy chủ (1–7)",
+    "tierDebridPrimary": "Debrid Chính",
+    "tierDebridBackup": "Debrid Dự phòng",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Thiết lập khóa API Real-Debrid và URL addon Stremio",
+    "debridApiKey": "Khóa API Real-Debrid",
+    "debridPrimaryAddon": "URL Addon Stremio Chính",
+    "debridBackupAddon": "URL Addon Stremio Dự phòng",
+    "debridEnvBackup": "Bản dự phòng .env đang bật (để trống)",
+    "debridConfigured": "Đã thiết lập",
+    "debridEnvReady": "Dự phòng .env",
+    "debridNotConfigured": "Chưa đặt"
   },
   "common": {
     "close": "Đóng",

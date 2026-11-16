@@ -146,7 +146,21 @@
     "delay0": "0ms (তাত্ক্ষণিক)",
     "delay100": "100ms (ডিফল্ট)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "প্লেব্যাক ক্রম",
+    "sourceOrderDesc": "সার্ভার ও Debrid-এর অগ্রাধিকার নির্ধারণ করুন",
+    "tierEmbedServers": "সার্ভার (১–৭)",
+    "tierDebridPrimary": "প্রাথমিক Debrid",
+    "tierDebridBackup": "ব্যাকআপ Debrid",
+    "debridConfig": "Debrid ও Stremio",
+    "debridConfigDesc": "Real-Debrid API কী এবং Stremio অ্যাডঅন URL সেট করুন",
+    "debridApiKey": "Real-Debrid API কী",
+    "debridPrimaryAddon": "প্রাথমিক Stremio অ্যাডঅন URL",
+    "debridBackupAddon": "ব্যাকআপ Stremio অ্যাডঅন URL",
+    "debridEnvBackup": ".env ব্যাকআপ সক্রিয় (ফাঁকা রাখুন)",
+    "debridConfigured": "সেট করা আছে",
+    "debridEnvReady": ".env ব্যাকআপ",
+    "debridNotConfigured": "সেট করা নেই"
   },
   "common": {
     "close": "বন্ধ",

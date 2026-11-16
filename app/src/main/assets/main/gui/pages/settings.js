@@ -5,7 +5,8 @@ import { manageModal } from '../js/utils/ui-helper.js';
 import { parseMarkdown } from '../js/utils/markdown-parser.js';
 import { createLoaderElement } from '../js/loader.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
-import { Api } from '../../logic/api.js';
+import { Api, DEFAULT_PLAYBACK_SOURCE_ORDER, DEFAULT_DEBRID_CONFIG } from '../../logic/api.js';
+import { RealDebridClient } from '../../logic/vod/real-debrid-client.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { VersionManager } from '../js/version-manager.js';
 
@@ -91,7 +92,9 @@ class SettingsManager {
         this.isCheckingUpdates = false;
         this.movingProviderId = null;
         this.movingM3uId = null;
+        this.movingSourceOrderId = null;
         this.movingOriginalList = null;
+        this.hasDebridEnvBackup = false;
         this.applySettingsGlobally();
         this.initializeUI();
         this.applySettings();
@@ -121,6 +124,8 @@ class SettingsManager {
                 { id: 'vidjoy', name: 'VidJoy (Server 7)', url: 'https://vidjoy.pro/embed', isCustom: false }
             ],
             m3uPlaylists: [],
+            playbackSourceOrder: [...DEFAULT_PLAYBACK_SOURCE_ORDER],
+            debridConfig: { ...DEFAULT_DEBRID_CONFIG },
             includeAdult: false,
             dataSaver: false,
             delayAction: 100
@@ -200,6 +205,18 @@ class SettingsManager {
                 }];
             }
 
+            // Normalize playbackSourceOrder preserving all 3 supported tiers
+            const rawOrder = Array.isArray(parsed.playbackSourceOrder) ? parsed.playbackSourceOrder : [];
+            const normalizedOrder = rawOrder.filter(id => DEFAULT_PLAYBACK_SOURCE_ORDER.includes(id));
+            DEFAULT_PLAYBACK_SOURCE_ORDER.forEach(id => {
+                if (!normalizedOrder.includes(id)) normalizedOrder.push(id);
+            });
+            parsed.playbackSourceOrder = normalizedOrder;
+            parsed.debridConfig = {
+                ...DEFAULT_DEBRID_CONFIG,
+                ...(parsed.debridConfig && typeof parsed.debridConfig === 'object' ? parsed.debridConfig : {})
+            };
+
             return { ...defaultSettings, ...parsed };
         } catch (e) { return defaultSettings; }
     }
@@ -221,6 +238,8 @@ class SettingsManager {
             playerProvider: this.settings.playerProvider,
             playerBaseUrl: this.settings.playerBaseUrl,
             playerProviders: this.settings.playerProviders,
+            playbackSourceOrder: this.settings.playbackSourceOrder,
+            debridConfig: this.settings.debridConfig,
             m3uPlaylists: this.settings.m3uPlaylists,
             includeAdult: this.settings.includeAdult,
             dataSaver: this.settings.dataSaver
@@ -328,9 +347,19 @@ class SettingsManager {
             };
         }
 
+        const editSourceOrderBtn = document.getElementById('edit-source-order-btn');
+        if (editSourceOrderBtn) {
+            editSourceOrderBtn.onclick = () => this.openModal('source-order-modal');
+        }
+
         const editPlayerBtn = document.getElementById('edit-player-btn');
         if (editPlayerBtn) {
             editPlayerBtn.onclick = () => this.openModal('player-modal');
+        }
+
+        const editDebridBtn = document.getElementById('edit-debrid-btn');
+        if (editDebridBtn) {
+            editDebridBtn.onclick = () => this.openModal('debrid-modal');
         }
 
         const editM3uBtn = document.getElementById('edit-m3u-btn');
@@ -374,9 +403,17 @@ class SettingsManager {
         }
 
         // Mobile inner advanced buttons
+        const mobileEditSourceOrderBtn = document.getElementById('mobile-edit-source-order-btn');
+        if (mobileEditSourceOrderBtn) {
+            mobileEditSourceOrderBtn.onclick = () => this.openModal('source-order-modal');
+        }
         const mobileEditPlayerBtn = document.getElementById('mobile-edit-player-btn');
         if (mobileEditPlayerBtn) {
             mobileEditPlayerBtn.onclick = () => this.openModal('player-modal');
+        }
+        const mobileEditDebridBtn = document.getElementById('mobile-edit-debrid-btn');
+        if (mobileEditDebridBtn) {
+            mobileEditDebridBtn.onclick = () => this.openModal('debrid-modal');
         }
         const mobileEditM3uBtn = document.getElementById('mobile-edit-m3u-btn');
         if (mobileEditM3uBtn) {
@@ -482,83 +519,59 @@ class SettingsManager {
         // Intercept ArrowUp and ArrowDown globally in capturing phase when actively reordering items on TV
         window.addEventListener('keydown', (e) => {
             if (this.movingProviderId) {
-                const keyCode = e.keyCode || e.which;
-                const key = e.key;
-                if (key === 'ArrowUp' || keyCode === 38) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    this.moveItem('playerProviders', this.movingProviderId, -1);
-                } else if (key === 'ArrowDown' || keyCode === 40) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    this.moveItem('playerProviders', this.movingProviderId, 1);
-                } else if (key === 'Enter' || keyCode === 13) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    const finishedId = this.movingProviderId;
-                    this.movingProviderId = null;
-                    this.movingOriginalList = null;
-                    this.renderPlayerProviders();
-                    const btn = document.querySelector(`.provider-item[data-id="${finishedId}"] .provider-move-btn`);
-                    if (btn) {
-                        btn.focus();
-                        if (window.SpatialNav) window.SpatialNav.setFocus(btn);
-                    }
-                } else if (key === 'Escape' || keyCode === 27 || keyCode === 8 || keyCode === 10009 || keyCode === 4) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    const finishedId = this.movingProviderId;
-                    this.pendingSettings.playerProviders = [...this.movingOriginalList];
-                    this.movingProviderId = null;
-                    this.movingOriginalList = null;
-                    this.renderPlayerProviders();
-                    const btn = document.querySelector(`.provider-item[data-id="${finishedId}"] .provider-move-btn`);
-                    if (btn) {
-                        btn.focus();
-                        if (window.SpatialNav) window.SpatialNav.setFocus(btn);
-                    }
-                }
+                this._handleMovingKeydown(e, 'movingProviderId', 'playerProviders', () => this.renderPlayerProviders());
             } else if (this.movingM3uId) {
-                const keyCode = e.keyCode || e.which;
-                const key = e.key;
-                if (key === 'ArrowUp' || keyCode === 38) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    this.moveItem('m3uPlaylists', this.movingM3uId, -1);
-                } else if (key === 'ArrowDown' || keyCode === 40) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    this.moveItem('m3uPlaylists', this.movingM3uId, 1);
-                } else if (key === 'Enter' || keyCode === 13) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    const finishedId = this.movingM3uId;
-                    this.movingM3uId = null;
-                    this.movingOriginalList = null;
-                    this.renderM3uPlaylists();
-                    const btn = document.querySelector(`.provider-item[data-id="${finishedId}"] .provider-move-btn`);
-                    if (btn) {
-                        btn.focus();
-                        if (window.SpatialNav) window.SpatialNav.setFocus(btn);
-                    }
-                } else if (key === 'Escape' || keyCode === 27 || keyCode === 8 || keyCode === 10009 || keyCode === 4) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    const finishedId = this.movingM3uId;
-                    this.pendingSettings.m3uPlaylists = [...this.movingOriginalList];
-                    this.movingM3uId = null;
-                    this.movingOriginalList = null;
-                    this.renderM3uPlaylists();
-                    const btn = document.querySelector(`.provider-item[data-id="${finishedId}"] .provider-move-btn`);
-                    if (btn) {
-                        btn.focus();
-                        if (window.SpatialNav) window.SpatialNav.setFocus(btn);
-                    }
-                }
+                this._handleMovingKeydown(e, 'movingM3uId', 'm3uPlaylists', () => this.renderM3uPlaylists());
+            } else if (this.movingSourceOrderId) {
+                this._handleMovingKeydown(e, 'movingSourceOrderId', 'playbackSourceOrderItems', () => this.renderSourceOrderList());
             }
         }, true);
 
+        new RealDebridClient('').isEnvBackupAvailable().then((hasBackup) => {
+            this.hasDebridEnvBackup = hasBackup;
+            this.updateDisplays();
+        }).catch(() => {});
+
         this.updateDisplays();
+    }
+
+    /**
+     * Handles D-pad / keyboard arrows, Enter, and Back while reordering items in Settings modals.
+     *
+     * @param {KeyboardEvent} e - Keyboard event object.
+     * @param {string} stateProp - Manager property tracking active item ID.
+     * @param {string} pendingKey - Array property name inside pendingSettings.
+     * @param {Function} renderFn - Callback to re-render the list after confirmation/cancellation.
+     */
+    _handleMovingKeydown(e, stateProp, pendingKey, renderFn) {
+        const keyCode = e.keyCode || e.which;
+        const key = e.key;
+        const activeId = this[stateProp];
+        if (!activeId) return;
+
+        if (key === 'ArrowUp' || keyCode === 38) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            this.moveItem(pendingKey, activeId, -1);
+        } else if (key === 'ArrowDown' || keyCode === 40) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            this.moveItem(pendingKey, activeId, 1);
+        } else if (key === 'Enter' || keyCode === 13 || key === 'Escape' || keyCode === 27 || keyCode === 8 || keyCode === 10009 || keyCode === 4) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            if (key !== 'Enter' && keyCode !== 13 && Array.isArray(this.movingOriginalList)) {
+                this.pendingSettings[pendingKey] = [...this.movingOriginalList];
+            }
+            this[stateProp] = null;
+            this.movingOriginalList = null;
+            renderFn();
+            const btn = document.querySelector(`.provider-item[data-id="${activeId}"] .provider-move-btn`);
+            if (btn) {
+                btn.focus();
+                if (window.SpatialNav) window.SpatialNav.setFocus(btn);
+            }
+        }
     }
 
 
@@ -762,6 +775,29 @@ class SettingsManager {
         const serversText = (window.i18n?.t('settings.serversCount') || '{count} Servers').replace('{count}', (this.settings.playerProviders || []).length);
         if (playerDisplay) playerDisplay.textContent = serversText;
         if (mobilePlayerDisplay) mobilePlayerDisplay.textContent = serversText;
+
+        const firstTierId = (this.settings.playbackSourceOrder || DEFAULT_PLAYBACK_SOURCE_ORDER)[0];
+        const tierLabelKeys = {
+            embed_servers: 'settings.tierEmbedServers',
+            debrid_primary: 'settings.tierDebridPrimary',
+            debrid_backup: 'settings.tierDebridBackup'
+        };
+        const firstTierLabel = window.i18n?.t(tierLabelKeys[firstTierId] || 'settings.tierDebridPrimary') || firstTierId;
+        const orderDisplay = document.getElementById('current-source-order-display');
+        const mobileOrderDisplay = document.getElementById('mobile-source-order-display');
+        if (orderDisplay) orderDisplay.textContent = firstTierLabel;
+        if (mobileOrderDisplay) mobileOrderDisplay.textContent = firstTierLabel;
+
+        const hasUserKey = Boolean((this.settings.debridConfig?.apiKey || '').trim());
+        const debridStatusText = hasUserKey
+            ? (window.i18n?.t('settings.debridConfigured') || 'Configured')
+            : (this.hasDebridEnvBackup
+                ? (window.i18n?.t('settings.debridEnvReady') || '.env Backup')
+                : (window.i18n?.t('settings.debridNotConfigured') || 'Not set'));
+        const debridDisplay = document.getElementById('current-debrid-display');
+        const mobileDebridDisplay = document.getElementById('mobile-debrid-display');
+        if (debridDisplay) debridDisplay.textContent = debridStatusText;
+        if (mobileDebridDisplay) mobileDebridDisplay.textContent = debridStatusText;
 
         const m3uDisplay = document.getElementById('current-m3u-display');
         const mobileM3uDisplay = document.getElementById('mobile-m3u-display');
@@ -1167,18 +1203,50 @@ class SettingsManager {
         if (this.settings.m3uPlaylists) {
             this.pendingSettings.m3uPlaylists = this.settings.m3uPlaylists.map(p => ({ ...p }));
         }
+        const tierOrder = this.settings.playbackSourceOrder || DEFAULT_PLAYBACK_SOURCE_ORDER;
+        this.pendingSettings.playbackSourceOrderItems = tierOrder.map(id => ({ id }));
+        this.pendingSettings.debridConfig = { ...DEFAULT_DEBRID_CONFIG, ...(this.settings.debridConfig || {}) };
 
         const keyMap = {
             'language-modal': 'language',
             'color-modal': 'accentColor',
             'update-mode-modal': 'updateMode',
+            'source-order-modal': 'playbackSourceOrder',
             'player-modal': 'playerProviders',
+            'debrid-modal': 'debridConfig',
             'm3u-modal': 'm3uPlaylists',
             'delay-action-modal': 'delayAction'
         };
         const key = keyMap[modalId] || modalId.replace('-modal', '');
 
-        if (modalId === 'player-modal') {
+        if (modalId === 'source-order-modal') {
+            this.movingSourceOrderId = null;
+            this.movingOriginalList = null;
+            this.renderSourceOrderList();
+        } else if (modalId === 'debrid-modal') {
+            const keyInput = document.getElementById('debrid-api-key-input');
+            const primaryInput = document.getElementById('debrid-primary-addon-input');
+            const backupInput = document.getElementById('debrid-backup-addon-input');
+            if (keyInput) {
+                keyInput.value = this.pendingSettings.debridConfig.apiKey || '';
+                keyInput.placeholder = this.hasDebridEnvBackup
+                    ? (window.i18n?.t('settings.debridEnvBackup') || '.env backup active')
+                    : 'Real-Debrid API Token';
+                keyInput.oninput = (e) => { this.pendingSettings.debridConfig.apiKey = e.target.value; };
+            }
+            if (primaryInput) {
+                primaryInput.value = this.pendingSettings.debridConfig.primaryAddonUrl || DEFAULT_DEBRID_CONFIG.primaryAddonUrl;
+                primaryInput.oninput = (e) => { this.pendingSettings.debridConfig.primaryAddonUrl = e.target.value; };
+            }
+            if (backupInput) {
+                backupInput.value = this.pendingSettings.debridConfig.backupAddonUrl || DEFAULT_DEBRID_CONFIG.backupAddonUrl;
+                backupInput.oninput = (e) => { this.pendingSettings.debridConfig.backupAddonUrl = e.target.value; };
+            }
+        } else if (modalId === 'source-order-modal') {
+            focusTarget = modal.querySelector('.provider-move-btn.focusable') || modal.querySelector('.modal__footer .btn--primary');
+        } else if (modalId === 'debrid-modal') {
+            focusTarget = document.getElementById('debrid-api-key-input');
+        } else if (modalId === 'player-modal') {
             this.movingProviderId = null;
             this.movingOriginalList = null;
             this.renderPlayerProviders();
@@ -1283,6 +1351,10 @@ class SettingsManager {
             }
         } else if (modalId === 'color-modal' || modalId === 'update-mode-modal' || modalId === 'delay-action-modal') {
             focusTarget = modal.querySelector('.language-card.is-active, .chip--option.is-active, .language-card, .chip--option');
+        } else if (modalId === 'source-order-modal') {
+            focusTarget = modal.querySelector('.provider-move-btn.focusable') || modal.querySelector('.modal__footer .btn--primary');
+        } else if (modalId === 'debrid-modal') {
+            focusTarget = document.getElementById('debrid-api-key-input');
         } else if (modalId === 'player-modal') {
             focusTarget = modal.querySelector('.form-input, .provider-url-input') || document.getElementById('add-provider-btn');
         } else if (modalId === 'm3u-modal') {
@@ -1357,7 +1429,7 @@ class SettingsManager {
                 }
                 if (modalId === 'language-modal') {
                     this.closeModal();
-                } else if (['color-modal', 'update-mode-modal', 'player-modal', 'm3u-modal', 'delay-action-modal'].includes(modalId)) {
+                } else if (['color-modal', 'update-mode-modal', 'source-order-modal', 'player-modal', 'debrid-modal', 'm3u-modal', 'delay-action-modal'].includes(modalId)) {
                     this.applyPending(key);
                 } else {
                     this.closeModal();
@@ -1612,6 +1684,15 @@ class SettingsManager {
         } else if (key === 'dataSaver') {
             newValue = newValue === 'true' || newValue === true;
         }
+        if (key === 'playbackSourceOrder' && Array.isArray(this.pendingSettings.playbackSourceOrderItems)) {
+            newValue = this.pendingSettings.playbackSourceOrderItems.map(item => item.id);
+        } else if (key === 'debridConfig' && this.pendingSettings.debridConfig) {
+            newValue = {
+                apiKey: (this.pendingSettings.debridConfig.apiKey || '').trim(),
+                primaryAddonUrl: (this.pendingSettings.debridConfig.primaryAddonUrl || DEFAULT_DEBRID_CONFIG.primaryAddonUrl).trim(),
+                backupAddonUrl: (this.pendingSettings.debridConfig.backupAddonUrl || DEFAULT_DEBRID_CONFIG.backupAddonUrl).trim()
+            };
+        }
         this.settings[key] = newValue;
 
         if (key === 'playerProviders') {
@@ -1644,6 +1725,78 @@ class SettingsManager {
 
         this.updateDisplays();
         this.closeModal(false);
+    }
+
+    /**
+     * Renders the draggable/D-pad-reorderable top-level source tier priority list inside #source-order-modal.
+     */
+    renderSourceOrderList() {
+        const listContainer = document.getElementById('source-order-list');
+        if (!listContainer) return;
+
+        const labels = {
+            embed_servers: window.i18n?.t('settings.tierEmbedServers') || 'Embed Servers (1–7)',
+            debrid_primary: window.i18n?.t('settings.tierDebridPrimary') || 'Primary Debrid',
+            debrid_backup: window.i18n?.t('settings.tierDebridBackup') || 'Backup Debrid'
+        };
+
+        listContainer.innerHTML = '';
+        const items = this.pendingSettings.playbackSourceOrderItems || [];
+
+        items.forEach((tier, idx) => {
+            const item = document.createElement('div');
+            item.className = 'provider-item';
+            if (this.movingSourceOrderId === tier.id) {
+                item.classList.add('moving');
+            }
+            item.dataset.id = tier.id;
+
+            const header = document.createElement('div');
+            header.className = 'provider-header';
+            const title = document.createElement('span');
+            title.className = 'provider-title';
+            title.textContent = `${idx + 1}. ${labels[tier.id] || tier.id}`;
+            header.appendChild(title);
+            item.appendChild(header);
+
+            const actions = document.createElement('div');
+            actions.className = 'provider-actions';
+
+            const moveBtn = document.createElement('button');
+            moveBtn.type = 'button';
+            moveBtn.className = 'btn btn--secondary btn--square edit-trigger provider-move-btn focusable';
+            moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+            if (this.movingSourceOrderId === tier.id) {
+                moveBtn.classList.add('active-moving');
+            }
+
+            moveBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (moveBtn._justDragged) return;
+                if (this.movingSourceOrderId === null) {
+                    this.movingSourceOrderId = tier.id;
+                    this.movingOriginalList = this.pendingSettings.playbackSourceOrderItems.map(p => ({ ...p }));
+                    this.renderSourceOrderList();
+                    const activeBtn = document.querySelector(`.provider-item[data-id="${tier.id}"] .provider-move-btn`);
+                    if (activeBtn) activeBtn.focus();
+                } else if (this.movingSourceOrderId === tier.id) {
+                    this.movingSourceOrderId = null;
+                    this.movingOriginalList = null;
+                    this.renderSourceOrderList();
+                    const activeBtn = document.querySelector(`.provider-item[data-id="${tier.id}"] .provider-move-btn`);
+                    if (activeBtn) activeBtn.focus();
+                }
+            };
+
+            actions.appendChild(moveBtn);
+            this.attachDragHandlers(item, moveBtn, 'playbackSourceOrderItems', tier.id);
+            item.appendChild(actions);
+            listContainer.appendChild(item);
+        });
+
+        if (window.SpatialNav && typeof window.SpatialNav.ensureTabindex === 'function') {
+            window.SpatialNav.ensureTabindex();
+        }
     }
 
     /**
@@ -1911,6 +2064,8 @@ class SettingsManager {
 
                 if (key === 'playerProviders') {
                     this.renderPlayerProviders();
+                } else if (key === 'playbackSourceOrderItems') {
+                    this.renderSourceOrderList();
                 } else {
                     this.renderM3uPlaylists();
                 }
@@ -1957,7 +2112,12 @@ class SettingsManager {
         const targetIndex = index + direction;
         if (targetIndex < 0 || targetIndex >= list.length) return;
 
-        const containerId = key === 'playerProviders' ? 'player-providers-list' : 'm3u-playlists-list';
+        const containerMap = {
+            playerProviders: 'player-providers-list',
+            playbackSourceOrderItems: 'source-order-list',
+            m3uPlaylists: 'm3u-playlists-list'
+        };
+        const containerId = containerMap[key] || 'm3u-playlists-list';
         const container = document.getElementById(containerId);
         if (!container) return;
 
@@ -1992,6 +2152,8 @@ class SettingsManager {
         setTimeout(() => {
             if (key === 'playerProviders') {
                 this.renderPlayerProviders();
+            } else if (key === 'playbackSourceOrderItems') {
+                this.renderSourceOrderList();
             } else {
                 this.renderM3uPlaylists();
             }

@@ -146,7 +146,21 @@
     "delay0": "0ms (Instantani)",
     "delay100": "100ms (Per defecte)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Ordre de fonts",
+    "sourceOrderDesc": "Tria la prioritat entre servidors i Debrid",
+    "tierEmbedServers": "Servidors (1–7)",
+    "tierDebridPrimary": "Debrid principal",
+    "tierDebridBackup": "Debrid de còpia",
+    "debridConfig": "Debrid i Stremio",
+    "debridConfigDesc": "Configura la clau Real-Debrid i URLs de Stremio",
+    "debridApiKey": "Clau API de Real-Debrid",
+    "debridPrimaryAddon": "URL principal de complement Stremio",
+    "debridBackupAddon": "URL de còpia de complement Stremio",
+    "debridEnvBackup": "Còpia .env activa (deixa en blanc)",
+    "debridConfigured": "Configurat",
+    "debridEnvReady": "Còpia .env",
+    "debridNotConfigured": "No configurat"
   },
   "common": {
     "close": "Tancar",

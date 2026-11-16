@@ -146,7 +146,21 @@
     "delay0": "0ms (Välitön)",
     "delay100": "100ms (Oletus)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Lähteiden järjestys",
+    "sourceOrderDesc": "Valitse järjestys palvelinten ja Debridin välillä",
+    "tierEmbedServers": "Palvelimet (1–7)",
+    "tierDebridPrimary": "Ensisijainen Debrid",
+    "tierDebridBackup": "Varalla oleva Debrid",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Määritä Real-Debrid API-avain ja Stremio-osoitteet",
+    "debridApiKey": "Real-Debrid API-avain",
+    "debridPrimaryAddon": "Ensisijainen Stremio-lisäosan URL",
+    "debridBackupAddon": "Varalla oleva Stremio-lisäosan URL",
+    "debridEnvBackup": ".env-varmuuskopio aktiivinen (jätä tyhjäksi)",
+    "debridConfigured": "Määritetty",
+    "debridEnvReady": ".env-varmuus",
+    "debridNotConfigured": "Ei asetettu"
   },
   "common": {
     "close": "Close",

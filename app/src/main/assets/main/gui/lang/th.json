@@ -146,7 +146,21 @@
     "delay0": "0ms (ทันที)",
     "delay100": "100ms (ค่าเริ่มต้น)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "ลำดับแหล่งเล่น",
+    "sourceOrderDesc": "เลือกลำดับความสำคัญระหว่างเซิร์ฟเวอร์และ Debrid",
+    "tierEmbedServers": "เซิร์ฟเวอร์ (1–7)",
+    "tierDebridPrimary": "Debrid หลัก",
+    "tierDebridBackup": "Debrid สำรอง",
+    "debridConfig": "Debrid และ Stremio",
+    "debridConfigDesc": "ตั้งค่าคีย์ Real-Debrid และ URL ส่วนเสริม Stremio",
+    "debridApiKey": "Real-Debrid API Key",
+    "debridPrimaryAddon": "URL ส่วนเสริม Stremio หลัก",
+    "debridBackupAddon": "URL ส่วนเสริม Stremio สำรอง",
+    "debridEnvBackup": "สำรอง .env ทำงานอยู่ (เว้นว่างเพื่อใช้)",
+    "debridConfigured": "ตั้งค่าแล้ว",
+    "debridEnvReady": "สำรอง .env",
+    "debridNotConfigured": "ยังไม่ตั้งค่า"
   },
   "common": {
     "close": "Close",

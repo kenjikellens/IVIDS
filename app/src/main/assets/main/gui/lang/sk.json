@@ -146,7 +146,21 @@
     "delay0": "0ms (Okamžite)",
     "delay100": "100ms (Predvolené)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Poradie zdrojov",
+    "sourceOrderDesc": "Zvoľte prioritu medzi servermi a Debrid",
+    "tierEmbedServers": "Servery (1–7)",
+    "tierDebridPrimary": "Primárny Debrid",
+    "tierDebridBackup": "Záložný Debrid",
+    "debridConfig": "Debrid a Stremio",
+    "debridConfigDesc": "Nastavte kľúč Real-Debrid a URL doplnkov Stremio",
+    "debridApiKey": "Real-Debrid API kľúč",
+    "debridPrimaryAddon": "Primárna URL doplnku Stremio",
+    "debridBackupAddon": "Záložná URL doplnku Stremio",
+    "debridEnvBackup": "Záloha .env aktívna (nechajte prázdne)",
+    "debridConfigured": "Nastavené",
+    "debridEnvReady": "Záloha .env",
+    "debridNotConfigured": "Nenastavené"
   },
   "common": {
     "close": "Close",

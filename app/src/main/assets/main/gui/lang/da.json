@@ -152,7 +152,21 @@
     "delay0": "0ms (Øjeblikkelig)",
     "delay100": "100ms (Standard)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Kilderækkefølge",
+    "sourceOrderDesc": "Vælg prioritet mellem servere og Debrid",
+    "tierEmbedServers": "Servere (1–7)",
+    "tierDebridPrimary": "Primær Debrid",
+    "tierDebridBackup": "Backup Debrid",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Konfigurer Real-Debrid API-nøgle og Stremio-URL'er",
+    "debridApiKey": "Real-Debrid API-nøgle",
+    "debridPrimaryAddon": "Primær Stremio-addon URL",
+    "debridBackupAddon": "Backup Stremio-addon URL",
+    "debridEnvBackup": ".env-backup aktiv (lad stå tom)",
+    "debridConfigured": "Konfigureret",
+    "debridEnvReady": ".env-backup",
+    "debridNotConfigured": "Ikke angivet"
   },
   "common": {
     "close": "Luk",

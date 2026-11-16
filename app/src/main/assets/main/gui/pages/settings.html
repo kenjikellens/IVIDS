@@ -122,6 +122,19 @@
 
             <div class="setting-item universal-onclick">
                 <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.sourceOrder">Playback Order</div>
+                    <div class="setting-description" data-i18n="settings.sourceOrderDesc">Choose priority order between servers and Debrid</div>
+                </div>
+                <div class="setting-control">
+                    <div id="current-source-order-display" class="current-value-display">—</div>
+                    <button id="edit-source-order-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
+                        <img src="images/edit.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
+            <div class="setting-item universal-onclick">
+                <div class="setting-info">
                     <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
                     <div class="setting-description" data-i18n="settings.playerProviderDesc">Configure the embed endpoint used by the movie and series player</div>
                 </div>
@@ -129,6 +142,19 @@
                     <div id="current-player-display" class="current-value-display">—</div>
                     <button id="edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Provider">
                         <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
+                    </button>
+                </div>
+            </div>
+
+            <div class="setting-item universal-onclick">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.debridConfig">Debrid &amp; Stremio</div>
+                    <div class="setting-description" data-i18n="settings.debridConfigDesc">Configure Real-Debrid API key and Stremio addon URLs</div>
+                </div>
+                <div class="setting-control">
+                    <div id="current-debrid-display" class="current-value-display">—</div>
+                    <button id="edit-debrid-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
+                        <img src="images/edit.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>
             </div>
@@ -474,6 +500,19 @@
             <!-- Player Providers Group -->
             <h2 class="section-title" data-i18n="settings.playerProviders">Player Providers</h2>
 
+            <div class="setting-item universal-onclick" id="mobile-source-order-item">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.sourceOrder">Playback Order</div>
+                    <div class="setting-description" data-i18n="settings.sourceOrderDesc">Choose priority order between servers and Debrid</div>
+                </div>
+                <div class="setting-control">
+                    <div id="mobile-source-order-display" class="current-value-display">—</div>
+                    <button id="mobile-edit-source-order-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
             <div class="setting-item universal-onclick" id="mobile-player-provider-item">
                 <div class="setting-info">
                     <div class="setting-label" data-i18n="settings.playerProvider">Player Provider</div>
@@ -482,6 +521,19 @@
                 <div class="setting-control">
                     <div id="mobile-player-display" class="current-value-display">—</div>
                     <button id="mobile-edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Provider" type="button">
+                        <img src="images/arrow.svg" class="setting-edit-icon" alt="">
+                    </button>
+                </div>
+            </div>
+
+            <div class="setting-item universal-onclick" id="mobile-debrid-item">
+                <div class="setting-info">
+                    <div class="setting-label" data-i18n="settings.debridConfig">Debrid &amp; Stremio</div>
+                    <div class="setting-description" data-i18n="settings.debridConfigDesc">Configure Real-Debrid API key and Stremio addon URLs</div>
+                </div>
+                <div class="setting-control">
+                    <div id="mobile-debrid-display" class="current-value-display">—</div>
+                    <button id="mobile-edit-debrid-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
                         <img src="images/arrow.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>
@@ -566,6 +618,57 @@
         <div class="modal__footer btn-group btn-group--end">
             <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
             <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- Source Priority Order Modal -->
+<div id="source-order-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
+        <h2 class="modal__title" data-i18n="settings.sourceOrder">Playback Order</h2>
+        <div class="modal__body modal__body--scroll">
+            <div id="source-order-list" class="providers-list"></div>
+        </div>
+        <div class="modal__footer btn-group btn-group--end">
+            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel" type="button">Cancel</button>
+            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply" type="button">Apply</button>
+        </div>
+    </div>
+</div>
+
+<!-- Debrid & Stremio Configuration Modal -->
+<div id="debrid-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
+        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
+            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+        </button>
+        <h2 class="modal__title" data-i18n="settings.debridConfig">Debrid &amp; Stremio</h2>
+        <div class="modal__body modal__body--scroll">
+            <div class="debrid-field-group">
+                <label class="debrid-field-label" for="debrid-api-key-input" data-i18n="settings.debridApiKey">Real-Debrid API Key</label>
+                <div class="form-control-wrapper">
+                    <input id="debrid-api-key-input" type="password" class="form-input focusable" autocomplete="off">
+                </div>
+            </div>
+            <div class="debrid-field-group">
+                <label class="debrid-field-label" for="debrid-primary-addon-input" data-i18n="settings.debridPrimaryAddon">Primary Stremio Addon URL</label>
+                <div class="form-control-wrapper">
+                    <input id="debrid-primary-addon-input" type="url" class="form-input focusable" placeholder="https://torrentio.strem.fun">
+                </div>
+            </div>
+            <div class="debrid-field-group">
+                <label class="debrid-field-label" for="debrid-backup-addon-input" data-i18n="settings.debridBackupAddon">Backup Stremio Addon URL</label>
+                <div class="form-control-wrapper">
+                    <input id="debrid-backup-addon-input" type="url" class="form-input focusable" placeholder="https://comet.elfhosted.com">
+                </div>
+            </div>
+        </div>
+        <div class="modal__footer btn-group btn-group--end">
+            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel" type="button">Cancel</button>
+            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply" type="button">Apply</button>
         </div>
     </div>
 </div>

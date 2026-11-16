@@ -152,7 +152,21 @@
     "delay0": "0ms (即時)",
     "delay100": "100ms (標準)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "再生ソース順序",
+    "sourceOrderDesc": "サーバーとDebridの優先順位を選択",
+    "tierEmbedServers": "サーバー (1–7)",
+    "tierDebridPrimary": "メイン Debrid",
+    "tierDebridBackup": "バックアップ Debrid",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Real-Debrid APIキーとStremioアドオンURLを設定",
+    "debridApiKey": "Real-Debrid APIキー",
+    "debridPrimaryAddon": "メイン StremioアドオンURL",
+    "debridBackupAddon": "バックアップ StremioアドオンURL",
+    "debridEnvBackup": ".envバックアップ有効（空欄で使用）",
+    "debridConfigured": "設定済み",
+    "debridEnvReady": ".env 予備",
+    "debridNotConfigured": "未設定"
   },
   "common": {
     "close": "閉じる",

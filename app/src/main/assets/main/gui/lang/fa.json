@@ -146,7 +146,21 @@
     "delay0": "0 میلی‌ثانیه (فوری)",
     "delay100": "100 میلی‌ثانیه (پیش‌فرض)",
     "delay250": "250 میلی‌ثانیه",
-    "delay500": "500 میلی‌ثانیه"
+    "delay500": "500 میلی‌ثانیه",
+    "sourceOrder": "ترتیب پخش",
+    "sourceOrderDesc": "اولویت بین سرورها و Debrid را انتخاب کنید",
+    "tierEmbedServers": "سرورها (۱–۷)",
+    "tierDebridPrimary": "Debrid اصلی",
+    "tierDebridBackup": "Debrid پشتیبان",
+    "debridConfig": "Debrid و Stremio",
+    "debridConfigDesc": "تنظیم کلید Real-Debrid و نشانی افزونه‌های Stremio",
+    "debridApiKey": "کلید API رئال-دبرید",
+    "debridPrimaryAddon": "نشانی افزونه اصلی Stremio",
+    "debridBackupAddon": "نشانی افزونه پشتیبان Stremio",
+    "debridEnvBackup": "نسخه پشتیبان .env فعال (خالی بگذارید)",
+    "debridConfigured": "تنظیم شده",
+    "debridEnvReady": "پشتیبان .env",
+    "debridNotConfigured": "تنظیم نشده"
   },
   "common": {
     "close": "بستن",

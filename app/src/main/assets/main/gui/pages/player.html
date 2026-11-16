@@ -1,13 +1,13 @@
 <div class="video-container" id="video-container">
     <div class="player-container">
         <div id="video-player" class="full-size"></div>
-        <video id="native-video-player" class="hidden" controls></video>
+        <video id="native-video-player" class="hidden" playsinline></video>
         
         <!-- Premium HUD Overlay -->
         <div id="player-hud" class="player-hud hidden">
             <!-- Top Bar: Back button, Title, Episode selector -->
             <div class="hud-top-bar" id="hud-top-bar">
-                <button class="btn btn--secondary btn--circle-md focusable universal-onclick" id="player-back" title="Back">
+                <button class="btn btn--secondary focusable universal-onclick" id="player-back" title="Back">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>

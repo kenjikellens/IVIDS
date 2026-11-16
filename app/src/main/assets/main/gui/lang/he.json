@@ -146,7 +146,21 @@
     "delay0": "0ms (מיידי)",
     "delay100": "100ms (ברירת מחדל)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "סדר מקורות",
+    "sourceOrderDesc": "בחר עדיפות בין שרתים ל-Debrid",
+    "tierEmbedServers": "שרתים (1–7)",
+    "tierDebridPrimary": "Debrid ראשי",
+    "tierDebridBackup": "Debrid גיבוי",
+    "debridConfig": "Debrid ו-Stremio",
+    "debridConfigDesc": "הגדר מפתח Real-Debrid וכתובות תוספי Stremio",
+    "debridApiKey": "מפתח API של Real-Debrid",
+    "debridPrimaryAddon": "כתובת תוסף Stremio ראשי",
+    "debridBackupAddon": "כתובת תוסף Stremio לגיבוי",
+    "debridEnvBackup": "גיבוי .env פעיל (השאר ריק לשימוש)",
+    "debridConfigured": "מוגדר",
+    "debridEnvReady": "גיבוי .env",
+    "debridNotConfigured": "לא הוגדר"
   },
   "common": {
     "close": "סגור",

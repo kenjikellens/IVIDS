@@ -147,7 +147,21 @@
     "delay0": "0ms (Direct)",
     "delay100": "100ms (Standaard)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Afspeelvolgorde",
+    "sourceOrderDesc": "Kies de volgorde tussen servers en Debrid",
+    "tierEmbedServers": "Servers (1–7)",
+    "tierDebridPrimary": "Debrid (Primair)",
+    "tierDebridBackup": "Debrid (Backup)",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Stel je Real-Debrid API-key en Stremio-addon URL's in",
+    "debridApiKey": "Real-Debrid API-key",
+    "debridPrimaryAddon": "Primaire Stremio-addon URL",
+    "debridBackupAddon": "Backup Stremio-addon URL",
+    "debridEnvBackup": ".env-backup actief (laat leeg om te gebruiken)",
+    "debridConfigured": "Ingesteld",
+    "debridEnvReady": ".env Backup",
+    "debridNotConfigured": "Niet ingesteld"
   },
   "common": {
     "close": "Sluiten",

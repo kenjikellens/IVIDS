@@ -147,7 +147,21 @@
     "delay0": "0ms (Sofort)",
     "delay100": "100ms (Standard)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Quellen-Reihenfolge",
+    "sourceOrderDesc": "Priorität zwischen Servern und Debrid festlegen",
+    "tierEmbedServers": "Server (1–7)",
+    "tierDebridPrimary": "Primärer Debrid",
+    "tierDebridBackup": "Backup-Debrid",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Real-Debrid API-Schlüssel und Stremio-Addon-URLs",
+    "debridApiKey": "Real-Debrid API-Schlüssel",
+    "debridPrimaryAddon": "Primäre Stremio-Addon-URL",
+    "debridBackupAddon": "Backup-Stremio-Addon-URL",
+    "debridEnvBackup": ".env-Backup aktiv (leer lassen)",
+    "debridConfigured": "Konfiguriert",
+    "debridEnvReady": ".env-Backup",
+    "debridNotConfigured": "Nicht festgelegt"
   },
   "common": {
     "close": "Schließen",

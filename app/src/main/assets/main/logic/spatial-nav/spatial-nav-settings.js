@@ -264,6 +264,49 @@ function findNextInModal(current, direction, modal) {
         }
     }
 
+    // 5b. Source Priority Order Modal (#source-order-modal) -> same vertical move list + footer as provider modals
+    if (modal.id === 'source-order-modal') {
+        const items = Array.from(modal.querySelectorAll('.provider-item'));
+        const applyBtn = modal.querySelector('.modal__footer .btn--primary');
+        const cancelBtn = modal.querySelector('.modal__footer .btn--secondary');
+        const backBtn = modal.querySelector('.modal__back-btn.focusable');
+        const itemContainer = current.closest('.provider-item');
+
+        if (itemContainer) {
+            const idx = items.indexOf(itemContainer);
+            if (direction === 'up') {
+                return idx > 0 ? items[idx - 1].querySelector('.provider-move-btn.focusable') : (backBtn || current);
+            }
+            if (direction === 'down') {
+                return idx < items.length - 1 ? items[idx + 1].querySelector('.provider-move-btn.focusable') : (applyBtn || cancelBtn || current);
+            }
+            return current;
+        }
+        if (current === applyBtn) {
+            if (direction === 'up' && items.length > 0) return items[items.length - 1].querySelector('.provider-move-btn.focusable');
+            if (direction === 'down' || direction === 'right') return cancelBtn || current;
+        }
+        if (current === cancelBtn) {
+            if (direction === 'up' || direction === 'left') return applyBtn || current;
+        }
+    }
+
+    // 5c. Debrid & Stremio Configuration Modal (#debrid-modal)
+    if (modal.id === 'debrid-modal') {
+        const inputs = Array.from(modal.querySelectorAll('.form-input.focusable')).filter(isElementVisible);
+        const applyBtn = modal.querySelector('.modal__footer .btn--primary');
+        const cancelBtn = modal.querySelector('.modal__footer .btn--secondary');
+        const backBtn = modal.querySelector('.modal__back-btn.focusable');
+        const inIdx = inputs.indexOf(current);
+        if (inIdx !== -1) {
+            if (direction === 'up') return inIdx > 0 ? inputs[inIdx - 1] : (backBtn || current);
+            if (direction === 'down') return inIdx < inputs.length - 1 ? inputs[inIdx + 1] : (applyBtn || cancelBtn || current);
+            return current;
+        }
+        if (current === applyBtn && direction === 'up') return inputs[inputs.length - 1] || current;
+        if (current === cancelBtn && direction === 'up') return applyBtn || current;
+    }
+
     // 6. Release Changes Modal (Close X at top right + bottom Close button)
     if (modal.id === 'changes-modal') {
         const closeX = modal.querySelector('.modal__close.focusable');
@@ -428,7 +471,9 @@ function findNextInSettingsPage(current, direction) {
         'toggle-datasaver-btn',
         'edit-delay-action-btn',
         'advanced-dropdown-btn',
+        'edit-source-order-btn',
         'edit-player-btn',
+        'edit-debrid-btn',
         'edit-m3u-btn',
         'edit-update-mode-btn',
         'check-updates-btn',

@@ -408,7 +408,23 @@ export const spatialNavPlayer = {
             window.playerResetHudTimer();
         }
 
-        // 3. Hardware TV Media Keys: Play, Pause, Play/Pause, Rewind, Fast Forward, Stop, Next, Previous
+        // 3. Spacebar toggles Play/Pause on desktop keyboard when no input or modal is active
+        const isSpace = key === ' ' || key === 'Spacebar' || code === 32;
+        if (isSpace && !getActiveModalSheet()) {
+            const tag = (document.activeElement && document.activeElement.tagName) || '';
+            if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                e.preventDefault();
+                if (typeof window !== 'undefined' && typeof window.playerTogglePlayPause === 'function') {
+                    window.playerTogglePlayPause();
+                }
+                if (typeof window !== 'undefined' && typeof window.playerShowHud === 'function') {
+                    window.playerShowHud();
+                }
+                return true;
+            }
+        }
+
+        // 4. Hardware TV Media Keys: Play, Pause, Play/Pause, Rewind, Fast Forward, Stop, Next, Previous
         const isMediaPlay = code === 415 || key === 'MediaPlay';
         const isMediaPause = code === 19 || key === 'MediaPause';
         const isMediaPlayPause = code === 179 || key === 'MediaPlayPause';

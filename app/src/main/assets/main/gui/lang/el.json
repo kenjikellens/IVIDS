@@ -146,7 +146,21 @@
     "delay0": "0ms (Άμεσα)",
     "delay100": "100ms (Προεπιλογή)",
     "delay250": "250ms",
-    "delay500": "500ms"
+    "delay500": "500ms",
+    "sourceOrder": "Σειρά πηγών",
+    "sourceOrderDesc": "Επιλέξτε προτεραιότητα μεταξύ διακομιστών και Debrid",
+    "tierEmbedServers": "Διακομιστές (1–7)",
+    "tierDebridPrimary": "Κύριο Debrid",
+    "tierDebridBackup": "Εφεδρικό Debrid",
+    "debridConfig": "Debrid & Stremio",
+    "debridConfigDesc": "Ρύθμιση κλειδιού Real-Debrid και URL πρόσθετων Stremio",
+    "debridApiKey": "Κλειδί Real-Debrid API",
+    "debridPrimaryAddon": "Κύριο URL προσθέτου Stremio",
+    "debridBackupAddon": "Εφεδρικό URL προσθέτου Stremio",
+    "debridEnvBackup": "Ενεργό αντίγραφο .env (αφήστε κενό)",
+    "debridConfigured": "Ρυθμισμένο",
+    "debridEnvReady": "Αντίγραφο .env",
+    "debridNotConfigured": "Μη ρυθμισμένο"
   },
   "common": {
     "close": "Κοντά",

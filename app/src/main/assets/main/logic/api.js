@@ -25,6 +25,12 @@ let _cachedTodayDate = null;
 let _cachedPlayerConfig = null;
 let _configOwnerId = null;
 const DEFAULT_PLAYER_PROVIDERS = [...PLAYER_CONFIG.DEFAULT_PROVIDERS];
+export const DEFAULT_PLAYBACK_SOURCE_ORDER = ['debrid_primary', 'debrid_backup', 'embed_servers'];
+export const DEFAULT_DEBRID_CONFIG = Object.freeze({
+    apiKey: '',
+    primaryAddonUrl: 'https://torrentio.strem.fun',
+    backupAddonUrl: 'https://comet.elfhosted.com'
+});
 
 /** Cached slow connection evaluation state. */
 let _slowConnectionResult = null;
@@ -848,7 +854,7 @@ export const Api = {
 
         try {
             const baseAppend = type === 'movie' ? 'release_dates' : 'content_ratings';
-            const url = `${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${baseAppend},videos,credits&language=${lang}`;
+            const url = `${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=${baseAppend},videos,credits,external_ids&language=${lang}`;
             const imagesUrl = `${BASE_URL}/${type}/${id}/images?api_key=${API_KEY}`;
             const [response, imagesRes] = await Promise.all([deduplicatedFetch(url), deduplicatedFetch(imagesUrl).catch(() => null)]);
             const data = await response.json();
@@ -940,6 +946,8 @@ export const Api = {
             playerProvider: 'custom',
             playerBaseUrl: DEFAULT_PLAYER_BASE_URL,
             playerProviders: DEFAULT_PLAYER_PROVIDERS,
+            playbackSourceOrder: [...DEFAULT_PLAYBACK_SOURCE_ORDER],
+            debridConfig: { ...DEFAULT_DEBRID_CONFIG },
             m3uPlaylists: []
         };
 
@@ -988,9 +996,21 @@ export const Api = {
                 }));
             }
 
+            const rawOrder = Array.isArray(saved.playbackSourceOrder) ? saved.playbackSourceOrder : [];
+            const normalizedOrder = rawOrder.filter(id => DEFAULT_PLAYBACK_SOURCE_ORDER.includes(id));
+            DEFAULT_PLAYBACK_SOURCE_ORDER.forEach(id => {
+                if (!normalizedOrder.includes(id)) normalizedOrder.push(id);
+            });
+            const normalizedDebrid = {
+                ...DEFAULT_DEBRID_CONFIG,
+                ...(saved.debridConfig && typeof saved.debridConfig === 'object' ? saved.debridConfig : {})
+            };
+
             _cachedPlayerConfig = {
                 ...defaults,
                 ...saved,
+                playbackSourceOrder: normalizedOrder,
+                debridConfig: normalizedDebrid,
                 playerBaseUrl: (saved.playerBaseUrl || defaults.playerBaseUrl).replace(/\/+$/, '')
             };
         } catch (error) {
