@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "Inställningar",
-    "subtitle": "Konfigurera din IVIDS-upplevelse",
     "appearance": "Utseende",
     "language": "Språk",
-    "languageDesc": "Välj ditt föredragna språk",
     "uiScale": "UI-skalering",
-    "uiScaleDesc": "Justera storleken på användargränssnittet",
     "accentColor": "Accentfärg",
-    "accentColorDesc": "Välj din favoritfärg för temat",
     "accent": "Accent",
     "saved": "Inställningarna har sparats!",
     "reset": "Återställ till standardvärden!",
@@ -54,7 +50,6 @@
     "selectColor": "Välj färg",
     "updates": "App-uppdateringar",
     "updateMode": "Uppdateringsläge",
-    "updateModeDesc": "Välj hur appen ska hantera uppdateringar",
     "checkNow": "Sök efter uppdateringar",
     "checkNowDesc": "Sök manuellt efter nya app-versioner",
     "checkButton": "Sök nu",
@@ -158,8 +153,7 @@
       "orange": "Orange",
       "yellow": "Gul"
     },
-    "failedToFetchReleases": "Kunde inte hämta utgåvor. Kontrollera din internetanslutning.",
-    "selectLanguage": "Välj ditt språk"
+    "failedToFetchReleases": "Kunde inte hämta utgåvor. Kontrollera din internetanslutning."
   },
   "common": {
     "close": "Stäng",

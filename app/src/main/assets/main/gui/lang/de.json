@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Einstellungen",
-    "subtitle": "Konfigurieren Sie Ihr IVIDS-Erlebnis",
     "appearance": "Erscheinungsbild",
     "language": "Sprache",
-    "languageDesc": "Wählen Sie Ihre bevorzugte Sprache",
     "uiScale": "UI-Skalierung",
-    "uiScaleDesc": "Größe der Benutzeroberfläche anpassen",
     "accentColor": "Akzentfarbe",
-    "accentColorDesc": "Wählen Sie Ihre bevorzugte Theme-Farbe",
     "saved": "Einstellungen gespeichert!",
     "reset": "Auf Standard zurücksetzen!",
     "cancel": "Abbrechen",
     "selectColor": "Farbe wählen",
     "updates": "App-Updates",
     "updateMode": "Update-Modus",
-    "updateModeDesc": "Wählen Sie, wie die App mit Updates umgeht",
     "checkNow": "Update-Prüfung",
     "checkNowDesc": "Manuell nach neuen App-Versionen suchen",
     "checkButton": "Jetzt prüfen",
@@ -153,8 +148,7 @@
       "orange": "Orange",
       "yellow": "Gelb"
     },
-    "failedToFetchReleases": "Releases konnten nicht abgerufen werden. Bitte überprüfen Sie Ihre Internetverbindung.",
-    "selectLanguage": "Wähle deine Sprache"
+    "failedToFetchReleases": "Releases konnten nicht abgerufen werden. Bitte überprüfen Sie Ihre Internetverbindung."
   },
   "common": {
     "close": "Schließen",

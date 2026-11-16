@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Configure your IVIDS experience",
     "appearance": "Appearance",
     "language": "Wika",
-    "languageDesc": "Choose your preferred language",
     "uiScale": "UI Scale",
-    "uiScaleDesc": "Adjust the size of the user interface",
     "accentColor": "Accent Color",
-    "accentColorDesc": "Choose your preferred theme color",
     "saved": "Settings saved!",
     "reset": "Reset to defaults!",
     "cancel": "Cancel",
     "accentColorSelect": "Pumili ng Kulay",
     "updates": "App Updates",
     "updateMode": "Update Mode",
-    "updateModeDesc": "Choose how the app handles updates",
     "checkNow": "Update Check",
     "checkNowDesc": "Manually search for new app versions",
     "checkButton": "Check Now",
@@ -152,8 +147,7 @@
       "orange": "Kahel",
       "yellow": "Dilaw"
     },
-    "failedToFetchReleases": "Nabigong kunin ang mga release. Mangyaring suriin ang iyong koneksyon sa internet.",
-    "selectLanguage": "Piliin ang iyong wika"
+    "failedToFetchReleases": "Nabigong kunin ang mga release. Mangyaring suriin ang iyong koneksyon sa internet."
   },
   "common": {
     "close": "Close",

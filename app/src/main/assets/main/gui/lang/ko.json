@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "설정",
-    "subtitle": "IVIDS 환경 설정",
     "appearance": "모양",
     "language": "언어",
-    "languageDesc": "선호하는 언어를 선택하세요",
     "uiScale": "UI 배율",
-    "uiScaleDesc": "사용자 인터페이스의 크기 조절",
     "accentColor": "강조색",
-    "accentColorDesc": "선호하는 테마 색상을 선택하세요",
     "accent": "강조색",
     "saved": "설정이 저장되었습니다!",
     "reset": "기본값으로 초기화!",
@@ -54,7 +50,6 @@
     "selectColor": "색상 선택",
     "updates": "앱 업데이트",
     "updateMode": "업데이트 모드",
-    "updateModeDesc": "앱 업데이트 처리 방식을 선택하세요",
     "checkNow": "지금 확인",
     "checkNowDesc": "새 앱 버전을 수동으로 검색",
     "checkButton": "지금 확인",
@@ -158,8 +153,7 @@
       "orange": "주황",
       "yellow": "노랑"
     },
-    "failedToFetchReleases": "릴리스를 가져오지 못했습니다. 인터넷 연결을 확인하세요.",
-    "selectLanguage": "언어를 선택하세요"
+    "failedToFetchReleases": "릴리스를 가져오지 못했습니다. 인터넷 연결을 확인하세요."
   },
   "common": {
     "close": "닫기",

@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "Cài đặt",
-    "subtitle": "Cấu hình trải nghiệm IVIDS của bạn",
     "appearance": "Giao diện",
     "language": "Ngôn ngữ",
-    "languageDesc": "Chọn ngôn ngữ ưu tiên của bạn",
     "uiScale": "Tỷ lệ giao diện",
-    "uiScaleDesc": "Điều chỉnh kích thước giao diện người dùng",
     "accentColor": "Màu nhấn",
-    "accentColorDesc": "Chọn màu chủ đề ưu tiên của bạn",
     "accent": "Nhấn",
     "saved": "Đã lưu cài đặt!",
     "reset": "Đặt lại về mặc định!",
@@ -54,7 +50,6 @@
     "selectColor": "Chọn màu",
     "updates": "Cập nhật ứng dụng",
     "updateMode": "Chế độ cập nhật",
-    "updateModeDesc": "Chọn cách ứng dụng xử lý các bản cập nhật",
     "checkNow": "Kiểm tra ngay",
     "checkNowDesc": "Tìm kiếm thủ công các phiên bản ứng dụng mới",
     "checkButton": "Kiểm tra ngay",
@@ -158,8 +153,7 @@
       "orange": "Cam",
       "yellow": "Vàng"
     },
-    "failedToFetchReleases": "Không thể tải các bản phát hành. Vui lòng kiểm tra kết nối internet của bạn.",
-    "selectLanguage": "Chọn ngôn ngữ của bạn"
+    "failedToFetchReleases": "Không thể tải các bản phát hành. Vui lòng kiểm tra kết nối internet của bạn."
   },
   "common": {
     "close": "Đóng",

@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "Setări",
-    "subtitle": "Configurează experiența IVIDS",
     "appearance": "Aspect",
     "language": "Limbă",
-    "languageDesc": "Alege limba preferată",
     "uiScale": "Scala interfeței",
-    "uiScaleDesc": "Ajustați dimensiunea interfeței utilizatorului",
     "accentColor": "Culoare accent",
-    "accentColorDesc": "Alege culoarea temei preferate",
     "accent": "Accent",
     "saved": "Setări salvate!",
     "reset": "Resetează la valorile implicite!",
@@ -54,7 +50,6 @@
     "selectColor": "Selectează culoarea",
     "updates": "Actualizări aplicație",
     "updateMode": "Mod actualizare",
-    "updateModeDesc": "Alege cum gestionează aplicația actualizările",
     "checkNow": "Verificare actualizări",
     "checkNowDesc": "Caută manual versiuni noi de aplicație",
     "checkButton": "Verifică acum",
@@ -158,8 +153,7 @@
       "orange": "Portocaliu",
       "yellow": "Galben"
     },
-    "failedToFetchReleases": "Eșec la preluarea versiunilor. Vă rugăm să verificați conexiunea la internet.",
-    "selectLanguage": "Selectați limba"
+    "failedToFetchReleases": "Eșec la preluarea versiunilor. Vă rugăm să verificați conexiunea la internet."
   },
   "common": {
     "close": "Închide",

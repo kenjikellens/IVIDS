@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Configure your IVIDS experience",
     "appearance": "Appearance",
     "language": "Мова",
-    "languageDesc": "Choose your preferred language",
     "uiScale": "UI Scale",
-    "uiScaleDesc": "Adjust the size of the user interface",
     "accentColor": "Accent Color",
-    "accentColorDesc": "Choose your preferred theme color",
     "saved": "Settings saved!",
     "reset": "Reset to defaults!",
     "cancel": "Cancel",
     "accentColorSelect": "Виберіть колір",
     "updates": "App Updates",
     "updateMode": "Update Mode",
-    "updateModeDesc": "Choose how the app handles updates",
     "checkNow": "Update Check",
     "checkNowDesc": "Manually search for new app versions",
     "checkButton": "Check Now",
@@ -152,8 +147,7 @@
       "orange": "Помаранчевий",
       "yellow": "Жовтий"
     },
-    "failedToFetchReleases": "Не вдалося отримати випуски. Перевірте підключення до Інтернету.",
-    "selectLanguage": "Виберіть свою мову"
+    "failedToFetchReleases": "Не вдалося отримати випуски. Перевірте підключення до Інтернету."
   },
   "common": {
     "close": "Close",

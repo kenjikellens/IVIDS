@@ -1428,7 +1428,7 @@ class SettingsManager {
     async previewLanguageModalHeading(languageCode, focusTarget) {
         const title = document.getElementById('language-modal-title');
         const subtitle = document.getElementById('language-modal-subtitle');
-        if (!title || !subtitle || !languageCode || !focusTarget) return;
+        if (!title || !languageCode || !focusTarget) return;
 
         const token = ++this.languageModalPreviewToken;
         let copyPromise = this.languageModalCopyCache.get(languageCode);
@@ -1439,8 +1439,7 @@ class SettingsManager {
                     return response.json();
                 })
                 .then(data => ({
-                    title: data.settings?.language || 'Language',
-                    subtitle: data.settings?.selectLanguage || 'Select your language'
+                    title: data.settings?.language || 'Language'
                 }));
             this.languageModalCopyCache.set(languageCode, copyPromise);
         }
@@ -1450,7 +1449,7 @@ class SettingsManager {
             const stillFocused = document.activeElement === focusTarget || focusTarget.classList.contains('focused');
             if (token !== this.languageModalPreviewToken || !stillFocused) return;
             title.textContent = copy.title;
-            subtitle.textContent = copy.subtitle;
+            if (subtitle) subtitle.textContent = '';
         } catch (error) {
             console.warn(`Could not preview ${languageCode} language heading:`, error);
         }

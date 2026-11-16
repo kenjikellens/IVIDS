@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "Nastavení",
-    "subtitle": "Nakonfigurujte svůj zážitek s IVIDS",
     "appearance": "Vzhled",
     "language": "Jazyk",
-    "languageDesc": "Vyberte preferovaný jazyk",
     "uiScale": "Měřítko rozhraní",
-    "uiScaleDesc": "Upravit velikost uživatelského rozhraní",
     "accentColor": "Barva akcentu",
-    "accentColorDesc": "Vyberte preferovanou barvu motivu",
     "accent": "Akcent",
     "saved": "Nastavení uloženo!",
     "reset": "Obnovit výchozí!",
@@ -54,7 +50,6 @@
     "selectColor": "Vybrat barvu",
     "updates": "Aktualizace aplikace",
     "updateMode": "Režim aktualizace",
-    "updateModeDesc": "Vyberte, jak má aplikace nakládat s aktualizacemi",
     "checkNow": "Zkontrolovat aktualizace",
     "checkNowDesc": "Ručně vyhledat novou verzi aplikace",
     "checkButton": "Zkontrolovat nyní",
@@ -158,8 +153,7 @@
       "orange": "Oranžová",
       "yellow": "Žlutá"
     },
-    "failedToFetchReleases": "Nepodařilo se načíst verze. Zkontrolujte připojení k internetu.",
-    "selectLanguage": "Vyberte svůj jazyk"
+    "failedToFetchReleases": "Nepodařilo se načíst verze. Zkontrolujte připojení k internetu."
   },
   "common": {
     "close": "Zavřít",

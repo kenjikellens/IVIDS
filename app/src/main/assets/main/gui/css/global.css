@@ -1152,8 +1152,9 @@ input, textarea, select { font: inherit; }
 .modal__close-btn:hover, .modal__close-btn:focus, .modal__close-btn.focused { color: #ffffff; outline: none; }
 
 /* Circular back button in modal header */
-.modal__back-btn { align-items: center; background: transparent; border: 0; border-radius: 50% !important; color: #ffffff; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: 18px !important; min-height: 38px; min-width: 38px; padding: 0; position: absolute !important; right: auto !important; top: 18px !important; width: 38px; z-index: 20; }
-.modal__back-btn:hover, .modal__back-btn:focus, .modal__back-btn.focused { background: rgba(255, 255, 255, 0.12) !important; color: #ffffff; outline: none; }
+.modal__back-btn { align-items: center; background: transparent; border: 2px solid transparent; border-radius: 50% !important; color: #ffffff; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: 18px !important; min-height: 38px; min-width: 38px; padding: 0; position: absolute !important; right: auto !important; top: 18px !important; width: 38px; z-index: 20; }
+.modal__back-btn:hover { background: rgba(255, 255, 255, 0.12) !important; color: #ffffff; }
+.modal__back-btn:focus, .modal__back-btn:focus-visible, .modal__back-btn.focused { background: rgba(255, 255, 255, 0.14) !important; border-color: #ffffff; color: #ffffff; outline: none; }
 .modal__back-btn:active { background: rgba(255, 255, 255, 0.2) !important; }
 /* SVG icon inside modal back button */
 .modal-back-icon { display: block; filter: brightness(0) invert(1); height: 20px; opacity: 0.9; pointer-events: none; width: 20px; }
@@ -1210,36 +1211,30 @@ input, textarea, select { font: inherit; }
 .playlist-selection-list .playlist-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0 !important; box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 500; justify-content: space-between; min-height: 52px; padding: 14px 18px; text-align: left; width: 100%; }
 /* Top border for first option in modal lists. */
 .playlist-selection-list .playlist-item:first-child { border-top: 1px solid #222222; }
-/* Keep the language heading wrapper layout-neutral outside the TV landscape presentation. */
+/* Keeps language heading wrapper layout-neutral outside TV landscape presentation. */
 .language-modal__heading, .language-modal__heading-copy { display: contents; }
-/* The live-language prompt is only added to the TV layout. */
 .language-modal__subtitle { display: none; }
-/* TV landscape language modal rules stay isolated from portrait and compact mobile layouts. */
+/* Two-column landscape language popup: title on the left beside scrollable language rows, back button pinned top-left. */
 @media (orientation: landscape) and (min-width: 1024px) and (min-height: 501px) {
-    /* Two-zone TV dialog places the language heading beside its readable single-column list. */
-    html body #language-modal.modal .modal__dialog { align-items: stretch !important; display: grid !important; gap: 36px !important; grid-template-columns: minmax(250px, 0.38fr) minmax(0, 0.62fr) !important; grid-template-rows: minmax(0, 1fr) !important; max-height: 86vh !important; max-width: 1100px !important; padding: 42px !important; width: min(92vw, 1100px) !important; }
-    /* Heading sits in the left column with its back control above the localized title. */
-    html body #language-modal .language-modal__heading { align-items: flex-start !important; display: flex !important; flex-direction: column !important; gap: 32px !important; grid-column: 1 !important; grid-row: 1 !important; min-width: 0; padding-top: 14px; text-align: left; }
-    /* Back control returns to the top of the heading panel instead of overlaying the title. */
-    html body #language-modal .language-modal__heading .modal__back-btn { align-self: flex-start !important; left: auto !important; position: static !important; right: auto !important; top: auto !important; }
-    /* Heading copy groups the translated title and subtitle together. */
-    html body #language-modal .language-modal__heading-copy { display: flex !important; flex-direction: column !important; gap: 16px !important; }
-    html body #language-modal #language-modal-title { font-size: clamp(34px, 3vw, 48px) !important; line-height: 1.08; margin: 0 !important; padding: 0 !important; text-align: left !important; }
-    /* Live prompt tells the viewer what the focused language means. */
-    html body #language-modal .language-modal__subtitle { color: rgba(255, 255, 255, 0.7); display: block !important; font-size: clamp(18px, 1.6vw, 24px); line-height: 1.45; margin: 0; max-width: 300px; text-align: left; }
-    /* TV language list scrolls independently in the right column. */
-    html body #language-modal.modal .modal__body { box-sizing: border-box !important; flex: 1 1 auto !important; grid-column: 2 !important; grid-row: 1 !important; max-height: min(72vh, 720px) !important; min-height: 0 !important; overflow-y: auto !important; padding: 4px 12px 6px 0 !important; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
-    /* One-column TV list is predictable with a remote and keeps each language name readable. */
-    html body #language-modal #language-selection-grid { box-sizing: border-box !important; display: flex !important; flex-direction: column !important; gap: 6px !important; grid-template-columns: none !important; padding: 4px 2px !important; width: 100% !important; }
-    /* Hide the legacy stepper while the TV grid is active. */
+    /* Two-column modal layout keeping title on left beside the scrollable language list. */
+    html body #language-modal.modal .modal__dialog { align-items: stretch !important; display: grid !important; gap: 36px !important; grid-template-columns: minmax(220px, 0.36fr) minmax(0, 0.64fr) !important; grid-template-rows: minmax(0, 1fr) !important; max-height: 84vh !important; max-width: 960px !important; padding: 36px 40px !important; width: min(92vw, 960px) !important; }
+    /* Left column aligns language heading comfortably clear of top-left corner back button. */
+    html body #language-modal .language-modal__heading { align-items: flex-start !important; display: flex !important; flex-direction: column !important; grid-column: 1 !important; grid-row: 1 !important; justify-content: flex-start !important; min-width: 0; padding-top: 48px; text-align: left; }
+    /* Keep language modal back button identically pinned top-left like all other dialogs. */
+    html body #language-modal .language-modal__heading .modal__back-btn { left: 18px !important; position: absolute !important; right: auto !important; top: 18px !important; }
+    /* Left heading copy container. */
+    html body #language-modal .language-modal__heading-copy { display: flex !important; flex-direction: column !important; }
+    html body #language-modal #language-modal-title { font-size: clamp(30px, 2.8vw, 42px) !important; line-height: 1.1; margin: 0 !important; padding: 0 !important; text-align: left !important; }
+    /* Scrollable single-column language list in right column. */
+    html body #language-modal.modal .modal__body { box-sizing: border-box !important; flex: 1 1 auto !important; grid-column: 2 !important; grid-row: 1 !important; max-height: min(70vh, 660px) !important; min-height: 0 !important; overflow-y: auto !important; padding: 4px 10px 4px 0 !important; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
+    /* Single-column list rows in right column. */
+    html body #language-modal #language-selection-grid { box-sizing: border-box !important; display: flex !important; flex-direction: column !important; gap: 6px !important; grid-template-columns: none !important; padding: 2px !important; width: 100% !important; }
     html body #language-modal.modal .language-stepper-container { display: none !important; }
-    /* Full-width TV language rows keep the labels readable from a couch distance. */
-    html body #language-modal .language-card { align-items: center !important; background: rgba(255, 255, 255, 0.06) !important; border: 2px solid rgba(255, 255, 255, 0.12) !important; border-radius: var(--radius-md) !important; box-sizing: border-box !important; min-height: 54px !important; padding: 10px 16px !important; width: 100% !important; }
-    /* White outline remains visible for remote-controlled card focus. */
-    html body #language-modal .language-card:focus-visible, html body #language-modal .language-card.focused { background: rgba(255, 255, 255, 0.18) !important; border-color: #ffffff !important; outline: 2px solid #ffffff !important; }
-    /* Keep the selected language visually distinct while preserving the focus outline. */
+    /* Language row items matching uniform modal card border and focus styles. */
+    html body #language-modal .language-card { align-items: center !important; background: rgba(255, 255, 255, 0.06) !important; border: 2px solid rgba(255, 255, 255, 0.12) !important; border-radius: var(--radius-md) !important; box-sizing: border-box !important; min-height: 50px !important; padding: 10px 16px !important; width: 100% !important; }
+    html body #language-modal .language-card:focus-visible, html body #language-modal .language-card.focused { background: rgba(255, 255, 255, 0.14) !important; border-color: #ffffff !important; outline: none !important; }
     html body #language-modal .language-card.is-active { background: rgba(var(--primary-rgb), 0.14) !important; border-color: var(--primary-color) !important; color: var(--primary-color) !important; }
-    html body #language-modal .language-card.is-active:focus-visible, html body #language-modal .language-card.is-active.focused { border-color: #ffffff !important; outline: 2px solid #ffffff !important; }
+    html body #language-modal .language-card.is-active:focus-visible, html body #language-modal .language-card.is-active.focused { border-color: #ffffff !important; outline: none !important; }
 }
 
 /* Landscape/TV vertical modal options stack fallback for non-language selectors like colors */
@@ -1249,11 +1244,11 @@ input, textarea, select { font: inherit; }
 /* Landscape/TV modal option card hover highlight */
 .language-card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.25); }
 /* Landscape/TV modal option card remote D-pad focus indicator */
-.language-card:focus, .language-card:focus-visible, .language-card.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: 2px solid #ffffff; }
+.language-card:focus, .language-card:focus-visible, .language-card.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; outline: none; }
 /* Landscape/TV modal option card active selection state */
 .language-card.is-active { background: rgba(var(--primary-rgb), 0.14); border-color: var(--primary-color); color: var(--primary-color); font-weight: 700; }
 /* Landscape/TV modal option card active state with remote D-pad focus */
-.language-card.is-active:focus, .language-card.is-active.focused { border-color: #ffffff; outline: 2px solid #ffffff; }
+.language-card.is-active:focus, .language-card.is-active.focused { border-color: #ffffff; outline: none; }
 /* Landscape/TV modal option card active text label color */
 .language-card.is-active .language-card__name { color: var(--primary-color); font-weight: 700; }
 /* Landscape/TV modal option card text label truncation */
@@ -1533,8 +1528,7 @@ input, textarea, select { font: inherit; }
 
 /* Unified page header bar and surface section panels. */
 .page-header { align-items: center; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 30px; }
-.settings-header h1 { margin-bottom: 8px; }
-.settings-header p { color: var(--text-muted); font-size: 17px; margin-bottom: 30px; }
+.settings-header h1,
 .account-header h1 { margin-bottom: 28px; }
 
 /* Unified dark surface section container for Settings and Account groups. */
@@ -2150,10 +2144,12 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
    Universal Material Design Ink Ripple System (.universal-onclick)
    ========================================================================== */
 
-/* Universal container class providing ink ripple boundary containment. */
+/* Universal container class providing ink ripple boundary containment without displacing absolute corner buttons. */
 .universal-onclick {
-    position: relative !important;
     overflow: hidden !important;
+}
+.universal-onclick:not(.modal__back-btn):not(.modal__close):not(.modal__close-btn):not(.modal__refresh-btn) {
+    position: relative !important;
 }
 
 /* Material Design circular ink ripple wave element. */

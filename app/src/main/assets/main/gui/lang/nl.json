@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Instellingen",
-    "subtitle": "Configureer uw IVIDS-ervaring",
     "appearance": "Uiterlijk",
     "language": "Taal",
-    "languageDesc": "Kies uw voorkeurstaal",
     "uiScale": "UI-grootte",
-    "uiScaleDesc": "Pas de grootte van de gebruikersinterface aan",
     "accentColor": "Accentkleur",
-    "accentColorDesc": "Kies uw voorkeur themakleur",
     "saved": "Instellingen opgeslagen!",
     "reset": "Terugzetten naar standaard!",
     "cancel": "Annuleren",
     "selectColor": "Kleur kiezen",
     "updates": "App Updates",
     "updateMode": "Update Modus",
-    "updateModeDesc": "Kies hoe de app omgaat met updates",
     "checkNow": "Controleren op updates",
     "checkNowDesc": "Handmatig zoeken naar nieuwe app-versies",
     "checkButton": "Controleren op updates",
@@ -153,8 +148,7 @@
       "orange": "Oranje",
       "yellow": "Geel"
     },
-    "failedToFetchReleases": "Kon releases niet ophalen. Controleer uw internetverbinding.",
-    "selectLanguage": "Selecteer uw taal"
+    "failedToFetchReleases": "Kon releases niet ophalen. Controleer uw internetverbinding."
   },
   "common": {
     "close": "Sluiten",

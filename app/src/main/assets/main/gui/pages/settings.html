@@ -1,7 +1,6 @@
 <div class="settings-container">
     <div class="settings-header">
         <h1 data-i18n="settings.title">Settings</h1>
-        <p data-i18n="settings.subtitle">Configure your IVIDS experience</p>
     </div>
 
     <!-- Appearance Settings -->
@@ -14,7 +13,6 @@
         <div class="setting-item universal-onclick">
             <div class="setting-info">
                 <div class="setting-label" data-i18n="settings.language">Language</div>
-                <div class="setting-description" data-i18n="settings.languageDesc">Choose your preferred language</div>
             </div>
             <div class="setting-control">
                 <div id="current-language-display" class="current-value-display">English</div>
@@ -27,7 +25,6 @@
         <div class="setting-item setting-item--ui-scale universal-onclick">
             <div class="setting-info">
                 <div class="setting-label" id="ui-scale-label" data-i18n="settings.uiScale">UI Scale</div>
-                <div class="setting-description" id="ui-scale-description" data-i18n="settings.uiScaleDesc">Adjust the size of the user interface</div>
             </div>
             <div class="setting-control ui-scale-control">
                 <button id="dec-uiscale-btn" class="btn btn--secondary btn--square focusable scale-adjust-btn universal-onclick" type="button" aria-label="Decrease UI size">−</button>
@@ -39,8 +36,6 @@
         <div class="setting-item universal-onclick">
             <div class="setting-info">
                 <div class="setting-label" data-i18n="settings.accentColor">Accent Color</div>
-                <div class="setting-description" data-i18n="settings.accentColorDesc">Choose your preferred theme color
-                </div>
             </div>
             <div class="setting-control">
                 <div id="current-color-display" class="color-preview-circle"></div>
@@ -149,7 +144,6 @@
             <div class="setting-item universal-onclick">
                 <div class="setting-info">
                     <div class="setting-label" data-i18n="settings.updateMode">Update Mode</div>
-                    <div class="setting-description" data-i18n="settings.updateModeDesc">Choose how the app handles updates</div>
                 </div>
                 <div class="setting-control">
                     <div id="current-update-mode-display" class="current-value-display">Manual</div>
@@ -226,10 +220,9 @@
             </button>
             <div class="language-modal__heading-copy">
                 <h2 id="language-modal-title" class="modal__title" data-i18n="settings.language">Language</h2>
-                <p id="language-modal-subtitle" class="language-modal__subtitle" data-i18n="settings.selectLanguage">Select your language</p>
             </div>
         </div>
-        <div class="modal__body">
+        <div class="modal__body modal__body--scroll">
             <div class="language-search-wrapper">
                 <input id="language-search" class="form-input language-search focusable hidden" type="search"
                     autocomplete="off" data-i18n="nav.search" placeholder="Search...">
@@ -258,7 +251,7 @@
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.accentColor">Accent Color</h2>
-        <div class="modal__body">
+        <div class="modal__body modal__body--scroll">
             <div id="color-options" class="language-selection-grid">
                 <button type="button" class="language-card focusable universal-onclick" data-value="#46d369">
                     <span class="color-dot green"></span>
@@ -307,7 +300,7 @@
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.updateMode">Update Mode</h2>
-        <div class="modal__body">
+        <div class="modal__body modal__body--scroll">
             <div id="update-mode-options" class="language-selection-grid">
                 <button type="button" class="language-card focusable universal-onclick" data-value="auto"><span class="language-card__name" data-i18n="settings.mode.auto">Auto</span><span class="language-card__check" aria-hidden="true">✓</span></button>
                 <button type="button" class="language-card focusable universal-onclick" data-value="manual"><span class="language-card__name" data-i18n="settings.mode.manual">Manual</span><span class="language-card__check" aria-hidden="true">✓</span></button>
@@ -485,7 +478,6 @@
             <div class="setting-item universal-onclick" id="mobile-update-mode-item">
                 <div class="setting-info">
                     <div class="setting-label" data-i18n="settings.updateMode">Update Mode</div>
-                    <div class="setting-description" data-i18n="settings.updateModeDesc">Choose how the app handles updates</div>
                 </div>
                 <div class="setting-control">
                     <div id="mobile-update-mode-display" class="current-value-display">Manual</div>
@@ -548,7 +540,7 @@
             <img src="images/back.svg" class="modal-back-icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.delayAction">Response Delay</h2>
-        <div class="modal__body">
+        <div class="modal__body modal__body--scroll">
             <div id="delay-action-options" class="language-selection-grid">
                 <button type="button" class="language-card focusable universal-onclick" data-value="0"><span class="language-card__name" data-i18n="settings.delay0">0ms (Instant)</span><span class="language-card__check" aria-hidden="true">✓</span></button>
                 <button type="button" class="language-card focusable universal-onclick" data-value="100"><span class="language-card__name" data-i18n="settings.delay100">100ms (Default)</span><span class="language-card__check" aria-hidden="true">✓</span></button>

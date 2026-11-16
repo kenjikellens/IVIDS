@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Paramètres",
-    "subtitle": "Configurez votre expérience IVIDS",
     "appearance": "Apparence",
     "language": "Langue",
-    "languageDesc": "Choisissez votre langue préférée",
     "uiScale": "Échelle de l'interface",
-    "uiScaleDesc": "Ajuster la taille de l'interface utilisateur",
     "accentColor": "Couleur d'accent",
-    "accentColorDesc": "Choisissez votre couleur de thème préférée",
     "saved": "Paramètres enregistrés !",
     "reset": "Réinitialiser par défaut !",
     "cancel": "Annuler",
     "selectColor": "Choisir une couleur",
     "updates": "Mises à jour",
     "updateMode": "Mode de mise à jour",
-    "updateModeDesc": "Choisissez comment l'application gère les mises à jour",
     "checkNow": "Vérification des mises à jour",
     "checkNowDesc": "Rechercher manuellement de nouvelles versions",
     "checkButton": "Vérifier maintenant",
@@ -153,8 +148,7 @@
       "orange": "Orange",
       "yellow": "Jaune"
     },
-    "failedToFetchReleases": "Échec de la récupération des versions. Veuillez vérifier votre connexion Internet.",
-    "selectLanguage": "Choisissez votre langue"
+    "failedToFetchReleases": "Échec de la récupération des versions. Veuillez vérifier votre connexion Internet."
   },
   "common": {
     "close": "Fermer",

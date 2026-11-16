@@ -4,12 +4,22 @@
  * Provides instant touch coordinate ripples on mobile and centered ripples for TV/Remote navigation.
  */
 
+const MOBILE_RIPPLE_MEDIA_QUERY = '(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)';
+
 export class RippleEffect {
     static _initialized = false;
     static _activeWave = null;
     static _startX = 0;
     static _startY = 0;
     static _touchSlop = 10;
+
+    /**
+     * Checks whether the current viewport uses mobile full-row click semantics.
+     * @returns {boolean} True when matching mobile portrait or compact touch layout rules.
+     */
+    static isMobileViewport() {
+        return Boolean(typeof window !== 'undefined' && window.matchMedia?.(MOBILE_RIPPLE_MEDIA_QUERY).matches);
+    }
 
     /**
      * Initializes the universal ink ripple listener on the document.
@@ -43,6 +53,11 @@ export class RippleEffect {
         if (!target) return null;
         if (target.disabled || target.getAttribute('aria-disabled') === 'true') return null;
         if (target.classList.contains('form-toggle')) return null;
+        if (target.classList.contains('setting-item')) {
+            if (target.classList.contains('setting-item--ui-scale') || !this.isMobileViewport()) {
+                return null;
+            }
+        }
 
         return target;
     }

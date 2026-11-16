@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "Ayarlar",
-    "subtitle": "IVIDS deneyiminizi yapılandırın",
     "appearance": "Görünüm",
     "language": "Dil",
-    "languageDesc": "Tercih ettiğiniz dili seçin",
     "uiScale": "Arayüz Ölçeği",
-    "uiScaleDesc": "Kullanıcı arayüzünün boyutunu ayarla",
     "accentColor": "Vurgu Rengi",
-    "accentColorDesc": "Tercih ettiğiniz tema rengini seçin",
     "accent": "Vurgu",
     "saved": "Ayarlar kaydedildi!",
     "reset": "Varsayılana sıfırla!",
@@ -54,7 +50,6 @@
     "selectColor": "Renk Seç",
     "updates": "Uygulama Güncellemeleri",
     "updateMode": "Güncelleme Modu",
-    "updateModeDesc": "Uygulamanın güncellemeleri nasıl işleyeceğini seçin",
     "checkNow": "Şimdi Kontrol Et",
     "checkNowDesc": "Yeni uygulama sürümlerini manuel olarak ara",
     "checkButton": "Şimdi Kontrol Et",
@@ -158,8 +153,7 @@
       "orange": "Turuncu",
       "yellow": "Sarı"
     },
-    "failedToFetchReleases": "Sürümler alınamadı. Lütfen internet bağlantınızı kontrol edin.",
-    "selectLanguage": "Dilinizi seçin"
+    "failedToFetchReleases": "Sürümler alınamadı. Lütfen internet bağlantınızı kontrol edin."
   },
   "common": {
     "close": "Kapat",

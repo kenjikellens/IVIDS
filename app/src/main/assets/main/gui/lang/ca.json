@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Configuració",
-    "subtitle": "Configura la teva experiència IVIDS",
     "appearance": "Aparença",
     "language": "Llengua",
-    "languageDesc": "Trieu el vostre idioma preferit",
     "uiScale": "Escala de la IU",
-    "uiScaleDesc": "Ajusteu la mida de la interfície d'usuari",
     "accentColor": "Color d'accent",
-    "accentColorDesc": "Trieu el color del vostre tema preferit",
     "saved": "Configuració desada!",
     "reset": "Restableix els valors predeterminats!",
     "cancel": "Cancel·la",
     "accentColorSelect": "Selecciona el color",
     "updates": "Actualitzacions d'aplicacions",
     "updateMode": "Mode d'actualització",
-    "updateModeDesc": "Trieu com l'aplicació gestiona les actualitzacions",
     "checkNow": "Comprovació d'actualització",
     "checkNowDesc": "Cerca manualment noves versions d'aplicacions",
     "checkButton": "Comproveu ara",
@@ -152,8 +147,7 @@
       "orange": "Taronja",
       "yellow": "Groc"
     },
-    "failedToFetchReleases": "No s'han pogut obtenir les versions. Comproveu la connexió a internet.",
-    "selectLanguage": "Seleccioneu la vostra llengua"
+    "failedToFetchReleases": "No s'han pogut obtenir les versions. Comproveu la connexió a internet."
   },
   "common": {
     "close": "Tancar",

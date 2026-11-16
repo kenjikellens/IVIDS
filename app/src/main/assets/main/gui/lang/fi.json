@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Configure your IVIDS experience",
     "appearance": "Appearance",
     "language": "Kieli",
-    "languageDesc": "Choose your preferred language",
     "uiScale": "UI Scale",
-    "uiScaleDesc": "Adjust the size of the user interface",
     "accentColor": "Accent Color",
-    "accentColorDesc": "Choose your preferred theme color",
     "saved": "Settings saved!",
     "reset": "Reset to defaults!",
     "cancel": "Cancel",
     "accentColorSelect": "Valitse väri",
     "updates": "App Updates",
     "updateMode": "Update Mode",
-    "updateModeDesc": "Choose how the app handles updates",
     "checkNow": "Update Check",
     "checkNowDesc": "Manually search for new app versions",
     "checkButton": "Check Now",
@@ -152,8 +147,7 @@
       "orange": "Oranssi",
       "yellow": "Keltainen"
     },
-    "failedToFetchReleases": "Julkaisujen nouto epäonnistui. Tarkista internetyhteytesi.",
-    "selectLanguage": "Valitse kielesi"
+    "failedToFetchReleases": "Julkaisujen nouto epäonnistui. Tarkista internetyhteytesi."
   },
   "common": {
     "close": "Close",

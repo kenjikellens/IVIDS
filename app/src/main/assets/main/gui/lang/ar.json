@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "الإعدادات",
-    "subtitle": "تكوين تجربة IVIDS الخاصة بك",
     "appearance": "المظهر",
     "language": "اللغة",
-    "languageDesc": "اختر لغتك المفضلة",
     "uiScale": "مقياس واجهة المستخدم",
-    "uiScaleDesc": "ضبط حجم واجهة المستخدم",
     "accentColor": "لون التمييز",
-    "accentColorDesc": "اختر لون السمة المفضل لديك",
     "accent": "تمييز",
     "saved": "تم حفظ الإعدادات!",
     "reset": "إعادة التعيين إلى الافتراضي!",
@@ -54,7 +50,6 @@
     "selectColor": "اختر اللون",
     "updates": "تحديثات التطبيق",
     "updateMode": "وضع التحديث",
-    "updateModeDesc": "اختر كيفية تعامل التطبيق مع التحديثات",
     "checkNow": "التحقق الآن",
     "checkNowDesc": "البحث يدوياً عن إصدارات جديدة من التطبيق",
     "checkButton": "تحقق الآن",
@@ -158,8 +153,7 @@
       "orange": "برتقالي",
       "yellow": "أصفر"
     },
-    "failedToFetchReleases": "فشل في جلب الإصدارات. يرجى التحقق من اتصالك بالإنترنت.",
-    "selectLanguage": "اختر لغتك"
+    "failedToFetchReleases": "فشل في جلب الإصدارات. يرجى التحقق من اتصالك بالإنترنت."
   },
   "common": {
     "close": "إغلاق",

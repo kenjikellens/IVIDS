@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "设置",
-    "subtitle": "配置您的 IVIDS 体验",
     "appearance": "外观",
     "language": "语言",
-    "languageDesc": "选择您的首选语言",
     "uiScale": "界面缩放",
-    "uiScaleDesc": "调整用户界面的大小",
     "accentColor": "强调色",
-    "accentColorDesc": "选择您的首选主题颜色",
     "accent": "强调色",
     "saved": "设置已保存！",
     "reset": "重置为默认值！",
@@ -54,7 +50,6 @@
     "selectColor": "选择颜色",
     "updates": "应用更新",
     "updateMode": "更新模式",
-    "updateModeDesc": "选择应用处理更新的方式",
     "checkNow": "检查更新",
     "checkNowDesc": "手动搜索新版本应用",
     "checkButton": "立即检查",
@@ -158,8 +153,7 @@
       "orange": "橙色",
       "yellow": "黄色"
     },
-    "failedToFetchReleases": "获取版本失败。请检查您的网络连接。",
-    "selectLanguage": "选择您的语言"
+    "failedToFetchReleases": "获取版本失败。请检查您的网络连接。"
   },
   "common": {
     "close": "关闭",

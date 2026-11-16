@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "設定",
-    "subtitle": "IVIDS体験をカスタマイズ",
     "appearance": "外観",
     "language": "言語",
-    "languageDesc": "希望の言語を選択してください",
     "uiScale": "UIの倍率",
-    "uiScaleDesc": "ユーザーインターフェースのサイズを調整します",
     "accentColor": "アクセントカラー",
-    "accentColorDesc": "希望のテーマカラーを選択してください",
     "accent": "アクセント",
     "saved": "設定を保存しました！",
     "reset": "デフォルトにリセット！",
@@ -54,7 +50,6 @@
     "selectColor": "カラーを選択",
     "updates": "アプリアップデート",
     "updateMode": "アップデートモード",
-    "updateModeDesc": "アプリアップデートの処理方法を選択",
     "checkNow": "アップデートを確認",
     "checkNowDesc": "新しいアプリバージョンを手動で検索",
     "checkButton": "今すぐ確認",
@@ -158,8 +153,7 @@
       "orange": "オレンジ",
       "yellow": "黄"
     },
-    "failedToFetchReleases": "リリースの取得に失敗しました。インターネット接続を確認してください。",
-    "selectLanguage": "言語を選択してください"
+    "failedToFetchReleases": "リリースの取得に失敗しました。インターネット接続を確認してください。"
   },
   "common": {
     "close": "閉じる",

@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Сеттингс",
-    "subtitle": "Цонфигуре yоур ИВИДС еxпериенце",
     "appearance": "Аппеаранце",
     "language": "Језик",
-    "languageDesc": "Цхоосе yоур преферред лангуаге",
     "uiScale": "УИ Сцале",
-    "uiScaleDesc": "Адјуст тхе сизе оф тхе усер интерфаце",
     "accentColor": "Аццент Цолор",
-    "accentColorDesc": "Цхоосе yоур преферред тхеме цолор",
     "saved": "Сеттингс савед!",
     "reset": "Ресет то дефаултс!",
     "cancel": "Цанцел",
     "accentColorSelect": "Изабери боју",
     "updates": "Апп Упдатес",
     "updateMode": "Упдате Моде",
-    "updateModeDesc": "Цхоосе хоw тхе апп хандлес упдатес",
     "checkNow": "Упдате Цхецк",
     "checkNowDesc": "Мануаллy сеарцх фор неw апп версионс",
     "checkButton": "Цхецк Ноw",
@@ -152,8 +147,7 @@
       "orange": "Наранџаста",
       "yellow": "Жута"
     },
-    "failedToFetchReleases": "Није успело преузимање издања. Проверите интернет везу.",
-    "selectLanguage": "Изаберите свој језик"
+    "failedToFetchReleases": "Није успело преузимање издања. Проверите интернет везу."
   },
   "common": {
     "close": "Цлосе",

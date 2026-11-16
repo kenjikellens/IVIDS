@@ -39,14 +39,10 @@
   },
   "settings": {
     "title": "Pengaturan",
-    "subtitle": "Konfigurasi pengalaman IVIDS Anda",
     "appearance": "Tampilan",
     "language": "Bahasa",
-    "languageDesc": "Pilih bahasa pilihan Anda",
     "uiScale": "Skala UI",
-    "uiScaleDesc": "Sesuaikan ukuran antarmuka pengguna",
     "accentColor": "Warna Aksen",
-    "accentColorDesc": "Pilih warna tema pilihan Anda",
     "accent": "Aksen",
     "saved": "Pengaturan disimpan!",
     "reset": "Atur ulang ke default!",
@@ -54,7 +50,6 @@
     "selectColor": "Pilih Warna",
     "updates": "Pembaruan Aplikasi",
     "updateMode": "Mode Pembaruan",
-    "updateModeDesc": "Pilih cara aplikasi menangani pembaruan",
     "checkNow": "Periksa Sekarang",
     "checkNowDesc": "Cari versi aplikasi baru secara manual",
     "checkButton": "Periksa Sekarang",
@@ -158,8 +153,7 @@
       "orange": "Oranye",
       "yellow": "Kuning"
     },
-    "failedToFetchReleases": "Gagal mengambil rilis. Silakan periksa koneksi internet Anda.",
-    "selectLanguage": "Pilih bahasa Anda"
+    "failedToFetchReleases": "Gagal mengambil rilis. Silakan periksa koneksi internet Anda."
   },
   "common": {
     "close": "Tutup",

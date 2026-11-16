@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "הגדרות",
-    "subtitle": "הגדר את חוויית IVIDS שלך",
     "appearance": "מראה",
     "language": "שפה",
-    "languageDesc": "בחר את השפה המועדפת עליך",
     "uiScale": "סולם ממשק משתמש",
-    "uiScaleDesc": "התאם את גודל ממשק המשתמש",
     "accentColor": "צבע מבטא",
-    "accentColorDesc": "בחר את צבע הנושא המועדף עליך",
     "saved": "ההגדרות נשמרו!",
     "reset": "אפס לברירות המחדל!",
     "cancel": "בטל",
     "accentColorSelect": "בחר צבע",
     "updates": "עדכוני אפליקציה",
     "updateMode": "מצב עדכון",
-    "updateModeDesc": "בחר כיצד האפליקציה מטפלת בעדכונים",
     "checkNow": "עדכון בדוק",
     "checkNowDesc": "חפש באופן ידני אחר גרסאות אפליקציה חדשות",
     "checkButton": "בדוק עכשיו",
@@ -152,8 +147,7 @@
       "orange": "כתום",
       "yellow": "צהוב"
     },
-    "failedToFetchReleases": "נכשל באחזור גרסאות. אנא בדוק את חיבור האינטרנט שלך.",
-    "selectLanguage": "בחרו את השפה שלכם"
+    "failedToFetchReleases": "נכשל באחזור גרסאות. אנא בדוק את חיבור האינטרנט שלך."
   },
   "common": {
     "close": "סגור",

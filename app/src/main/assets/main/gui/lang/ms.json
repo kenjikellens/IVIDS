@@ -39,21 +39,16 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Configure your IVIDS experience",
     "appearance": "Appearance",
     "language": "Bahasa",
-    "languageDesc": "Choose your preferred language",
     "uiScale": "UI Scale",
-    "uiScaleDesc": "Adjust the size of the user interface",
     "accentColor": "Accent Color",
-    "accentColorDesc": "Choose your preferred theme color",
     "saved": "Settings saved!",
     "reset": "Reset to defaults!",
     "cancel": "Cancel",
     "accentColorSelect": "Pilih Warna",
     "updates": "App Updates",
     "updateMode": "Update Mode",
-    "updateModeDesc": "Choose how the app handles updates",
     "checkNow": "Update Check",
     "checkNowDesc": "Manually search for new app versions",
     "checkButton": "Check Now",
@@ -152,8 +147,7 @@
       "orange": "Oren",
       "yellow": "Kuning"
     },
-    "failedToFetchReleases": "Gagal mengambil keluaran. Sila semak sambungan internet anda.",
-    "selectLanguage": "Pilih bahasa anda"
+    "failedToFetchReleases": "Gagal mengambil keluaran. Sila semak sambungan internet anda."
   },
   "common": {
     "close": "Close",
