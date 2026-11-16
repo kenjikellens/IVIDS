@@ -519,7 +519,10 @@
     "audioTrack": "Audio",
     "subtitles": "Subtitrări",
     "auto": "Auto",
-    "off": "Oprit"
+    "off": "Oprit",
+    "aspectContain": "Încadrare",
+    "aspectCover": "Acoperire",
+    "aspectFill": "Umplere"
   },
   "settings_livetv": {
     "title": "Configurare TV în direct",

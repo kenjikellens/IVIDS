@@ -519,7 +519,10 @@
     "audioTrack": "ऑडियो",
     "subtitles": "उपशीर्षक",
     "auto": "ऑटो",
-    "off": "बंद"
+    "off": "बंद",
+    "aspectContain": "समाहित",
+    "aspectCover": "कवर",
+    "aspectFill": "भरें"
   },
   "settings_livetv": {
     "title": "लाइव टीवी कॉन्फ़िगरेशन",

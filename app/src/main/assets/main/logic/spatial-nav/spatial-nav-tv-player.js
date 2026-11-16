@@ -69,11 +69,26 @@ function getSettingsOptions() {
 }
 
 /**
+ * Retrieves ordered visible focusable items inside the Stream Options sidebar (close button + vertical option rows).
+ * @returns {HTMLElement[]} Ordered vertical array of sidebar focus targets.
+ */
+function getSettingsSidebarItems() {
+    const panel = document.getElementById('tv-settings-panel');
+    if (!panel || !isElementVisible(panel)) return [];
+    const closeBtn = document.getElementById('tv-settings-close');
+    const opts = Array.from(panel.querySelectorAll('.tv-opt-btn.focusable')).filter(isElementVisible);
+    if (closeBtn && isElementVisible(closeBtn)) {
+        return [closeBtn, ...opts];
+    }
+    return opts;
+}
+
+/**
  * Spatial Navigation controller for the compact 4-item Live TV Player overlay:
  * - Top bar: #tv-back (left) <-> #tv-settings-btn (right)
- * - Stream Options panel (#tv-settings-panel) option routing
+ * - Right-edge Stream Options sidebar (#tv-settings-panel) linear Up/Down routing
  * - Offline Retry button (#tv-retry-btn) when stream is offline
- * - Fast channel zapping with ArrowUp/ArrowDown when overlay is hidden
+ * - Fast channel zapping with ArrowUp/ArrowDown when overlay and sidebar are closed
  */
 export const spatialNavTvPlayer = {
     id: 'tv-player',
@@ -98,7 +113,7 @@ export const spatialNavTvPlayer = {
 
     /**
      * Resolves directional D-pad focus routing on the Live TV player across
-     * top bar (#tv-back <-> #tv-settings-btn), #tv-settings-panel options, and #tv-retry-btn.
+     * top bar (#tv-back <-> #tv-settings-btn), Stream Options sidebar vertical list, and #tv-retry-btn.
      * @param {HTMLElement} current - The currently focused element.
      * @param {string} direction - Navigation direction ('up', 'down', 'left', 'right').
      * @returns {HTMLElement|null} Next focus target element, or current to trap focus.
@@ -115,40 +130,21 @@ export const spatialNavTvPlayer = {
             const settingsBtn = getSettingsBtn();
             const retryBtn = getRetryBtn();
 
-            // 1. Inside Stream Options panel (#tv-settings-panel)
+            // 1. Inside right-edge Stream Options sidebar (#tv-settings-panel): pure 1D vertical navigation
             if (isSettingsPanelOpen() && current.closest('#tv-settings-panel')) {
-                const groups = Array.from(document.querySelectorAll('#tv-settings-panel .tv-settings-group'))
-                    .map(g => Array.from(g.querySelectorAll('.tv-opt-btn.focusable')).filter(isElementVisible))
-                    .filter(arr => arr.length > 0);
-
-                for (let gIdx = 0; gIdx < groups.length; gIdx++) {
-                    const row = groups[gIdx];
-                    const cIdx = row.indexOf(current);
-                    if (cIdx !== -1) {
-                        if (direction === 'left') {
-                            return cIdx > 0 ? row[cIdx - 1] : current;
-                        }
-                        if (direction === 'right') {
-                            return cIdx < row.length - 1 ? row[cIdx + 1] : current;
-                        }
-                        if (direction === 'up') {
-                            if (gIdx > 0) {
-                                const prevRow = groups[gIdx - 1];
-                                return prevRow[Math.min(cIdx, prevRow.length - 1)];
-                            }
-                            return settingsBtn || current;
-                        }
-                        if (direction === 'down') {
-                            if (gIdx < groups.length - 1) {
-                                const nextRow = groups[gIdx + 1];
-                                return nextRow[Math.min(cIdx, nextRow.length - 1)];
-                            }
-                            return current;
-                        }
-                    }
+                const items = getSettingsSidebarItems();
+                const idx = items.indexOf(current);
+                if (idx === -1) {
+                    const opts = getSettingsOptions();
+                    return opts[0] || items[0] || settingsBtn || current;
                 }
-                const allOpts = getSettingsOptions();
-                return allOpts[0] || settingsBtn || current;
+                if (direction === 'up') {
+                    return idx > 0 ? items[idx - 1] : current;
+                }
+                if (direction === 'down') {
+                    return idx < items.length - 1 ? items[idx + 1] : current;
+                }
+                return current;
             }
 
             // 2. Top-Left Back Button (#tv-back)
@@ -184,7 +180,7 @@ export const spatialNavTvPlayer = {
     },
 
     /**
-     * Intercepts key events for fast channel zapping, overlay reveal, and hardware media keys.
+     * Intercepts key events for sidebar drawer lock/exit, fast channel zapping, overlay reveal, and media keys.
      * @param {KeyboardEvent} e - Keydown event object.
      * @param {number} keyCode - Numeric keycode.
      * @returns {boolean} True if the key event was intercepted and handled.
@@ -198,6 +194,35 @@ export const spatialNavTvPlayer = {
         const isLeft = (code === 37 || key === 'ArrowLeft' || key === 'Left');
         const isRight = (code === 39 || key === 'ArrowRight' || key === 'Right');
         const isEnter = (code === 13 || code === 23 || code === 66 || key === 'Enter' || code === 32 || key === ' ');
+
+        // Never zap channels while Stream Options sidebar is open; Left closes drawer cleanly back to Settings button.
+        if (isSettingsPanelOpen()) {
+            if (typeof window !== 'undefined' && typeof window.tvResetOverlayTimer === 'function') {
+                window.tvResetOverlayTimer();
+            }
+            const panel = document.getElementById('tv-settings-panel');
+            const focusedEl = document.querySelector('.focused');
+            const isInsideSidebar = Boolean(panel && focusedEl && panel.contains(focusedEl));
+
+            if (!isInsideSidebar && (isUp || isDown || isLeft || isRight)) {
+                const opts = getSettingsOptions();
+                const target = opts[0] || document.getElementById('tv-settings-close');
+                if (target && isElementVisible(target)) SpatialNav.setFocus(target);
+                return true;
+            }
+            if (isInsideSidebar && isLeft) {
+                if (typeof window !== 'undefined' && typeof window.tvCloseSettingsPanel === 'function') {
+                    window.tvCloseSettingsPanel(true);
+                } else if (panel) {
+                    panel.classList.add('hidden');
+                }
+                return true;
+            }
+            if (isInsideSidebar && isRight) {
+                return true;
+            }
+            return false;
+        }
 
         const hasFocusedOverlayControl = Boolean(document.querySelector('#tv-overlay .focused'));
         if (!isOverlayVisible() || !hasFocusedOverlayControl) {

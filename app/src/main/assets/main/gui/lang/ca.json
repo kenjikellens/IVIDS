@@ -523,7 +523,10 @@
     "audioTrack": "Àudio",
     "subtitles": "Subtítols",
     "auto": "Auto",
-    "off": "Desactivat"
+    "off": "Desactivat",
+    "aspectContain": "Contenir",
+    "aspectCover": "Cobrir",
+    "aspectFill": "Omplir"
   },
   "settings_livetv": {
     "title": "Configuració de TV en directe",

@@ -523,7 +523,10 @@
     "audioTrack": "Ääni",
     "subtitles": "Tekstitys",
     "auto": "Auto",
-    "off": "Pois"
+    "off": "Pois",
+    "aspectContain": "Sovita",
+    "aspectCover": "Peitä",
+    "aspectFill": "Täytä"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

@@ -59,11 +59,11 @@ function isLowRamAndroidDevice() {
     }
     return false;
 }
-const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
-const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
-
 let renderedCount = 0;
+let windowStartIndex = 0;
+let isAdjustingChannelWindow = false;
 const CHUNK_SIZE = 35;
+const MAX_RENDERED_NODES = 120;
 
 /**
  * Priority countries displayed near the top of the vertical Categories / Countries list.
@@ -248,7 +248,6 @@ function renderLoadingSkeletons() {
             const skeleton = document.createElement('div');
             skeleton.className = 'channel-list-item channel-card card is-skeleton';
             skeleton.innerHTML = `
-                <span class="list-status-dot checking"></span>
                 <div class="channel-card__logo-wrap channel-list-logo-container">
                     <div class="skeleton-logo-placeholder"></div>
                 </div>
@@ -457,6 +456,7 @@ function filterAndRenderChannels(resetFocus = false) {
     const focusedChanEl = document.querySelector('#channels-list .focused');
     const focusedChanUrl = focusedChanEl ? focusedChanEl.dataset.url : null;
 
+    windowStartIndex = 0;
     renderedCount = 0;
     if (container) {
         container.innerHTML = '';
@@ -701,16 +701,101 @@ function setupEventListeners() {
     const listColumn = document.getElementById('channels-list') || document.querySelector('.livetv-list-column');
     if (listColumn) {
         listColumn.onscroll = () => {
+            if (isAdjustingChannelWindow) return;
             if (listColumn.scrollTop + listColumn.clientHeight >= listColumn.scrollHeight - 300) {
                 renderNextChunk();
+            } else if (windowStartIndex > 0 && listColumn.scrollTop <= 250) {
+                renderPrevChunk();
             }
         };
     }
 }
 
 /**
- * Renders the next batch of clean channel rows in #channels-list (logo and channel name only).
- * 
+ * Builds an interactive channel row element bound to the bounded virtual window index.
+ *
+ * @param {object} channel - Channel object to render.
+ * @param {number} index - Zero-based index within filteredChannels.
+ * @param {string|null} focusedUrl - URL to match for focus restoration.
+ * @returns {{ item: HTMLElement, isFocusedTarget: boolean }} Constructed row element and focus match flag.
+ */
+function createChannelRow(channel, index, focusedUrl) {
+    const item = document.createElement('div');
+    item.className = 'channel-list-item channel-card card card--interactive focusable universal-onclick';
+    item.tabIndex = 0;
+    item.dataset.url = channel.url;
+
+    const iconUrl = isSafeMediaUrl(channel.logo) ? channel.logo : 'images/livetv.svg';
+
+    item.innerHTML = `
+        <div class="channel-card__logo-wrap channel-list-logo-container">
+            <img src="${escapeHtml(iconUrl)}" class="channel-card__logo channel-list-logo" loading="lazy">
+        </div>
+        <div class="channel-card__meta channel-list-meta-container">
+            <span class="channel-card__title channel-list-name">${escapeHtml(channel.name)}</span>
+        </div>
+    `;
+    const logoImg = item.querySelector('.channel-list-logo');
+    if (logoImg) {
+        logoImg.onerror = () => {
+            logoImg.onerror = null;
+            logoImg.src = 'images/livetv.svg';
+        };
+    }
+
+    item.onfocus = () => {
+        showChannelDetail(channel);
+        if (index >= renderedCount - 5) {
+            renderNextChunk();
+        } else if (index <= windowStartIndex + 3 && windowStartIndex > 0) {
+            renderPrevChunk();
+        }
+    };
+
+    item.onclick = () => {
+        playChannel(channel);
+    };
+
+    return { item, isFocusedTarget: focusedUrl === channel.url };
+}
+
+/**
+ * Prepends the previous batch of channel rows when scrolling or navigating upward while
+ * enforcing MAX_RENDERED_NODES by trimming off-screen bottom rows.
+ */
+function renderPrevChunk() {
+    if (windowStartIndex <= 0) return;
+
+    const container = document.getElementById('channels-list');
+    if (!container) return;
+
+    const newStart = Math.max(0, windowStartIndex - CHUNK_SIZE);
+    const fragment = document.createDocumentFragment();
+    for (let i = newStart; i < windowStartIndex; i++) {
+        const { item } = createChannelRow(filteredChannels[i], i, null);
+        fragment.appendChild(item);
+    }
+
+    isAdjustingChannelWindow = true;
+    const prevScrollHeight = container.scrollHeight;
+    container.prepend(fragment);
+    const addedHeight = container.scrollHeight - prevScrollHeight;
+    if (addedHeight > 0) {
+        container.scrollTop += addedHeight;
+    }
+    windowStartIndex = newStart;
+
+    while (container.children.length > MAX_RENDERED_NODES && container.lastElementChild && !container.lastElementChild.classList.contains('focused')) {
+        container.lastElementChild.remove();
+        renderedCount = Math.max(windowStartIndex, renderedCount - 1);
+    }
+    isAdjustingChannelWindow = false;
+}
+
+/**
+ * Renders the next batch of clean channel rows in #channels-list while keeping total
+ * rendered DOM nodes bounded to MAX_RENDERED_NODES.
+ *
  * @param {string|null} [preserveFocusedUrl=null] - Optional URL of the channel that should retain focus after re-render.
  */
 function renderNextChunk(preserveFocusedUrl = null) {
@@ -729,44 +814,9 @@ function renderNextChunk(preserveFocusedUrl = null) {
     let refocusTarget = null;
 
     for (let i = start; i < end; i++) {
-        const channel = filteredChannels[i];
-        const item = document.createElement('div');
-        item.className = 'channel-list-item channel-card card card--interactive focusable universal-onclick';
-        item.tabIndex = 0;
-        item.dataset.url = channel.url;
-
-        const iconUrl = isSafeMediaUrl(channel.logo) ? channel.logo : 'images/livetv.svg';
-
-        item.innerHTML = `
-            <div class="channel-card__logo-wrap channel-list-logo-container">
-                <img src="${escapeHtml(iconUrl)}" class="channel-card__logo channel-list-logo" loading="lazy">
-            </div>
-            <div class="channel-card__meta channel-list-meta-container">
-                <span class="channel-card__title channel-list-name">${escapeHtml(channel.name)}</span>
-            </div>
-        `;
-        const logoImg = item.querySelector('.channel-list-logo');
-        if (logoImg) {
-            logoImg.onerror = () => {
-                logoImg.onerror = null;
-                logoImg.src = 'images/livetv.svg';
-            };
-        }
-
-        item.onfocus = () => {
-            showChannelDetail(channel);
-            if (i >= renderedCount - 5) {
-                renderNextChunk();
-            }
-        };
-
-        item.onclick = () => {
-            playChannel(channel);
-        };
-
+        const { item, isFocusedTarget } = createChannelRow(filteredChannels[i], i, focusedUrl);
         fragment.appendChild(item);
-
-        if (focusedUrl === channel.url) {
+        if (isFocusedTarget) {
             refocusTarget = item;
         }
     }
@@ -781,4 +831,19 @@ function renderNextChunk(preserveFocusedUrl = null) {
     }
 
     renderedCount = end;
+
+    if (container.children.length > MAX_RENDERED_NODES) {
+        isAdjustingChannelWindow = true;
+        let removedHeight = 0;
+        while (container.children.length > MAX_RENDERED_NODES && container.firstElementChild && !container.firstElementChild.classList.contains('focused')) {
+            const first = container.firstElementChild;
+            removedHeight += first.offsetHeight;
+            first.remove();
+            windowStartIndex++;
+        }
+        if (removedHeight > 0) {
+            container.scrollTop = Math.max(0, container.scrollTop - removedHeight);
+        }
+        isAdjustingChannelWindow = false;
+    }
 }

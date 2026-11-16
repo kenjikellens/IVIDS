@@ -519,7 +519,10 @@
     "audioTrack": "Audio",
     "subtitles": "Subtitle",
     "auto": "Otomatis",
-    "off": "Mati"
+    "off": "Mati",
+    "aspectContain": "Muat",
+    "aspectCover": "Tutup",
+    "aspectFill": "Isi"
   },
   "settings_livetv": {
     "title": "Konfigurasi TV Langsung",

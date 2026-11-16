@@ -3,6 +3,7 @@ import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { manageModal, attachImageWithLoader, loadBackgroundWithLoader } from '../js/utils/ui-helper.js';
+import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 
 
 let currentPlaylistId = null;
@@ -136,11 +137,16 @@ function render() {
         if (playlist.items.length > 0) {
             const firstItem = playlist.items[0];
             const backdropUrl = Api.getImageUrl(firstItem.backdrop_path || firstItem.poster_path, Api.getRecommendedBackdropSize());
-            backdropEl.classList.remove('media-backdrop--empty');
-            backdropEl.innerHTML = `
-                <img src="${backdropUrl}" alt="Backdrop">
-                <div class="backdrop-overlay"></div>
-            `;
+            if (isSafeMediaUrl(backdropUrl)) {
+                backdropEl.classList.remove('media-backdrop--empty');
+                backdropEl.innerHTML = `
+                    <img src="${escapeHtml(backdropUrl)}" alt="Backdrop">
+                    <div class="backdrop-overlay"></div>
+                `;
+            } else {
+                backdropEl.classList.add('media-backdrop--empty');
+                backdropEl.innerHTML = `<div class="media-backdrop__overlay backdrop-overlay backdrop-overlay-empty"></div>`;
+            }
         } else {
             backdropEl.classList.remove('media-backdrop--empty');
             backdropEl.classList.add('media-backdrop--empty');
@@ -272,14 +278,14 @@ function createItemElement(item, index, total) {
         <div class="card__body">
             <div class="episode-header">
                 <span class="episode-number">${index + 1}</span>
-                <span class="card__title">${item.title || item.name}</span>
+                <span class="card__title">${escapeHtml(item.title || item.name || '')}</span>
             </div>
-            <p class="card__desc">${item.overview || ''}</p>
+            <p class="card__desc">${escapeHtml(item.overview || '')}</p>
         </div>
     `;
 
     // Click on item card navigates to content details
-    if (imageUrl) loadBackgroundWithLoader(itemCard.querySelector('.card__thumb'), imageUrl);
+    if (isSafeMediaUrl(imageUrl)) loadBackgroundWithLoader(itemCard.querySelector('.card__thumb'), imageUrl);
     itemCard.onclick = () => {
         Router.loadPage('details', { id: item.id, type: item.media_type });
     };

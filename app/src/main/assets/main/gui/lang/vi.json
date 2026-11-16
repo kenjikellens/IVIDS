@@ -519,7 +519,10 @@
     "audioTrack": "Âm thanh",
     "subtitles": "Phụ đề",
     "auto": "Tự động",
-    "off": "Tắt"
+    "off": "Tắt",
+    "aspectContain": "Vừa khung",
+    "aspectCover": "Phủ kín",
+    "aspectFill": "Lấp đầy"
   },
   "settings_livetv": {
     "title": "Cấu hình Live TV",

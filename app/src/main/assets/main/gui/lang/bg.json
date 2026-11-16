@@ -523,7 +523,10 @@
     "audioTrack": "Аудио",
     "subtitles": "Субтитри",
     "auto": "Авто",
-    "off": "Изкл."
+    "off": "Изкл.",
+    "aspectContain": "Побиране",
+    "aspectCover": "Покриване",
+    "aspectFill": "Запълване"
   },
   "settings_livetv": {
     "title": "Конфигурация на телевизия на живо",

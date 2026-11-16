@@ -523,7 +523,10 @@
     "audioTrack": "Audio",
     "subtitles": "Mga Subtitle",
     "auto": "Auto",
-    "off": "Naka-off"
+    "off": "Naka-off",
+    "aspectContain": "Iangkop",
+    "aspectCover": "Takpan",
+    "aspectFill": "Punuin"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

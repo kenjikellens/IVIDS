@@ -323,6 +323,8 @@
 #app .livetv-preview-column { flex-shrink: 0; height: auto; order: 1; width: 100%; }
 /* Compact preview video card sizing on mobile. */
 #app .preview-card, #app .preview-card-video { flex: 0 0 auto; height: 148px; max-height: none; min-height: 132px; }
+/* Touch-friendly >=44px channel search clear button on mobile. */
+#app .search-clear-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 /* Touch-friendly channel cards (>=44px tap target) on mobile. */
 #app .channel-card, #app .channel-list-item { height: auto; min-height: 46px; padding: 8px 12px; }
 /* Compact EPG strip padding on mobile. */
@@ -331,10 +333,11 @@
 #app .tv-overlay { padding: calc(12px + env(safe-area-inset-top, 12px)) 14px calc(16px + env(safe-area-inset-bottom, 12px)); }
 /* Touch-friendly >=44px top Back and Settings buttons on mobile. */
 #app .tv-back-btn, #app .tv-settings-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
-/* Full-width responsive Stream Options panel on narrow mobile viewports (360px+). */
-#app .tv-settings-panel { left: 14px; max-height: 60vh; max-width: none; right: 14px; top: calc(64px + env(safe-area-inset-top, 12px)); width: auto; }
-/* Touch-friendly Stream Options choice buttons on mobile. */
-#app .tv-opt-btn { min-height: 44px; padding: 8px 12px; }
+/* Docked right-edge Stream Options sidebar with safe-area padding on mobile. */
+#app .tv-settings-panel { bottom: 0; height: 100%; left: auto; max-height: 100%; padding: calc(16px + env(safe-area-inset-top, 12px)) 14px calc(20px + env(safe-area-inset-bottom, 12px)); right: 0; top: 0; width: min(290px, 84vw); }
+/* Touch-friendly >=44px Stream Options sidebar rows and close trigger on mobile. */
+#app .tv-opt-btn { min-height: 44px; padding: 10px 14px; }
+#app .tv-settings-close { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 /* Compact channel info typography on narrow mobile screens. */
 #app .tv-info { max-width: calc(100% - 54px); }
 #app .tv-info h1 { font-size: 17px; }

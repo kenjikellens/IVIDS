@@ -523,7 +523,10 @@
     "audioTrack": "Zvuk",
     "subtitles": "Titlovi",
     "auto": "Auto",
-    "off": "Isključeno"
+    "off": "Isključeno",
+    "aspectContain": "Prilagodi",
+    "aspectCover": "Pokrij",
+    "aspectFill": "Ispuni"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

@@ -523,7 +523,10 @@
     "audioTrack": "Звук",
     "subtitles": "Титлови",
     "auto": "Ауто",
-    "off": "Искључено"
+    "off": "Искључено",
+    "aspectContain": "Uklopi",
+    "aspectCover": "Pokrij",
+    "aspectFill": "Popuni"
   },
   "settings_livetv": {
     "title": "Ливе ТВ Цонфигуратион",

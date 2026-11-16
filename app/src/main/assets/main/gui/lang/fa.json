@@ -523,7 +523,10 @@
     "audioTrack": "صدا",
     "subtitles": "زیرنویس",
     "auto": "خودکار",
-    "off": "خاموش"
+    "off": "خاموش",
+    "aspectContain": "گنجاندن",
+    "aspectCover": "پوشش",
+    "aspectFill": "پر کردن"
   },
   "settings_livetv": {
     "title": "پیکربندی تلویزیون زنده",

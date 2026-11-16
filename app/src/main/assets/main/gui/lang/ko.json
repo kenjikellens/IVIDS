@@ -519,7 +519,10 @@
     "audioTrack": "오디오",
     "subtitles": "자막",
     "auto": "자동",
-    "off": "끄기"
+    "off": "끄기",
+    "aspectContain": "맞춤",
+    "aspectCover": "채우기(자르기)",
+    "aspectFill": "늘리기"
   },
   "settings_livetv": {
     "title": "라이브 TV 설정",

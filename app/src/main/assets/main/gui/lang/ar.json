@@ -519,7 +519,10 @@
     "audioTrack": "الصوت",
     "subtitles": "الترجمة",
     "auto": "تلقائي",
-    "off": "إيقاف"
+    "off": "إيقاف",
+    "aspectContain": "احتواء",
+    "aspectCover": "تغطية",
+    "aspectFill": "ملء"
   },
   "settings_livetv": {
     "title": "تكوين البث المباشر",

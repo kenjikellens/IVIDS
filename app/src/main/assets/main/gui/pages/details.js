@@ -8,6 +8,7 @@ import { getLoaderHtml } from '../js/loader.js';
 import { ErrorHandler } from '../js/error-handler.js';
 import { imageCache } from '../../logic/image-cache.js';
 import { attachImageWithLoader, loadBackgroundWithLoader, manageModal } from '../js/utils/ui-helper.js';
+import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 
 let currentSeriesId = null;
 let closePlaylistModalFn = null;
@@ -158,7 +159,7 @@ function render(item, type) {
         if (date) {
             try {
                 const year = (item.release_date || item.first_air_date || '').substring(0, 4);
-                date.innerHTML = year ? `<span class="badge badge--primary">${year}</span>` : '';
+                date.innerHTML = year ? `<span class="badge badge--primary">${escapeHtml(year)}</span>` : '';
             } catch (dateError) {
                 console.error('Error rendering date:', dateError);
             }
@@ -172,7 +173,7 @@ function render(item, type) {
                 if (rating) {
                     const isAdult = rating === 'R' || rating === 'TV-MA' || rating === 'NC-17';
                     const ratingClass = isAdult ? 'chip chip--rating rating-R' : 'chip chip--rating';
-                    ratingEl.innerHTML = `<span class="${ratingClass}">${rating}</span>`;
+                    ratingEl.innerHTML = `<span class="${ratingClass}">${escapeHtml(rating)}</span>`;
                 } else {
                     ratingEl.innerHTML = '';
                 }
@@ -718,16 +719,16 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                 const durationStr = formatEpisodeDuration(episode.runtime);
                 const airDateStr = formatEpisodeAirDate(episode.air_date);
                 const metaParts = [];
-                if (durationStr) metaParts.push(`<span class="episode-meta__item">${durationStr}</span>`);
-                if (airDateStr) metaParts.push(`<span class="episode-meta__item">${airDateStr}</span>`);
+                if (durationStr) metaParts.push(`<span class="episode-meta__item">${escapeHtml(durationStr)}</span>`);
+                if (airDateStr) metaParts.push(`<span class="episode-meta__item">${escapeHtml(airDateStr)}</span>`);
                 const metaHtml = metaParts.length > 0 ? `<div class="episode-meta">${metaParts.join('')}</div>` : '';
 
                 el.innerHTML = `
                     <div class="card__thumb"${thumbStyle}></div>
                     <div class="card__body">
-                        <div class="card__title">${episodeNumber}. ${episodeName}</div>
+                        <div class="card__title">${escapeHtml(String(episodeNumber))}. ${escapeHtml(episodeName)}</div>
                         ${metaHtml}
-                        <p class="card__desc">${episodeOverview}</p>
+                        <p class="card__desc">${escapeHtml(episodeOverview)}</p>
                     </div>
                 `;
 
@@ -740,7 +741,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                     }
                 };
 
-                if (stillPath) loadBackgroundWithLoader(el.querySelector('.card__thumb'), stillPath);
+                if (isSafeMediaUrl(stillPath)) loadBackgroundWithLoader(el.querySelector('.card__thumb'), stillPath);
                 container.appendChild(el);
             } catch (episodeError) {
                 console.error('Error rendering episode:', episodeError);
@@ -1012,12 +1013,12 @@ function renderExtras(videos, contentId, mediaType) {
                     <div class="disney-extra-play-icon">▶</div>
                 </div>
                 <div class="card__body">
-                    <div class="card__meta">${video.type}</div>
-                    <div class="card__title">${video.name}</div>
-                    <p class="card__desc">${video.type}${pubDateStr}</p>
+                    <div class="card__meta">${escapeHtml(video.type || '')}</div>
+                    <div class="card__title">${escapeHtml(video.name || '')}</div>
+                    <p class="card__desc">${escapeHtml(video.type || '')}${escapeHtml(pubDateStr)}</p>
                 </div>
             `;
-            loadBackgroundWithLoader(card.querySelector('.card__thumb'), thumbUrl);
+            if (isSafeMediaUrl(thumbUrl)) loadBackgroundWithLoader(card.querySelector('.card__thumb'), thumbUrl);
             container.appendChild(card);
         });
 
@@ -1050,7 +1051,7 @@ function renderAbout(overview, credits) {
         castContainer.innerHTML = '';
         
         if (!credits || !credits.cast || credits.cast.length === 0) {
-            castContainer.innerHTML = `<p class="text-muted-light py-20">${I18n.t('details.noCast')}</p>`;
+            castContainer.innerHTML = `<p class="text-muted-light py-20">${escapeHtml(I18n.t('details.noCast'))}</p>`;
             return;
         }
         
@@ -1062,12 +1063,12 @@ function renderAbout(overview, credits) {
             
             card.innerHTML = `
                 <div class="disney-cast-img"></div>
-                <div class="disney-cast-name">${actor.name}</div>
-                <div class="disney-cast-character">${actor.character || ''}</div>
+                <div class="disney-cast-name">${escapeHtml(actor.name || '')}</div>
+                <div class="disney-cast-character">${escapeHtml(actor.character || '')}</div>
             `;
             if (actor.profile_path) {
                 const profileUrl = Api.getImageUrl(actor.profile_path, Api.getRecommendedProfileSize());
-                loadBackgroundWithLoader(card.querySelector('.disney-cast-img'), profileUrl);
+                if (isSafeMediaUrl(profileUrl)) loadBackgroundWithLoader(card.querySelector('.disney-cast-img'), profileUrl);
             }
             castContainer.appendChild(card);
         });

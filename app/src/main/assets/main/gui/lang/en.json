@@ -523,7 +523,10 @@
     "audioTrack": "Audio",
     "subtitles": "Subtitles",
     "auto": "Auto",
-    "off": "Off"
+    "off": "Off",
+    "aspectContain": "Contain",
+    "aspectCover": "Cover",
+    "aspectFill": "Fill"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

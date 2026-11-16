@@ -519,7 +519,10 @@
     "audioTrack": "Dźwięk",
     "subtitles": "Napisy",
     "auto": "Auto",
-    "off": "Wył."
+    "off": "Wył.",
+    "aspectContain": "Dopasuj",
+    "aspectCover": "Wypełnij z przycięciem",
+    "aspectFill": "Rozciągnij"
   },
   "settings_livetv": {
     "title": "Konfiguracja TV na żywo",

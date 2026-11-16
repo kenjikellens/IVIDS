@@ -523,7 +523,10 @@
     "audioTrack": "Zvuk",
     "subtitles": "Titulky",
     "auto": "Auto",
-    "off": "Vypnuté"
+    "off": "Vypnuté",
+    "aspectContain": "Prispôsobiť",
+    "aspectCover": "Pokryť",
+    "aspectFill": "Vyplniť"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

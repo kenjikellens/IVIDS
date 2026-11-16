@@ -563,21 +563,32 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
             Map<String, String> reqHeaders = request.getRequestHeaders();
-            if (reqHeaders != null) {
-                for (Map.Entry<String, String> entry : reqHeaders.entrySet()) {
-                    if (entry.getKey() == null || entry.getValue() == null) continue;
-                    String keyLower = entry.getKey().toLowerCase(Locale.ROOT);
-                    String val = entry.getValue().trim();
-                    if (val.isEmpty()) continue;
-                    if ("referer".equals(keyLower) && !val.startsWith("file:///android_asset/")) {
+            if (reqHeaders == null) {
+                return false;
+            }
+            boolean hasTrustedReferer = false;
+            for (Map.Entry<String, String> entry : reqHeaders.entrySet()) {
+                if (entry.getKey() == null || entry.getValue() == null) continue;
+                String keyLower = entry.getKey().toLowerCase(Locale.ROOT);
+                String val = entry.getValue().trim();
+                if (val.isEmpty()) continue;
+                if ("referer".equals(keyLower)) {
+                    if (!val.startsWith("file:///android_asset/")) {
                         return false;
                     }
-                    if ("origin".equals(keyLower) && !"null".equalsIgnoreCase(val) && !val.startsWith("file://")) {
+                    hasTrustedReferer = true;
+                }
+                if ("sec-fetch-dest".equals(keyLower)) {
+                    String destLower = val.toLowerCase(Locale.ROOT);
+                    if ("document".equals(destLower) || "iframe".equals(destLower)) {
                         return false;
                     }
                 }
+                if ("origin".equals(keyLower) && !"null".equalsIgnoreCase(val) && !val.startsWith("file://")) {
+                    return false;
+                }
             }
-            return true;
+            return hasTrustedReferer;
         }
 
         /**
@@ -877,7 +888,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDatabaseEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
-        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         String defaultUa = webSettings.getUserAgentString();
         if (defaultUa != null) {
             webSettings.setUserAgentString(defaultUa.replace("; wv", "").replace("Version/4.0 ", ""));

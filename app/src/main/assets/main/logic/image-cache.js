@@ -11,9 +11,6 @@
 
 import { CACHE_CONFIG, NETWORK_CONFIG } from './constants.js';
 
-/** Maximum number of cached image blobs before LRU eviction kicks in. */
-const MAX_ITEMS = CACHE_CONFIG.MAX_IMAGE_ITEMS;
-
 /** Maximum time in milliseconds to wait for a high-res image before falling back to low-res. */
 const HIGH_RES_TIMEOUT_MS = 8000;
 
@@ -23,9 +20,38 @@ const FALLBACK_TIMEOUT_MS = 10000;
 /** Maximum time in milliseconds to wait for an image when already in slow-network mode. */
 const SLOW_MODE_TIMEOUT_MS = 10000;
 
+/** Maximum single image blob size eligible for RAM caching (2 MB) to avoid evicting dozens of posters. */
+const MAX_SINGLE_BLOB_BYTES = 2 * 1024 * 1024;
+
+/**
+ * Detects whether the runtime is a low-memory / Android device to apply stricter RAM and concurrency budgets.
+ * @returns {boolean} True on Android or low-memory devices.
+ */
+function isConstrainedDevice() {
+    try {
+        if (typeof window !== 'undefined' && (window.AndroidSettings || window.AndroidUpdate)) {
+            return true;
+        }
+        if (typeof navigator !== 'undefined') {
+            if (/Android/i.test(navigator.userAgent || '')) return true;
+            if (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2) return true;
+        }
+    } catch (e) {
+        // Ignore environment probe errors
+    }
+    return false;
+}
+
 class ImageCache {
     constructor() {
-        /** @type {Map<string, {blobUrl: string, lastAccess: number}>} */
+        const constrained = isConstrainedDevice();
+        /** @type {number} Maximum cached items in LRU memory. */
+        this.maxItems = constrained ? 50 : 120;
+        /** @type {number} Maximum total blob bytes retained in RAM (10 MB Android/TV, 25 MB PC). */
+        this.maxBytes = constrained ? (10 * 1024 * 1024) : (25 * 1024 * 1024);
+        /** @type {number} Total byte size of all blobs currently held in cache. */
+        this.totalBytes = 0;
+        /** @type {Map<string, {blobUrl: string, size: number, lastAccess: number}>} */
         this.cache = new Map();
         /** @type {Map<string, Promise<string|null>>} In-flight fetch promises to deduplicate concurrent requests. */
         this.inflight = new Map();
@@ -34,7 +60,7 @@ class ImageCache {
         /** @type {number} Current active fetch request count. */
         this.activeRequests = 0;
         /** @type {number} Maximum concurrent network blob fetch requests. */
-        this.MAX_CONCURRENT = 8;
+        this.MAX_CONCURRENT = constrained ? 4 : 8;
         /** @type {number} Generation counter to isolate active tasks across cache purges and reloads. */
         this._generation = 0;
         /** @type {boolean} When true, bypasses browser HTTP disk cache via { cache: 'reload' } for one refresh wave. */
@@ -70,34 +96,44 @@ class ImageCache {
     }
 
     /**
-     * Stores an image blob and returns its Object URL.
-     * Evicts the oldest entry if the cache is full.
+     * Stores an image blob within both byte and item LRU budgets.
+     * Skips caching oversized blobs (>2 MB) directly into RAM so one large backdrop never evicts dozens of posters.
      * @param {string} url - The original image network URL.
      * @param {Blob} blob - The fetched image blob data.
-     * @returns {string} The created Object URL.
+     * @returns {string|null} The created Object URL, or null when skipped/invalid.
      */
     put(url, blob) {
         if (!blob) return null;
+        const blobSize = typeof blob.size === 'number' ? blob.size : 0;
 
-        // Evict oldest if at capacity
-        if (this.cache.size >= MAX_ITEMS && !this.cache.has(url)) {
+        if (blobSize > MAX_SINGLE_BLOB_BYTES) {
+            return url;
+        }
+
+        // If already cached, revoke old blob and subtract its bytes before replacing
+        if (this.cache.has(url)) {
+            const existing = this.cache.get(url);
+            if (existing) {
+                URL.revokeObjectURL(existing.blobUrl);
+                this.totalBytes = Math.max(0, this.totalBytes - (existing.size || 0));
+            }
+            this.cache.delete(url);
+        }
+
+        // Evict oldest LRU entries until within both item count and byte budgets
+        while (this.cache.size > 0 && (this.cache.size >= this.maxItems || (this.totalBytes + blobSize) > this.maxBytes)) {
             const oldestKey = this.cache.keys().next().value;
             const oldestEntry = this.cache.get(oldestKey);
             if (oldestEntry) {
                 URL.revokeObjectURL(oldestEntry.blobUrl);
+                this.totalBytes = Math.max(0, this.totalBytes - (oldestEntry.size || 0));
             }
             this.cache.delete(oldestKey);
         }
 
-        // If already cached, revoke old blob before replacing
-        if (this.cache.has(url)) {
-            const existing = this.cache.get(url);
-            if (existing) URL.revokeObjectURL(existing.blobUrl);
-            this.cache.delete(url);
-        }
-
         const blobUrl = URL.createObjectURL(blob);
-        this.cache.set(url, { blobUrl, lastAccess: Date.now() });
+        this.cache.set(url, { blobUrl, size: blobSize, lastAccess: Date.now() });
+        this.totalBytes += blobSize;
         return blobUrl;
     }
 
@@ -309,6 +345,7 @@ class ImageCache {
             }
         }
         this.cache.clear();
+        this.totalBytes = 0;
         this.inflight.clear();
 
         // Safely discard queue items from previous generation

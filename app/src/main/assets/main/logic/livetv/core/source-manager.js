@@ -155,10 +155,13 @@ export class SourceManager {
     /**
      * Rebuilds the O(1) category and country lookup buckets (`categoryIndex`) for instant UI filtering.
      *
-     * @param {Array<Channel>} channels - Sorted array of all channels.
+     * @param {Array<Channel>} channels - Array of channels to index.
+     * @param {boolean} [linkMirrors=true] - Whether to cross-link mirror fallback URLs across identical channels.
      */
-    _rebuildCategoryIndex(channels) {
-        this._linkMirrorFallbackUrls(channels);
+    _rebuildCategoryIndex(channels, linkMirrors = true) {
+        if (linkMirrors) {
+            this._linkMirrorFallbackUrls(channels);
+        }
         this.categoryIndex.clear();
         this.categoryIndex.set('all', channels);
 
@@ -235,6 +238,7 @@ export class SourceManager {
 
         const merged = [];
         const byNormalizedUrl = new Map();
+        let lastProgressNotify = 0;
 
         const fetchPromises = providerList.map(async provider => {
             try {
@@ -270,11 +274,12 @@ export class SourceManager {
                     });
 
                     if (changed) {
-                        this._sortChannels(merged);
                         this.cachedChannels = merged;
-                        this._rebuildCategoryIndex(merged);
-                        if (typeof onProgress === 'function') {
-                            onProgress([...merged]);
+                        const ts = Date.now();
+                        if (typeof onProgress === 'function' && (lastProgressNotify === 0 || (ts - lastProgressNotify) >= 400)) {
+                            lastProgressNotify = ts;
+                            this._rebuildCategoryIndex(merged, false);
+                            onProgress(merged);
                         }
                     }
                 }
@@ -289,7 +294,7 @@ export class SourceManager {
         this._sortChannels(merged);
 
         this.cachedChannels = merged;
-        this._rebuildCategoryIndex(merged);
+        this._rebuildCategoryIndex(merged, true);
         this.lastFetchTimestamp = now;
         return this.cachedChannels;
     }

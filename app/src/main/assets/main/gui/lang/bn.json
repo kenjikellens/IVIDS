@@ -523,7 +523,10 @@
     "audioTrack": "অডিও",
     "subtitles": "সাবটাইটেল",
     "auto": "অটো",
-    "off": "বন্ধ"
+    "off": "বন্ধ",
+    "aspectContain": "ধারণ",
+    "aspectCover": "কভার",
+    "aspectFill": "পূরণ"
   },
   "settings_livetv": {
     "title": "লাইভ টিভি কনফিগারেশন",

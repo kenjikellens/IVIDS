@@ -18,13 +18,14 @@
             </button>
         </div>
 
-        <!-- Compact Stream Options Panel (Opened by Settings Button) -->
-        <div id="tv-settings-panel" class="card card--panel tv-settings-panel hidden">
+        <!-- Docked Right Stream Options Sidebar (Opened by Settings Button) -->
+        <aside id="tv-settings-panel" class="tv-settings-panel hidden" aria-label="Stream Options">
             <div class="tv-settings-header">
                 <span class="tv-settings-title" data-i18n="livetv.streamOptions">Stream Options</span>
+                <button id="tv-settings-close" type="button" class="tv-settings-close focusable universal-onclick" aria-label="Close">&times;</button>
             </div>
             <div id="tv-settings-options" class="tv-settings-options"></div>
-        </div>
+        </aside>
 
         <!-- Minimal Inline Offline Retry Fallback -->
         <div id="tv-offline-fallback" class="tv-offline-fallback hidden">

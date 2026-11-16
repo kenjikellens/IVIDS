@@ -40,6 +40,7 @@ export async function init(params) {
     const backBtn = document.getElementById('tv-back-btn') || document.getElementById('tv-back');
     const settingsBtn = document.getElementById('tv-settings-btn');
     const settingsPanel = document.getElementById('tv-settings-panel');
+    const settingsCloseBtn = document.getElementById('tv-settings-close');
     const settingsOptionsEl = document.getElementById('tv-settings-options');
     const zappingHud = document.getElementById('tv-zapping-hud');
     const zappingName = document.getElementById('zapping-channel-name');
@@ -109,40 +110,64 @@ export async function init(params) {
             subtitleTracks: [], currentSubtitleTrack: -1
         };
 
+        /**
+         * Builds a single full-width sidebar option row without overlapping indicator artifacts.
+         * @param {string} kind - Option category ('quality'|'audio'|'subtitle'|'aspect').
+         * @param {number} value - Option value index.
+         * @param {string} label - Localized option label.
+         * @param {boolean} isActive - Whether this option is currently active.
+         * @returns {string} HTML string for the option button.
+         */
+        const buildOptionRow = (kind, value, label, isActive) => (
+            `<button type="button" class="tv-opt-btn focusable universal-onclick ${isActive ? 'is-active' : ''}" data-kind="${kind}" data-value="${value}">` +
+                `<span class="tv-opt-label">${escapeHtml(label)}</span>` +
+                `<span class="tv-opt-check" aria-hidden="true"></span>` +
+            `</button>`
+        );
+
         const groups = [];
 
         if (opts.qualities.length > 0) {
             const buttons = [
-                `<button type="button" class="chip chip--option tv-opt-btn focusable universal-onclick ${opts.currentQuality === -1 ? 'is-active' : ''}" data-kind="quality" data-value="-1">${escapeHtml(t('livetv.auto', 'Auto'))}</button>`
+                buildOptionRow('quality', -1, t('livetv.auto', 'Auto'), opts.currentQuality === -1)
             ].concat(opts.qualities.map(q =>
-                `<button type="button" class="chip chip--option tv-opt-btn focusable universal-onclick ${opts.currentQuality === q.index ? 'is-active' : ''}" data-kind="quality" data-value="${q.index}">${escapeHtml(q.label)}</button>`
+                buildOptionRow('quality', q.index, q.label, opts.currentQuality === q.index)
             ));
             groups.push(`<div class="tv-settings-group"><span class="tv-settings-label">${escapeHtml(t('livetv.quality', 'Quality'))}</span><div class="tv-settings-choices">${buttons.join('')}</div></div>`);
         }
 
         if (opts.audioTracks.length > 0) {
             const buttons = opts.audioTracks.map(a =>
-                `<button type="button" class="chip chip--option tv-opt-btn focusable universal-onclick ${opts.currentAudioTrack === a.index ? 'is-active' : ''}" data-kind="audio" data-value="${a.index}">${escapeHtml(a.label)}</button>`
+                buildOptionRow('audio', a.index, a.label, opts.currentAudioTrack === a.index)
             );
             groups.push(`<div class="tv-settings-group"><span class="tv-settings-label">${escapeHtml(t('livetv.audioTrack', 'Audio'))}</span><div class="tv-settings-choices">${buttons.join('')}</div></div>`);
         }
 
         if (opts.subtitleTracks.length > 0) {
             const buttons = [
-                `<button type="button" class="chip chip--option tv-opt-btn focusable universal-onclick ${opts.currentSubtitleTrack === -1 ? 'is-active' : ''}" data-kind="subtitle" data-value="-1">${escapeHtml(t('livetv.off', 'Off'))}</button>`
+                buildOptionRow('subtitle', -1, t('livetv.off', 'Off'), opts.currentSubtitleTrack === -1)
             ].concat(opts.subtitleTracks.map(s =>
-                `<button type="button" class="chip chip--option tv-opt-btn focusable universal-onclick ${opts.currentSubtitleTrack === s.index ? 'is-active' : ''}" data-kind="subtitle" data-value="${s.index}">${escapeHtml(s.label)}</button>`
+                buildOptionRow('subtitle', s.index, s.label, opts.currentSubtitleTrack === s.index)
             ));
             groups.push(`<div class="tv-settings-group"><span class="tv-settings-label">${escapeHtml(t('livetv.subtitles', 'Subtitles'))}</span><div class="tv-settings-choices">${buttons.join('')}</div></div>`);
         }
 
+        const aspectLabelKeys = {
+            contain: ['livetv.aspectContain', 'Contain'],
+            cover: ['livetv.aspectCover', 'Cover'],
+            fill: ['livetv.aspectFill', 'Fill']
+        };
         const aspectButtons = aspectModes.map((mode, idx) => {
-            const label = mode.charAt(0).toUpperCase() + mode.slice(1);
-            return `<button type="button" class="chip chip--option tv-opt-btn focusable universal-onclick ${currentAspectIndex === idx ? 'is-active' : ''}" data-kind="aspect" data-value="${idx}">${escapeHtml(label)}</button>`;
+            const [key, fallback] = aspectLabelKeys[mode] || ['', mode];
+            const label = key ? t(key, fallback) : fallback;
+            return buildOptionRow('aspect', idx, label, currentAspectIndex === idx);
         });
         groups.push(`<div class="tv-settings-group"><span class="tv-settings-label">${escapeHtml(t('livetv.aspectRatio', 'Aspect Ratio'))}</span><div class="tv-settings-choices">${aspectButtons.join('')}</div></div>`);
 
         settingsOptionsEl.innerHTML = groups.join('');
+        if (settingsPanel) {
+            SpatialNav.ensureTabindex(settingsPanel);
+        }
 
         settingsOptionsEl.querySelectorAll('.tv-opt-btn').forEach((btn) => {
             btn.onclick = (e) => {
@@ -165,6 +190,21 @@ export async function init(params) {
                 if (nextFocus) SpatialNav.setFocus(nextFocus);
             };
         });
+    }
+
+    /**
+     * Re-renders the open Stream Options panel and restores spatial focus onto the active option.
+     */
+    function refreshSettingsPanelPreservingFocus() {
+        if (!isSettingsPanelOpen() || !settingsOptionsEl) return;
+        const activeBtn = settingsOptionsEl.querySelector('.tv-opt-btn.focused');
+        const kind = activeBtn?.dataset.kind;
+        const val = activeBtn?.dataset.value;
+        renderSettingsPanel();
+        const selector = kind && val !== undefined ? `.tv-opt-btn[data-kind="${kind}"][data-value="${val}"]` : '';
+        const target = (selector && settingsOptionsEl.querySelector(selector))
+            || settingsOptionsEl.querySelector('.tv-opt-btn.focusable');
+        if (target) SpatialNav.setFocus(target);
     }
 
     /**
@@ -230,14 +270,10 @@ export async function init(params) {
                 loader.classList.add('hidden');
                 loader.style.display = 'none';
             }
-            if (isSettingsPanelOpen()) {
-                renderSettingsPanel();
-            }
+            refreshSettingsPanelPreservingFocus();
         },
         onTracksUpdated: () => {
-            if (isSettingsPanelOpen()) {
-                renderSettingsPanel();
-            }
+            refreshSettingsPanelPreservingFocus();
         },
         onOffline: () => {
             if (loader) {
@@ -310,6 +346,13 @@ export async function init(params) {
         settingsBtn.onclick = (e) => {
             e.stopPropagation();
             toggleSettingsPanel();
+        };
+    }
+
+    if (settingsCloseBtn) {
+        settingsCloseBtn.onclick = (e) => {
+            e.stopPropagation();
+            closeSettingsPanel(true);
         };
     }
 
@@ -437,6 +480,11 @@ export async function init(params) {
 
         if (title) title.textContent = nextChannel.name || '';
         updateChannelLogo(nextChannel.logo || '');
+        const tvEpgEl = document.getElementById('tv-epg');
+        if (tvEpgEl) {
+            tvEpgEl.textContent = '';
+            tvEpgEl.classList.add('hidden');
+        }
         if (offlineFallback) offlineFallback.classList.add('hidden');
 
         if (zapDebounceTimer) {

@@ -519,7 +519,10 @@
     "audioTrack": "Áudio",
     "subtitles": "Legendas",
     "auto": "Auto",
-    "off": "Desativado"
+    "off": "Desativado",
+    "aspectContain": "Conter",
+    "aspectCover": "Cobrir",
+    "aspectFill": "Preencher"
   },
   "settings_livetv": {
     "title": "Configuração de TV ao Vivo",

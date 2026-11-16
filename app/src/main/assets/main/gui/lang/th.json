@@ -523,7 +523,10 @@
     "audioTrack": "เสียง",
     "subtitles": "คำบรรยาย",
     "auto": "อัตโนมัติ",
-    "off": "ปิด"
+    "off": "ปิด",
+    "aspectContain": "พอดีจอ",
+    "aspectCover": "ครอบคลุม",
+    "aspectFill": "เต็มจอ"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

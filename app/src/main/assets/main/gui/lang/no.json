@@ -519,7 +519,10 @@
     "audioTrack": "Lyd",
     "subtitles": "Undertekster",
     "auto": "Auto",
-    "off": "Av"
+    "off": "Av",
+    "aspectContain": "Tilpass",
+    "aspectCover": "Dekk",
+    "aspectFill": "Fyll"
   },
   "settings_livetv": {
     "title": "Konfigurasjon av Live TV",

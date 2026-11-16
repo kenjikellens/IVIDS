@@ -523,7 +523,10 @@
     "audioTrack": "Audio",
     "subtitles": "Sari kata",
     "auto": "Auto",
-    "off": "Mati"
+    "off": "Mati",
+    "aspectContain": "Muat",
+    "aspectCover": "Litup",
+    "aspectFill": "Isi"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

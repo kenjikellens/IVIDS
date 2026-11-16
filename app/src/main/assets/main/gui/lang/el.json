@@ -523,7 +523,10 @@
     "audioTrack": "Ήχος",
     "subtitles": "Υπότιτλοι",
     "auto": "Αυτόματο",
-    "off": "Απενεργοποιημένο"
+    "off": "Απενεργοποιημένο",
+    "aspectContain": "Προσαρμογή",
+    "aspectCover": "Κάλυψη",
+    "aspectFill": "Γέμισμα"
   },
   "settings_livetv": {
     "title": "Διαμόρφωση ζωντανής τηλεόρασης",

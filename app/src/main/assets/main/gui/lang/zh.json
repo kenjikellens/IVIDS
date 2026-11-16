@@ -519,7 +519,10 @@
     "audioTrack": "音轨",
     "subtitles": "字幕",
     "auto": "自动",
-    "off": "关闭"
+    "off": "关闭",
+    "aspectContain": "适应",
+    "aspectCover": "裁剪填充",
+    "aspectFill": "拉伸铺满"
   },
   "settings_livetv": {
     "title": "电视直播配置",

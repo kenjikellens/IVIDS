@@ -519,7 +519,10 @@
     "audioTrack": "Ses",
     "subtitles": "Altyazılar",
     "auto": "Otomatik",
-    "off": "Kapalı"
+    "off": "Kapalı",
+    "aspectContain": "Sığdır",
+    "aspectCover": "Kapla",
+    "aspectFill": "Doldur"
   },
   "settings_livetv": {
     "title": "Canlı TV Yapılandırması",

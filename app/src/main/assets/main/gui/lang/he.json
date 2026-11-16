@@ -523,7 +523,10 @@
     "audioTrack": "שמע",
     "subtitles": "כתוביות",
     "auto": "אוטומטי",
-    "off": "כבוי"
+    "off": "כבוי",
+    "aspectContain": "התאם",
+    "aspectCover": "כסה",
+    "aspectFill": "מלא"
   },
   "settings_livetv": {
     "title": "תצורת טלוויזיה בשידור חי",

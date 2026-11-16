@@ -519,7 +519,10 @@
     "audioTrack": "音声",
     "subtitles": "字幕",
     "auto": "自動",
-    "off": "オフ"
+    "off": "オフ",
+    "aspectContain": "全体表示",
+    "aspectCover": "トリミング",
+    "aspectFill": "引き伸ばし"
   },
   "settings_livetv": {
     "title": "ライブTV設定",
