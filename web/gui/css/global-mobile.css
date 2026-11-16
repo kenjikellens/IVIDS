@@ -1,0 +1,1069 @@
+/* ==========================================================================
+   IVIDS UNIFIED MOBILE & COMPACT VIEWPORT OVERRIDES (OOCSS)
+   ========================================================================== */
+
+/* Custom root variables defining design system tokens for portrait mobile viewports. */
+:root {
+    --poster-width: clamp(110px, 27vw, 128px);
+    --app-content-padding-x: 4%;
+    --app-content-padding-y: 3%;
+}
+
+/* Block layout reset for mobile viewport. */
+#app { display: block; height: 100%; position: relative; width: 100%; }
+
+/* Keeps the bottom navigation container at full width on mobile. */
+#app #sidebar-container, #app.sidebar-always-expanded #sidebar-container {
+    bottom: 0;
+    flex-basis: auto;
+    height: auto;
+    left: 0;
+    padding-bottom: 0;
+    pointer-events: none;
+    position: fixed;
+    right: 0;
+    top: auto;
+    width: 100%;
+    z-index: 3000;
+}
+
+/* Sizing, margin, and scrolling adjustments for main view area. */
+#main-view {
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100dvh;
+    overflow-x: hidden;
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+}
+
+/* Mobile bottom navigation bar surface spanning 100% full width. */
+#app .nav-rail, #app .navbar, #app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.98);
+    border-right: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    bottom: 0;
+    flex-direction: row;
+    gap: 4px;
+    height: auto;
+    justify-content: space-between;
+    left: 0;
+    overflow: visible;
+    padding: 6px calc(12px + env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
+    pointer-events: auto;
+    position: fixed;
+    right: 0;
+    top: auto;
+    width: 100%;
+}
+
+/* One shared mobile navigation row gives every destination an identical grid cell. */
+#app #sidebar-container #nav-links { display: grid; flex: 1 1 auto; gap: 0; grid-template-columns: repeat(7, minmax(0, 1fr)); margin: 0; min-width: 0; width: 100%; }
+#app #sidebar-container #nav-utilities { display: none; }
+
+/* Layout and spacing override for bottom nav item. */
+#app .nav-item, #app.sidebar-always-expanded .nav-item {
+    align-items: center;
+    aspect-ratio: 1 / 1;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    display: flex;
+    flex: 1 1 0;
+    height: auto;
+    justify-content: center;
+    margin: 0;
+    max-width: 52px;
+    padding: 0;
+    width: 100%;
+}
+
+/* Nav icon sizing and margins on mobile. */
+#app .nav-item__icon, #app .nav-icon { flex-basis: 25px; height: 25px; margin: 0; width: 25px; }
+
+/* Hides elements that should not render on mobile bottom navigation. */
+#app .nav-rail__header, #app .logo-container, #app .nav-item__label, #app .nav-item span,
+#app .nav-item::before, #app .nav-item[data-route="livetv"], #app .nav-item[data-route="music"] {
+    display: none;
+}
+
+/* Ordering for mobile navigation items. */
+#app .nav-item[data-route="home"] { order: 1; }
+#app .nav-item[data-route="movies"] { order: 2; }
+#app .nav-item[data-route="series"] { order: 3; }
+#app .nav-item[data-route="search"] { order: 4; }
+#app .nav-item[data-route="playlists"] { order: 5; }
+#app .nav-item[data-route="account"] { order: 6; }
+#app .nav-item[data-route="settings"] { order: 7; }
+
+/* Height and layout adjustments for the hero banner on mobile. */
+#app .hero { align-items: flex-end; height: 45vh; min-height: 320px; padding: 0 4% 5%; }
+#app .hero-slide { background-attachment: scroll; background-position: center top; background-size: cover; }
+#app .hero-content { margin: 0 auto; text-align: center; width: 100%; }
+/* Horizontally centers hero title text across mobile viewports. */
+#app #hero-title, #app .hero-title { display: block; margin-left: auto; margin-right: auto; max-width: 90%; text-align: center; }
+#app .hero-buttons { display: flex; justify-content: center; margin-top: 4px; width: 100%; }
+#app .hero-buttons .btn { margin: 0 auto; max-width: 90%; padding: 10px 24px; width: fit-content; }
+
+/* Scrolling and gap adjustments for media rails. */
+#app .media-rail, #app .row-posters { gap: 10px; padding: 2% 4% 4%; }
+
+/* Search main view area padding override with safe area inset for top status bar. */
+#app .search-main { box-sizing: border-box; height: 100%; padding: calc(16px + env(safe-area-inset-top, 24px)) 4% 2%; }
+#app .search-container-wrapper { margin: 10px auto 2%; max-width: 100%; width: 92%; }
+#app .recent-searches-row { align-items: flex-start; flex-direction: column; gap: 8px; }
+#app .results-container { -webkit-mask-image: none; mask-image: none; padding: 2% 2% 8%; }
+#app .media-grid--posters, #app .search-results-grid {
+    --poster-width: clamp(86px, 26vw, 108px);
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
+}
+.filter-main-grid { gap: 12px; grid-template-columns: 1fr; }
+
+/* Mobile details page root container with safe-area spacing and bottom nav rail clearance. */
+#app .details-page {
+    background-color: var(--background-color);
+    background: radial-gradient(circle at 50% 0%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 35%, transparent 70%), linear-gradient(180deg, rgba(8, 8, 8, 0.6) 0%, var(--background-color) 100%);
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding-top: calc(8px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px));
+}
+#app .details-layout { gap: 12px; margin: 0 auto; max-width: 600px; padding: 0 16px; position: relative; z-index: 1; }
+
+/* Mobile circular floating back button pinned to top-left with safe-area spacing. */
+#app #details-back-btn,
+#app .details-back-btn {
+    align-items: center;
+    background: rgba(18, 18, 18, 0.72);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    height: 42px;
+    justify-content: center;
+    left: 16px;
+    min-height: 42px;
+    min-width: 42px;
+    padding: 0;
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    width: 42px;
+    z-index: 50;
+}
+#app .details-back-btn:active {
+    background: rgba(255, 255, 255, 0.18);
+}
+#app .details-back-icon {
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 18px;
+    pointer-events: none;
+    width: 18px;
+}
+
+/* Mobile: Details backdrop image hidden completely as requested. */
+#app .details-backdrop,
+#app .details-backdrop-overlay {
+    display: none !important;
+}
+
+/* Compact mobile hero layout centering the poster, title and metadata. */
+#app .details-top { align-items: center; display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; padding-top: 0; text-align: center; }
+#app .details-poster-container { display: flex; justify-content: center; margin-bottom: 2px; order: 1; width: 100%; }
+#app .details-hero-poster { border: 2px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-sm); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); height: auto; max-height: 155px; max-width: 28vw; min-width: 90px; width: 105px; }
+#app .details-info { align-items: center; display: flex; flex-direction: column; max-width: 100%; order: 2; text-align: center; width: 100%; }
+#app #details-title, #app .details-info .details-title, #app .details-title { font-size: clamp(20px, 5.5vw, 24px); font-weight: 800; line-height: 1.25; margin: 2px auto; text-align: center; width: 100%; }
+#app .details-overview { display: none; }
+#app .details-meta, #app .details-genres { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 6px; }
+#app .details-meta span, #app .details-genres > * { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; font-size: 11px; font-weight: 600; padding: 3px 9px; }
+
+/* Compact horizontal action buttons row. */
+#app .details-actions { align-items: center; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 8px; margin: 4px 0 10px; width: 100%; }
+#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: 12px; color: #111111; display: inline-flex; flex: 1 1 0; font-size: 14px; font-weight: 700; gap: 8px; height: 48px; justify-content: center; min-height: 48px; min-width: 0; padding: 0 14px; width: auto; }
+#app .details-play-icon { display: inline-block !important; filter: brightness(0); height: 16px; pointer-events: none; width: 16px; }
+#app .details-play-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 14px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: hidden; position: static; text-overflow: ellipsis; white-space: nowrap; }
+#app #details-trailer, #app #details-playlist { align-items: center; background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; display: inline-flex; flex: 1 1 0; font-size: 13.5px; font-weight: 600; gap: 6px; height: 48px; justify-content: center; min-height: 48px; min-width: 0; padding: 0 10px; width: auto; }
+#app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 16px; height: 16px; pointer-events: none; width: 16px; }
+#app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Tabs header bar copied from landscape */
+#app .tab-bar,
+#app #details-tabs {
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    width: 100%;
+}
+#app #details-tabs .btn,
+#app .tab-bar .btn {
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    justify-content: center;
+    min-height: 44px;
+    outline: none;
+    padding: 0 20px;
+    position: relative;
+    text-align: center;
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, color 150ms ease;
+    user-select: none;
+    white-space: nowrap;
+    width: auto;
+}
+#app #details-tabs .btn.btn--secondary,
+#app .tab-bar .btn.btn--secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+}
+#app #details-tabs .btn.btn--primary,
+#app #details-tabs .btn.is-active,
+#app #details-tabs .btn.active,
+#app .tab-bar .btn.btn--primary,
+#app .tab-bar .btn.is-active,
+#app .tab-bar .btn.active {
+    background: rgba(var(--primary-rgb), 0.25);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-weight: 800;
+}
+
+/* Tab Panel Over: copied from landscape mode */
+#app .tab-panel.hidden, #app .details-bottom.hidden { display: none; }
+#app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+#app .disney-about-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; width: 100%; }
+#app .disney-about-left, #app .disney-about-right { width: 100%; }
+#app .disney-about-description { color: #dddddd; font-size: 16px; line-height: 1.6; }
+#app .media-grid--cast, #app .disney-cast-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); width: 100%; }
+#app .card--compact { background: rgba(255, 255, 255, 0.02); border: 2px solid transparent; border-radius: var(--radius-sm); overflow: hidden; padding-bottom: 0.5rem; text-align: center; }
+#app .disney-cast-img { aspect-ratio: 2 / 3; background-color: #1a1c22; background-image: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.25) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #16181e 100%); background-position: center; background-size: cover; border: none; border-radius: 0; margin: 0; position: relative; width: 100%; }
+#app .disney-cast-name { color: var(--text-color); font-size: 0.9rem; font-weight: 700; overflow: hidden; padding: 0.35rem 0.25rem 0.1rem; text-overflow: ellipsis; white-space: nowrap; }
+#app .disney-cast-character { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Touch-friendly compact season selector pill. */
+#app .details-seasons { align-items: center; backdrop-filter: none; background: transparent; border: none; display: flex; justify-content: flex-start; margin: 2px 0 8px; max-height: none; padding: 0; width: 100%; }
+#app .seasons-list-content { display: none; }
+#app .seasons-dropdown-wrapper { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 999px; box-sizing: border-box; display: inline-flex; height: 36px; max-width: 220px; min-height: 36px; position: relative; transition: background-color 150ms ease, border-color 150ms ease; width: auto; }
+#app .seasons-dropdown-wrapper::after { border-bottom: 2px solid rgba(255, 255, 255, 0.7); border-right: 2px solid rgba(255, 255, 255, 0.7); content: ''; height: 5px; pointer-events: none; position: absolute; right: 14px; top: calc(50% - 4px); transform: rotate(45deg); width: 5px; }
+#app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: 13.5px; font-weight: 700; height: 100%; min-height: 36px; outline: none; padding: 0 32px 0 16px; width: 100%; }
+
+/* Tab Panel Extra: copied from landscape mode card--row */
+#app .disney-episode-item,
+#app .card--row.disney-episode-item,
+#app .disney-extra-item,
+#app .card--row.disney-extra-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid transparent; border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; gap: 16px; margin-bottom: 12px; overflow: hidden; padding: 12px 16px; transition: border-color 150ms ease, background-color 150ms ease; width: 100%; }
+#app .disney-episode-item:active, #app .disney-extra-item:active { background: rgba(255, 255, 255, 0.08); }
+#app .disney-episode-item.watched { border-bottom: 3px solid var(--primary-color); }
+
+/* 16:9 thumbnail copied from landscape card__thumb */
+#app .disney-episode-item .card__thumb,
+#app .disney-extra-item .card__thumb { aspect-ratio: 16 / 9; background-color: #1a1c22; background-image: radial-gradient(circle at 80% 25%, rgba(var(--primary-rgb), 0.26) 0%, transparent 65%), linear-gradient(135deg, #262932 0%, #17191f 100%); background-position: center; background-size: cover; border-radius: var(--radius-sm); flex-shrink: 0; overflow: hidden; position: relative; width: clamp(120px, 36vw, 180px); }
+
+/* Play icon copied from landscape .disney-extra-play-icon */
+#app .disney-extra-item .disney-extra-play-icon { align-items: center; background: rgba(0, 0, 0, 0.65); border: 2px solid rgba(255, 255, 255, 0.85); border-radius: 50%; color: #ffffff; display: flex; font-size: 16px; height: 42px; justify-content: center; left: calc(50% - 21px); position: absolute; top: calc(50% - 21px); width: 42px; }
+
+/* Card body typography copied from landscape */
+#app .disney-episode-item .card__body,
+#app .disney-extra-item .card__body { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: center; min-width: 0; width: auto; }
+#app .disney-episode-item .card__title,
+#app .disney-extra-item .card__title { color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#app .disney-extra-item .card__meta { color: var(--primary-color, #46d369); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 2px; text-transform: uppercase; }
+#app .disney-extra-item .card__desc { color: #888888; font-size: 12px; line-height: 1.3; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#app .disney-episode-item .episode-meta { align-items: center; color: #888888; display: flex; font-size: 11.5px; font-weight: 600; gap: 6px; margin-bottom: 3px; }
+#app .disney-episode-item .episode-meta__item:not(:last-child)::after { color: rgba(255, 255, 255, 0.3); content: "•"; margin-left: 6px; }
+#app .disney-episode-item .card__desc { -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: #999999; display: -webkit-box; font-size: 12px; line-clamp: 2; line-height: 1.35; margin: 0; overflow: hidden; }
+
+/* Extra scroll padding at bottom of episodes and extras containers. */
+#app #details-episodes, #app #extras-list { box-sizing: border-box; padding-bottom: 24px; }
+
+/* Empty state container for Extras & Trailers tab on mobile. */
+#app .extras-empty-state { align-items: center; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; justify-content: center; min-height: 240px; padding: 48px 16px 32px; text-align: center; width: 100%; }
+/* Centered greyish empty text. */
+#app .extras-empty-text { color: #888888; font-size: 14.5px; font-weight: 500; line-height: 1.4; margin: 0; max-width: 320px; }
+/* Circular retry action button in empty state. */
+#app .extras-retry-btn { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 50%; box-sizing: border-box; cursor: pointer; display: inline-flex; height: 48px; justify-content: center; min-height: 48px; min-width: 48px; padding: 0; transition: background-color 150ms ease, border-color 150ms ease; width: 48px; }
+#app .extras-retry-btn:hover, #app .extras-retry-btn:active { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.35); }
+#app .extras-retry-btn:focus, #app .extras-retry-btn.focused { border-color: #ffffff; outline: 2px solid #ffffff; }
+/* Retry icon inside circular button. */
+#app .extras-retry-icon { color: #ffffff; display: block; filter: brightness(0) invert(1); height: 20px; pointer-events: none; width: 20px; }
+
+/* Non-episode horizontal row cards fallback (e.g. playlist item rows on mobile). */
+#app .card--row:not(.disney-episode-item):not(.disney-extra-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
+#app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb, #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
+#app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__body { width: 100%; }
+#app .livetv-two-column-layout { flex-direction: column; gap: 12px; padding: 4% var(--app-content-padding-x); }
+/* Vertical category and country list column on mobile viewports. */
+#app .livetv-categories-column { height: 22vh; width: 100%; }
+#app .livetv-list-column { height: 34vh; width: 100%; }
+#app .livetv-preview-column { height: auto; width: 100%; }
+/* Responsive preview video card sizing on mobile. */
+#app .preview-card, #app .preview-card-video { height: 28vh; min-height: 180px; }
+
+/* Touch-friendly channel cards on mobile. */
+#app .channel-card, #app .channel-list-item { min-height: 52px; padding: 10px 12px; }
+
+/* Compact EPG schedule panel padding on mobile. */
+#app .epg-panel, #app .epg-card { padding: 16px; }
+
+/* Single column grid flow for custom playlists grid on mobile. */
+#app .media-grid--widescreen, #app .playlists-grid { gap: 12px; grid-template-columns: 1fr; }
+
+/* Mobile container top padding overrides to accommodate phone top status bar and notch areas. */
+#app .playlists-container, #app .settings-container, #app .account-container, #app .page-container {
+    box-sizing: border-box;
+    padding: calc(16px + env(safe-area-inset-top, 24px)) var(--app-content-padding-x) calc(72px + env(safe-area-inset-bottom, 16px));
+    width: 100%;
+}
+#app .page-header { align-items: flex-start; flex-direction: column; gap: 12px; }
+
+/* Mobile Settings and Account typography and section card overrides. */
+#app .page-title, #app .settings-header h1, #app .account-header h1 { font-size: clamp(24px, 6vw, 30px); }
+#app .settings-section, #app .account-section { border-radius: var(--radius-md); margin-bottom: 16px; padding: 16px; }
+#app .settings-section .section-title { font-size: 15px; gap: 10px; margin-bottom: 4px; }
+#app .setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: row; gap: 12px; justify-content: space-between; padding: 12px 0; }
+#app .setting-item:first-of-type { border-top: none; }
+#app .setting-info { flex: 1 1 auto; min-width: 0; }
+#app .setting-label { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+#app .setting-description { color: var(--text-muted); font-size: 12.5px; line-height: 1.35; }
+#app .setting-control { align-items: center; display: flex; flex: 0 0 auto; flex-shrink: 0; gap: 8px; justify-content: flex-end; width: auto; }
+#app #manual-check-container { align-items: center; text-align: center; }
+#app #manual-check-container .setting-control { justify-content: center; }
+#app .current-value-display { border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; height: 40px; max-width: 150px; overflow: hidden; padding: 0 12px; text-overflow: ellipsis; white-space: nowrap; }
+#app .btn--square, #app .edit-trigger, #app .setting-btn { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
+#app .setting-edit-icon { height: 18px; width: 18px; }
+#app .form-toggle { border-radius: 999px; cursor: pointer; flex-shrink: 0; height: 32px; width: 58px; }
+#app .form-toggle__slider { height: 22px; left: 2px; top: 2px; transition: left 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease; width: 22px; }
+#app .form-toggle:has(input:checked) .form-toggle__slider { left: 28px; }
+#app .color-preview-circle, #app #current-color-display { border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 50%; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); flex-shrink: 0; height: 32px; width: 32px; }
+
+/* Account profile layout on mobile. */
+#app .profile-display { align-items: center; flex-direction: column; gap: 20px; text-align: center; }
+#app .profile-avatar.large { flex: 0 0 100px; font-size: 40px; height: 100px; width: 100px; }
+#app .profile-name-text { font-size: 24px; margin-bottom: 12px; text-align: center; }
+#app .profile-actions { justify-content: center; width: 100%; }
+#app .login-panel { padding: 24px 20px; }
+
+/* Full-screen mobile sub-page backdrop and container for settings modals */
+html body .modal, body .modal, .modal {
+    align-items: stretch;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.58);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    inset: 0;
+    justify-content: flex-start;
+    margin: 0;
+    max-height: 100%;
+    max-width: 100%;
+    padding: 0;
+    position: fixed;
+    width: 100vw;
+    z-index: 100000;
+}
+
+/* Full-screen mobile sub-page surface replacing floating container card */
+html body .modal__dialog, body .modal__dialog,
+html body .modal__dialog--sm, body .modal__dialog--sm,
+html body .modal__dialog--md, body .modal__dialog--md,
+html body .modal__dialog--lg, body .modal__dialog--lg,
+html body .modal__dialog--xl, body .modal__dialog--xl {
+    background: #050505;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 1 100%;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    max-height: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    padding: calc(env(safe-area-inset-top, 44px) + 16px) 20px calc(env(safe-area-inset-bottom, 28px) + 16px);
+    position: relative;
+    text-align: left;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    width: 100%;
+}
+
+/* Opens mobile settings sub-pages from the right edge like a native navigation push. */
+html body .modal.is-open .modal__dialog, html body .modal.show .modal__dialog,
+body .modal.is-open .modal__dialog, body .modal.show .modal__dialog {
+    transform: translateX(0);
+}
+
+/* Mobile sub-page header title bar */
+html body .modal__title, .modal__title {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    flex-shrink: 0;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+    padding: 0 0 16px;
+    text-align: center;
+    width: 100%;
+}
+html body .modal__close, .modal__close {
+    border-radius: 50%;
+    position: absolute;
+    right: 16px;
+    top: calc(env(safe-area-inset-top, 44px) + 8px);
+    z-index: 10;
+}
+
+/* Top-left back button for mobile sub-pages: invisible round button showing only the arrow, circular highlight on click. */
+html body .modal__back-btn, body .modal__back-btn, .modal__back-btn {
+    align-items: center;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    left: 12px !important;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    position: absolute !important;
+    top: calc(env(safe-area-inset-top, 44px) + 8px) !important;
+    transition: background-color 140ms ease;
+    width: 44px;
+    z-index: 50 !important;
+}
+html body .modal__back-btn:active, body .modal__back-btn:active {
+    background: rgba(255, 255, 255, 0.14) !important;
+    transform: none !important;
+}
+html body .modal__back-btn:focus-visible, body .modal__back-btn.focused {
+    background: rgba(255, 255, 255, 0.16) !important;
+    outline: none !important;
+}
+
+/* Icon image inside mobile sub-page back button */
+.modal-back-icon {
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 24px;
+    pointer-events: none;
+    width: 24px;
+}
+
+/* Fluid scrollable content body in full-screen sub-page */
+html body .modal__body, .modal__body,
+html body .modal__body--scroll, .modal__body--scroll {
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    margin: 0;
+    max-height: none;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 8px 4px 16px;
+    touch-action: pan-y;
+    width: 100%;
+}
+
+/* Pinned bottom action bar for mobile sub-page */
+html body .modal__footer, .modal__footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 10px;
+    margin-top: auto;
+    padding: 16px 0 0;
+    width: 100%;
+}
+html body .modal__footer .btn, .modal__footer .btn {
+    flex: none;
+    font-size: 15px;
+    font-weight: 700;
+    min-height: 48px;
+    min-width: 0;
+    width: 100%;
+}
+body .modal__footer .btn { border-radius: 14px; min-height: 48px; }
+body .modal__footer .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: #ffffff; }
+body .modal__footer .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
+body .modal__footer .btn, body .modal__back-btn { transition: background-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); }
+body .modal__footer .btn:active, body .modal__back-btn:active { filter: brightness(0.92); transform: scale(0.96); }
+
+/* Hide bottom action footer in sub-pages on mobile for auto-apply/back navigation */
+html body #language-modal .modal__footer, body #language-modal .modal__footer, #language-modal .modal__footer,
+html body #color-modal .modal__footer, body #color-modal .modal__footer, #color-modal .modal__footer,
+html body #update-mode-modal .modal__footer, body #update-mode-modal .modal__footer, #update-mode-modal .modal__footer,
+html body #delay-action-modal .modal__footer, body #delay-action-modal .modal__footer, #delay-action-modal .modal__footer,
+html body #app-info-modal .modal__footer, body #app-info-modal .modal__footer, #app-info-modal .modal__footer,
+html body #version-selector-modal .modal__footer, body #version-selector-modal .modal__footer, #version-selector-modal .modal__footer {
+    display: none !important;
+}
+
+/* Provider item container inside mobile sub-page */
+.provider-item {
+    align-items: stretch;
+    box-sizing: border-box;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    width: 100%;
+}
+/* Provider item header container */
+.provider-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    width: 100%;
+}
+/* Provider item title and server label */
+.provider-title {
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+/* Action button bar inside provider item */
+.provider-actions {
+    justify-content: flex-end;
+    width: 100%;
+}
+/* Hide drag and reorder handles on mobile portrait touchscreens */
+html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
+    display: none !important;
+}
+
+/* Responsive full-width language stepper for mobile sub-page */
+.language-stepper-container {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    justify-content: center;
+    margin: 36px auto;
+    max-width: 100%;
+    width: 100%;
+}
+.language-stepper-value {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    color: #ffffff;
+    display: inline-flex;
+    flex: 0 1 auto;
+    font-size: 16px;
+    font-weight: 700;
+    gap: 8px;
+    height: 48px;
+    justify-content: center;
+    max-width: 210px;
+    min-height: 48px;
+    min-width: 140px;
+    overflow: hidden;
+    padding: 0 14px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.display-flag-span, .language-stepper-value .display-flag-span {
+    flex-shrink: 0;
+    font-size: 22px;
+    line-height: 1;
+    margin-right: 4px;
+}
+.stepper-arrow-btn {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: inline-flex;
+    flex: 0 0 44px;
+    flex-shrink: 0;
+    height: 44px;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    width: 44px;
+}
+.stepper-arrow-btn svg, .stepper-arrow-btn img {
+    height: 18px;
+    width: 18px;
+}
+
+/* Mobile active chip styling replacing solid neon green with dark-glass glow */
+.chip.is-selected, .chip.is-active, .chip.selected, .chip.active {
+    background: rgba(var(--primary-rgb), 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.25);
+    color: #ffffff;
+    font-weight: 800;
+}
+.chip--filter.is-selected::before, .chip--filter.selected::before {
+    color: var(--primary-color);
+}
+
+/* Mobile section title icons, edit triggers, and stepper icons rendered in consistent crisp white */
+.section-title__icon, .section-title-icon,
+.setting-stepper-icon, .setting-edit-icon {
+    filter: brightness(0) invert(1);
+}
+
+/* Mobile button touch targets and geometry. */
+#app .btn { border-radius: var(--radius-md); font-size: 14px; gap: 8px; min-height: 44px; padding: 10px 20px; }
+#app .btn--sm, #app .btn-small { font-size: 13px; min-height: 36px; padding: 6px 14px; }
+#app .btn--circle, #app .btn-circle { border-radius: 50%; height: 38px; min-height: 38px; min-width: 38px; padding: 0; width: 38px; }
+#app .btn--circle-lg { border-radius: 50%; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
+#app .btn--circle-xl { border-radius: 50%; height: 56px; min-height: 56px; min-width: 56px; padding: 0; width: 56px; }
+
+/* Tactile active touch feedback for interactive mobile elements without movement or transforms. */
+#app .btn:active,
+#app .edit-trigger:active,
+#app .scale-adjust-btn:active,
+#app .form-toggle:active,
+#app .nav-item:active,
+#app .card:active,
+#app .media-rail .card:active,
+#app .chip:active {
+    filter: brightness(1.15);
+    opacity: 0.85;
+}
+
+/* Toast notifications and version badges on mobile. */
+.toast-container, .toast-container.bottom-right, .toast-container.top-right { bottom: auto; left: 0; margin: 0 auto; max-width: 400px; right: 0; top: 20px; width: 90%; }
+.toast { transform: translateY(-120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease; }
+.toast.visible { opacity: 1; transform: translateY(0); }
+.toast:not(.visible) { opacity: 0; transform: translateY(-120%); }
+#app .version-option-list { flex-direction: column; }
+.version-badge-container { align-items: center; flex-direction: column; gap: 6px; }
+.version-arrow { transform: rotate(90deg); }
+#app .details-actions .btn, #app .profile-actions .btn, #app .livetv-top-bar .search-box, .form-input { width: 100%; }
+
+/* Comfortable mobile touch geometry for shared buttons and controls. */
+#app .btn { -webkit-tap-highlight-color: transparent; border-radius: 14px; box-shadow: none; font-size: 15px; font-weight: 650; min-height: 48px; padding: 12px 18px; transition: background-color 0.14s ease, border-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); user-select: none; }
+#app .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: #ffffff; }
+#app .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
+#app .btn--ghost { background: transparent; border-color: transparent; box-shadow: none; color: rgba(255, 255, 255, 0.82); }
+#app .btn:active { filter: brightness(0.92); opacity: 1; transform: none; }
+#app .btn:focus-visible, #app .btn.focused { border-color: #ffffff; outline: 2px solid #ffffff; outline-offset: 2px; }
+#app .btn--circle, #app .btn-circle { border-radius: 50%; height: 48px; min-height: 48px; min-width: 48px; padding: 0; width: 48px; }
+#app .btn--sm, #app .btn-small { min-height: 48px; }
+
+/* Poster cards keep a consistent portrait crop, dark edge, and soft lift on mobile. */
+#app .card--poster, #app .poster-wrapper { aspect-ratio: 2 / 3; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6); height: auto; overflow: hidden; }
+#app .card--poster .card__media, #app .poster-wrapper .poster, #app .poster-wrapper .poster-img { aspect-ratio: 2 / 3; height: 100%; object-fit: cover; width: 100%; }
+#app .media-grid--posters, #app .search-results-grid { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 12px 4%; }
+#app .media-grid--posters > .card--poster, #app .search-results-grid > .card--poster,
+#app .media-grid--posters > .poster-wrapper, #app .search-results-grid > .poster-wrapper { min-width: 0; width: 100%; }
+#app .card__badge, #app .poster-badge { backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 4px; font-size: 11px; padding: 2px 6px; position: absolute; right: 6px; top: 6px; }
+
+body #changes-modal .modal__close, body .modal__close-btn { display: none !important; }
+
+/* Language selection and modal options list with simple divider lines and zero border-radius. */
+body .language-selection-grid { display: flex !important; flex-direction: column !important; gap: 0 !important; grid-template-columns: none !important; padding: 0 !important; width: 100% !important; }
+body .language-stepper-container { display: none; }
+/* Opaque sticky wrapper ensuring scrolling language cards slide behind search bar cleanly without bleed-through */
+body .language-search-wrapper { background: #050505; box-sizing: border-box; padding: 4px 0 12px; position: sticky; top: 0; width: 100%; z-index: 10; }
+body .language-search-wrapper:has(> .hidden) { display: none; }
+/* Input field for filtering available languages */
+body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px !important; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0; padding: 0 18px; position: static; width: 100%; }
+body .language-search:focus { border-color: var(--primary-color); outline: none; }
+body .language-card { align-items: center; background: transparent !important; border: 0 !important; border-bottom: 1px solid #1c1c1c !important; border-radius: 0 !important; box-shadow: none !important; color: #ffffff; cursor: pointer; display: flex !important; gap: 14px; justify-content: space-between; min-height: 52px; min-width: 0; padding: 14px 12px !important; text-align: left; width: 100% !important; box-sizing: border-box; }
+body .language-card:first-child { border-top: 1px solid #1c1c1c !important; }
+body .language-card:active { background: rgba(255, 255, 255, 0.08) !important; }
+body .language-card.is-active { background: transparent !important; color: var(--primary-color) !important; }
+body .language-card.is-active .language-card__name { color: var(--primary-color) !important; font-weight: 700; }
+body .language-card:focus-visible, body .language-card.focused { background: transparent !important; border-color: transparent !important; border-radius: 0 !important; outline: none !important; }
+body .language-card__flag { flex: 0 0 auto; font-size: 22px; width: 30px; }
+body .language-card__name { flex: 1; font-size: 15.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body .language-card__check { color: var(--primary-color); display: inline-block !important; flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
+body .language-card.is-active .language-card__check { opacity: 1 !important; }
+
+body .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; flex-shrink: 0; height: 22px; margin-right: 14px; width: 22px; }
+
+/* Mobile landscape optimizations: keep sleek bottom navigation bar on landscape phones. */
+@media (orientation: landscape) and (max-height: 500px) {
+    #app #sidebar-container, #app.sidebar-always-expanded #sidebar-container {
+        height: auto;
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
+    }
+    #main-view {
+        padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
+    }
+    #app .nav-rail, #app .navbar, #app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar {
+        gap: 8px;
+        height: auto;
+        justify-content: space-between;
+        padding: 4px calc(12px + env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) calc(12px + env(safe-area-inset-left, 0px));
+        width: 100%;
+    }
+    #app .nav-item, #app.sidebar-always-expanded .nav-item {
+        aspect-ratio: 1 / 1;
+        flex: 1 1 0;
+        height: auto;
+        max-width: 48px;
+        width: 100%;
+    }
+    #app .nav-item__icon, #app .nav-icon, #app.sidebar-always-expanded .nav-item__icon, #app.sidebar-always-expanded .nav-icon {
+        flex-basis: 22px;
+        height: 22px;
+        width: 22px;
+    }
+}
+
+/* Unified neutral mobile surface and button system; accent colors stay in user-selected swatches. */
+:root { --mobile-surface: #0f0f0f; --mobile-panel: #181818; --mobile-border: #303030; --mobile-muted: #a1a1a1; --mobile-ink: #111111; }
+html, body, #app { background-color: var(--mobile-surface); }
+#main-view { height: 100dvh; overscroll-behavior-y: contain; }
+#app .nav-rail, #app .navbar { background: #0f0f0f; border-top-color: #2a2a2a; display: flex; gap: 0; justify-content: space-around; padding-left: calc(6px + env(safe-area-inset-left, 0px)); padding-right: calc(6px + env(safe-area-inset-right, 0px)); }
+#app #sidebar-container .nav-rail #nav-links > .nav-item { -webkit-tap-highlight-color: transparent; background: transparent; border: 2px solid transparent; border-radius: 10px; box-shadow: none; box-sizing: border-box; flex: initial; height: 48px; margin: 0; max-width: none; min-height: 48px; min-width: 0; outline: none; padding: 0; touch-action: manipulation; transition: background-color 140ms ease, opacity 140ms ease, transform 160ms cubic-bezier(0.2, 0, 0, 1); width: 100%; }
+/* YouTube-style bottom navigation without grey background boxes. */
+#app #sidebar-container .nav-rail .nav-item.active, #app #sidebar-container .nav-rail .nav-item.is-active { background: transparent; border-color: transparent; }
+#app #sidebar-container .nav-rail .nav-item:hover { background: transparent; border-color: transparent; }
+#app #sidebar-container .nav-rail .nav-item:focus, #app #sidebar-container .nav-rail .nav-item.focused { background: transparent; border-color: transparent; outline: none; }
+#app #sidebar-container .nav-rail .nav-item:is(.active, .is-active):is(:focus, .focused) { background: transparent; }
+#app #sidebar-container .nav-rail .nav-item:focus-visible { border-color: #ffffff; outline: 2px solid #ffffff; outline-offset: 1px; }
+#app #sidebar-container .nav-rail .nav-item:active, #app #sidebar-container .nav-rail .nav-item.is-pressed { background: rgba(255, 255, 255, 0.08); border-color: transparent; filter: none; opacity: 1; transform: none; }
+#app #sidebar-container .nav-rail .nav-item:is(.active, .is-active):is(:active, .is-pressed) { background: rgba(255, 255, 255, 0.08); }
+#app #sidebar-container .nav-rail .nav-item .nav-icon, #app #sidebar-container .nav-rail .nav-item .nav-item__icon { background-color: #888888; margin: 0; transition: background-color 140ms ease; }
+#app #sidebar-container .nav-rail .nav-item:is(.active, .is-active) .nav-icon,
+#app #sidebar-container .nav-rail .nav-item:is(.active, .is-active) .nav-item__icon { background-color: var(--primary-color) !important; }
+#app #sidebar-container .nav-rail .nav-item:is(:focus-visible, :active, .is-pressed):not(.active):not(.is-active) .nav-icon,
+#app #sidebar-container .nav-rail .nav-item:is(:focus-visible, :active, .is-pressed):not(.active):not(.is-active) .nav-item__icon { background-color: #ffffff; }
+#app:has(.login-page-wrapper) #sidebar-container { display: none; }
+#app:has(.login-page-wrapper) #main-view { padding-bottom: env(safe-area-inset-bottom, 0px); }
+#app .tab-btn.is-active, #app .tab-btn.active { background: #ffffff; border-color: #ffffff; color: #111111; }
+#app .chip.is-selected, #app .chip.is-active, #app .chip.selected, #app .chip.active { background: #252525; border-color: var(--primary-color); box-shadow: none; color: var(--primary-color); }
+#app .form-toggle { background: transparent; border: 0; height: 48px; overflow: visible; width: 64px; }
+#app .form-toggle::before { background: #333333; border-radius: 999px; content: ""; height: 30px; left: 6px; position: absolute; top: 9px; transition: background-color 140ms ease; width: 52px; }
+#app .form-toggle__slider { height: 24px; left: 9px; top: 12px; transition: left 160ms cubic-bezier(0.2, 0, 0, 1), background-color 140ms ease; width: 24px; }
+#app .form-toggle:has(input:checked)::before { background-color: var(--primary-color) !important; }
+#app .form-toggle:has(input:checked) .form-toggle__slider { background-color: #000000 !important; left: 31px; }
+#app .form-toggle:focus-visible, #app .form-toggle.focused { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+
+/* Tactile hero play button on mobile with visible label and icon. */
+#app .hero-buttons #play-btn, #app #play-all-btn, body #context-play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
+#app .hero-buttons #play-btn .mobile-play-icon, #app #play-all-btn .mobile-play-icon, body #context-play-btn .mobile-play-icon { display: inline-block !important; fill: #111111; height: 18px; pointer-events: none; width: 18px; }
+#app .hero-buttons #play-btn .play-button-label, #app #play-all-btn .play-button-label, body #context-play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
+
+/* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */
+#app .settings-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
+#app .settings-header { margin-bottom: 12px; padding: 12px 18px 4px; text-align: left; }
+#app .settings-header h1 { color: #f1f1f1; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 2px; }
+#app .settings-header p { display: none; }
+
+/* Mobile settings grouped sections and category titles matching YouTube settings. */
+#app .settings-section { background: transparent; border: 0; border-radius: 0; box-shadow: none; margin: 0 0 16px; padding: 0; }
+#app .settings-section .section-title,
+body #advanced-settings-modal .section-title { border: 0; color: #888888; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
+#app .settings-section .section-title__icon,
+body #advanced-settings-modal .section-title__icon { display: none; }
+body #advanced-settings-modal .modal__dialog { padding-left: 0; padding-right: 0; }
+body #advanced-settings-modal .modal__title { box-sizing: border-box; margin: 0 0 8px; padding-left: 52px; padding-right: 52px; width: 100%; }
+body #advanced-settings-modal .modal__body { padding: 0; width: 100%; }
+
+/* Suppress TV spatial-nav persistent focus outlines on mobile touch viewports. */
+#app .btn:focus-visible, #app .btn.focused,
+#app .settings-container .setting-item:focus-visible, #app .settings-container .setting-item.focused,
+#app .ui-scale-control .scale-adjust-btn:focus-visible, #app .ui-scale-control .scale-adjust-btn.focused,
+#app .profile-actions .btn:focus-visible, #app .profile-actions .btn.focused,
+#app .form-toggle:focus-visible, #app .form-toggle.focused,
+body .modal .focusable:focus-visible, body .modal .focusable.focused {
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Full-width YouTube-style touch rows: clean title, subtle subtitle, and right-aligned chevron. */
+#app .settings-container .setting-item,
+body #advanced-settings-modal .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; }
+#app .settings-container .setting-item:first-of-type,
+body #advanced-settings-modal .setting-item:first-of-type { border-top: 1px solid #1a1a1a; }
+#app .settings-container .setting-item:active,
+body #advanced-settings-modal .setting-item:active { background: rgba(255, 255, 255, 0.08); }
+#app .settings-container .setting-info,
+body #advanced-settings-modal .setting-info { flex: 1 1 auto; min-width: 0; padding-right: 12px; }
+#app .settings-container .setting-label,
+body #advanced-settings-modal .setting-label { color: #f1f1f1; font-size: 16px; font-weight: 400; line-height: 1.35; margin: 0; }
+#app .settings-container .setting-description,
+body #advanced-settings-modal .setting-description { color: #888888; display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; }
+
+/* Subtitle/value display and chevron indicators in YouTube style. */
+#app .settings-container .setting-control,
+body #advanced-settings-modal .setting-control { align-items: center; display: inline-flex; flex: 0 0 auto; gap: 6px; justify-content: flex-end; }
+#app .settings-container .current-value-display,
+body #advanced-settings-modal .current-value-display { align-items: center; background: transparent; border: 0; color: #888888; display: inline-flex; font-size: 14px; font-weight: 400; height: 24px; line-height: 1; margin-right: 4px; padding: 0; }
+#app .settings-container .color-preview-circle { border-radius: 50%; height: 16px; width: 16px; margin-right: 4px; display: inline-block; }
+#app .settings-container .setting-item .edit-trigger,
+body #advanced-settings-modal .setting-item .edit-trigger { align-items: center; background: transparent; border: 0; border-radius: 50%; display: inline-flex; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; padding: 0; width: 14px; }
+#app .settings-container .setting-item .edit-trigger .setting-edit-icon,
+body #advanced-settings-modal .setting-item .edit-trigger .setting-edit-icon { display: none; }
+#app .settings-container .setting-item .edit-trigger::after,
+body #advanced-settings-modal .setting-item .edit-trigger::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
+
+/* Keep switches and scale steppers cleanly visible on the right. */
+#app .settings-container .setting-control:has(.form-toggle),
+#app .settings-container .setting-control.ui-scale-control { display: inline-flex !important; }
+#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; display: inline-flex !important; font-size: 13.5px; font-weight: 600; height: 34px; justify-content: center; min-width: 44px; text-align: center; }
+
+/* Clean, native-feeling circular UI scale stepper buttons. */
+#app .settings-container .ui-scale-control { background: transparent; border: 0; border-radius: 0; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
+#app .settings-container .ui-scale-control .scale-adjust-btn { background: #222222; border: 1px solid #333333; border-radius: 50%; color: #ffffff; font-size: 16px; font-weight: 600; height: 34px; min-height: 34px; min-width: 34px; width: 34px; }
+#app .settings-container .ui-scale-control .scale-adjust-btn:active { background: #383838; }
+#app .settings-container .ui-scale-control .scale-adjust-btn::after { content: none; display: none; }
+
+#app .settings-section--app-info { margin-bottom: 18px; padding: 0 20px; }
+#app .settings-container #app-info-btn { background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; color: #f1f1f1; font-size: 16px; font-weight: 400; justify-content: space-between; min-height: 52px; padding: 16px 0; width: 100%; display: flex; align-items: center; }
+#app .settings-container #app-info-btn:active { background: rgba(255, 255, 255, 0.08); }
+#app .settings-container #app-info-btn .btn__icon { display: none; }
+#app .settings-container #app-info-btn .btn__chevron { color: #666666; font-size: 18px; display: inline-block; }
+
+/* Mobile layout: hide desktop dropdown and show mobile entry row */
+#app .advanced-dropdown-wrapper,
+#app #advanced-dropdown-container,
+#app #advanced-settings-section { display: none !important; }
+#app #mobile-advanced-item { display: flex !important; }
+
+/* Prevent floating network status icon from colliding on mobile */
+.network-status-overlay { display: none !important; }
+
+/* Dedicated Update Check Modal status alignment */
+#update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
+#update-check-modal .update-modal-heading { color: #f1f1f1; font-size: 19px; font-weight: 600; margin: 16px 0 6px; }
+#update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
+#update-check-modal .update-version-badge { background: rgba(70, 211, 105, 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
+
+
+/* Mobile: Centered version fetch error and retry button */
+.version-error-center {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    min-height: 180px;
+    padding: 36px 16px;
+    text-align: center;
+    width: 100%;
+}
+.version-error-center .version-fetch-error {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 320px;
+    text-align: center;
+}
+.version-error-center .btn {
+    min-height: 48px;
+    min-width: 200px;
+    width: auto;
+}
+
+/* Mobile: Version selector refresh button in dialog top-right header */
+html body #version-selector-modal .modal__refresh-btn,
+html body #version-selector-refresh-btn,
+body #version-selector-modal .modal__refresh-btn,
+body #version-selector-refresh-btn,
+body .modal__refresh-btn {
+    align-items: center;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    left: auto !important;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    position: absolute !important;
+    right: 12px !important;
+    top: calc(env(safe-area-inset-top, 44px) + 8px) !important;
+    width: 44px;
+    z-index: 50 !important;
+}
+body .modal__refresh-btn:active {
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+.modal-refresh-icon {
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 22px;
+    pointer-events: none;
+    width: 22px;
+}
+
+/* Mobile: Polished App Info modal dialog layout */
+body #app-info-modal .modal__dialog {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 20px;
+}
+/* Mobile: App info body layout */
+body #app-info-modal .app-info-body {
+    padding: 4px 0 12px;
+    width: 100%;
+}
+/* Mobile: Centered app brand logo in app info dialog */
+body #app-info-modal .app-info-logo {
+    height: 56px;
+    margin-bottom: 2px;
+    width: 56px;
+}
+/* Mobile: Application title heading in app info dialog */
+body #app-info-modal .app-info-app-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+/* Mobile: Version pill badge in app info dialog */
+body #app-info-modal .app-info-badge {
+    background: rgba(var(--primary-rgb), 0.14);
+    border: 1px solid var(--primary-color);
+    border-radius: 999px;
+    color: var(--primary-color);
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 4px 16px;
+}
+/* Mobile: Clean details list without nested boxes */
+body #app-info-modal .app-info-details {
+    display: flex;
+    flex-direction: column;
+    margin: 8px 0 16px;
+    width: 100%;
+}
+/* Mobile: Clean info row */
+body #app-info-modal .app-info-row {
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 12px 4px;
+    width: 100%;
+}
+body #app-info-modal .app-info-row:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* Mobile: Info label */
+body #app-info-modal .app-info-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    font-weight: 500;
+}
+/* Mobile: Info value */
+body #app-info-modal .app-info-value {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+}
+/* Mobile: Modal footer close button */
+body #app-info-modal .modal__footer .btn {
+    border-radius: 12px;
+    font-size: 15px;
+    min-height: 48px;
+    width: 100%;
+}
+
+/* Mobile: Account screen styled consistently with IVIDS card architecture. */
+#app .account-container { box-sizing: border-box; margin: 0 auto; max-width: 600px; padding: calc(16px + env(safe-area-inset-top, 24px)) 16px calc(84px + env(safe-area-inset-bottom, 16px)); width: 100%; }
+#app .account-header { margin-bottom: 16px; padding: 0 4px; text-align: left; }
+#app .account-header h1 { color: #ffffff; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+#app .account-section { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); box-sizing: border-box; box-shadow: none; margin-bottom: 20px; padding: 20px 18px; width: 100%; }
+#app .account-section .section-title { border: none; color: #ffffff; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 16px; padding: 0; text-transform: none; }
+#app .profile-display { align-items: center; border: none; display: flex; gap: 18px; padding: 0; text-align: left; width: 100%; }
+#app .profile-avatar.large { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.25); border-radius: var(--radius-md); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); color: #ffffff; display: flex; flex: 0 0 68px; font-size: 28px; font-weight: 800; height: 68px; justify-content: center; width: 68px; }
+#app .profile-details { display: flex; flex: 1 1 auto; flex-direction: column; gap: 6px; min-width: 0; }
+#app .profile-name-text { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+#app .profile-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; width: 100%; }
+#app .profile-actions .btn { align-items: center; border-radius: var(--radius-sm); box-sizing: border-box; display: inline-flex; font-size: 14.5px; font-weight: 700; justify-content: center; min-height: 46px; padding: 0 18px; width: 100%; }
+#app .profile-actions .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: #000000; }
+#app .profile-actions .btn--secondary { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
+#app .profile-actions .btn--danger { background: #e63946; border: 1px solid #e63946; color: #ffffff; }
+
+/* Login screen keeps its form within the phone width and uses a single clear primary action. */
+#app .login-page-wrapper { align-items: flex-start; background: #0f0f0f; box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
+#app .login-card-container { max-width: 460px; width: 100%; }
+#app .login-panel { background: transparent; border: 0; border-radius: 0; box-shadow: none; max-height: none; overflow: visible; padding: 64px 0 12px; width: 100%; }
+#app #login-circle-back { background: transparent; border: 0; border-radius: 50%; height: 44px; left: 0; min-height: 44px; min-width: 44px; top: 0; width: 44px; }
+#app #login-circle-back:active { background: rgba(255, 255, 255, 0.14); }
+#app .login-header { align-items: flex-start; margin: 0 0 28px; text-align: left; }
+#app .login-title-text { font-size: 28px; justify-content: flex-start; text-align: left; }
+#app .login-subtitle-text { color: var(--mobile-muted); font-size: 14px; text-align: left; }
+#app .tab-bar--fill { border-bottom-color: #343434; gap: 18px; margin-bottom: 20px; }
+#app .tab-bar--fill .btn { color: #aaaaaa; font-size: 15px; font-weight: 600; min-height: 48px; }
+#app .tab-bar--fill .btn.is-active, #app .tab-bar--fill .btn.active { border-bottom-color: #ffffff; color: #ffffff; }
+#app .login-panel .form-input { background: #191919; border: 1px solid #353535; border-radius: 12px; color: #ffffff; font-size: 16px; height: 52px; min-height: 52px; padding: 0 15px; width: 100%; }
+#app .login-panel .form-input:focus { background: #202020; border-color: #ffffff; }
+#app .login-panel .form-label { color: #e2e2e2; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+#app .login-footer { align-items: stretch; gap: 10px; margin-top: 22px; }
+#app #login-submit { background: #ffffff; border: 1px solid #ffffff; border-radius: 12px; color: #111111; font-size: 15px; font-weight: 700; min-height: 52px; width: 100%; }
+#app #login-back { display: none; }
+
+@media (orientation: landscape) and (max-height: 500px) {
+    #app .settings-container .setting-item--ui-scale { align-items: center; grid-template-columns: minmax(0, 1fr) auto; }
+    #app .settings-container .ui-scale-control { gap: 4px; }
+}
+
+/* Avoid motion when the system asks for reduced animations. */
+@media (prefers-reduced-motion: reduce) {
+    html body .modal__dialog, body .modal__dialog { transform: none; transition: none; }
+    #app .btn, body .modal__footer .btn, body .modal__back-btn, body .language-card, #app .tab-bar--fill .btn { transition: none; }
+    #app .btn:active, body .modal__footer .btn:active, body .modal__back-btn:active, body .language-card:active, #app .tab-bar--fill .btn:active { transform: none; }
+    #sidebar-container .nav-rail .nav-item { transition: none; }
+    #sidebar-container .nav-rail .nav-item:active, #sidebar-container .nav-rail .nav-item.is-pressed { transform: none; }
+    #app #details-tabs .btn { transition: none; }
+    .ripple-wave { animation: none !important; opacity: 0 !important; }
+}
+
+/* Eliminate native tap overlay box in WebViews */
+html, body, button, a, .universal-onclick { -webkit-tap-highlight-color: transparent; }
+
+/* Account and authentication actions keep a clearly visible 2px outline. */
+#app .account-container .profile-actions .btn,
+#app .login-panel .login-footer .btn,
+#app #login-submit,
+#app #login-circle-back { border-width: 2px; }

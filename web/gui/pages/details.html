@@ -1,0 +1,103 @@
+<div class="details-page">
+    <button id="details-back-btn" class="btn btn--secondary btn--circle focusable details-back-btn universal-onclick" title="Back" aria-label="Back">
+        <img src="images/back.svg" class="details-back-icon" alt="Back">
+    </button>
+    <!-- Cinematic Background backdrop -->
+    <div class="media-backdrop details-backdrop" id="details-backdrop">
+        <div class="media-backdrop__overlay details-backdrop-overlay"></div>
+    </div>
+    <div id="details-page-loader" class="loader-center-container">
+        <div class="ivids-loader"><img src="svg/loader.svg" class="ivids-loader-svg" alt="Loading..."></div>
+    </div>
+    <div class="details-layout is-loading">
+        <div class="details-top">
+            <div class="details-info">
+                <h1 class="title-hero details-title" id="details-title"></h1>
+                <div id="details-genres" class="details-genres"></div>
+                <div class="details-meta">
+                    <span id="details-date"></span>
+                    <span id="details-rating"></span>
+                </div>
+                <p class="details-overview" id="details-overview"></p>
+                <div class="details-actions btn-group">
+                    <button class="btn btn--primary focusable play-icon-button details-play-icon-btn universal-onclick" id="details-play" type="button" aria-label="Play">
+                        <svg class="mobile-play-icon details-play-icon details-mobile-icon hidden" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M5 3L19 12L5 21V3Z" fill="#111111"></path>
+                        </svg>
+                        <span class="details-play-label hidden" data-i18n="details.play" aria-hidden="true">Play</span>
+                    </button>
+                    <button class="btn btn--secondary focusable hidden universal-onclick" id="details-trailer">
+                        <img src="images/movies.svg" class="details-action-icon details-mobile-icon hidden" alt="">
+                        <span class="details-action-label" data-i18n="details.watchTrailer">Watch Trailer</span>
+                    </button>
+                    <button class="btn btn--secondary focusable universal-onclick" id="details-playlist">
+                        <img src="images/playlists.svg" class="details-action-icon details-mobile-icon hidden" alt="">
+                        <span class="details-action-label" data-i18n="details.addToPlaylist">Add to Playlist</span>
+                    </button>
+                </div>
+            </div>
+            <div class="details-poster-container">
+                <img id="details-poster" class="details-hero-poster" src="" alt="">
+            </div>
+        </div>
+        <!-- Tabs header bar -->
+        <div class="tab-bar" id="details-tabs">
+            <button class="btn btn--secondary focusable hidden universal-onclick" id="tab-seasons" data-i18n="details.seasons">Seasons</button>
+            <button class="btn btn--secondary focusable universal-onclick" id="tab-extra" data-i18n="details.extra">Extra</button>
+            <button class="btn btn--secondary focusable universal-onclick" id="tab-about" data-i18n="details.about">About</button>
+        </div>
+        
+        <!-- Tab Panel: Seasons (TV Show only) -->
+        <div class="tab-panel details-bottom" id="panel-seasons">
+            <div class="details-seasons" id="seasons-container">
+                <div class="seasons-dropdown-wrapper form-select-wrapper">
+                    <select id="seasons-dropdown" class="filter-select focusable"></select>
+                </div>
+                <div id="seasons-list" class="seasons-list-content">
+                    <!-- Filled by JS with IVIDS .season-btn -->
+                </div>
+            </div>
+            <div id="details-episodes" class="episodes-list">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- Tab Panel: Extra (Trailers & Specials) -->
+        <div class="tab-panel hidden" id="panel-extra">
+            <div class="disney-extras-list" id="extras-list">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- Tab Panel: About (Synopsis & Cast) -->
+        <div class="tab-panel hidden" id="panel-about">
+            <div class="disney-about-content">
+                <div class="disney-about-left">
+                    <h4 class="section-title" data-i18n="details.synopsis">Synopsis</h4>
+                    <p class="disney-about-description" id="about-description"></p>
+                </div>
+                <div class="disney-about-right">
+                    <h4 class="section-title" data-i18n="details.castAndCrew">Cast & Crew</h4>
+                    <div class="media-grid media-grid--cast disney-cast-grid" id="about-cast">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Add to Playlist Modal -->
+<div id="add-to-playlist-modal" class="modal">
+    <div class="modal__dialog modal__dialog--md">
+        <h2 class="modal__title" data-i18n="details.addToPlaylist">Add to Playlist</h2>
+        <div id="playlist-selection-list" class="modal__body modal__body--scroll playlist-selection-list">
+            <!-- Playlists to select will be injected here -->
+        </div>
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
+            <button id="add-to-playlist-cancel" class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="details.cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+

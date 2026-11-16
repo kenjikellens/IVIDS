@@ -62,7 +62,7 @@ function main() {
     // 4. Validate Tizen config.xml files
     const configPaths = [
         path.join(__dirname, 'app', 'src', 'main', 'config.xml'),
-        path.join(__dirname, 'app', 'src', 'main', 'assets', 'main', 'config.xml')
+        path.join(__dirname, 'web', 'config.xml')
     ];
 
     configPaths.forEach(cfgPath => {
@@ -80,7 +80,7 @@ function main() {
     });
 
     // 5. Scan GUI HTML/JS files for legacy hardcoded strings
-    const guiDir = path.join(__dirname, 'app', 'src', 'main', 'assets', 'main', 'gui');
+    const guiDir = path.join(__dirname, 'web', 'gui');
     const legacyPatterns = [
         { regex: /app-version-display[^>]*>v\d+\.\d+\.\d+</i, name: 'Hardcoded initial HTML version in app-version-display' },
         { regex: /return\s+['"]v0\.[0-5]\.\d+['"]/g, name: 'Legacy hardcoded fallback return in JS' }

@@ -1,0 +1,175 @@
+import { SpatialNav } from './spatial-nav.js';
+import I18n from './i18n.js';
+
+export class ErrorHandler {
+    /**
+     * Initializes the ErrorHandler modal DOM element and sets up click handlers.
+     * Creates and appends the error modal wrapper inside the document body.
+     */
+    static init() {
+        try {
+            // Create the modal container if it doesn't exist
+            if (!document.getElementById('error-modal')) {
+                const modal = document.createElement('div');
+                modal.id = 'error-modal';
+                modal.className = 'modal modal--danger error-modal';
+                modal.innerHTML = `
+                    <div class="modal__dialog modal__dialog--sm error-content">
+                        <div class="error-icon-container">
+                            <div class="error-icon-mask"></div>
+                        </div>
+                        <h2 id="error-title" class="modal__title error-title">Error</h2>
+                        <div class="modal__body error-message-container">
+                            <p id="error-message" class="modal__desc error-message"></p>
+                        </div>
+                        <div class="modal__footer error-actions btn-group">
+                            <button id="error-retry-btn" class="btn btn--primary btn--fixed-min focusable">Retry</button>
+                            <button id="error-close-btn" class="btn btn--secondary btn--fixed-min focusable">Close</button>
+                        </div>
+                    </div>
+                `;
+                if (document.body) {
+                    document.body.appendChild(modal);
+                } else {
+                    console.error('document.body not ready for ErrorHandler');
+                    return;
+                }
+
+                // Bind generic close event
+                const closeBtn = document.getElementById('error-close-btn');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => ErrorHandler.hide());
+                }
+            }
+        } catch (e) {
+            console.error('Failed to initialize ErrorHandler:', e);
+        }
+    }
+
+    /**
+     * Displays the system error modal with a custom message, optional title, and optional retry action.
+     * Modifies the DOM content of the modal elements and redirects spatial focus to the active modal buttons.
+     * @param {string} message - The description of the error to show.
+     * @param {function} [retryCallback] - Callback executed when the retry button is activated.
+     * @param {string} [title] - Custom title text for the error header.
+     */
+    static show(message, retryCallback = null, title = null) {
+        try {
+            const modal = document.getElementById('error-modal');
+            const titleEl = document.getElementById('error-title');
+            const messageEl = document.getElementById('error-message');
+            const retryBtn = document.getElementById('error-retry-btn');
+            const closeBtn = document.getElementById('error-close-btn');
+
+            if (!modal) {
+                console.error('Error modal not initialized. Error message:', message);
+                try {
+                    const fallbackDiv = document.createElement('div');
+                    fallbackDiv.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;background:rgba(255,0,0,0.9);color:#fff;padding:15px;z-index:99999;border-radius:5px;font-family:sans-serif;font-size:14px;';
+                    fallbackDiv.innerHTML = `<strong>Error Fallback:</strong> ${message}`;
+                    document.documentElement.appendChild(fallbackDiv);
+                    setTimeout(() => fallbackDiv.remove(), 8000);
+                } catch (domErr) {
+                    console.error('Failed to inject fallback DOM error:', domErr);
+                }
+                return;
+            }
+
+            // Force Splash Dismissal if active
+            const splash = document.getElementById('splash-screen');
+            if (splash && !splash.classList.contains('hidden')) {
+                splash.classList.add('hidden');
+                setTimeout(() => splash.style.display = 'none', 500);
+            }
+
+            // Safe I18n access
+            const defaultTitle = (I18n && typeof I18n.t === 'function') ? I18n.t('error.defaultTitle') : 'Ooops!';
+            const defaultMessage = (I18n && typeof I18n.t === 'function') ? I18n.t('error.defaultMessage') : 'Something went wrong. Please try again.';
+
+            if (titleEl) titleEl.textContent = title || defaultTitle;
+            if (messageEl) messageEl.textContent = message || defaultMessage;
+
+            // Configure Buttons
+            if (retryCallback) {
+                if (retryBtn) {
+                    retryBtn.style.display = 'inline-block';
+                    
+                    // Directly assign the onclick listener to prevent event stacking without DOM cloning overhead
+                    retryBtn.onclick = () => {
+                        ErrorHandler.hide();
+                        try {
+                            retryCallback();
+                        } catch (cbError) {
+                            console.error('Error in retry callback:', cbError);
+                        }
+                    };
+
+                    // Handle focus based on device/available tools
+                    setTimeout(() => {
+                        if (SpatialNav && typeof SpatialNav.setFocus === 'function') {
+                            SpatialNav.setFocus(retryBtn);
+                        } else {
+                            retryBtn.focus();
+                        }
+                    }, 100);
+                }
+            } else {
+                if (retryBtn) retryBtn.style.display = 'none';
+
+                // Focus close button
+                setTimeout(() => {
+                    if (closeBtn) {
+                        if (SpatialNav && typeof SpatialNav.setFocus === 'function') {
+                            SpatialNav.setFocus(closeBtn);
+                        } else {
+                            closeBtn.focus();
+                        }
+                    }
+                }, 100);
+            }
+
+            // Show with animation class
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                modal.classList.add('visible', 'is-open');
+            });
+
+        } catch (e) {
+            console.error('Error showing ErrorHandler:', e);
+            console.error('Original Error message:', message);
+            try {
+                const fallbackDiv = document.createElement('div');
+                fallbackDiv.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;background:rgba(255,0,0,0.9);color:#fff;padding:15px;z-index:99999;border-radius:5px;font-family:sans-serif;font-size:14px;';
+                fallbackDiv.innerHTML = `<strong>Critical Error:</strong> ${message}`;
+                document.documentElement.appendChild(fallbackDiv);
+                setTimeout(() => fallbackDiv.remove(), 8000);
+            } catch (domErr) {
+                console.error('Failed to inject critical DOM error:', domErr);
+            }
+        }
+    }
+
+    /**
+     * Hides the system error modal with transition and restores spatial focus.
+     * Clears visibility and is-open classes from the error modal element.
+     */
+    static hide() {
+        try {
+            const modal = document.getElementById('error-modal');
+            if (modal) {
+                modal.classList.remove('visible', 'is-open');
+
+                // Wait for transition to finish
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    // Refocus on the previous element or default
+                    if (SpatialNav && typeof SpatialNav.refocus === 'function') {
+                        SpatialNav.refocus();
+                    }
+                }, 400); // Matches CSS transition duration
+            }
+        } catch (e) {
+            console.error('Error hiding ErrorHandler:', e);
+        }
+    }
+}

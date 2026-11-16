@@ -1,0 +1,106 @@
+import { clearActiveAccountCache } from './account-helper.js';
+import { PersistentStorage } from './persistent-storage.js';
+
+/**
+ * Data Migration Utility for IVIDS.
+ * Converted legacy profile layouts and plaintext storage keys into secure,
+ * account-specific namespaced storage structures on startup.
+ */
+
+async function hashPin(pin) {
+    if (!pin) return null;
+    try {
+        const msgBuffer = new TextEncoder().encode(pin);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {
+        console.error('Migration: Hash calculation failed, keeping plaintext as fallback:', e);
+        return pin; // Fallback in case of older WebView environments lacking full Web Crypto support
+    }
+}
+
+/**
+ * Executes database/storage migration from older versions to the namespaced accounts system.
+ * Converts legacy profiles to local accounts and namespaces historical data.
+ */
+export async function runMigration() {
+    try {
+        const hasMigrated = PersistentStorage.getItem('ivids-migrated-v0.5.0');
+        if (hasMigrated) return; // Already migrated
+
+        console.log('Migration: Checking for legacy data...');
+        const legacyProfilesStr = PersistentStorage.getItem('ivids-profiles');
+        
+        let legacyProfiles = null;
+        if (legacyProfilesStr) {
+            try {
+                legacyProfiles = JSON.parse(legacyProfilesStr);
+            } catch (e) {
+                console.error('Migration: Failed to parse legacy profiles:', e);
+            }
+        }
+
+        // 1. Convert legacy custom profiles to Accounts
+        let accounts = [];
+        if (legacyProfiles && Array.isArray(legacyProfiles)) {
+            const customProfiles = legacyProfiles.filter(p => p.id !== 'guest' && p.name !== 'Guest');
+            
+            for (let i = 0; i < customProfiles.length; i++) {
+                const p = customProfiles[i];
+                const accId = `acc_${Date.now()}_${i}`;
+                const hashedPin = await hashPin(p.pin);
+                accounts.push({
+                    id: accId,
+                    name: p.name,
+                    color: p.color,
+                    pin: hashedPin
+                });
+            }
+        }
+
+        // Fetch legacy global data
+        const legacyHistory = PersistentStorage.getItem('recentlyWatched');
+        const legacyPlaylists = PersistentStorage.getItem('user_playlists');
+        const legacySettings = PersistentStorage.getItem('ivids-settings');
+
+        if (accounts.length > 0) {
+            // Migrate legacy data to the first converted custom account
+            const firstAccId = accounts[0].id;
+            console.log(`Migration: Migrating legacy data to account: ${accounts[0].name} (${firstAccId})`);
+
+            if (legacyHistory) PersistentStorage.setItem(`ivids-acc-${firstAccId}-recentlyWatched`, legacyHistory);
+            if (legacyPlaylists) PersistentStorage.setItem(`ivids-acc-${firstAccId}-playlists`, legacyPlaylists);
+            if (legacySettings) PersistentStorage.setItem(`ivids-acc-${firstAccId}-settings`, legacySettings);
+
+            // Save new accounts list
+            PersistentStorage.setItem('ivids-profiles', JSON.stringify(accounts));
+            
+            // Set first custom account as active
+            PersistentStorage.setItem('ivids-current-profile', JSON.stringify(accounts[0]));
+        } else {
+            // No custom profiles, migrate global legacy data to anonymous namespace
+            console.log('Migration: No custom profiles found. Migrating to anonymous namespace.');
+            
+            if (legacyHistory) PersistentStorage.setItem('ivids-anon-recentlyWatched', legacyHistory);
+            if (legacyPlaylists) PersistentStorage.setItem('ivids-anon-playlists', legacyPlaylists);
+            if (legacySettings) PersistentStorage.setItem('ivids-anon-settings', legacySettings);
+
+            // Clean up profiles
+            PersistentStorage.removeItem('ivids-profiles');
+            PersistentStorage.removeItem('ivids-current-profile');
+        }
+
+        // Clean up legacy global keys
+        PersistentStorage.removeItem('recentlyWatched');
+        PersistentStorage.removeItem('user_playlists');
+        PersistentStorage.removeItem('ivids-guest-pos');
+        
+        // Mark migration as complete
+        PersistentStorage.setItem('ivids-migrated-v0.5.0', 'true');
+        clearActiveAccountCache();
+        console.log('Migration: Migration completed successfully.');
+    } catch (error) {
+        console.error('Migration: Critical migration error:', error);
+    }
+}

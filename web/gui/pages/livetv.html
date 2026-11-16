@@ -1,0 +1,73 @@
+<div class="livetv-page-layout">
+    <!-- Three-Column IPTV Body: [Categories / Countries List] | [Search + Channels List] | [Video Preview & EPG] -->
+    <div class="livetv-two-column-layout">
+        <!-- Left Column: Vertical Scrollable List of Categories & Countries -->
+        <div class="livetv-categories-column">
+            <div class="categories-list" id="categories-list">
+                <!-- Dynamically injected focusable category & country rows -->
+            </div>
+        </div>
+
+        <!-- Middle Column: Search Bar + Scrollable list of channels -->
+        <div class="livetv-list-column">
+            <div class="search-box livetv-search-box">
+                <div class="form-control-wrapper focusable-container">
+                    <img src="images/search.svg" class="search-icon" alt="Search">
+                    <input type="text" id="search-input" class="form-input focusable" placeholder="Search for channels..."
+                        data-i18n="livetv.searchPlaceholder" readonly>
+                    <button id="search-clear" class="search-clear-btn focusable hidden universal-onclick" aria-label="Clear Search">&times;</button>
+                </div>
+            </div>
+
+            <div class="channels-list" id="channels-list">
+                <!-- Dynamically injected clean channel rows -->
+            </div>
+
+            <div id="no-channels-message" class="empty-state hidden">
+                <p data-i18n="livetv.noChannels">No channels found</p>
+            </div>
+        </div>
+
+        <!-- Right Column: Channel Preview & EPG details (Consistent Structure from Initial Load) -->
+        <div class="livetv-preview-column">
+            <div id="hero-active-content" class="hero-active-content">
+                <!-- Top Card: 16:9 Widescreen Video Preview -->
+                <div class="preview-card preview-card-video focusable" id="livetv-preview-card" tabindex="0">
+                    <video id="livetv-preview-video" autoplay muted playsinline></video>
+                    <div id="preview-video-loading" class="preview-video-loading hidden">
+                        <div class="ivids-loader"></div>
+                    </div>
+                </div>
+
+                <!-- Bottom Card: Current & Upcoming Program EPG Schedules -->
+                <div class="card card--panel epg-panel epg-card">
+                    <!-- Current Program Schedule -->
+                    <div id="hero-epg-container" class="details-epg-section">
+                        <h3 class="section-title">
+                            <span class="live-badge" data-i18n="livetv.live">LIVE</span>
+                            <span data-i18n="livetv.playingNow">Playing Now</span>
+                        </h3>
+                        <div class="epg-active-show">
+                            <span id="hero-epg-title" class="epg-show-title" data-i18n="livetv.loading">Loading channels...</span>
+                            <div class="hero-epg-progress-wrapper">
+                                <span id="hero-epg-start" class="epg-time">--:--</span>
+                                <div class="epg-progress-bar-container">
+                                    <div id="hero-epg-progress" class="epg-progress-bar-fill"></div>
+                                </div>
+                                <span id="hero-epg-end" class="epg-time">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Programs list -->
+                    <div class="details-upcoming-section">
+                        <h3 class="section-title" data-i18n="livetv.upcoming">Upcoming Programs</h3>
+                        <div class="upcoming-programs-list" id="upcoming-programs-list">
+                            <!-- Injected upcoming show rows -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

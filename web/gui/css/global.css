@@ -1,0 +1,2193 @@
+/* ==========================================================================
+   IVIDS UNIFIED OOCSS DESIGN SYSTEM STYLESHEET
+   ========================================================================== */
+
+/* ==========================================================================
+   SECTION 1: DESIGN TOKENS, CORE UTILITIES & BASE RESET
+   ========================================================================== */
+
+/* Root design system tokens for TV, desktop, and responsive scaling. */
+:root {
+    color-scheme: dark;
+    --ui-scale: 1.0;
+    --app-content-padding-x: clamp(18px, 2.5vw, 36px);
+    --app-content-padding-y: clamp(16px, 2vw, 30px);
+    --app-sidebar-expanded-width: clamp(190px, 14vw, 220px);
+    --app-sidebar-width: clamp(58px, 4vw, 68px);
+    --background-color: #050505;
+    --background-elevated: #0f0f0f;
+    --card-bg: var(--surface-color);
+    --focus-border-color: #ffffff;
+    --focus-ring: none;
+    --focus-ring-strong: none;
+    --poster-height: calc(var(--poster-width) * 1.5);
+    --poster-width: clamp(120px, 10.5vw, 154px);
+    --primary-color: #46d369;
+    --primary-rgb: 70, 211, 105;
+    --radius-lg: 5px;
+    --radius-md: 5px;
+    --radius-sm: 5px;
+    --radius-xs: 5px;
+    --row-min-height: calc(var(--poster-height) + 44px);
+    --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.36);
+    --shadow-panel: 0 18px 48px rgba(0, 0, 0, 0.48);
+    --surface-color: #171717;
+    --surface-muted: #2a2a2a;
+    --surface-soft: #202020;
+    --text-color: #f4f4f4;
+    --text-dim: #707070;
+    --text-muted: #a7a7a7;
+}
+
+/* Universal box-sizing reset and tap highlight removal. */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+
+/* Suppresses default browser focus outlines in favor of standardized white focus borders. */
+*:focus { outline: none; }
+
+/* Root html element configured to support dynamic UI scaling zoom. */
+html { background: var(--background-color); zoom: var(--ui-scale, 1.0); }
+
+/* Viewport container constrained to fit physical screen dimensions inversely relative to root zoom. */
+body {
+    background: #050505;
+    color: var(--text-color);
+    font-family: "Twemoji Country Flags", Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    height: calc(100vh / var(--ui-scale, 1.0));
+    line-height: 1.4;
+    margin: 0;
+    overflow: hidden;
+    width: calc(100vw / var(--ui-scale, 1.0));
+}
+
+/* Form element typography inheritance resets. */
+button { color: inherit; font: inherit; }
+input, textarea, select { font: inherit; }
+
+/* Primary flex application shell hosting sidebar rail and main viewport. */
+#app { background: transparent; display: flex; flex-direction: row; height: 100%; position: relative; width: 100%; }
+
+/* Sidebar host container with smooth width transition. */
+#sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.25s ease, flex-basis 0.25s ease; width: var(--app-sidebar-width); z-index: 2000; will-change: width, flex-basis; }
+
+/* Primary vertical scroll viewport container with bottom edge fade mask. */
+#main-view {
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
+    flex: 1;
+    height: 100%;
+    mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
+    min-width: 0;
+    overflow: hidden auto;
+    position: relative;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+/* Utility rule hiding hidden elements, scrollbars, and inactive fullscreen chrome. */
+#app.fullscreen-layout #sidebar-container, .hidden, [hidden], .btn.hidden, .mobile-back-btn, #main-view::-webkit-scrollbar, *::-webkit-scrollbar, .hero::after, .details-page::after, .details-page::before, .episodes-list:empty, .recent-searches-row.hidden, .server-list::-webkit-scrollbar { display: none !important; }
+
+/* Fullscreen content viewport occupying full screen width without fade masks. */
+#app.fullscreen-layout #main-view { -webkit-mask-image: none; margin-left: 0; mask-image: none; padding: 0; width: 100%; }
+
+/* Expanded sidebar container width override when pinned open. */
+#app.sidebar-always-expanded #sidebar-container { flex: 0 0 var(--app-sidebar-expanded-width); width: var(--app-sidebar-expanded-width); }
+
+/* Reveals navigation labels, brand text, and carousel handles on hover or focus. */
+#app.sidebar-always-expanded .nav-item span, #app.sidebar-always-expanded .logo-text, .navbar:hover .nav-item span, .navbar:focus-within .nav-item span, .navbar:hover .logo-text, .navbar:focus-within .logo-text, .row-container:hover .handle { opacity: 1; }
+
+/* Active typing highlight for input wrappers and standalone text inputs. */
+.input-wrapper:has(> .active-typing), input.active-typing:not(.input-wrapper *), textarea.active-typing:not(.input-wrapper *) { background: rgba(var(--primary-rgb), 0.12); border-color: var(--primary-color); }
+
+/* Suppresses inner input border when parent wrapper displays active typing highlight. */
+.input-wrapper > input.active-typing, .input-wrapper > textarea.active-typing { background: transparent; border-color: transparent; }
+
+/* Suppresses default outline for D-pad and keyboard spatial navigation elements. */
+.focusable { outline: none; }
+
+/* Reusable utility classes for horizontal centering, full-size stretching, and inline dot separators. */
+.mx-auto { margin: 0 auto; }
+.loader-inline-container .ivids-loader, .full-size { height: 100%; width: 100%; }
+.meta-separator-dot { color: var(--text-dim); margin: 0 4px; }
+
+/* ==========================================================================
+   SECTION 2: OOCSS BUTTON SYSTEM (.btn & .btn-group)
+   ========================================================================== */
+
+/* Base button structural superclass defining geometry, 3px transparent border, alignment, and transitions. */
+.btn {
+    align-items: center;
+    border: 3px solid transparent;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    gap: 8px;
+    justify-content: center;
+    line-height: 1;
+    min-height: 44px;
+    outline: none;
+    padding: 8px 22px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+    user-select: none;
+    white-space: nowrap;
+}
+
+/* Compact button sizing modifier with reduced padding and smaller typography. */
+.btn--sm, .btn-small { align-self: center; flex: none; font-size: 13px; min-height: 34px; padding: 6px 14px; width: fit-content; }
+
+/* Default standard button sizing modifier. */
+.btn--md { font-size: 15px; min-height: 44px; padding: 8px 22px; }
+
+/* Large button sizing modifier for prominent hero and confirmation actions. */
+.btn--lg { font-size: 17px; min-height: 52px; padding: 12px 28px; }
+
+/* Circular icon button modifier with unified 36px dimensions. */
+.btn--circle, .btn-circle { border-radius: 50%; flex-shrink: 0; height: 36px; min-height: 36px; min-width: 36px; padding: 0; width: 36px; }
+
+/* Medium circular icon button modifier (40px) for media player transport controls. */
+.btn--circle-md { border-radius: 50%; flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; padding: 0; width: 40px; }
+
+/* Compact circular icon button modifier (28px) for dense inline controls. */
+.btn--circle-sm { border-radius: 50%; flex-shrink: 0; height: 28px; min-height: 28px; min-width: 28px; padding: 0; width: 28px; }
+
+/* Large circular icon button modifier (48px) for modal steppers and transport controls. */
+.btn--circle-lg { border-radius: 50%; flex-shrink: 0; height: 48px; min-height: 48px; min-width: 48px; padding: 0; width: 48px; }
+
+/* Extra-large circular icon button modifier (64px) for TV and fullscreen player overlays. */
+.btn--circle-xl { border-radius: 50%; flex-shrink: 0; height: 64px; min-height: 64px; min-width: 64px; padding: 0; width: 64px; }
+/* Icon sizing inside medium circular buttons. */
+.btn--circle-md img, .btn--circle-md .btn__icon { height: 20px; width: 20px; }
+/* Icon sizing inside extra-large circular buttons. */
+.btn--circle-xl img, .btn--circle-xl .btn__icon { height: 26px; width: 26px; }
+
+/* Square icon action button modifier (46px) for settings triggers and list item actions. */
+.btn--square { border-radius: var(--radius-sm); flex-shrink: 0; height: 46px; min-height: 46px; min-width: 46px; padding: 0; width: 46px; }
+
+/* Full-width block button modifier stretching across parent container width. */
+.btn--block, .btn-full-center { display: flex; justify-content: center; width: 100%; }
+
+/* Fixed minimum-width button modifier ensuring localized labels fit consistently. */
+.btn--fixed-min, .btn-min-w { min-width: 130px; }
+
+/* Primary skin variant styling buttons with brand theme translucent fill. */
+.btn--primary, .btn-primary { background: rgba(var(--primary-rgb), 0.25); border-color: transparent; color: #ffffff; font-weight: 800; }
+/* Hover state for primary button skin variant. */
+.btn--primary:hover, .btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #ffffff; outline: none; }
+/* Focus state for primary button skin variant with standardized thick white border. */
+.btn--primary:focus, .btn--primary:focus-visible, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; color: #ffffff; outline: none; }
+
+/* Secondary skin variant styling buttons with soft neutral translucent fill and tactile border for TV affordance. */
+.btn--secondary, .btn-secondary { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.18); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35); color: #ffffff; }
+/* Hover state for secondary button skin variant. */
+.btn--secondary:hover, .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.35); color: #ffffff; outline: none; }
+/* Focus state for secondary button skin variant with standardized thick white border for TV. */
+.btn--secondary:focus, .btn--secondary:focus-visible, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; box-shadow: 0 0 14px rgba(255, 255, 255, 0.45); color: #ffffff; outline: none; }
+
+/* Danger skin variant styling destructive action buttons with red fill. */
+.btn--danger, .btn-danger { background: #b92b23; border-color: transparent; color: #ffffff; }
+/* Hover state for danger button skin variant. */
+.btn--danger:hover, .btn-danger:hover { background: #d43830; border-color: transparent; color: #ffffff; outline: none; }
+/* Focus state for danger button skin variant with standardized thick white border. */
+.btn--danger:focus, .btn--danger:focus-visible, .btn--danger.focused, .btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #ffffff; color: #ffffff; outline: none; }
+
+/* Ghost skin variant styling transparent background buttons with subtle highlight. */
+.btn--ghost { background: transparent; border-color: transparent; color: rgba(255, 255, 255, 0.8); }
+/* Hover state for ghost button skin variant. */
+.btn--ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; color: #ffffff; outline: none; }
+/* Focus state for ghost button skin variant with standardized thick white border. */
+.btn--ghost:focus, .btn--ghost:focus-visible, .btn--ghost.focused { background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff; outline: none; }
+
+/* Disabled state modifier applied to inactive or pending action buttons. */
+.btn:disabled, .btn.is-disabled { background: rgba(255, 255, 255, 0.06); cursor: not-allowed; opacity: 0.4; pointer-events: none; }
+
+/* Active state modifier applied to toggled or currently selected action buttons. */
+.btn.is-active, .btn.active { background: rgba(var(--primary-rgb), 0.35); border-color: var(--primary-color); color: #ffffff; }
+/* Preserves white focus border on active buttons when focused. */
+.btn.is-active:focus, .btn.is-active.focused, .btn.active:focus, .btn.active.focused { border-color: #ffffff; }
+
+/* Visual state modifier for buttons indicating item has already been added to collection. */
+.btn.is-added, .btn-added { color: rgba(255, 255, 255, 0.4); }
+
+/* Composite container grouping related action buttons with standard gap spacing. */
+.btn-group { align-items: center; display: flex; gap: 12px; }
+/* Button group modifier distributing child buttons equally across full container width. */
+.btn-group--fill .btn { flex: 1; min-width: 0; }
+/* Button group modifier aligning action buttons to the trailing edge. */
+.btn-group--end { justify-content: flex-end; }
+/* Button group modifier stacking buttons vertically across full container width. */
+.btn-group--vertical { flex-direction: column; width: 100%; }
+.btn-group--vertical .btn { width: 100%; }
+
+/* ==========================================================================
+   SECTION 3: OOCSS MEDIA GRIDS, RAILS & CARD SYSTEM (.media-*, .card)
+   ========================================================================== */
+
+/* Horizontal scrolling carousel rail container for media poster rows. */
+.media-rail, .row-posters {
+    -webkit-overflow-scrolling: touch;
+    contain: layout;
+    display: flex;
+    gap: 14px;
+    min-height: var(--row-min-height);
+    overflow: auto hidden;
+    padding: 14px var(--app-content-padding-x) 26px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+/* Base responsive CSS grid container for media card layouts. */
+.media-grid { display: grid; gap: clamp(12px, 1.5vw, 18px); width: 100%; }
+
+/* Responsive poster card grid with auto-fill columns. */
+.media-grid--posters, .search-results-grid, .playlist-items-grid {
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
+}
+
+/* Responsive widescreen 16:9 card grid for playlists with auto-fill columns. */
+.media-grid--widescreen, .playlists-grid {
+    display: grid;
+    gap: clamp(12px, 1.5vw, 18px);
+    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 18vw, 280px), 1fr));
+}
+
+/* Responsive compact cast and mini-card grid layout. */
+.media-grid--cast, .disney-cast-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    width: 100%;
+}
+
+/* Abstract base card structure enforcing containment, rounded corners, and smooth transitions. */
+.card {
+    background: var(--surface-soft);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    contain: layout;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 200ms ease;
+}
+
+/* Interactive card state modifier adding cursor pointer and outline suppression. */
+.card--interactive, .focusable-card { cursor: pointer; }
+.card--interactive:hover, .focusable.focusable-card:hover { outline: none; }
+.card--interactive:focus, .card--interactive.focused, .focusable.focusable-card:focus, .focusable.focusable-card.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    outline: none;
+    z-index: 10;
+}
+
+/* Vertical 2:3 poster card component for horizontal rails and search grids (zero scale transform). */
+.card--poster, .poster-wrapper {
+    background: var(--surface-soft);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    contain: layout;
+    cursor: pointer;
+    flex: 0 0 var(--poster-width);
+    height: var(--poster-height);
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 200ms ease;
+    width: var(--poster-width);
+}
+
+/* Poster card hover and focus states applying crisp white highlight border without displacement. */
+.card--poster:hover, .card--poster:focus, .card--poster.focused, .poster-wrapper:hover, .poster-wrapper:focus, .poster-wrapper.focused {
+    border-color: #ffffff;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+    outline: none;
+    z-index: 10;
+}
+
+/* Widescreen 16:9 card tile for playlist collections. */
+.card--widescreen {
+    aspect-ratio: 16 / 9;
+    background: var(--surface-soft);
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    contain: layout;
+    cursor: pointer;
+    flex: 0 0 auto;
+    height: auto;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+
+/* Widescreen playlist card hover and focus states applying white highlight border. */
+.card--widescreen:hover, .card--widescreen:focus, .card--widescreen.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    outline: none;
+    z-index: 10;
+}
+
+/* Horizontal media item row card layout for episodes, trailers, and playlist items. */
+.card--row {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    padding: 12px 16px;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+
+/* Hover state for horizontal row cards with soft background highlight. */
+.card--row:hover { background: rgba(255, 255, 255, 0.08); border-color: transparent; outline: none; }
+
+/* Focus state for horizontal row cards with solid white highlight border. */
+.card--row:focus, .card--row.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+
+/* Accent bottom indicator for watched media items. */
+.card--row.is-watched, .card--row.watched { border-bottom: 3px solid var(--primary-color); }
+
+/* Compact mini-card for cast members and actors. */
+.card--compact {
+    background: rgba(255, 255, 255, 0.02);
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+    text-align: center;
+    transition: border-color 150ms ease;
+}
+
+/* Focus state for compact cast cards with standard white border. */
+.card--compact:focus, .card--compact.focused {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+    outline: none;
+}
+
+/* Solid panel surface card for preview videos, EPG details, login, and version cards. */
+.card--panel {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+/* Focus state for interactive panel surface cards with white border. */
+.card--panel:focus, .card--panel.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+
+/* Card image element with object-fit cover and default dimming filter. */
+.card__media, .poster, .poster-img {
+    display: block;
+    filter: brightness(0.8);
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.25s ease, filter 0.16s ease;
+    width: 100%;
+}
+
+/* Restores full brightness to media images when parent card is hovered or focused. */
+.card--poster:hover .card__media, .card--poster:focus .card__media, .card--poster.focused .card__media,
+.card--widescreen:hover .card__media, .card--widescreen:focus .card__media, .card--widescreen.focused .card__media,
+.poster-wrapper:hover .poster, .poster-wrapper:focus .poster, .poster-wrapper.focused .poster,
+.poster-wrapper:hover .poster-img, .poster-wrapper:focus .poster-img, .poster-wrapper.focused .poster-img {
+    filter: brightness(1.1);
+}
+
+/* Card 16:9 thumbnail container for episodes, extras, and playlist row cards. */
+.card__thumb {
+    aspect-ratio: 16 / 9;
+    background-color: #1a1c22;
+    background-image: radial-gradient(circle at 80% 25%, rgba(var(--primary-rgb), 0.26) 0%, transparent 65%), linear-gradient(135deg, #262932 0%, #17191f 100%);
+    background-position: center;
+    background-size: cover;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    width: 200px;
+}
+
+/* Compact 16:9 card thumbnail modifier for playlist item rows. */
+.card__thumb--sm { width: 160px; }
+
+/* Centered play indicator icon overlay inside video/trailer thumbnails. */
+.disney-extra-play-icon {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.65);
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
+    color: #ffffff;
+    display: flex;
+    font-size: 16px;
+    height: 42px;
+    justify-content: center;
+    left: calc(50% - 21px);
+    position: absolute;
+    top: calc(50% - 21px);
+    width: 42px;
+}
+
+/* Empty state container for the Extras and Trailers panel when no videos exist. */
+.extras-empty-state {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    min-height: 240px;
+    padding: 60px 20px 40px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Subtle greyish empty state description text. */
+.extras-empty-text {
+    color: #888888;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 400px;
+}
+
+/* Circular retry button beneath empty state message. */
+.extras-retry-btn {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    height: 48px;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 48px;
+}
+
+/* Hover state for circular retry button. */
+.extras-retry-btn:hover, .extras-retry-btn:active {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Focus state for circular retry button with standardized thick white outline. */
+.extras-retry-btn:focus, .extras-retry-btn.focused {
+    border-color: #ffffff;
+    outline: 2px solid #ffffff;
+}
+
+/* Standalone retry icon inside empty state action button. */
+.extras-retry-icon {
+    color: #ffffff;
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 20px;
+    pointer-events: none;
+    width: 20px;
+}
+
+/* Card gradient overlay providing dark readability backing for widescreen card titles. */
+.card__overlay, .playlist-overlay {
+    align-items: flex-start;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    left: 0;
+    opacity: 1;
+    padding: 24px 14px 12px 14px;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+}
+
+/* Card badge icon indicator for playlists and media status. */
+.card__badge, .playlist-badge {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    height: 32px;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 32px;
+    z-index: 5;
+}
+
+/* Card text content body for titles, metadata, and descriptions. */
+.card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+/* Uppercase metadata label inside card bodies (e.g. Trailer / Teaser type). */
+.card__meta {
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+/* Card title typography with text ellipsis truncation. */
+.card__title {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+    width: 100%;
+}
+
+/* Episode metadata typography (duration, air date) inside row cards. */
+.episode-meta {
+    align-items: center;
+    color: var(--text-muted);
+    display: flex;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.episode-meta__item:not(:last-child)::after {
+    color: rgba(255, 255, 255, 0.35);
+    content: "•";
+    margin-left: 8px;
+}
+
+/* Card description and overview text with 2-line clamping. */
+.card__desc {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--text-muted);
+    display: -webkit-box;
+    font-size: 14px;
+    line-clamp: 2;
+    line-height: 1.45;
+    overflow: hidden;
+}
+
+/* Action buttons cluster aligned alongside row cards. */
+.card__actions, .playlist-item-actions { align-items: center; display: flex; flex-shrink: 0; gap: 10px; }
+
+/* ==========================================================================
+   SECTION 4: OOCSS FORM CONTROLS, INPUTS, CHIPS & BADGES
+   ========================================================================== */
+
+/* Vertical form group container for aligning labels, inputs, and validation hints. */
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; text-align: left; width: 100%; }
+
+/* Uppercase muted typography for form input labels. */
+.form-label { color: rgba(255, 255, 255, 0.85); display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 4px; text-transform: uppercase; }
+
+/* Validation message text wrapper inside forms. */
+.form-message { font-size: 13px; font-weight: 700; min-height: 18px; text-align: center; }
+
+/* Glassmorphic input wrapper container for text fields with leading or trailing icons. */
+.form-control-wrapper {
+    align-items: center;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.07);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    display: flex;
+    height: 58px;
+    padding: 0 16px;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+.form-control-wrapper:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
+.form-control-wrapper:focus-within, .form-control-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+
+/* Base text, password, number, and search input styling. */
+.form-input {
+    background: transparent;
+    border: 0;
+    box-sizing: border-box;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 700;
+    height: 100%;
+    outline: 0;
+    width: 100%;
+}
+
+/* Standalone form input not nested inside form-control-wrapper. */
+.form-input:not(.form-control-wrapper *) {
+    background: rgba(255, 255, 255, 0.07);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    height: 48px;
+    padding: 0 16px;
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+.form-input:not(.form-control-wrapper *):hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
+.form-input:not(.form-control-wrapper *):focus, .form-input:not(.form-control-wrapper *).focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; box-shadow: none; outline: none; }
+.form-input::placeholder { color: rgba(255, 255, 255, 0.38); }
+
+/* Compact form input modifier for modal dialogs and inline table rows. */
+.form-input--compact { font-size: 14px; height: 42px; padding: 0 12px; }
+
+/* Glassmorphic custom dropdown selector wrapper with chevron indicator. */
+.form-select-wrapper {
+    align-items: center;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-xs);
+    box-sizing: border-box;
+    display: flex;
+    height: 54px;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+.form-select-wrapper:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
+.form-select-wrapper:focus-within, .form-select-wrapper.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+.form-select-wrapper::after {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    border-right: 2px solid rgba(255, 255, 255, 0.6);
+    content: '';
+    height: 6px;
+    pointer-events: none;
+    position: absolute;
+    right: 18px;
+    top: calc(50% - 4px);
+    transform: rotate(45deg);
+    width: 6px;
+}
+
+/* Native select element inside custom select wrapper stripped of browser defaults. */
+.form-select, .filter-select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: none;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    height: 100%;
+    outline: none;
+    padding: 0 36px 0 18px;
+    width: 100%;
+}
+.form-select option, .filter-select option { background: #111111; color: #ffffff; padding: 10px; }
+
+/* Modal select menu trigger button with flex alignment and chevron. */
+.form-select-trigger {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.07);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    font-size: 16px;
+    font-weight: 800;
+    height: 50px;
+    justify-content: space-between;
+    outline: none;
+    padding: 0 16px;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+.form-select-trigger:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
+.form-select-trigger:focus, .form-select-trigger.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+
+/* Toggle switch pill container for boolean settings and preferences. */
+.form-toggle {
+    background: rgba(255, 255, 255, 0.14);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    height: 36px;
+    outline: none;
+    position: relative;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 64px;
+}
+.form-toggle input { height: 0; opacity: 0; width: 0; }
+.form-toggle__slider {
+    background-color: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 24px;
+    left: 3px;
+    position: absolute;
+    top: 3px;
+    transition: left 0.2s ease, background-color 0.2s ease;
+    width: 24px;
+}
+.form-toggle:hover { background-color: rgba(255, 255, 255, 0.22); }
+.form-toggle:has(input:checked) { background-color: var(--primary-color); }
+.form-toggle:has(input:checked) .form-toggle__slider { background-color: #050505; left: 31px; }
+.form-toggle:focus, .form-toggle.focused { border-color: #ffffff; outline: none; }
+
+/* Base interactive selection chip component for filters, options, recent searches, and tags. */
+.chip {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 15px;
+    font-weight: 700;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    min-height: 48px;
+    padding: 10px 16px;
+    position: relative;
+    text-align: center;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.chip:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
+.chip:focus, .chip.focused { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; outline: none; }
+
+/* Universal nested icon sizing inside buttons and chips preventing sticky or stretched graphics. */
+.btn img, .setting-btn img, .stepper-arrow-btn img, .chip img, .btn__icon, .chip__icon {
+    display: block;
+    flex-shrink: 0;
+    height: 16px;
+    object-fit: contain;
+    width: 16px;
+}
+
+/* Selected and active state highlight for chips with primary brand color. */
+.chip.is-selected, .chip.is-active, .chip.selected, .chip.active {
+    background: var(--primary-color);
+    border-color: transparent;
+    color: #050505;
+    font-weight: 800;
+}
+.chip.is-selected:focus, .chip.is-selected.focused, .chip.is-active:focus, .chip.is-active.focused,
+.chip.selected:focus, .chip.selected.focused, .chip.active:focus, .chip.active.focused {
+    border-color: #ffffff;
+    outline: none;
+}
+
+/* Visually hides native checkboxes and radio inputs inside filter chips for custom styled appearance. */
+.chip input[type="checkbox"],
+.chip input[type="radio"],
+.chip--filter input[type="checkbox"],
+.chip--filter input[type="radio"] {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 0;
+    margin: -1px;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0;
+    pointer-events: none;
+    position: absolute;
+    white-space: nowrap;
+    width: 0;
+}
+
+/* Filter chip modifier with checkmark indicator when selected. */
+.chip--filter.is-selected::before, .chip--filter.selected::before {
+    color: #050505;
+    content: '\2713';
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 900;
+    margin-right: 6px;
+}
+
+/* Option chip modifier with radio dot indicator for settings modal options. */
+.chip--option.is-active::after, .chip--option.active::after {
+    background: var(--primary-color);
+    border-radius: 999px;
+    content: '';
+    height: 8px;
+    position: absolute;
+    right: 14px;
+    top: calc(50% - 4px);
+    width: 8px;
+}
+
+/* Recent search chip modifier styled as compact pill with remove trigger. */
+.chip--recent { font-size: 14px; gap: 8px; min-height: 34px; padding: 6px 14px; }
+
+/* Genre chip modifier for media details tags. */
+.chip--genre { backdrop-filter: blur(5px); font-size: 13px; font-weight: 600; min-height: 32px; padding: 6px 12px; }
+
+/* Rating badge chip modifier for content advisory ratings. */
+.chip--rating { font-size: 12px; font-weight: 800; min-height: 28px; padding: 4px 10px; text-transform: uppercase; }
+.chip--rating.rating-R, .chip--rating.rating-TV-MA { background-color: #ff4500; border-color: #ff4500; color: #ffffff; }
+
+/* Color picker option chip modifier with square proportions. */
+.chip--color { min-height: 88px; }
+
+/* Responsive grid layout container for arranging chips in discovery modals and settings. */
+.chip-grid { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+.chip-grid--2col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.chip-grid--color { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+/* Universal status pill badge component. */
+.badge {
+    align-items: center;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 800;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    min-height: 24px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.badge--primary { background-color: var(--primary-color); color: #050505; }
+.badge--outline, .version-badge { background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; }
+
+/* ==========================================================================
+   SECTION 5: OOCSS TABS, TOP-BAR & TYPOGRAPHY SYSTEM
+   ========================================================================== */
+
+/* Unified horizontal tab bar container. */
+.tab-bar {
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    width: 100%;
+}
+.tab-bar--fill { border-bottom: none; padding-bottom: 0; }
+.tab-bar--fill .btn { flex: 1; }
+
+/* Tab content panel component displayed conditionally. */
+.tab-panel { display: block; width: 100%; }
+/* Ensures hidden tab panels and full-page loader overlays remain hidden. */
+.tab-panel.hidden, .loader-center-container.hidden, #details-page-loader.hidden { display: none; pointer-events: none; }
+
+/* Standardized view top bar layout container for search inputs and action buttons. */
+.top-bar { align-items: center; box-sizing: border-box; display: flex; gap: 16px; justify-content: space-between; margin-bottom: 20px; width: 100%; }
+.top-bar__actions { align-items: center; display: flex; gap: 8px; justify-content: flex-end; }
+
+/* High-impact fluid typography for hero banners and detail headlines. */
+.title-hero, .hero-title {
+    color: #ffffff;
+    font-family: inherit;
+    font-size: clamp(24px, 3.5vw, 42px);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    width: 100%;
+}
+
+/* Unified primary page title heading across Playlists, Settings, and Account views. */
+.page-title, .settings-header h1, .account-header h1 {
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0;
+}
+
+/* Fluid responsive category and card section heading. */
+.section-title, .row-title {
+    align-items: center;
+    box-sizing: border-box;
+    color: #ffffff;
+    display: flex;
+    font-family: inherit;
+    font-size: clamp(16px, 1.8vw, 22px);
+    font-weight: 800;
+    gap: 8px;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
+}
+
+/* Horizontal alignment for category row headings matching carousel poster rail padding. */
+.row-title, .row > .section-title {
+    padding-left: var(--app-content-padding-x);
+    padding-right: var(--app-content-padding-x);
+}
+
+/* Aligned category icon inside section titles. */
+.section-title__icon, .section-title-icon { display: block; filter: brightness(0) invert(1); flex-shrink: 0; height: 22px; object-fit: contain; width: 22px; }
+
+/* Fluid secondary explanatory subtitle text below titles. */
+.section-subtitle { color: var(--text-muted); font-size: clamp(13px, 1.2vw, 15px); font-weight: 500; line-height: 1.5; margin: 0; }
+.hero-title { font-size: clamp(32px, 4.2vw, 56px); line-height: 1.08; margin-bottom: 16px; max-width: 18ch; }
+.hero-desc {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    color: rgba(255, 255, 255, 0.84);
+    display: -webkit-box;
+    font-size: clamp(14px, 1.25vw, 17px);
+    font-weight: 500;
+    line-clamp: 4;
+    line-height: 1.55;
+    margin: 0 0 24px 0;
+    max-width: 68ch;
+    overflow: hidden;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.68);
+}
+
+/* Small uppercase metadata typography for genre, duration, and year. */
+.text-meta { color: var(--text-muted); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* Fullscreen background poster wrapper with absolute positioning. */
+.media-backdrop, .details-backdrop, .playlist-backdrop {
+    background-color: var(--background-color);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 75vh;
+    min-height: 520px;
+    inset: 0 0 auto 0;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    overflow: hidden;
+    position: absolute;
+    z-index: 0;
+}
+.media-backdrop img, .details-backdrop img, .playlist-backdrop img { height: 100%; object-fit: cover; opacity: 0.22; width: 100%; }
+
+/* Linear gradient mask darkening background for high text contrast and seamless bottom fade. */
+.media-backdrop__overlay, .backdrop-overlay {
+    background: linear-gradient(90deg, rgba(5, 5, 5, 0.94) 0%, rgba(5, 5, 5, 0.76) 45%, rgba(5, 5, 5, 0.3) 100%), linear-gradient(0deg, var(--background-color) 0%, rgba(5, 5, 5, 0.6) 40%, transparent 100%);
+    inset: 0;
+    position: absolute;
+}
+
+/* Ambient dark-grey and theme-accent overlay when no backdrop image is available. */
+.media-backdrop--empty .media-backdrop__overlay, .backdrop-overlay-empty {
+    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 46%, transparent 76%), linear-gradient(180deg, rgba(8, 8, 8, 0.65) 0%, var(--background-color) 100%);
+}
+
+/* Centered circular media action play indicator on trailers and cards. */
+.media-play-icon {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.65);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-sizing: border-box;
+    color: #ffffff;
+    display: flex;
+    height: 48px;
+    justify-content: center;
+    position: absolute;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 48px;
+}
+
+/* ==========================================================================
+   SECTION 6: GLOBAL UI COMPONENTS (SPLASH, MODAL, TOAST, NAVIGATION RAIL)
+   ========================================================================== */
+
+/* Fullscreen splash screen container overlay and transition effects. */
+#splash-screen {
+    align-items: center;
+    background: #050505;
+    display: flex;
+    height: 100%;
+    inset: 0;
+    justify-content: center;
+    opacity: 1;
+    overflow: hidden;
+    position: fixed;
+    transition: opacity 0.2s ease-in-out, visibility 0.2s;
+    visibility: visible;
+    width: 100%;
+    z-index: 9999;
+}
+#splash-screen.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+.splash-content { align-items: center; display: flex; flex-direction: column; gap: 34px; }
+.splash-logo-container { align-items: center; display: flex; flex-direction: row; gap: 18px; justify-content: center; margin-bottom: 0; }
+.splash-logo-img { display: block; flex: 0 0 72px; height: 72px; object-fit: contain; width: 72px; }
+.splash-logo-text { color: #ffffff; font-size: 52px; font-weight: 600; letter-spacing: 0; line-height: 1; margin: 0; }
+.splash-loader-container { opacity: 1; transition: opacity 0.25s ease; }
+.hero-content.transitioning, .splash-loader-container.hidden { opacity: 0; }
+
+/* Canonical modal backdrop and window manager providing glassmorphic background blur and flex centering. */
+.modal {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    height: 100%;
+    inset: 0;
+    justify-content: center;
+    opacity: 0;
+    padding: 32px;
+    pointer-events: none;
+    position: fixed;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    visibility: hidden;
+    width: 100%;
+    z-index: 10000;
+}
+.modal.is-open, .modal.is-active, .modal.active, .modal.show, .modal.visible { opacity: 1; pointer-events: auto; visibility: visible; }
+
+/* Core modal dialog card panel encapsulating header, body, and action footer. */
+.modal__dialog {
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    max-height: 86vh;
+    max-width: 90%;
+    overflow: hidden;
+    padding: 32px 36px;
+    position: relative;
+    text-align: center;
+    width: min(600px, 92vw);
+}
+.modal__dialog--sm { max-width: 480px; padding: 24px 28px; width: min(480px, 92vw); }
+.modal__dialog--md { max-width: 600px; width: min(600px, 92vw); }
+.modal__dialog--lg { max-width: 880px; width: min(880px, 94vw); }
+.modal__dialog--xl { max-width: 1200px; width: min(1200px, 94vw); }
+.modal--danger .modal__dialog { border: 1px solid rgba(230, 57, 70, 0.45); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 24px rgba(230, 57, 70, 0.15); }
+
+/* Header container row aligning title and optional top-right dismiss action. */
+.modal__header { align-items: center; display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%; }
+
+/* Primary heading typography standard for modal dialogs. */
+.modal__title, .update-title, .error-title {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    margin-top: 0;
+    padding: 0 0 4px;
+    text-align: center;
+    width: 100%;
+}
+.modal__title--truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Top-right circular close button positioning inside modal dialogs. */
+.modal__close { font-size: 24px; position: absolute; right: 18px; top: 18px; z-index: 10; }
+
+/* Flexible content body container for modal options and forms. */
+.modal__body, .error-message-container, .update-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 0 10px;
+    width: 100%;
+}
+
+/* Scrollable viewport modifier with branded track and thumb scrollbars. */
+.modal__body--scroll, .update-changelog { max-height: 56vh; overflow-x: hidden; overflow-y: auto; padding: 0 12px 12px; }
+.modal__body--scroll::-webkit-scrollbar, .update-changelog::-webkit-scrollbar, .livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar { width: 6px; }
+.modal__body--scroll::-webkit-scrollbar-track, .update-changelog::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
+.modal__body--scroll::-webkit-scrollbar-thumb, .update-changelog::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
+.modal__body--scroll::-webkit-scrollbar-thumb:hover, .update-changelog::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
+
+/* Explanatory descriptive text inside modal dialogs. */
+.modal__desc, .error-message { color: var(--text-muted); font-size: 15px; line-height: 1.5; margin-bottom: 20px; text-align: center; }
+
+/* Search input container header inside selection modals. */
+.modal__search { padding: 0 0 16px; width: 100%; }
+
+/* Action footer container providing spacing and layout for modal dialogs. */
+.modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 12px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; width: 100%; }
+.modal__footer--center { justify-content: center; }
+.modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 0; width: 100%; }
+
+/* Floating close button with 'X' in modal top-right corner. */
+.modal__close-btn { align-items: center; background: transparent; border: 0; color: #aaaaaa; cursor: pointer; display: inline-flex; font-size: 18px; height: 36px; justify-content: center; position: absolute; right: 16px; top: 16px; width: 36px; z-index: 10; }
+.modal__close-btn:hover, .modal__close-btn:focus, .modal__close-btn.focused { color: #ffffff; outline: none; }
+
+/* Circular back button in modal header */
+.modal__back-btn { align-items: center; background: transparent; border: 0; border-radius: 50% !important; color: #ffffff; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: 18px !important; min-height: 38px; min-width: 38px; padding: 0; position: absolute !important; right: auto !important; top: 18px !important; width: 38px; z-index: 20; }
+.modal__back-btn:hover, .modal__back-btn:focus, .modal__back-btn.focused { background: rgba(255, 255, 255, 0.12) !important; color: #ffffff; outline: none; }
+.modal__back-btn:active { background: rgba(255, 255, 255, 0.2) !important; }
+/* SVG icon inside modal back button */
+.modal-back-icon { display: block; filter: brightness(0) invert(1); height: 20px; opacity: 0.9; pointer-events: none; width: 20px; }
+.modal__back-btn:hover .modal-back-icon, .modal__back-btn:focus .modal-back-icon { opacity: 1; }
+
+/* Circular refresh button in modal header */
+#version-selector-modal .modal__refresh-btn, #version-selector-refresh-btn, .modal .modal__refresh-btn { align-items: center; background: transparent; border: 0; border-radius: 50% !important; color: #aaaaaa; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: auto !important; min-height: 38px; min-width: 38px; padding: 0; position: absolute !important; right: 18px !important; top: 18px !important; width: 38px; z-index: 50 !important; }
+.modal__refresh-btn:hover, .modal__refresh-btn:focus, .modal__refresh-btn.focused { background: rgba(255, 255, 255, 0.12) !important; color: #ffffff; outline: none; }
+.modal__refresh-btn:active { background: rgba(255, 255, 255, 0.2) !important; }
+/* SVG icon inside modal refresh button */
+.modal-refresh-icon { display: block; filter: brightness(0) invert(1); height: 20px; opacity: 0.9; pointer-events: none; width: 20px; }
+.modal__refresh-btn:hover .modal-refresh-icon, .modal__refresh-btn:focus .modal-refresh-icon { opacity: 1; }
+/* Spinning animation class for refresh triggers */
+.spinning { animation: ivids-loader-spin 0.8s linear infinite; }
+
+/* Section header label for official releases */
+.version-section-header { color: rgba(255, 255, 255, 0.5); font-size: 13px; font-weight: 700; letter-spacing: 0.05em; margin: 16px 0 8px; text-transform: uppercase; width: 100%; }
+/* Container holding all release option cards */
+.version-releases-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+/* Centered error container and retry button in version selector modal */
+.version-error-center { align-items: center; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; justify-content: center; min-height: 160px; padding: 32px 16px; text-align: center; width: 100%; }
+.version-error-center .version-fetch-error { color: rgba(255, 255, 255, 0.7); font-size: 15px; line-height: 1.5; margin: 0; max-width: 380px; text-align: center; }
+.version-error-center .btn { min-width: 180px; }
+
+/* App info body layout */
+.app-info-body { align-items: center; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 4px 12px 16px; width: 100%; }
+/* App info header with centered logo and title metadata */
+.app-info-header { align-items: center; display: flex; flex-direction: column; gap: 8px; margin: 4px 0 8px; text-align: center; }
+/* App info brand logo image */
+.app-info-logo { height: 56px; width: 56px; }
+/* App info title container */
+.app-info-header-meta { align-items: center; display: flex; flex-direction: column; gap: 6px; }
+/* App info application title text */
+.app-info-app-title { color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+/* Version pill badge in app info dialog */
+.app-info-badge { background: rgba(var(--primary-rgb), 0.16); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13px; font-weight: 700; padding: 3px 14px; }
+/* Clean app info details list - no nested heavy boxes */
+.app-info-details { display: flex; flex-direction: column; margin: 8px 0 16px; width: 100%; }
+/* Clean info row with subtle separator line */
+.app-info-row { align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); box-sizing: border-box; display: flex; justify-content: space-between; padding: 12px 6px; width: 100%; }
+.app-info-row:first-child { border-top: 1px solid rgba(255, 255, 255, 0.08); }
+/* Label for info item */
+.app-info-label { color: rgba(255, 255, 255, 0.7); font-size: 15px; font-weight: 500; }
+/* Value for info item */
+.app-info-value { color: #ffffff; font-size: 15px; font-weight: 600; }
+
+/* Sticky container for language search input matching modal dialog surface */
+.language-search-wrapper { background: #161616; box-sizing: border-box; padding: 4px 0 12px; position: sticky; top: 0; width: 100%; z-index: 10; }
+.language-search-wrapper:has(> .hidden) { display: none; }
+
+/* Clean zero-gap list containers for modal selections with divider lines. */
+.playlist-selection-list { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
+/* Flat list option with divider line and zero radius inside modals. */
+.playlist-selection-list .playlist-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0 !important; box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 500; justify-content: space-between; min-height: 52px; padding: 14px 18px; text-align: left; width: 100%; }
+/* Top border for first option in modal lists. */
+.playlist-selection-list .playlist-item:first-child { border-top: 1px solid #222222; }
+/* Keep the language heading wrapper layout-neutral outside the TV landscape presentation. */
+.language-modal__heading, .language-modal__heading-copy { display: contents; }
+/* The live-language prompt is only added to the TV layout. */
+.language-modal__subtitle { display: none; }
+/* TV landscape language modal rules stay isolated from portrait and compact mobile layouts. */
+@media (orientation: landscape) and (min-width: 1024px) and (min-height: 501px) {
+    /* Two-zone TV dialog places the language heading beside its readable single-column list. */
+    html body #language-modal.modal .modal__dialog { align-items: stretch !important; display: grid !important; gap: 36px !important; grid-template-columns: minmax(250px, 0.38fr) minmax(0, 0.62fr) !important; grid-template-rows: minmax(0, 1fr) !important; max-height: 86vh !important; max-width: 1100px !important; padding: 42px !important; width: min(92vw, 1100px) !important; }
+    /* Heading sits in the left column with its back control above the localized title. */
+    html body #language-modal .language-modal__heading { align-items: flex-start !important; display: flex !important; flex-direction: column !important; gap: 32px !important; grid-column: 1 !important; grid-row: 1 !important; min-width: 0; padding-top: 14px; text-align: left; }
+    /* Back control returns to the top of the heading panel instead of overlaying the title. */
+    html body #language-modal .language-modal__heading .modal__back-btn { align-self: flex-start !important; left: auto !important; position: static !important; right: auto !important; top: auto !important; }
+    /* Heading copy groups the translated title and subtitle together. */
+    html body #language-modal .language-modal__heading-copy { display: flex !important; flex-direction: column !important; gap: 16px !important; }
+    html body #language-modal #language-modal-title { font-size: clamp(34px, 3vw, 48px) !important; line-height: 1.08; margin: 0 !important; padding: 0 !important; text-align: left !important; }
+    /* Live prompt tells the viewer what the focused language means. */
+    html body #language-modal .language-modal__subtitle { color: rgba(255, 255, 255, 0.7); display: block !important; font-size: clamp(18px, 1.6vw, 24px); line-height: 1.45; margin: 0; max-width: 300px; text-align: left; }
+    /* TV language list scrolls independently in the right column. */
+    html body #language-modal.modal .modal__body { box-sizing: border-box !important; flex: 1 1 auto !important; grid-column: 2 !important; grid-row: 1 !important; max-height: min(72vh, 720px) !important; min-height: 0 !important; overflow-y: auto !important; padding: 4px 12px 6px 0 !important; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
+    /* One-column TV list is predictable with a remote and keeps each language name readable. */
+    html body #language-modal #language-selection-grid { box-sizing: border-box !important; display: flex !important; flex-direction: column !important; gap: 6px !important; grid-template-columns: none !important; padding: 4px 2px !important; width: 100% !important; }
+    /* Hide the legacy stepper while the TV grid is active. */
+    html body #language-modal.modal .language-stepper-container { display: none !important; }
+    /* Full-width TV language rows keep the labels readable from a couch distance. */
+    html body #language-modal .language-card { align-items: center !important; background: rgba(255, 255, 255, 0.06) !important; border: 2px solid rgba(255, 255, 255, 0.12) !important; border-radius: var(--radius-md) !important; box-sizing: border-box !important; min-height: 54px !important; padding: 10px 16px !important; width: 100% !important; }
+    /* White outline remains visible for remote-controlled card focus. */
+    html body #language-modal .language-card:focus-visible, html body #language-modal .language-card.focused { background: rgba(255, 255, 255, 0.18) !important; border-color: #ffffff !important; outline: 2px solid #ffffff !important; }
+    /* Keep the selected language visually distinct while preserving the focus outline. */
+    html body #language-modal .language-card.is-active { background: rgba(var(--primary-rgb), 0.14) !important; border-color: var(--primary-color) !important; color: var(--primary-color) !important; }
+    html body #language-modal .language-card.is-active:focus-visible, html body #language-modal .language-card.is-active.focused { border-color: #ffffff !important; outline: 2px solid #ffffff !important; }
+}
+
+/* Landscape/TV vertical modal options stack fallback for non-language selectors like colors */
+.language-selection-grid { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; width: 100%; }
+/* Landscape/TV modal option card with subtle surface, border, and focus outline */
+.language-card { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md); box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 600; gap: 14px; justify-content: space-between; min-height: 52px; padding: 12px 18px; text-align: left; transition: background-color 150ms ease, border-color 150ms ease; width: 100%; }
+/* Landscape/TV modal option card hover highlight */
+.language-card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.25); }
+/* Landscape/TV modal option card remote D-pad focus indicator */
+.language-card:focus, .language-card:focus-visible, .language-card.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; outline: 2px solid #ffffff; }
+/* Landscape/TV modal option card active selection state */
+.language-card.is-active { background: rgba(var(--primary-rgb), 0.14); border-color: var(--primary-color); color: var(--primary-color); font-weight: 700; }
+/* Landscape/TV modal option card active state with remote D-pad focus */
+.language-card.is-active:focus, .language-card.is-active.focused { border-color: #ffffff; outline: 2px solid #ffffff; }
+/* Landscape/TV modal option card active text label color */
+.language-card.is-active .language-card__name { color: var(--primary-color); font-weight: 700; }
+/* Landscape/TV modal option card text label truncation */
+.language-card__name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Landscape/TV modal option card checkmark icon indicator */
+.language-card__check { color: var(--primary-color); font-size: 18px; font-weight: 800; opacity: 0; }
+/* Landscape/TV modal option card active checkmark visibility */
+.language-card.is-active .language-card__check { opacity: 1; }
+/* Landscape/TV modal option card flag emoji display */
+.language-card__flag { flex-shrink: 0; font-family: "Twemoji Country Flags", inherit; font-size: 22px; line-height: 1; margin-right: 2px; }
+/* Landscape/TV modal option card circular color dot */
+.language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; flex-shrink: 0; height: 22px; margin-right: 14px; width: 22px; }
+
+
+/* Error modal specific icon and message overrides. */
+.error-icon-container { align-items: center; align-self: center; background: rgba(var(--primary-rgb), 0.14); border-radius: var(--radius-lg); display: flex; height: 50px; justify-content: center; margin-bottom: 14px; width: 50px; }
+.error-icon-mask { -webkit-mask-image: url('../images/error.svg'); -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background-color: var(--primary-color); height: 24px; mask-image: url('../images/error.svg'); mask-position: center; mask-repeat: no-repeat; mask-size: contain; width: 24px; }
+.error-title { color: #ffffff; font-size: 30px; font-weight: 900; margin-bottom: 14px; }
+.error-message-container { background: rgba(0, 0, 0, 0.34); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); margin-bottom: 26px; max-height: 260px; overflow-y: auto; padding: 18px; width: 100%; }
+.error-message { color: rgba(255, 255, 255, 0.78); font-size: 15px; line-height: 1.5; margin: 0; text-align: left; white-space: pre-wrap; word-break: break-word; }
+.error-actions { display: flex; gap: 12px; justify-content: center; width: 100%; }
+
+/* Toast notification alerts and floating network status indicator. */
+.toast-container { display: flex; flex-direction: column; gap: 10px; pointer-events: none; position: fixed; z-index: 10000; }
+.toast-container.bottom-right { bottom: 28px; right: 28px; }
+.toast-container.top-right { right: 28px; top: 28px; }
+.toast {
+    align-items: center;
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 4px solid var(--primary-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    gap: 12px;
+    max-width: 440px;
+    min-width: 300px;
+    opacity: 0;
+    padding: 14px 16px;
+    pointer-events: auto;
+    transform: translateX(120%);
+    transition: transform 0.28s ease, opacity 0.2s ease;
+    will-change: transform, opacity;
+}
+.toast.visible { opacity: 1; transform: translateX(0); }
+.toast-icon { align-items: center; color: var(--primary-color); display: flex; flex: 0 0 24px; height: 24px; justify-content: center; width: 24px; }
+.toast-icon-mask { -webkit-mask-image: var(--icon-url); -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background-color: currentColor; height: 18px; mask-image: var(--icon-url); mask-repeat: no-repeat; mask-size: contain; width: 18px; }
+.toast-error .toast-icon-mask, .toast-warning .toast-icon-mask { --icon-url: url('../images/disconnected.svg'); }
+.toast-title { color: #ffffff; font-size: 15px; font-weight: 900; margin: 0 0 2px; }
+.toast-message { color: rgba(255, 255, 255, 0.74); font-size: 14px; line-height: 1.35; margin: 0; }
+.toast-error { border-left-color: #ff7770; }
+.toast-error .toast-icon, .toast-error .toast-title, .form-message.error { color: #ff7770; }
+.toast-warning { border-left-color: #f1c84c; }
+.toast-warning .toast-icon, .toast-warning .toast-title { color: #f1c84c; }
+.toast-info .toast-icon { color: #63b3ff; }
+.toast-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+/* Floating network connection status icon overlay. */
+.network-status-overlay { align-items: center; bottom: 28px; display: flex; height: 28px; justify-content: center; opacity: 0; pointer-events: none; position: fixed; right: 28px; transition: opacity 0.3s ease; width: 28px; z-index: 10010; }
+.network-status-overlay.visible { opacity: 1; }
+.network-status-overlay.lost { color: #ff7770; }
+.network-status-overlay.slow { color: #f1c84c; }
+.network-status-overlay.connected { color: var(--primary-color); }
+.toast-blink-icon { animation: toast-pulse-opacity 1.5s infinite ease-in-out; }
+
+/* Main vertical navigation rail container with smooth width expansion on TV and hover. */
+.nav-rail, .navbar {
+    align-items: stretch;
+    background: #000000eb;
+    border-right: none;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    height: 100%;
+    overflow: hidden;
+    padding: 28px 10px;
+    position: relative;
+    transition: width 0.25s ease;
+    width: var(--app-sidebar-width);
+    z-index: 1000;
+}
+#app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar,
+.nav-rail:hover, .nav-rail:focus-within, .navbar:hover, .navbar:focus-within { width: var(--app-sidebar-expanded-width); }
+.nav-rail__header, .logo-container { align-items: center; box-sizing: border-box; display: flex; gap: 12px; margin-bottom: 12px; min-height: 44px; padding: 0 12px; white-space: nowrap; width: 100%; }
+.nav-rail__logo, .logo-img { display: block; flex: 0 0 24px; height: 24px; object-fit: contain; width: 24px; }
+.nav-rail__brand, .logo-text { color: #ffffff; font-size: 22px; font-weight: 600; letter-spacing: -0.03em; opacity: 0; transition: opacity 0.25s ease; will-change: opacity; }
+.nav-rail__group, .nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
+.nav-rail__group--bottom, .nav-utilities { display: flex; flex-direction: column; gap: 5px; margin-top: auto; width: 100%; }
+
+/* Navigation button item for sidebar routes. */
+.nav-item {
+    align-items: center;
+    border: 3px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    color: rgba(255, 255, 255, 0.72);
+    display: flex;
+    font-size: 16px;
+    font-weight: 700;
+    height: 40px;
+    justify-content: flex-start;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-decoration: none;
+    transition: width 0.25s ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+    white-space: nowrap;
+    width: calc(var(--app-sidebar-width) - 20px);
+}
+.nav-item:hover { background: rgba(255, 255, 255, 0.22); border-color: transparent; color: #ffffff; }
+.nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.22); border-color: #ffffff; color: #ffffff; outline: none; }
+.nav-item.is-active, .nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #ffffff; }
+
+/* Masked icon container inside navigation item. */
+.nav-item__icon, .nav-icon {
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    background-color: currentColor;
+    flex: 0 0 24px;
+    height: 24px;
+    margin-left: calc((var(--app-sidebar-width) - 50px) / 2);
+    margin-right: 16px;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    width: 24px;
+}
+.nav-item.is-active .nav-item__icon, .nav-item.active .nav-icon { background-color: var(--primary-color); }
+.nav-item__label, .nav-item span { opacity: 0; transition: opacity 0.25s ease; }
+#app.sidebar-always-expanded .nav-item, .nav-rail:hover .nav-item, .nav-rail:focus-within .nav-item, .navbar:hover .nav-item, .navbar:focus-within .nav-item { width: 100%; }
+#app.sidebar-always-expanded .nav-item__label, .nav-rail:hover .nav-item__label, .nav-rail:focus-within .nav-item__label,
+#app.sidebar-always-expanded .nav-item span, .navbar:hover .nav-item span, .navbar:focus-within .nav-item span { opacity: 1; pointer-events: auto; }
+
+/* Sidebar route SVG mask sources. */
+.nav-icon.search { -webkit-mask-image: url('../images/search.svg'); mask-image: url('../images/search.svg'); }
+.nav-icon.home { -webkit-mask-image: url('../images/home.svg'); mask-image: url('../images/home.svg'); }
+.nav-icon.movies { -webkit-mask-image: url('../images/movies.svg'); mask-image: url('../images/movies.svg'); }
+.nav-icon.series { -webkit-mask-image: url('../images/series.svg'); mask-image: url('../images/series.svg'); }
+.nav-icon.playlists { -webkit-mask-image: url('../images/playlists.svg'); mask-image: url('../images/playlists.svg'); }
+.nav-icon.livetv { -webkit-mask-image: url('../images/livetv.svg'); mask-image: url('../images/livetv.svg'); }
+.nav-icon.account { -webkit-mask-image: url('../images/account.svg'); mask-image: url('../images/account.svg'); }
+.nav-icon.settings { -webkit-mask-image: url('../images/settings.svg'); mask-image: url('../images/settings.svg'); }
+
+/* ==========================================================================
+   SECTION 7: HERO SLIDER, MEDIA RAILS & SHARED PAGE CONTAINERS
+   ========================================================================== */
+
+/* Hero header layout container in normal document flow. */
+.hero {
+    align-items: flex-end;
+    background: transparent;
+    display: flex;
+    height: 60vh;
+    min-height: 560px;
+    overflow: hidden;
+    padding: 0 var(--app-content-padding-x) 72px;
+    position: relative;
+    z-index: 2;
+}
+.hero::before {
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%);
+    content: "";
+    inset: 0;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+}
+.hero-content { padding-top: 24px; position: relative; transition: opacity 0.35s ease; width: min(1100px, 90%); z-index: 2; }
+.hero-slides-track { height: 100%; left: 0; pointer-events: none; position: absolute; top: 0; width: 100%; z-index: 1; }
+.hero-slide {
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    background-attachment: fixed;
+    background-position: center top;
+    background-size: cover;
+    box-sizing: border-box;
+    height: 100%;
+    left: 0;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: opacity 0.8s ease-in-out;
+    width: 100%;
+    will-change: opacity;
+    z-index: 0;
+}
+.hero-slide.active { opacity: 1; z-index: 1; }
+
+/* Centered overlay loader containers. */
+.loader-center-container { align-items: center; display: flex; inset: 0; justify-content: center; position: absolute; }
+#hero-loader-container { background: rgba(0, 0, 0, 0.22); z-index: 5; }
+.ivids-loader {
+    -webkit-mask-image: url('../svg/loader.svg');
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    animation: ivids-loader-spin 0.9s linear infinite;
+    background-color: var(--primary-color);
+    display: inline-block;
+    height: clamp(32px, 4.5vw, 60px);
+    mask-image: url('../svg/loader.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    vertical-align: middle;
+    width: clamp(32px, 4.5vw, 60px);
+}
+/* Hides inner img tag so CSS mask-image renders svg/loader.svg in dynamic var(--primary-color). */
+.ivids-loader-svg { display: block; height: 100%; opacity: 0; pointer-events: none; width: 100%; }
+/* Centered overlay spinner inside poster cards, skeletons, thumbnails, and cast cards while loading. */
+.poster-loader, .is-skeleton > .ivids-loader {
+    height: clamp(28px, 3vw, 40px);
+    inset: 0;
+    margin: auto;
+    pointer-events: none;
+    position: absolute;
+    width: clamp(28px, 3vw, 40px);
+    z-index: 5;
+}
+/* Skeleton error fallback container and icon when a row fetch fails. */
+.skeleton-error-container { align-items: center; display: flex; height: 100%; justify-content: center; width: 100%; }
+.skeleton-error-icon { height: 32px; opacity: 0.75; width: 32px; }
+
+/* Category row containers and carousel navigation handles. */
+.row { animation: fadeIn 0.35s ease-out forwards; opacity: 0; padding: 0; position: relative; z-index: 20; }
+.row:nth-child(2) { animation-delay: 0.08s; }
+.row:nth-child(3) { animation-delay: 0.14s; }
+.row:nth-child(5) { animation-delay: 0.26s; }
+.row-container {
+    align-items: center;
+    contain: layout;
+    contain-intrinsic-size: auto var(--row-min-height);
+    content-visibility: auto;
+    display: flex;
+    margin-bottom: 14px;
+    min-height: var(--row-min-height);
+    position: relative;
+    width: 100%;
+}
+.handle {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.62);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    bottom: 26px;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    font-size: 34px;
+    justify-content: center;
+    opacity: 0;
+    position: absolute;
+    top: 10px;
+    transition: opacity 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+    width: 44px;
+    z-index: 50;
+}
+.handle:hover { background: rgba(255, 255, 255, 0.14); border-color: transparent; outline: none; }
+.handle:focus, .handle.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; opacity: 1; outline: none; }
+
+/* Unified page containers for Playlists, Settings, and Account views. */
+.playlists-container, .settings-container, .account-container {
+    box-sizing: border-box;
+    padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px;
+    width: 100%;
+}
+.playlists-container { height: 100%; overflow-y: auto; }
+.settings-container, .account-container { margin: 0 auto; max-width: 1060px; }
+.page-container { height: 100%; }
+
+/* Unified page header bar and surface section panels. */
+.page-header { align-items: center; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 30px; }
+.settings-header h1 { margin-bottom: 8px; }
+.settings-header p { color: var(--text-muted); font-size: 17px; margin-bottom: 30px; }
+.account-header h1 { margin-bottom: 28px; }
+
+/* Unified dark surface section container for Settings and Account groups. */
+.settings-section, .account-section {
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: none;
+    margin-bottom: 28px;
+    padding: 24px 28px;
+}
+.account-section { padding: 32px 36px; }
+
+/* Centered container for the small desktop advanced settings dropdown button */
+.advanced-dropdown-wrapper { display: flex; justify-content: center; margin: 8px 0 24px; width: 100%; }
+
+/* Small dropdown toggle button under Live TV */
+.advanced-dropdown-btn { font-size: 14.5px; font-weight: 600; gap: 8px; padding: 10px 22px; }
+
+/* Rotating dropdown arrow inside toggle button */
+.dropdown-chevron { display: inline-block; font-size: 11px; margin-left: 6px; transition: transform 0.2s ease; }
+
+/* Inverted chevron when dropdown container is open */
+.advanced-dropdown-btn[aria-expanded="true"] .dropdown-chevron { transform: rotate(180deg); }
+
+/* Desktop-only: hide mobile advanced settings entry row */
+#mobile-advanced-item { display: none; }
+
+/* ==========================================================================
+   SECTION 8: DETAILS, PLAYLISTS & SEARCH PAGE LAYOUTS
+   ========================================================================== */
+
+/* Details page layout and hero metadata columns. */
+.details-page {
+    background-color: var(--background-color);
+    background: radial-gradient(circle at 80% 16%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 35%, transparent 65%), var(--background-color);
+    height: auto;
+    min-height: 100vh;
+    padding-bottom: 3rem;
+    padding-top: 4rem;
+    position: relative;
+}
+/* Circular floating back button positioned top-left for navigation. */
+.details-back-btn {
+    align-items: center;
+    background: rgba(18, 18, 18, 0.75);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    left: calc(var(--app-sidebar-width) + 24px);
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    position: fixed;
+    top: 24px;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 44px;
+    z-index: 100;
+}
+/* Hover state for circular details back button. */
+.details-back-btn:hover, .details-back-btn:active {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+/* Focus state for circular details back button with standardized thick white outline. */
+.details-back-btn:focus, .details-back-btn.focused {
+    border-color: #ffffff;
+    outline: 2px solid #ffffff;
+}
+/* Icon inside circular details back button. */
+.details-back-icon {
+    display: block;
+    filter: brightness(0) invert(1);
+    height: 20px;
+    pointer-events: none;
+    width: 20px;
+}
+.details-layout { display: flex; flex-direction: column; gap: 2.5rem; margin: 0 auto; max-width: 90rem; padding: 0 5%; position: relative; transition: opacity 0.2s ease; z-index: 10; }
+/* Hides unpopulated details layout while metadata is being fetched from API. */
+.details-layout.is-loading { opacity: 0; pointer-events: none; }
+/* Centers full-page loader inside details page during initial API metadata request. */
+#details-page-loader { min-height: 70vh; z-index: 20; }
+/* Relative positioning for details poster container so poster-loader centers accurately. */
+.details-poster-container { position: relative; }
+.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #262932 0%, #16181e 100%); border-radius: 5px; min-width: 20rem; width: 25vw; }
+.details-poster-container.is-loading.is-widescreen { aspect-ratio: 16 / 9; }
+.details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; }
+.details-info { flex: 1; max-width: 50%; }
+.details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #262932 0%, #16181e 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
+.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.34) 0%, rgba(var(--primary-rgb), 0.08) 50%, transparent 75%), linear-gradient(145deg, #282b34 0%, #171920 100%); border: 0.1875rem solid rgba(var(--primary-rgb), 0.35); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5), inset 0 0 32px rgba(var(--primary-rgb), 0.12); min-width: 20rem; width: 25vw; }
+.details-poster-container.is-empty.is-widescreen { aspect-ratio: 16 / 9; }
+.details-meta { align-items: center; color: #aaaaaa; display: flex; font-size: 18px; gap: 15px; margin-bottom: 20px; }
+.details-genres { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.details-overview { color: #dddddd; font-size: 18px; line-height: 1.6; margin-bottom: 30px; }
+.details-actions { display: flex; gap: 20px; }
+.details-bottom { align-items: flex-start; display: flex; flex-direction: row; gap: 30px; margin: 0 auto; max-width: 1400px; width: 100%; }
+
+/* Seasons list sidebar and episode/playlist item headers. */
+.details-seasons { backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px; flex-shrink: 0; max-height: 600px; overflow-y: auto; padding: 20px; width: 250px; }
+.season-btn { justify-content: flex-start; text-align: left; width: 100%; }
+.seasons-dropdown-wrapper { display: none; width: 100%; }
+.seasons-list-content { display: flex; flex-direction: column; gap: 0.625rem; }
+.episode-header { align-items: baseline; display: flex; gap: 10px; margin-bottom: 4px; }
+.episode-number { color: var(--primary-color); font-size: 18px; font-weight: 800; }
+.playlist-selection-list { margin-bottom: 20px; max-height: 300px; overflow-y: auto; text-align: left; }
+
+/* Cast profile card elements and two-column About panel in Details view. */
+.disney-about-content { display: flex; gap: 2.5rem; width: 100%; }
+.disney-about-left, .disney-about-right { flex: 1; min-width: 0; }
+.disney-about-description { color: #dddddd; font-size: 16px; line-height: 1.6; }
+.disney-cast-img { aspect-ratio: 2 / 3; background-color: #1a1c22; background-image: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.25) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #16181e 100%); background-position: center; background-size: cover; position: relative; width: 100%; }
+.disney-cast-name { color: var(--text-color); font-size: 0.9rem; font-weight: 700; overflow: hidden; padding: 0.35rem 0.25rem 0.1rem; text-overflow: ellipsis; white-space: nowrap; }
+.disney-cast-character { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Playlists overview and Playlist Details item rows. */
+.empty-state { background: rgba(255, 255, 255, 0.045); border: 2px dashed rgba(255, 255, 255, 0.16); border-radius: var(--radius-lg); color: var(--text-muted); font-size: 18px; grid-column: 1 / -1; padding: 54px; text-align: center; }
+.playlist-cover { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #15171c 100%); height: 100%; overflow: hidden; position: relative; width: 100%; }
+.playlist-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.playlist-hero-cover { aspect-ratio: 16 / 9; height: auto; object-fit: cover; }
+.playlist-item-row { align-items: center; display: flex; gap: 15px; margin-bottom: 12px; width: 100%; }
+.playlist-item-row .card--row { margin-bottom: 0; }
+.playlist-item-card-wrapper, .toast-content, .episodes-list, .profile-details { flex: 1; min-width: 0; }
+.playlist-item-row.moving-active .card--row { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5); }
+
+/* Search page layout, recent search chips bar, and results grid container. */
+.search-page-layout { color: #ffffff; height: 100%; overflow: hidden; width: 100%; }
+.search-main { display: flex; flex-direction: column; height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); }
+.search-container-wrapper { align-items: center; display: flex; flex-direction: column; justify-content: center; margin: 4% auto 2%; max-width: min(720px, 90%); text-align: center; width: 80%; }
+.search-box { margin-bottom: 14px; width: 100%; }
+.search-icon, .filter-icon { height: 20px; margin-right: 8px; opacity: 0.85; width: 20px; }
+.trash-icon { height: 14px; width: 14px; }
+.search-actions { display: flex; gap: 15px; justify-content: center; margin-bottom: 25px; width: 100%; }
+.recent-searches-row { align-items: center; display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; width: 100%; }
+.recent-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
+.recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.recent-delete-btn { font-size: 16px; line-height: 1; margin-left: 4px; opacity: 0.7; }
+.recent-delete-btn:hover { opacity: 1; }
+.results-container {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    flex: 1;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8% 6% 6%;
+}
+.search-results-grid { --poster-width: clamp(105px, 9.5vw, 136px); align-items: start; display: grid; gap: clamp(12px, 1.5vw, 18px); grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr)); }
+.search-results-grid .loading-center { grid-column: 1 / -1; }
+.select-options-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 0 28px 16px; }
+.filter-main-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+.group-header { align-items: center; display: flex; justify-content: space-between; }
+
+/* ==========================================================================
+   SECTION 9: LIVE TV GUIDE, TV PLAYER & VOD PLAYER LAYOUTS
+   ========================================================================== */
+
+/* Live TV guide two-column layout and channel list items. */
+.livetv-page-layout { box-sizing: border-box; color: #ffffff; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+
+/* Clear button nested inside Live TV search input wrapper (consistent 2px border prevents focus shift). */
+.search-clear-btn {
+    align-items: center;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    flex-shrink: 0;
+    font-size: 22px;
+    height: 32px;
+    justify-content: center;
+    padding: 0;
+    transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+    width: 32px;
+}
+.search-clear-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; color: #ffffff; outline: none; }
+.search-clear-btn:focus, .search-clear-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
+
+/* Live TV columns, channel list items, and EPG preview panel. */
+/* Live TV main two-column content layout. */
+.livetv-two-column-layout { box-sizing: border-box; display: flex; flex: 1; gap: 12px; height: 100%; min-height: 0; padding: 14px var(--app-content-padding-x); }
+/* Left scrollable channel list column. */
+/* Left scrollable categories and countries list column. */
+.livetv-categories-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 17%; }
+/* Vertical stack container for category and country rows. */
+.categories-list { box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; padding: 4px; width: 100%; }
+/* Category and country row item in the Live TV left column. */
+.category-list-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; flex-shrink: 0; gap: 8px; height: 48px; justify-content: space-between; min-height: 48px; padding: 8px 14px; transition: border-color 150ms ease, background-color 150ms ease; width: 100%; }
+/* Category row hover state. */
+.category-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+/* Selected category row active state with primary brand highlight. */
+.category-list-item.active, .category-list-item.is-selected { background: rgba(var(--primary-rgb), 0.2); border-color: var(--primary-color); }
+/* Category row spatial navigation focus state. */
+.category-list-item:focus, .category-list-item.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+/* Category or country label text. */
+.category-list-name { color: #ffffff; font-size: 0.9rem; font-weight: 700; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+/* Channel count badge inside category row. */
+.category-list-count { background: rgba(255, 255, 255, 0.08); border-radius: 999px; color: var(--text-muted); flex-shrink: 0; font-size: 0.78rem; font-weight: 700; padding: 2px 8px; }
+/* Middle scrollable channel list column. */
+.livetv-list-column { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; overflow: hidden; width: 25%; }
+/* Search input box at the top of the middle channel list column. */
+.livetv-search-box { box-sizing: border-box; flex-shrink: 0; margin-bottom: 0; padding: 4px 4px 0; width: 100%; }
+/* Compact search input wrapper inside the Live TV middle column aligned with category rows. */
+.livetv-search-box .form-control-wrapper { box-sizing: border-box; height: 48px; min-height: 48px; padding: 0 14px; }
+/* Compact search input typography inside the Live TV middle column. */
+.livetv-search-box .form-input { font-size: 14px; font-weight: 600; }
+/* Right channel video preview and EPG schedule column. */
+.livetv-preview-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; width: 58%; }
+.livetv-list-column::-webkit-scrollbar-thumb, .livetv-preview-column::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
+/* Channel items vertical stack container. */
+.channels-list { box-sizing: border-box; display: flex; flex: 1; flex-direction: column; gap: 8px; min-height: 0; overflow-y: auto; padding: 4px; width: 100%; }
+/* OOCSS Channel card component for Live TV channel list with 8px spacing. */
+
+.channel-card, .channel-list-item {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+    height: 48px;
+    margin: 0;
+    margin: 0;
+    min-height: 48px;
+    padding: 8px 14px;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+.channel-card, .channel-list-item {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+    height: 48px;
+    margin: 0;
+    min-height: 48px;
+    padding: 8px 14px;
+    position: relative;
+    transition: border-color 150ms ease, background-color 150ms ease;
+    width: 100%;
+}
+/* Channel card hover state. */
+.channel-card:hover, .channel-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+/* Channel card focused spatial navigation state. */
+.channel-card:focus, .channel-card.focused, .channel-list-item:focus, .channel-list-item.focused { background: rgba(255, 255, 255, 0.1); border-color: #ffffff; outline: none; }
+/* Channel playback health status dot indicator. */
+.list-status-dot { border-radius: 50%; flex-shrink: 0; height: 8px; width: 8px; }
+.list-status-dot.checking { background: #f1c84c; }
+.list-status-dot.online { background: #46d369; }
+.list-status-dot.offline { background: #e24a4a; }
+/* Channel logo glass surface container. */
+.channel-card__logo-wrap, .channel-list-logo-container { align-items: center; background: rgba(255, 255, 255, 0.06); border-radius: 6px; box-sizing: border-box; display: flex; flex-shrink: 0; height: 28px; justify-content: center; overflow: hidden; padding: 3px; width: 28px; }
+/* Channel logo image. */
+.channel-card__logo, .channel-list-logo { max-height: 100%; max-width: 100%; object-fit: contain; }
+/* Channel metadata text stack. */
+.channel-card__meta, .channel-list-meta-container { align-items: center; display: flex; flex: 1; gap: 8px; min-width: 0; }
+/* Channel title label. */
+.channel-card__name, .channel-card__title, .channel-list-name { color: #ffffff; font-size: 0.9rem; font-weight: 700; line-height: 1.2; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+
+/* Live TV EPG and preview video panel. */
+.hero-active-content { display: flex; flex-direction: column; gap: 10px; height: 100%; min-height: 0; width: 100%; }
+/* 16:9 Widescreen video preview card. */
+.preview-card, .preview-card-video { aspect-ratio: 16 / 9; background: #000000; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); box-sizing: border-box; cursor: pointer; flex: 1 1 auto; max-height: 70%; min-height: 240px; overflow: hidden; position: relative; transition: border-color 150ms ease; width: 100%; }
+/* Widescreen video preview card spatial navigation focus state. */
+.preview-card:focus, .preview-card.focused, .preview-card-video:focus, .preview-card-video.focused { border-color: #ffffff; outline: none; }
+
+/* Video element inside preview card. */
+.preview-card-video video, .preview-card__video-wrap video { background: #000000; display: block; height: 100%; object-fit: cover; width: 100%; }
+.preview-video-loading { align-items: center; background: rgba(0, 0, 0, 0.5); display: flex; height: 100%; justify-content: center; left: 0; position: absolute; top: 0; width: 100%; z-index: 2; }
+/* EPG Schedule panel card surface. */
+.epg-panel, .epg-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 0 0 auto; flex-direction: column; gap: 6px; max-height: 29%; min-height: 0; overflow: hidden; padding: 10px 14px; }
+/* Compact section headers inside EPG card. */
+.epg-card .section-title { color: rgba(255, 255, 255, 0.7); font-size: 11px; font-weight: 700; gap: 6px; letter-spacing: 0.05em; margin-bottom: 2px; text-transform: uppercase; }
+/* Compact red LIVE badge inside EPG section header. */
+.epg-card .live-badge { background: #e24a4a; border-radius: 4px; color: #ffffff; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; padding: 2px 6px; }
+.details-epg-section { display: flex; flex-direction: column; flex-shrink: 0; gap: 4px; width: 100%; }
+.details-upcoming-section { display: flex; flex: 1; flex-direction: column; gap: 6px; min-height: 0; width: 100%; }
+.epg-active-show { display: flex; flex-direction: column; gap: 4px; }
+.epg-show-title { color: #ffffff; font-size: 14px; font-weight: 600; text-align: left; }
+.epg-time { color: var(--text-muted); font-size: 11px; font-weight: 700; }
+.hero-epg-progress-wrapper, .version-chip-header { align-items: center; display: flex; gap: 8px; width: 100%; }
+.epg-progress-bar-container { background: rgba(255, 255, 255, 0.1); border-radius: 5px; flex: 1; height: 6px; overflow: hidden; }
+.epg-progress-bar-fill { background: var(--primary-color); height: 100%; transition: width 0.3s ease; width: 0%; }
+.upcoming-programs-list { display: flex; flex: 1; flex-direction: column; gap: 6px; min-height: 0; overflow-y: auto; width: 100%; }
+.upcoming-program-row { align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.04); border-left: 3px solid var(--primary-color); border-radius: var(--radius-sm); display: flex; gap: 10px; padding: 5px 10px; transition: background 0.2s ease, border-color 0.2s ease; }
+.upcoming-program-row:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); }
+.upcoming-program-time { color: var(--primary-color); flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; }
+.upcoming-program-title { color: rgba(255, 255, 255, 0.82); font-size: 12px; font-weight: 500; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.loading-center { align-items: center; background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-lg); color: var(--text-muted); display: flex; font-size: 17px; justify-content: center; min-height: 200px; width: 100%; }
+
+/* Live TV initial placeholder panel. */
+.hero-placeholder-content { align-items: center; backdrop-filter: blur(12px); background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 1; flex-direction: column; justify-content: center; padding: 8%; text-align: center; }
+.placeholder-icon-large { -webkit-mask-image: url('../images/livetv.svg'); -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background: linear-gradient(135deg, var(--primary-color) 0%, rgba(255, 255, 255, 0.6) 100%); height: 6rem; margin-bottom: 1.5rem; mask-image: url('../images/livetv.svg'); mask-repeat: no-repeat; mask-size: contain; opacity: 0.85; transition: opacity 0.3s ease, filter 0.3s ease; width: 6rem; }
+.hero-placeholder-content:hover .placeholder-icon-large { filter: drop-shadow(0 0 8px rgba(var(--primary-rgb), 0.5)); opacity: 1; }
+.hero-placeholder-content h1 { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%); background-clip: text; font-size: 1.8rem; font-weight: 900; letter-spacing: -0.02em; margin: 0 0 0.8rem 0; }
+.hero-placeholder-content p { color: var(--text-muted); font-size: 1rem; line-height: 1.5; margin: 0; max-width: 80%; }
+
+/* Live TV fullscreen player overlay. */
+.tv-player-container { background: #000000; height: 100%; overflow: hidden; position: relative; width: 100%; }
+.tv-video { height: 100%; object-fit: contain; width: 100%; }
+.tv-overlay { background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%); display: flex; flex-direction: column; inset: 0; justify-content: space-between; opacity: 0; padding: 5vh 5vw; pointer-events: none; position: absolute; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 12; }
+.tv-overlay.show { opacity: 1; pointer-events: auto; }
+.tv-overlay-top { align-items: center; display: flex; justify-content: flex-start; pointer-events: auto; }
+/* Live TV fullscreen player top back button. */
+.tv-back-btn {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    height: 44px;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    pointer-events: auto;
+    transition: background-color 150ms ease, border-color 150ms ease;
+    width: 44px;
+}
+.tv-back-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.4); }
+.tv-back-btn:focus, .tv-back-btn.focused { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; outline: none; }
+.tv-overlay-bottom { align-items: center; display: flex; justify-content: space-between; width: 100%; }
+.tv-controls-left { align-items: center; display: flex; gap: 24px; }
+.tv-info { display: flex; flex-direction: column; justify-content: center; max-width: 50vw; }
+.tv-info h1 { color: #ffffff; font-size: 28px; font-weight: 900; margin: 0; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); white-space: nowrap; }
+.tv-meta-row { align-items: center; display: flex; gap: 12px; margin-top: 8px; }
+.tv-group-badge { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); border-radius: var(--radius-xs); color: var(--primary-color); font-size: 12px; font-weight: 900; letter-spacing: 0.05em; padding: 4px 10px; text-transform: uppercase; }
+.tv-epg-info { color: rgba(255, 255, 255, 0.6); font-size: 14px; font-weight: 700; }
+.tv-controls-right { align-items: center; display: flex; gap: 28px; }
+.guide-key { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-xs); color: #ffffff; font-size: 15px; font-weight: 900; padding: 2px 10px; }
+.guide-label { color: rgba(255, 255, 255, 0.55); font-size: 11px; font-weight: 800; letter-spacing: 0.05em; margin-top: 5px; text-transform: uppercase; }
+.tv-status-badge { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 5px; display: flex; gap: 8px; padding: 6px 14px; }
+.tv-quality-badge { color: #ffffff; font-size: 12px; font-weight: 900; }
+.tv-zapping-hud { backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.85); border-left: 5px solid var(--primary-color); border-radius: var(--radius-md); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; min-width: 260px; padding: 16px 28px; pointer-events: none; position: absolute; right: 5vw; top: 5vh; z-index: 9; }
+.tv-zapping-hud.fade-in { animation: hudFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.zapping-label { color: var(--primary-color); font-size: 12px; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px; text-transform: uppercase; }
+.zapping-channel-name { color: #ffffff; font-size: 18px; font-weight: 900; }
+.tv-loading { align-items: center; background: rgba(0, 0, 0, 0.5); bottom: 0; display: none; justify-content: center; left: 0; pointer-events: none; position: absolute; right: 0; top: 0; z-index: 10; }
+
+/* VOD Video player page and HUD overlay. */
+.video-container { background: #000000; height: 100%; overflow: hidden; position: relative; width: 100%; }
+.player-container { height: 100%; position: relative; width: 100%; }
+iframe, #native-video-player { background: #000000; border: none; height: 100%; width: 100%; }
+.player-loading-overlay { align-items: center; background: #000000; display: flex; flex-direction: column; gap: 20px; height: 100%; justify-content: center; left: 0; position: absolute; top: 0; width: 100%; z-index: 150; }
+.player-loading-text { color: rgba(255, 255, 255, 0.7); font-size: 18px; font-weight: 500; letter-spacing: 1px; }
+.player-status-panel { align-items: center; background: rgba(18, 18, 18, 0.96); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-lg); box-shadow: var(--shadow-panel); box-sizing: border-box; color: #ffffff; display: flex; flex-direction: column; height: fit-content; inset: 0; justify-content: center; margin: auto; max-width: 500px; padding: 4%; position: absolute; text-align: center; width: 80%; z-index: 200; }
+.player-status-actions { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+.player-hud { display: flex; flex-direction: column; height: 100%; justify-content: space-between; left: 0; opacity: 0; pointer-events: none; position: absolute; top: 0; transition: opacity 0.4s ease, visibility 0.4s ease; visibility: hidden; width: 100%; z-index: 100; }
+.player-hud.visible { opacity: 1; pointer-events: auto; visibility: visible; }
+.server-selection-overlay { display: flex; justify-content: center; width: 100%; }
+.server-list { display: flex; gap: 12px; justify-content: center; overflow-x: auto; padding: 4px 0; scrollbar-width: none; width: 100%; }
+
+/* ==========================================================================
+   SECTION 10: SETTINGS, ACCOUNT, LOGIN & APP UPDATE COMPONENTS
+   ========================================================================== */
+
+/* Settings item rows, value badges, and stepper controls. */
+.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.04); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
+.setting-item:first-of-type { border-top: 0; }
+.setting-info { min-width: 0; }
+.setting-label { color: #ffffff; font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+.setting-description { color: var(--text-muted); font-size: 15px; line-height: 1.45; }
+.setting-control { align-items: center; display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; }
+.current-value-display { align-items: center; background: rgba(255, 255, 255, 0.08); border: none; border-radius: var(--radius-sm); color: #ffffff; display: inline-flex; font-size: 16px; font-weight: 700; height: 46px; justify-content: center; min-width: 0; padding: 0 18px; text-align: center; }
+.color-preview-circle, #current-color-display { background: var(--primary-color); border: none; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); display: inline-block; flex-shrink: 0; font-size: 0; height: 36px; padding: 0; width: 36px; }
+.setting-item--ui-scale { align-items: center; }
+/* UI scale control container with aligned stepper buttons and output display. */
+.ui-scale-control { align-items: center; background: transparent; border: 0; display: inline-flex; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
+/* Stepper adjust buttons (+ and -) matching the exact dimensions and tactile styling of settings buttons. */
+.ui-scale-control .scale-adjust-btn { font-size: 24px; font-weight: 700; line-height: 1; }
+/* Trailing chevron indicator for full-width action buttons. */
+.btn__chevron { color: #a8a8a8; font-size: 26px; font-weight: 300; line-height: 1; margin-left: auto; }
+.setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
+.setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
+.loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
+
+/* Streaming providers and M3U playlists reorderable rows. */
+.providers-list { display: flex; flex-direction: column; gap: 1.5%; margin-bottom: 2%; width: 100%; }
+.provider-item { align-items: center; background: #202020; border: none; border-radius: var(--radius-md); box-sizing: border-box; display: flex; gap: 12px; margin-bottom: 10px; padding: 10px 14px; position: relative; transition: background 0.2s ease, box-shadow 0.2s ease; width: 100%; }
+.provider-item:hover, .provider-item:focus, .provider-item.focused { background: #202020; border: none; box-shadow: none; outline: none; }
+.provider-item.moving, .provider-item.moving:hover, .provider-item.moving:focus, .provider-item.moving.focused { background: #2c2c2c; border: 2px solid #ffffff; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88); outline: none; z-index: 20; }
+.provider-item.dragging { background: #333333; border: 2px solid #ffffff; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95); cursor: grabbing; opacity: 0.98; outline: none; user-select: none; z-index: 50; }
+.provider-actions { align-items: center; display: flex; gap: 8px; }
+.provider-actions .edit-trigger, .provider-actions .setting-btn { height: 42px; min-height: 42px; min-width: 42px; width: 42px; }
+.provider-move-btn { cursor: grab; }
+.provider-move-btn:active, .provider-item.dragging .provider-move-btn { cursor: grabbing; }
+.provider-move-btn.active-moving { background: #333333; border-color: #ffffff; }
+
+/* Accent color dots and warning banner inside settings modals. */
+.color-dot { border: 2px solid rgba(255, 255, 255, 0.32); border-radius: 999px; height: 44px; width: 44px; }
+.color-dot.green { background-color: #46d369; }
+.color-dot.red { background-color: #e50914; }
+.color-dot.blue { background-color: #00d4ff; }
+.color-dot.purple { background-color: #9146ff; }
+.color-dot.orange { background-color: #ff6b35; }
+.color-dot.yellow { background-color: #ffd700; }
+.warning-container { background: rgba(255, 107, 53, 0.11); border-left: 4px solid #ff6b35; border-radius: var(--radius-md); color: #ffb08f; font-size: 14px; line-height: 1.45; margin-top: 4px; padding: 14px 16px; }
+
+/* Language stepper inside settings language modal. */
+.language-stepper-container { align-items: center; display: flex; gap: 16px; justify-content: center; margin: 16px 0 24px; width: 100%; }
+.language-stepper-value { align-items: center; background: #222222; border: none; border-radius: var(--radius-md); color: #ffffff; display: flex; font-size: 18px; font-weight: 800; gap: 12px; justify-content: center; min-height: 56px; min-width: 240px; padding: 0 24px; text-align: center; }
+.display-flag-span, .language-stepper-value .display-flag-span { align-items: center; display: inline-flex; font-family: "Twemoji Country Flags", inherit; font-size: 22px; line-height: 1; margin-right: 12px; }
+
+/* Account profile display and avatar. */
+.profile-display { align-items: center; display: flex; gap: 36px; }
+.profile-avatar.large { align-items: center; border: 3px solid rgba(255, 255, 255, 0.25); border-radius: var(--radius-md); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); color: #ffffff; display: flex; flex: 0 0 108px; font-size: 48px; font-weight: 800; height: 108px; justify-content: center; width: 108px; }
+.profile-details { display: flex; flex: 1; flex-direction: column; gap: 12px; min-width: 0; }
+.profile-name-text { color: #ffffff; font-size: 28px; font-weight: 700; margin: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
+
+/* Login and registration screen layout. */
+.login-page-wrapper { align-items: center; background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.05) 0%, rgba(5, 5, 5, 0.98) 70%); box-sizing: border-box; display: flex; justify-content: center; min-height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); position: relative; }
+.login-card-container { box-sizing: border-box; margin: 0 auto; position: relative; width: min(460px, 92vw); }
+.login-panel { background: #141414; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9); box-sizing: border-box; margin: 0 auto; max-height: 94vh; overflow-y: auto; padding: 28px 28px 24px; position: relative; width: 100%; }
+#login-circle-back { left: 20px; position: absolute; top: 20px; z-index: 10; }
+.login-back-icon { height: 18px; object-fit: contain; pointer-events: none; width: 18px; }
+.login-header { align-items: center; display: flex; flex-direction: column; justify-content: center; margin-bottom: 24px; text-align: center; }
+.login-title-text { color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px; text-align: center; justify-content: center; }
+.login-subtitle-text { color: var(--text-muted); font-size: 14px; margin: 0; }
+.login-pin-row { align-items: baseline; display: flex; justify-content: space-between; margin-bottom: 6px; width: 100%; }
+.login-pin-row label { margin-bottom: 0; }
+.login-pin-hint { color: var(--text-dim); font-size: 12px; font-weight: 600; }
+.login-footer { align-items: center; display: flex; flex-direction: column; gap: 8px; margin-top: 14px; width: 100%; }
+
+/* App update prompt modal and developer version selector. */
+.update-header { align-items: center; display: flex; flex-direction: column; gap: 8px; }
+.update-icon-container { align-items: center; align-self: center; background: rgba(var(--primary-rgb), 0.14); border-radius: var(--radius-lg); display: flex; height: 76px; justify-content: center; margin-bottom: 12px; width: 76px; }
+.update-icon-mask { -webkit-mask-image: url('../images/update.svg'); -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background-color: var(--primary-color); height: 38px; mask-image: url('../images/update.svg'); mask-position: center; mask-repeat: no-repeat; mask-size: contain; width: 38px; }
+.version-badge-container { align-items: center; display: flex; flex-direction: row; gap: 14px; justify-content: center; margin-bottom: 8px; }
+.version-badge { border-radius: 5px; font-size: 0.85rem; font-weight: 700; padding: 4px 12px; }
+.version-badge.current { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.65); }
+.version-badge.remote { background: rgba(var(--primary-rgb), 0.15); border: 1px solid rgba(var(--primary-rgb), 0.3); color: var(--primary-color); }
+.version-arrow { color: rgba(255, 255, 255, 0.4); font-size: 1rem; }
+.update-branch-section { align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; padding: 12px; }
+.update-branch-title { color: rgba(255, 255, 255, 0.4); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.update-release-name { color: #ffffff; font-size: 1.1rem; font-weight: 700; }
+/* Update prompt experimental warning notice */
+.update-experimental-warning { align-items: flex-start; background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.45); border-radius: var(--radius-md); box-sizing: border-box; display: flex; gap: 12px; margin: 8px 0; padding: 12px 14px; text-align: left; width: 100%; }
+.update-experimental-warning .warning-icon { font-size: 20px; line-height: 1.2; }
+.update-experimental-warning .warning-content { display: flex; flex: 1; flex-direction: column; gap: 4px; }
+.update-experimental-warning .warning-title { color: #fbbf24; font-size: 0.9rem; font-weight: 700; }
+.update-experimental-warning .warning-text { color: rgba(255, 255, 255, 0.85); font-size: 0.82rem; line-height: 1.45; margin: 0; }
+.update-footer-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; width: 100%; }
+.update-progress-container { align-items: center; display: none; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%; }
+.update-progress-bar-bg { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 5px; height: 10px; overflow: hidden; position: relative; width: 100%; }
+.update-progress-bar { background: var(--primary-color); border-radius: 5px; bottom: 0; box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6); left: 0; position: absolute; top: 0; transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+.update-progress-text { color: var(--text-color, #ffffff); font-size: 14px; font-weight: 700; margin-top: 4px; }
+
+/* Version selector vertical list and option cards. */
+.version-option-list { display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 4px 0 8px; width: 100%; }
+.version-option-list .chip--option { justify-content: flex-start; min-height: 60px; padding: 12px 18px; text-align: left; width: 100%; }
+.version-chip-content { align-items: flex-start; display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; width: 100%; }
+.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
+.version-chip-title { color: #ffffff; font-size: 14px; font-weight: 700; margin-top: 2px; text-align: left; }
+.version-chip-desc { color: rgba(255, 255, 255, 0.65); font-size: 12px; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+#version-list-loader { align-items: center; display: flex; inset: auto; justify-content: center; margin: 0 auto; min-height: 220px; position: relative; width: 100%; }
+.version-applied-icon { flex-shrink: 0; height: 28px; margin-left: auto; width: 28px; }
+
+/* Update more info button container */
+.update-more-info-container { box-sizing: border-box; margin: 10px 0 6px; width: 100%; }
+/* Update more info button */
+#update-more-info-btn { border-radius: 12px; font-size: 14.5px; font-weight: 600; min-height: 44px; width: 100%; }
+/* Update changelog dedicated modal scroll container */
+.update-changelog-scroll { box-sizing: border-box; max-height: 60vh; overflow-x: hidden; overflow-y: auto; padding: 8px 16px 20px; width: 100%; }
+.update-changelog-scroll::-webkit-scrollbar { width: 6px; }
+.update-changelog-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
+.update-changelog-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
+.update-changelog-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.6); }
+
+/* Markdown changelog formatting. */
+.markdown-body { color: var(--text-color); font-size: 0.9rem; line-height: 1.6; padding: 0 2%; text-align: left; word-break: break-word; }
+.markdown-body h2, .update-changelog-body h2 { color: #ffffff; font-size: 1.25rem; font-weight: 700; margin: 16px 0 8px; }
+.markdown-body h3, .update-changelog-body h3 { color: #ffffff; font-size: 1.15rem; font-weight: 700; margin: 14px 0 8px; }
+.markdown-body h4, .update-changelog-body h4 { color: #ffffff; font-size: 1.05rem; font-weight: 600; margin: 12px 0 6px; }
+.markdown-body h5, .update-changelog-body h5 { color: #ffffff; font-size: 0.95rem; font-weight: 600; margin: 10px 0 6px; }
+.markdown-body h6, .update-changelog-body h6 { color: #ffffff; font-size: 0.9rem; font-weight: 600; margin: 8px 0 4px; }
+.markdown-body p, .update-changelog-body p { line-height: 1.6; margin: 0 0 10px; }
+.markdown-body ul, .update-changelog-body ul { list-style-type: disc; margin: 0 0 12px; padding-left: 20px; }
+.markdown-body li, .update-changelog-body li { line-height: 1.5; margin-bottom: 4px; }
+.markdown-body code, .update-changelog-body code { background: rgba(255, 255, 255, 0.08); border-radius: 5px; font-family: monospace; font-size: 0.85rem; padding: 2px 6px; word-break: break-all; }
+.markdown-body a, .update-changelog-body a { color: var(--primary-color); text-decoration: underline; }
+.markdown-body a:hover, .markdown-body a:focus, .update-changelog-body a:hover, .update-changelog-body a:focus { color: #ffffff; text-decoration: underline; }
+
+/* ==========================================================================
+   SECTION 11: UNIVERSAL SPATIAL NAVIGATION FOCUS, KEYFRAMES & MEDIA QUERIES
+   ========================================================================== */
+
+/* High-visibility focus border for any focused TV/keyboard element (no white border on hover). */
+.focusable:focus, .focusable.focused, .focusable:focus-within, .focusable-container:focus-within, .focusable-container.focused {
+    border-color: #ffffff;
+    box-shadow: none;
+    outline: none;
+}
+.focusable:hover, .focusable-container:hover { outline: none; }
+
+/* Suppresses borders and outlines for inputs and selects nested within wrappers to prevent double focus rings. */
+.input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+/* Chromium native off-screen rendering optimization for poster cards. */
+.recyclable-card, .poster-card { contain-intrinsic-size: 150px 70px; content-visibility: auto; }
+
+/* Keyframe animations. */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hudFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes toast-pulse-opacity { 0% { opacity: 0.7; } 50% { opacity: 0.4; } 100% { opacity: 0.7; } }
+@keyframes ivids-loader-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Media query for large laptops and 1080p displays. */
+@media (min-aspect-ratio: 3/4) and (max-width: 1440px) {
+    :root {
+        --app-content-padding-x: 24px;
+        --app-content-padding-y: 20px;
+        --app-sidebar-expanded-width: 190px;
+        --app-sidebar-width: 60px;
+        --poster-width: 130px;
+        --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.30);
+        --shadow-panel: 0 12px 36px rgba(0, 0, 0, 0.40);
+    }
+    .hero { height: 50vh; min-height: 380px; padding-bottom: 40px; }
+}
+
+/* Media query for medium/small screens like 720p TV and laptops. */
+@media (min-aspect-ratio: 3/4) and (max-width: 1280px) {
+    :root {
+        --app-content-padding-x: 20px;
+        --app-content-padding-y: 16px;
+        --app-sidebar-expanded-width: 180px;
+        --app-sidebar-width: 56px;
+        --poster-width: 116px;
+        --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.25);
+        --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.32);
+    }
+    .hero { height: 46vh; min-height: 320px; padding-bottom: 30px; }
+    .row-container { margin-bottom: 8px; }
+    .details-top { gap: 20px; }
+    .details-backdrop { height: 46vh; }
+}
+
+/* Intermediate media query for small viewports. */
+@media (min-aspect-ratio: 3/4) and (max-width: 1100px) {
+    :root {
+        --app-content-padding-x: 18px;
+        --app-content-padding-y: 14px;
+        --poster-width: 106px;
+        --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.22);
+        --shadow-panel: 0 6px 16px rgba(0, 0, 0, 0.28);
+    }
+    .hero { height: 44vh; min-height: 280px; padding-bottom: 25px; }
+}
+
+/* Intermediate media query for common TV WebView effective viewports. */
+@media (min-aspect-ratio: 3/4) and (max-width: 960px) {
+    :root {
+        --app-content-padding-x: 16px;
+        --app-content-padding-y: 12px;
+        --app-sidebar-width: 52px;
+        --poster-width: 98px;
+        --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.18);
+        --shadow-panel: 0 4px 10px rgba(0, 0, 0, 0.22);
+    }
+    .hero { height: 42vh; min-height: 240px; padding-bottom: 20px; }
+}
+
+/* Media query for very small viewports like 480p screens. */
+@media (min-aspect-ratio: 3/4) and (max-width: 900px) {
+    :root {
+        --app-content-padding-x: 14px;
+        --app-content-padding-y: 10px;
+        --app-sidebar-expanded-width: 160px;
+        --app-sidebar-width: 48px;
+        --poster-width: 90px;
+        --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.15);
+        --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+    .hero { height: 40vh; min-height: 220px; padding-bottom: 16px; }
+    .btn { font-size: 11px; min-height: 32px; padding: 4px 12px; }
+    .row-container { margin-bottom: 6px; }
+    .details-top { align-items: center; flex-direction: column; gap: 14px; text-align: center; }
+    .details-info { text-align: center; }
+    .details-hero-poster { width: 100px; }
+    .details-actions { justify-content: center; }
+    .details-bottom { flex-direction: column; gap: 10px; }
+}
+
+/* Media query for screens larger than 1080p (1440p and 4K displays). */
+@media (min-width: 1921px) {
+    :root { --poster-width: 154px; }
+}
+
+/* Media query to stack chip grids into a single column on compact viewports. */
+@media (max-width: 1024px) {
+    .chip-grid, .chip-grid--2col { gap: 12px; grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   Universal Material Design Ink Ripple System (.universal-onclick)
+   ========================================================================== */
+
+/* Universal container class providing ink ripple boundary containment. */
+.universal-onclick {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Material Design circular ink ripple wave element. */
+.ripple-wave {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.22) 60%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    transform: scale(0);
+    animation: material-ripple 450ms cubic-bezier(0.1, 0, 0.2, 1) forwards;
+    z-index: 10;
+}
+
+/* Inverts ink ripple contrast to dark grey on white button surfaces for high visibility. */
+.btn--primary .ripple-wave,
+#play-btn .ripple-wave,
+#play-all-btn .ripple-wave,
+.tab-btn.is-active .ripple-wave {
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.16) 60%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Keyframe animation expanding the ink circle outward before fading out smoothly. */
+@keyframes material-ripple {
+    0% {
+        transform: scale(0);
+        opacity: 0.42;
+    }
+    50% {
+        opacity: 0.28;
+    }
+    100% {
+        transform: scale(1.05);
+        opacity: 0;
+    }
+}
