@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "تماشای زنده",
+    "selectChannel": "یک شبکه انتخاب کنید",
+    "streamOffline": "پخش در حال حاضر آفلاین است. شبکه دیگری را امتحان کنید یا دوباره تلاش کنید.",
+    "streamOptions": "گزینه‌های پخش",
+    "quality": "کیفیت",
+    "audioTrack": "صدا",
+    "subtitles": "زیرنویس",
+    "auto": "خودکار",
+    "off": "خاموش"
   },
   "settings_livetv": {
     "title": "پیکربندی تلویزیون زنده",

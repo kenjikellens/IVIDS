@@ -36,36 +36,27 @@
                     <video id="livetv-preview-video" autoplay muted playsinline></video>
                     <div id="preview-minimal-prompt" class="preview-minimal-prompt">
                         <span id="preview-channel-name" class="preview-channel-name" data-i18n="livetv.selectChannel">Select a channel</span>
-                        <button id="preview-watch-btn" type="button" class="btn btn--primary btn--sm preview-watch-btn focusable universal-onclick" data-i18n="livetv.watchLive">Watch Live</button>
+                        <button id="preview-watch-btn" type="button" class="btn btn--primary btn--sm preview-watch-btn universal-onclick" data-i18n="livetv.watchLive">Watch Live</button>
                     </div>
                     <div id="preview-video-loading" class="preview-video-loading hidden">
                         <div class="ivids-loader"></div>
                     </div>
                 </div>
 
-                <!-- Bottom Card: Current & Upcoming Program EPG Schedules -->
+                <!-- Bottom Card: Clean Minimal EPG Schedule -->
                 <div class="card card--panel epg-panel epg-card">
-                    <!-- Current Program Schedule -->
                     <div id="hero-epg-container" class="details-epg-section">
-                        <h3 class="section-title">
-                            <span class="live-badge" data-i18n="livetv.live">LIVE</span>
-                            <span data-i18n="livetv.playingNow">Playing Now</span>
-                        </h3>
-                        <div class="epg-active-show">
-                            <span id="hero-epg-title" class="epg-show-title" data-i18n="livetv.loading">Loading channels...</span>
-                            <div class="hero-epg-progress-wrapper">
-                                <span id="hero-epg-start" class="epg-time">--:--</span>
-                                <div class="epg-progress-bar-container">
-                                    <div id="hero-epg-progress" class="epg-progress-bar-fill"></div>
-                                </div>
-                                <span id="hero-epg-end" class="epg-time">--:--</span>
-                            </div>
+                        <div class="epg-header-row">
+                            <span id="hero-epg-title" class="epg-show-title" data-i18n="livetv.noEpgInfo">No program info available</span>
+                            <span id="hero-epg-time" class="epg-time hidden"></span>
+                        </div>
+                        <div id="hero-epg-progress-wrap" class="epg-progress-bar-container hidden">
+                            <div id="hero-epg-progress" class="epg-progress-bar-fill"></div>
                         </div>
                     </div>
 
-                    <!-- Upcoming Programs list -->
-                    <div class="details-upcoming-section">
-                        <h3 class="section-title" data-i18n="livetv.upcoming">Upcoming Programs</h3>
+                    <!-- Upcoming Programs list (shown only when data exists) -->
+                    <div id="details-upcoming-section" class="details-upcoming-section hidden">
                         <div class="upcoming-programs-list" id="upcoming-programs-list">
                             <!-- Injected upcoming show rows -->
                         </div>

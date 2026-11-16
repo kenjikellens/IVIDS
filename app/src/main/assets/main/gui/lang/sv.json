@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Titta live",
+    "selectChannel": "Välj en kanal",
+    "streamOffline": "Strömmen är offline just nu. Prova en annan kanal eller försök igen.",
+    "streamOptions": "Strömalternativ",
+    "quality": "Kvalitet",
+    "audioTrack": "Ljud",
+    "subtitles": "Undertexter",
+    "auto": "Auto",
+    "off": "Av"
   },
   "settings_livetv": {
     "title": "Konfiguration av Live TV",

@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Παρακολούθηση ζωντανά",
+    "selectChannel": "Επιλέξτε κανάλι",
+    "streamOffline": "Η ροή είναι εκτός σύνδεσης. Δοκιμάστε άλλο κανάλι ή ξαναπροσπαθήστε.",
+    "streamOptions": "Επιλογές ροής",
+    "quality": "Ποιότητα",
+    "audioTrack": "Ήχος",
+    "subtitles": "Υπότιτλοι",
+    "auto": "Αυτόματο",
+    "off": "Απενεργοποιημένο"
   },
   "settings_livetv": {
     "title": "Διαμόρφωση ζωντανής τηλεόρασης",

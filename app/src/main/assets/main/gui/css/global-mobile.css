@@ -309,19 +309,38 @@
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb, #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__thumb--sm { aspect-ratio: 16 / 9; height: auto; width: 100%; }
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) .card__body { width: 100%; }
-#app .livetv-two-column-layout { flex-direction: column; gap: 12px; padding: 4% var(--app-content-padding-x); }
-/* Vertical category and country list column on mobile viewports. */
-#app .livetv-categories-column { height: 22vh; width: 100%; }
-#app .livetv-list-column { height: 34vh; width: 100%; }
-#app .livetv-preview-column { height: auto; width: 100%; }
-/* Responsive preview video card sizing on mobile. */
-#app .preview-card, #app .preview-card-video { height: 28vh; min-height: 180px; }
-
-/* Touch-friendly channel cards on mobile. */
-#app .channel-card, #app .channel-list-item { min-height: 52px; padding: 10px 12px; }
-
-/* Compact EPG schedule panel padding on mobile. */
-#app .epg-panel, #app .epg-card { padding: 16px; }
+/* Compact mobile Live TV vertical layout with horizontal category pills and spacious channel list. */
+#app .livetv-two-column-layout { flex-direction: column; gap: 8px; height: 100%; padding: 10px var(--app-content-padding-x) calc(68px + env(safe-area-inset-bottom, 12px)); }
+/* Horizontal scrollable category pill bar on mobile viewports. */
+#app .livetv-categories-column { flex-shrink: 0; height: auto; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; width: 100%; }
+/* Horizontal pill container for mobile Live TV categories. */
+#app .categories-list { flex-direction: row; flex-wrap: nowrap; gap: 6px; padding: 2px 0; width: max-content; }
+/* Touch-friendly category pill chip (>=44px tap height) on mobile. */
+#app .category-list-item { border-radius: 999px; height: 44px; min-height: 44px; padding: 8px 14px; width: auto; }
+/* Spacious middle channel list taking remaining viewport height on mobile. */
+#app .livetv-list-column { flex: 1 1 auto; gap: 6px; height: auto; min-height: 0; order: 2; width: 100%; }
+/* Compact top preview card container on mobile. */
+#app .livetv-preview-column { flex-shrink: 0; height: auto; order: 1; width: 100%; }
+/* Compact preview video card sizing on mobile. */
+#app .preview-card, #app .preview-card-video { flex: 0 0 auto; height: 148px; max-height: none; min-height: 132px; }
+/* Touch-friendly channel cards (>=44px tap target) on mobile. */
+#app .channel-card, #app .channel-list-item { height: auto; min-height: 46px; padding: 8px 12px; }
+/* Compact EPG strip padding on mobile. */
+#app .epg-panel, #app .epg-card { max-height: 74px; padding: 8px 12px; }
+/* Mobile fullscreen Live TV player compact 4-item OSD and 360px overflow safety. */
+#app .tv-overlay { padding: calc(12px + env(safe-area-inset-top, 12px)) 14px calc(16px + env(safe-area-inset-bottom, 12px)); }
+/* Touch-friendly >=44px top Back and Settings buttons on mobile. */
+#app .tv-back-btn, #app .tv-settings-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
+/* Full-width responsive Stream Options panel on narrow mobile viewports (360px+). */
+#app .tv-settings-panel { left: 14px; max-height: 60vh; max-width: none; right: 14px; top: calc(64px + env(safe-area-inset-top, 12px)); width: auto; }
+/* Touch-friendly Stream Options choice buttons on mobile. */
+#app .tv-opt-btn { min-height: 44px; padding: 8px 12px; }
+/* Compact channel info typography on narrow mobile screens. */
+#app .tv-info { max-width: calc(100% - 54px); }
+#app .tv-info h1 { font-size: 17px; }
+#app .tv-epg-info { font-size: 12px; }
+/* Compact top-right zapping indicator on mobile. */
+#app .tv-zapping-hud { min-width: 0; max-width: calc(100vw - 28px); right: 14px; top: calc(12px + env(safe-area-inset-top, 12px)); }
 
 /* Single column grid flow for custom playlists grid on mobile. */
 #app .media-grid--widescreen, #app .playlists-grid { gap: 12px; grid-template-columns: 1fr; }

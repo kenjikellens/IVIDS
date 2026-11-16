@@ -505,7 +505,16 @@
     "previousChannel": "Vorige zender",
     "nextChannel": "Volgende zender",
     "aspectRatio": "Beeldverhouding",
-    "channelGuide": "TV-gids"
+    "channelGuide": "TV-gids",
+    "watchLive": "Live kijken",
+    "selectChannel": "Selecteer een zender",
+    "streamOffline": "Stream is momenteel offline. Probeer een andere zender of probeer opnieuw.",
+    "streamOptions": "Streamopties",
+    "quality": "Kwaliteit",
+    "audioTrack": "Audio",
+    "subtitles": "Ondertiteling",
+    "auto": "Automatisch",
+    "off": "Uit"
   },
   "settings_livetv": {
     "title": "Live TV Configuratie",

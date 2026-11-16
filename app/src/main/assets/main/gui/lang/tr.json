@@ -510,7 +510,16 @@
     "previousChannel": "Önceki Kanal",
     "nextChannel": "Sonraki Kanal",
     "aspectRatio": "En Boy Oranı",
-    "channelGuide": "Kanal Rehberi"
+    "channelGuide": "Kanal Rehberi",
+    "watchLive": "Canlı İzle",
+    "selectChannel": "Bir kanal seçin",
+    "streamOffline": "Yayın şu anda çevrimdışı. Başka bir kanal deneyin veya tekrar deneyin.",
+    "streamOptions": "Yayın Seçenekleri",
+    "quality": "Kalite",
+    "audioTrack": "Ses",
+    "subtitles": "Altyazılar",
+    "auto": "Otomatik",
+    "off": "Kapalı"
   },
   "settings_livetv": {
     "title": "Canlı TV Yapılandırması",

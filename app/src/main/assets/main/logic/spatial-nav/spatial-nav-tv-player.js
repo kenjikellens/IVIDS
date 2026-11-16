@@ -24,7 +24,16 @@ function isOverlayVisible() {
 }
 
 /**
- * Retrieves the top Back button in the TV player overlay.
+ * Checks if the Stream Options panel is currently open and visible.
+ * @returns {boolean} True if #tv-settings-panel is visible.
+ */
+function isSettingsPanelOpen() {
+    const panel = document.getElementById('tv-settings-panel');
+    return isElementVisible(panel);
+}
+
+/**
+ * Retrieves the top-left Back button in the TV player overlay.
  * @returns {HTMLElement|null} Back button element.
  */
 function getBackBtn() {
@@ -32,7 +41,16 @@ function getBackBtn() {
 }
 
 /**
- * Retrieves the center error Retry button if visible.
+ * Retrieves the top-right Settings button in the TV player overlay.
+ * @returns {HTMLElement|null} Settings button element.
+ */
+function getSettingsBtn() {
+    const btn = document.getElementById('tv-settings-btn');
+    return (btn && isElementVisible(btn)) ? btn : null;
+}
+
+/**
+ * Retrieves the center offline Retry button if visible.
  * @returns {HTMLElement|null} Retry button element or null.
  */
 function getRetryBtn() {
@@ -41,50 +59,37 @@ function getRetryBtn() {
 }
 
 /**
- * Retrieves all visible focusable controls in the bottom overlay bar in logical left-to-right DOM order.
- * @returns {HTMLElement[]} Array of visible bottom bar control elements.
+ * Retrieves all visible focusable option buttons inside the Stream Options panel.
+ * @returns {HTMLElement[]} Array of option button elements.
  */
-function getBottomControls() {
-    const selector = [
-        '#tv-play-pause.focusable',
-        '#tv-prev-btn.focusable',
-        '#tv-next-btn.focusable',
-        '#tv-aspect-ratio.focusable',
-        '.tv-overlay-bottom .focusable'
-    ].join(', ');
-    const items = Array.from(document.querySelectorAll(selector));
-    const unique = Array.from(new Set(items));
-    return unique.filter(isElementVisible);
+function getSettingsOptions() {
+    const panel = document.getElementById('tv-settings-panel');
+    if (!panel || !isElementVisible(panel)) return [];
+    return Array.from(panel.querySelectorAll('.tv-opt-btn.focusable')).filter(isElementVisible);
 }
 
 /**
- * Spatial Navigation controller for the Live TV Player page.
- * Coordinates D-pad navigation across Channel OSD controls, fast channel zapping with Up/Down keys
- * when overlay is hidden, and tiered back navigation.
+ * Spatial Navigation controller for the compact 4-item Live TV Player overlay:
+ * - Top bar: #tv-back (left) <-> #tv-settings-btn (right)
+ * - Stream Options panel (#tv-settings-panel) option routing
+ * - Offline Retry button (#tv-retry-btn) when stream is offline
+ * - Fast channel zapping with ArrowUp/ArrowDown when overlay is hidden
  */
 export const spatialNavTvPlayer = {
     id: 'tv-player',
 
     /**
-     * Retrieves the default focus element when loading the TV player or revealing overlays.
-     * Prefers retry button if in error state, or the primary Play/Pause button (#tv-play-pause) in the bottom bar.
-     * Never defaults to the Back button.
+     * Retrieves the default focus element when opening the player overlay.
+     * Prefers #tv-retry-btn if offline, otherwise #tv-settings-btn (never defaults to Back).
      * @returns {HTMLElement|null} The default focus target element.
      */
     getDefaultFocus() {
-        // 1. If center Retry button is visible, focus it
         const retryBtn = getRetryBtn();
         if (retryBtn) return retryBtn;
 
-        // 2. Primary focus: Play/Pause button (#tv-play-pause)
-        const playPause = document.getElementById('tv-play-pause');
-        if (playPause && isElementVisible(playPause)) return playPause;
+        const settingsBtn = getSettingsBtn();
+        if (settingsBtn) return settingsBtn;
 
-        // 3. Fallback to first visible bottom control
-        const bottomControls = getBottomControls();
-        if (bottomControls.length > 0) return bottomControls[0];
-
-        // 4. Ultimate fallback to Back button if no other controls exist
         const backBtn = getBackBtn();
         if (backBtn && isElementVisible(backBtn)) return backBtn;
 
@@ -92,8 +97,8 @@ export const spatialNavTvPlayer = {
     },
 
     /**
-     * Resolves directional D-pad focus routing on the Live TV player:
-     * - Traversal between Top Bar (#tv-back), Center Retry, and Bottom Controls
+     * Resolves directional D-pad focus routing on the Live TV player across
+     * top bar (#tv-back <-> #tv-settings-btn), #tv-settings-panel options, and #tv-retry-btn.
      * @param {HTMLElement} current - The currently focused element.
      * @param {string} direction - Navigation direction ('up', 'down', 'left', 'right').
      * @returns {HTMLElement|null} Next focus target element, or current to trap focus.
@@ -107,50 +112,71 @@ export const spatialNavTvPlayer = {
             }
 
             const backBtn = getBackBtn();
+            const settingsBtn = getSettingsBtn();
             const retryBtn = getRetryBtn();
-            const bottomControls = getBottomControls();
 
-            // Top Bar: Back button (#tv-back)
-            if (current === backBtn || current.closest('.tv-overlay-top')) {
+            // 1. Inside Stream Options panel (#tv-settings-panel)
+            if (isSettingsPanelOpen() && current.closest('#tv-settings-panel')) {
+                const groups = Array.from(document.querySelectorAll('#tv-settings-panel .tv-settings-group'))
+                    .map(g => Array.from(g.querySelectorAll('.tv-opt-btn.focusable')).filter(isElementVisible))
+                    .filter(arr => arr.length > 0);
+
+                for (let gIdx = 0; gIdx < groups.length; gIdx++) {
+                    const row = groups[gIdx];
+                    const cIdx = row.indexOf(current);
+                    if (cIdx !== -1) {
+                        if (direction === 'left') {
+                            return cIdx > 0 ? row[cIdx - 1] : current;
+                        }
+                        if (direction === 'right') {
+                            return cIdx < row.length - 1 ? row[cIdx + 1] : current;
+                        }
+                        if (direction === 'up') {
+                            if (gIdx > 0) {
+                                const prevRow = groups[gIdx - 1];
+                                return prevRow[Math.min(cIdx, prevRow.length - 1)];
+                            }
+                            return settingsBtn || current;
+                        }
+                        if (direction === 'down') {
+                            if (gIdx < groups.length - 1) {
+                                const nextRow = groups[gIdx + 1];
+                                return nextRow[Math.min(cIdx, nextRow.length - 1)];
+                            }
+                            return current;
+                        }
+                    }
+                }
+                const allOpts = getSettingsOptions();
+                return allOpts[0] || settingsBtn || current;
+            }
+
+            // 2. Top-Left Back Button (#tv-back)
+            if (current === backBtn) {
+                if (direction === 'right' && settingsBtn) return settingsBtn;
+                if (direction === 'down' && retryBtn) return retryBtn;
+                return current;
+            }
+
+            // 3. Top-Right Settings Button (#tv-settings-btn)
+            if (current === settingsBtn) {
+                if (direction === 'left' && backBtn && isElementVisible(backBtn)) return backBtn;
                 if (direction === 'down') {
+                    if (isSettingsPanelOpen()) {
+                        const opts = getSettingsOptions();
+                        if (opts.length > 0) return opts[0];
+                    }
                     if (retryBtn) return retryBtn;
-                    const playPause = document.getElementById('tv-play-pause');
-                    if (playPause && isElementVisible(playPause)) return playPause;
-                    if (bottomControls.length > 0) return bottomControls[0];
                 }
                 return current;
             }
 
-            // Center Error State: Retry button (#tv-retry-btn)
+            // 4. Center Offline Retry Button (#tv-retry-btn)
             if (current === retryBtn) {
-                if (direction === 'up') {
-                    if (backBtn && isElementVisible(backBtn)) return backBtn;
-                }
-                if (direction === 'down') {
-                    if (bottomControls.length > 0) return bottomControls[0];
-                }
+                if (direction === 'up') return settingsBtn || backBtn || current;
+                if (direction === 'left' && backBtn && isElementVisible(backBtn)) return backBtn;
+                if (direction === 'right' && settingsBtn) return settingsBtn;
                 return current;
-            }
-
-            // Bottom Controls Bar
-            const idx = bottomControls.indexOf(current);
-            if (idx !== -1) {
-                if (direction === 'left') {
-                    if (idx > 0) return bottomControls[idx - 1];
-                    return current;
-                }
-                if (direction === 'right') {
-                    if (idx >= 0 && idx < bottomControls.length - 1) return bottomControls[idx + 1];
-                    return current;
-                }
-                if (direction === 'up') {
-                    if (retryBtn) return retryBtn;
-                    if (backBtn && isElementVisible(backBtn)) return backBtn;
-                    return current;
-                }
-                if (direction === 'down') {
-                    return current;
-                }
             }
         }
 
@@ -158,11 +184,7 @@ export const spatialNavTvPlayer = {
     },
 
     /**
-     * Intercepts key events for fast channel switching, overlay reveal, and hardware media keys:
-     * - When overlay is hidden:
-     *   - ArrowUp / ArrowDown: Immediately switches to previous/next channel and briefly shows banner.
-     *   - Enter / Space / ArrowLeft / ArrowRight: Reveals the overlay and focuses #tv-play-pause.
-     * - Hardware Media Keys: Play, Pause, Play/Pause, Stop.
+     * Intercepts key events for fast channel zapping, overlay reveal, and hardware media keys.
      * @param {KeyboardEvent} e - Keydown event object.
      * @param {number} keyCode - Numeric keycode.
      * @returns {boolean} True if the key event was intercepted and handled.
@@ -177,7 +199,6 @@ export const spatialNavTvPlayer = {
         const isRight = (code === 39 || key === 'ArrowRight' || key === 'Right');
         const isEnter = (code === 13 || code === 23 || code === 66 || key === 'Enter' || code === 32 || key === ' ');
 
-        // When Overlay is HIDDEN or passively displayed during channel zapping (no control focused):
         const hasFocusedOverlayControl = Boolean(document.querySelector('#tv-overlay .focused'));
         if (!isOverlayVisible() || !hasFocusedOverlayControl) {
             if (isUp) {
@@ -196,20 +217,16 @@ export const spatialNavTvPlayer = {
                 if (typeof window !== 'undefined' && typeof window.tvShowOverlay === 'function') {
                     window.tvShowOverlay(true);
                 }
-                const target = document.getElementById('tv-play-pause') || this.getDefaultFocus();
+                const target = this.getDefaultFocus();
                 if (target && isElementVisible(target)) {
                     SpatialNav.setFocus(target);
                 }
                 return true;
             }
-        } else {
-            // When overlay is actively focused, keep auto-hide timer alive on any key interaction
-            if (typeof window !== 'undefined' && typeof window.tvResetOverlayTimer === 'function') {
-                window.tvResetOverlayTimer();
-            }
+        } else if (typeof window !== 'undefined' && typeof window.tvResetOverlayTimer === 'function') {
+            window.tvResetOverlayTimer();
         }
 
-        // Hardware TV Media Keys: Play, Pause, Play/Pause, Stop
         const isMediaPlay = code === 415 || key === 'MediaPlay';
         const isMediaPause = code === 19 || key === 'MediaPause';
         const isMediaPlayPause = code === 179 || key === 'MediaPlayPause';
@@ -226,13 +243,23 @@ export const spatialNavTvPlayer = {
     },
 
     /**
-     * Executes back navigation action in a multi-layered hierarchy for TV remotes:
-     * - If TV controls overlay is visible: hide overlay and return true.
-     * - Else (overlay is already hidden): return false so the core router exits the player back to Live TV!
+     * Executes layered Back navigation:
+     * 1. If Stream Options panel is open -> close panel and focus #tv-settings-btn.
+     * 2. Else if TV controls overlay is visible -> hide overlay.
+     * 3. Else -> return false so router exits player back to Live TV guide.
      * @returns {boolean} True if handled locally, false to exit player.
      */
     handleBack() {
-        // 1. If TV controls overlay is visible: hide overlay and consume back event
+        if (isSettingsPanelOpen()) {
+            if (typeof window !== 'undefined' && typeof window.tvCloseSettingsPanel === 'function') {
+                window.tvCloseSettingsPanel(true);
+            } else {
+                const panel = document.getElementById('tv-settings-panel');
+                if (panel) panel.classList.add('hidden');
+            }
+            return true;
+        }
+
         if (isOverlayVisible()) {
             if (typeof window !== 'undefined' && typeof window.tvHideOverlay === 'function') {
                 window.tvHideOverlay();
@@ -243,7 +270,6 @@ export const spatialNavTvPlayer = {
             return true;
         }
 
-        // 2. Overlay is already hidden: return false to let router exit the player back to Live TV!
         return false;
     }
 };

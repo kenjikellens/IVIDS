@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Se live",
+    "selectChannel": "Vælg en kanal",
+    "streamOffline": "Stream er offline i øjeblikket. Prøv en anden kanal eller prøv igen.",
+    "streamOptions": "Streamindstillinger",
+    "quality": "Kvalitet",
+    "audioTrack": "Lyd",
+    "subtitles": "Undertekster",
+    "auto": "Auto",
+    "off": "Fra"
   },
   "settings_livetv": {
     "title": "Konfiguration af Live TV",

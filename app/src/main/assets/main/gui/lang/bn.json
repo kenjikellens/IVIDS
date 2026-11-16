@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "লাইভ দেখুন",
+    "selectChannel": "একটি চ্যানেল নির্বাচন করুন",
+    "streamOffline": "স্ট্রিমটি বর্তমানে অফলাইন আছে। অন্য চ্যানেল চেষ্টা করুন বা আবার চেষ্টা করুন।",
+    "streamOptions": "স্ট্রিম অপশন",
+    "quality": "মান",
+    "audioTrack": "অডিও",
+    "subtitles": "সাবটাইটেল",
+    "auto": "অটো",
+    "off": "বন্ধ"
   },
   "settings_livetv": {
     "title": "লাইভ টিভি কনফিগারেশন",

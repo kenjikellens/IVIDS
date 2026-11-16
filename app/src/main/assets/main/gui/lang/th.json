@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "ดูสด",
+    "selectChannel": "เลือกช่อง",
+    "streamOffline": "สตรีมกำลังออฟไลน์อยู่ ลองช่องอื่นหรือลองใหม่อีกครั้ง",
+    "streamOptions": "ตัวเลือกสตรีม",
+    "quality": "คุณภาพ",
+    "audioTrack": "เสียง",
+    "subtitles": "คำบรรยาย",
+    "auto": "อัตโนมัติ",
+    "off": "ปิด"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

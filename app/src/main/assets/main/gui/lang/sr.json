@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Гледај уживо",
+    "selectChannel": "Изаберите канал",
+    "streamOffline": "Стрим је тренутно ван мреже. Покушајте други канал или покушајте поново.",
+    "streamOptions": "Опције стрима",
+    "quality": "Квалитет",
+    "audioTrack": "Звук",
+    "subtitles": "Титлови",
+    "auto": "Ауто",
+    "off": "Искључено"
   },
   "settings_livetv": {
     "title": "Ливе ТВ Цонфигуратион",

@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "ライブ視聴",
+    "selectChannel": "チャンネルを選択",
+    "streamOffline": "ストリームは現在オフラインです。別のチャンネルを試すか再試行してください。",
+    "streamOptions": "ストリーム設定",
+    "quality": "画質",
+    "audioTrack": "音声",
+    "subtitles": "字幕",
+    "auto": "自動",
+    "off": "オフ"
   },
   "settings_livetv": {
     "title": "ライブTV設定",

@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Vizionează live",
+    "selectChannel": "Selectați un canal",
+    "streamOffline": "Fluxul este momentan offline. Încercați alt canal sau reîncercați.",
+    "streamOptions": "Opțiuni flux",
+    "quality": "Calitate",
+    "audioTrack": "Audio",
+    "subtitles": "Subtitrări",
+    "auto": "Auto",
+    "off": "Oprit"
   },
   "settings_livetv": {
     "title": "Configurare TV în direct",

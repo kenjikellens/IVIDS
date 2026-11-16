@@ -38,6 +38,7 @@ export class LiveStreamEngine {
         this.onLoading = typeof callbacks.onLoading === 'function' ? callbacks.onLoading : null;
         this.onPlaying = typeof callbacks.onPlaying === 'function' ? callbacks.onPlaying : null;
         this.onOffline = typeof callbacks.onOffline === 'function' ? callbacks.onOffline : null;
+        this.onTracksUpdated = typeof callbacks.onTracksUpdated === 'function' ? callbacks.onTracksUpdated : null;
         this.isPreview = Boolean(callbacks.isPreview);
 
         this.hls = null;
@@ -255,10 +256,23 @@ export class LiveStreamEngine {
                     detectedQuality = this.isPreview
                         ? (channel.quality || 'SD')
                         : this._lockHighestHdLevel(hls, data?.levels, channel.quality);
+                    if (this.onTracksUpdated) this.onTracksUpdated(this.getStreamOptions());
                     video.play().catch((err) => {
                         if (err && err.name === 'AbortError') return;
                         finish(false);
                     });
+                });
+
+                hls.on(window.Hls.Events.AUDIO_TRACKS_UPDATED, () => {
+                    if (genId === this.generationId && this.onTracksUpdated) {
+                        this.onTracksUpdated(this.getStreamOptions());
+                    }
+                });
+
+                hls.on(window.Hls.Events.SUBTITLE_TRACKS_UPDATED, () => {
+                    if (genId === this.generationId && this.onTracksUpdated) {
+                        this.onTracksUpdated(this.getStreamOptions());
+                    }
                 });
 
                 hls.on(window.Hls.Events.ERROR, (event, data) => {
@@ -396,6 +410,93 @@ export class LiveStreamEngine {
         this.generationId++;
         this._cleanupCurrentAttempt();
         this.activeChannel = null;
+    }
+
+    /**
+     * Returns available quality levels, audio tracks, and subtitle tracks for the active stream.
+     *
+     * @returns {{qualities: Array, currentQuality: number, audioTracks: Array, currentAudioTrack: number, subtitleTracks: Array, currentSubtitleTrack: number}}
+     */
+    getStreamOptions() {
+        const result = {
+            qualities: [],
+            currentQuality: -1,
+            audioTracks: [],
+            currentAudioTrack: -1,
+            subtitleTracks: [],
+            currentSubtitleTrack: -1
+        };
+
+        if (this.hls) {
+            if (Array.isArray(this.hls.levels) && this.hls.levels.length > 1) {
+                result.qualities = this.hls.levels.map((lvl, idx) => ({
+                    index: idx,
+                    label: lvl.height ? `${lvl.height}p` : `${Math.max(1, Math.round((lvl.bitrate || 0) / 1000))} kbps`
+                }));
+                result.currentQuality = this.hls.autoLevelEnabled ? -1 : this.hls.currentLevel;
+            }
+            if (Array.isArray(this.hls.audioTracks) && this.hls.audioTracks.length > 1) {
+                result.audioTracks = this.hls.audioTracks.map((t, idx) => ({
+                    index: idx,
+                    label: t.name || t.lang || `Audio ${idx + 1}`
+                }));
+                result.currentAudioTrack = typeof this.hls.audioTrack === 'number' ? this.hls.audioTrack : 0;
+            }
+            if (Array.isArray(this.hls.subtitleTracks) && this.hls.subtitleTracks.length > 0) {
+                result.subtitleTracks = this.hls.subtitleTracks.map((t, idx) => ({
+                    index: idx,
+                    label: t.name || t.lang || `Subtitle ${idx + 1}`
+                }));
+                result.currentSubtitleTrack = typeof this.hls.subtitleTrack === 'number' ? this.hls.subtitleTrack : -1;
+            }
+        } else if (this.video && this.video.textTracks && this.video.textTracks.length > 0) {
+            const tracks = Array.from(this.video.textTracks);
+            result.subtitleTracks = tracks.map((t, idx) => ({
+                index: idx,
+                label: t.label || t.language || `Subtitle ${idx + 1}`
+            }));
+            result.currentSubtitleTrack = tracks.findIndex(t => t.mode === 'showing');
+        }
+
+        return result;
+    }
+
+    /**
+     * Switches HLS video quality level (-1 restores automatic adaptive selection).
+     *
+     * @param {number} levelIndex - Target HLS level index or -1 for Auto.
+     */
+    setQualityLevel(levelIndex) {
+        if (!this.hls) return;
+        this.hls.currentLevel = levelIndex;
+        this.hls.nextLevel = levelIndex;
+    }
+
+    /**
+     * Switches the active HLS audio track by index.
+     *
+     * @param {number} trackIndex - Target audio track index.
+     */
+    setAudioTrack(trackIndex) {
+        if (!this.hls || trackIndex < 0) return;
+        this.hls.audioTrack = trackIndex;
+    }
+
+    /**
+     * Switches the active subtitle track (-1 disables subtitles).
+     *
+     * @param {number} trackIndex - Target subtitle track index or -1 to disable.
+     */
+    setSubtitleTrack(trackIndex) {
+        if (this.hls) {
+            this.hls.subtitleTrack = trackIndex;
+            this.hls.subtitleDisplay = trackIndex >= 0;
+        }
+        if (this.video && this.video.textTracks) {
+            Array.from(this.video.textTracks).forEach((track, idx) => {
+                track.mode = idx === trackIndex ? 'showing' : 'disabled';
+            });
+        }
     }
 
     /**

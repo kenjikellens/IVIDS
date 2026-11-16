@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Katso livenä",
+    "selectChannel": "Valitse kanava",
+    "streamOffline": "Lähetys on tällä hetkellä offline-tilassa. Kokeile toista kanavaa tai yritä uudelleen.",
+    "streamOptions": "Lähetyksen asetukset",
+    "quality": "Laatu",
+    "audioTrack": "Ääni",
+    "subtitles": "Tekstitys",
+    "auto": "Auto",
+    "off": "Pois"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

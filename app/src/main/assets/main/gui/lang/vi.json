@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Xem trực tiếp",
+    "selectChannel": "Chọn kênh",
+    "streamOffline": "Luồng hiện đang ngoại tuyến. Hãy thử kênh khác hoặc thử lại.",
+    "streamOptions": "Tùy chọn phát",
+    "quality": "Chất lượng",
+    "audioTrack": "Âm thanh",
+    "subtitles": "Phụ đề",
+    "auto": "Tự động",
+    "off": "Tắt"
   },
   "settings_livetv": {
     "title": "Cấu hình Live TV",

@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "실시간 시청",
+    "selectChannel": "채널 선택",
+    "streamOffline": "현재 스트림이 오프라인입니다. 다른 채널을 시도하거나 다시 시도하세요.",
+    "streamOptions": "스트림 옵션",
+    "quality": "화질",
+    "audioTrack": "오디오",
+    "subtitles": "자막",
+    "auto": "자동",
+    "off": "끄기"
   },
   "settings_livetv": {
     "title": "라이브 TV 설정",

@@ -510,7 +510,16 @@
     "previousChannel": "القناة السابقة",
     "nextChannel": "القناة التالية",
     "aspectRatio": "نسبة العرض",
-    "channelGuide": "دليل القنوات"
+    "channelGuide": "دليل القنوات",
+    "watchLive": "مشاهدة مباشرة",
+    "selectChannel": "اختر قناة",
+    "streamOffline": "البث غير متصل حالياً. جرّب قناة أخرى أو أعد المحاولة.",
+    "streamOptions": "خيارات البث",
+    "quality": "الجودة",
+    "audioTrack": "الصوت",
+    "subtitles": "الترجمة",
+    "auto": "تلقائي",
+    "off": "إيقاف"
   },
   "settings_livetv": {
     "title": "تكوين البث المباشر",

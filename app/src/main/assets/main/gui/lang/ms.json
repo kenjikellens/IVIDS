@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Tonton Langsung",
+    "selectChannel": "Pilih saluran",
+    "streamOffline": "Strim sedang luar talian. Cuba saluran lain atau cuba semula.",
+    "streamOptions": "Pilihan Strim",
+    "quality": "Kualiti",
+    "audioTrack": "Audio",
+    "subtitles": "Sari kata",
+    "auto": "Auto",
+    "off": "Mati"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

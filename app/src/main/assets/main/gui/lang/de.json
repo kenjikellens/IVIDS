@@ -505,7 +505,16 @@
     "previousChannel": "Vorheriger Sender",
     "nextChannel": "Nächster Sender",
     "aspectRatio": "Seitenverhältnis",
-    "channelGuide": "Senderliste"
+    "channelGuide": "Senderliste",
+    "watchLive": "Live ansehen",
+    "selectChannel": "Sender auswählen",
+    "streamOffline": "Stream ist derzeit offline. Versuchen Sie einen anderen Sender oder erneut.",
+    "streamOptions": "Stream-Optionen",
+    "quality": "Qualität",
+    "audioTrack": "Audio",
+    "subtitles": "Untertitel",
+    "auto": "Auto",
+    "off": "Aus"
   },
   "settings_livetv": {
     "title": "Live TV Konfiguration",

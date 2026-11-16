@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "צפה בשידור חי",
+    "selectChannel": "בחר ערוץ",
+    "streamOffline": "השידור אינו זמין כרגע. נסה ערוץ אחר או נסה שוב.",
+    "streamOptions": "אפשרויות שידור",
+    "quality": "איכות",
+    "audioTrack": "שמע",
+    "subtitles": "כתוביות",
+    "auto": "אוטומטי",
+    "off": "כבוי"
   },
   "settings_livetv": {
     "title": "תצורת טלוויזיה בשידור חי",

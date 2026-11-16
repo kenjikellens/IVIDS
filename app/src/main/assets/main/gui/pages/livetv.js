@@ -32,7 +32,6 @@ let filteredChannels = [];
 let searchQuery = '';
 let selectedChannel = null;
 let activeCategoryKey = 'all';
-const statusCache = new Map();
 let previewEngine = null;
 let previewTimeout = null;
 let searchDebounceTimer = null;
@@ -114,7 +113,6 @@ export async function init(params) {
     searchQuery = '';
     activeCategoryKey = 'all';
     selectedChannel = null;
-    loadStatusCache();
     cleanupPreview();
     initPreviewEngine();
 
@@ -213,20 +211,17 @@ function initPreviewEngine() {
 
     previewEngine = new LiveStreamEngine(video, {
         isPreview: true,
-        onLoading: (channel) => {
+        onLoading: () => {
             if (previewCard) previewCard.classList.remove('is-playing');
             if (loader) loader.classList.remove('hidden');
-            if (channel?.url) updateChannelStatus(channel.url, 'checking');
         },
-        onPlaying: (channel) => {
+        onPlaying: () => {
             if (loader) loader.classList.add('hidden');
             if (previewCard) previewCard.classList.add('is-playing');
-            if (channel?.url) updateChannelStatus(channel.url, 'online');
         },
-        onOffline: (channel) => {
+        onOffline: () => {
             if (loader) loader.classList.add('hidden');
             if (previewCard) previewCard.classList.remove('is-playing');
-            if (channel?.url) updateChannelStatus(channel.url, 'offline');
         }
     });
 }
@@ -517,23 +512,25 @@ async function showChannelDetail(channel) {
 
     const epgContainer = document.getElementById('hero-epg-container');
     const epgTitleEl = document.getElementById('hero-epg-title');
-    const epgStartEl = document.getElementById('hero-epg-start');
-    const epgEndEl = document.getElementById('hero-epg-end');
+    const epgTimeEl = document.getElementById('hero-epg-time');
+    const epgProgressWrap = document.getElementById('hero-epg-progress-wrap');
     const epgProgressEl = document.getElementById('hero-epg-progress');
+    const upcomingSection = document.getElementById('details-upcoming-section');
+    const upcomingListEl = document.getElementById('upcoming-programs-list');
     const noEpgText = window.i18n?.t('livetv.noEpgInfo') || 'No program info available';
 
     if (epgContainer) {
         epgContainer.classList.remove('hidden');
-        if (epgTitleEl) epgTitleEl.textContent = channel.name;
-        if (epgStartEl) epgStartEl.textContent = '--:--';
-        if (epgEndEl) epgEndEl.textContent = '--:--';
+        if (epgTitleEl) epgTitleEl.textContent = noEpgText;
+        if (epgTimeEl) {
+            epgTimeEl.textContent = '';
+            epgTimeEl.classList.add('hidden');
+        }
+        if (epgProgressWrap) epgProgressWrap.classList.add('hidden');
         if (epgProgressEl) epgProgressEl.style.width = '0%';
     }
-
-    const upcomingListEl = document.getElementById('upcoming-programs-list');
-    if (upcomingListEl) {
-        upcomingListEl.innerHTML = `<div class="upcoming-program-row"><span class="upcoming-program-title">${escapeHtml(noEpgText)}</span></div>`;
-    }
+    if (upcomingSection) upcomingSection.classList.add('hidden');
+    if (upcomingListEl) upcomingListEl.innerHTML = '';
 
     const reqId = ++detailRequestId;
 
@@ -566,25 +563,36 @@ async function showChannelDetail(channel) {
         if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
         if (epgContainer) {
-            if (epgTitleEl) epgTitleEl.textContent = epg.title || channel.name;
-            if (epgStartEl) epgStartEl.textContent = epg.start;
-            if (epgEndEl) epgEndEl.textContent = epg.end;
-            if (epgProgressEl) epgProgressEl.style.width = `${epg.progress}%`;
+            if (epg && epg.hasData) {
+                if (epgTitleEl) epgTitleEl.textContent = epg.title || noEpgText;
+                if (epgTimeEl) {
+                    epgTimeEl.textContent = `${epg.start} – ${epg.end}`;
+                    epgTimeEl.classList.remove('hidden');
+                }
+                if (epgProgressWrap) epgProgressWrap.classList.remove('hidden');
+                if (epgProgressEl) epgProgressEl.style.width = `${epg.progress}%`;
+            } else {
+                if (epgTitleEl) epgTitleEl.textContent = noEpgText;
+                if (epgTimeEl) {
+                    epgTimeEl.textContent = '';
+                    epgTimeEl.classList.add('hidden');
+                }
+                if (epgProgressWrap) epgProgressWrap.classList.add('hidden');
+                if (epgProgressEl) epgProgressEl.style.width = '0%';
+            }
         }
 
-        if (upcomingListEl) {
+        if (upcomingListEl && upcomingSection) {
             upcomingListEl.innerHTML = '';
             if (upcomingShows.length === 0) {
-                const row = document.createElement('div');
-                row.className = 'upcoming-program-row';
-                row.innerHTML = `<span class="upcoming-program-title">${escapeHtml(noEpgText)}</span>`;
-                upcomingListEl.appendChild(row);
+                upcomingSection.classList.add('hidden');
             } else {
+                upcomingSection.classList.remove('hidden');
                 upcomingShows.forEach(show => {
                     const row = document.createElement('div');
                     row.className = 'upcoming-program-row';
                     row.innerHTML = `
-                        <span class="upcoming-program-time">${escapeHtml(show.start)} - ${escapeHtml(show.end)}</span>
+                        <span class="upcoming-program-time">${escapeHtml(show.start)} – ${escapeHtml(show.end)}</span>
                         <span class="upcoming-program-title">${escapeHtml(show.title)}</span>
                     `;
                     upcomingListEl.appendChild(row);
@@ -643,6 +651,7 @@ function playChannel(channel) {
     Router.loadPage('tv-player', {
         url: channel.url,
         title: channel.name,
+        logo: channel.logo || '',
         group: formatPrimaryCategory(channel.group),
         tvgId: channel.tvgId,
         headers: channel.headers
@@ -700,72 +709,7 @@ function setupEventListeners() {
 }
 
 /**
- * Loads cached channel health statuses from localStorage (used strictly for status dot color, never to hide channels).
- */
-function loadStatusCache() {
-    statusCache.clear();
-    try {
-        const raw = localStorage.getItem(LIVE_TV_STATUS_KEY);
-        if (!raw) return;
-        const now = Date.now();
-        const entries = JSON.parse(raw);
-        if (Array.isArray(entries)) {
-            entries.forEach(([url, val]) => {
-                if (val && now - val.timestamp < STATUS_TTL_MS) {
-                    statusCache.set(url, val);
-                }
-            });
-        }
-    } catch (e) {
-        console.warn('Failed to read Live TV status cache:', e);
-    }
-}
-
-let saveCacheTimeout = null;
-
-/**
- * Debounces saving the statusCache to localStorage.
- */
-function scheduleSaveStatusCache() {
-    if (saveCacheTimeout) return;
-    saveCacheTimeout = setTimeout(() => {
-        saveCacheTimeout = null;
-        try {
-            const entries = Array.from(statusCache.entries());
-            localStorage.setItem(LIVE_TV_STATUS_KEY, JSON.stringify(entries));
-        } catch (e) {
-            console.warn('Failed to save Live TV status cache:', e);
-        }
-    }, 2000);
-}
-
-/**
- * Updates the visual status dot ('online' = green, 'offline' = red, 'checking' = yellow) for a channel URL.
- * NEVER removes or hides the channel from the DOM or playlist so the user can always retry it.
- * 
- * @param {string} url - Channel stream URL.
- * @param {string} status - The current playback status ('online' | 'offline' | 'checking').
- */
-function updateChannelStatus(url, status) {
-    if (!url) return;
-    if (status === 'online' || status === 'offline') {
-        statusCache.set(url, { status, timestamp: Date.now() });
-        scheduleSaveStatusCache();
-    }
-
-    const escapedUrl = CSS.escape(url);
-    const row = document.querySelector(`.channel-list-item[data-url="${escapedUrl}"], .channel-card[data-url="${escapedUrl}"]`);
-    if (row) {
-        const dot = row.querySelector('.list-status-dot');
-        if (dot) {
-            dot.classList.remove('checking', 'online', 'offline');
-            dot.classList.add(status);
-        }
-    }
-}
-
-/**
- * Renders the next batch of clean channel rows in #channels-list (status dot, logo, and channel name only).
+ * Renders the next batch of clean channel rows in #channels-list (logo and channel name only).
  * 
  * @param {string|null} [preserveFocusedUrl=null] - Optional URL of the channel that should retain focus after re-render.
  */
@@ -792,11 +736,8 @@ function renderNextChunk(preserveFocusedUrl = null) {
         item.dataset.url = channel.url;
 
         const iconUrl = isSafeMediaUrl(channel.logo) ? channel.logo : 'images/livetv.svg';
-        const status = statusCache.get(channel.url)?.status || 'unknown';
-        const statusClass = status === 'online' || status === 'offline' ? status : 'checking';
 
         item.innerHTML = `
-            <span class="list-status-dot ${statusClass}"></span>
             <div class="channel-card__logo-wrap channel-list-logo-container">
                 <img src="${escapeHtml(iconUrl)}" class="channel-card__logo channel-list-logo" loading="lazy">
             </div>

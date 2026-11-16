@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Гледай на живо",
+    "selectChannel": "Изберете канал",
+    "streamOffline": "Потокът в момента е офлайн. Опитайте друг канал или опитайте отново.",
+    "streamOptions": "Опции на потока",
+    "quality": "Качество",
+    "audioTrack": "Аудио",
+    "subtitles": "Субтитри",
+    "auto": "Авто",
+    "off": "Изкл."
   },
   "settings_livetv": {
     "title": "Конфигурация на телевизия на живо",

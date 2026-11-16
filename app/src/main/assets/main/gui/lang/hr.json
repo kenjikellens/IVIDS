@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Gledaj uživo",
+    "selectChannel": "Odaberite kanal",
+    "streamOffline": "Prijenos je trenutno izvan mreže. Pokušajte drugi kanal ili pokušajte ponovo.",
+    "streamOptions": "Opcije prijenosa",
+    "quality": "Kvaliteta",
+    "audioTrack": "Zvuk",
+    "subtitles": "Titlovi",
+    "auto": "Auto",
+    "off": "Isključeno"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

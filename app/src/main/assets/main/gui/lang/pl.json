@@ -510,7 +510,16 @@
     "previousChannel": "Poprzedni kanał",
     "nextChannel": "Następny kanał",
     "aspectRatio": "Proporcje obrazu",
-    "channelGuide": "Lista kanałów"
+    "channelGuide": "Lista kanałów",
+    "watchLive": "Oglądaj na żywo",
+    "selectChannel": "Wybierz kanał",
+    "streamOffline": "Strumień jest obecnie offline. Wypróbuj inny kanał lub spróbuj ponownie.",
+    "streamOptions": "Opcje strumienia",
+    "quality": "Jakość",
+    "audioTrack": "Dźwięk",
+    "subtitles": "Napisy",
+    "auto": "Auto",
+    "off": "Wył."
   },
   "settings_livetv": {
     "title": "Konfiguracja TV na żywo",

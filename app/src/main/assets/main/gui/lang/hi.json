@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "लाइव देखें",
+    "selectChannel": "एक चैनल चुनें",
+    "streamOffline": "स्ट्रीम अभी ऑफ़लाइन है। दूसरा चैनल आज़माएँ या पुनः प्रयास करें।",
+    "streamOptions": "स्ट्रीम विकल्प",
+    "quality": "गुणवत्ता",
+    "audioTrack": "ऑडियो",
+    "subtitles": "उपशीर्षक",
+    "auto": "ऑटो",
+    "off": "बंद"
   },
   "settings_livetv": {
     "title": "लाइव टीवी कॉन्फ़िगरेशन",

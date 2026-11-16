@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Veure en directe",
+    "selectChannel": "Selecciona un canal",
+    "streamOffline": "L'emissió està fora de línia. Prova un altre canal o torna-ho a intentar.",
+    "streamOptions": "Opcions de transmissió",
+    "quality": "Qualitat",
+    "audioTrack": "Àudio",
+    "subtitles": "Subtítols",
+    "auto": "Auto",
+    "off": "Desactivat"
   },
   "settings_livetv": {
     "title": "Configuració de TV en directe",

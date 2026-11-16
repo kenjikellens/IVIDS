@@ -514,7 +514,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Élő nézése",
+    "selectChannel": "Válasszon csatornát",
+    "streamOffline": "A közvetítés jelenleg nem elérhető. Próbáljon másik csatornát vagy próbálja újra.",
+    "streamOptions": "Stream beállítások",
+    "quality": "Minőség",
+    "audioTrack": "Hang",
+    "subtitles": "Feliratok",
+    "auto": "Auto",
+    "off": "Ki"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

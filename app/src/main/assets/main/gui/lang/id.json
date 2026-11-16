@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Tonton Langsung",
+    "selectChannel": "Pilih saluran",
+    "streamOffline": "Siaran sedang offline. Coba saluran lain atau coba lagi.",
+    "streamOptions": "Opsi Siaran",
+    "quality": "Kualitas",
+    "audioTrack": "Audio",
+    "subtitles": "Subtitle",
+    "auto": "Otomatis",
+    "off": "Mati"
   },
   "settings_livetv": {
     "title": "Konfigurasi TV Langsung",

@@ -510,7 +510,16 @@
     "previousChannel": "上一频道",
     "nextChannel": "下一频道",
     "aspectRatio": "画面比例",
-    "channelGuide": "频道列表"
+    "channelGuide": "频道列表",
+    "watchLive": "观看直播",
+    "selectChannel": "选择频道",
+    "streamOffline": "流媒体当前离线。请尝试其他频道或重试。",
+    "streamOptions": "流媒体选项",
+    "quality": "画质",
+    "audioTrack": "音轨",
+    "subtitles": "字幕",
+    "auto": "自动",
+    "off": "关闭"
   },
   "settings_livetv": {
     "title": "电视直播配置",

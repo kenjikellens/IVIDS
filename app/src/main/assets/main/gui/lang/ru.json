@@ -510,7 +510,16 @@
     "previousChannel": "Предыдущий канал",
     "nextChannel": "Следующий канал",
     "aspectRatio": "Соотношение сторон",
-    "channelGuide": "Список каналов"
+    "channelGuide": "Список каналов",
+    "watchLive": "Смотреть в эфире",
+    "selectChannel": "Выберите канал",
+    "streamOffline": "Поток сейчас недоступен. Попробуйте другой канал или повторите попытку.",
+    "streamOptions": "Настройки потока",
+    "quality": "Качество",
+    "audioTrack": "Аудио",
+    "subtitles": "Субтитры",
+    "auto": "Авто",
+    "off": "Выкл."
   },
   "settings_livetv": {
     "title": "Настройка Live TV",

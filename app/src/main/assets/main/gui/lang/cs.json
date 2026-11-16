@@ -510,7 +510,16 @@
     "previousChannel": "Previous Channel",
     "nextChannel": "Next Channel",
     "aspectRatio": "Aspect Ratio",
-    "channelGuide": "Channel Guide"
+    "channelGuide": "Channel Guide",
+    "watchLive": "Sledovat živě",
+    "selectChannel": "Vyberte kanál",
+    "streamOffline": "Stream je momentálně offline. Zkuste jiný kanál nebo to zkuste znovu.",
+    "streamOptions": "Možnosti streamu",
+    "quality": "Kvalita",
+    "audioTrack": "Zvuk",
+    "subtitles": "Titulky",
+    "auto": "Auto",
+    "off": "Vypnuto"
   },
   "settings_livetv": {
     "title": "Konfigurace Živého TV",
