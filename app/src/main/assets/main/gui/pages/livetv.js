@@ -39,6 +39,26 @@ let categoryFocusTimer = null;
 let progressiveRenderTimer = null;
 let loadSourcesPromise = null;
 let liveTvPageBackHandler = null;
+let detailRequestId = 0;
+
+/**
+ * Detects Android TV / mobile or low-memory devices where auto-starting HLS preview streams on hover causes decoder crashes.
+ * @returns {boolean} True when running on Android or a low-memory device.
+ */
+function isLowRamAndroidDevice() {
+    try {
+        if (window.AndroidSettings && typeof window.AndroidSettings.isTV === 'function') {
+            return true;
+        }
+        if (typeof navigator !== 'undefined') {
+            if (/Android/i.test(navigator.userAgent || '')) return true;
+            if (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2) return true;
+        }
+    } catch (e) {
+        // Ignore detection errors
+    }
+    return false;
+}
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
 const STATUS_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -382,7 +402,7 @@ async function loadAllSources() {
                 progressiveRenderTimer = setTimeout(() => {
                     renderCategoriesList();
                     filterAndRenderChannels(false);
-                }, 350);
+                }, 1000);
             }
         });
 
@@ -496,21 +516,27 @@ async function showChannelDetail(channel) {
         upcomingListEl.innerHTML = `<div class="upcoming-program-row"><span class="upcoming-program-title">${noEpgText}</span></div>`;
     }
 
+    const reqId = ++detailRequestId;
+
     if (previewTimeout) {
         clearTimeout(previewTimeout);
     }
-    if (previewEngine) {
+
+    const lowRamDevice = isLowRamAndroidDevice();
+    if (!lowRamDevice && previewEngine) {
         previewEngine.stop();
     }
 
     previewTimeout = setTimeout(async () => {
-        if (!selectedChannel || selectedChannel.url !== channel.url) return;
+        if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
-        if (!previewEngine) {
-            initPreviewEngine();
-        }
-        if (previewEngine) {
-            previewEngine.loadChannel(channel);
+        if (!lowRamDevice) {
+            if (!previewEngine) {
+                initPreviewEngine();
+            }
+            if (previewEngine) {
+                previewEngine.loadChannel(channel);
+            }
         }
 
         const [epg, upcomingShows] = await Promise.all([
@@ -518,7 +544,7 @@ async function showChannelDetail(channel) {
             EpgManager.getUpcomingPrograms(channel.name, channel.group, 3, channel.tvgId)
         ]);
 
-        if (!selectedChannel || selectedChannel.url !== channel.url) return;
+        if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
         if (epgContainer) {
             if (epgTitleEl) epgTitleEl.textContent = epg.title || channel.name;
@@ -546,7 +572,7 @@ async function showChannelDetail(channel) {
                 });
             }
         }
-    }, 300);
+    }, 900);
 }
 
 /**

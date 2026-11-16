@@ -179,7 +179,29 @@ function configureStreamNetworkInterceptors() {
         const urlLower = (details.url || '').toLowerCase();
         const isRawIptv = /^https?:\/\/\d+\.\d+\.\d+\.\d+|:(?:8008|8080|8880|25461|1935)\/|\/play\/[a-z0-9]+/i.test(urlLower);
 
-        if (isRawIptv) {
+        // Extract optional per-channel override headers injected by LiveStreamEngine
+        let customUa = null;
+        let customRef = null;
+        let customOrig = null;
+        Object.keys(headers).forEach((k) => {
+            const lk = k.toLowerCase();
+            if (lk === 'x-ivids-user-agent') {
+                customUa = headers[k];
+                delete headers[k];
+            } else if (lk === 'x-ivids-referer') {
+                customRef = headers[k];
+                delete headers[k];
+            } else if (lk === 'x-ivids-origin') {
+                customOrig = headers[k];
+                delete headers[k];
+            }
+        });
+
+        if (customUa || customRef || customOrig) {
+            headers['User-Agent'] = customUa || (isRawIptv ? vlcUA : chromeUA);
+            if (customRef) headers['Referer'] = customRef;
+            if (customOrig) headers['Origin'] = customOrig;
+        } else if (isRawIptv) {
             headers['User-Agent'] = vlcUA;
             delete headers['Origin'];
             delete headers['Referer'];

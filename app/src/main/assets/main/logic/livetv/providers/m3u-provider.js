@@ -77,6 +77,7 @@ export class M3uProvider extends BaseStreamProvider {
                     const group = item.group || this.category;
                     const extraTags = this.countryTag ? [this.countryTag] : [];
                     const reqHeaders = StreamOptimizer.getRequiredHeaders(item.url);
+                    const mergedHeaders = { ...reqHeaders, ...(item.headers || {}) };
                     return this.createChannel({
                         name: cleanName || item.name,
                         url: item.url,
@@ -85,7 +86,7 @@ export class M3uProvider extends BaseStreamProvider {
                         groupTags: extraTags,
                         country: this.countryTag,
                         tvgId: item.tvgId || '',
-                        headers: reqHeaders
+                        headers: mergedHeaders
                     });
                 });
         } catch (error) {

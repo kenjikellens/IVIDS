@@ -6,6 +6,7 @@ import { LiveStreamEngine } from '../../logic/livetv/core/live-stream-engine.js'
 
 let overlayTimeout;
 let zappingHudTimeout;
+let zapDebounceTimer = null;
 let playerEngine = null;
 let epgRequestId = 0;
 const LIVE_TV_STATUS_KEY = 'ivids-live-tv-status-cache';
@@ -375,11 +376,15 @@ export async function init(params) {
         if (title) title.textContent = nextChannel.name;
         if (group) group.textContent = formatPrimaryCategory(nextChannel.group || '');
 
-        // Update zapped EPG details
-        updateEpgInfo(nextChannel.name, nextChannel.group || '', nextChannel.tvgId || '');
-
-        // Switch stream URL
-        loadStream(nextChannel, nextChannel.headers);
+        // Debounce heavy stream + EPG loading during rapid D-pad zapping
+        if (zapDebounceTimer) {
+            clearTimeout(zapDebounceTimer);
+        }
+        zapDebounceTimer = setTimeout(() => {
+            zapDebounceTimer = null;
+            updateEpgInfo(nextChannel.name, nextChannel.group || '', nextChannel.tvgId || '');
+            loadStream(nextChannel, nextChannel.headers);
+        }, 250);
 
         // Briefly show overlay banner without moving focus away
         showOverlay(false);
@@ -417,6 +422,10 @@ export async function init(params) {
         }
         clearTimeout(overlayTimeout);
         clearTimeout(zappingHudTimeout);
+        if (zapDebounceTimer) {
+            clearTimeout(zapDebounceTimer);
+            zapDebounceTimer = null;
+        }
         if (playerEngine) {
             playerEngine.destroy();
             playerEngine = null;

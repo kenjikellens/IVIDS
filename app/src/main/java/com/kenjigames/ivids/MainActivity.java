@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.zip.GZIPInputStream;
 
 /**
  * MainActivity is the primary entry point for the IVIDS Android application.
@@ -458,25 +459,41 @@ public class MainActivity extends AppCompatActivity {
 
             for (String[] prof : profiles) {
                 try {
-                    URL u = new URL(targetUrl);
-                    conn = (HttpURLConnection) u.openConnection();
-                    if (conn instanceof javax.net.ssl.HttpsURLConnection) {
-                        ((javax.net.ssl.HttpsURLConnection) conn).setHostnameVerifier((hostname, session) -> true);
-                    }
-                    conn.setInstanceFollowRedirects(true);
-                    conn.setConnectTimeout(4500);
-                    conn.setReadTimeout(6000);
-                    conn.setRequestProperty("User-Agent", prof[0]);
-                    if (prof[1] != null && !prof[1].isEmpty()) conn.setRequestProperty("Referer", prof[1]);
-                    if (prof[2] != null && !prof[2].isEmpty()) conn.setRequestProperty("Origin", prof[2]);
-                    conn.setRequestProperty("Accept", "*/*");
+                    String currentUrl = targetUrl;
+                    for (int hop = 0; hop < 5; hop++) {
+                        URL u = new URL(currentUrl);
+                        conn = (HttpURLConnection) u.openConnection();
+                        if (conn instanceof javax.net.ssl.HttpsURLConnection) {
+                            ((javax.net.ssl.HttpsURLConnection) conn).setHostnameVerifier((hostname, session) -> true);
+                        }
+                        conn.setInstanceFollowRedirects(false);
+                        conn.setConnectTimeout(3000);
+                        conn.setReadTimeout(4500);
+                        conn.setRequestProperty("Connection", "keep-alive");
+                        conn.setRequestProperty("User-Agent", prof[0]);
+                        if (prof[1] != null && !prof[1].isEmpty()) conn.setRequestProperty("Referer", prof[1]);
+                        if (prof[2] != null && !prof[2].isEmpty()) conn.setRequestProperty("Origin", prof[2]);
+                        conn.setRequestProperty("Accept", "*/*");
 
-                    statusCode = conn.getResponseCode();
+                        statusCode = conn.getResponseCode();
+                        if (statusCode == 301 || statusCode == 302 || statusCode == 303 || statusCode == 307 || statusCode == 308) {
+                            String location = conn.getHeaderField("Location");
+                            conn.disconnect();
+                            conn = null;
+                            if (location == null || location.isEmpty()) break;
+                            currentUrl = new URI(currentUrl).resolve(location).toString();
+                            continue;
+                        }
+                        break;
+                    }
+                    if (conn == null) continue;
                     if (statusCode == 401 || statusCode == 403 || statusCode == 406) {
                         conn.disconnect();
                         conn = null;
                         continue;
                     }
+                    targetUrl = currentUrl;
+                    lowerUrl = targetUrl.toLowerCase();
                     winningUa = prof[0];
                     winningRef = prof[1];
                     winningOrig = prof[2];
@@ -499,10 +516,14 @@ public class MainActivity extends AppCompatActivity {
                 if (contentType == null || contentType.isEmpty()) {
                     contentType = "application/octet-stream";
                 }
+                String contentEncoding = conn.getContentEncoding();
+                boolean isGzipEncoded = (contentEncoding != null && contentEncoding.toLowerCase().contains("gzip"))
+                        || lowerUrl.endsWith(".gz");
                 boolean isM3u8 = lowerUrl.contains(".m3u8") || contentType.toLowerCase().contains("mpegurl");
+                InputStream rawStream = isGzipEncoded ? new GZIPInputStream(conn.getInputStream()) : conn.getInputStream();
                 if (isM3u8) {
                     StringBuilder sb = new StringBuilder();
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(rawStream, StandardCharsets.UTF_8))) {
                         String line;
                         StringBuilder extra = new StringBuilder();
                         if (winningRef != null && !winningRef.isEmpty()) extra.append("&referer=").append(URLEncoder.encode(winningRef, "UTF-8"));
@@ -517,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
                                 continue;
                             }
                             if (trimmed.startsWith("#")) {
-                                if (trimmed.startsWith("#EXT-X-MEDIA") && trimmed.contains("URI=\"")) {
+                                if (trimmed.contains("URI=\"")) {
                                     int uStart = trimmed.indexOf("URI=\"") + 5;
                                     int uEnd = trimmed.indexOf("\"", uStart);
                                     if (uEnd > uStart) {
@@ -546,9 +567,10 @@ public class MainActivity extends AppCompatActivity {
                     byte[] bodyBytes = sb.toString().getBytes(StandardCharsets.UTF_8);
                     return new WebResourceResponse("application/vnd.apple.mpegurl", "UTF-8", 200, "OK", corsHeaders, new ByteArrayInputStream(bodyBytes));
                 } else {
-                    String cleanMime = contentType.split(";")[0].trim();
-                    InputStream stream = conn.getInputStream();
-                    return new WebResourceResponse(cleanMime, null, 200, "OK", corsHeaders, stream);
+                    String cleanMime = isGzipEncoded && lowerUrl.endsWith(".xml.gz")
+                            ? "application/xml"
+                            : contentType.split(";")[0].trim();
+                    return new WebResourceResponse(cleanMime, null, 200, "OK", corsHeaders, rawStream);
                 }
             } catch (Exception e) {
                 conn.disconnect();

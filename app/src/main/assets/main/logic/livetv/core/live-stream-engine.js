@@ -69,13 +69,17 @@ export class LiveStreamEngine {
             this.onLoading(channel);
         }
 
-        const primaryUrl = StreamOptimizer.optimizeStreamUrl(channel.url || '');
+        const rawUrl = (channel.url || '').trim();
+        const primaryUrl = StreamOptimizer.optimizeStreamUrl(rawUrl);
         if (!primaryUrl) {
             if (this.onOffline) this.onOffline(channel, 'Missing stream URL');
             return false;
         }
 
         const candidateUrls = [primaryUrl];
+        if (rawUrl && rawUrl !== primaryUrl && !candidateUrls.includes(rawUrl)) {
+            candidateUrls.push(rawUrl);
+        }
         if (Array.isArray(channel.fallbackUrls)) {
             channel.fallbackUrls.forEach(fb => {
                 const opt = StreamOptimizer.optimizeStreamUrl(fb);
@@ -200,13 +204,21 @@ export class LiveStreamEngine {
             const video = this.video;
 
             if (window.Hls && window.Hls.isSupported()) {
+                const isAndroid = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent || '');
+                const channelHeaders = {
+                    ...(StreamOptimizer.getRequiredHeaders(endpointUrl) || {}),
+                    ...(channel.headers || {})
+                };
+                const useElectronHeaderBridge = !StreamOptimizer.canUseProxy()
+                    && Boolean(channelHeaders['User-Agent'] || channelHeaders['Referer'] || channelHeaders['Origin']);
+
                 const hls = new window.Hls({
-                    enableWorker: true,
-                    lowLatencyMode: true,
-                    backBufferLength: this.isPreview ? 10 : 30,
-                    maxBufferLength: this.isPreview ? 5 : 14,
-                    maxMaxBufferLength: this.isPreview ? 10 : 28,
-                    liveSyncDurationCount: 2,
+                    enableWorker: !this.isPreview,
+                    lowLatencyMode: !this.isPreview,
+                    backBufferLength: this.isPreview ? 2 : (isAndroid ? 8 : 30),
+                    maxBufferLength: this.isPreview ? 3 : (isAndroid ? 10 : 14),
+                    maxMaxBufferLength: this.isPreview ? 6 : (isAndroid ? 15 : 28),
+                    liveSyncDurationCount: this.isPreview ? 1 : 2,
                     initialLiveManifestSize: 1,
                     manifestLoadingTimeOut: this.isPreview ? 3500 : 5500,
                     manifestLoadingMaxRetry: 0,
@@ -214,8 +226,15 @@ export class LiveStreamEngine {
                     levelLoadingMaxRetry: 0,
                     fragLoadingTimeOut: 5500,
                     fragLoadingMaxRetry: 1,
-                    startLevel: -1,
-                    capLevelToPlayerSize: false
+                    startLevel: this.isPreview ? 0 : -1,
+                    capLevelToPlayerSize: this.isPreview,
+                    ...(useElectronHeaderBridge ? {
+                        xhrSetup: (xhr) => {
+                            if (channelHeaders['User-Agent']) xhr.setRequestHeader('X-IVIDS-User-Agent', channelHeaders['User-Agent']);
+                            if (channelHeaders['Referer']) xhr.setRequestHeader('X-IVIDS-Referer', channelHeaders['Referer']);
+                            if (channelHeaders['Origin']) xhr.setRequestHeader('X-IVIDS-Origin', channelHeaders['Origin']);
+                        }
+                    } : {})
                 });
 
                 this.hls = hls;
@@ -233,7 +252,9 @@ export class LiveStreamEngine {
                         finish(false);
                         return;
                     }
-                    detectedQuality = this._lockHighestHdLevel(hls, data?.levels, channel.quality);
+                    detectedQuality = this.isPreview
+                        ? (channel.quality || 'SD')
+                        : this._lockHighestHdLevel(hls, data?.levels, channel.quality);
                     video.play().catch((err) => {
                         if (err && err.name === 'AbortError') return;
                         finish(false);
@@ -347,6 +368,8 @@ export class LiveStreamEngine {
         this._clearWatchdog();
         if (this.hls) {
             try {
+                this.hls.stopLoad();
+                this.hls.detachMedia();
                 this.hls.destroy();
             } catch (e) {
                 // Ignore destroy errors
@@ -356,8 +379,10 @@ export class LiveStreamEngine {
         if (this.video) {
             try {
                 this.video.pause();
-                this.video.removeAttribute('src');
-                this.video.load();
+                if (this.video.hasAttribute('src') || this.video.src) {
+                    this.video.removeAttribute('src');
+                    this.video.load();
+                }
             } catch (e) {
                 // Ignore media reset errors
             }

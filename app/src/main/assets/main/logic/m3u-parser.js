@@ -52,7 +52,7 @@ export const M3UParser = {
             }
 
             if (line.startsWith('#EXTINF:')) {
-                currentChannel = {};
+                currentChannel = { headers: {} };
 
                 // High-performance string index scanner for M3U tags
                 const groupIdx = line.indexOf('group-title="');
@@ -84,12 +84,61 @@ export const M3UParser = {
                 const commaIndex = line.lastIndexOf(',');
                 const namePart = commaIndex !== -1 ? line.substring(commaIndex + 1).trim() : line.split(':').pop().trim();
                 currentChannel.name = namePart || "Unknown Channel";
+                const uaIdx = line.indexOf('http-user-agent="');
+                if (uaIdx !== -1) {
+                    const start = uaIdx + 17;
+                    const end = line.indexOf('"', start);
+                    if (end !== -1) currentChannel.headers['User-Agent'] = line.substring(start, end).trim();
+                }
+                const refIdx = line.indexOf('http-referrer="');
+                if (refIdx !== -1) {
+                    const start = refIdx + 15;
+                    const end = line.indexOf('"', start);
+                    if (end !== -1) currentChannel.headers['Referer'] = line.substring(start, end).trim();
+                }
+                const origIdx = line.indexOf('http-origin="');
+                if (origIdx !== -1) {
+                    const start = origIdx + 13;
+                    const end = line.indexOf('"', start);
+                    if (end !== -1) currentChannel.headers['Origin'] = line.substring(start, end).trim();
+                }
+            } else if (line.startsWith('#EXTVLCOPT:')) {
+                if (currentChannel) {
+                    const opt = line.substring(11).trim();
+                    const eqIdx = opt.indexOf('=');
+                    if (eqIdx !== -1) {
+                        const key = opt.substring(0, eqIdx).trim().toLowerCase();
+                        const val = opt.substring(eqIdx + 1).trim();
+                        if (key === 'http-user-agent' && val) currentChannel.headers['User-Agent'] = val;
+                        else if (key === 'http-referrer' && val) currentChannel.headers['Referer'] = val;
+                        else if (key === 'http-origin' && val) currentChannel.headers['Origin'] = val;
+                    }
+                }
             } else if (line.startsWith('#')) {
                 continue;
             } else {
                 if (currentChannel) {
-                    currentChannel.url = line;
-                    currentChannel.id = this.createChannelId(line);
+                    let streamUrl = line;
+                    const pipeIdx = streamUrl.indexOf('|');
+                    if (pipeIdx !== -1) {
+                        const suffix = streamUrl.substring(pipeIdx + 1);
+                        streamUrl = streamUrl.substring(0, pipeIdx).trim();
+                        suffix.split('&').forEach(pair => {
+                            const eq = pair.indexOf('=');
+                            if (eq === -1) return;
+                            const k = pair.substring(0, eq).trim().toLowerCase();
+                            try {
+                                const v = decodeURIComponent(pair.substring(eq + 1).trim());
+                                if ((k === 'user-agent' || k === 'useragent') && v) currentChannel.headers['User-Agent'] = v;
+                                else if ((k === 'referer' || k === 'referrer') && v) currentChannel.headers['Referer'] = v;
+                                else if (k === 'origin' && v) currentChannel.headers['Origin'] = v;
+                            } catch (e) {
+                                // Ignore malformed percent-encoding in header suffixes
+                            }
+                        });
+                    }
+                    currentChannel.url = streamUrl;
+                    currentChannel.id = this.createChannelId(streamUrl);
                     currentChannel.media_type = 'live';
                     channels.push(currentChannel);
                     currentChannel = null;

@@ -25,6 +25,22 @@ export const REGIONAL_CATALOG = [
         country: 'netherlands',
         priority: 10
     },
+    {
+        id: 'freetv_nl',
+        name: 'Free-TV Netherlands',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_netherlands.m3u8',
+        category: 'Netherlands',
+        country: 'netherlands',
+        priority: 9
+    },
+    {
+        id: 'lang_dutch',
+        name: 'Dutch Language Channels',
+        url: 'https://iptv-org.github.io/iptv/languages/nld.m3u',
+        category: 'Netherlands',
+        country: 'netherlands',
+        priority: 11
+    },
 
     // Belgium
     {
@@ -34,6 +50,14 @@ export const REGIONAL_CATALOG = [
         category: 'Belgium',
         country: 'belgium',
         priority: 10
+    },
+    {
+        id: 'freetv_be',
+        name: 'Free-TV Belgium',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_belgium.m3u8',
+        category: 'Belgium',
+        country: 'belgium',
+        priority: 9
     },
 
     // Spain
@@ -54,6 +78,72 @@ export const REGIONAL_CATALOG = [
         category: 'France',
         country: 'france',
         priority: 12
+    },
+    {
+        id: 'freetv_fr',
+        name: 'Free-TV France',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_france.m3u8',
+        category: 'France',
+        country: 'france',
+        priority: 11
+    },
+    {
+        id: 'lang_french',
+        name: 'French Language Channels',
+        url: 'https://iptv-org.github.io/iptv/languages/fra.m3u',
+        category: 'France',
+        country: 'france',
+        priority: 13
+    },
+
+    // Verified Regional FAST Playlists (Samsung TV Plus, Pluto TV, Plex)
+    {
+        id: 'samsung_fr',
+        name: 'Samsung TV Plus France',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/samsungtvplus_fr.m3u',
+        category: 'France',
+        country: 'france',
+        priority: 14
+    },
+    {
+        id: 'pluto_fr',
+        name: 'Pluto TV France',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plutotv_fr.m3u',
+        category: 'France',
+        country: 'france',
+        priority: 14
+    },
+    {
+        id: 'plex_fr',
+        name: 'Plex Live France',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plex_fr.m3u',
+        category: 'France',
+        country: 'france',
+        priority: 14
+    },
+    {
+        id: 'samsung_gb',
+        name: 'Samsung TV Plus UK',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/samsungtvplus_gb.m3u',
+        category: 'UK',
+        country: 'united kingdom',
+        priority: 16
+    },
+    {
+        id: 'pluto_gb',
+        name: 'Pluto TV UK',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plutotv_gb.m3u',
+        category: 'UK',
+        country: 'united kingdom',
+        priority: 16
+    },
+    {
+        id: 'samsung_de',
+        name: 'Samsung TV Plus Germany',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/samsungtvplus_de.m3u',
+        category: 'Germany',
+        country: 'germany',
+        priority: 16
     },
 
     // Germany

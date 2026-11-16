@@ -668,7 +668,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     self.send_header('Access-Control-Allow-Origin', '*')
                     self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
                     self.send_header('Access-Control-Allow-Headers', '*')
-                    if '.m3u' in target_url.lower():
+                    if not is_m3u8 and '.m3u' in target_path_lower:
                         self.send_header('Cache-Control', 'public, max-age=7200')
                     else:
                         self.send_header('Cache-Control', 'no-store')
@@ -685,7 +685,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     self.send_header('Access-Control-Allow-Origin', '*')
                     self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
                     self.send_header('Access-Control-Allow-Headers', '*')
-                    if '.m3u' in target_url.lower():
+                    if not is_m3u8 and '.m3u' in target_path_lower:
                         self.send_header('Cache-Control', 'public, max-age=7200')
                     else:
                         self.send_header('Cache-Control', 'no-store')

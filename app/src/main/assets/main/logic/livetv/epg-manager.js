@@ -10,6 +10,8 @@ export class EpgManager {
     static CACHE_TTL_MS = 2 * 60 * 60 * 1000;
     static guideLookup = new Map();
     static guideCache = new Map();
+    static failedGuideCache = new Map();
+    static FAILED_CACHE_TTL_MS = 30 * 60 * 1000;
     static guideFetchPromises = new Map();
     static channelProgramCache = new Map();
     static initPromise = null;
@@ -69,9 +71,12 @@ export class EpgManager {
                    lowerChannel.endsWith('.co') || lowerChannel.endsWith('.pe') || lowerChannel.endsWith('.br')) {
             urls = ['https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/Latino_guide.xml.gz'];
         } else {
-            const countryFolder = this.getGlobetvCountryFolder(guide);
-            if (countryFolder) {
-                urls = [`https://raw.githubusercontent.com/globetvapp/epg/main/${countryFolder}/${countryFolder.toLowerCase()}1.xml`];
+            const epgshareCode = this.getEpgshareCountryCode(guide);
+            if (epgshareCode) {
+                urls = [
+                    `https://epgshare01.online/epgshare01/epg_ripper_${epgshareCode}.xml.gz`,
+                    'https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/guide.xml.gz'
+                ];
             } else {
                 urls = ['https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/guide.xml.gz'];
             }
@@ -90,41 +95,34 @@ export class EpgManager {
     }
 
     /**
-     * Maps guide language or country code to globetvapp folder name.
-     * This affects XMLTV guide URL resolution for country-specific feeds.
+     * Maps guide language or country code to verified epgshare01 XMLTV ripper codes.
      *
      * @param {object} guide - The guide object.
-     * @returns {string|null}
+     * @returns {string|null} Country feed code (e.g. 'BE2', 'NL1', 'FR1', 'TR1').
      */
-    static getGlobetvCountryFolder(guide) {
+    static getEpgshareCountryCode(guide) {
         const lang = (guide.lang || '').toLowerCase();
         const channel = (guide.channel || '').toLowerCase();
 
-        // Check channel suffix first (e.g. Channel.nl -> Netherlands)
-        if (channel.endsWith('.nl')) return 'Netherlands';
-        if (channel.endsWith('.fr')) return 'France';
-        if (channel.endsWith('.de')) return 'Germany';
-        if (channel.endsWith('.it')) return 'Italy';
-        if (channel.endsWith('.es')) return 'Spain';
-        if (channel.endsWith('.pt')) return 'Portugal';
-        if (channel.endsWith('.au')) return 'Australia';
-        if (channel.endsWith('.be')) return 'Belgium';
-        if (channel.endsWith('.ro')) return 'Romania';
-        if (channel.endsWith('.pl')) return 'Poland';
-        if (channel.endsWith('.gr')) return 'Greece';
-        if (channel.endsWith('.tr')) return 'Turkey';
+        if (channel.endsWith('.nl')) return 'NL1';
+        if (channel.endsWith('.fr')) return 'FR1';
+        if (channel.endsWith('.de')) return 'DE1';
+        if (channel.endsWith('.it')) return 'IT1';
+        if (channel.endsWith('.es')) return 'ES1';
+        if (channel.endsWith('.pt')) return 'PT1';
+        if (channel.endsWith('.uk')) return 'UK1';
+        if (channel.endsWith('.be')) return 'BE2';
+        if (channel.endsWith('.tr')) return 'TR1';
 
-        // Check lang code
         switch (lang) {
-            case 'nld': case 'nl': return 'Netherlands';
-            case 'fra': case 'fr': return 'France';
-            case 'deu': case 'de': return 'Germany';
-            case 'ita': case 'it': return 'Italy';
-            case 'ron': case 'ro': return 'Romania';
-            case 'pol': case 'pl': return 'Poland';
-            case 'ell': case 'el': case 'gr': return 'Greece';
-            case 'tur': case 'tr': return 'Turkey';
-            case 'bel': return 'Belgium';
+            case 'nld': case 'nl': return 'NL1';
+            case 'fra': case 'fr': return 'FR1';
+            case 'deu': case 'de': return 'DE1';
+            case 'ita': case 'it': return 'IT1';
+            case 'spa': case 'es': return 'ES1';
+            case 'por': case 'pt': return 'PT1';
+            case 'tur': case 'tr': return 'TR1';
+            case 'bel': return 'BE2';
             default: return null;
         }
     }
@@ -266,6 +264,10 @@ export class EpgManager {
      * @returns {Promise<string>}
      */
     static async fetchSingleGuideXml(url) {
+        const failedAt = this.failedGuideCache.get(url);
+        if (failedAt && Date.now() - failedAt < this.FAILED_CACHE_TTL_MS) {
+            return '';
+        }
         const cached = this.guideCache.get(url);
         if (cached && Date.now() - cached.timestamp < this.CACHE_TTL_MS) {
             return cached.xml;
@@ -284,6 +286,7 @@ export class EpgManager {
                 return xml;
             })
             .catch(error => {
+                this.failedGuideCache.set(url, Date.now());
                 console.warn('EPG XML unavailable:', url, error);
                 return '';
             });
