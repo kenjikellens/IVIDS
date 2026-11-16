@@ -183,7 +183,9 @@ function render(item, type) {
         }
 
         if (overview) {
-            overview.textContent = item.overview || I18n.t('details.noDescription');
+            const cleanOverview = (item.overview || '').trim();
+            overview.textContent = cleanOverview;
+            overview.classList.toggle('hidden', !cleanOverview);
         }
 
         if (bg) {
@@ -713,7 +715,8 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
 
                 const episodeNumber = episode.episode_number || '?';
                 const episodeName = episode.name || I18n.t('details.untitled');
-                const episodeOverview = episode.overview || I18n.t('details.noDescription');
+                const episodeOverview = (episode.overview || '').trim();
+                const descHtml = episodeOverview ? `<p class="card__desc">${escapeHtml(episodeOverview)}</p>` : '';
                 const stillPath = episode.still_path ? Api.getImageUrl(episode.still_path, Api.getRecommendedStillSize()) : '';
                 const thumbStyle = '';
                 const durationStr = formatEpisodeDuration(episode.runtime);
@@ -728,7 +731,7 @@ function renderEpisodes(episodes, seriesId, seasonNumber) {
                     <div class="card__body">
                         <div class="card__title">${escapeHtml(String(episodeNumber))}. ${escapeHtml(episodeName)}</div>
                         ${metaHtml}
-                        <p class="card__desc">${escapeHtml(episodeOverview)}</p>
+                        ${descHtml}
                     </div>
                 `;
 
@@ -1043,7 +1046,9 @@ function renderAbout(overview, credits) {
     try {
         const descEl = document.getElementById('about-description');
         if (descEl) {
-            descEl.textContent = overview || I18n.t('details.noDescription');
+            const cleanAbout = (overview || '').trim();
+            descEl.textContent = cleanAbout;
+            descEl.classList.toggle('hidden', !cleanAbout);
         }
         
         const castContainer = document.getElementById('about-cast');

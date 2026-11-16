@@ -30,19 +30,19 @@ function isOverlayVisible() {
  */
 function isSettingsPanelOpen() {
     const panel = document.getElementById('player-settings-panel');
-    return isElementVisible(panel);
+    return Boolean(panel && (panel.classList.contains('is-open') || panel.classList.contains('active')));
 }
 
 /**
- * Retrieves focusable items inside the open Settings sidebar (back header + option rows).
+ * Retrieves focusable items inside the open Stream Options modal (back button + setting rows).
  *
- * @returns {HTMLElement[]} Ordered sidebar controls.
+ * @returns {HTMLElement[]} Ordered modal controls.
  */
 function getSettingsSidebarItems() {
     const panel = document.getElementById('player-settings-panel');
-    if (!panel || !isElementVisible(panel)) return [];
+    if (!panel || !isSettingsPanelOpen()) return [];
     const backBtn = document.getElementById('player-settings-back');
-    const opts = Array.from(panel.querySelectorAll('.tv-opt-btn.focusable')).filter(isElementVisible);
+    const opts = Array.from(panel.querySelectorAll('.setting-item.focusable')).filter(isElementVisible);
     return (backBtn && isElementVisible(backBtn)) ? [backBtn, ...opts] : opts;
 }
 
@@ -117,7 +117,7 @@ export const spatialNavPlayer = {
     getDefaultFocus() {
         if (isSettingsPanelOpen()) {
             const items = getSettingsSidebarItems();
-            const active = document.querySelector('#player-settings-options .tv-opt-btn.is-active');
+            const active = document.querySelector('#player-settings-options .setting-item.is-active');
             if (active && isElementVisible(active)) return active;
             if (items.length > 0) return items[0];
         }

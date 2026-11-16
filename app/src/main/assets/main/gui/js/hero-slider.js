@@ -262,7 +262,11 @@ export class HeroSlider {
         if (isInitial) {
             // Initial render - set text content instantly without fade out
             if (this.titleEl) this.titleEl.textContent = item.title || item.name;
-            if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', CONFIG.TRUNCATE_LIMIT);
+            const cleanDesc = (item.overview || '').trim();
+            if (this.descEl) {
+                this.descEl.textContent = cleanDesc ? this.truncate(cleanDesc, CONFIG.TRUNCATE_LIMIT) : '';
+                this.descEl.classList.toggle('hidden', !cleanDesc);
+            }
             this.updateButtonHandlers(item);
         } else {
             // Subsequent transitions - fade out content, change text, fade in
@@ -272,7 +276,11 @@ export class HeroSlider {
                 if (this.isDestroyed) return;
 
                 if (this.titleEl) this.titleEl.textContent = item.title || item.name;
-                if (this.descEl) this.descEl.textContent = this.truncate(item.overview || 'No description available.', CONFIG.TRUNCATE_LIMIT);
+                const cleanDesc = (item.overview || '').trim();
+            if (this.descEl) {
+                this.descEl.textContent = cleanDesc ? this.truncate(cleanDesc, CONFIG.TRUNCATE_LIMIT) : '';
+                this.descEl.classList.toggle('hidden', !cleanDesc);
+            }
                 this.updateButtonHandlers(item);
 
                 if (content) content.classList.remove('transitioning');

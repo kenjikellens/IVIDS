@@ -156,16 +156,25 @@ function bindNativeVideoListeners(videoEl) {
         }
     });
 
+    let lastFormattedSec = -1;
+    let lastPct = -1;
     const syncProgress = () => {
         const fill = document.getElementById('player-progress-fill');
         const curTime = document.getElementById('player-current-time');
         const durTime = document.getElementById('player-duration');
+        const curSec = Math.floor(videoEl.currentTime || 0);
         if (videoEl.duration && Number.isFinite(videoEl.duration) && fill) {
-            const pct = Math.max(0, Math.min(100, (videoEl.currentTime / videoEl.duration) * 100));
-            fill.style.width = `${pct}%`;
+            const pct = Math.round(Math.max(0, Math.min(100, (videoEl.currentTime / videoEl.duration) * 100)) * 10) / 10;
+            if (pct !== lastPct) {
+                lastPct = pct;
+                fill.style.width = `${pct}%`;
+            }
         }
-        if (curTime) curTime.textContent = formatTime(videoEl.currentTime);
-        if (durTime) durTime.textContent = formatTime(videoEl.duration);
+        if (curSec !== lastFormattedSec) {
+            lastFormattedSec = curSec;
+            if (curTime) curTime.textContent = formatTime(videoEl.currentTime);
+            if (durTime) durTime.textContent = formatTime(videoEl.duration);
+        }
     };
 
     videoEl.addEventListener('loadedmetadata', syncProgress);
@@ -577,7 +586,14 @@ async function startNativePlayback(streamUrl, onPlaybackFailed = null) {
     const isHls = probe.isHls;
     const playbackUrl = probe.sourceUrl || streamUrl;
     if (isHls && typeof window.Hls !== 'undefined' && window.Hls.isSupported()) {
-        activeHls = new window.Hls({ enableWorker: true });
+        activeHls = new window.Hls({
+            enableWorker: true,
+            backBufferLength: 30,
+            maxBufferLength: 20,
+            maxMaxBufferLength: 30,
+            maxBufferSize: 30 * 1000 * 1000,
+            capLevelToPlayerSize: true
+        });
         activeHls.loadSource(playbackUrl);
         activeHls.attachMedia(videoEl);
         activeHls.on(window.Hls.Events.MANIFEST_PARSED, () => {
@@ -722,8 +738,8 @@ export async function init(params) {
         let nextEpisodeTarget = null;
         let vodState = null;
 
-        /** Checks whether the right-edge Settings drawer is open. */
-        const isSettingsOpen = () => Boolean(settingsPanel && !settingsPanel.classList.contains('hidden'));
+        /** Checks whether the Stream Options popup modal is open. */
+        const isSettingsOpen = () => Boolean(settingsPanel && settingsPanel.classList.contains('is-open'));
 
         /** Resets the 4s overlay auto-hide timer (stays open when paused or drawer open). */
         const resetOverlayTimer = () => {
@@ -760,24 +776,24 @@ export async function init(params) {
             }
         };
 
-        /** Closes the Settings sidebar cleanly. */
+        /** Closes the Stream Options popup modal cleanly. */
         const closeSettingsPanel = (restoreFocus = false) => {
             if (!settingsPanel) return;
             activeSubmenu = null;
-            settingsPanel.classList.add('hidden');
+            settingsPanel.classList.remove('is-open', 'active');
             if (restoreFocus && settingsBtn) SpatialNav.setFocus(settingsBtn);
             resetOverlayTimer();
         };
 
-        /** Steps up one level inside Settings or closes the drawer if already at root. */
+        /** Steps up one level inside Stream Options or closes the modal if already at root. */
         const navigateSettingsBack = () => {
             if (!isSettingsOpen()) return false;
             if (activeSubmenu) {
                 const prevCat = activeSubmenu;
                 activeSubmenu = null;
                 renderSettingsPanel();
-                const catBtn = settingsOptionsEl?.querySelector(`.tv-opt-btn[data-submenu="${prevCat}"]`)
-                    || settingsOptionsEl?.querySelector('.tv-opt-btn.focusable');
+                const catBtn = settingsOptionsEl?.querySelector(`.setting-item[data-submenu="${prevCat}"]`)
+                    || settingsOptionsEl?.querySelector('.setting-item.focusable');
                 if (catBtn) SpatialNav.setFocus(catBtn);
                 resetOverlayTimer();
                 return true;
@@ -1028,16 +1044,18 @@ export async function init(params) {
 
             if (!activeCategory) {
                 settingsOptionsEl.innerHTML = categories.map(cat => (
-                    `<button type="button" class="tv-opt-btn tv-opt-btn--category focusable universal-onclick" data-submenu="${escapeHtml(cat.key)}">` +
-                        `<span class="tv-opt-label">${escapeHtml(cat.label)}</span>` +
-                        `<span class="tv-opt-value">${escapeHtml(cat.currentValue || '')}</span>` +
-                        `<span class="tv-opt-chevron" aria-hidden="true">&#8250;</span>` +
+                    `<button type="button" class="setting-item focusable universal-onclick" data-submenu="${escapeHtml(cat.key)}">` +
+                        `<span class="setting-info"><span class="setting-label">${escapeHtml(cat.label)}</span></span>` +
+                        `<span class="setting-control">` +
+                            `<span class="current-value-display">${escapeHtml(cat.currentValue || '')}</span>` +
+                            `<span class="edit-trigger" aria-hidden="true"></span>` +
+                        `</span>` +
                     `</button>`
                 )).join('');
 
                 if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
 
-                settingsOptionsEl.querySelectorAll('.tv-opt-btn--category').forEach(btn => {
+                settingsOptionsEl.querySelectorAll('.setting-item[data-submenu]').forEach(btn => {
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         const key = btn.dataset.submenu;
@@ -1049,8 +1067,8 @@ export async function init(params) {
                         activeSubmenu = key;
                         lastCategoryKey = key;
                         renderSettingsPanel();
-                        const target = settingsOptionsEl.querySelector('.tv-opt-btn.is-active')
-                            || settingsOptionsEl.querySelector('.tv-opt-btn.focusable');
+                        const target = settingsOptionsEl.querySelector('.setting-item.is-active')
+                            || settingsOptionsEl.querySelector('.setting-item.focusable');
                         if (target) SpatialNav.setFocus(target);
                     };
                 });
@@ -1058,15 +1076,15 @@ export async function init(params) {
             }
 
             settingsOptionsEl.innerHTML = activeCategory.options.map((opt, idx) => (
-                `<button type="button" class="tv-opt-btn focusable universal-onclick ${opt.isActive ? 'is-active' : ''}" data-opt-idx="${idx}">` +
-                    `<span class="tv-opt-label">${escapeHtml(opt.label)}</span>` +
-                    (opt.isActive ? `<span class="tv-opt-checkmark" aria-hidden="true">&#10003;</span>` : '') +
+                `<button type="button" class="setting-item focusable universal-onclick ${opt.isActive ? 'is-active' : ''}" data-opt-idx="${idx}">` +
+                    `<span class="setting-info"><span class="setting-label">${escapeHtml(opt.label)}</span></span>` +
+                    `<span class="setting-control">${opt.isActive ? '<span class="tv-opt-checkmark" aria-hidden="true">&#10003;</span>' : ''}</span>` +
                 `</button>`
             )).join('');
 
             if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
 
-            settingsOptionsEl.querySelectorAll('.tv-opt-btn').forEach(btn => {
+            settingsOptionsEl.querySelectorAll('.setting-item[data-opt-idx]').forEach(btn => {
                 btn.onclick = (e) => {
                     e.stopPropagation();
                     const idx = Number(btn.dataset.optIdx);
@@ -1075,13 +1093,13 @@ export async function init(params) {
                         picked.onPick();
                     }
                     renderSettingsPanel();
-                    const refBtn = settingsOptionsEl.querySelector(`[data-opt-idx="${idx}"]`);
+                    const refBtn = settingsOptionsEl.querySelector(`.setting-item[data-opt-idx="${idx}"]`);
                     if (refBtn) SpatialNav.setFocus(refBtn);
                 };
             });
         };
 
-        /** Toggles the right-edge Settings drawer open/closed. */
+        /** Toggles the Stream Options popup modal open/closed. */
         const toggleSettingsPanel = () => {
             if (!settingsPanel) return;
             if (isSettingsOpen()) {
@@ -1092,9 +1110,9 @@ export async function init(params) {
             if (overlay) overlay.classList.add('show');
             activeSubmenu = null;
             renderSettingsPanel();
-            settingsPanel.classList.remove('hidden');
-            const firstOpt = (lastCategoryKey && settingsPanel.querySelector(`.tv-opt-btn[data-submenu="${lastCategoryKey}"]`))
-                || settingsPanel.querySelector('.tv-opt-btn.focusable');
+            settingsPanel.classList.add('is-open', 'active');
+            const firstOpt = (lastCategoryKey && settingsPanel.querySelector(`.setting-item[data-submenu="${lastCategoryKey}"]`))
+                || settingsPanel.querySelector('.setting-item.focusable');
             if (firstOpt) SpatialNav.setFocus(firstOpt);
         };
 
@@ -1120,7 +1138,13 @@ export async function init(params) {
             };
         }
         if (settingsPanel) {
-            settingsPanel.onclick = (e) => e.stopPropagation();
+            settingsPanel.onclick = (e) => {
+                if (e.target === settingsPanel) {
+                    closeSettingsPanel(true);
+                } else {
+                    e.stopPropagation();
+                }
+            };
         }
 
         // Bind bottom transport bar: strictly -30s, -10s, Play/Pause, +10s, +30s

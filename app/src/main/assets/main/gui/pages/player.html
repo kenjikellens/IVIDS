@@ -16,15 +16,6 @@
                 </button>
             </div>
 
-            <!-- Right-Edge 2-Level Settings Sidebar (Quality, Subtitles, Server Settings) -->
-            <aside id="player-settings-panel" class="tv-settings-panel hidden">
-                <button id="player-settings-back" type="button" class="tv-settings-header focusable universal-onclick">
-                    <img src="images/back.svg" alt="" class="btn__icon">
-                    <span id="player-settings-title" class="tv-settings-title" data-i18n="livetv.streamOptions">Stream Options</span>
-                </button>
-                <div id="player-settings-options" class="tv-settings-options"></div>
-            </aside>
-
             <!-- Minimal Bottom Controls: Thin Scrub Bar + Only -30s, -10s, Play/Pause, +10s, +30s -->
             <div class="vod-overlay-bottom" id="vod-overlay-bottom">
                 <div class="vod-scrub-row" id="hud-scrub-bar-container">
@@ -37,22 +28,35 @@
                 </div>
 
                 <div class="vod-transport-bar" id="hud-control-bar">
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-rewind-30" type="button" aria-label="Rewind 30 seconds">
+                    <button class="btn btn--secondary btn--circle-lg vod-skip-btn focusable universal-onclick" id="player-rewind-30" type="button" aria-label="Rewind 30 seconds">
                         <img src="images/replay-30.svg" alt="-30s" class="btn__icon">
                     </button>
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-rewind-10" type="button" aria-label="Rewind 10 seconds">
+                    <button class="btn btn--secondary btn--circle-lg vod-skip-btn focusable universal-onclick" id="player-rewind-10" type="button" aria-label="Rewind 10 seconds">
                         <img src="images/replay-10.svg" alt="-10s" class="btn__icon">
                     </button>
-                    <button class="btn btn--primary vod-play-btn focusable universal-onclick" id="play-pause-btn" type="button" aria-label="Play or Pause">
+                    <button class="btn btn--primary btn--circle-xl vod-play-btn focusable universal-onclick" id="play-pause-btn" type="button" aria-label="Play or Pause">
                         <img src="images/pause.svg" alt="" id="player-icon-pause" class="btn__icon">
                         <img src="images/play.svg" alt="" id="player-icon-play" class="btn__icon hidden">
                     </button>
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-forward-10" type="button" aria-label="Forward 10 seconds">
+                    <button class="btn btn--secondary btn--circle-lg vod-skip-btn focusable universal-onclick" id="player-forward-10" type="button" aria-label="Forward 10 seconds">
                         <img src="images/forward-10.svg" alt="+10s" class="btn__icon">
                     </button>
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-forward-30" type="button" aria-label="Forward 30 seconds">
+                    <button class="btn btn--secondary btn--circle-lg vod-skip-btn focusable universal-onclick" id="player-forward-30" type="button" aria-label="Forward 30 seconds">
                         <img src="images/forward-30.svg" alt="+30s" class="btn__icon">
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stream Options Popup Modal matching Settings styling on Desktop & Mobile -->
+        <div id="player-settings-panel" class="modal">
+            <div class="modal__dialog modal__dialog--md">
+                <button id="player-settings-back" type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+                    <img src="images/back.svg" class="modal-back-icon" alt="Back">
+                </button>
+                <h2 id="player-settings-title" class="modal__title" data-i18n="livetv.streamOptions">Stream Options</h2>
+                <div class="modal__body modal__body--scroll">
+                    <div id="player-settings-options" class="settings-container"></div>
                 </div>
             </div>
         </div>
