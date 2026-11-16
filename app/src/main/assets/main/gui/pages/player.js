@@ -16,6 +16,7 @@ let activeHls = null;
 let activePlaybackMode = 'native'; // 'native' | 'embed' | 'live' | 'trailer'
 let playbackGeneration = 0;
 let activeSubtitleBlobUrls = [];
+let activeManifestBlobUrl = null;
 let cachedStremioSubtitles = [];
 let activeExternalSubId = 'off';
 let activeAudioTrackId = null;
@@ -104,6 +105,15 @@ function teardownNativeMedia() {
             }
         });
         activeSubtitleBlobUrls = [];
+    }
+
+    if (activeManifestBlobUrl) {
+        try {
+            URL.revokeObjectURL(activeManifestBlobUrl);
+        } catch {
+            // Ignore blob cleanup errors
+        }
+        activeManifestBlobUrl = null;
     }
 
     const fill = document.getElementById('player-progress-fill');
@@ -397,36 +407,92 @@ function setOverlayPlaybackMode(mode) {
 }
 
 /**
- * Probes extensionless or redirected media URLs with a tiny byte-range GET to determine
- * whether the upstream returns an HTTP error or an HLS `#EXTM3U` playlist.
+ * Converts a fetched `.m3u8` playlist into a local Blob URL with absolute `/proxy?url=` origins
+ * so Hls.js starts playback immediately without a duplicate redirect + manifest network round-trip.
  *
- * @param {string} url - Stream URL to probe.
- * @returns {Promise<{ok: boolean, isHls: boolean, status?: number}>} Probe outcome.
+ * @param {string} m3u8Text - Rewritten M3U8 playlist string.
+ * @returns {string} Revocable `blob:` URL pointing to the manifest.
+ */
+function createManifestBlobUrl(m3u8Text) {
+    const originPrefix = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null')
+        ? window.location.origin
+        : 'http://localhost';
+    const absolutized = m3u8Text
+        .replace(/(^|\n)(\/proxy\?url=)/g, `$1${originPrefix}$2`)
+        .replace(/URI="(\/proxy\?url=)/g, `URI="${originPrefix}$1`);
+    if (activeManifestBlobUrl) {
+        try { URL.revokeObjectURL(activeManifestBlobUrl); } catch {}
+    }
+    activeManifestBlobUrl = URL.createObjectURL(new Blob([absolutized], { type: 'application/vnd.apple.mpegurl' }));
+    return activeManifestBlobUrl;
+}
+
+/**
+ * Fetches an extensionless or `/redirect` stream URL ONCE, combining format probing, error
+ * rejection, redirect resolution, and HLS manifest preloading into a single network step.
+ * Aborts immediately after the first chunk when the stream is a direct video binary (MP4/MKV).
+ *
+ * @param {string} url - Stream URL to probe and prepare.
+ * @returns {Promise<{ok: boolean, isHls: boolean, sourceUrl: string, status?: number}>} Prepared playback target.
  */
 async function probeStreamFormat(url) {
-    if (/\.m3u8(\?|$)/i.test(url)) return { ok: true, isHls: true };
-    if (/\.(mp4|m4v|mkv|webm|avi|mov)(\?|$)/i.test(url)) return { ok: true, isHls: false };
+    if (/\.m3u8(\?|$)/i.test(url)) return { ok: true, isHls: true, sourceUrl: url };
+    if (/\.(mp4|m4v|mkv|webm|avi|mov)(\?|$)/i.test(url)) return { ok: true, isHls: false, sourceUrl: url };
 
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 6000);
+    const timer = setTimeout(() => controller.abort(), 7000);
     try {
-        const res = await fetch(url, {
-            method: 'GET',
-            headers: { Range: 'bytes=0-511' },
-            signal: controller.signal
-        });
+        const res = await fetch(url, { method: 'GET', signal: controller.signal });
         clearTimeout(timer);
-        if (!res.ok) return { ok: false, isHls: false, status: res.status };
-        if (/hostingersite\.com|\/premium\.mp4/i.test(res.url || '')) {
-            return { ok: false, isHls: false, status: 402 };
+        if (!res.ok) {
+            try { controller.abort(); } catch {}
+            return { ok: false, isHls: false, sourceUrl: url, status: res.status };
         }
+        const finalUrl = res.headers.get('X-Final-Url') || res.url || '';
+        if (/hostingersite\.com|\/premium\.mp4/i.test(finalUrl)) {
+            try { controller.abort(); } catch {}
+            return { ok: false, isHls: false, sourceUrl: url, status: 402 };
+        }
+
         const ct = (res.headers.get('Content-Type') || '').toLowerCase();
-        if (ct.includes('mpegurl') || ct.includes('m3u')) return { ok: true, isHls: true };
-        const head = await res.text().catch(() => '');
-        return { ok: true, isHls: head.trimStart().startsWith('#EXTM3U') };
+        const headerIsHls = ct.includes('mpegurl') || ct.includes('m3u') || /\.m3u8(\?|$)/i.test(finalUrl);
+
+        if (headerIsHls) {
+            const manifestText = await res.text();
+            if (manifestText.trimStart().startsWith('#EXTM3U')) {
+                return { ok: true, isHls: true, sourceUrl: createManifestBlobUrl(manifestText) };
+            }
+            return { ok: true, isHls: true, sourceUrl: url };
+        }
+
+        if (res.body && typeof res.body.getReader === 'function') {
+            const reader = res.body.getReader();
+            const first = await reader.read();
+            const decoder = new TextDecoder();
+            const firstText = first.value ? decoder.decode(first.value, { stream: true }) : '';
+            if (firstText.trimStart().startsWith('#EXTM3U')) {
+                let fullText = firstText;
+                let totalBytes = first.value ? first.value.byteLength : 0;
+                while (!first.done && totalBytes < 2 * 1024 * 1024) {
+                    const next = await reader.read();
+                    if (next.value) {
+                        totalBytes += next.value.byteLength;
+                        fullText += decoder.decode(next.value, { stream: true });
+                    }
+                    if (next.done) break;
+                }
+                return { ok: true, isHls: true, sourceUrl: createManifestBlobUrl(fullText) };
+            }
+            await reader.cancel().catch(() => {});
+            controller.abort();
+            return { ok: true, isHls: false, sourceUrl: url };
+        }
+
+        controller.abort();
+        return { ok: true, isHls: false, sourceUrl: url };
     } catch {
         clearTimeout(timer);
-        return { ok: false, isHls: false };
+        return { ok: false, isHls: false, sourceUrl: url };
     }
 }
 
@@ -509,9 +575,10 @@ async function startNativePlayback(streamUrl, onPlaybackFailed = null) {
     }
 
     const isHls = probe.isHls;
+    const playbackUrl = probe.sourceUrl || streamUrl;
     if (isHls && typeof window.Hls !== 'undefined' && window.Hls.isSupported()) {
         activeHls = new window.Hls({ enableWorker: true });
-        activeHls.loadSource(streamUrl);
+        activeHls.loadSource(playbackUrl);
         activeHls.attachMedia(videoEl);
         activeHls.on(window.Hls.Events.MANIFEST_PARSED, () => {
             clearLoadTimer();
@@ -723,9 +790,9 @@ export async function init(params) {
         const getSidebarCategories = () => {
             const categories = [];
 
-            // 1. Quality / Candidate Stream selector
+            // 1. Quality selector (strictly video resolutions, never raw server names)
             const qualityOpts = [];
-            if (activeHls && Array.isArray(activeHls.levels) && activeHls.levels.length > 0) {
+            if (activeHls && Array.isArray(activeHls.levels) && activeHls.levels.length > 1) {
                 qualityOpts.push({
                     value: 'hls-auto',
                     label: t('livetv.auto', 'Auto'),
@@ -735,8 +802,11 @@ export async function init(params) {
                         if (activeHls) activeHls.currentLevel = -1;
                     }
                 });
+                const seenHeights = new Set();
                 activeHls.levels.forEach((lvl, idx) => {
                     const label = lvl.height ? `${lvl.height}p` : `Level ${idx + 1}`;
+                    if (seenHeights.has(label)) return;
+                    seenHeights.add(label);
                     qualityOpts.push({
                         value: `hls-${idx}`,
                         label,
@@ -749,14 +819,37 @@ export async function init(params) {
                 });
             } else if (vodState && vodState.activeTierId !== 'embed_servers') {
                 const tierRes = vodState.tierResults[vodState.activeTierId];
+                const byRes = new Map();
                 if (tierRes?.streams?.length) {
-                    tierRes.streams.slice(0, 8).forEach((s, idx) => {
-                        qualityOpts.push({
-                            value: `cand-${idx}`,
-                            label: s.label || `Stream ${idx + 1}`,
-                            isActive: vodState.activeStreamIndex === idx,
-                            onPick: () => vodState.handlers.onSelectDebridCandidate(vodState.activeTierId, idx)
+                    tierRes.streams.forEach((s, idx) => {
+                        const match = `${s.label || ''} ${s.rawTitle || ''}`.match(/\b(2160p|4K|1080p|720p|480p|360p)\b/i);
+                        if (!match) return;
+                        const resLabel = match[1].toUpperCase() === '4K' ? '4K' : match[1].toLowerCase();
+                        if (!byRes.has(resLabel) || idx === vodState.activeStreamIndex) {
+                            if (idx === vodState.activeStreamIndex || !byRes.has(resLabel)) {
+                                byRes.set(resLabel, { resLabel, idx });
+                            }
+                        }
+                    });
+                }
+                if (byRes.size > 0) {
+                    const order = ['4K', '2160p', '1080p', '720p', '480p', '360p'];
+                    Array.from(byRes.values())
+                        .sort((a, b) => order.indexOf(a.resLabel) - order.indexOf(b.resLabel))
+                        .forEach(({ resLabel, idx }) => {
+                            qualityOpts.push({
+                                value: `res-${resLabel}`,
+                                label: resLabel,
+                                isActive: vodState.activeStreamIndex === idx,
+                                onPick: () => vodState.handlers.onSelectDebridCandidate(vodState.activeTierId, idx)
+                            });
                         });
+                } else if (videoEl && videoEl.videoHeight > 0) {
+                    qualityOpts.push({
+                        value: 'native-res',
+                        label: `${videoEl.videoHeight}p`,
+                        isActive: true,
+                        onPick: () => {}
                     });
                 }
             }

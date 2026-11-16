@@ -37,14 +37,22 @@
                 </div>
 
                 <div class="vod-transport-bar" id="hud-control-bar">
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-rewind-30" type="button">-30s</button>
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-rewind-10" type="button">-10s</button>
-                    <button class="vod-play-btn focusable universal-onclick" id="play-pause-btn" type="button" aria-label="Play or Pause">
+                    <button class="vod-skip-btn focusable universal-onclick" id="player-rewind-30" type="button" aria-label="Rewind 30 seconds">
+                        <img src="images/replay-30.svg" alt="-30s" class="btn__icon">
+                    </button>
+                    <button class="vod-skip-btn focusable universal-onclick" id="player-rewind-10" type="button" aria-label="Rewind 10 seconds">
+                        <img src="images/replay-10.svg" alt="-10s" class="btn__icon">
+                    </button>
+                    <button class="btn btn--primary vod-play-btn focusable universal-onclick" id="play-pause-btn" type="button" aria-label="Play or Pause">
                         <img src="images/pause.svg" alt="" id="player-icon-pause" class="btn__icon">
                         <img src="images/play.svg" alt="" id="player-icon-play" class="btn__icon hidden">
                     </button>
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-forward-10" type="button">+10s</button>
-                    <button class="vod-skip-btn focusable universal-onclick" id="player-forward-30" type="button">+30s</button>
+                    <button class="vod-skip-btn focusable universal-onclick" id="player-forward-10" type="button" aria-label="Forward 10 seconds">
+                        <img src="images/forward-10.svg" alt="+10s" class="btn__icon">
+                    </button>
+                    <button class="vod-skip-btn focusable universal-onclick" id="player-forward-30" type="button" aria-label="Forward 30 seconds">
+                        <img src="images/forward-30.svg" alt="+30s" class="btn__icon">
+                    </button>
                 </div>
             </div>
         </div>

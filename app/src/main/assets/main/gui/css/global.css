@@ -1899,13 +1899,15 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .vod-scrub-row .progress-bar:hover, .vod-scrub-row .progress-bar:focus, .vod-scrub-row .progress-bar.focused { height: 8px; outline: 2px solid #ffffff; outline-offset: 4px; }
 .vod-time-display { color: rgba(255, 255, 255, 0.9); font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 600; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75); white-space: nowrap; }
 .vod-transport-bar { align-items: center; display: flex; gap: 14px; justify-content: center; width: 100%; }
-.vod-skip-btn { align-items: center; background: rgba(0, 0, 0, 0.55); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-pill); color: #ffffff; cursor: pointer; display: inline-flex; font-size: 13px; font-weight: 700; height: 42px; justify-content: center; min-height: 42px; min-width: 56px; padding: 0 14px; transition: background-color 150ms ease, border-color 150ms ease; }
+.vod-skip-btn { align-items: center; background: rgba(0, 0, 0, 0.55); border: 2px solid rgba(255, 255, 255, 0.22); border-radius: 50%; cursor: pointer; display: inline-flex; height: 46px; justify-content: center; min-height: 46px; min-width: 46px; padding: 0; transition: background-color 150ms ease, border-color 150ms ease; width: 46px; }
+.vod-skip-btn .btn__icon { height: 24px; width: 24px; }
 .vod-skip-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.45); }
 .vod-skip-btn:focus, .vod-skip-btn.focused { background: rgba(255, 255, 255, 0.24); border-color: #ffffff; outline: none; }
-.vod-play-btn { align-items: center; background: rgba(0, 0, 0, 0.65); border: 2px solid rgba(255, 255, 255, 0.28); border-radius: 50%; cursor: pointer; display: inline-flex; height: 52px; justify-content: center; min-height: 52px; min-width: 52px; padding: 0; transition: background-color 150ms ease, border-color 150ms ease; width: 52px; }
+/* Primary VOD Play/Pause circular button matching the Details Watch button theme fill. */
+.vod-play-btn { background: rgba(var(--primary-rgb), 0.25); border: 2px solid rgba(var(--primary-rgb), 0.5); border-radius: 50%; flex-shrink: 0; height: 54px; min-height: 54px; min-width: 54px; padding: 0; width: 54px; }
 .vod-play-btn .btn__icon { height: 22px; width: 22px; }
-.vod-play-btn:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.5); }
-.vod-play-btn:focus, .vod-play-btn.focused { background: rgba(255, 255, 255, 0.28); border-color: #ffffff; outline: none; }
+.vod-play-btn:hover { background: rgba(var(--primary-rgb), 0.35); border-color: rgba(255, 255, 255, 0.5); }
+.vod-play-btn:focus, .vod-play-btn.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; outline: none; }
 
 /* ==========================================================================
    SECTION 10: SETTINGS, ACCOUNT, LOGIN & APP UPDATE COMPONENTS

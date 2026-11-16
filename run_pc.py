@@ -1075,9 +1075,11 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     self.send_response(200)
                     self.send_header('Content-Type', content_type)
                     self.send_header('Content-Length', str(len(body)))
+                    self.send_header('X-Final-Url', final_url or target_url)
                     self.send_header('Access-Control-Allow-Origin', '*')
                     self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
                     self.send_header('Access-Control-Allow-Headers', '*')
+                    self.send_header('Access-Control-Expose-Headers', 'Content-Length, Content-Range, Accept-Ranges, X-Final-Url')
                     if not is_m3u8 and '.m3u' in target_path_lower:
                         self.send_header('Cache-Control', 'public, max-age=7200')
                     else:
