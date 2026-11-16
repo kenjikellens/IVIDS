@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Tria la prioritat entre servidors i Debrid",
     "tierEmbedServers": "Servidors (1–7)",
     "tierDebridPrimary": "Debrid principal",
-    "tierDebridBackup": "Debrid de còpia",
     "debridConfig": "Debrid i Stremio",
-    "debridConfigDesc": "Configura la clau Real-Debrid i URLs de Stremio",
+    "debridConfigDesc": "Configura Real-Debrid i l'addon HTTP gratuït",
     "debridApiKey": "Clau API de Real-Debrid",
     "debridPrimaryAddon": "URL principal de complement Stremio",
-    "debridBackupAddon": "URL de còpia de complement Stremio",
     "debridEnvBackup": "Còpia .env activa (deixa en blanc)",
     "debridConfigured": "Configurat",
     "debridEnvReady": "Còpia .env",
-    "debridNotConfigured": "No configurat"
+    "debridNotConfigured": "No configurat",
+    "tierDirectHttp": "HTTP directe (Gratuït)",
+    "directHttpAddon": "URL d'addon HTTP gratuït"
   },
   "common": {
     "close": "Tancar",

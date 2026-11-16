@@ -157,16 +157,16 @@
     "sourceOrderDesc": "Scegli la priorità tra server e Debrid",
     "tierEmbedServers": "Server (1–7)",
     "tierDebridPrimary": "Debrid principale",
-    "tierDebridBackup": "Debrid di backup",
     "debridConfig": "Debrid e Stremio",
-    "debridConfigDesc": "Configura chiave API Real-Debrid e URL addon Stremio",
+    "debridConfigDesc": "Configura Real-Debrid e addon HTTP gratuito",
     "debridApiKey": "Chiave API Real-Debrid",
     "debridPrimaryAddon": "URL Addon Stremio principale",
-    "debridBackupAddon": "URL Addon Stremio di backup",
     "debridEnvBackup": "Backup .env attivo (lascia vuoto)",
     "debridConfigured": "Configurato",
     "debridEnvReady": "Backup .env",
-    "debridNotConfigured": "Non impostato"
+    "debridNotConfigured": "Non impostato",
+    "tierDirectHttp": "HTTP diretto (Gratis)",
+    "directHttpAddon": "URL addon HTTP gratuito"
   },
   "common": {
     "close": "Chiudi",

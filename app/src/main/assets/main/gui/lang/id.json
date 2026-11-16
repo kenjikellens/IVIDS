@@ -157,16 +157,16 @@
     "sourceOrderDesc": "Pilih urutan prioritas antara server dan Debrid",
     "tierEmbedServers": "Server (1–7)",
     "tierDebridPrimary": "Debrid Utama",
-    "tierDebridBackup": "Debrid Cadangan",
     "debridConfig": "Debrid & Stremio",
-    "debridConfigDesc": "Atur kunci API Real-Debrid dan URL addon Stremio",
+    "debridConfigDesc": "Konfigurasi Real-Debrid dan addon HTTP gratis",
     "debridApiKey": "Kunci API Real-Debrid",
     "debridPrimaryAddon": "URL Addon Stremio Utama",
-    "debridBackupAddon": "URL Addon Stremio Cadangan",
     "debridEnvBackup": "Cadangan .env aktif (kosongkan)",
     "debridConfigured": "Terkonfigurasi",
     "debridEnvReady": "Cadangan .env",
-    "debridNotConfigured": "Belum diatur"
+    "debridNotConfigured": "Belum diatur",
+    "tierDirectHttp": "HTTP Langsung (Gratis)",
+    "directHttpAddon": "URL Addon HTTP Gratis"
   },
   "common": {
     "close": "Tutup",

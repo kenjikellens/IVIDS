@@ -5,7 +5,7 @@ import { manageModal } from '../js/utils/ui-helper.js';
 import { parseMarkdown } from '../js/utils/markdown-parser.js';
 import { createLoaderElement } from '../js/loader.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
-import { Api, DEFAULT_PLAYBACK_SOURCE_ORDER, DEFAULT_DEBRID_CONFIG } from '../../logic/api.js';
+import { Api, DEFAULT_PLAYBACK_SOURCE_ORDER, DEFAULT_DEBRID_CONFIG, getDefaultPlaybackSourceOrder } from '../../logic/api.js';
 import { RealDebridClient } from '../../logic/vod/real-debrid-client.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { VersionManager } from '../js/version-manager.js';
@@ -125,6 +125,7 @@ class SettingsManager {
             ],
             m3uPlaylists: [],
             playbackSourceOrder: [...DEFAULT_PLAYBACK_SOURCE_ORDER],
+            hasCustomSourceOrder: false,
             debridConfig: { ...DEFAULT_DEBRID_CONFIG },
             includeAdult: false,
             dataSaver: false,
@@ -205,17 +206,26 @@ class SettingsManager {
                 }];
             }
 
-            // Normalize playbackSourceOrder preserving all 3 supported tiers
-            const rawOrder = Array.isArray(parsed.playbackSourceOrder) ? parsed.playbackSourceOrder : [];
-            const normalizedOrder = rawOrder.filter(id => DEFAULT_PLAYBACK_SOURCE_ORDER.includes(id));
+            const rawDebrid = parsed.debridConfig && typeof parsed.debridConfig === 'object' ? parsed.debridConfig : {};
+            parsed.debridConfig = {
+                ...DEFAULT_DEBRID_CONFIG,
+                ...rawDebrid,
+                httpAddonUrl: (rawDebrid.httpAddonUrl || DEFAULT_DEBRID_CONFIG.httpAddonUrl).trim()
+            };
+            const useCustomOrder = Boolean(parsed.hasCustomSourceOrder) && Array.isArray(parsed.playbackSourceOrder);
+            const rawOrder = useCustomOrder ? parsed.playbackSourceOrder : getDefaultPlaybackSourceOrder(parsed.debridConfig);
+            const mappedOrder = rawOrder.map(id => (id === 'debrid_backup' ? 'direct_http' : id));
+            const normalizedOrder = [];
+            mappedOrder.forEach(id => {
+                if (DEFAULT_PLAYBACK_SOURCE_ORDER.includes(id) && !normalizedOrder.includes(id)) {
+                    normalizedOrder.push(id);
+                }
+            });
             DEFAULT_PLAYBACK_SOURCE_ORDER.forEach(id => {
                 if (!normalizedOrder.includes(id)) normalizedOrder.push(id);
             });
             parsed.playbackSourceOrder = normalizedOrder;
-            parsed.debridConfig = {
-                ...DEFAULT_DEBRID_CONFIG,
-                ...(parsed.debridConfig && typeof parsed.debridConfig === 'object' ? parsed.debridConfig : {})
-            };
+            parsed.hasCustomSourceOrder = useCustomOrder;
 
             return { ...defaultSettings, ...parsed };
         } catch (e) { return defaultSettings; }
@@ -239,6 +249,7 @@ class SettingsManager {
             playerBaseUrl: this.settings.playerBaseUrl,
             playerProviders: this.settings.playerProviders,
             playbackSourceOrder: this.settings.playbackSourceOrder,
+            hasCustomSourceOrder: Boolean(this.settings.hasCustomSourceOrder),
             debridConfig: this.settings.debridConfig,
             m3uPlaylists: this.settings.m3uPlaylists,
             includeAdult: this.settings.includeAdult,
@@ -780,7 +791,7 @@ class SettingsManager {
         const tierLabelKeys = {
             embed_servers: 'settings.tierEmbedServers',
             debrid_primary: 'settings.tierDebridPrimary',
-            debrid_backup: 'settings.tierDebridBackup'
+            direct_http: 'settings.tierDirectHttp'
         };
         const firstTierLabel = window.i18n?.t(tierLabelKeys[firstTierId] || 'settings.tierDebridPrimary') || firstTierId;
         const orderDisplay = document.getElementById('current-source-order-display');
@@ -1226,7 +1237,7 @@ class SettingsManager {
         } else if (modalId === 'debrid-modal') {
             const keyInput = document.getElementById('debrid-api-key-input');
             const primaryInput = document.getElementById('debrid-primary-addon-input');
-            const backupInput = document.getElementById('debrid-backup-addon-input');
+            const httpInput = document.getElementById('direct-http-addon-input');
             if (keyInput) {
                 keyInput.value = this.pendingSettings.debridConfig.apiKey || '';
                 keyInput.placeholder = this.hasDebridEnvBackup
@@ -1238,14 +1249,10 @@ class SettingsManager {
                 primaryInput.value = this.pendingSettings.debridConfig.primaryAddonUrl || DEFAULT_DEBRID_CONFIG.primaryAddonUrl;
                 primaryInput.oninput = (e) => { this.pendingSettings.debridConfig.primaryAddonUrl = e.target.value; };
             }
-            if (backupInput) {
-                backupInput.value = this.pendingSettings.debridConfig.backupAddonUrl || DEFAULT_DEBRID_CONFIG.backupAddonUrl;
-                backupInput.oninput = (e) => { this.pendingSettings.debridConfig.backupAddonUrl = e.target.value; };
+            if (httpInput) {
+                httpInput.value = this.pendingSettings.debridConfig.httpAddonUrl || DEFAULT_DEBRID_CONFIG.httpAddonUrl;
+                httpInput.oninput = (e) => { this.pendingSettings.debridConfig.httpAddonUrl = e.target.value; };
             }
-        } else if (modalId === 'source-order-modal') {
-            focusTarget = modal.querySelector('.provider-move-btn.focusable') || modal.querySelector('.modal__footer .btn--primary');
-        } else if (modalId === 'debrid-modal') {
-            focusTarget = document.getElementById('debrid-api-key-input');
         } else if (modalId === 'player-modal') {
             this.movingProviderId = null;
             this.movingOriginalList = null;
@@ -1686,12 +1693,16 @@ class SettingsManager {
         }
         if (key === 'playbackSourceOrder' && Array.isArray(this.pendingSettings.playbackSourceOrderItems)) {
             newValue = this.pendingSettings.playbackSourceOrderItems.map(item => item.id);
+            this.settings.hasCustomSourceOrder = true;
         } else if (key === 'debridConfig' && this.pendingSettings.debridConfig) {
             newValue = {
                 apiKey: (this.pendingSettings.debridConfig.apiKey || '').trim(),
                 primaryAddonUrl: (this.pendingSettings.debridConfig.primaryAddonUrl || DEFAULT_DEBRID_CONFIG.primaryAddonUrl).trim(),
-                backupAddonUrl: (this.pendingSettings.debridConfig.backupAddonUrl || DEFAULT_DEBRID_CONFIG.backupAddonUrl).trim()
+                httpAddonUrl: (this.pendingSettings.debridConfig.httpAddonUrl || DEFAULT_DEBRID_CONFIG.httpAddonUrl).trim()
             };
+            if (!this.settings.hasCustomSourceOrder) {
+                this.settings.playbackSourceOrder = getDefaultPlaybackSourceOrder(newValue);
+            }
         }
         this.settings[key] = newValue;
 
@@ -1737,7 +1748,7 @@ class SettingsManager {
         const labels = {
             embed_servers: window.i18n?.t('settings.tierEmbedServers') || 'Embed Servers (1–7)',
             debrid_primary: window.i18n?.t('settings.tierDebridPrimary') || 'Primary Debrid',
-            debrid_backup: window.i18n?.t('settings.tierDebridBackup') || 'Backup Debrid'
+            direct_http: window.i18n?.t('settings.tierDirectHttp') || 'Direct HTTP (Free)'
         };
 
         listContainer.innerHTML = '';

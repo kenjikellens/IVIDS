@@ -157,16 +157,16 @@
     "sourceOrderDesc": "サーバーとDebridの優先順位を選択",
     "tierEmbedServers": "サーバー (1–7)",
     "tierDebridPrimary": "メイン Debrid",
-    "tierDebridBackup": "バックアップ Debrid",
     "debridConfig": "Debrid & Stremio",
-    "debridConfigDesc": "Real-Debrid APIキーとStremioアドオンURLを設定",
+    "debridConfigDesc": "Real-Debridと無料HTTPアドオンを設定",
     "debridApiKey": "Real-Debrid APIキー",
     "debridPrimaryAddon": "メイン StremioアドオンURL",
-    "debridBackupAddon": "バックアップ StremioアドオンURL",
     "debridEnvBackup": ".envバックアップ有効（空欄で使用）",
     "debridConfigured": "設定済み",
     "debridEnvReady": ".env 予備",
-    "debridNotConfigured": "未設定"
+    "debridNotConfigured": "未設定",
+    "tierDirectHttp": "ダイレクトHTTP（無料）",
+    "directHttpAddon": "無料HTTPアドオンURL"
   },
   "common": {
     "close": "閉じる",

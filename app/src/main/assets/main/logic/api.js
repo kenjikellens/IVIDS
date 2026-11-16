@@ -25,12 +25,26 @@ let _cachedTodayDate = null;
 let _cachedPlayerConfig = null;
 let _configOwnerId = null;
 const DEFAULT_PLAYER_PROVIDERS = [...PLAYER_CONFIG.DEFAULT_PROVIDERS];
-export const DEFAULT_PLAYBACK_SOURCE_ORDER = ['debrid_primary', 'direct_http', 'embed_servers'];
+export const DEFAULT_PLAYBACK_SOURCE_ORDER = ['direct_http', 'embed_servers', 'debrid_primary'];
 export const DEFAULT_DEBRID_CONFIG = Object.freeze({
     apiKey: '',
     primaryAddonUrl: 'https://torrentio.strem.fun',
     httpAddonUrl: 'https://addon.notorrent2.workers.dev'
 });
+
+/**
+ * Computes the logical playback tier priority order based on whether a user Real-Debrid API key is set:
+ * always tries Free Direct HTTP first, then Real-Debrid (when keyed) or the 7 Embed Servers second.
+ *
+ * @param {Object} [debridConfig] - Active Debrid configuration object.
+ * @returns {Array<string>} Ordered source tier IDs.
+ */
+export function getDefaultPlaybackSourceOrder(debridConfig) {
+    const hasKey = Boolean((debridConfig?.apiKey || '').trim());
+    return hasKey
+        ? ['direct_http', 'debrid_primary', 'embed_servers']
+        : ['direct_http', 'embed_servers', 'debrid_primary'];
+}
 
 /** Cached slow connection evaluation state. */
 let _slowConnectionResult = null;
@@ -996,7 +1010,14 @@ export const Api = {
                 }));
             }
 
-            const rawOrder = Array.isArray(saved.playbackSourceOrder) ? saved.playbackSourceOrder : [];
+            const rawDebrid = (saved.debridConfig && typeof saved.debridConfig === 'object') ? saved.debridConfig : {};
+            const normalizedDebrid = {
+                ...DEFAULT_DEBRID_CONFIG,
+                ...rawDebrid,
+                httpAddonUrl: (rawDebrid.httpAddonUrl || DEFAULT_DEBRID_CONFIG.httpAddonUrl).trim()
+            };
+            const useCustomOrder = Boolean(saved.hasCustomSourceOrder) && Array.isArray(saved.playbackSourceOrder);
+            const rawOrder = useCustomOrder ? saved.playbackSourceOrder : getDefaultPlaybackSourceOrder(normalizedDebrid);
             const mappedOrder = rawOrder.map(id => (id === 'debrid_backup' ? 'direct_http' : id));
             const normalizedOrder = [];
             mappedOrder.forEach(id => {
@@ -1007,12 +1028,6 @@ export const Api = {
             DEFAULT_PLAYBACK_SOURCE_ORDER.forEach(id => {
                 if (!normalizedOrder.includes(id)) normalizedOrder.push(id);
             });
-            const rawDebrid = (saved.debridConfig && typeof saved.debridConfig === 'object') ? saved.debridConfig : {};
-            const normalizedDebrid = {
-                ...DEFAULT_DEBRID_CONFIG,
-                ...rawDebrid,
-                httpAddonUrl: (rawDebrid.httpAddonUrl || DEFAULT_DEBRID_CONFIG.httpAddonUrl).trim()
-            };
 
             _cachedPlayerConfig = {
                 ...defaults,

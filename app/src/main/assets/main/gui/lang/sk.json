@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Zvoľte prioritu medzi servermi a Debrid",
     "tierEmbedServers": "Servery (1–7)",
     "tierDebridPrimary": "Primárny Debrid",
-    "tierDebridBackup": "Záložný Debrid",
     "debridConfig": "Debrid a Stremio",
-    "debridConfigDesc": "Nastavte kľúč Real-Debrid a URL doplnkov Stremio",
+    "debridConfigDesc": "Nastavte Real-Debrid a bezplatný HTTP doplnok",
     "debridApiKey": "Real-Debrid API kľúč",
     "debridPrimaryAddon": "Primárna URL doplnku Stremio",
-    "debridBackupAddon": "Záložná URL doplnku Stremio",
     "debridEnvBackup": "Záloha .env aktívna (nechajte prázdne)",
     "debridConfigured": "Nastavené",
     "debridEnvReady": "Záloha .env",
-    "debridNotConfigured": "Nenastavené"
+    "debridNotConfigured": "Nenastavené",
+    "tierDirectHttp": "Priamy HTTP (Zadarmo)",
+    "directHttpAddon": "URL bezplatného HTTP doplnku"
   },
   "common": {
     "close": "Close",

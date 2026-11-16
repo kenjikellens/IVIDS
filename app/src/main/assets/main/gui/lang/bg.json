@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Изберете приоритет между сървъри и Debrid",
     "tierEmbedServers": "Сървъри (1–7)",
     "tierDebridPrimary": "Основен Debrid",
-    "tierDebridBackup": "Резервен Debrid",
     "debridConfig": "Debrid и Stremio",
-    "debridConfigDesc": "Настройка на Real-Debrid ключ и Stremio адреси",
+    "debridConfigDesc": "Настройки на Real-Debrid, HTTP и Stremio",
     "debridApiKey": "Real-Debrid API ключ",
     "debridPrimaryAddon": "Основен Stremio аддон URL",
-    "debridBackupAddon": "Резервен Stremio аддон URL",
     "debridEnvBackup": "Активен .env резерв (оставете празно)",
     "debridConfigured": "Конфигуриран",
     "debridEnvReady": ".env резерв",
-    "debridNotConfigured": "Не е зададен"
+    "debridNotConfigured": "Не е зададен",
+    "tierDirectHttp": "Директен HTTP (Безплатен)",
+    "directHttpAddon": "URL на безплатна HTTP добавка"
   },
   "common": {
     "close": "затвори",

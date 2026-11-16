@@ -157,16 +157,16 @@
     "sourceOrderDesc": "Välj prioritet mellan servrar och Debrid",
     "tierEmbedServers": "Servrar (1–7)",
     "tierDebridPrimary": "Primär Debrid",
-    "tierDebridBackup": "Backup Debrid",
     "debridConfig": "Debrid & Stremio",
-    "debridConfigDesc": "Konfigurera Real-Debrid API-nyckel och Stremio-URL:er",
+    "debridConfigDesc": "Konfigurera Real-Debrid och gratis HTTP-tillägg",
     "debridApiKey": "Real-Debrid API-nyckel",
     "debridPrimaryAddon": "Primär Stremio-addon URL",
-    "debridBackupAddon": "Backup Stremio-addon URL",
     "debridEnvBackup": ".env-backup aktiv (lämna tomt)",
     "debridConfigured": "Konfigurerad",
     "debridEnvReady": ".env-backup",
-    "debridNotConfigured": "Ej inställd"
+    "debridNotConfigured": "Ej inställd",
+    "tierDirectHttp": "Direkt HTTP (Gratis)",
+    "directHttpAddon": "Gratis HTTP-tillägg URL"
   },
   "common": {
     "close": "Stäng",

@@ -397,12 +397,46 @@ function setOverlayPlaybackMode(mode) {
 }
 
 /**
- * Starts native HTML5 / Hls.js playback for a direct Debrid stream URL.
+ * Probes extensionless or redirected media URLs with a tiny byte-range GET to determine
+ * whether the upstream returns an HTTP error or an HLS `#EXTM3U` playlist.
  *
- * @param {string} streamUrl - Playable `.mp4`/`.m3u8`/`.mkv` URL.
+ * @param {string} url - Stream URL to probe.
+ * @returns {Promise<{ok: boolean, isHls: boolean, status?: number}>} Probe outcome.
+ */
+async function probeStreamFormat(url) {
+    if (/\.m3u8(\?|$)/i.test(url)) return { ok: true, isHls: true };
+    if (/\.(mp4|m4v|mkv|webm|avi|mov)(\?|$)/i.test(url)) return { ok: true, isHls: false };
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: { Range: 'bytes=0-511' },
+            signal: controller.signal
+        });
+        clearTimeout(timer);
+        if (!res.ok) return { ok: false, isHls: false, status: res.status };
+        if (/hostingersite\.com|\/premium\.mp4/i.test(res.url || '')) {
+            return { ok: false, isHls: false, status: 402 };
+        }
+        const ct = (res.headers.get('Content-Type') || '').toLowerCase();
+        if (ct.includes('mpegurl') || ct.includes('m3u')) return { ok: true, isHls: true };
+        const head = await res.text().catch(() => '');
+        return { ok: true, isHls: head.trimStart().startsWith('#EXTM3U') };
+    } catch {
+        clearTimeout(timer);
+        return { ok: false, isHls: false };
+    }
+}
+
+/**
+ * Starts native HTML5 / Hls.js playback for a direct Debrid or Direct HTTP stream URL.
+ *
+ * @param {string} streamUrl - Playable `.mp4`/`.m3u8`/redirect URL.
  * @param {Function} [onPlaybackFailed] - Failure fallback callback.
  */
-function startNativePlayback(streamUrl, onPlaybackFailed = null) {
+async function startNativePlayback(streamUrl, onPlaybackFailed = null) {
     const gen = playbackGeneration + 1;
     teardownNativeMedia();
     playbackGeneration = gen;
@@ -464,7 +498,17 @@ function startNativePlayback(streamUrl, onPlaybackFailed = null) {
         }
     };
 
-    const isHls = /\.m3u8(\?|$)/i.test(streamUrl);
+    const probe = await probeStreamFormat(streamUrl);
+    if (playbackGeneration !== gen) {
+        clearLoadTimer();
+        return;
+    }
+    if (!probe.ok) {
+        handleFatalFailure(`HTTP ${probe.status || 'probe error'}`);
+        return;
+    }
+
+    const isHls = probe.isHls;
     if (isHls && typeof window.Hls !== 'undefined' && window.Hls.isSupported()) {
         activeHls = new window.Hls({ enableWorker: true });
         activeHls.loadSource(streamUrl);
@@ -820,12 +864,12 @@ export async function init(params) {
                 });
             }
 
-            // 4. Server Settings (Primary Debrid, Backup Debrid, and the 7 original Embed Servers)
+            // 4. Server Settings (Primary Debrid, Free Direct HTTP, and the 7 original Embed Servers)
             if (vodState && params.type !== 'trailer' && params.type !== 'live') {
                 const serverOpts = [];
                 const tierLabels = {
                     debrid_primary: t('settings.tierDebridPrimary', 'Primary Debrid'),
-                    debrid_backup: t('settings.tierDebridBackup', 'Backup Debrid')
+                    direct_http: t('settings.tierDirectHttp', 'Direct HTTP (Free)')
                 };
 
                 vodState.order.forEach(tierId => {
@@ -1153,9 +1197,9 @@ export async function init(params) {
         const advanceFallbackPlayback = async (fromTierId, failedIndex) => {
             const tierRes = vodState.tierResults[fromTierId];
             if (tierRes && tierRes.kind === 'native' && Array.isArray(tierRes.streams)) {
-                const maxTries = Math.min(tierRes.streams.length, 4);
+                const maxTries = Math.min(tierRes.streams.length, 6);
                 for (let nextIdx = failedIndex + 1; nextIdx < maxTries; nextIdx++) {
-                    const resolvedUrl = await resolver.resolveCandidateUrl(tierRes.streams[nextIdx]);
+                    const resolvedUrl = await resolver.resolveCandidateUrl(tierRes.streams[nextIdx], fromTierId);
                     if (resolvedUrl) {
                         vodState.activeTierId = fromTierId;
                         vodState.activeStreamIndex = nextIdx;
@@ -1204,7 +1248,7 @@ export async function init(params) {
                 const candidate = tierRes?.streams?.[idx];
                 if (!candidate) return;
                 if (loadingOverlay) loadingOverlay.style.display = 'flex';
-                const resolvedUrl = await resolver.resolveCandidateUrl(candidate);
+                const resolvedUrl = await resolver.resolveCandidateUrl(candidate, tierId);
                 if (resolvedUrl) {
                     vodState.activeTierId = tierId;
                     vodState.activeStreamIndex = idx;
@@ -1229,12 +1273,12 @@ export async function init(params) {
                     startNativePlayback(resolvedTier.url, () => advanceFallbackPlayback(tierId, vodState.activeStreamIndex));
                 } else {
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
-                    const reason = resolver.lastError || 'No playable Debrid stream found for this title.';
-                    console.warn(`[IVIDS Player] Manual Debrid switch failed (${tierId}):`, reason);
+                    const reason = resolver.lastError || 'No playable direct stream found for this title.';
+                    console.warn(`[IVIDS Player] Manual source switch failed (${tierId}):`, reason);
                     const statusPanel = document.getElementById('player-status-panel');
                     const statusTitle = document.getElementById('player-status-title');
                     const statusMsg = document.getElementById('player-status-message');
-                    if (statusTitle) statusTitle.textContent = t(`settings.${tierId === 'debrid_backup' ? 'tierDebridBackup' : 'tierDebridPrimary'}`, tierId);
+                    if (statusTitle) statusTitle.textContent = t(`settings.${tierId === 'direct_http' ? 'tierDirectHttp' : 'tierDebridPrimary'}`, tierId);
                     if (statusMsg) statusMsg.textContent = reason;
                     if (statusPanel) {
                         statusPanel.classList.remove('hidden');

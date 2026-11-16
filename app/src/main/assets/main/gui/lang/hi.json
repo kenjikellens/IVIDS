@@ -157,16 +157,16 @@
     "sourceOrderDesc": "सर्वर और Debrid के बीच प्राथमिकता चुनें",
     "tierEmbedServers": "एम्बेड सर्वर (1–7)",
     "tierDebridPrimary": "प्राथमिक Debrid",
-    "tierDebridBackup": "बैकअप Debrid",
     "debridConfig": "Debrid और Stremio",
-    "debridConfigDesc": "Real-Debrid API कुंजी और Stremio एडऑन URL सेट करें",
+    "debridConfigDesc": "Real-Debrid और मुफ़्त HTTP ऐडऑन कॉन्फ़िगर करें",
     "debridApiKey": "Real-Debrid API कुंजी",
     "debridPrimaryAddon": "प्राथमिक Stremio एडऑन URL",
-    "debridBackupAddon": "बैकअप Stremio एडऑन URL",
     "debridEnvBackup": ".env बैकअप सक्रिय (खाली छोड़ें)",
     "debridConfigured": "कॉन्फ़िगर किया गया",
     "debridEnvReady": ".env बैकअप",
-    "debridNotConfigured": "सेट नहीं"
+    "debridNotConfigured": "सेट नहीं",
+    "tierDirectHttp": "डायरेक्ट HTTP (मुफ़्त)",
+    "directHttpAddon": "मुफ़्त HTTP ऐडऑन URL"
   },
   "common": {
     "close": "बंद करें",

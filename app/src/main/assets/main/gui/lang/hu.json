@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Válassza ki a szerverek és a Debrid prioritását",
     "tierEmbedServers": "Szerverek (1–7)",
     "tierDebridPrimary": "Elsődleges Debrid",
-    "tierDebridBackup": "Tartalék Debrid",
     "debridConfig": "Debrid és Stremio",
-    "debridConfigDesc": "Real-Debrid API-kulcs és Stremio addon URL-ek beállítása",
+    "debridConfigDesc": "Real-Debrid és ingyenes HTTP kiegészítő beállítása",
     "debridApiKey": "Real-Debrid API-kulcs",
     "debridPrimaryAddon": "Elsődleges Stremio addon URL",
-    "debridBackupAddon": "Tartalék Stremio addon URL",
     "debridEnvBackup": ".env mentés aktív (hagyja üresen)",
     "debridConfigured": "Beállítva",
     "debridEnvReady": ".env mentés",
-    "debridNotConfigured": "Nincs beállítva"
+    "debridNotConfigured": "Nincs beállítva",
+    "tierDirectHttp": "Közvetlen HTTP (Ingyenes)",
+    "directHttpAddon": "Ingyenes HTTP kiegészítő URL"
   },
   "common": {
     "close": "Close",

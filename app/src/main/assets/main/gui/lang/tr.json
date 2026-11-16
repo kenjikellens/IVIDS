@@ -157,16 +157,16 @@
     "sourceOrderDesc": "Sunucular ve Debrid arasındaki önceliği seçin",
     "tierEmbedServers": "Sunucular (1–7)",
     "tierDebridPrimary": "Birincil Debrid",
-    "tierDebridBackup": "Yedek Debrid",
     "debridConfig": "Debrid ve Stremio",
-    "debridConfigDesc": "Real-Debrid API anahtarı ve Stremio eklenti URL'lerini ayarlayın",
+    "debridConfigDesc": "Real-Debrid ve ücretsiz HTTP eklentisini yapılandır",
     "debridApiKey": "Real-Debrid API Anahtarı",
     "debridPrimaryAddon": "Birincil Stremio Eklenti URL",
-    "debridBackupAddon": "Yedek Stremio Eklenti URL",
     "debridEnvBackup": ".env yedeği etkin (boş bırakın)",
     "debridConfigured": "Ayarlandı",
     "debridEnvReady": ".env Yedeği",
-    "debridNotConfigured": "Ayarlı değil"
+    "debridNotConfigured": "Ayarlı değil",
+    "tierDirectHttp": "Doğrudan HTTP (Ücretsiz)",
+    "directHttpAddon": "Ücretsiz HTTP Eklenti URL'si"
   },
   "common": {
     "close": "Kapat",

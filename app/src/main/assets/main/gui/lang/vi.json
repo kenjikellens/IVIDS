@@ -157,16 +157,16 @@
     "sourceOrderDesc": "Chọn mức ưu tiên giữa máy chủ và Debrid",
     "tierEmbedServers": "Máy chủ (1–7)",
     "tierDebridPrimary": "Debrid Chính",
-    "tierDebridBackup": "Debrid Dự phòng",
     "debridConfig": "Debrid & Stremio",
-    "debridConfigDesc": "Thiết lập khóa API Real-Debrid và URL addon Stremio",
+    "debridConfigDesc": "Cấu hình Real-Debrid và tiện ích HTTP miễn phí",
     "debridApiKey": "Khóa API Real-Debrid",
     "debridPrimaryAddon": "URL Addon Stremio Chính",
-    "debridBackupAddon": "URL Addon Stremio Dự phòng",
     "debridEnvBackup": "Bản dự phòng .env đang bật (để trống)",
     "debridConfigured": "Đã thiết lập",
     "debridEnvReady": "Dự phòng .env",
-    "debridNotConfigured": "Chưa đặt"
+    "debridNotConfigured": "Chưa đặt",
+    "tierDirectHttp": "HTTP trực tiếp (Miễn phí)",
+    "directHttpAddon": "URL tiện ích HTTP miễn phí"
   },
   "common": {
     "close": "Đóng",

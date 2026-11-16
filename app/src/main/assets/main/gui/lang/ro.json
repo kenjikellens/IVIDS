@@ -157,16 +157,16 @@
     "sourceOrderDesc": "Alegeți prioritatea între servere și Debrid",
     "tierEmbedServers": "Servere (1–7)",
     "tierDebridPrimary": "Debrid principal",
-    "tierDebridBackup": "Debrid de rezervă",
     "debridConfig": "Debrid și Stremio",
-    "debridConfigDesc": "Configurați cheia Real-Debrid și URL-urile Stremio",
+    "debridConfigDesc": "Configurează Real-Debrid și addonul HTTP gratuit",
     "debridApiKey": "Cheie API Real-Debrid",
     "debridPrimaryAddon": "URL principal addon Stremio",
-    "debridBackupAddon": "URL de rezervă addon Stremio",
     "debridEnvBackup": "Backup .env activ (lăsați gol)",
     "debridConfigured": "Configurat",
     "debridEnvReady": "Backup .env",
-    "debridNotConfigured": "Nesetat"
+    "debridNotConfigured": "Nesetat",
+    "tierDirectHttp": "HTTP direct (Gratuit)",
+    "directHttpAddon": "URL addon HTTP gratuit"
   },
   "common": {
     "close": "Închide",

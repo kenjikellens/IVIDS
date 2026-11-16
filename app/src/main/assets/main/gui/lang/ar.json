@@ -157,16 +157,16 @@
     "sourceOrderDesc": "اختر أولوية الخوادم وDebrid",
     "tierEmbedServers": "الخوادم (1–7)",
     "tierDebridPrimary": "Debrid الأساسي",
-    "tierDebridBackup": "Debrid الاحتياطي",
     "debridConfig": "Debrid وStremio",
-    "debridConfigDesc": "إعداد مفتاح Real-Debrid وروابط إضافات Stremio",
+    "debridConfigDesc": "إعدادات الطابور والمصادر — Real-Debrid وHTTP و7 خوادم",
     "debridApiKey": "مفتاح Real-Debrid API",
     "debridPrimaryAddon": "رابط إضافة Stremio الأساسية",
-    "debridBackupAddon": "رابط إضافة Stremio الاحتياطية",
     "debridEnvBackup": "نسخة .env نشطة (اتركه فارغاً للاستخدام)",
     "debridConfigured": "مُعدّ",
     "debridEnvReady": "نسخة .env",
-    "debridNotConfigured": "غير مُعدّ"
+    "debridNotConfigured": "غير مُعدّ",
+    "tierDirectHttp": "بث HTTP مباشر (مجاني)",
+    "directHttpAddon": "رابط إضافة HTTP مجانية"
   },
   "common": {
     "close": "إغلاق",

@@ -151,16 +151,16 @@
     "sourceOrderDesc": "เลือกลำดับความสำคัญระหว่างเซิร์ฟเวอร์และ Debrid",
     "tierEmbedServers": "เซิร์ฟเวอร์ (1–7)",
     "tierDebridPrimary": "Debrid หลัก",
-    "tierDebridBackup": "Debrid สำรอง",
     "debridConfig": "Debrid และ Stremio",
-    "debridConfigDesc": "ตั้งค่าคีย์ Real-Debrid และ URL ส่วนเสริม Stremio",
+    "debridConfigDesc": "ตั้งค่า Real-Debrid และแอดออน HTTP ฟรี",
     "debridApiKey": "Real-Debrid API Key",
     "debridPrimaryAddon": "URL ส่วนเสริม Stremio หลัก",
-    "debridBackupAddon": "URL ส่วนเสริม Stremio สำรอง",
     "debridEnvBackup": "สำรอง .env ทำงานอยู่ (เว้นว่างเพื่อใช้)",
     "debridConfigured": "ตั้งค่าแล้ว",
     "debridEnvReady": "สำรอง .env",
-    "debridNotConfigured": "ยังไม่ตั้งค่า"
+    "debridNotConfigured": "ยังไม่ตั้งค่า",
+    "tierDirectHttp": "HTTP โดยตรง (ฟรี)",
+    "directHttpAddon": "URL แอดออน HTTP ฟรี"
   },
   "common": {
     "close": "Close",

@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Επιλέξτε προτεραιότητα μεταξύ διακομιστών και Debrid",
     "tierEmbedServers": "Διακομιστές (1–7)",
     "tierDebridPrimary": "Κύριο Debrid",
-    "tierDebridBackup": "Εφεδρικό Debrid",
     "debridConfig": "Debrid & Stremio",
-    "debridConfigDesc": "Ρύθμιση κλειδιού Real-Debrid και URL πρόσθετων Stremio",
+    "debridConfigDesc": "Ρυθμίστε Real-Debrid και δωρεάν πρόσθετο HTTP",
     "debridApiKey": "Κλειδί Real-Debrid API",
     "debridPrimaryAddon": "Κύριο URL προσθέτου Stremio",
-    "debridBackupAddon": "Εφεδρικό URL προσθέτου Stremio",
     "debridEnvBackup": "Ενεργό αντίγραφο .env (αφήστε κενό)",
     "debridConfigured": "Ρυθμισμένο",
     "debridEnvReady": "Αντίγραφο .env",
-    "debridNotConfigured": "Μη ρυθμισμένο"
+    "debridNotConfigured": "Μη ρυθμισμένο",
+    "tierDirectHttp": "Άμεσο HTTP (Δωρεάν)",
+    "directHttpAddon": "URL δωρεάν πρόσθετου HTTP"
   },
   "common": {
     "close": "Κοντά",

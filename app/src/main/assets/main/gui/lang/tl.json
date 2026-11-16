@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Piliin ang priyoridad sa pagitan ng mga server at Debrid",
     "tierEmbedServers": "Mga Server (1–7)",
     "tierDebridPrimary": "Pangunahing Debrid",
-    "tierDebridBackup": "Backup na Debrid",
     "debridConfig": "Debrid at Stremio",
-    "debridConfigDesc": "I-configure ang Real-Debrid API key at mga Stremio addon URL",
+    "debridConfigDesc": "I-configure ang Real-Debrid at libreng HTTP addon",
     "debridApiKey": "Real-Debrid API Key",
     "debridPrimaryAddon": "Pangunahing Stremio Addon URL",
-    "debridBackupAddon": "Backup na Stremio Addon URL",
     "debridEnvBackup": "Aktibo ang .env backup (iwanang blangko)",
     "debridConfigured": "Naka-setup",
     "debridEnvReady": ".env Backup",
-    "debridNotConfigured": "Hindi nakaset"
+    "debridNotConfigured": "Hindi nakaset",
+    "tierDirectHttp": "Direktang HTTP (Libre)",
+    "directHttpAddon": "Libreng HTTP Addon URL"
   },
   "common": {
     "close": "Close",

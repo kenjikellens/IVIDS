@@ -151,16 +151,16 @@
     "sourceOrderDesc": "בחר עדיפות בין שרתים ל-Debrid",
     "tierEmbedServers": "שרתים (1–7)",
     "tierDebridPrimary": "Debrid ראשי",
-    "tierDebridBackup": "Debrid גיבוי",
     "debridConfig": "Debrid ו-Stremio",
-    "debridConfigDesc": "הגדר מפתח Real-Debrid וכתובות תוספי Stremio",
+    "debridConfigDesc": "הגדר מפתח Real-Debrid ותוסף HTTP חינמי",
     "debridApiKey": "מפתח API של Real-Debrid",
     "debridPrimaryAddon": "כתובת תוסף Stremio ראשי",
-    "debridBackupAddon": "כתובת תוסף Stremio לגיבוי",
     "debridEnvBackup": "גיבוי .env פעיל (השאר ריק לשימוש)",
     "debridConfigured": "מוגדר",
     "debridEnvReady": "גיבוי .env",
-    "debridNotConfigured": "לא הוגדר"
+    "debridNotConfigured": "לא הוגדר",
+    "tierDirectHttp": "HTTP ישיר (חינם)",
+    "directHttpAddon": "כתובת תוסף HTTP חינמי"
   },
   "common": {
     "close": "סגור",

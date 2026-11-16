@@ -151,16 +151,16 @@
     "sourceOrderDesc": "সার্ভার ও Debrid-এর অগ্রাধিকার নির্ধারণ করুন",
     "tierEmbedServers": "সার্ভার (১–৭)",
     "tierDebridPrimary": "প্রাথমিক Debrid",
-    "tierDebridBackup": "ব্যাকআপ Debrid",
     "debridConfig": "Debrid ও Stremio",
-    "debridConfigDesc": "Real-Debrid API কী এবং Stremio অ্যাডঅন URL সেট করুন",
+    "debridConfigDesc": "Real-Debrid এবং HTTP অ্যাডঅন কনফিগার করুন",
     "debridApiKey": "Real-Debrid API কী",
     "debridPrimaryAddon": "প্রাথমিক Stremio অ্যাডঅন URL",
-    "debridBackupAddon": "ব্যাকআপ Stremio অ্যাডঅন URL",
     "debridEnvBackup": ".env ব্যাকআপ সক্রিয় (ফাঁকা রাখুন)",
     "debridConfigured": "সেট করা আছে",
     "debridEnvReady": ".env ব্যাকআপ",
-    "debridNotConfigured": "সেট করা নেই"
+    "debridNotConfigured": "সেট করা নেই",
+    "tierDirectHttp": "সরাসরি HTTP (বিনামূল্যে)",
+    "directHttpAddon": "বিনামূল্যে HTTP অ্যাডঅন URL"
   },
   "common": {
     "close": "বন্ধ",

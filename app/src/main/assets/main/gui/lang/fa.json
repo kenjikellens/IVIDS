@@ -151,16 +151,16 @@
     "sourceOrderDesc": "اولویت بین سرورها و Debrid را انتخاب کنید",
     "tierEmbedServers": "سرورها (۱–۷)",
     "tierDebridPrimary": "Debrid اصلی",
-    "tierDebridBackup": "Debrid پشتیبان",
     "debridConfig": "Debrid و Stremio",
-    "debridConfigDesc": "تنظیم کلید Real-Debrid و نشانی افزونه‌های Stremio",
+    "debridConfigDesc": "پیکربندی Real-Debrid و افزونه رایگان HTTP",
     "debridApiKey": "کلید API رئال-دبرید",
     "debridPrimaryAddon": "نشانی افزونه اصلی Stremio",
-    "debridBackupAddon": "نشانی افزونه پشتیبان Stremio",
     "debridEnvBackup": "نسخه پشتیبان .env فعال (خالی بگذارید)",
     "debridConfigured": "تنظیم شده",
     "debridEnvReady": "پشتیبان .env",
-    "debridNotConfigured": "تنظیم نشده"
+    "debridNotConfigured": "تنظیم نشده",
+    "tierDirectHttp": "HTTP مستقیم (رایگان)",
+    "directHttpAddon": "نشانی افزونه HTTP رایگان"
   },
   "common": {
     "close": "بستن",

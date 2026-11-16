@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Valitse järjestys palvelinten ja Debridin välillä",
     "tierEmbedServers": "Palvelimet (1–7)",
     "tierDebridPrimary": "Ensisijainen Debrid",
-    "tierDebridBackup": "Varalla oleva Debrid",
     "debridConfig": "Debrid & Stremio",
-    "debridConfigDesc": "Määritä Real-Debrid API-avain ja Stremio-osoitteet",
+    "debridConfigDesc": "Määritä Real-Debrid ja ilmainen HTTP-lisäosa",
     "debridApiKey": "Real-Debrid API-avain",
     "debridPrimaryAddon": "Ensisijainen Stremio-lisäosan URL",
-    "debridBackupAddon": "Varalla oleva Stremio-lisäosan URL",
     "debridEnvBackup": ".env-varmuuskopio aktiivinen (jätä tyhjäksi)",
     "debridConfigured": "Määritetty",
     "debridEnvReady": ".env-varmuus",
-    "debridNotConfigured": "Ei asetettu"
+    "debridNotConfigured": "Ei asetettu",
+    "tierDirectHttp": "Suora HTTP (Ilmainen)",
+    "directHttpAddon": "Ilmainen HTTP-lisäosan URL"
   },
   "common": {
     "close": "Close",

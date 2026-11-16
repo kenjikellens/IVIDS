@@ -84,7 +84,7 @@ export class HttpStreamProvider {
             if (s.externalUrl && !s.url) continue;
 
             const combined = `${s.name || ''} ${s.title || ''} ${s.description || ''}`;
-            if (/🔒|paypal|premium streams available/i.test(combined)) continue;
+            if (/🔒|paypal|premium streams available|free trial/i.test(combined)) continue;
 
             const score = this._scoreHttpStream(s, combined);
             const label = this._extractCompactLabel(s, combined, i);

@@ -151,16 +151,16 @@
     "sourceOrderDesc": "Choose priority order between servers and Debrid",
     "tierEmbedServers": "Embed Servers (1–7)",
     "tierDebridPrimary": "Primary Debrid",
-    "tierDebridBackup": "Backup Debrid",
     "debridConfig": "Debrid & Stremio",
-    "debridConfigDesc": "Configure Real-Debrid API key and Stremio addon URLs",
+    "debridConfigDesc": "Configure Real-Debrid API key and free HTTP addon URL",
     "debridApiKey": "Real-Debrid API Key",
     "debridPrimaryAddon": "Primary Stremio Addon URL",
-    "debridBackupAddon": "Backup Stremio Addon URL",
     "debridEnvBackup": ".env backup active (leave blank to use)",
     "debridConfigured": "Configured",
     "debridEnvReady": ".env Backup",
-    "debridNotConfigured": "Not set"
+    "debridNotConfigured": "Not set",
+    "tierDirectHttp": "Direct HTTP (Free)",
+    "directHttpAddon": "Free HTTP Addon URL"
   },
   "common": {
     "close": "Close",
