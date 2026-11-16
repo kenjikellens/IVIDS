@@ -61,9 +61,6 @@ export class RealDebridClient {
         if (!stream) return null;
 
         if (stream.url && /^https?:\/\//i.test(stream.url)) {
-            if (isLocalhostEnv() && !/\.m3u8(\?|$)/i.test(stream.url)) {
-                return proxyUrl(stream.url);
-            }
             return stream.url;
         }
 

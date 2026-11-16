@@ -136,13 +136,19 @@ export class StremioDebridProvider {
      */
     _scoreStream(s, text) {
         let score = 0;
+        const fullText = `${s.url || ''} ${text}`;
         if (s.url && /^https?:\/\//i.test(s.url)) score += 200;
-        if (/\b(RD\+|TB\+|AD\+|PM\+|⚡)/i.test(text)) score += 120;
-        if (/\.mp4\b|\.m3u8\b|webm/i.test(`${s.url || ''} ${text}`)) score += 80;
+        if (/\b(RD\+|TB\+|AD\+|PM\+|⚡)/i.test(text)) score += 140;
+        if (/\bRD download\b/i.test(text)) score -= 120;
+        if (/\.mp4\b|\.m3u8\b|webm/i.test(fullText)) score += 70;
+        if (/\b(aac|mp3|opus|vorbis|stereo|2\.0)\b/i.test(fullText)) score += 75;
+        if (/\b(h\.?264|x264|avc)\b/i.test(fullText)) score += 55;
         if (/1080p|fhd/i.test(text)) score += 50;
         else if (/720p|hd/i.test(text)) score += 35;
         else if (/2160p|4k|uhd/i.test(text)) score += 25;
-        if (/remux|dv\b|dolby\s*vision|hevc|x265|h\.265/i.test(text)) score -= 35;
+        if (/dolbyd|ddp?\s*5\.1|e?-?ac-?3|\bdts\b|truehd|atmos/i.test(fullText)) score -= 65;
+        if (/remux|dv\b|dolby\s*vision|hevc|x265|h\.265/i.test(fullText)) score -= 50;
+        if (/\b(3d|hsbs|hou)\b/i.test(fullText)) score -= 90;
         return score;
     }
 

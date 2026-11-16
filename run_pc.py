@@ -944,6 +944,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 (chrome_ua, f"{target_origin}/" if target_origin else referer, target_origin or origin),
                 ('Lavf/60.3.100', None, None)
             ]
+            incoming_range = self.headers.get('Range')
             response = None
             last_http_err = None
             for prof_ua, prof_ref, prof_orig in profiles:
@@ -953,9 +954,11 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     req.add_header('Referer', prof_ref)
                 if prof_orig:
                     req.add_header('Origin', prof_orig)
+                if incoming_range:
+                    req.add_header('Range', incoming_range)
                 req.add_header('Accept', '*/*')
                 try:
-                    response = _PROXY_OPENER.open(req, timeout=4)
+                    response = _PROXY_OPENER.open(req, timeout=8)
                     user_agent, referer, origin = prof_ua, prof_ref, prof_orig
                     break
                 except ForbiddenRedirectError:
@@ -969,16 +972,25 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 raise last_http_err
             with response:
                 content_type = response.headers.get('Content-Type', 'application/octet-stream')
-                
-                # Check URL path and headers first
-                parsed_target = urllib.parse.urlparse(target_url)
+                upstream_status = getattr(response, 'status', 200) or 200
+                final_url = response.geturl() if hasattr(response, 'geturl') else target_url
+
+                parsed_target = urllib.parse.urlparse(final_url or target_url)
                 target_path_lower = parsed_target.path.lower()
-                
+
+                if content_type.lower() in ('application/force-download', 'application/octet-stream', 'binary/octet-stream'):
+                    if target_path_lower.endswith(('.mp4', '.m4v')):
+                        content_type = 'video/mp4'
+                    elif target_path_lower.endswith('.mkv'):
+                        content_type = 'video/x-matroska'
+                    elif target_path_lower.endswith('.webm'):
+                        content_type = 'video/webm'
+
                 is_m3u8 = target_path_lower.endswith('.m3u8') or 'mpegurl' in content_type.lower()
-                
-                # Read the first chunk (up to 65536 bytes) to detect magic bytes of gzip or start streaming
-                first_chunk = response.read(65536)
-                
+                is_partial_or_video = (upstream_status == 206) or content_type.lower().startswith('video/')
+
+                first_chunk = b'' if is_partial_or_video else response.read(65536)
+
                 is_gzip = False
                 if first_chunk:
                     is_gzip = (
@@ -987,7 +999,7 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                         first_chunk.startswith(b'\x1f\x8b')
                     )
 
-                if is_m3u8 or is_gzip:
+                if (is_m3u8 or is_gzip) and upstream_status != 206:
                     # Limit size and read the rest in chunks (MAX_PROXY_RESPONSE_SIZE = 50 MB)
                     MAX_PROXY_RESPONSE_SIZE = 50 * 1024 * 1024
                     body_parts = [first_chunk] if first_chunk else []
@@ -1040,15 +1052,22 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                     self._proxy_headers_sent = True
                     self.wfile.write(body)
                 else:
-                    # Stream directly to client
-                    self.send_response(200)
+                    # Stream directly to client preserving 206 Partial Content and Content-Range for seeking
+                    self.send_response(upstream_status)
                     self.send_header('Content-Type', content_type)
                     upstream_len = response.headers.get('Content-Length')
                     if upstream_len:
                         self.send_header('Content-Length', upstream_len)
+                    content_range = response.headers.get('Content-Range')
+                    if content_range:
+                        self.send_header('Content-Range', content_range)
+                    accept_ranges = response.headers.get('Accept-Ranges')
+                    if accept_ranges or content_range or content_type.lower().startswith('video/'):
+                        self.send_header('Accept-Ranges', accept_ranges or 'bytes')
                     self.send_header('Access-Control-Allow-Origin', '*')
                     self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
                     self.send_header('Access-Control-Allow-Headers', '*')
+                    self.send_header('Access-Control-Expose-Headers', 'Content-Length, Content-Range, Accept-Ranges')
                     if not is_m3u8 and '.m3u' in target_path_lower:
                         self.send_header('Cache-Control', 'public, max-age=7200')
                     else:

@@ -821,8 +821,21 @@ function startNativePlayback(streamUrl, onPlaybackFailed = null) {
     videoEl.style.display = 'block';
     syncPlayPauseIcons(true);
 
+    console.log(`[IVIDS Player] Starting native stream: ${streamUrl}`);
     let failedTriggered = false;
+    let loadTimer = setTimeout(() => {
+        if (!failedTriggered && playbackGeneration === gen && (!videoEl.readyState || videoEl.readyState < 1)) {
+            handleFatalFailure('Native stream metadata timeout (12s)');
+        }
+    }, 12000);
+    const clearLoadTimer = () => {
+        if (loadTimer) {
+            clearTimeout(loadTimer);
+            loadTimer = null;
+        }
+    };
     const handleFatalFailure = (reason) => {
+        clearLoadTimer();
         if (failedTriggered || playbackGeneration !== gen) return;
         failedTriggered = true;
         console.warn('[IVIDS Player] Native stream failed:', reason);
@@ -843,6 +856,7 @@ function startNativePlayback(streamUrl, onPlaybackFailed = null) {
         activeHls.loadSource(streamUrl);
         activeHls.attachMedia(videoEl);
         activeHls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+            clearLoadTimer();
             if (playbackGeneration !== gen) return;
             if (loadingOverlay) loadingOverlay.style.display = 'none';
             videoEl.play().catch(err => console.warn('[IVIDS Player] Autoplay prevented:', err));
@@ -855,7 +869,12 @@ function startNativePlayback(streamUrl, onPlaybackFailed = null) {
         });
     } else {
         const onReady = () => {
+            clearLoadTimer();
             if (playbackGeneration !== gen) return;
+            if (videoEl.readyState >= 1 && videoEl.videoWidth === 0) {
+                handleFatalFailure('Video codec unsupported (videoWidth=0)');
+                return;
+            }
             if (loadingOverlay) loadingOverlay.style.display = 'none';
             videoEl.play().catch(err => console.warn('[IVIDS Player] Autoplay prevented:', err));
         };
@@ -1061,6 +1080,7 @@ export async function init(params) {
 
         const resolver = new VodStreamResolver();
         const plan = await resolver.resolveInitialPlayback(params);
+        console.log('[IVIDS Player] Resolved plan:', plan.active.tierId, plan.active.kind, plan.mediaMeta?.imdbId || 'no-imdb', resolver.lastError || '');
         if (plan.mediaMeta?.imdbId) {
             loadStremioSubtitles(plan.mediaMeta);
         }
