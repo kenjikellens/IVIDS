@@ -1673,7 +1673,9 @@ input, textarea, select { font: inherit; }
 .search-container-wrapper { align-items: center; display: flex; flex-direction: column; justify-content: center; margin: 0 auto 14px; max-width: 960px; text-align: center; width: 100%; }
 /* Horizontal toolbar uniting search input and action buttons on one compact row */
 .search-toolbar { align-items: center; display: flex; gap: 10px; width: 100%; }
-.search-box { flex: 1; margin-bottom: 0; min-width: 0; width: 100%; }
+.search-box { margin-bottom: 0; min-width: 0; width: 100%; }
+/* Expands the search input box only inside the horizontal search-toolbar row. */
+.search-toolbar .search-box { flex: 1; }
 .search-icon, .filter-icon { height: 20px; margin-right: 8px; opacity: 0.85; width: 20px; }
 .trash-icon { height: 14px; width: 14px; }
 .search-actions { display: flex; flex-shrink: 0; gap: 10px; justify-content: center; margin-bottom: 0; width: auto; }
