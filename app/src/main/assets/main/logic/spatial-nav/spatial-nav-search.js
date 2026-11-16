@@ -268,6 +268,15 @@ export const spatialNavSearch = {
                 return null;
             }
             if (direction === 'right') {
+                const clearBtn = document.getElementById('search-clear-btn');
+                if (clearBtn && !clearBtn.classList.contains('hidden') && isElementVisible(clearBtn)) {
+                    return clearBtn;
+                }
+                const searchBtn = document.getElementById('search-btn');
+                const inputRect = current.getBoundingClientRect();
+                if (searchBtn && isElementVisible(searchBtn) && searchBtn.getBoundingClientRect().top <= inputRect.bottom) {
+                    return searchBtn;
+                }
                 return null;
             }
             if (direction === 'up') {
@@ -281,21 +290,81 @@ export const spatialNavSearch = {
             if (direction === 'down') {
                 const searchBtn = document.getElementById('search-btn');
                 const filterBtn = document.getElementById('filter-btn');
-                if (searchBtn && isElementVisible(searchBtn)) return searchBtn;
-                if (filterBtn && isElementVisible(filterBtn)) return filterBtn;
-                return getFirstGridCard();
+                const inputRect = current.getBoundingClientRect();
+                if (searchBtn && isElementVisible(searchBtn) && searchBtn.getBoundingClientRect().top > inputRect.bottom - 4) {
+                    return searchBtn;
+                }
+                if (filterBtn && isElementVisible(filterBtn) && filterBtn.getBoundingClientRect().top > inputRect.bottom - 4) {
+                    return filterBtn;
+                }
+                const topRowCards = getTopRowCards();
+                if (topRowCards.length > 0) {
+                    return findClosestCardByX(current, topRowCards);
+                }
+                return null;
+            }
+        }
+
+        // 3b. Search Clear Button (#search-clear-btn)
+        if (current.id === 'search-clear-btn') {
+            if (direction === 'left') return document.getElementById('search-input');
+            if (direction === 'right') {
+                const searchBtn = document.getElementById('search-btn');
+                const clearRect = current.getBoundingClientRect();
+                if (searchBtn && isElementVisible(searchBtn) && searchBtn.getBoundingClientRect().top <= clearRect.bottom) {
+                    return searchBtn;
+                }
+                return null;
+            }
+            if (direction === 'up') {
+                const recentsRow = document.getElementById('recent-searches-row');
+                if (recentsRow && !recentsRow.classList.contains('hidden') && isElementVisible(recentsRow)) {
+                    const firstRecent = document.querySelector('#recent-list .recent-item.focusable') || document.getElementById('clear-recents-btn');
+                    if (firstRecent && isElementVisible(firstRecent)) return firstRecent;
+                }
+                return null;
+            }
+            if (direction === 'down') {
+                const searchBtn = document.getElementById('search-btn');
+                if (searchBtn && isElementVisible(searchBtn) && searchBtn.getBoundingClientRect().top > current.getBoundingClientRect().bottom - 4) {
+                    return searchBtn;
+                }
+                const topRowCards = getTopRowCards();
+                if (topRowCards.length > 0) {
+                    return findClosestCardByX(current, topRowCards);
+                }
+                return null;
             }
         }
 
         // 4. Action Buttons (#search-btn and #filter-btn)
         if (current.id === 'search-btn') {
-            if (direction === 'left') return getActiveSidebarItem('search');
+            const input = document.getElementById('search-input');
+            const isStackedBelow = input && isElementVisible(input) && current.getBoundingClientRect().top > input.getBoundingClientRect().bottom - 4;
+            if (direction === 'left') {
+                if (!isStackedBelow) {
+                    const clearBtn = document.getElementById('search-clear-btn');
+                    if (clearBtn && !clearBtn.classList.contains('hidden') && isElementVisible(clearBtn)) {
+                        return clearBtn;
+                    }
+                    if (input && isElementVisible(input)) return input;
+                }
+                return getActiveSidebarItem('search');
+            }
             if (direction === 'right') {
                 const filterBtn = document.getElementById('filter-btn');
                 if (filterBtn && isElementVisible(filterBtn)) return filterBtn;
                 return null;
             }
-            if (direction === 'up') return document.getElementById('search-input');
+            if (direction === 'up') {
+                if (isStackedBelow) return input;
+                const recentsRow = document.getElementById('recent-searches-row');
+                if (recentsRow && !recentsRow.classList.contains('hidden') && isElementVisible(recentsRow)) {
+                    const firstRecent = document.querySelector('#recent-list .recent-item.focusable') || document.getElementById('clear-recents-btn');
+                    if (firstRecent && isElementVisible(firstRecent)) return firstRecent;
+                }
+                return null;
+            }
             if (direction === 'down') {
                 const topRowCards = getTopRowCards();
                 if (topRowCards.length > 0) {
@@ -306,13 +375,23 @@ export const spatialNavSearch = {
         }
 
         if (current.id === 'filter-btn') {
+            const input = document.getElementById('search-input');
+            const isStackedBelow = input && isElementVisible(input) && current.getBoundingClientRect().top > input.getBoundingClientRect().bottom - 4;
             if (direction === 'left') {
                 const searchBtn = document.getElementById('search-btn');
                 if (searchBtn && isElementVisible(searchBtn)) return searchBtn;
                 return getActiveSidebarItem('search');
             }
             if (direction === 'right') return null;
-            if (direction === 'up') return document.getElementById('search-input');
+            if (direction === 'up') {
+                if (isStackedBelow) return input;
+                const recentsRow = document.getElementById('recent-searches-row');
+                if (recentsRow && !recentsRow.classList.contains('hidden') && isElementVisible(recentsRow)) {
+                    const firstRecent = document.querySelector('#recent-list .recent-item.focusable') || document.getElementById('clear-recents-btn');
+                    if (firstRecent && isElementVisible(firstRecent)) return firstRecent;
+                }
+                return null;
+            }
             if (direction === 'down') {
                 const topRowCards = getTopRowCards();
                 if (topRowCards.length > 0) {
@@ -337,7 +416,7 @@ export const spatialNavSearch = {
      */
     handleBack: () => {
         const current = document.querySelector('.focused');
-        if (current && current.closest('#search-results, .search-actions, #recent-searches-row')) {
+        if (current && current.closest('#search-results, .search-actions, #search-clear-btn, #recent-searches-row')) {
             const input = document.getElementById('search-input');
             if (input && isElementVisible(input)) {
                 SpatialNav.setFocus(input);

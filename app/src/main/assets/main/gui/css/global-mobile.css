@@ -110,16 +110,23 @@
 #app .media-rail, #app .row-posters { gap: 10px; padding: 2% 4% 4%; }
 
 /* Search main view area padding override with safe area inset for top status bar. */
-#app .search-main { box-sizing: border-box; height: 100%; padding: calc(16px + env(safe-area-inset-top, 24px)) 4% 2%; }
-#app .search-container-wrapper { margin: 10px auto 2%; max-width: 100%; width: 92%; }
-#app .recent-searches-row { align-items: flex-start; flex-direction: column; gap: 8px; }
-#app .results-container { -webkit-mask-image: none; mask-image: none; padding: 2% 2% 8%; }
+#app .search-main { box-sizing: border-box; height: 100%; padding: calc(12px + env(safe-area-inset-top, 20px)) 4% 0; }
+#app .search-container-wrapper { margin: 0 0 8px; max-width: 100%; width: 100%; }
+/* Mobile portrait search toolbar stacked vertically above two equal-width action pills */
+#app .search-toolbar { flex-direction: column; gap: 8px; width: 100%; }
+#app .search-actions { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+#app .recent-searches-row { align-items: center; flex-direction: row; flex-wrap: nowrap; gap: 8px; overflow-x: auto; width: 100%; }
+#app .results-container { -webkit-mask-image: none; mask-image: none; padding: 4px 0 72px; }
 #app .media-grid--posters, #app .search-results-grid {
     --poster-width: clamp(86px, 26vw, 108px);
     gap: 10px;
     grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
 }
-.filter-main-grid { gap: 12px; grid-template-columns: 1fr; }
+/* Mobile standardized filter modal sections, triggers, and 2-column chip grids */
+#app .filter-main-grid { gap: 12px; grid-template-columns: 1fr; margin-bottom: 12px; }
+#app #filter-modal .form-group h3 { color: rgba(255, 255, 255, 0.65); font-size: 12px; font-weight: 700; letter-spacing: 0.05em; margin: 0 0 8px; text-transform: uppercase; }
+#app #filter-modal .form-select-trigger { border-radius: 12px; font-size: 15px; height: 48px; }
+#app #filter-modal .chip-grid--3col, #app #genre-modal .chip-grid--3col, #app #country-modal .chip-grid--3col { gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 /* Mobile details page root container with safe-area spacing and bottom nav rail clearance. */
 #app .details-page {

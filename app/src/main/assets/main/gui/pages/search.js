@@ -55,7 +55,34 @@ export async function init(params) {
         }
 
         const input = document.getElementById('search-input');
+        const clearBtn = document.getElementById('search-clear-btn');
         const searchBtn = document.getElementById('search-btn');
+
+        const syncClearBtn = () => {
+            if (!clearBtn || !input) return;
+            clearBtn.classList.toggle('hidden', input.value.trim().length === 0);
+        };
+
+        updateFilterBadge(currentFilters);
+
+        if (input) {
+            const debouncedSearch = debounce((val) => performSearch(val, true), 350);
+            input.oninput = () => {
+                syncClearBtn();
+                debouncedSearch(input.value);
+            };
+        }
+
+        if (clearBtn) {
+            clearBtn.onclick = () => {
+                if (input) {
+                    input.value = '';
+                    syncClearBtn();
+                    SpatialNav.setFocus(input);
+                }
+                performSearch('', true);
+            };
+        }
 
         let closeFilterModalFn = null;
         let closeGenreModalFn = null;
@@ -128,6 +155,7 @@ export async function init(params) {
 
             const applyFilters = () => {
                 currentFilters = JSON.parse(JSON.stringify(pendingFilters));
+                updateFilterBadge(currentFilters);
                 if (closeFilterModalFn) {
                     closeFilterModalFn();
                     closeFilterModalFn = null;
@@ -475,6 +503,24 @@ function updateGenreBadge(filtersObj) {
 }
 
 /**
+ * Updates the active filter count badge on the Filters button.
+ * @param {Object} filtersObj - The currently applied filters object.
+ */
+function updateFilterBadge(filtersObj) {
+    const badge = document.getElementById('active-filter-badge');
+    if (!badge || !filtersObj) return;
+    let count = 0;
+    if (filtersObj.types && filtersObj.types.length === 1) count++;
+    if (filtersObj.genres && filtersObj.genres.length > 0) count += filtersObj.genres.length;
+    if (filtersObj.certification) count++;
+    if (filtersObj.originCountry) count++;
+    if (filtersObj.sortBy && filtersObj.sortBy !== 'popularity.desc') count++;
+    if (filtersObj.year) count++;
+    badge.textContent = count > 0 ? String(count) : '';
+    badge.classList.toggle('hidden', count === 0);
+}
+
+/**
  * Resets all filter values to their default states.
  * This resets checked items in the DOM and filters object.
  * @param {Object} filtersObj - The filters object to reset.
@@ -638,6 +684,28 @@ function renderResultItems(items, container) {
     });
 
     container.appendChild(fragment);
+    loadVisibleSearchImages(container, document.getElementById('search-results-container'));
+}
+
+/**
+ * Eagerly loads poster images for search cards visible within the scroll viewport buffer.
+ * @param {HTMLElement} grid - The `#search-results` grid element.
+ * @param {HTMLElement|null} scrollContainer - The `#search-results-container` scroll wrapper.
+ */
+function loadVisibleSearchImages(grid, scrollContainer) {
+    if (!grid) return;
+    const bounds = scrollContainer ? scrollContainer.getBoundingClientRect() : { top: 0, bottom: window.innerHeight };
+    const buffer = 300;
+    const cards = grid.querySelectorAll('.card--poster');
+    for (const card of cards) {
+        const img = card.querySelector('img[data-src]');
+        if (!img) continue;
+        const rect = card.getBoundingClientRect();
+        if (rect.height === 0) continue;
+        if (rect.top <= bounds.bottom + buffer && rect.bottom >= bounds.top - buffer) {
+            lazyLoader.loadImage(card);
+        }
+    }
 }
 
 /**
@@ -649,10 +717,11 @@ function initInfiniteScroll() {
     if (!container) return;
     let ticking = false;
     container.onscroll = () => {
-        if (ticking || isLoading || !hasMoreResults) return;
+        if (ticking) return;
         ticking = true;
         window.requestAnimationFrame(() => {
-            if (container.scrollTop + container.clientHeight >= container.scrollHeight - 300) {
+            loadVisibleSearchImages(document.getElementById('search-results'), container);
+            if (!isLoading && hasMoreResults && container.scrollTop + container.clientHeight >= container.scrollHeight - 300) {
                 currentPage++;
                 fetchResults(false);
             }
@@ -714,6 +783,8 @@ function renderRecentSearches() {
                 const input = document.getElementById('search-input');
                 if (input) {
                     input.value = query;
+                    const clearBtn = document.getElementById('search-clear-btn');
+                    if (clearBtn) clearBtn.classList.toggle('hidden', query.trim().length === 0);
                     performSearch(query, true);
                 }
             }
