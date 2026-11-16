@@ -269,7 +269,8 @@
     "statusTitle": "Spilleren tar for lang tid",
     "statusMessage": "Den konfigurerde spillerleverandøren har ikke svart ennå. Du kan gå tilbake eller endre spillerens endepunkt i Innstillinger.",
     "selectServer": "Velg server",
-    "tracksTitle": "Lyd og undertekster"
+    "tracksTitle": "Lyd og undertekster",
+    "tryingVia": "Prøver via {source}..."
   },
   "playlists": {
     "title": "Mine spillelister",

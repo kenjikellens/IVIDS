@@ -960,9 +960,10 @@ export async function init(params) {
             // 4. Server Settings (Primary Debrid, Free Direct HTTP, and the 7 original Embed Servers)
             if (vodState && params.type !== 'trailer' && params.type !== 'live') {
                 const serverOpts = [];
+                const cleanServerLabel = (name) => String(name || '').replace(/\s*\([^)]*\)\s*/g, ' ').trim();
                 const tierLabels = {
-                    debrid_primary: t('settings.tierDebridPrimary', 'Primary Debrid'),
-                    direct_http: t('settings.tierDirectHttp', 'Direct HTTP (Free)')
+                    debrid_primary: cleanServerLabel(t('settings.tierDebridPrimary', 'Debrid')),
+                    direct_http: cleanServerLabel(t('settings.tierDirectHttp', 'Direct HTTP'))
                 };
 
                 vodState.order.forEach(tierId => {
@@ -971,7 +972,7 @@ export async function init(params) {
                             const isCur = vodState.activeTierId === 'embed_servers' && vodState.activeServerId === srv.id;
                             serverOpts.push({
                                 value: `srv:${srv.id}`,
-                                label: srv.name,
+                                label: cleanServerLabel(srv.name),
                                 isActive: isCur,
                                 onPick: () => vodState.handlers.onSelectEmbedServer(srv.id)
                             });
@@ -1262,19 +1263,42 @@ export async function init(params) {
                 .then(next => { nextEpisodeTarget = next; });
         }
 
+        const cleanLabel = (name) => String(name || '').replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+        const playerConfig = Api.getPlayerConfig();
+        const configuredEmbedServer = Api.SERVERS.find(s => s.url === playerConfig.playerBaseUrl) || Api.SERVERS[0];
+
+        const setLoadingSource = (sourceLabel) => {
+            const el = document.getElementById('player-loading-source');
+            if (!el) return;
+            const cleaned = cleanLabel(sourceLabel);
+            if (!cleaned) {
+                el.textContent = '';
+                el.classList.add('hidden');
+                return;
+            }
+            const tpl = t('player.tryingVia', 'Trying via {source}...');
+            el.textContent = tpl.replace('{source}', cleaned);
+            el.classList.remove('hidden');
+        };
+
+        const tierDisplayName = (tierId) => {
+            if (tierId === 'direct_http') return t('settings.tierDirectHttp', 'Direct HTTP');
+            if (tierId === 'debrid_primary') return t('settings.tierDebridPrimary', 'Debrid');
+            return configuredEmbedServer?.name || 'VidLink';
+        };
+
         const loadingOverlay = document.getElementById('player-loading-overlay');
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
         const resolver = new VodStreamResolver();
-        const plan = await resolver.resolveInitialPlayback(params);
+        const plan = await resolver.resolveInitialPlayback(params, (tierId) => {
+            setLoadingSource(tierDisplayName(tierId));
+        });
         console.log('[IVIDS Player] Resolved plan:', plan.active.tierId, plan.active.kind, plan.mediaMeta?.imdbId || 'no-imdb', resolver.lastError || '');
 
         if (plan.mediaMeta?.imdbId) {
             loadStremioSubtitles(plan.mediaMeta);
         }
-
-        const playerConfig = Api.getPlayerConfig();
-        const configuredEmbedServer = Api.SERVERS.find(s => s.url === playerConfig.playerBaseUrl) || Api.SERVERS[0];
 
         vodState = {
             resolver,
@@ -1292,6 +1316,7 @@ export async function init(params) {
             if (tierRes && tierRes.kind === 'native' && Array.isArray(tierRes.streams)) {
                 const maxTries = Math.min(tierRes.streams.length, 6);
                 for (let nextIdx = failedIndex + 1; nextIdx < maxTries; nextIdx++) {
+                    setLoadingSource(`${tierDisplayName(fromTierId)} #${nextIdx + 1}`);
                     const resolvedUrl = await resolver.resolveCandidateUrl(tierRes.streams[nextIdx], fromTierId);
                     if (resolvedUrl) {
                         vodState.activeTierId = fromTierId;
@@ -1307,6 +1332,7 @@ export async function init(params) {
             const startTierPos = Math.max(0, vodState.order.indexOf(fromTierId) + 1);
             for (let tIdx = startTierPos; tIdx < vodState.order.length; tIdx++) {
                 const nextTierId = vodState.order[tIdx];
+                setLoadingSource(tierDisplayName(nextTierId));
                 const resolvedTier = vodState.tierResults[nextTierId] || await resolver.resolveTier(nextTierId, vodState.mediaMeta);
                 if (!resolvedTier) continue;
                 vodState.tierResults[nextTierId] = resolvedTier;
@@ -1328,6 +1354,8 @@ export async function init(params) {
         };
 
         const activateEmbedServer = (serverId) => {
+            const srvObj = Api.SERVERS.find(s => s.id === serverId);
+            setLoadingSource(srvObj?.name || serverId);
             vodState.activeTierId = 'embed_servers';
             vodState.activeStreamIndex = -1;
             vodState.activeServerId = serverId;
@@ -1340,6 +1368,7 @@ export async function init(params) {
                 const tierRes = vodState.tierResults[tierId];
                 const candidate = tierRes?.streams?.[idx];
                 if (!candidate) return;
+                setLoadingSource(tierDisplayName(tierId));
                 if (loadingOverlay) loadingOverlay.style.display = 'flex';
                 const resolvedUrl = await resolver.resolveCandidateUrl(candidate, tierId);
                 if (resolvedUrl) {
@@ -1353,6 +1382,7 @@ export async function init(params) {
                 }
             },
             onTriggerDebridTier: async (tierId) => {
+                setLoadingSource(tierDisplayName(tierId));
                 if (loadingOverlay) loadingOverlay.style.display = 'flex';
                 const resolvedTier = vodState.tierResults[tierId]?.url
                     ? vodState.tierResults[tierId]

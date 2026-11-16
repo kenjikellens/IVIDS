@@ -269,7 +269,8 @@
     "statusTitle": "플레이어가 응답하는 데 시간이 너무 오래 걸립니다",
     "statusMessage": "설정된 플레이어 제공업체가 아직 응답하지 않았습니다. 돌아가거나 설정에서 플레이어 엔드포인트를 변경할 수 있습니다.",
     "selectServer": "서버 선택",
-    "tracksTitle": "오디오 및 자막"
+    "tracksTitle": "오디오 및 자막",
+    "tryingVia": "{source} 통해 시도 중..."
   },
   "playlists": {
     "title": "내 플레이리스트",

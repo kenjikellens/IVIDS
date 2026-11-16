@@ -264,7 +264,8 @@
     "statusTitle": "Der Player braucht zu lange",
     "statusMessage": "Der konfigurierte Player-Anbieter hat noch nicht geantwortet. Sie können zurückgehen oder den Player-Endpunkt in den Einstellungen ändern.",
     "selectServer": "Server auswählen",
-    "tracksTitle": "Audio & Untertitel"
+    "tracksTitle": "Audio & Untertitel",
+    "tryingVia": "Versuch über {source}..."
   },
   "playlists": {
     "title": "Meine Wiedergabelisten",

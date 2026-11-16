@@ -269,7 +269,8 @@
     "statusTitle": "Pemutar memakan waktu terlalu lama",
     "statusMessage": "Penyedia pemutar yang dikonfigurasi belum merespons. Anda dapat kembali atau mengubah endpoint pemutar di Pengaturan.",
     "selectServer": "Pilih Server",
-    "tracksTitle": "Audio & Terjemahan"
+    "tracksTitle": "Audio & Terjemahan",
+    "tryingVia": "Mencoba melalui {source}..."
   },
   "playlists": {
     "title": "Daftar Putar Saya",

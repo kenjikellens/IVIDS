@@ -263,7 +263,8 @@
     "loading": "Carregant...",
     "statusTitle": "El jugador triga massa",
     "statusMessage": "El proveïdor de reproductor configurat encara no ha respost. Pots tornar enrere o canviar el punt final del reproductor a Configuració.",
-    "tracksTitle": "Àudio i subtítols"
+    "tracksTitle": "Àudio i subtítols",
+    "tryingVia": "Provant via {source}..."
   },
   "playlists": {
     "title": "Les meves llistes de reproducció",

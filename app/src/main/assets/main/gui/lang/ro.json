@@ -269,7 +269,8 @@
     "statusTitle": "Redarea durează prea mult",
     "statusMessage": "Furnizorul de redare configurat nu a răspuns încă. Puteți reveni sau modifica adresa de redare în Setări.",
     "selectServer": "Selectați serverul",
-    "tracksTitle": "Audio și subtitrări"
+    "tracksTitle": "Audio și subtitrări",
+    "tryingVia": "Se încearcă prin {source}..."
   },
   "playlists": {
     "title": "Listele mele",

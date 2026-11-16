@@ -264,7 +264,8 @@
     "statusTitle": "Le lecteur met trop de temps",
     "statusMessage": "Le fournisseur de lecture configuré n'a pas encore répondu. Vous pouvez revenir en arrière ou modifier le point de terminaison du lecteur dans les Paramètres.",
     "selectServer": "Sélectionner le serveur",
-    "tracksTitle": "Audio & Sous-titres"
+    "tracksTitle": "Audio & Sous-titres",
+    "tryingVia": "Tentative via {source}..."
   },
   "playlists": {
     "title": "Mes Listes",

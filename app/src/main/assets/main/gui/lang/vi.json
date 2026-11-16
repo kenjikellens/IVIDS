@@ -269,7 +269,8 @@
     "statusTitle": "Trình phát mất quá nhiều thời gian",
     "statusMessage": "Nhà cung cấp trình phát được cấu hình vẫn chưa phản hồi. Bạn có thể quay lại hoặc thay đổi điểm cuối của trình phát trong Cài đặt.",
     "selectServer": "Chọn máy chủ",
-    "tracksTitle": "Âm thanh & Phụ đề"
+    "tracksTitle": "Âm thanh & Phụ đề",
+    "tryingVia": "Đang thử qua {source}..."
   },
   "playlists": {
     "title": "Danh sách phát của tôi",

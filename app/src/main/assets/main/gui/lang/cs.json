@@ -269,7 +269,8 @@
     "statusTitle": "Přehrávač trvá příliš dlouho",
     "statusMessage": "Nakonfigurovaný poskytovatel přehrávače dosud neodpověděl. Můžete se vrátit zpět nebo změnit koncový bod přehrávače v Nastavení.",
     "selectServer": "Vybrat server",
-    "tracksTitle": "Zvuk a titulky"
+    "tracksTitle": "Zvuk a titulky",
+    "tryingVia": "Zkouším přes {source}..."
   },
   "playlists": {
     "title": "Moje playlisty",

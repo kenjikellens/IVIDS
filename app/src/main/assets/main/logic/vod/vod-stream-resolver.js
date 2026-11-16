@@ -161,13 +161,17 @@ export class VodStreamResolver {
      * Evaluates all tiers in user-configured priority order until a playable source succeeds.
      *
      * @param {Object} params - Route parameters from player.js.
+     * @param {Function} [onTierAttempt] - Optional callback notified with each tierId before resolution.
      * @returns {Promise<Object>} Resolved playback plan.
      */
-    async resolveInitialPlayback(params) {
+    async resolveInitialPlayback(params, onTierAttempt = null) {
         const mediaMeta = await this.resolveMediaMetadata(params);
         const order = this.getSourceOrder();
 
         for (const tierId of order) {
+            if (typeof onTierAttempt === 'function') {
+                onTierAttempt(tierId);
+            }
             const result = await this.resolveTier(tierId, mediaMeta);
             if (result) {
                 return { mediaMeta, order, active: result };

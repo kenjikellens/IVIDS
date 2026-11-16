@@ -269,7 +269,8 @@
     "statusTitle": "播放器响应时间过长",
     "statusMessage": "配置的播放器提供商尚未响应。您可以返回或在设置中更改播放器接口。",
     "selectServer": "选择服务器",
-    "tracksTitle": "音频与字幕"
+    "tracksTitle": "音频与字幕",
+    "tryingVia": "正在尝试通过 {source}..."
   },
   "playlists": {
     "title": "我的播放列表",

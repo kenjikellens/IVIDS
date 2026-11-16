@@ -264,7 +264,8 @@
     "statusTitle": "El reproductor está tardando demasiado",
     "statusMessage": "El proveedor de reproducción configurado aún no ha respondido. Puede volver atrás o cambiar el enlace del reproductor en Ajustes.",
     "selectServer": "Seleccionar servidor",
-    "tracksTitle": "Audio y subtítulos"
+    "tracksTitle": "Audio y subtítulos",
+    "tryingVia": "Probando vía {source}..."
   },
   "playlists": {
     "title": "Mis listas",

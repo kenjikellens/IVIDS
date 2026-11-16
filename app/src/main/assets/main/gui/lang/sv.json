@@ -269,7 +269,8 @@
     "statusTitle": "Spelaren tar för lång tid",
     "statusMessage": "Den konfigurerade spelarleverantören svarade inte än. Du kan gå tillbaka eller ändra spelarens slutpunkt i Inställningar.",
     "selectServer": "Välj server",
-    "tracksTitle": "Ljud & Undertexter"
+    "tracksTitle": "Ljud & Undertexter",
+    "tryingVia": "Försöker via {source}..."
   },
   "playlists": {
     "title": "Mina spellistor",

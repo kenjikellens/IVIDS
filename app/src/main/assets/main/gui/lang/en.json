@@ -263,7 +263,8 @@
     "loading": "Loading...",
     "statusTitle": "Player is taking too long",
     "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
-    "tracksTitle": "Audio & Subtitles"
+    "tracksTitle": "Audio & Subtitles",
+    "tryingVia": "Trying via {source}..."
   },
   "playlists": {
     "title": "My Playlists",

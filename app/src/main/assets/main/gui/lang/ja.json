@@ -269,7 +269,8 @@
     "statusTitle": "再生プレイヤーの応答に時間がかかっています",
     "statusMessage": "設定された再生プロバイダーがまだ応答していません。戻るか、設定でプレイヤーのエンドポイントを変更できます。",
     "selectServer": "サーバーを選択",
-    "tracksTitle": "音声と字幕"
+    "tracksTitle": "音声と字幕",
+    "tryingVia": "{source} 経由で試行中..."
   },
   "playlists": {
     "title": "マイプレイリスト",

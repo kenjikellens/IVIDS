@@ -85,6 +85,10 @@ export class HttpStreamProvider {
 
             const combined = `${s.name || ''} ${s.title || ''} ${s.description || ''}`;
             if (/🔒|paypal|premium streams available|free trial/i.test(combined)) continue;
+            // Skip foreign-dubbed streams unless Original Audio / MultiLang / English / Dutch is present
+            const hasOriginalOrMulti = /original audio|multilang|english|dutch|nederlands|🌐|🇬🇧|🇺🇸|🇳🇱/i.test(combined);
+            const isForeignDub = /türkçe|turkish|audio latino|castellano|hindi|dublado|vf\b|vostfr|italiano|deutsch|polski|русск|🇹🇷|🇲🇽|🇪🇸|🇮🇳|🇧🇷/i.test(combined);
+            if (isForeignDub && !hasOriginalOrMulti) continue;
 
             const score = this._scoreHttpStream(s, combined);
             const label = this._extractCompactLabel(s, combined, i);

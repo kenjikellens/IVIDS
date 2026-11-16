@@ -269,7 +269,8 @@
     "statusTitle": "Odtwarzacz zbyt długo nie odpowiada",
     "statusMessage": "Skonfigurowany dostawca odtwarzacza jeszcze nie odpowiedział. Możesz wrócić lub zmienić punkt końcowy odtwarzacza w Ustawieniach.",
     "selectServer": "Wybierz serwer",
-    "tracksTitle": "Dźwięk i napisy"
+    "tracksTitle": "Dźwięk i napisy",
+    "tryingVia": "Próba przez {source}..."
   },
   "playlists": {
     "title": "Moje playlisty",

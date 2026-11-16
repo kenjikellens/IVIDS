@@ -263,7 +263,8 @@
     "loading": "Loading...",
     "statusTitle": "Player is taking too long",
     "statusMessage": "The configured player provider did not respond yet. You can go back or change the player endpoint in Settings.",
-    "tracksTitle": "Audio i titlovi"
+    "tracksTitle": "Audio i titlovi",
+    "tryingVia": "Pokušaj putem {source}..."
   },
   "playlists": {
     "title": "My Playlists",

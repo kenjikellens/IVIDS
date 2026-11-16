@@ -269,7 +269,8 @@
     "statusTitle": "O reprodutor está demorando muito",
     "statusMessage": "O provedor do reprodutor configurado ainda não respondeu. Você pode voltar ou alterar o endpoint do reprodutor nas Configurações.",
     "selectServer": "Selecionar Servidor",
-    "tracksTitle": "Áudio e Legendas"
+    "tracksTitle": "Áudio e Legendas",
+    "tryingVia": "Tentando via {source}..."
   },
   "playlists": {
     "title": "Minhas Playlists",

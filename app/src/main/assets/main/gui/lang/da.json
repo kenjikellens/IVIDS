@@ -269,7 +269,8 @@
     "statusTitle": "Afspilleren tager for lang tid",
     "statusMessage": "Den konfigurerede afspillerudbyder har ikke svaret endnu. Du kan gå tilbage eller ændre afspillerens slutpunkt i Indstillinger.",
     "selectServer": "Vælg server",
-    "tracksTitle": "Lyd og undertekster"
+    "tracksTitle": "Lyd og undertekster",
+    "tryingVia": "Prøver via {source}..."
   },
   "playlists": {
     "title": "Mine playlister",

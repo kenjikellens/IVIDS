@@ -264,7 +264,8 @@
     "loading": "Laden...",
     "statusTitle": "Speler duurt te lang",
     "statusMessage": "De geconfigureerde spelerprovider heeft nog niet gereageerd. U kunt teruggaan of het speler-eindpunt wijzigen in Instellingen.",
-    "tracksTitle": "Audio & Ondertitels"
+    "tracksTitle": "Audio & Ondertitels",
+    "tryingVia": "Proberen via {source}..."
   },
   "playlists": {
     "title": "Mijn Afspeellijsten",
