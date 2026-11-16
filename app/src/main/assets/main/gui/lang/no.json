@@ -545,7 +545,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Italia",
     "countryUk": "Storbritannia",
-    "countryUs": "USA"
+    "countryUs": "USA",
+    "previewUnavailable": "Strømmen fungerer ikke akkurat nå"
   },
   "settings_livetv": {
     "title": "Konfigurasjon av Live TV",

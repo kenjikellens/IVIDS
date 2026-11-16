@@ -549,7 +549,8 @@
     "countryPortugal": "পর্তুগাল",
     "countryItaly": "ইতালি",
     "countryUk": "যুক্তরাজ্য",
-    "countryUs": "যুক্তরাষ্ট্র"
+    "countryUs": "যুক্তরাষ্ট্র",
+    "previewUnavailable": "স্ট্রীমটি বর্তমানে চলছে না"
   },
   "settings_livetv": {
     "title": "লাইভ টিভি কনফিগারেশন",

@@ -549,7 +549,8 @@
     "countryPortugal": "پرتغال",
     "countryItaly": "ایتالیا",
     "countryUk": "بریتانیا",
-    "countryUs": "ایالات متحده"
+    "countryUs": "ایالات متحده",
+    "previewUnavailable": "پخش در حال حاضر در دسترس نیست"
   },
   "settings_livetv": {
     "title": "پیکربندی تلویزیون زنده",

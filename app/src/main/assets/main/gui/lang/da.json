@@ -545,7 +545,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Italien",
     "countryUk": "Storbritannien",
-    "countryUs": "USA"
+    "countryUs": "USA",
+    "previewUnavailable": "Streamen virker ikke lige nu"
   },
   "settings_livetv": {
     "title": "Konfiguration af Live TV",

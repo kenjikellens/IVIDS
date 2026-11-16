@@ -545,7 +545,8 @@
     "countryPortugal": "Portekiz",
     "countryItaly": "İtalya",
     "countryUk": "Birleşik Krallık",
-    "countryUs": "Amerika Birleşik Devletleri"
+    "countryUs": "Amerika Birleşik Devletleri",
+    "previewUnavailable": "Yayın şu anda kullanılamıyor"
   },
   "settings_livetv": {
     "title": "Canlı TV Yapılandırması",

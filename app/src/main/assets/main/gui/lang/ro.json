@@ -545,7 +545,8 @@
     "countryPortugal": "Portugalia",
     "countryItaly": "Italia",
     "countryUk": "Regatul Unit",
-    "countryUs": "Statele Unite"
+    "countryUs": "Statele Unite",
+    "previewUnavailable": "Fluxul nu funcționează momentan"
   },
   "settings_livetv": {
     "title": "Configurare TV în direct",

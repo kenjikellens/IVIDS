@@ -545,7 +545,8 @@
     "countryPortugal": "Португалия",
     "countryItaly": "Италия",
     "countryUk": "Великобритания",
-    "countryUs": "США"
+    "countryUs": "США",
+    "previewUnavailable": "Поток сейчас недоступен"
   },
   "settings_livetv": {
     "title": "Настройка Live TV",

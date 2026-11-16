@@ -545,7 +545,8 @@
     "countryPortugal": "포르투갈",
     "countryItaly": "이탈리아",
     "countryUk": "영국",
-    "countryUs": "미국"
+    "countryUs": "미국",
+    "previewUnavailable": "현재 스트림을 재생할 수 없습니다"
   },
   "settings_livetv": {
     "title": "라이브 TV 설정",

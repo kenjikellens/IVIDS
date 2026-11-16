@@ -404,9 +404,12 @@ export class LiveStreamEngine {
     }
 
     /**
-     * Stops playback immediately and invalidates any in-flight stream load attempts.
+     * Stops playback immediately when active and invalidates any in-flight stream load attempts.
      */
     stop() {
+        if (!this.hls && !this.activeChannel && !this.watchdogTimer) {
+            return;
+        }
         this.generationId++;
         this._cleanupCurrentAttempt();
         this.activeChannel = null;

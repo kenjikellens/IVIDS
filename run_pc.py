@@ -112,10 +112,10 @@ def _is_public_ip(ip_obj):
     return True
 
 
-def _is_safe_hostname(hostname_lower):
+def _classify_hostname(hostname_lower):
     """
-    Validates if a hostname resolves exclusively to public, non-loopback, non-private IP addresses.
-    Fails closed on DNS resolution errors and caches decisions briefly to reduce streaming latency.
+    Classifies whether a hostname resolves exclusively to public IPs ('ok'),
+    fails DNS resolution ('dns_error'), or targets internal/loopback/forbidden hosts ('forbidden').
     """
     try:
         if (
@@ -123,7 +123,7 @@ def _is_safe_hostname(hostname_lower):
             or hostname_lower in ('localhost', '0.0.0.0', '127.0.0.1', '::1', 'metadata', 'metadata.google.internal')
             or hostname_lower.endswith('.localhost')
         ):
-            return False
+            return 'forbidden'
 
         now = time.time()
         with _SAFE_HOST_CACHE_LOCK:
@@ -134,10 +134,10 @@ def _is_safe_hostname(hostname_lower):
         stripped = hostname_lower.strip('[]')
         try:
             ip_obj = ipaddress.ip_address(stripped)
-            safe = _is_public_ip(ip_obj)
+            status = 'ok' if _is_public_ip(ip_obj) else 'forbidden'
             with _SAFE_HOST_CACHE_LOCK:
-                _SAFE_HOST_CACHE[hostname_lower] = (safe, now + 60.0)
-            return safe
+                _SAFE_HOST_CACHE[hostname_lower] = (status, now + 60.0)
+            return status
         except ValueError:
             pass
 
@@ -145,31 +145,56 @@ def _is_safe_hostname(hostname_lower):
             addr_infos = socket.getaddrinfo(hostname_lower, None)
         except socket.gaierror:
             with _SAFE_HOST_CACHE_LOCK:
-                _SAFE_HOST_CACHE[hostname_lower] = (False, now + 10.0)
-            return False
+                _SAFE_HOST_CACHE[hostname_lower] = ('dns_error', now + 10.0)
+            return 'dns_error'
 
         if not addr_infos:
             with _SAFE_HOST_CACHE_LOCK:
-                _SAFE_HOST_CACHE[hostname_lower] = (False, now + 10.0)
-            return False
+                _SAFE_HOST_CACHE[hostname_lower] = ('dns_error', now + 10.0)
+            return 'dns_error'
 
         for info in addr_infos:
             ip_str = info[4][0]
             if '%' in ip_str:
-                return False
+                return 'forbidden'
             ip_obj = ipaddress.ip_address(ip_str)
             if not _is_public_ip(ip_obj):
                 with _SAFE_HOST_CACHE_LOCK:
-                    _SAFE_HOST_CACHE[hostname_lower] = (False, now + 60.0)
-                return False
+                    _SAFE_HOST_CACHE[hostname_lower] = ('forbidden', now + 60.0)
+                return 'forbidden'
 
         with _SAFE_HOST_CACHE_LOCK:
             if len(_SAFE_HOST_CACHE) > 2048:
                 _SAFE_HOST_CACHE.clear()
-            _SAFE_HOST_CACHE[hostname_lower] = (True, now + 60.0)
-        return True
+            _SAFE_HOST_CACHE[hostname_lower] = ('ok', now + 60.0)
+        return 'ok'
     except Exception:
-        return False
+        return 'forbidden'
+
+
+def _classify_proxy_url(url):
+    """
+    Validates target URL scheme/host for proxy safety, distinguishing DNS failures from SSRF blocks.
+    """
+    try:
+        if not isinstance(url, str):
+            return 'forbidden'
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme.lower() not in ('http', 'https'):
+            return 'forbidden'
+        hostname = parsed.hostname
+        if not hostname:
+            return 'forbidden'
+        return _classify_hostname(hostname.lower())
+    except Exception:
+        return 'forbidden'
+
+
+def _is_safe_hostname(hostname_lower):
+    """
+    Validates if a hostname resolves exclusively to public, non-loopback, non-private IP addresses.
+    """
+    return _classify_hostname(hostname_lower) == 'ok'
 
 
 def is_safe_url(url):
@@ -177,18 +202,7 @@ def is_safe_url(url):
     Validates if the target URL has a safe http/https scheme and resolves to public IP addresses only.
     Fails closed on malformed URLs, non-HTTP schemes, or unresolved/internal hostnames.
     """
-    try:
-        if not isinstance(url, str):
-            return False
-        parsed = urllib.parse.urlparse(url)
-        if parsed.scheme.lower() not in ('http', 'https'):
-            return False
-        hostname = parsed.hostname
-        if not hostname:
-            return False
-        return _is_safe_hostname(hostname.lower())
-    except Exception:
-        return False
+    return _classify_proxy_url(url) == 'ok'
 
 
 class ForbiddenRedirectError(urllib.error.HTTPError):
@@ -671,13 +685,17 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             else:
                 del _DEAD_HOSTS[target_host]
 
-        if not is_safe_url(target_url):
+        url_status = _classify_proxy_url(target_url)
+        if url_status == 'dns_error':
+            if target_host:
+                _DEAD_HOSTS[target_host] = time.time()
+            self.send_error(502, f'Host lookup failed: {target_host}')
+            return
+        if url_status != 'ok':
             self.send_error(403, 'Forbidden target URL')
             return
 
-
         try:
-            self._proxy_headers_sent = False
             self._proxy_headers_sent = False
             req = urllib.request.Request(target_url)
             referer = query.get('referer', [None])[0]

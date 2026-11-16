@@ -549,7 +549,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Italija",
     "countryUk": "Ujedinjeno Kraljevstvo",
-    "countryUs": "Sjedinjene Države"
+    "countryUs": "Sjedinjene Države",
+    "previewUnavailable": "Strim trenutno nije dostupan"
   },
   "settings_livetv": {
     "title": "Ливе ТВ Цонфигуратион",

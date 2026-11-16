@@ -545,7 +545,8 @@
     "countryPortugal": "葡萄牙",
     "countryItaly": "意大利",
     "countryUk": "英国",
-    "countryUs": "美国"
+    "countryUs": "美国",
+    "previewUnavailable": "当前无法播放此频道"
   },
   "settings_livetv": {
     "title": "电视直播配置",

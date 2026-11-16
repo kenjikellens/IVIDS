@@ -545,7 +545,8 @@
     "countryPortugal": "ポルトガル",
     "countryItaly": "イタリア",
     "countryUk": "イギリス",
-    "countryUs": "アメリカ合衆国"
+    "countryUs": "アメリカ合衆国",
+    "previewUnavailable": "現在このストリームは再生できません"
   },
   "settings_livetv": {
     "title": "ライブTV設定",

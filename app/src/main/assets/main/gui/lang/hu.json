@@ -549,7 +549,8 @@
     "countryPortugal": "Portugália",
     "countryItaly": "Olaszország",
     "countryUk": "Egyesült Királyság",
-    "countryUs": "Egyesült Államok"
+    "countryUs": "Egyesült Államok",
+    "previewUnavailable": "A közvetítés jelenleg nem érhető el"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

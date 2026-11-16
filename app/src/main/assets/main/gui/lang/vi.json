@@ -545,7 +545,8 @@
     "countryPortugal": "Bồ Đào Nha",
     "countryItaly": "Ý",
     "countryUk": "Vương quốc Anh",
-    "countryUs": "Hoa Kỳ"
+    "countryUs": "Hoa Kỳ",
+    "previewUnavailable": "Luồng phát hiện không khả dụng"
   },
   "settings_livetv": {
     "title": "Cấu hình Live TV",

@@ -545,7 +545,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Italia",
     "countryUk": "Britania Raya",
-    "countryUs": "Amerika Serikat"
+    "countryUs": "Amerika Serikat",
+    "previewUnavailable": "Siaran sedang tidak tersedia"
   },
   "settings_livetv": {
     "title": "Konfigurasi TV Langsung",

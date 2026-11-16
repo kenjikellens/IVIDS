@@ -549,7 +549,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Itàlia",
     "countryUk": "Regne Unit",
-    "countryUs": "Estats Units"
+    "countryUs": "Estats Units",
+    "previewUnavailable": "La transmissió no funciona ara mateix"
   },
   "settings_livetv": {
     "title": "Configuració de TV en directe",

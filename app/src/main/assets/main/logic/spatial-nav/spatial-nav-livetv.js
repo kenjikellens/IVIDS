@@ -106,6 +106,24 @@ function getPreferredChannelCard() {
 }
 
 /**
+ * Finds an immediate adjacent focusable sibling matching selector in O(1) without full-list layout reads.
+ * @param {HTMLElement} current - Starting list item element.
+ * @param {string} direction - 'up' or 'down'.
+ * @param {string} selector - CSS selector matching sibling items.
+ * @returns {HTMLElement|null} Adjacent matching sibling, or null at boundary.
+ */
+function findAdjacentListItem(current, direction, selector) {
+    let sibling = direction === 'down' ? current.nextElementSibling : current.previousElementSibling;
+    while (sibling) {
+        if (sibling.matches && sibling.matches(selector) && !sibling.classList.contains('hidden')) {
+            return sibling;
+        }
+        sibling = direction === 'down' ? sibling.nextElementSibling : sibling.previousElementSibling;
+    }
+    return null;
+}
+
+/**
  * Spatial Navigation rules for the 3-column Live TV page:
  * [Sidebar] <-> [Categories/Countries List (#categories-list)] <-> [Channels List (#channels-list)] <-> [Preview Card (#livetv-preview-card)]
  * with Top Search Bar (#search-input) above the lists.
@@ -139,8 +157,6 @@ export const spatialNavLivetv = {
      */
     findNext: (current, direction) => {
         if (!current) return null;
-
-        const scrollBehavior = SpatialNav.getScrollBehavior ? SpatialNav.getScrollBehavior() : 'smooth';
 
         // 1. Sidebar Boundary: Returning into Live TV content (Right from desktop sidebar, Up from mobile bottom nav)
         const inSidebar = current.closest('#sidebar-container') !== null;
@@ -191,27 +207,20 @@ export const spatialNavLivetv = {
         const parentCat = current.closest('#categories-list .category-list-item.focusable');
         const inCategoriesList = parentCat !== null || current.closest('#categories-list') !== null;
         if (inCategoriesList) {
-            const categories = getCategoryItems();
             const activeCat = parentCat || current;
-            const currentIndex = categories.indexOf(activeCat);
-
-            if (activeCat && categories.includes(activeCat)) {
-                lastFocusedCategoryItem = activeCat;
-            }
+            lastFocusedCategoryItem = activeCat;
 
             if (direction === 'up') {
-                if (currentIndex > 0) {
-                    const prev = categories[currentIndex - 1];
-                    prev.scrollIntoView({ block: 'nearest', behavior: scrollBehavior });
+                const prev = findAdjacentListItem(activeCat, 'up', '.category-list-item.focusable');
+                if (prev) {
                     lastFocusedCategoryItem = prev;
                     return prev;
                 }
                 return topControls.length > 0 ? topControls[0] : current;
             }
             if (direction === 'down') {
-                if (currentIndex >= 0 && currentIndex < categories.length - 1) {
-                    const next = categories[currentIndex + 1];
-                    next.scrollIntoView({ block: 'nearest', behavior: scrollBehavior });
+                const next = findAdjacentListItem(activeCat, 'down', '.category-list-item.focusable');
+                if (next) {
                     lastFocusedCategoryItem = next;
                     return next;
                 }
@@ -231,27 +240,20 @@ export const spatialNavLivetv = {
         const parentCard = current.closest('#channels-list .channel-list-item.focusable, #channels-list .channel-card.focusable');
         const inChannelList = parentCard !== null || current.closest('#channels-list') !== null;
         if (inChannelList) {
-            const channels = getChannelCards();
             const activeCard = parentCard || current;
-            const currentIndex = channels.indexOf(activeCard);
-
-            if (activeCard && channels.includes(activeCard)) {
-                lastFocusedChannelCard = activeCard;
-            }
+            lastFocusedChannelCard = activeCard;
 
             if (direction === 'up') {
-                if (currentIndex > 0) {
-                    const prev = channels[currentIndex - 1];
-                    prev.scrollIntoView({ block: 'nearest', behavior: scrollBehavior });
+                const prev = findAdjacentListItem(activeCard, 'up', '.channel-list-item.focusable, .channel-card.focusable');
+                if (prev) {
                     lastFocusedChannelCard = prev;
                     return prev;
                 }
                 return topControls.length > 0 ? topControls[0] : current;
             }
             if (direction === 'down') {
-                if (currentIndex >= 0 && currentIndex < channels.length - 1) {
-                    const next = channels[currentIndex + 1];
-                    next.scrollIntoView({ block: 'nearest', behavior: scrollBehavior });
+                const next = findAdjacentListItem(activeCard, 'down', '.channel-list-item.focusable, .channel-card.focusable');
+                if (next) {
                     lastFocusedChannelCard = next;
                     return next;
                 }

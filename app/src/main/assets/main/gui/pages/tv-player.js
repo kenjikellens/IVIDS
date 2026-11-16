@@ -292,6 +292,7 @@ export async function init(params) {
         settingsOptionsEl.innerHTML = activeCategory.options.map(opt => (
             `<button type="button" class="tv-opt-btn focusable universal-onclick ${opt.isActive ? 'is-active' : ''}" data-kind="${activeCategory.key}" data-value="${opt.value}">` +
                 `<span class="tv-opt-label">${escapeHtml(opt.label)}</span>` +
+                (opt.isActive ? `<span class="tv-opt-checkmark" aria-hidden="true">&#10003;</span>` : '') +
             `</button>`
         )).join('');
 
@@ -704,4 +705,11 @@ export async function init(params) {
         delete window.tvShowOverlay;
         delete window.tvHideOverlay;
         delete window.tvResetOverlayTimer;
-        delete window.tvIs
+        delete window.tvIsOverlayVisible;
+        delete window.tvIsSettingsOpen;
+        delete window.tvCloseSettingsPanel;
+        delete window.tvSettingsBack;
+    };
+
+    showOverlay(true);
+}

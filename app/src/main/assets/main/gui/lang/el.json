@@ -549,7 +549,8 @@
     "countryPortugal": "Πορτογαλία",
     "countryItaly": "Ιταλία",
     "countryUk": "Ηνωμένο Βασίλειο",
-    "countryUs": "Ηνωμένες Πολιτείες"
+    "countryUs": "Ηνωμένες Πολιτείες",
+    "previewUnavailable": "Η ροή δεν λειτουργεί αυτή τη στιγμή"
   },
   "settings_livetv": {
     "title": "Διαμόρφωση ζωντανής τηλεόρασης",

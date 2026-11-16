@@ -549,7 +549,8 @@
     "countryPortugal": "Португалія",
     "countryItaly": "Італія",
     "countryUk": "Велика Британія",
-    "countryUs": "США"
+    "countryUs": "США",
+    "previewUnavailable": "Потік зараз недоступний"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

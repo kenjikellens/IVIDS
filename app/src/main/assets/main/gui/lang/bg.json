@@ -549,7 +549,8 @@
     "countryPortugal": "Португалия",
     "countryItaly": "Италия",
     "countryUk": "Обединено кралство",
-    "countryUs": "САЩ"
+    "countryUs": "САЩ",
+    "previewUnavailable": "Потокът в момента не работи"
   },
   "settings_livetv": {
     "title": "Конфигурация на телевизия на живо",

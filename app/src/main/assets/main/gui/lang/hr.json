@@ -549,7 +549,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Italija",
     "countryUk": "Ujedinjeno Kraljevstvo",
-    "countryUs": "Sjedinjene Države"
+    "countryUs": "Sjedinjene Države",
+    "previewUnavailable": "Prijenos trenutačno nije dostupan"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

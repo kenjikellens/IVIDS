@@ -5,6 +5,7 @@ import { SpatialNav } from '../js/spatial-nav.js';
 import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
 import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
+import I18n from '../js/i18n.js';
 
 /**
  * Loads merged global and user-specific application settings from localStorage.
@@ -37,6 +38,7 @@ let previewTimeout = null;
 let searchDebounceTimer = null;
 let categoryFocusTimer = null;
 let progressiveRenderTimer = null;
+let detailUiDebounceTimer = null;
 let loadSourcesPromise = null;
 let liveTvPageBackHandler = null;
 let detailRequestId = 0;
@@ -70,20 +72,31 @@ const MAX_RENDERED_NODES = 120;
  * Uses strict exact country keys ('country:belgium', etc.) backed by SourceManager's O(1) categoryIndex.
  */
 const PRIORITY_COUNTRIES = [
-    { key: 'country:netherlands', label: 'Netherlands' },
-    { key: 'country:belgium', label: 'Belgium' },
-    { key: 'country:france', label: 'France' },
-    { key: 'country:spain', label: 'Spain' },
-    { key: 'country:germany', label: 'Germany' },
-    { key: 'country:portugal', label: 'Portugal' },
-    { key: 'country:italy', label: 'Italy' },
-    { key: 'country:united kingdom', label: 'United Kingdom' },
-    { key: 'country:united states', label: 'United States' }
+    { key: 'country:netherlands', i18nKey: 'livetv.countryNetherlands' },
+    { key: 'country:belgium', i18nKey: 'livetv.countryBelgium' },
+    { key: 'country:france', i18nKey: 'livetv.countryFrance' },
+    { key: 'country:spain', i18nKey: 'livetv.countrySpain' },
+    { key: 'country:germany', i18nKey: 'livetv.countryGermany' },
+    { key: 'country:portugal', i18nKey: 'livetv.countryPortugal' },
+    { key: 'country:italy', i18nKey: 'livetv.countryItaly' },
+    { key: 'country:united kingdom', i18nKey: 'livetv.countryUk' },
+    { key: 'country:united states', i18nKey: 'livetv.countryUs' }
 ];
 
 const ALLOWED_GENRES = [
-    'News', 'Movies', 'Entertainment', 'Music', 'Kids', 'Documentary',
-    'General', 'Series', 'Comedy', 'Lifestyle', 'Culture', 'Education', 'Science'
+    { key: 'genre:news', i18nKey: 'livetv.catNews' },
+    { key: 'genre:movies', i18nKey: 'livetv.catMovies' },
+    { key: 'genre:entertainment', i18nKey: 'livetv.catEntertainment' },
+    { key: 'genre:music', i18nKey: 'livetv.catMusic' },
+    { key: 'genre:kids', i18nKey: 'livetv.catKids' },
+    { key: 'genre:documentary', i18nKey: 'livetv.catDocumentary' },
+    { key: 'genre:general', i18nKey: 'livetv.catGeneral' },
+    { key: 'genre:series', i18nKey: 'livetv.catSeries' },
+    { key: 'genre:comedy', i18nKey: 'livetv.catComedy' },
+    { key: 'genre:lifestyle', i18nKey: 'livetv.catLifestyle' },
+    { key: 'genre:culture', i18nKey: 'livetv.catCulture' },
+    { key: 'genre:education', i18nKey: 'livetv.catEducation' },
+    { key: 'genre:science', i18nKey: 'livetv.catScience' }
 ];
 
 /**
@@ -92,12 +105,13 @@ const ALLOWED_GENRES = [
  * and returns the first clean, human-readable segment (e.g. 'Sports').
  *
  * @param {string|null|undefined} groupStr - Raw compound group or category string.
- * @returns {string} Clean single primary category name, or 'Live TV' if unassigned.
+ * @returns {string} Clean single primary category name, or localized Live TV label if unassigned.
  */
 export function formatPrimaryCategory(groupStr) {
-    if (!groupStr || typeof groupStr !== 'string') return 'Live TV';
+    const fallbackLabel = I18n.t('livetv.title');
+    if (!groupStr || typeof groupStr !== 'string') return fallbackLabel;
     const segments = groupStr.split(/[;|]/).map(s => s.trim()).filter(Boolean);
-    return segments.length > 0 ? segments[0] : 'Live TV';
+    return segments.length > 0 ? segments[0] : fallbackLabel;
 }
 window.formatPrimaryCategory = formatPrimaryCategory;
 
@@ -108,6 +122,8 @@ window.formatPrimaryCategory = formatPrimaryCategory;
  * @param {object} params - Routing parameters.
  */
 export async function init(params) {
+    await I18n.init();
+    I18n.applyTranslations();
     console.log('Live TV List UI initializing...');
 
     searchQuery = '';
@@ -132,6 +148,10 @@ export async function init(params) {
         if (progressiveRenderTimer) {
             clearTimeout(progressiveRenderTimer);
             progressiveRenderTimer = null;
+        }
+        if (detailUiDebounceTimer) {
+            clearTimeout(detailUiDebounceTimer);
+            detailUiDebounceTimer = null;
         }
         if (liveTvPageBackHandler) {
             SpatialNav.popBackHandler(liveTvPageBackHandler);
@@ -277,7 +297,7 @@ function renderCategoriesList() {
     // 1. All Channels
     items.push({
         key: 'all',
-        label: window.i18n?.t('livetv.allChannels') || 'All Channels',
+        label: I18n.t('livetv.allChannels'),
         count: allChannels.length
     });
 
@@ -285,7 +305,7 @@ function renderCategoriesList() {
     const sportsChannels = sourceManager.getChannelsByCategory('sports');
     items.push({
         key: 'sports',
-        label: 'Sports',
+        label: I18n.t('livetv.catSports'),
         count: sportsChannels.length
     });
 
@@ -295,20 +315,19 @@ function renderCategoriesList() {
         if (count > 0) {
             items.push({
                 key: country.key,
-                label: country.label,
+                label: I18n.t(country.i18nKey),
                 count
             });
         }
     });
 
     // 4. Allowed Genres
-    ALLOWED_GENRES.forEach(genreName => {
-        const key = `genre:${genreName.toLowerCase()}`;
-        const count = sourceManager.getChannelsByCategory(key).length;
+    ALLOWED_GENRES.forEach(genre => {
+        const count = sourceManager.getChannelsByCategory(genre.key).length;
         if (count > 0) {
             items.push({
-                key,
-                label: genreName,
+                key: genre.key,
+                label: I18n.t(genre.i18nKey),
                 count
             });
         }
@@ -400,7 +419,9 @@ async function loadAllSources() {
                 if (progressiveRenderTimer) clearTimeout(progressiveRenderTimer);
                 progressiveRenderTimer = setTimeout(() => {
                     renderCategoriesList();
-                    filterAndRenderChannels(false);
+                    if (renderedCount < CHUNK_SIZE) {
+                        filterAndRenderChannels(false);
+                    }
                 }, 1000);
             }
         });
@@ -408,6 +429,10 @@ async function loadAllSources() {
         if (progressiveRenderTimer) {
             clearTimeout(progressiveRenderTimer);
             progressiveRenderTimer = null;
+        }
+        if (detailUiDebounceTimer) {
+            clearTimeout(detailUiDebounceTimer);
+            detailUiDebounceTimer = null;
         }
 
         renderCategoriesList();
@@ -487,61 +512,82 @@ function filterAndRenderChannels(resetFocus = false) {
  * @param {object} channel - The selected channel object to preview.
  */
 async function showChannelDetail(channel) {
+    const isInitialSelection = !selectedChannel;
     selectedChannel = channel;
-    const content = document.getElementById('hero-active-content');
-    if (content) content.classList.remove('hidden');
-
-    const previewCard = document.getElementById('livetv-preview-card');
-    if (previewCard) {
-        previewCard.classList.remove('is-playing');
-        previewCard.onclick = () => playChannel(channel);
-    }
-
-    const previewChannelName = document.getElementById('preview-channel-name');
-    if (previewChannelName) {
-        previewChannelName.textContent = channel.name || '';
-    }
-
-    const previewWatchBtn = document.getElementById('preview-watch-btn');
-    if (previewWatchBtn) {
-        previewWatchBtn.onclick = (e) => {
-            e.stopPropagation();
-            playChannel(channel);
-        };
-    }
-
-    const epgContainer = document.getElementById('hero-epg-container');
-    const epgTitleEl = document.getElementById('hero-epg-title');
-    const epgTimeEl = document.getElementById('hero-epg-time');
-    const epgProgressWrap = document.getElementById('hero-epg-progress-wrap');
-    const epgProgressEl = document.getElementById('hero-epg-progress');
-    const upcomingSection = document.getElementById('details-upcoming-section');
-    const upcomingListEl = document.getElementById('upcoming-programs-list');
-    const noEpgText = window.i18n?.t('livetv.noEpgInfo') || 'No program info available';
-
-    if (epgContainer) {
-        epgContainer.classList.remove('hidden');
-        if (epgTitleEl) epgTitleEl.textContent = noEpgText;
-        if (epgTimeEl) {
-            epgTimeEl.textContent = '';
-            epgTimeEl.classList.add('hidden');
-        }
-        if (epgProgressWrap) epgProgressWrap.classList.add('hidden');
-        if (epgProgressEl) epgProgressEl.style.width = '0%';
-    }
-    if (upcomingSection) upcomingSection.classList.add('hidden');
-    if (upcomingListEl) upcomingListEl.innerHTML = '';
-
     const reqId = ++detailRequestId;
 
+    if (detailUiDebounceTimer) {
+        clearTimeout(detailUiDebounceTimer);
+        detailUiDebounceTimer = null;
+    }
     if (previewTimeout) {
         clearTimeout(previewTimeout);
+        previewTimeout = null;
+    }
+
+    const applyPreviewMeta = () => {
+        if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
+
+        const content = document.getElementById('hero-active-content');
+        if (content) content.classList.remove('hidden');
+
+        const previewCard = document.getElementById('livetv-preview-card');
+        if (previewCard) {
+            previewCard.classList.remove('is-playing');
+            previewCard.onclick = () => playChannel(channel);
+        }
+
+        const previewChannelName = document.getElementById('preview-channel-name');
+        if (previewChannelName) {
+            previewChannelName.textContent = channel.name || '';
+        }
+
+        const previewWatchBtn = document.getElementById('preview-watch-btn');
+        if (previewWatchBtn) {
+            previewWatchBtn.onclick = (e) => {
+                e.stopPropagation();
+                playChannel(channel);
+            };
+        }
+
+        const epgContainer = document.getElementById('hero-epg-container');
+        const epgTitleEl = document.getElementById('hero-epg-title');
+        const epgTimeEl = document.getElementById('hero-epg-time');
+        const epgProgressWrap = document.getElementById('hero-epg-progress-wrap');
+        const epgProgressEl = document.getElementById('hero-epg-progress');
+        const upcomingSection = document.getElementById('details-upcoming-section');
+        const upcomingListEl = document.getElementById('upcoming-programs-list');
+        const noEpgText = I18n.t('livetv.noEpgInfo');
+
+        if (epgContainer) {
+            epgContainer.classList.remove('hidden');
+            if (epgTitleEl) epgTitleEl.textContent = noEpgText;
+            if (epgTimeEl) {
+                epgTimeEl.textContent = '';
+                epgTimeEl.classList.add('hidden');
+            }
+            if (epgProgressWrap) epgProgressWrap.classList.add('hidden');
+            if (epgProgressEl) epgProgressEl.style.width = '0%';
+        }
+        if (upcomingSection) upcomingSection.classList.add('hidden');
+        if (upcomingListEl) upcomingListEl.innerHTML = '';
+
+        const lowRamDevice = isLowRamAndroidDevice();
+        if (!lowRamDevice && previewEngine) {
+            previewEngine.stop();
+        }
+    };
+
+    if (isInitialSelection) {
+        applyPreviewMeta();
+    } else {
+        detailUiDebounceTimer = setTimeout(() => {
+            detailUiDebounceTimer = null;
+            applyPreviewMeta();
+        }, 70);
     }
 
     const lowRamDevice = isLowRamAndroidDevice();
-    if (!lowRamDevice && previewEngine) {
-        previewEngine.stop();
-    }
 
     previewTimeout = setTimeout(async () => {
         if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
@@ -729,7 +775,7 @@ function createChannelRow(channel, index, focusedUrl) {
 
     item.innerHTML = `
         <div class="channel-card__logo-wrap channel-list-logo-container">
-            <img src="${escapeHtml(iconUrl)}" class="channel-card__logo channel-list-logo" loading="lazy">
+            <img src="${escapeHtml(iconUrl)}" class="channel-card__logo channel-list-logo" loading="lazy" decoding="async">
         </div>
         <div class="channel-card__meta channel-list-meta-container">
             <span class="channel-card__title channel-list-name">${escapeHtml(channel.name)}</span>

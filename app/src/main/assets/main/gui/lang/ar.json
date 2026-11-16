@@ -545,7 +545,8 @@
     "countryPortugal": "البرتغال",
     "countryItaly": "إيطاليا",
     "countryUk": "المملكة المتحدة",
-    "countryUs": "الولايات المتحدة"
+    "countryUs": "الولايات المتحدة",
+    "previewUnavailable": "تعذر تشغيل البث حاليًا"
   },
   "settings_livetv": {
     "title": "تكوين البث المباشر",

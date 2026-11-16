@@ -549,7 +549,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Itali",
     "countryUk": "United Kingdom",
-    "countryUs": "Amerika Syarikat"
+    "countryUs": "Amerika Syarikat",
+    "previewUnavailable": "Strim tidak tersedia buat masa ini"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

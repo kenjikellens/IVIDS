@@ -545,7 +545,8 @@
     "countryPortugal": "Portugalsko",
     "countryItaly": "Itálie",
     "countryUk": "Spojené království",
-    "countryUs": "Spojené státy"
+    "countryUs": "Spojené státy",
+    "previewUnavailable": "Stream momentálně nefunguje"
   },
   "settings_livetv": {
     "title": "Konfigurace Živého TV",

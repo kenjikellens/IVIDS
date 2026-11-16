@@ -549,7 +549,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Italy",
     "countryUk": "United Kingdom",
-    "countryUs": "United States"
+    "countryUs": "United States",
+    "previewUnavailable": "Stream currently unavailable"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",

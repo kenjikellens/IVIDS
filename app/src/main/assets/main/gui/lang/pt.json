@@ -545,7 +545,8 @@
     "countryPortugal": "Portugal",
     "countryItaly": "Itália",
     "countryUk": "Reino Unido",
-    "countryUs": "Estados Unidos"
+    "countryUs": "Estados Unidos",
+    "previewUnavailable": "Transmissão indisponível no momento"
   },
   "settings_livetv": {
     "title": "Configuração de TV ao Vivo",

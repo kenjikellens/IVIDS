@@ -549,7 +549,8 @@
     "countryPortugal": "โปรตุเกส",
     "countryItaly": "อิตาลี",
     "countryUk": "สหราชอาณาจักร",
-    "countryUs": "สหรัฐอเมริกา"
+    "countryUs": "สหรัฐอเมริกา",
+    "previewUnavailable": "สตรีมไม่สามารถใช้งานได้ในขณะนี้"
   },
   "settings_livetv": {
     "title": "Live TV Configuration",
