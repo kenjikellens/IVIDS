@@ -273,7 +273,7 @@
     "tryingVia": "Próba przez {source}..."
   },
   "playlists": {
-    "title": "Moje playlisty",
+    "title": "Playlisty",
     "sidebarTitle": "Playlisty",
     "createShort": "+ Utwórz listę",
     "create": "Utwórz nową playlistę",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Usuń z listy odtwarzania",
     "clearHistory": "Wyczyść historię",
     "clearHistoryTitle": "Wyczyść ostatnio oglądane",
-    "clearHistoryMessage": "Czy na pewno chcesz wyczyścić historię ostatnio oglądanych?"
+    "clearHistoryMessage": "Czy na pewno chcesz wyczyścić historię ostatnio oglądanych?",
+    "itemSingle": "1 element",
+    "itemPlural": "{count} elementów",
+    "browseContent": "Przeglądaj treści",
+    "options": "Opcje",
+    "addToOtherPlaylist": "Dodaj do innej playlisty"
   },
   "row": {
     "trending": "Na czasie",

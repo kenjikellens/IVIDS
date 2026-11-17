@@ -23,11 +23,11 @@
     <!-- Critical inline CSS for instant splash screen render before external stylesheets load -->
     <style>
         /* Inline critical splash styles to eliminate FOUC during stylesheet download. */
-        body { margin: 0; background: #050505; overflow: hidden; }
+        body { margin: 0; background: #000000; overflow: hidden; }
         #splash-screen {
             position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9999;
             display: flex; align-items: center; justify-content: center;
-            background: #050505; transition: opacity 0.35s ease-in-out, visibility 0.35s;
+            background: #000000; transition: opacity 0.35s ease-in-out, visibility 0.35s;
         }
         #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .splash-content { display: flex; flex-direction: column; align-items: center; gap: 24px; }
@@ -40,8 +40,8 @@
     </style>
 
     <!-- Unified Stylesheet -->
-    <link rel="stylesheet" href="css/global.css?v=20261102T1938">
-    <link rel="stylesheet" href="css/global-mobile.css?v=20261101T0105" media="(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)">
+    <link rel="stylesheet" href="css/global.css?v=20261117T1531">
+    <link rel="stylesheet" href="css/global-mobile.css?v=20261117T1531" media="(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)">
 </head>
 
 <body>

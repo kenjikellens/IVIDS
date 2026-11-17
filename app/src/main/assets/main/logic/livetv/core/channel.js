@@ -64,12 +64,30 @@ export class Channel {
         this.sourcePriority = typeof data.sourcePriority === 'number' ? data.sourcePriority : 50;
         this.headers = data.headers || {};
         this.country = Channel.resolveExactCountry(data.country, this.group, this.groupTags, this.name, this.tvgId);
+        this.countries = new Set(this.country ? [this.country] : []);
         this.isSports = Boolean(
             data.isSports ||
             Channel.detectSports(this.name, this.group, this.groupTags)
         );
         this.isLiveMatch = Boolean(data.isLiveMatch);
         this.media_type = 'live';
+    }
+
+    /**
+     * Associates an additional canonical country bucket with this channel so multi-country
+     * or language-overlapping streams are never hidden from a country list during deduplication.
+     *
+     * @param {string} country - Canonical country key (e.g. 'belgium').
+     * @returns {boolean} True if the country was newly added.
+     */
+    addCountry(country) {
+        if (!country || typeof country !== 'string') return false;
+        const clean = country.trim().toLowerCase();
+        if (!clean || clean === 'global') return false;
+        if (!this.country) this.country = clean;
+        if (this.countries.has(clean)) return false;
+        this.countries.add(clean);
+        return true;
     }
 
     /**
@@ -153,7 +171,7 @@ export class Channel {
     static detectSports(name = '', group = '', groupTags = []) {
         const tags = Array.isArray(groupTags) ? groupTags.join(' ') : '';
         const combined = `${tags} ${group} ${name}`.toLowerCase();
-        return /sport|voetbal|football|soccer|canal\+\s*(foot|sport|live)|bein|ziggo|dazn|eurosport|espn|sky\s*sport|tnt\s*sport|arena\s*sport|premier\s*league|fighting|motor|golf|tennis|nba|nfl|ufc|f1/i.test(combined);
+        return /sport|voetbal|football|soccer|canal\+\s*(foot|sport|live)|bein|ziggo|dazn|eurosport|espn|sky\s*sport|tnt\s*sport|arena\s*sport|premier\s*league|fighting|motor|golf|tennis|nba|nfl|ufc|f1|real\s*madrid|bar[cç]a\s*tv|teledeporte|l['’]?[eé]quipe|equidia|fifa\+?|uefa|red\s*bull\s*tv|billiard|poker|wpt|pfl|mma|boxing|glory|wrestling|tna|wwe|mlb|nhl|nascar|motogp|cycling|uci|horse\s*&?\s*country|fuel\s*tv|pac-?12|big\s*ten|sec\s*network|fanduel|tudn|tyc|gol\s*tv|mutv|lfctv|celtic\s*tv|benfica\s*tv|sportitalia|supertennis|sporza/i.test(combined);
     }
 
     /**

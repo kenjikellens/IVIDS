@@ -9,7 +9,7 @@ import { domRecycler } from './dom-recycler.js';
 const _htmlCache = new Map();
 
 /** Cache key for page templates so edited mobile button markup is fetched after an app restart. */
-let PAGE_TEMPLATE_CACHE_VERSION = '20261102T1938';
+let PAGE_TEMPLATE_CACHE_VERSION = '20261117T1453';
 
 /** Flag to track whether the initial boot page has loaded. Used to skip splash signals on subsequent loads. */
 let _initialLoadComplete = false;
@@ -20,11 +20,137 @@ let _loadGeneration = 0;
 /** Active AbortController for aborting in-flight HTML template fetches on page change or timeout. */
 let _activeAbortController = null;
 
+/** Session storage key for persisting navigation history across reloads on mobile/browser. */
+const NAV_HISTORY_STORAGE_KEY = 'ivids-nav-history';
+const MAX_NAV_HISTORY = 30;
+
 export const Router = {
     currentPage: null,
     params: {},
     history: [],
     isLoading: false,
+
+    /**
+     * Persists the in-memory navigation history stack to sessionStorage.
+     */
+    saveHistory() {
+        try {
+            const trimmed = this.history.slice(-MAX_NAV_HISTORY);
+            sessionStorage.setItem(NAV_HISTORY_STORAGE_KEY, JSON.stringify(trimmed));
+        } catch (e) {
+            // Ignore storage quota or restricted-context errors
+        }
+    },
+
+    /**
+     * Restores the navigation history stack from sessionStorage if available.
+     */
+    restoreHistory() {
+        try {
+            const raw = sessionStorage.getItem(NAV_HISTORY_STORAGE_KEY);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) {
+                    this.history = parsed.filter(entry => entry && typeof entry.page === 'string');
+                }
+            }
+        } catch (e) {
+            this.history = [];
+        }
+    },
+
+    /**
+     * Converts a route name and parameter dictionary into a standard query string.
+     * Supports subpage and deep-link parameters without server-side URL rewriting.
+     * @param {string} pageName - The page identifier (e.g. 'details', 'playlist-details').
+     * @param {Object} params - The parameter key-value pairs (e.g. { sub: 'playback', id: '123' }).
+     * @returns {string} Serialized query string (e.g. '?page=details&type=movie&id=550').
+     */
+    buildQueryString(pageName, params = {}) {
+        const queryParams = new URLSearchParams();
+        queryParams.set('page', pageName || 'home');
+
+        for (const [key, value] of Object.entries(params)) {
+            if (value !== undefined && value !== null && value !== '' && key !== 'route') {
+                queryParams.set(key, String(value));
+            }
+        }
+        return `?${queryParams.toString()}`;
+    },
+
+    /**
+     * Parses the current browser URL query parameters (or legacy hash) into route name and params.
+     * @returns {{ page: string, params: Object }} Parsed route state.
+     */
+    parseCurrentUrl() {
+        const search = window.location.search;
+        if (search) {
+            const queryParams = new URLSearchParams(search);
+            const page = queryParams.get('page');
+            if (page) {
+                const params = {};
+                for (const [key, value] of queryParams.entries()) {
+                    if (key !== 'page') {
+                        params[key] = value;
+                    }
+                }
+                return { page, params };
+            }
+        }
+
+        // Legacy hash fallback (e.g. #settings)
+        const hashRoute = window.location.hash ? window.location.hash.replace(/^#\/?/, '').split('?')[0] : '';
+        if (hashRoute) {
+            return { page: hashRoute, params: {} };
+        }
+
+        return { page: 'home', params: {} };
+    },
+
+    /**
+     * Synchronizes browser URL bar with the active route and subpage parameters without reloading.
+     * Safely no-ops on file:// environments (Android WebView / Tizen).
+     * @param {string} pageName - The route name.
+     * @param {Object} params - The route/subpage parameters.
+     * @param {boolean} replace - Whether to replace the current history entry instead of pushing.
+     */
+    syncUrl(pageName, params = {}, replace = false) {
+        if (window.location.protocol === 'file:' || !window.history || !window.history.pushState) return;
+
+        const cleanParams = { ...params };
+        delete cleanParams.route;
+        const newUrl = `${window.location.pathname}${this.buildQueryString(pageName, cleanParams)}`;
+        const state = { page: pageName, params: cleanParams };
+
+        try {
+            if (replace) {
+                window.history.replaceState(state, '', newUrl);
+            } else {
+                window.history.pushState(state, '', newUrl);
+            }
+        } catch (e) {
+            console.warn('Router.syncUrl failed:', e);
+        }
+    },
+
+    /**
+     * Updates subpage/tab query parameters for the currently active page without reloading it.
+     * @param {Object} partialParams - Key-value pairs to merge into active route params (null/'' removes key).
+     * @param {boolean} replace - Whether to replace history instead of pushing a new entry.
+     */
+    updateSubpageParams(partialParams = {}, replace = false) {
+        if (!this.currentPage) return;
+        const merged = { ...this.params };
+        for (const [key, value] of Object.entries(partialParams)) {
+            if (value === undefined || value === null || value === '') {
+                delete merged[key];
+            } else {
+                merged[key] = String(value);
+            }
+        }
+        this.params = merged;
+        this.syncUrl(this.currentPage, merged, replace);
+    },
 
     /**
      * Clears the HTML template cache and forces a clean reload of the currently active route.
@@ -73,10 +199,16 @@ export const Router = {
 
         // Save current page to history before navigating away
         if (addToHistory && this.currentPage) {
+            const cleanPrevParams = { ...this.params };
+            delete cleanPrevParams.route;
             this.history.push({
                 page: this.currentPage,
-                params: this.params
+                params: cleanPrevParams
             });
+            if (this.history.length > MAX_NAV_HISTORY) {
+                this.history.shift();
+            }
+            this.saveHistory();
         }
 
         _loadGeneration++;
@@ -222,7 +354,7 @@ export const Router = {
 
                 // 4. Load Spatial Navigation Logic
                 try {
-                    const navModule = await import(`../../logic/spatial-nav/spatial-nav-${pageName}.js`);
+                    const navModule = await import(`../../logic/spatial-nav/spatial-nav-${pageName}.js?v=${PAGE_TEMPLATE_CACHE_VERSION}`);
                     if (currentGen !== _loadGeneration) return;
                     const logicKey = `spatialNav${pageName.charAt(0).toUpperCase()}${pageName.slice(1).replace(/-([a-z])/g, (g) => g[1].toUpperCase())}`;
                     if (navModule && navModule[logicKey]) {
@@ -256,7 +388,7 @@ export const Router = {
 
                 // Pre-import critical page modules and prefetch HTML templates after initial load for faster subsequent navigation
                 setTimeout(() => {
-                    const criticalPages = ['home', 'details', 'search', 'movies', 'series'];
+                    const criticalPages = ['home', 'details', 'search', 'movies', 'series', 'livetv', 'playlists'];
                     criticalPages.forEach(p => {
                         if (p !== pageName) {
                             const isBrowse = ['home', 'movies', 'series'].includes(p);
@@ -293,6 +425,7 @@ export const Router = {
             if (currentGen !== _loadGeneration) return;
 
             this.currentPage = pageName;
+            this.syncUrl(pageName, params, !addToHistory);
 
             // 4. Update active nav item
             this.updateActiveNavLink(pageName);
@@ -388,15 +521,17 @@ export const Router = {
     goBack(fallbackPage = null, fallbackParams = {}) {
         if (this.history.length > 0) {
             const lastPage = this.history.pop();
-            this.loadPage(lastPage.page, lastPage.params, false);
+            this.saveHistory();
+            this.loadPage(lastPage.page, lastPage.params || {}, false);
         } else {
-            // No history (likely after reload)
-            const fallback = fallbackPage || this.getFallbackPage(this.currentPage, this.params);
-            if (fallback) {
-                console.log(`No history, using fallback: ${fallback}`);
-                this.loadPage(fallback, fallbackParams, false);
+            // No history (likely after direct deep-link boot)
+            const fallback = fallbackPage
+                ? { page: fallbackPage, params: fallbackParams }
+                : this.getFallbackRoute(this.currentPage, this.params);
+            if (fallback && fallback.page) {
+                console.log(`No history, using fallback: ${fallback.page}`);
+                this.loadPage(fallback.page, fallback.params || {}, false);
             } else if (this.currentPage !== 'home') {
-                // Absolute fallback to home
                 this.loadPage('home', {}, false);
             } else {
                 console.log('Already on home and no history. App will not close.');
@@ -405,7 +540,22 @@ export const Router = {
     },
 
     /**
-     * Determines the appropriate fallback page to load when there is no navigation history.
+     * Resolves a smart fallback route (including required IDs) when history is empty.
+     * Ensures returning from player always lands on details for that item when possible.
+     * @param {string} currentPage - The name of the active page.
+     * @param {Object} [params] - Active route parameter mapping.
+     * @returns {{ page: string, params: Object }} Target fallback route and parameters.
+     */
+    getFallbackRoute(currentPage, params = {}) {
+        if (currentPage === 'player' && params && params.id && params.type) {
+            return { page: 'details', params: { id: params.id, type: params.type } };
+        }
+        const page = this.getFallbackPage(currentPage, params);
+        return { page, params: {} };
+    },
+
+    /**
+     * Determines the appropriate fallback page name when there is no navigation history.
      * Maps the current page to its logical parent page in the app hierarchy.
      * @param {string} currentPage - The name of the active page.
      * @param {Object} [params] - Route parameter mapping.

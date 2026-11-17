@@ -273,7 +273,7 @@
     "tryingVia": "{source} 통해 시도 중..."
   },
   "playlists": {
-    "title": "내 플레이리스트",
+    "title": "재생목록",
     "sidebarTitle": "플레이리스트",
     "createShort": "+ 만들기",
     "create": "새 플레이리스트 만들기",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "재생목록에서 제거",
     "clearHistory": "시청 기록 삭제",
     "clearHistoryTitle": "최근 시청 기록 삭제",
-    "clearHistoryMessage": "최근 시청 기록을 삭제하시겠습니까?"
+    "clearHistoryMessage": "최근 시청 기록을 삭제하시겠습니까?",
+    "itemSingle": "1개 항목",
+    "itemPlural": "{count}개 항목",
+    "browseContent": "콘텐츠 둘러보기",
+    "options": "옵션",
+    "addToOtherPlaylist": "다른 재생목록에 추가"
   },
   "row": {
     "trending": "인기 급상승",

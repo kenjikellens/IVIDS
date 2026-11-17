@@ -150,30 +150,37 @@ export const spatialNavPlaylists = {
         // 2. Modal Focus Trap / Dialog Navigation: Create Playlist Dialog
         const inCreateModal = current.closest('#create-playlist-modal') !== null;
         if (inCreateModal) {
+            const input = document.getElementById('new-playlist-name');
+            const cancelBtn = document.getElementById('cancel-create-btn');
+            const confirmBtn = document.getElementById('confirm-create-btn');
+            const isStacked = cancelBtn && confirmBtn && Math.abs(cancelBtn.getBoundingClientRect().top - confirmBtn.getBoundingClientRect().top) > 10;
+
             if (current.id === 'new-playlist-name') {
                 if (direction === 'down') {
-                    const confirmBtn = document.getElementById('confirm-create-btn');
+                    if (isStacked && cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
                     if (confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
-                }
-            } else if (current.id === 'confirm-create-btn') {
-                if (direction === 'up') {
-                    const input = document.getElementById('new-playlist-name');
-                    if (input && isElementVisible(input)) return input;
-                }
-                if (direction === 'down') {
-                    const cancelBtn = document.getElementById('cancel-create-btn');
                     if (cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
                 }
-            } else if (current.id === 'cancel-create-btn') {
-                if (direction === 'up') {
-                    const confirmBtn = document.getElementById('confirm-create-btn');
-                    if (confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
-                }
+                return current;
             }
-            return null;
+            if (current.id === 'cancel-create-btn') {
+                if (direction === 'up' && input && isElementVisible(input)) return input;
+                if (direction === 'right' && !isStacked && confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
+                if (direction === 'down' && isStacked && confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
+                return current;
+            }
+            if (current.id === 'confirm-create-btn') {
+                if (direction === 'up') {
+                    if (isStacked && cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
+                    if (input && isElementVisible(input)) return input;
+                }
+                if (direction === 'left' && !isStacked && cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
+                return current;
+            }
+            return current;
         }
 
-        // 3. Header Actions: 'Create Playlist' button and optional filter/search controls
+        // 3. Header Actions: 'Create Playlist' button
         const inHeader = current.closest('.page-header') !== null || current.id === 'create-playlist-btn';
         if (inHeader) {
             const headerActions = Array.from(document.querySelectorAll('.page-header .focusable, #create-playlist-btn.focusable')).filter(isElementVisible);
@@ -181,58 +188,44 @@ export const spatialNavPlaylists = {
 
             if (direction === 'left') {
                 if (currentIndex > 0) return headerActions[currentIndex - 1];
-                return getActiveSidebarItem();
+                return getActiveSidebarItem() || current;
             }
             if (direction === 'right') {
                 if (currentIndex >= 0 && currentIndex < headerActions.length - 1) return headerActions[currentIndex + 1];
-                return null;
+                return current;
             }
             if (direction === 'down') {
-                // Down moves into the playlist cards grid (.media-grid)
                 const firstCard = document.querySelector('#playlists-grid .card.focusable, #playlists-grid .playlist-card.focusable, #playlists-grid .focusable');
                 if (firstCard && isElementVisible(firstCard)) return firstCard;
-                return null;
+                return current;
             }
             if (direction === 'up') {
-                return null;
+                return current;
             }
         }
 
-        // 4. Playlist Cards 2D Grid: Left/Right within row, Up/Down across rows
+        // 4. Playlist Cards Vertical List: Left -> Sidebar, Up/Down between cards, Right trapped
         const inGrid = current.closest('#playlists-grid') !== null || current.classList.contains('playlist-card');
         if (inGrid) {
             if (direction === 'left') {
                 const sibling = findRowCardSibling(current, 'left');
                 if (sibling) return sibling;
-                // Column 0 moving left returns to sidebar rail
-                return getActiveSidebarItem();
+                return getActiveSidebarItem() || current;
             }
             if (direction === 'right') {
-                return findRowCardSibling(current, 'right');
+                return findRowCardSibling(current, 'right') || current;
             }
             if (direction === 'up') {
                 const above = findAdjacentGridCard(current, 'up');
                 if (above) return above;
-                // Row 0 moving up returns to header actions
                 const headerActions = Array.from(document.querySelectorAll('.page-header .focusable, #create-playlist-btn.focusable')).filter(isElementVisible);
                 if (headerActions.length > 0) {
-                    const currentCenterX = current.getBoundingClientRect().left + current.getBoundingClientRect().width / 2;
-                    let closest = headerActions[0];
-                    let minDiff = Infinity;
-                    for (const action of headerActions) {
-                        const r = action.getBoundingClientRect();
-                        const diff = Math.abs((r.left + r.width / 2) - currentCenterX);
-                        if (diff < minDiff) {
-                            minDiff = diff;
-                            closest = action;
-                        }
-                    }
-                    return closest;
+                    return headerActions[headerActions.length - 1];
                 }
-                return null;
+                return current;
             }
             if (direction === 'down') {
-                return findAdjacentGridCard(current, 'down');
+                return findAdjacentGridCard(current, 'down') || current;
             }
         }
 

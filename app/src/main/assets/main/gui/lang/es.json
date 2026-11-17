@@ -268,7 +268,7 @@
     "tryingVia": "Probando vía {source}..."
   },
   "playlists": {
-    "title": "Mis listas",
+    "title": "Listas de reproducción",
     "sidebarTitle": "Listas",
     "createShort": "+ Crear lista",
     "create": "Crear nueva lista",
@@ -297,7 +297,12 @@
     "removeFromPlaylist": "Eliminar de la lista de reproducción",
     "clearHistory": "Borrar historial",
     "clearHistoryTitle": "Borrar vistos recientemente",
-    "clearHistoryMessage": "¿Está seguro de que desea borrar su historial de vistos recientemente?"
+    "clearHistoryMessage": "¿Está seguro de que desea borrar su historial de vistos recientemente?",
+    "itemSingle": "1 elemento",
+    "itemPlural": "{count} elementos",
+    "browseContent": "Explorar contenido",
+    "options": "Opciones",
+    "addToOtherPlaylist": "Añadir a otra lista"
   },
   "row": {
     "trending": "Tendencias ahora",

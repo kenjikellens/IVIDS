@@ -128,10 +128,10 @@
 #app #filter-modal .form-select-trigger { border-radius: 12px; font-size: 15px; height: 48px; }
 #app #filter-modal .chip-grid--3col, #app #genre-modal .chip-grid--3col, #app #country-modal .chip-grid--3col { gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-/* Mobile details page root container with safe-area spacing and bottom nav rail clearance. */
+/* Mobile details page root container with safe-area spacing and clean solid background (no accent glow). */
 #app .details-page {
+    background: var(--background-color);
     background-color: var(--background-color);
-    background: radial-gradient(circle at 50% 0%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 35%, transparent 70%), linear-gradient(180deg, rgba(8, 8, 8, 0.6) 0%, var(--background-color) 100%);
     box-sizing: border-box;
     min-height: 100vh;
     padding-top: calc(8px + env(safe-area-inset-top, 0px));
@@ -172,8 +172,9 @@
     width: 18px;
 }
 
-/* Mobile: Details backdrop image hidden completely as requested. */
+/* Mobile: Details and Playlist backdrop images hidden completely as requested. */
 #app .details-backdrop,
+#app .playlist-backdrop,
 #app .details-backdrop-overlay {
     display: none !important;
 }
@@ -182,6 +183,8 @@
 #app .details-top { align-items: center; display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; padding-top: 0; text-align: center; }
 #app .details-poster-container { display: flex; justify-content: center; margin-bottom: 2px; order: 1; width: 100%; }
 #app .details-hero-poster { border: 2px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-sm); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); height: auto; max-height: 155px; max-width: 28vw; min-width: 90px; width: 105px; }
+/* Widescreen 16:9 hero cover proportions for playlist details on mobile. */
+#app .playlist-hero-cover { aspect-ratio: 16 / 9; max-height: 135px; max-width: 64vw; object-fit: cover; width: 210px; }
 #app .details-info { align-items: center; display: flex; flex-direction: column; max-width: 100%; order: 2; text-align: center; width: 100%; }
 #app #details-title, #app .details-info .details-title, #app .details-title { font-size: clamp(20px, 5.5vw, 24px); font-weight: 800; line-height: 1.25; margin: 2px auto; text-align: center; width: 100%; }
 #app .details-overview { display: none; }
@@ -194,6 +197,7 @@
 #app .details-play-icon { display: inline-block !important; filter: brightness(0); height: 16px; pointer-events: none; width: 16px; }
 #app .details-play-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 14px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: hidden; position: static; text-overflow: ellipsis; white-space: nowrap; }
 #app #details-trailer, #app #details-playlist { align-items: center; background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; display: inline-flex; flex: 1 1 0; font-size: 13.5px; font-weight: 600; gap: 6px; height: 48px; justify-content: center; min-height: 48px; min-width: 0; padding: 0 10px; width: auto; }
+#app .details-actions .details-mobile-icon { display: inline-block !important; }
 #app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 16px; height: 16px; pointer-events: none; width: 16px; }
 #app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -353,6 +357,26 @@
 
 /* Single column grid flow for custom playlists grid on mobile. */
 #app .media-grid--widescreen, #app .playlists-grid { gap: 12px; grid-template-columns: 1fr; }
+/* Vertical stack of horizontal playlist cards on mobile with cover, centered title/count, and right item list. */
+#app .playlists-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+#app .playlist-card { gap: 10px; height: 92px; padding: 8px 10px 8px 8px; }
+#app .playlist-card__title { font-size: 17px; }
+#app .playlist-card__count { font-size: 13px; }
+/* Hide right-hand scrolling items box on mobile for a clean 2-column touch row. */
+#app .playlist-card__items-box { display: none; }
+#app .playlist-card__item-line { font-size: 11px; }
+/* Compact mobile playlist header with inline create button and touch-friendly item rows. */
+#app .playlists-container .page-header { align-items: center; flex-direction: row; justify-content: space-between; }
+/* Mobile elevated summary card and items container for playlist details. */
+#app #playlist-details-view.details-page { padding-top: calc(56px + env(safe-area-inset-top, 0px)); }
+#app .playlist-header-card { background: rgba(255, 255, 255, 0.04); border: none; border-radius: var(--radius-md); padding: 16px; width: 100%; }
+#app .playlist-items-section { background: transparent; border: none; padding: 0; width: 100%; }
+#app .playlist-item-row { gap: 8px; margin-bottom: 10px; }
+#app .playlist-item-actions { gap: 6px; }
+#app .playlist-item-actions .btn--circle { height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
+/* Mobile uses compact overflow context menu button instead of separate move and delete buttons. */
+#app .playlist-action-move, #app .playlist-action-delete { display: none; }
+#app .playlist-action-more { display: inline-flex; }
 
 /* Mobile container top padding overrides to accommodate phone top status bar and notch areas. */
 #app .playlists-container, #app .settings-container, #app .account-container, #app .page-container {
@@ -417,7 +441,7 @@ html body .modal__dialog--sm, body .modal__dialog--sm,
 html body .modal__dialog--md, body .modal__dialog--md,
 html body .modal__dialog--lg, body .modal__dialog--lg,
 html body .modal__dialog--xl, body .modal__dialog--xl {
-    background: #050505;
+    background: #000000;
     border: none;
     border-radius: 0;
     box-shadow: none;
@@ -558,37 +582,132 @@ html body #version-selector-modal .modal__footer, body #version-selector-modal .
 }
 
 /* Provider item container inside mobile sub-page */
+/* Clean flat mobile reorder rows matching Settings list aesthetic instead of stacked grey boxes. */
+body .provider-item,
 .provider-item {
-    align-items: stretch;
+    align-items: center;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid #1a1a1a !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     box-sizing: border-box;
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    justify-content: space-between;
+    margin-bottom: 0 !important;
+    min-height: 56px;
+    padding: 12px 4px !important;
     width: 100%;
 }
-/* Provider item header container */
+body .provider-item:first-child,
+.provider-item:first-child {
+    border-top: 1px solid #1a1a1a !important;
+}
+/* Playback Order rows (no URL input) support direct full-row touch drag. */
+body .provider-item:not(:has(input)),
+.provider-item:not(:has(input)) {
+    flex-wrap: nowrap;
+    touch-action: none;
+}
+body .provider-item.moving, body .provider-item.dragging,
+.provider-item.moving, .provider-item.dragging {
+    background: #141414 !important;
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.5) !important;
+    border-top: 1px solid rgba(var(--primary-rgb), 0.5) !important;
+}
+/* Provider item header container placed inline left of actions. */
 .provider-header {
     align-items: center;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px;
-    width: 100%;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    margin-bottom: 0;
+    min-width: 0;
+    order: 1;
+    width: auto;
 }
 /* Provider item title and server label */
 .provider-title {
-    color: #ffffff;
-    font-size: 14.5px;
-    font-weight: 700;
+    color: #f1f1f1;
+    font-size: 15.5px;
+    font-weight: 500;
     letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-/* Action button bar inside provider item */
+/* Action button bar aligned inline on the right of provider/order title. */
 .provider-actions {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 2px;
     justify-content: flex-end;
-    width: 100%;
+    order: 2;
+    width: auto;
 }
-/* Hide drag and reorder handles on mobile portrait touchscreens */
-html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
+/* URL input placed cleanly underneath header+actions on provider/M3U rows. */
+body .provider-item .form-input {
+    background: #0d0d0d;
+    border: 1px solid #242424;
+    border-radius: 10px;
+    flex: 1 0 100%;
+    font-size: 14px;
+    height: 44px;
+    min-height: 44px;
+    order: 3;
+    padding: 0 12px;
+}
+/* Borderless 6-dot drag grip replacing the square 2-arrow box button on mobile touchscreens. */
+html body .provider-actions .provider-move-btn,
+body .provider-actions .provider-move-btn,
+.provider-actions .provider-move-btn {
+    align-items: center;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    cursor: grab;
+    display: inline-flex;
+    height: 44px !important;
+    justify-content: center;
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0 !important;
+    touch-action: none;
+    width: 44px !important;
+}
+.provider-move-btn .setting-edit-icon {
     display: none !important;
+}
+.provider-move-btn::after {
+    background-color: #888888;
+    content: "";
+    display: inline-block;
+    height: 22px;
+    mask: url('../svg/drag-handle.svg') no-repeat center / contain;
+    -webkit-mask: url('../svg/drag-handle.svg') no-repeat center / contain;
+    width: 22px;
+}
+.provider-item.moving .provider-move-btn::after,
+.provider-item.dragging .provider-move-btn::after,
+.provider-move-btn:active::after {
+    background-color: #ffffff;
+}
+/* Clean borderless trash icon button next to custom provider rows on mobile. */
+body .provider-actions .provider-delete-btn {
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0 !important;
+    width: 44px !important;
 }
 
 /* Responsive full-width language stepper for mobile sub-page */
@@ -708,8 +827,14 @@ html body .provider-move-btn, body .provider-move-btn, .provider-move-btn {
 #app .btn--ghost { background: transparent; border-color: transparent; box-shadow: none; color: rgba(255, 255, 255, 0.82); }
 #app .btn:active { filter: brightness(0.92); opacity: 1; transform: none; }
 #app .btn:focus-visible, #app .btn.focused { border-color: #ffffff; outline: 2px solid #ffffff; outline-offset: 2px; }
-#app .btn--circle, #app .btn-circle { border-radius: 50%; height: 48px; min-height: 48px; min-width: 48px; padding: 0; width: 48px; }
-#app .btn--sm, #app .btn-small { min-height: 48px; }
+/* Circular icon button modifiers preserved after shared #app .btn rule to match Player buttons. */
+#app .btn--circle, #app .btn-circle,
+#app .btn--circle-md, #app .btn--circle-lg,
+#app .tv-back-btn, #app .tv-settings-btn { border-radius: 50%; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
+#app .btn--circle-sm { border-radius: 50%; height: 32px; min-height: 32px; min-width: 32px; padding: 0; width: 32px; }
+#app .btn--circle-xl { border-radius: 50%; height: 56px; min-height: 56px; min-width: 56px; padding: 0; width: 56px; }
+#app .btn--square, body .modal .btn--square { border-radius: var(--radius-sm); height: 42px; min-height: 42px; min-width: 42px; padding: 0; width: 42px; }
+#app .btn--sm, #app .btn-small { min-height: 44px; }
 
 /* Poster cards keep a consistent portrait crop, dark edge, and soft lift on mobile. */
 #app .card--poster, #app .poster-wrapper { aspect-ratio: 2 / 3; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6); height: auto; overflow: hidden; }
@@ -776,11 +901,11 @@ body .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); bor
     }
 }
 
-/* Unified neutral mobile surface and button system; accent colors stay in user-selected swatches. */
-:root { --mobile-surface: #0f0f0f; --mobile-panel: #181818; --mobile-border: #303030; --mobile-muted: #a1a1a1; --mobile-ink: #111111; }
+/* Pure OLED black mobile surface tokens matching the #000000 desktop/modal base. */
+:root { --mobile-surface: #000000; --mobile-panel: #0a0a0a; --mobile-border: #222222; --mobile-muted: #a1a1a1; --mobile-ink: #111111; }
 html, body, #app { background-color: var(--mobile-surface); }
 #main-view { height: 100dvh; overscroll-behavior-y: contain; }
-#app .nav-rail, #app .navbar { background: #0f0f0f; border-top-color: #2a2a2a; display: flex; gap: 0; justify-content: space-around; padding-left: calc(6px + env(safe-area-inset-left, 0px)); padding-right: calc(6px + env(safe-area-inset-right, 0px)); }
+#app .nav-rail, #app .navbar { background: #000000; border-top-color: #1c1c1c; display: flex; gap: 0; justify-content: space-around; padding-left: calc(6px + env(safe-area-inset-left, 0px)); padding-right: calc(6px + env(safe-area-inset-right, 0px)); }
 #app #sidebar-container .nav-rail #nav-links > .nav-item { -webkit-tap-highlight-color: transparent; background: transparent; border: 2px solid transparent; border-radius: 10px; box-shadow: none; box-sizing: border-box; flex: initial; height: 48px; margin: 0; max-width: none; min-height: 48px; min-width: 0; outline: none; padding: 0; touch-action: manipulation; transition: background-color 140ms ease, opacity 140ms ease, transform 160ms cubic-bezier(0.2, 0, 0, 1); width: 100%; }
 /* YouTube-style bottom navigation without grey background boxes. */
 #app #sidebar-container .nav-rail .nav-item.active, #app #sidebar-container .nav-rail .nav-item.is-active { background: transparent; border-color: transparent; }
@@ -807,9 +932,9 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .form-toggle:focus-visible, #app .form-toggle.focused { outline: 2px solid var(--primary-color); outline-offset: 2px; }
 
 /* Tactile hero play button on mobile with visible label and icon. */
-#app .hero-buttons #play-btn, #app #play-all-btn, body #context-play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
-#app .hero-buttons #play-btn .mobile-play-icon, #app #play-all-btn .mobile-play-icon, body #context-play-btn .mobile-play-icon { display: inline-block !important; fill: #111111; height: 18px; pointer-events: none; width: 18px; }
-#app .hero-buttons #play-btn .play-button-label, #app #play-all-btn .play-button-label, body #context-play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
+#app .hero-buttons #play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
+#app .hero-buttons #play-btn .mobile-play-icon { display: inline-block !important; fill: #111111; height: 18px; pointer-events: none; width: 18px; }
+#app .hero-buttons #play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
 
 /* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */
 #app .settings-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
@@ -823,9 +948,18 @@ html, body, #app { background-color: var(--mobile-surface); }
 body #advanced-settings-modal .section-title { border: 0; color: #888888; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
 #app .settings-section .section-title__icon,
 body #advanced-settings-modal .section-title__icon { display: none; }
-body #advanced-settings-modal .modal__dialog { padding-left: 0; padding-right: 0; }
-body #advanced-settings-modal .modal__title { box-sizing: border-box; margin: 0 0 8px; padding-left: 52px; padding-right: 52px; width: 100%; }
-body #advanced-settings-modal .modal__body { padding: 0; width: 100%; }
+body #advanced-settings-modal .modal__dialog,
+body #item-context-modal .modal__dialog,
+body #add-to-other-playlist-modal .modal__dialog { padding-left: 0; padding-right: 0; }
+body #advanced-settings-modal .modal__title,
+body #item-context-modal .modal__title,
+body #add-to-other-playlist-modal .modal__title { box-sizing: border-box; margin: 0 0 8px; padding-left: 52px; padding-right: 52px; width: 100%; }
+body #advanced-settings-modal .modal__body,
+body #item-context-modal .modal__body,
+body #add-to-other-playlist-modal .modal__body { padding: 0; width: 100%; }
+body #item-context-modal .settings-container,
+body #add-to-other-playlist-modal .settings-container { padding: 8px 0 0; }
+body .setting-item--danger .setting-label { color: #ff5c66; }
 
 /* Suppress TV spatial-nav persistent focus outlines on mobile touch viewports. */
 #app .btn:focus-visible, #app .btn.focused,
@@ -839,31 +973,42 @@ body .modal .focusable:focus-visible, body .modal .focusable.focused {
     box-shadow: none !important;
 }
 
-/* Full-width YouTube-style touch rows: clean title, subtle subtitle, and right-aligned chevron. */
+/* Full-width YouTube-style touch rows matching Player Settings modal across settings and context modals. */
 #app .settings-container .setting-item,
-body #advanced-settings-modal .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; }
+body .modal .settings-container .setting-item,
+body #advanced-settings-modal .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; text-align: left; }
 #app .settings-container .setting-item:first-of-type,
+body .modal .settings-container .setting-item:first-of-type,
 body #advanced-settings-modal .setting-item:first-of-type { border-top: 1px solid #1a1a1a; }
 #app .settings-container .setting-item:active,
+body .modal .settings-container .setting-item:active,
 body #advanced-settings-modal .setting-item:active { background: rgba(255, 255, 255, 0.08); }
 #app .settings-container .setting-info,
+body .modal .settings-container .setting-info,
 body #advanced-settings-modal .setting-info { flex: 1 1 auto; min-width: 0; padding-right: 12px; }
 #app .settings-container .setting-label,
+body .modal .settings-container .setting-label,
 body #advanced-settings-modal .setting-label { color: #f1f1f1; font-size: 16px; font-weight: 400; line-height: 1.35; margin: 0; }
 #app .settings-container .setting-description,
+body .modal .settings-container .setting-description,
 body #advanced-settings-modal .setting-description { color: #888888; display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; }
 
-/* Subtitle/value display and chevron indicators in YouTube style. */
+/* Subtitle/value display and chevron indicators matching Player Settings style. */
 #app .settings-container .setting-control,
+body .modal .settings-container .setting-control,
 body #advanced-settings-modal .setting-control { align-items: center; display: inline-flex; flex: 0 0 auto; gap: 6px; justify-content: flex-end; }
 #app .settings-container .current-value-display,
+body .modal .settings-container .current-value-display,
 body #advanced-settings-modal .current-value-display { align-items: center; background: transparent; border: 0; color: #888888; display: inline-flex; font-size: 14px; font-weight: 400; height: 24px; line-height: 1; margin-right: 4px; padding: 0; }
 #app .settings-container .color-preview-circle { border-radius: 50%; height: 16px; width: 16px; margin-right: 4px; display: inline-block; }
 #app .settings-container .setting-item .edit-trigger,
+body .modal .settings-container .setting-item .edit-trigger,
 body #advanced-settings-modal .setting-item .edit-trigger { align-items: center; background: transparent; border: 0; border-radius: 50%; display: inline-flex; height: 20px; justify-content: center; min-height: 20px; min-width: 14px; padding: 0; width: 14px; }
 #app .settings-container .setting-item .edit-trigger .setting-edit-icon,
+body .modal .settings-container .setting-item .edit-trigger .setting-edit-icon,
 body #advanced-settings-modal .setting-item .edit-trigger .setting-edit-icon { display: none; }
 #app .settings-container .setting-item .edit-trigger::after,
+body .modal .settings-container .setting-item .edit-trigger::after,
 body #advanced-settings-modal .setting-item .edit-trigger::after { background-color: #666666; content: ""; display: inline-block; height: 14px; mask: url('../images/arrow.svg') no-repeat center / contain; -webkit-mask: url('../images/arrow.svg') no-repeat center / contain; width: 14px; }
 
 /* Keep switches and scale steppers cleanly visible on the right. */
@@ -1052,8 +1197,8 @@ body #app-info-modal .modal__footer .btn {
 #app .profile-actions .btn--secondary { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
 #app .profile-actions .btn--danger { background: #e63946; border: 1px solid #e63946; color: #ffffff; }
 
-/* Login screen keeps its form within the phone width and uses a single clear primary action. */
-#app .login-page-wrapper { align-items: flex-start; background: #0f0f0f; box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
+/* Login screen keeps its form within the phone width on the pure black #000000 canvas. */
+#app .login-page-wrapper { align-items: flex-start; background: #000000; box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
 #app .login-card-container { max-width: 460px; width: 100%; }
 #app .login-panel { background: transparent; border: 0; border-radius: 0; box-shadow: none; max-height: none; overflow: visible; padding: 64px 0 12px; width: 100%; }
 #app #login-circle-back { background: transparent; border: 0; border-radius: 50%; height: 44px; left: 0; min-height: 44px; min-width: 44px; top: 0; width: 44px; }

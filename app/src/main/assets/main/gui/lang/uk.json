@@ -267,7 +267,7 @@
     "tryingVia": "Спроба через {source}..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "Плейлисти",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "Очистити історію",
     "clearHistoryTitle": "Очистити нещодавно переглянуті",
-    "clearHistoryMessage": "Ви впевнені, що хочете очистити історію недавніх переглядів?"
+    "clearHistoryMessage": "Ви впевнені, що хочете очистити історію недавніх переглядів?",
+    "itemSingle": "1 елемент",
+    "itemPlural": "{count} ел.",
+    "browseContent": "Огляд контенту",
+    "options": "Параметри",
+    "addToOtherPlaylist": "Додати до іншого плейлиста"
   },
   "row": {
     "trending": "Trending Now",

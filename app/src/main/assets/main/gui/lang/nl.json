@@ -268,7 +268,7 @@
     "tryingVia": "Proberen via {source}..."
   },
   "playlists": {
-    "title": "Mijn Afspeellijsten",
+    "title": "Afspeellijsten",
     "sidebarTitle": "Afspeellijsten",
     "createShort": "+ Maak Afspeellijst",
     "create": "Maak Nieuwe Afspeellijst",
@@ -297,7 +297,12 @@
     "removeFromPlaylist": "Verwijderen uit afspeellijst",
     "clearHistory": "Geschiedenis wissen",
     "clearHistoryTitle": "Recent bekeken wissen",
-    "clearHistoryMessage": "Weet u zeker dat u uw recent bekeken geschiedenis wilt wissen?"
+    "clearHistoryMessage": "Weet u zeker dat u uw recent bekeken geschiedenis wilt wissen?",
+    "itemSingle": "1 item",
+    "itemPlural": "{count} items",
+    "browseContent": "Blader door aanbod",
+    "options": "Opties",
+    "addToOtherPlaylist": "Toevoegen aan andere afspeellijst"
   },
   "row": {
     "trending": "Nu Trending",

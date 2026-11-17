@@ -273,7 +273,7 @@
     "tryingVia": "{source} के माध्यम से प्रयास किया जा रहा है..."
   },
   "playlists": {
-    "title": "मेरी प्लेलिस्ट",
+    "title": "प्लेलिस्ट",
     "sidebarTitle": "प्लेलिस्ट",
     "createShort": "+ प्लेलिस्ट बनाएं",
     "create": "नई प्लेलिस्ट बनाएं",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "प्लेलिस्ट से हटाएँ",
     "clearHistory": "इतिहास साफ़ करें",
     "clearHistoryTitle": "हाल ही में देखे गए साफ़ करें",
-    "clearHistoryMessage": "क्या आप वाकई अपने हाल ही में देखे गए इतिहास को साफ़ करना चाहते हैं?"
+    "clearHistoryMessage": "क्या आप वाकई अपने हाल ही में देखे गए इतिहास को साफ़ करना चाहते हैं?",
+    "itemSingle": "1 आइटम",
+    "itemPlural": "{count} आइटम",
+    "browseContent": "सामग्री ब्राउज़ करें",
+    "options": "विकल्प",
+    "addToOtherPlaylist": "अन्य प्लेलिस्ट में जोड़ें"
   },
   "row": {
     "trending": "ट्रेंडिंग",

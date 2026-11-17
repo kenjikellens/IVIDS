@@ -267,7 +267,7 @@
     "tryingVia": "Yritetään lähteen {source} kautta..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "Soittolistat",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "Tyhjennä historia",
     "clearHistoryTitle": "Tyhjennä äskettäin katsotut",
-    "clearHistoryMessage": "Haluatko varmasti tyhjentää äskettäin katsottujen historian?"
+    "clearHistoryMessage": "Haluatko varmasti tyhjentää äskettäin katsottujen historian?",
+    "itemSingle": "1 kohde",
+    "itemPlural": "{count} kohdetta",
+    "browseContent": "Selaa sisältöä",
+    "options": "Asetukset",
+    "addToOtherPlaylist": "Lisää toiseen soittolistaan"
   },
   "row": {
     "trending": "Trending Now",

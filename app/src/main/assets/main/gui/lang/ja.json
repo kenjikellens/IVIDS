@@ -273,7 +273,7 @@
     "tryingVia": "{source} 経由で試行中..."
   },
   "playlists": {
-    "title": "マイプレイリスト",
+    "title": "プレイリスト",
     "sidebarTitle": "プレイリスト",
     "createShort": "+ プレイリストを作成",
     "create": "新しいプレイリストを作成",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "プレイリストから削除",
     "clearHistory": "履歴を消去",
     "clearHistoryTitle": "最近見た履歴を消去",
-    "clearHistoryMessage": "最近見た履歴を消去してもよろしいですか？"
+    "clearHistoryMessage": "最近見た履歴を消去してもよろしいですか？",
+    "itemSingle": "1件",
+    "itemPlural": "{count}件",
+    "browseContent": "コンテンツを探す",
+    "options": "オプション",
+    "addToOtherPlaylist": "別のプレイリストに追加"
   },
   "row": {
     "trending": "今注目の作品",

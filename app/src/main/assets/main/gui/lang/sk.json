@@ -267,7 +267,7 @@
     "tryingVia": "Skúšam cez {source}..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "Zoznamy",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "Vymazať históriu",
     "clearHistoryTitle": "Vymazať nedávno sledované",
-    "clearHistoryMessage": "Naozaj chcete vymazať históriu nedávno sledovaných položiek?"
+    "clearHistoryMessage": "Naozaj chcete vymazať históriu nedávno sledovaných položiek?",
+    "itemSingle": "1 položka",
+    "itemPlural": "{count} položiek",
+    "browseContent": "Prehliadať obsah",
+    "options": "Možnosti",
+    "addToOtherPlaylist": "Pridať do iného zoznamu"
   },
   "row": {
     "trending": "Trending Now",

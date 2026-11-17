@@ -267,7 +267,7 @@
     "tryingVia": "מנסה דרך {source}..."
   },
   "playlists": {
-    "title": "הפלייליסטים שלי",
+    "title": "רשימות השמעה",
     "sidebarTitle": "רשימות השמעה",
     "createShort": "+ צור רשימת השמעה",
     "create": "צור רשימת השמעה חדשה",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "הסר מרשימת ההשמעה",
     "clearHistory": "נקה היסטוריה",
     "clearHistoryTitle": "נקה נצפה לאחרונה",
-    "clearHistoryMessage": "האם אתה בטוח שברצונך לנקות את ההיסטוריה שצפית לאחרונה?"
+    "clearHistoryMessage": "האם אתה בטוח שברצונך לנקות את ההיסטוריה שצפית לאחרונה?",
+    "itemSingle": "פריט 1",
+    "itemPlural": "{count} פריטים",
+    "browseContent": "עיין בתוכן",
+    "options": "אפשרויות",
+    "addToOtherPlaylist": "הוסף לרשימה אחרת"
   },
   "row": {
     "trending": "פופולרי עכשיו",

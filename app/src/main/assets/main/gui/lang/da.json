@@ -273,7 +273,7 @@
     "tryingVia": "Prøver via {source}..."
   },
   "playlists": {
-    "title": "Mine playlister",
+    "title": "Afspilningslister",
     "sidebarTitle": "Playlister",
     "createShort": "+ Opret liste",
     "create": "Opret ny playliste",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Fjern fra afspilningsliste",
     "clearHistory": "Ryd historik",
     "clearHistoryTitle": "Ryd senest sete",
-    "clearHistoryMessage": "Er du sikker på, at du vil rydde din oversigt over senest sete?"
+    "clearHistoryMessage": "Er du sikker på, at du vil rydde din oversigt over senest sete?",
+    "itemSingle": "1 element",
+    "itemPlural": "{count} elementer",
+    "browseContent": "Gennemse indhold",
+    "options": "Indstillinger",
+    "addToOtherPlaylist": "Føj til en anden playliste"
   },
   "row": {
     "trending": "Trending nu",

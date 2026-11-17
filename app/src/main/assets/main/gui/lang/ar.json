@@ -273,7 +273,7 @@
     "tryingVia": "جارٍ المحاولة عبر {source}..."
   },
   "playlists": {
-    "title": "قوائم التشغيل الخاصة بي",
+    "title": "قوائم التشغيل",
     "sidebarTitle": "قوائم التشغيل",
     "createShort": "+ إنشاء قائمة",
     "create": "إنشاء قائمة تشغيل جديدة",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "إزالة من قائمة التشغيل",
     "clearHistory": "مسح السجل",
     "clearHistoryTitle": "مسح المشاهدات الحديثة",
-    "clearHistoryMessage": "هل أنت متأكد من رغبتك في مسح سجل المشاهدات الحديثة؟"
+    "clearHistoryMessage": "هل أنت متأكد من رغبتك في مسح سجل المشاهدات الحديثة؟",
+    "itemSingle": "عنصر واحد",
+    "itemPlural": "{count} عناصر",
+    "browseContent": "تصفح المحتوى",
+    "options": "الخيارات",
+    "addToOtherPlaylist": "إضافة إلى قائمة أخرى"
   },
   "row": {
     "trending": "الأكثر تداولاً",

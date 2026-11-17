@@ -45,7 +45,7 @@ export class UpdatePrompt {
                             <div class="update-release-name"></div>
                         </div>
                         <div id="update-experimental-warning" class="update-experimental-warning" style="display: none;">
-                            <span class="warning-icon">⚠️</span>
+                            <img src="images/error.svg" class="warning-icon" alt="" aria-hidden="true">
                             <div class="warning-content">
                                 <span class="warning-title"></span>
                                 <p class="warning-text"></p>

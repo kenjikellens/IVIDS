@@ -273,7 +273,7 @@
     "tryingVia": "Prøver via {source}..."
   },
   "playlists": {
-    "title": "Mine spillelister",
+    "title": "Spillelister",
     "sidebarTitle": "Spillelister",
     "createShort": "+ Opprett liste",
     "create": "Opprett ny spilleliste",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Fjern fra spilleliste",
     "clearHistory": "Tøm historikk",
     "clearHistoryTitle": "Tøm nylig sett",
-    "clearHistoryMessage": "Er du sikker på at du vil tømme historikken over nylig sett?"
+    "clearHistoryMessage": "Er du sikker på at du vil tømme historikken over nylig sett?",
+    "itemSingle": "1 element",
+    "itemPlural": "{count} elementer",
+    "browseContent": "Bla gjennom innhold",
+    "options": "Alternativer",
+    "addToOtherPlaylist": "Legg til i en annen spilleliste"
   },
   "row": {
     "trending": "Trending nå",

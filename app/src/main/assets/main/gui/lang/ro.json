@@ -273,7 +273,7 @@
     "tryingVia": "Se încearcă prin {source}..."
   },
   "playlists": {
-    "title": "Listele mele",
+    "title": "Liste de redare",
     "sidebarTitle": "Liste de redare",
     "createShort": "+ Creează listă",
     "create": "Creează o listă nouă",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Eliminați din lista de redare",
     "clearHistory": "Șterge istoricul",
     "clearHistoryTitle": "Șterge vizionate recent",
-    "clearHistoryMessage": "Sigur doriți să ștergeți istoricul vizionărilor recente?"
+    "clearHistoryMessage": "Sigur doriți să ștergeți istoricul vizionărilor recente?",
+    "itemSingle": "1 element",
+    "itemPlural": "{count} elemente",
+    "browseContent": "Răsfoiește conținutul",
+    "options": "Opțiuni",
+    "addToOtherPlaylist": "Adaugă în altă listă"
   },
   "row": {
     "trending": "În tendințe",

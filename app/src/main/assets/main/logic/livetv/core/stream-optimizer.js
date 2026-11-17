@@ -53,7 +53,11 @@ export class StreamOptimizer {
         // 1. Automatic override of verified dead public upstream hosts to active streams
         const DEAD_HOST_OVERRIDES = [
             // Canal+ (France) - dead / geo-blocked upstream streambox
-            { pattern: /tv\.streambox\.fr\/canal/i, target: 'http://92.114.85.87:8019/play/a003/index.m3u8' }
+            { pattern: /tv\.streambox\.fr\/canal/i, target: 'http://92.114.85.87:8019/play/a003/index.m3u8' },
+            // RTBF La Une (Belgium) - dead 145.239.5.177 upstream -> working stream
+            { pattern: /145\.239\.5\.177\/329\/index\.m3u8/i, target: 'http://41.205.93.154/LA-UNE/index.m3u8' },
+            // RTBF Tipik (Belgium) - dead 193.111.198.85 upstream -> working stream
+            { pattern: /193\.111\.198\.85:8589\/stream\/mstv\/rtbftipik/i, target: 'http://41.205.93.154/TIPIK/index.m3u8' }
         ];
 
         for (let i = 0; i < DEAD_HOST_OVERRIDES.length; i++) {
@@ -152,7 +156,10 @@ export class StreamOptimizer {
         const requiredHeaders = StreamOptimizer.getRequiredHeaders(optimized);
         const mergedHeaders = { ...requiredHeaders, ...customHeaders };
 
-        const basePrefix = StreamOptimizer.isAndroidWebView() && !StreamOptimizer.isLocalhost()
+        const basePrefix = StreamOptimizer.isAndroidWebView()
+            && typeof window !== 'undefined'
+            && window.location
+            && window.location.protocol === 'file:'
             ? 'http://localhost/proxy?url='
             : '/proxy?url=';
 

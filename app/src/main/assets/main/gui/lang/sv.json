@@ -273,7 +273,7 @@
     "tryingVia": "Försöker via {source}..."
   },
   "playlists": {
-    "title": "Mina spellistor",
+    "title": "Spellistor",
     "sidebarTitle": "Spellistor",
     "createShort": "+ Skapa lista",
     "create": "Skapa ny spellista",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Ta bort från spellistan",
     "clearHistory": "Rensa historik",
     "clearHistoryTitle": "Rensa senast sedda",
-    "clearHistoryMessage": "Är du säker på att du vill rensa historiken över senast sedda?"
+    "clearHistoryMessage": "Är du säker på att du vill rensa historiken över senast sedda?",
+    "itemSingle": "1 objekt",
+    "itemPlural": "{count} objekt",
+    "browseContent": "Bläddra bland innehåll",
+    "options": "Alternativ",
+    "addToOtherPlaylist": "Lägg till i annan spellista"
   },
   "row": {
     "trending": "Trendar just nu",

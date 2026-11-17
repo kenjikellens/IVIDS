@@ -267,7 +267,7 @@
     "tryingVia": "Покушај преко {source}..."
   },
   "playlists": {
-    "title": "Мy Плаyлистс",
+    "title": "Листе",
     "sidebarTitle": "Плаyлистс",
     "createShort": "+ Цреате Плаyлист",
     "create": "Цреате Неw Плаyлист",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Ремове фром Плаyлист",
     "clearHistory": "Очисти историја",
     "clearHistoryTitle": "Очисти недавно гледано",
-    "clearHistoryMessage": "Јесте ли сигурни да желите очистити историја недавно гледаног?"
+    "clearHistoryMessage": "Јесте ли сигурни да желите очистити историја недавно гледаног?",
+    "itemSingle": "1 ставка",
+    "itemPlural": "{count} ставки",
+    "browseContent": "Прегледај садржај",
+    "options": "Opcije",
+    "addToOtherPlaylist": "Додај на другу листу"
   },
   "row": {
     "trending": "Трендинг Ноw",

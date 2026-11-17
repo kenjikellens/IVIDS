@@ -267,7 +267,7 @@
     "tryingVia": "Pokušaj putem {source}..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "Popisi za reprodukciju",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "Očisti povijest",
     "clearHistoryTitle": "Očisti nedavno gledano",
-    "clearHistoryMessage": "Jeste li sigurni da želite očistiti povijest nedavno gledanog?"
+    "clearHistoryMessage": "Jeste li sigurni da želite očistiti povijest nedavno gledanog?",
+    "itemSingle": "1 stavka",
+    "itemPlural": "{count} stavki",
+    "browseContent": "Pregledaj sadržaj",
+    "options": "Opcije",
+    "addToOtherPlaylist": "Dodaj na drugi popis"
   },
   "row": {
     "trending": "Trending Now",

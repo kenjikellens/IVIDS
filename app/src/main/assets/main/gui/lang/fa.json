@@ -267,7 +267,7 @@
     "tryingVia": "در حال تلاش از طریق {source}..."
   },
   "playlists": {
-    "title": "لیست های پخش من",
+    "title": "فهرست‌های پخش",
     "sidebarTitle": "لیست های پخش",
     "createShort": "+ ایجاد لیست پخش",
     "create": "ایجاد لیست پخش جدید",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "حذف از لیست پخش",
     "clearHistory": "پاک کردن تاریخچه",
     "clearHistoryTitle": "پاک کردن اخیرا تماشا شده",
-    "clearHistoryMessage": "آیا مطمئنید که می‌خواهید سابقه تماشای اخیر خود را پاک کنید؟"
+    "clearHistoryMessage": "آیا مطمئنید که می‌خواهید سابقه تماشای اخیر خود را پاک کنید؟",
+    "itemSingle": "۱ مورد",
+    "itemPlural": "{count} مورد",
+    "browseContent": "مرور محتوا",
+    "options": "گزینه‌ها",
+    "addToOtherPlaylist": "افزودن به فهرست دیگر"
   },
   "row": {
     "trending": "پرطرفدار در حال حاضر",

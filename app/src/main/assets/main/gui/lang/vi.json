@@ -273,7 +273,7 @@
     "tryingVia": "Đang thử qua {source}..."
   },
   "playlists": {
-    "title": "Danh sách phát của tôi",
+    "title": "Danh sách phát",
     "sidebarTitle": "Danh sách phát",
     "createShort": "+ Tạo danh sách",
     "create": "Tạo danh sách phát mới",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Xóa khỏi Danh sách phát",
     "clearHistory": "Xóa lịch sử",
     "clearHistoryTitle": "Xóa đã xem gần đây",
-    "clearHistoryMessage": "Bạn có chắc chắn muốn xóa lịch sử đã xem gần đây không?"
+    "clearHistoryMessage": "Bạn có chắc chắn muốn xóa lịch sử đã xem gần đây không?",
+    "itemSingle": "1 mục",
+    "itemPlural": "{count} mục",
+    "browseContent": "Duyệt nội dung",
+    "options": "Tùy chọn",
+    "addToOtherPlaylist": "Thêm vào danh sách khác"
   },
   "row": {
     "trending": "Xu hướng",

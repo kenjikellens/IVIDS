@@ -267,7 +267,7 @@
     "tryingVia": "{source} এর মাধ্যমে চেষ্টা করা হচ্ছে..."
   },
   "playlists": {
-    "title": "আমার প্লেলিস্ট",
+    "title": "প্লেলিস্ট",
     "sidebarTitle": "প্লেলিস্ট",
     "createShort": "+ প্লেলিস্ট তৈরি করুন",
     "create": "নতুন প্লেলিস্ট তৈরি করুন",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "প্লেলিস্ট থেকে সরান",
     "clearHistory": "ইতিহাস সাফ করুন",
     "clearHistoryTitle": "সাফ সম্প্রতি দেখা",
-    "clearHistoryMessage": "আপনি কি আপনার সম্প্রতি দেখা ইতিহাস সাফ করার বিষয়ে নিশ্চিত?"
+    "clearHistoryMessage": "আপনি কি আপনার সম্প্রতি দেখা ইতিহাস সাফ করার বিষয়ে নিশ্চিত?",
+    "itemSingle": "১টি আইটেম",
+    "itemPlural": "{count}টি আইটেম",
+    "browseContent": "বিষয়বস্তু ব্রাউজ করুন",
+    "options": "বিকল্পসমূহ",
+    "addToOtherPlaylist": "অন্য প্লেলিস্টে যোগ করুন"
   },
   "row": {
     "trending": "এখন প্রবণতা",

@@ -273,7 +273,7 @@
     "tryingVia": "Zkouším přes {source}..."
   },
   "playlists": {
-    "title": "Moje playlisty",
+    "title": "Seznamy skladeb",
     "sidebarTitle": "Playlisty",
     "createShort": "+ Vytvořit seznam",
     "create": "Vytvořit nový playlist",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Odebrat ze seznamu skladeb",
     "clearHistory": "Vymazat historii",
     "clearHistoryTitle": "Vymazat nedávno sledované",
-    "clearHistoryMessage": "Opravdu chcete vymazat historii nedávno sledovaných položek?"
+    "clearHistoryMessage": "Opravdu chcete vymazat historii nedávno sledovaných položek?",
+    "itemSingle": "1 položka",
+    "itemPlural": "{count} položek",
+    "browseContent": "Procházet obsah",
+    "options": "Možnosti",
+    "addToOtherPlaylist": "Přidat do jiného seznamu"
   },
   "row": {
     "trending": "Právě letí",

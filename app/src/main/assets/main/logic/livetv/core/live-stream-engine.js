@@ -292,6 +292,19 @@ export class LiveStreamEngine {
                         }
                     }
 
+                    // Fall back to native <video> for direct MP4/MP3/AAC/Shoutcast streams that fail HLS manifest parsing
+                    if (window.Hls.ErrorDetails && data.details === window.Hls.ErrorDetails.MANIFEST_PARSING_ERROR) {
+                        video.removeEventListener('playing', onVideoPlaying);
+                        try {
+                            hls.stopLoad();
+                            hls.detachMedia();
+                            hls.destroy();
+                        } catch (_) {}
+                        if (this.hls === hls) this.hls = null;
+                        this._startNativePlayback(video, endpointUrl, channel.quality || 'HD', genId, finish);
+                        return;
+                    }
+
                     video.removeEventListener('playing', onVideoPlaying);
                     finish(false);
                 });
@@ -299,30 +312,48 @@ export class LiveStreamEngine {
                 hls.loadSource(endpointUrl);
                 hls.attachMedia(video);
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                const onPlaying = () => {
-                    cleanupNativeListeners();
-                    finish(true, channel.quality || 'HD');
-                };
-                const onError = () => {
-                    cleanupNativeListeners();
-                    finish(false);
-                };
-                const cleanupNativeListeners = () => {
-                    video.removeEventListener('playing', onPlaying);
-                    video.removeEventListener('error', onError);
-                };
-
-                video.addEventListener('playing', onPlaying);
-                video.addEventListener('error', onError);
-                video.src = endpointUrl;
-                video.play().catch((err) => {
-                    if (err && err.name === 'AbortError') return;
-                    cleanupNativeListeners();
-                    finish(false);
-                });
+                this._startNativePlayback(video, endpointUrl, channel.quality || 'HD', genId, finish);
             } else {
                 finish(false);
             }
+        });
+    }
+
+    /**
+     * Attempts native HTMLVideoElement playback for Safari HLS or direct non-HLS media streams (MP4/MP3/AAC).
+     *
+     * @param {HTMLVideoElement} video - Target video DOM element.
+     * @param {string} endpointUrl - Stream URL to load.
+     * @param {string} qualityLabel - Quality badge label.
+     * @param {number} genId - Active generation token.
+     * @param {Function} finish - Completion callback `(success, qualityLabel) => void`.
+     */
+    _startNativePlayback(video, endpointUrl, qualityLabel, genId, finish) {
+        if (genId !== this.generationId || !video) {
+            finish(false);
+            return;
+        }
+
+        const onPlaying = () => {
+            cleanupNativeListeners();
+            finish(true, qualityLabel);
+        };
+        const onError = () => {
+            cleanupNativeListeners();
+            finish(false);
+        };
+        const cleanupNativeListeners = () => {
+            video.removeEventListener('playing', onPlaying);
+            video.removeEventListener('error', onError);
+        };
+
+        video.addEventListener('playing', onPlaying);
+        video.addEventListener('error', onError);
+        video.src = endpointUrl;
+        video.play().catch((err) => {
+            if (err && err.name === 'AbortError') return;
+            cleanupNativeListeners();
+            finish(false);
         });
     }
 

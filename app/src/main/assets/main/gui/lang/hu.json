@@ -267,7 +267,7 @@
     "tryingVia": "Próbálkozás ezen keresztül: {source}..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "Lejátszási listák",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "Előzmények törlése",
     "clearHistoryTitle": "Nemrég nézettek törlése",
-    "clearHistoryMessage": "Biztosan törölni szeretné a legutóbb megtekintett előzményeket?"
+    "clearHistoryMessage": "Biztosan törölni szeretné a legutóbb megtekintett előzményeket?",
+    "itemSingle": "1 elem",
+    "itemPlural": "{count} elem",
+    "browseContent": "Tartalom böngészése",
+    "options": "Beállítások",
+    "addToOtherPlaylist": "Hozzáadás másik listához"
   },
   "row": {
     "trending": "Trending Now",

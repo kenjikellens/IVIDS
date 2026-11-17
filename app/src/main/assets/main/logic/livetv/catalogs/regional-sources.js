@@ -37,8 +37,8 @@ export const REGIONAL_CATALOG = [
         id: 'lang_dutch',
         name: 'Dutch Language Channels',
         url: 'https://iptv-org.github.io/iptv/languages/nld.m3u',
-        category: 'Netherlands',
-        country: 'netherlands',
+        category: 'Global',
+        country: 'global',
         priority: 11
     },
 
@@ -69,6 +69,22 @@ export const REGIONAL_CATALOG = [
         country: 'spain',
         priority: 12
     },
+    {
+        id: 'freetv_es',
+        name: 'Free-TV Spain',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_spain.m3u8',
+        category: 'Spain',
+        country: 'spain',
+        priority: 11
+    },
+    {
+        id: 'lang_spanish',
+        name: 'Spanish Language Channels',
+        url: 'https://iptv-org.github.io/iptv/languages/spa.m3u',
+        category: 'Global',
+        country: 'global',
+        priority: 13
+    },
 
     // France
     {
@@ -91,8 +107,8 @@ export const REGIONAL_CATALOG = [
         id: 'lang_french',
         name: 'French Language Channels',
         url: 'https://iptv-org.github.io/iptv/languages/fra.m3u',
-        category: 'France',
-        country: 'france',
+        category: 'Global',
+        country: 'global',
         priority: 13
     },
 
@@ -145,6 +161,62 @@ export const REGIONAL_CATALOG = [
         country: 'germany',
         priority: 16
     },
+    {
+        id: 'pluto_de',
+        name: 'Pluto TV Germany',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plutotv_de.m3u',
+        category: 'Germany',
+        country: 'germany',
+        priority: 16
+    },
+    {
+        id: 'samsung_es',
+        name: 'Samsung TV Plus Spain',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/samsungtvplus_es.m3u',
+        category: 'Spain',
+        country: 'spain',
+        priority: 14
+    },
+    {
+        id: 'pluto_es',
+        name: 'Pluto TV Spain',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plutotv_es.m3u',
+        category: 'Spain',
+        country: 'spain',
+        priority: 14
+    },
+    {
+        id: 'plex_es',
+        name: 'Plex Live Spain',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plex_es.m3u',
+        category: 'Spain',
+        country: 'spain',
+        priority: 14
+    },
+    {
+        id: 'samsung_it',
+        name: 'Samsung TV Plus Italy',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/samsungtvplus_it.m3u',
+        category: 'Italy',
+        country: 'italy',
+        priority: 16
+    },
+    {
+        id: 'pluto_it',
+        name: 'Pluto TV Italy',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plutotv_it.m3u',
+        category: 'Italy',
+        country: 'italy',
+        priority: 16
+    },
+    {
+        id: 'pluto_us',
+        name: 'Pluto TV USA',
+        url: 'https://raw.githubusercontent.com/BuddyChewChew/app-m3u-generator/main/playlists/plutotv_us.m3u',
+        category: 'USA',
+        country: 'united states',
+        priority: 16
+    },
 
     // Germany
     {
@@ -154,6 +226,22 @@ export const REGIONAL_CATALOG = [
         category: 'Germany',
         country: 'germany',
         priority: 15
+    },
+    {
+        id: 'freetv_de',
+        name: 'Free-TV Germany',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_germany.m3u8',
+        category: 'Germany',
+        country: 'germany',
+        priority: 14
+    },
+    {
+        id: 'lang_german',
+        name: 'German Language Channels',
+        url: 'https://iptv-org.github.io/iptv/languages/deu.m3u',
+        category: 'Global',
+        country: 'global',
+        priority: 16
     },
 
     // Portugal
@@ -165,6 +253,22 @@ export const REGIONAL_CATALOG = [
         country: 'portugal',
         priority: 15
     },
+    {
+        id: 'freetv_pt',
+        name: 'Free-TV Portugal',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_portugal.m3u8',
+        category: 'Portugal',
+        country: 'portugal',
+        priority: 14
+    },
+    {
+        id: 'lang_portuguese',
+        name: 'Portuguese Language Channels',
+        url: 'https://iptv-org.github.io/iptv/languages/por.m3u',
+        category: 'Global',
+        country: 'global',
+        priority: 16
+    },
 
     // Italy
     {
@@ -174,6 +278,22 @@ export const REGIONAL_CATALOG = [
         category: 'Italy',
         country: 'italy',
         priority: 15
+    },
+    {
+        id: 'freetv_it',
+        name: 'Free-TV Italy',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_italy.m3u8',
+        category: 'Italy',
+        country: 'italy',
+        priority: 14
+    },
+    {
+        id: 'lang_italian',
+        name: 'Italian Language Channels',
+        url: 'https://iptv-org.github.io/iptv/languages/ita.m3u',
+        category: 'Global',
+        country: 'global',
+        priority: 16
     },
 
     // United Kingdom
@@ -185,6 +305,14 @@ export const REGIONAL_CATALOG = [
         country: 'united kingdom',
         priority: 15
     },
+    {
+        id: 'freetv_uk',
+        name: 'Free-TV UK',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_uk.m3u8',
+        category: 'UK',
+        country: 'united kingdom',
+        priority: 14
+    },
 
     // United States
     {
@@ -194,6 +322,22 @@ export const REGIONAL_CATALOG = [
         category: 'USA',
         country: 'united states',
         priority: 15
+    },
+    {
+        id: 'freetv_us',
+        name: 'Free-TV USA',
+        url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_usa.m3u8',
+        category: 'USA',
+        country: 'united states',
+        priority: 14
+    },
+    {
+        id: 'lang_english',
+        name: 'English Language Channels',
+        url: 'https://iptv-org.github.io/iptv/languages/eng.m3u',
+        category: 'Global',
+        country: 'global',
+        priority: 18
     },
 
     // Global thematic playlists

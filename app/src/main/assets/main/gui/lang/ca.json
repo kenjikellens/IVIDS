@@ -267,7 +267,7 @@
     "tryingVia": "Provant via {source}..."
   },
   "playlists": {
-    "title": "Les meves llistes de reproducció",
+    "title": "Llistes de reproducció",
     "sidebarTitle": "Llistes de reproducció",
     "createShort": "+ Crea una llista de reproducció",
     "create": "Crea una nova llista de reproducció",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Elimina de la llista de reproducció",
     "clearHistory": "Esborra l'historial",
     "clearHistoryTitle": "Esborra Mirats recentment",
-    "clearHistoryMessage": "Confirmes que vols esborrar l'historial de visualitzacions recents?"
+    "clearHistoryMessage": "Confirmes que vols esborrar l'historial de visualitzacions recents?",
+    "itemSingle": "1 element",
+    "itemPlural": "{count} elements",
+    "browseContent": "Explora el contingut",
+    "options": "Opcions",
+    "addToOtherPlaylist": "Afegeix a una altra llista"
   },
   "row": {
     "trending": "Tendència ara",

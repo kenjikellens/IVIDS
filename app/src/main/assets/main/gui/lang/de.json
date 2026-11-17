@@ -268,7 +268,7 @@
     "tryingVia": "Versuch über {source}..."
   },
   "playlists": {
-    "title": "Meine Wiedergabelisten",
+    "title": "Playlists",
     "sidebarTitle": "Wiedergabelisten",
     "createShort": "+ Liste erstellen",
     "create": "Neue Wiedergabeliste erstellen",
@@ -297,7 +297,12 @@
     "removeFromPlaylist": "Aus Playlist entfernen",
     "clearHistory": "Verlauf löschen",
     "clearHistoryTitle": "Zuletzt gesehen löschen",
-    "clearHistoryMessage": "Möchten Sie Ihren Verlauf der zuletzt angesehenen Inhalte wirklich löschen?"
+    "clearHistoryMessage": "Möchten Sie Ihren Verlauf der zuletzt angesehenen Inhalte wirklich löschen?",
+    "itemSingle": "1 Eintrag",
+    "itemPlural": "{count} Einträge",
+    "browseContent": "Inhalte durchsuchen",
+    "options": "Optionen",
+    "addToOtherPlaylist": "Zu anderer Playlist hinzufügen"
   },
   "row": {
     "trending": "Gerade angesagt",

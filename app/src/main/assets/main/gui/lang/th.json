@@ -267,7 +267,7 @@
     "tryingVia": "กำลังลองผ่าน {source}..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "เพลย์ลิสต์",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "ล้างประวัติ",
     "clearHistoryTitle": "ล้างประวัติการดูล่าสุด",
-    "clearHistoryMessage": "คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติการดูล่าสุดของคุณ?"
+    "clearHistoryMessage": "คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติการดูล่าสุดของคุณ?",
+    "itemSingle": "1 รายการ",
+    "itemPlural": "{count} รายการ",
+    "browseContent": "เรียกดูเนื้อหา",
+    "options": "ตัวเลือก",
+    "addToOtherPlaylist": "เพิ่มไปยังเพลย์ลิสต์อื่น"
   },
   "row": {
     "trending": "Trending Now",

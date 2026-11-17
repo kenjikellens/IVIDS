@@ -12,6 +12,7 @@ import { SportsProvider } from '../providers/sports-provider.js';
 import { M3uProvider } from '../providers/m3u-provider.js';
 import { XtreamProvider } from '../providers/xtream-provider.js';
 import { REGIONAL_CATALOG } from '../catalogs/regional-sources.js';
+import { StreamOptimizer } from './stream-optimizer.js';
 
 const ALLOWED_GENRES = [
     'News', 'Movies', 'Entertainment', 'Music', 'Kids', 'Documentary',
@@ -30,7 +31,34 @@ export class SourceManager {
         this.isCacheComplete = false;
         this._inFlightPromise = null;
         this._progressSubscribers = new Set();
+        this._brokenUrlsSet = null;
         this.cacheTtlMs = 15 * 60 * 1000; // 15 minutes
+    }
+
+    /**
+     * Loads and caches normalized URLs from broken-channels.json so dead streams are filtered out.
+     * @returns {Promise<Set<string>>} Set of normalized broken channel URLs.
+     */
+    async _loadBrokenUrlsSet() {
+        if (this._brokenUrlsSet) return this._brokenUrlsSet;
+        const brokenSet = new Set();
+        try {
+            const url = new URL('../broken-channels.json', import.meta.url).href;
+            const res = await fetch(url);
+            if (res && res.ok) {
+                const list = await res.json();
+                if (Array.isArray(list)) {
+                    for (let i = 0; i < list.length; i++) {
+                        const norm = Channel.normalizeUrl(list[i]);
+                        if (norm) brokenSet.add(norm);
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn('[SourceManager] Could not load broken-channels.json:', err?.message || err);
+        }
+        this._brokenUrlsSet = brokenSet;
+        return brokenSet;
     }
 
     /**
@@ -176,7 +204,17 @@ export class SourceManager {
                 sportsBucket.push(c);
             }
 
-            if (c.country) {
+            if (c.countries && c.countries.size > 0) {
+                c.countries.forEach(country => {
+                    const countryKey = `country:${country}`;
+                    let bucket = this.categoryIndex.get(countryKey);
+                    if (!bucket) {
+                        bucket = [];
+                        this.categoryIndex.set(countryKey, bucket);
+                    }
+                    bucket.push(c);
+                });
+            } else if (c.country) {
                 const countryKey = `country:${c.country}`;
                 let bucket = this.categoryIndex.get(countryKey);
                 if (!bucket) {
@@ -254,6 +292,7 @@ export class SourceManager {
         const merged = [];
         const byNormalizedUrl = new Map();
         let lastProgressNotify = 0;
+        let progressFlushTimer = null;
 
         const notifySubscribers = (list) => {
             this._progressSubscribers.forEach(cb => {
@@ -265,7 +304,19 @@ export class SourceManager {
             });
         };
 
+        const flushProgress = () => {
+            if (progressFlushTimer) {
+                clearTimeout(progressFlushTimer);
+                progressFlushTimer = null;
+            }
+            lastProgressNotify = Date.now();
+            this._rebuildCategoryIndex(merged, false);
+            notifySubscribers(merged);
+        };
+
         this._inFlightPromise = (async () => {
+            const brokenSet = await this._loadBrokenUrlsSet();
+
             const fetchPromises = providerList.map(async provider => {
                 try {
                     const channels = await provider.fetchChannels();
@@ -275,15 +326,31 @@ export class SourceManager {
                             if (!(channel instanceof Channel)) {
                                 channel = new Channel(channel);
                             }
+                            const optimizedUrl = StreamOptimizer.optimizeStreamUrl(channel.url);
+                            if (optimizedUrl && optimizedUrl !== channel.url) {
+                                channel.url = optimizedUrl;
+                                channel.normalizedUrl = Channel.normalizeUrl(optimizedUrl);
+                            }
                             const normalized = channel.normalizedUrl;
-                            if (!normalized) return;
+                            if (!normalized || brokenSet.has(normalized)) return;
 
                             const existing = byNormalizedUrl.get(normalized);
                             if (existing) {
-                                // Enrich existing channel if this regional provider supplies a concrete country tag
-                                if (!existing.country && channel.country) {
-                                    existing.country = channel.country;
+                                // Merge all country tags so regional playlists never lose channels to earlier language playlists
+                                if (channel.country && existing.addCountry(channel.country)) {
                                     changed = true;
+                                }
+                                if (channel.countries && channel.countries.size > 0) {
+                                    channel.countries.forEach(ctry => {
+                                        if (existing.addCountry(ctry)) changed = true;
+                                    });
+                                }
+                                if (!existing.isSports && channel.isSports) {
+                                    existing.isSports = true;
+                                    changed = true;
+                                }
+                                if ((!existing.group || existing.group === 'General') && channel.group && channel.group !== 'General') {
+                                    existing.group = channel.group;
                                 }
                                 if (!existing.tvgId && channel.tvgId) {
                                     existing.tvgId = channel.tvgId;
@@ -303,9 +370,9 @@ export class SourceManager {
                             this.cachedChannels = merged;
                             const ts = Date.now();
                             if (lastProgressNotify === 0 || (ts - lastProgressNotify) >= 350) {
-                                lastProgressNotify = ts;
-                                this._rebuildCategoryIndex(merged, false);
-                                notifySubscribers(merged);
+                                flushProgress();
+                            } else if (!progressFlushTimer) {
+                                progressFlushTimer = setTimeout(flushProgress, 350 - (ts - lastProgressNotify));
                             }
                         }
                     }
@@ -317,6 +384,10 @@ export class SourceManager {
             });
 
             await Promise.allSettled(fetchPromises);
+            if (progressFlushTimer) {
+                clearTimeout(progressFlushTimer);
+                progressFlushTimer = null;
+            }
             this._sortChannels(merged);
 
             this.cachedChannels = merged;

@@ -14,7 +14,7 @@
     --app-content-padding-y: clamp(16px, 2vw, 30px);
     --app-sidebar-expanded-width: clamp(190px, 14vw, 220px);
     --app-sidebar-width: clamp(58px, 4vw, 68px);
-    --background-color: #050505;
+    --background-color: #000000;
     --background-elevated: #0f0f0f;
     --card-bg: var(--surface-color);
     --focus-border-color: #ffffff;
@@ -50,7 +50,7 @@ html { background: var(--background-color); zoom: var(--ui-scale, 1.0); }
 
 /* Viewport container constrained to fit physical screen dimensions inversely relative to root zoom. */
 body {
-    background: #050505;
+    background: #000000;
     color: var(--text-color);
     font-family: "Twemoji Country Flags", Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif;
     height: calc(100vh / var(--ui-scale, 1.0));
@@ -65,13 +65,14 @@ button { color: inherit; font: inherit; }
 input, textarea, select { font: inherit; }
 
 /* Primary flex application shell hosting sidebar rail and main viewport. */
-#app { background: transparent; display: flex; flex-direction: row; height: 100%; position: relative; width: 100%; }
+#app { background: var(--background-color); display: flex; flex-direction: row; height: 100%; position: relative; width: 100%; }
 
 /* Sidebar host container with smooth width transition. */
 #sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.25s ease, flex-basis 0.25s ease; width: var(--app-sidebar-width); z-index: 2000; will-change: width, flex-basis; }
 
 /* Primary vertical scroll viewport container with bottom edge fade mask. */
 #main-view {
+    background: var(--background-color);
     -webkit-mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
     flex: 1;
     height: 100%;
@@ -1016,9 +1017,9 @@ input, textarea, select { font: inherit; }
     position: absolute;
 }
 
-/* Ambient dark-grey and theme-accent overlay when no backdrop image is available. */
+/* Subtle ambient dark-grey and theme-accent overlay when no backdrop image is available. */
 .media-backdrop--empty .media-backdrop__overlay, .backdrop-overlay-empty {
-    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 46%, transparent 76%), linear-gradient(180deg, rgba(8, 8, 8, 0.65) 0%, var(--background-color) 100%);
+    background: radial-gradient(ellipse 75% 60% at 74% 20%, rgba(var(--primary-rgb), 0.14) 0%, rgba(var(--primary-rgb), 0.04) 48%, transparent 78%), linear-gradient(180deg, rgba(8, 8, 8, 0.72) 0%, var(--background-color) 100%);
 }
 
 /* Centered circular media action play indicator on trailers and cards. */
@@ -1328,7 +1329,7 @@ input, textarea, select { font: inherit; }
 /* Main vertical navigation rail container with smooth width expansion on TV and hover. */
 .nav-rail, .navbar {
     align-items: stretch;
-    background: #000000eb;
+    background: #000000;
     border-right: none;
     box-sizing: border-box;
     display: flex;
@@ -1531,7 +1532,7 @@ input, textarea, select { font: inherit; }
     padding: var(--app-content-padding-y) var(--app-content-padding-x) 80px;
     width: 100%;
 }
-.playlists-container { height: 100%; overflow-y: auto; }
+.playlists-container { height: 100%; margin: 0 auto; max-width: 1320px; overflow-y: auto; }
 .settings-container, .account-container { margin: 0 auto; max-width: 1060px; }
 .page-container { height: 100%; }
 
@@ -1573,7 +1574,7 @@ input, textarea, select { font: inherit; }
 /* Details page layout and hero metadata columns. */
 .details-page {
     background-color: var(--background-color);
-    background: radial-gradient(circle at 80% 16%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 35%, transparent 65%), var(--background-color);
+    background: radial-gradient(ellipse 72% 58% at 76% 18%, rgba(var(--primary-rgb), 0.09) 0%, rgba(var(--primary-rgb), 0.025) 45%, transparent 78%), var(--background-color);
     height: auto;
     min-height: 100vh;
     padding-bottom: 3rem;
@@ -1627,12 +1628,12 @@ input, textarea, select { font: inherit; }
 #details-page-loader { min-height: 70vh; z-index: 20; }
 /* Relative positioning for details poster container so poster-loader centers accurately. */
 .details-poster-container { position: relative; }
-.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #262932 0%, #16181e 100%); border-radius: 5px; min-width: 20rem; width: 25vw; }
+.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border-radius: 5px; min-width: 20rem; width: 25vw; }
 .details-poster-container.is-loading.is-widescreen { aspect-ratio: 16 / 9; }
 .details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; }
 .details-info { flex: 1; max-width: 50%; }
-.details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #262932 0%, #16181e 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
-.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.34) 0%, rgba(var(--primary-rgb), 0.08) 50%, transparent 75%), linear-gradient(145deg, #282b34 0%, #171920 100%); border: 0.1875rem solid rgba(var(--primary-rgb), 0.35); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5), inset 0 0 32px rgba(var(--primary-rgb), 0.12); min-width: 20rem; width: 25vw; }
+.details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
+.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 50%, transparent 75%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.16); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); min-width: 20rem; width: 25vw; }
 .details-poster-container.is-empty.is-widescreen { aspect-ratio: 16 / 9; }
 .details-meta { align-items: center; color: #aaaaaa; display: flex; font-size: 18px; gap: 15px; margin-bottom: 20px; }
 .details-genres { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
@@ -1658,14 +1659,85 @@ input, textarea, select { font: inherit; }
 .disney-cast-character { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Playlists overview and Playlist Details item rows. */
-.empty-state { background: rgba(255, 255, 255, 0.045); border: 2px dashed rgba(255, 255, 255, 0.16); border-radius: var(--radius-lg); color: var(--text-muted); font-size: 18px; grid-column: 1 / -1; padding: 54px; text-align: center; }
-.playlist-cover { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.28) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #15171c 100%); height: 100%; overflow: hidden; position: relative; width: 100%; }
+/* Clean borderless empty state matching Settings and Account surface styling. */
+.empty-state { background: rgba(255, 255, 255, 0.03); border: none; border-radius: var(--radius-md); color: var(--text-muted); font-size: 16px; grid-column: 1 / -1; padding: 36px 24px; text-align: center; }
+/* Centered empty state layout with call-to-action button on playlists overview. */
+.playlists-empty-state { align-items: center; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+.empty-state__text { margin: 0; }
+/* Playlist badge icon sizing inside widescreen playlist cards. */
+.playlist-badge__icon { filter: brightness(0) invert(1); height: 16px; width: 16px; }
+/* Button icon sizing inside circular playlist item action buttons. */
+.btn__icon { filter: brightness(0) invert(1); height: 18px; pointer-events: none; width: 18px; }
+.playlist-cover { background: linear-gradient(145deg, #20232a 0%, #14161b 100%); height: 100%; overflow: hidden; position: relative; width: 100%; }
+/* Four-tile cover grid displayed inside playlist cards with four or more artworks. */
+.playlist-cover-mosaic { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); height: 100%; width: 100%; }
+/* Clean neutral dark surface when a playlist has no cover image yet. */
+.playlist-cover--empty { background: linear-gradient(145deg, #1d2026 0%, #121419 100%); }
+/* Neutral card border styling for vertical stack of horizontal playlist overview rows. */
+.playlists-list { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+/* Horizontal playlist overview card with cover left, centered title/count middle, and scrolling items right. */
+.playlist-card { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); box-sizing: border-box; display: flex; flex-direction: row; gap: 20px; height: 128px; padding: 10px 16px 10px 10px; width: 100%; }
+/* 16:9 single-cover thumbnail wrapper inside playlist overview card. */
+.playlist-card__media { aspect-ratio: 16 / 9; border-radius: var(--radius-sm); flex-shrink: 0; height: 100%; overflow: hidden; position: relative; }
+/* Middle column vertically centering playlist title and item count right beside the cover. */
+.playlist-card__body { display: flex; flex: 1 1 auto; flex-direction: column; gap: 4px; justify-content: center; min-width: 0; overflow: hidden; }
+/* Playlist title header positioned centrally beside the cover thumbnail. */
+.playlist-card__title { color: #ffffff; flex-shrink: 0; font-size: 22px; font-weight: 800; line-height: 1.2; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Item count subtitle directly beneath the centered playlist title. */
+.playlist-card__count { color: var(--text-muted); font-size: 15px; font-weight: 600; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Right-aligned clipped viewport box for vertical movie/series titles moving up and down. */
+.playlist-card__items-box { align-self: stretch; border-left: 1px solid rgba(255, 255, 255, 0.08); flex: 0 0 36%; min-height: 0; min-width: 0; overflow: hidden; padding-left: 16px; position: relative; }
+/* Vertically stacked track animated up and down when playlist items overflow the card height. */
+.playlist-card__items-track { display: flex; flex-direction: column; gap: 3px; will-change: transform; }
+/* Single small media title row inside the right-side playlist preview list. */
+.playlist-card__item-line { color: var(--text-muted); font-size: 12.5px; font-weight: 500; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.playlist-card__item-line--empty { opacity: 0.65; }
 .playlist-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
-.playlist-hero-cover { aspect-ratio: 16 / 9; height: auto; object-fit: cover; }
+/* Clean layout and background for Playlist Details matching Settings and Account views. */
+#playlist-details-view.details-page { background: var(--background-color); min-height: 100%; padding: 5.25rem var(--app-content-padding-x) 80px; }
+#playlist-details-view .playlist-backdrop { display: none; }
+#playlist-details-view .details-layout { gap: 24px; margin: 0 auto; max-width: 1060px; padding: 0; width: 100%; }
+/* Top summary card for Playlist Details matching Settings and Account sections. */
+.playlist-header-card {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: none;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    display: flex;
+    gap: 28px;
+    justify-content: space-between;
+    margin-bottom: 0;
+    padding: 28px 32px;
+    width: 100%;
+}
+.playlist-header-card .details-info { flex: 1 1 auto; max-width: 100%; min-width: 0; }
+.playlist-header-card .details-title { font-size: 32px; font-weight: 800; margin: 0 0 8px; text-shadow: none; }
+.playlist-header-card .details-genres { color: var(--text-muted); font-size: 14px; font-weight: 600; gap: 8px; margin-bottom: 16px; }
+/* Collapse bottom margin on playlist item count when all header action buttons are hidden. */
+.playlist-header-card .details-genres:has(+ .details-actions.hidden) { margin-bottom: 0; }
+.playlist-header-card .details-actions { flex-wrap: wrap; gap: 12px; }
+.playlist-header-card .details-poster-container { flex: 0 0 220px; width: 220px; }
+.playlist-hero-cover { aspect-ratio: 16 / 9; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-sm); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); height: auto; min-width: 0; object-fit: cover; width: 220px; }
+/* Bottom items list card for Playlist Details matching Settings and Account sections. */
+.recommendations-section, .playlist-items-section {
+    box-sizing: border-box;
+    flex: 1 1 100%;
+    min-width: 0;
+    width: 100%;
+}
+.playlist-items-section {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+.playlist-items-section .empty-state { background: transparent; padding: 24px 12px; }
 .playlist-item-row { align-items: center; display: flex; gap: 15px; margin-bottom: 12px; width: 100%; }
 .playlist-item-row .card--row { margin-bottom: 0; }
 .playlist-item-card-wrapper, .toast-content, .episodes-list, .profile-details { flex: 1; min-width: 0; }
 .playlist-item-row.moving-active .card--row { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5); }
+/* Overflow context menu trigger hidden on landscape/TV where direct move and delete buttons are shown. */
+.playlist-action-more { display: none; }
 
 /* Search page layout, recent search chips bar, and results grid container. */
 .search-page-layout { color: #ffffff; height: 100%; overflow: hidden; width: 100%; }
@@ -1964,11 +2036,14 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .provider-item:hover, .provider-item:focus, .provider-item.focused { background: #202020; border: none; box-shadow: none; outline: none; }
 .provider-item.moving, .provider-item.moving:hover, .provider-item.moving:focus, .provider-item.moving.focused { background: #2c2c2c; border: 2px solid #ffffff; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88); outline: none; z-index: 20; }
 .provider-item.dragging { background: #333333; border: 2px solid #ffffff; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95); cursor: grabbing; opacity: 0.98; outline: none; user-select: none; z-index: 50; }
-.provider-actions { align-items: center; display: flex; gap: 8px; }
-.provider-actions .edit-trigger, .provider-actions .setting-btn { height: 42px; min-height: 42px; min-width: 42px; width: 42px; }
-.provider-move-btn { cursor: grab; }
-.provider-move-btn:active, .provider-item.dragging .provider-move-btn { cursor: grabbing; }
-.provider-move-btn.active-moving { background: #333333; border-color: #ffffff; }
+.provider-actions { align-items: center; display: flex; gap: 8px; margin-left: auto; }
+.provider-actions .edit-trigger, .provider-actions .setting-btn { border-radius: 50%; height: 42px; min-height: 42px; min-width: 42px; padding: 0; width: 42px; }
+/* Borderless circular drag-handle control on Landscape/TV with white focus ring on focus/move. */
+.provider-actions .provider-move-btn { background: transparent; border: 2px solid transparent; box-shadow: none; cursor: grab; opacity: 0.78; }
+.provider-actions .provider-move-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.45); opacity: 1; }
+.provider-actions .provider-move-btn:focus, .provider-actions .provider-move-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; opacity: 1; outline: none; }
+.provider-move-btn:active, .provider-item.dragging .provider-move-btn { cursor: grabbing; opacity: 1; }
+.provider-move-btn.active-moving { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; opacity: 1; }
 
 /* Accent color dots and warning banner inside settings modals. */
 .color-dot { border: 2px solid rgba(255, 255, 255, 0.32); border-radius: 999px; height: 44px; width: 44px; }
@@ -1993,7 +2068,7 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .profile-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
 
 /* Login and registration screen layout. */
-.login-page-wrapper { align-items: center; background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.05) 0%, rgba(5, 5, 5, 0.98) 70%); box-sizing: border-box; display: flex; justify-content: center; min-height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); position: relative; }
+.login-page-wrapper { align-items: center; background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.05) 0%, rgba(0, 0, 0, 0.98) 70%); box-sizing: border-box; display: flex; justify-content: center; min-height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); position: relative; }
 .login-card-container { box-sizing: border-box; margin: 0 auto; position: relative; width: min(460px, 92vw); }
 .login-panel { background: #141414; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9); box-sizing: border-box; margin: 0 auto; max-height: 94vh; overflow-y: auto; padding: 28px 28px 24px; position: relative; width: 100%; }
 #login-circle-back { left: 20px; position: absolute; top: 20px; z-index: 10; }
@@ -2020,7 +2095,8 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .update-release-name { color: #ffffff; font-size: 1.1rem; font-weight: 700; }
 /* Update prompt experimental warning notice */
 .update-experimental-warning { align-items: flex-start; background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.45); border-radius: var(--radius-md); box-sizing: border-box; display: flex; gap: 12px; margin: 8px 0; padding: 12px 14px; text-align: left; width: 100%; }
-.update-experimental-warning .warning-icon { font-size: 20px; line-height: 1.2; }
+/* Warning icon sizing inside experimental update notice banner. */
+.update-experimental-warning .warning-icon { flex-shrink: 0; height: 20px; width: 20px; }
 .update-experimental-warning .warning-content { display: flex; flex: 1; flex-direction: column; gap: 4px; }
 .update-experimental-warning .warning-title { color: #fbbf24; font-size: 0.9rem; font-weight: 700; }
 .update-experimental-warning .warning-text { color: rgba(255, 255, 255, 0.85); font-size: 0.82rem; line-height: 1.45; margin: 0; }

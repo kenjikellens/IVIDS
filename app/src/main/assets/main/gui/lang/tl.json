@@ -267,7 +267,7 @@
     "tryingVia": "Sinusubukan gamit ang {source}..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "Mga Playlist",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "I-clear ang Kasaysayan",
     "clearHistoryTitle": "I-clear ang Kamakailang Napanood",
-    "clearHistoryMessage": "Sigurado ka bang gusto mong i-clear ang iyong kamakailang napanood na kasaysayan?"
+    "clearHistoryMessage": "Sigurado ka bang gusto mong i-clear ang iyong kamakailang napanood na kasaysayan?",
+    "itemSingle": "1 item",
+    "itemPlural": "{count} mga item",
+    "browseContent": "Mag-browse ng Nilalaman",
+    "options": "Mga Opsyon",
+    "addToOtherPlaylist": "Idagdag sa Ibang Playlist"
   },
   "row": {
     "trending": "Trending Now",

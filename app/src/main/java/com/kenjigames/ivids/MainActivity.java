@@ -44,6 +44,10 @@ import java.util.zip.GZIPInputStream;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String APP_ASSET_HOST = "appassets.androidplatform.net";
+    private static final String APP_ASSET_ORIGIN = "https://" + APP_ASSET_HOST;
+    private static final String APP_ASSET_PREFIX = APP_ASSET_ORIGIN + "/assets/";
+    private static final String APP_INDEX_URL = APP_ASSET_PREFIX + "main/gui/index.html";
     private static final Set<String> AD_HOSTS = new HashSet<>();
     static {
         AD_HOSTS.add("doubleclick.net");
@@ -310,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
             if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER
                     || keyCode == android.view.KeyEvent.KEYCODE_ENTER) {
                 String url = mWebView.getUrl();
-                if (url != null && !url.contains("file:///android_asset/")) {
+                if (url != null && !isLocalAppUrl(url)) {
                     // We are in the player iframe or external content
                     simulateClick(mWebView.getWidth() / 2f, mWebView.getHeight() / 2f);
                     return true;
@@ -321,13 +325,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Checks whether a WebView URL belongs to the bundled local IVIDS application assets.
+     * Supports both the HTTPS appassets origin and legacy file:///android_asset URLs.
+     *
+     * @param url Candidate URL string from WebView state or request headers.
+     * @return true if the URL targets bundled application assets.
+     */
+    private static boolean isLocalAppUrl(@Nullable String url) {
+        return url != null && (url.startsWith(APP_ASSET_PREFIX) || url.startsWith("file:///android_asset/"));
+    }
+
+    /**
      * A custom WebViewClient that aggressively blocks known advertisement domains, serves bundled
-     * android_asset files with CORS/MIME headers for ES modules, and enforces local-app & SSRF
+     * asset files over HTTPS with CORS/MIME headers for ES modules, and enforces local-app & SSRF
      * guards on the /proxy endpoint.
      */
     private static class AdBlockingWebViewClient extends WebViewClient {
         private final Context mAppContext;
-        private volatile String mCurrentMainFrameUrl = "file:///android_asset/main/gui/index.html";
+        private volatile String mCurrentMainFrameUrl = APP_INDEX_URL;
 
         /**
          * Initializes the WebViewClient with the application context for safe asset loading on WebView IO threads.
@@ -339,8 +354,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
-         * Intercepts bundled android_asset requests, local /proxy requests, and known ad hosts.
-         * Serves local assets safely without file:// universal access and enforces caller/SSRF checks on /proxy.
+         * Intercepts bundled asset requests, local /proxy requests, and known ad hosts.
+         * Serves local assets over https://appassets.androidplatform.net/assets/ for Chromium ES module CORS compliance
+         * and enforces caller/SSRF checks on /proxy.
          *
          * @param view The WebView requesting the resource.
          * @param request The WebResourceRequest containing URL, method, and headers.
@@ -349,10 +365,25 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             Uri url = request.getUrl();
+            if (url != null && "https".equalsIgnoreCase(url.getScheme()) && APP_ASSET_HOST.equalsIgnoreCase(url.getHost())) {
+                String path = url.getPath();
+                if (path != null && path.startsWith("/assets/")) {
+                    return handleAssetRequest(url, "/assets/");
+                }
+                if ("/proxy".equals(path)) {
+                    if (!isLocalAppProxyCaller(request)) {
+                        return buildErrorResponse(403, "Forbidden", createCorsHeaders());
+                    }
+                    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                        return new WebResourceResponse("text/plain", "UTF-8", 200, "OK", createCorsHeaders(), new ByteArrayInputStream(new byte[0]));
+                    }
+                    return handleStreamProxyRequest(url);
+                }
+            }
             if (url != null && "file".equalsIgnoreCase(url.getScheme())) {
                 String path = url.getPath();
                 if (path != null && path.startsWith("/android_asset/")) {
-                    return handleAssetRequest(url);
+                    return handleAssetRequest(url, "/android_asset/");
                 }
             }
             if (url != null && ("localhost".equalsIgnoreCase(url.getHost()) || "127.0.0.1".equals(url.getHost())) && "/proxy".equals(url.getPath())) {
@@ -471,20 +502,21 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Serves bundled android_asset files over WebView interception with accurate MIME types and CORS headers.
-         * Rejects path traversal segments so ES module imports function safely with file URL access disabled.
+         * Rejects path traversal segments so ES module imports function safely over the HTTPS appassets origin.
          *
-         * @param assetUri Requested file:///android_asset/... URI.
+         * @param assetUri Requested asset URI.
+         * @param prefix Path prefix to strip before opening the relative APK asset path.
          * @return WebResourceResponse containing asset stream or 403/404 response.
          */
-        private WebResourceResponse handleAssetRequest(Uri assetUri) {
+        private WebResourceResponse handleAssetRequest(Uri assetUri, String prefix) {
             Map<String, String> headers = new HashMap<>();
             headers.put("Access-Control-Allow-Origin", "*");
 
             String rawPath = assetUri.getPath();
-            if (rawPath == null || !rawPath.startsWith("/android_asset/")) {
+            if (rawPath == null || !rawPath.startsWith(prefix)) {
                 return buildErrorResponse(403, "Forbidden", headers);
             }
-            String assetPath = rawPath.substring("/android_asset/".length());
+            String assetPath = rawPath.substring(prefix.length());
             if (assetPath.isEmpty() || assetPath.contains("\\") || assetPath.contains("\0") || rawPath.contains("..")) {
                 return buildErrorResponse(403, "Forbidden", headers);
             }
@@ -549,7 +581,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
-         * Verifies that a /proxy request originates from the bundled file:///android_asset/ app rather than external pages or iframes.
+         * Verifies that a /proxy request originates from the bundled local app rather than external pages or iframes.
          *
          * @param request Intercepted WebResourceRequest targeting /proxy.
          * @return true if main frame and request headers match the local application origin.
@@ -559,7 +591,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
             String mainUrl = mCurrentMainFrameUrl;
-            if (mainUrl == null || !mainUrl.startsWith("file:///android_asset/")) {
+            if (!isLocalAppUrl(mainUrl)) {
                 return false;
             }
             Map<String, String> reqHeaders = request.getRequestHeaders();
@@ -567,13 +599,15 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
             boolean hasTrustedReferer = false;
+            boolean hasTrustedOrigin = false;
+            boolean isSameOriginFetchSite = false;
             for (Map.Entry<String, String> entry : reqHeaders.entrySet()) {
                 if (entry.getKey() == null || entry.getValue() == null) continue;
                 String keyLower = entry.getKey().toLowerCase(Locale.ROOT);
                 String val = entry.getValue().trim();
                 if (val.isEmpty()) continue;
                 if ("referer".equals(keyLower)) {
-                    if (!val.startsWith("file:///android_asset/")) {
+                    if (!val.startsWith(APP_ASSET_ORIGIN + "/") && !val.startsWith("file:///android_asset/")) {
                         return false;
                     }
                     hasTrustedReferer = true;
@@ -584,11 +618,25 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 }
-                if ("origin".equals(keyLower) && !"null".equalsIgnoreCase(val) && !val.startsWith("file://")) {
-                    return false;
+                if ("sec-fetch-site".equals(keyLower)) {
+                    String siteLower = val.toLowerCase(Locale.ROOT);
+                    if ("cross-site".equals(siteLower) || "none".equals(siteLower)) {
+                        return false;
+                    }
+                    if ("same-origin".equals(siteLower)) {
+                        isSameOriginFetchSite = true;
+                    }
+                }
+                if ("origin".equals(keyLower)) {
+                    if (!APP_ASSET_ORIGIN.equalsIgnoreCase(val) && !"null".equalsIgnoreCase(val) && !val.startsWith("file://")) {
+                        return false;
+                    }
+                    if (APP_ASSET_ORIGIN.equalsIgnoreCase(val)) {
+                        hasTrustedOrigin = true;
+                    }
                 }
             }
-            return hasTrustedReferer;
+            return hasTrustedReferer || hasTrustedOrigin || isSameOriginFetchSite;
         }
 
         /**
@@ -814,7 +862,7 @@ public class MainActivity extends AppCompatActivity {
                                         String resolvedUri = (rawUri.startsWith("http://") || rawUri.startsWith("https://"))
                                                 ? rawUri
                                                 : baseUri.resolve(rawUri).toString();
-                                        String proxiedUri = "http://localhost/proxy?url=" + URLEncoder.encode(resolvedUri, "UTF-8") + suffix;
+                                        String proxiedUri = APP_ASSET_ORIGIN + "/proxy?url=" + URLEncoder.encode(resolvedUri, "UTF-8") + suffix;
                                         trimmed = trimmed.substring(0, uStart) + proxiedUri + trimmed.substring(uEnd);
                                     }
                                 }
@@ -823,7 +871,7 @@ public class MainActivity extends AppCompatActivity {
                                 String resolved = (trimmed.startsWith("http://") || trimmed.startsWith("https://"))
                                         ? trimmed
                                         : baseUri.resolve(trimmed).toString();
-                                sb.append("http://localhost/proxy?url=")
+                                sb.append(APP_ASSET_ORIGIN + "/proxy?url=")
                                   .append(URLEncoder.encode(resolved, "UTF-8"))
                                   .append(suffix)
                                   .append("\n");
@@ -932,7 +980,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mWebView.loadUrl("file:///android_asset/main/gui/index.html");
+        mWebView.loadUrl(APP_INDEX_URL);
     }
 
 

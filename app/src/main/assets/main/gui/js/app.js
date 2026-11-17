@@ -657,18 +657,42 @@ function showExitConfirmation() {
 
 
 function initHistoryTrap() {
-    // Push an initial state to allow capturing the back button
-    window.history.pushState({ page: 'home' }, document.title, window.location.href);
-
-    window.addEventListener('popstate', (event) => {
-        // Prevent browser back
+    if (window.location.protocol === 'file:') {
+        // Push an initial state to allow capturing the hardware back button on Android/Tizen
         window.history.pushState({ page: 'home' }, document.title, window.location.href);
 
-        // Delegate to our unified back action logic
-        if (SpatialNav && typeof SpatialNav.back === 'function') {
-            SpatialNav.back();
-        } else if (SpatialNav && typeof SpatialNav.onBack === 'function') {
-            SpatialNav.onBack();
+        window.addEventListener('popstate', () => {
+            window.history.pushState({ page: 'home' }, document.title, window.location.href);
+            if (SpatialNav && typeof SpatialNav.back === 'function') {
+                SpatialNav.back();
+            } else if (SpatialNav && typeof SpatialNav.onBack === 'function') {
+                SpatialNav.onBack();
+            }
+        });
+        return;
+    }
+
+    // Browser deep-linking: close active modals/overlays first, otherwise synchronize back/forward navigation with Router
+    window.addEventListener('popstate', (event) => {
+        if (SpatialNav && Array.isArray(SpatialNav.backHandlers) && SpatialNav.backHandlers.length > 0) {
+            if (SpatialNav.back()) {
+                if (Router.currentPage) {
+                    Router.syncUrl(Router.currentPage, Router.params, true);
+                }
+                return;
+            }
+        }
+
+        if (Router.history.length > 0) {
+            Router.history.pop();
+            Router.saveHistory();
+        }
+
+        if (event.state && event.state.page) {
+            Router.loadPage(event.state.page, event.state.params || {}, false);
+        } else {
+            const currentRoute = Router.parseCurrentUrl();
+            Router.loadPage(currentRoute.page, currentRoute.params, false);
         }
     });
 }
@@ -885,11 +909,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('ivids-last-route');
             localStorage.removeItem('ivids-last-active');
 
-            // Honor location hash if provided (e.g. #settings), fallback to home.
-            const hashRoute = location.hash ? location.hash.replace(/^#\/?/, '').split('?')[0] : '';
-            const targetRoute = hashRoute && hashRoute !== '' ? hashRoute : 'home';
-            Router.loadPage(targetRoute);
-            if (location.hash.includes('modal=language')) {
+            // Restore persisted navigation stack and parse query-parameter deep link (?page=...&sub=...)
+            Router.restoreHistory();
+            const initialRoute = Router.parseCurrentUrl();
+            Router.loadPage(initialRoute.page, initialRoute.params, false);
+            if (location.hash.includes('modal=language') || initialRoute.params?.modal === 'language') {
                 setTimeout(() => {
                     const btn = document.getElementById('edit-language-btn');
                     if (btn) btn.click();

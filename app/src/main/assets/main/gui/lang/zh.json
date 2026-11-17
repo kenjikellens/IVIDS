@@ -273,7 +273,7 @@
     "tryingVia": "正在尝试通过 {source}..."
   },
   "playlists": {
-    "title": "我的播放列表",
+    "title": "播放列表",
     "sidebarTitle": "播放列表",
     "createShort": "+ 创建播放列表",
     "create": "创建新播放列表",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "从播放列表中删除",
     "clearHistory": "清除历史记录",
     "clearHistoryTitle": "清除最近观看",
-    "clearHistoryMessage": "您确定要清除最近观看记录吗？"
+    "clearHistoryMessage": "您确定要清除最近观看记录吗？",
+    "itemSingle": "1 项",
+    "itemPlural": "{count} 项",
+    "browseContent": "浏览内容",
+    "options": "选项",
+    "addToOtherPlaylist": "添加到其他播放列表"
   },
   "row": {
     "trending": "当下流行",

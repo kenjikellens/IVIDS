@@ -273,7 +273,7 @@
     "tryingVia": "Tentativo tramite {source}..."
   },
   "playlists": {
-    "title": "Le Mie Playlist",
+    "title": "Playlist",
     "sidebarTitle": "Playlist",
     "createShort": "+ Crea Playlist",
     "create": "Crea Nuova Playlist",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Rimuovi dalla playlist",
     "clearHistory": "Cancella cronologia",
     "clearHistoryTitle": "Cancella visti di recente",
-    "clearHistoryMessage": "Sei sicuro di voler cancellare la cronologia dei contenuti visti di recente?"
+    "clearHistoryMessage": "Sei sicuro di voler cancellare la cronologia dei contenuti visti di recente?",
+    "itemSingle": "1 elemento",
+    "itemPlural": "{count} elementi",
+    "browseContent": "Sfoglia contenuti",
+    "options": "Opzioni",
+    "addToOtherPlaylist": "Aggiungi a un'altra playlist"
   },
   "row": {
     "trending": "In Tendenza",

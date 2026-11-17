@@ -273,7 +273,7 @@
     "tryingVia": "Попытка через {source}..."
   },
   "playlists": {
-    "title": "Мои плейлисты",
+    "title": "Плейлисты",
     "sidebarTitle": "Плейлисты",
     "createShort": "+ Создать",
     "create": "Создать новый плейлист",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Удалить из плейлиста",
     "clearHistory": "Очистить историю",
     "clearHistoryTitle": "Очистить недавно просмотренное",
-    "clearHistoryMessage": "Вы уверены, что хотите очистить историю недавних просмотров?"
+    "clearHistoryMessage": "Вы уверены, что хотите очистить историю недавних просмотров?",
+    "itemSingle": "1 элемент",
+    "itemPlural": "{count} эл.",
+    "browseContent": "Обзор контента",
+    "options": "Параметры",
+    "addToOtherPlaylist": "Добавить в другой плейлист"
   },
   "row": {
     "trending": "В тренде",

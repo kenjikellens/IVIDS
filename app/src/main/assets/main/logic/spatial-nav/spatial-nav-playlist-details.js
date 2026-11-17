@@ -5,7 +5,9 @@ import {
     setActiveMoveIndex,
     getPlaylistItemsCount,
     moveItemInActivePlaylist,
-    reRenderList
+    reRenderList,
+    closePlaylistOptionsPanel,
+    navigatePlaylistOptionsBack
 } from '../../gui/pages/playlist-details.js';
 
 /**
@@ -34,38 +36,35 @@ function getActiveSidebarItem() {
 }
 
 /**
- * Resolves the primary focusable action button inside the details action header row.
- * Prefers 'Play All' or falls back to the first visible action button.
- * @returns {HTMLElement|null} The target action button.
+ * Resolves the primary focusable top-bar control (Options button or Back button).
+ * @returns {HTMLElement|null} The target top-bar button.
  */
 function getPrimaryActionBtn() {
-    const playAll = document.getElementById('play-all-btn');
-    if (playAll && isElementVisible(playAll)) return playAll;
-    const actions = Array.from(document.querySelectorAll('.details-actions .btn.focusable')).filter(isElementVisible);
-    return actions.length > 0 ? actions[0] : null;
+    const optionsBtn = document.getElementById('playlist-options-btn');
+    if (optionsBtn && isElementVisible(optionsBtn)) return optionsBtn;
+    const backBtn = document.getElementById('back-btn');
+    return (backBtn && isElementVisible(backBtn)) ? backBtn : null;
 }
 
 /**
  * Spatial navigation configuration object for the Playlist Details page.
- * Manages D-pad routing across hero actions, vertical playlist items, Move Mode reordering, and modals.
+ * Manages D-pad routing across top bar, options sidebar, vertical playlist items, Move Mode reordering, and modals.
  */
 export const spatialNavPlaylistDetails = {
     id: 'playlist-details',
 
     /**
      * Retrieves the default focus element when loading the Playlist Details page.
-     * Prefers the 'Play All' button or the first track/media item.
+     * Prefers the first item in the playlist, otherwise the top-right Options button or Back button.
      * @returns {HTMLElement|null} The initial focus target element.
      */
     getDefaultFocus: () => {
-        const playAll = document.getElementById('play-all-btn');
-        if (playAll && isElementVisible(playAll)) return playAll;
         const firstItem = document.querySelector('#playlist-items-container .episode-item.focusable, #playlist-items-container .focusable');
         if (firstItem && isElementVisible(firstItem)) return firstItem;
-        const actions = Array.from(document.querySelectorAll('.details-actions .btn.focusable')).filter(isElementVisible);
-        if (actions.length > 0) return actions[0];
-        const emptyBtn = document.getElementById('empty-browse-btn');
-        if (emptyBtn && isElementVisible(emptyBtn)) return emptyBtn;
+        const optionsBtn = document.getElementById('playlist-options-btn');
+        if (optionsBtn && isElementVisible(optionsBtn)) return optionsBtn;
+        const backBtn = document.getElementById('back-btn');
+        if (backBtn && isElementVisible(backBtn)) return backBtn;
         return null;
     },
 
@@ -80,6 +79,40 @@ export const spatialNavPlaylistDetails = {
      */
     findNext: (current, direction) => {
         if (!current) return null;
+
+        // 0. Modal Focus Trap: Keep D-pad navigation inside active modals
+        const activeModal = current.closest('#confirmation-modal, #edit-playlist-modal, #item-context-modal');
+        if (activeModal) {
+            const modalFocusables = Array.from(activeModal.querySelectorAll('.focusable')).filter(isElementVisible);
+            const idx = modalFocusables.indexOf(current);
+            if (direction === 'up') {
+                return idx > 0 ? modalFocusables[idx - 1] : modalFocusables[0] || current;
+            }
+            if (direction === 'down') {
+                return (idx >= 0 && idx < modalFocusables.length - 1) ? modalFocusables[idx + 1] : modalFocusables[modalFocusables.length - 1] || current;
+            }
+            return current;
+        }
+
+        // 0b. Options Sidebar Focus Trap (reuses tv-settings-panel pattern)
+        const optionsPanel = document.getElementById('playlist-options-panel');
+        if (optionsPanel && isElementVisible(optionsPanel)) {
+            const closeBtn = document.getElementById('playlist-options-close');
+            const optBtns = Array.from(optionsPanel.querySelectorAll('.tv-opt-btn.focusable')).filter(isElementVisible);
+            const sidebarItems = (closeBtn && isElementVisible(closeBtn)) ? [closeBtn, ...optBtns] : optBtns;
+            const idx = sidebarItems.indexOf(current);
+            if (direction === 'up') {
+                return idx > 0 ? sidebarItems[idx - 1] : (sidebarItems[0] || current);
+            }
+            if (direction === 'down') {
+                return (idx >= 0 && idx < sidebarItems.length - 1) ? sidebarItems[idx + 1] : (sidebarItems[sidebarItems.length - 1] || current);
+            }
+            if (direction === 'left') {
+                navigatePlaylistOptionsBack();
+                return document.querySelector('.focused') || document.getElementById('playlist-options-btn') || current;
+            }
+            return current;
+        }
 
         // 1. Move Mode: Active Item Reordering Interception
         const moveIndex = getActiveMoveIndex();
@@ -129,31 +162,36 @@ export const spatialNavPlaylistDetails = {
             return null;
         }
 
-        // 3. Action Row: Play All, Edit Info, Back, Clear History, Delete Playlist
-        const inActions = current.closest('.details-actions') !== null;
-        if (inActions) {
-            const actions = Array.from(document.querySelectorAll('.details-actions .btn.focusable')).filter(isElementVisible);
-            const currentIndex = actions.indexOf(current);
-
-            if (direction === 'left') {
-                if (currentIndex > 0) return actions[currentIndex - 1];
-                return getActiveSidebarItem();
-            }
+        // 2b. Top Bar: Back Button <-> Options Button
+        if (current.id === 'back-btn') {
             if (direction === 'right') {
-                if (currentIndex >= 0 && currentIndex < actions.length - 1) return actions[currentIndex + 1];
-                return null;
-            }
-            if (direction === 'up') {
+                const optionsBtn = document.getElementById('playlist-options-btn');
+                if (optionsBtn && isElementVisible(optionsBtn)) return optionsBtn;
                 return null;
             }
             if (direction === 'down') {
-                // Moving down enters the playlist items list
                 const firstItem = document.querySelector('#playlist-items-container .episode-item.focusable, #playlist-items-container .focusable');
                 if (firstItem && isElementVisible(firstItem)) return firstItem;
-                const browseBtn = document.getElementById('empty-browse-btn');
-                if (browseBtn && isElementVisible(browseBtn)) return browseBtn;
                 return null;
             }
+            if (direction === 'left') {
+                return getActiveSidebarItem();
+            }
+            return null;
+        }
+
+        if (current.id === 'playlist-options-btn') {
+            if (direction === 'left') {
+                const backBtn = document.getElementById('back-btn');
+                if (backBtn && isElementVisible(backBtn)) return backBtn;
+                return getActiveSidebarItem();
+            }
+            if (direction === 'down') {
+                const firstItem = document.querySelector('#playlist-items-container .episode-item.focusable, #playlist-items-container .focusable');
+                if (firstItem && isElementVisible(firstItem)) return firstItem;
+                return null;
+            }
+            return null;
         }
 
         // 4. Media Item Card: Focusable item card in playlist item row
@@ -164,12 +202,10 @@ export const spatialNavPlaylistDetails = {
             const cardIndex = allCards.indexOf(current);
 
             if (direction === 'right') {
-                // Right into row action buttons (Move or Delete)
+                // Right into first visible row action button (Move/Delete on Landscape, More on Mobile)
                 if (row) {
-                    const moveBtn = row.querySelector('.playlist-action-btn.focusable');
-                    if (moveBtn && isElementVisible(moveBtn)) return moveBtn;
-                    const deleteBtn = row.querySelector('.playlist-item-actions button:last-child.focusable, .playlist-item-actions .btn--circle.focusable');
-                    if (deleteBtn && isElementVisible(deleteBtn)) return deleteBtn;
+                    const visibleRowBtns = Array.from(row.querySelectorAll('.playlist-item-actions .focusable')).filter(isElementVisible);
+                    if (visibleRowBtns.length > 0) return visibleRowBtns[0];
                 }
                 return null;
             }
@@ -178,12 +214,14 @@ export const spatialNavPlaylistDetails = {
                 return getActiveSidebarItem();
             }
             if (direction === 'up') {
-                // Moving up from first item returns to action row
+                // Moving up from first item focuses top-left Back button (or Options fallback)
                 if (cardIndex === 0) {
-                    return getPrimaryActionBtn();
+                    const backBtn = document.getElementById('back-btn');
+                    return (backBtn && isElementVisible(backBtn)) ? backBtn : getPrimaryActionBtn();
                 }
                 if (cardIndex > 0) return allCards[cardIndex - 1];
-                return getPrimaryActionBtn();
+                const backBtn = document.getElementById('back-btn');
+                return (backBtn && isElementVisible(backBtn)) ? backBtn : getPrimaryActionBtn();
             }
             if (direction === 'down') {
                 if (cardIndex >= 0 && cardIndex < allCards.length - 1) return allCards[cardIndex + 1];
@@ -191,79 +229,50 @@ export const spatialNavPlaylistDetails = {
             }
         }
 
-        // 5. Item Row Action Buttons: Move Button and Delete Button
+        // 5. Item Row Action Buttons: Index-based traversal across visible row action buttons
         const inItemActions = current.closest('.playlist-item-actions') !== null;
         if (inItemActions) {
             const row = current.closest('.playlist-item-row');
-            const isMoveBtn = current.classList.contains('playlist-action-btn');
             const allRows = Array.from(document.querySelectorAll('#playlist-items-container .playlist-item-row')).filter(isElementVisible);
             const rowIndex = allRows.indexOf(row);
+            const visibleRowBtns = row ? Array.from(row.querySelectorAll('.playlist-item-actions .focusable')).filter(isElementVisible) : [];
+            const btnIdx = visibleRowBtns.indexOf(current);
 
-            if (isMoveBtn) {
-                if (direction === 'left') {
-                    const card = row?.querySelector('.episode-item.focusable');
-                    if (card && isElementVisible(card)) return card;
-                    return getActiveSidebarItem();
+            if (direction === 'left') {
+                if (btnIdx > 0) return visibleRowBtns[btnIdx - 1];
+                const card = row?.querySelector('.episode-item.focusable');
+                if (card && isElementVisible(card)) return card;
+                return getActiveSidebarItem();
+            }
+            if (direction === 'right') {
+                if (btnIdx >= 0 && btnIdx < visibleRowBtns.length - 1) return visibleRowBtns[btnIdx + 1];
+                return null;
+            }
+            if (direction === 'up') {
+                if (rowIndex === 0) return getPrimaryActionBtn();
+                if (rowIndex > 0) {
+                    const prevBtns = Array.from(allRows[rowIndex - 1].querySelectorAll('.playlist-item-actions .focusable')).filter(isElementVisible);
+                    if (prevBtns.length > 0) return prevBtns[Math.min(Math.max(btnIdx, 0), prevBtns.length - 1)];
+                    const prevCard = allRows[rowIndex - 1].querySelector('.episode-item.focusable');
+                    if (prevCard && isElementVisible(prevCard)) return prevCard;
                 }
-                if (direction === 'right') {
-                    // Right into delete icon if present
-                    const deleteBtn = row?.querySelector('.playlist-item-actions button:last-child.focusable');
-                    if (deleteBtn && deleteBtn !== current && isElementVisible(deleteBtn)) return deleteBtn;
-                    return null;
+                return getPrimaryActionBtn();
+            }
+            if (direction === 'down') {
+                if (rowIndex >= 0 && rowIndex < allRows.length - 1) {
+                    const nextBtns = Array.from(allRows[rowIndex + 1].querySelectorAll('.playlist-item-actions .focusable')).filter(isElementVisible);
+                    if (nextBtns.length > 0) return nextBtns[Math.min(Math.max(btnIdx, 0), nextBtns.length - 1)];
+                    const nextCard = allRows[rowIndex + 1].querySelector('.episode-item.focusable');
+                    if (nextCard && isElementVisible(nextCard)) return nextCard;
                 }
-                if (direction === 'up') {
-                    if (rowIndex === 0) return getPrimaryActionBtn();
-                    if (rowIndex > 0) {
-                        const prevMove = allRows[rowIndex - 1].querySelector('.playlist-action-btn.focusable');
-                        if (prevMove && isElementVisible(prevMove)) return prevMove;
-                        const prevCard = allRows[rowIndex - 1].querySelector('.episode-item.focusable');
-                        if (prevCard && isElementVisible(prevCard)) return prevCard;
-                    }
-                    return getPrimaryActionBtn();
-                }
-                if (direction === 'down') {
-                    if (rowIndex >= 0 && rowIndex < allRows.length - 1) {
-                        const nextMove = allRows[rowIndex + 1].querySelector('.playlist-action-btn.focusable');
-                        if (nextMove && isElementVisible(nextMove)) return nextMove;
-                        const nextCard = allRows[rowIndex + 1].querySelector('.episode-item.focusable');
-                        if (nextCard && isElementVisible(nextCard)) return nextCard;
-                    }
-                    return null;
-                }
-            } else {
-                // Delete button in row
-                if (direction === 'left') {
-                    const moveBtn = row?.querySelector('.playlist-action-btn.focusable');
-                    if (moveBtn && isElementVisible(moveBtn)) return moveBtn;
-                    const card = row?.querySelector('.episode-item.focusable');
-                    if (card && isElementVisible(card)) return card;
-                    return getActiveSidebarItem();
-                }
-                if (direction === 'right') {
-                    return null;
-                }
-                if (direction === 'up') {
-                    if (rowIndex === 0) return getPrimaryActionBtn();
-                    if (rowIndex > 0) {
-                        const prevDel = allRows[rowIndex - 1].querySelector('.playlist-item-actions button:last-child.focusable');
-                        if (prevDel && isElementVisible(prevDel)) return prevDel;
-                    }
-                    return getPrimaryActionBtn();
-                }
-                if (direction === 'down') {
-                    if (rowIndex >= 0 && rowIndex < allRows.length - 1) {
-                        const nextDel = allRows[rowIndex + 1].querySelector('.playlist-item-actions button:last-child.focusable');
-                        if (nextDel && isElementVisible(nextDel)) return nextDel;
-                    }
-                    return null;
-                }
+                return null;
             }
         }
 
         // 6. Empty State Button
         if (current.id === 'empty-browse-btn') {
             if (direction === 'up') {
-                return getPrimaryActionBtn();
+                return getPrimaryActionBtn() || document.getElementById('back-btn');
             }
             if (direction === 'left') {
                 return getActiveSidebarItem();
@@ -288,7 +297,14 @@ export const spatialNavPlaylistDetails = {
             return true;
         }
 
-        // 2. Dismiss any open modal
+        // 2. Close/Step Back Options Sidebar if open
+        const optionsPanel = document.getElementById('playlist-options-panel');
+        if (optionsPanel && isElementVisible(optionsPanel)) {
+            navigatePlaylistOptionsBack();
+            return true;
+        }
+
+        // 3. Dismiss any open modal
         const openModal = document.querySelector('.modal.is-open, .modal.active, .modal[style*="display: flex"], .modal[style*="display: block"]');
         if (openModal && isElementVisible(openModal)) {
             const cancelBtn = openModal.querySelector('.btn--secondary, #modal-cancel-btn, #edit-playlist-cancel-btn, #context-cancel-btn');

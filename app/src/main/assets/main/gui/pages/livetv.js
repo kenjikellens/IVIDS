@@ -64,6 +64,9 @@ function isLowRamAndroidDevice() {
 let renderedCount = 0;
 let windowStartIndex = 0;
 let isAdjustingChannelWindow = false;
+let scrollRafPending = false;
+const failedLogoUrls = new Set();
+const rowMetaMap = new WeakMap();
 const CHUNK_SIZE = 35;
 const MAX_RENDERED_NODES = 120;
 
@@ -343,6 +346,25 @@ function renderCategoriesList() {
         }
     });
 
+    // Fast path: update category counts in-place if the visible category keys are unchanged
+    const existingRows = Array.from(container.children);
+    if (
+        existingRows.length === items.length &&
+        existingRows.every((el, idx) => el.dataset.categoryKey === items[idx].key)
+    ) {
+        existingRows.forEach((el, idx) => {
+            const countEl = el.querySelector('.category-list-count');
+            const nextCount = String(Number(items[idx].count) || 0);
+            if (countEl && countEl.textContent !== nextCount) {
+                countEl.textContent = nextCount;
+            }
+            const isActive = items[idx].key === activeCategoryKey;
+            el.classList.toggle('active', isActive);
+            el.classList.toggle('is-selected', isActive);
+        });
+        return;
+    }
+
     const fragment = document.createDocumentFragment();
     let refocusEl = null;
 
@@ -431,8 +453,11 @@ async function loadAllSources() {
                 progressiveRenderTimer = setTimeout(() => {
                     progressiveRenderTimer = null;
                     renderCategoriesList();
+                    const prevFilteredCount = filteredChannels.length;
                     updateFilteredChannelsArray();
-                    if (renderedCount < CHUNK_SIZE && filteredChannels.length > renderedCount) {
+                    if (filteredChannels.length !== prevFilteredCount) {
+                        filterAndRenderChannels(false);
+                    } else if (renderedCount < CHUNK_SIZE && filteredChannels.length > renderedCount) {
                         const container = document.getElementById('channels-list');
                         if (container && container.querySelector('.is-skeleton')) {
                             filterAndRenderChannels(false);
@@ -543,6 +568,15 @@ async function showChannelDetail(channel) {
         previewTimeout = null;
     }
 
+    const epgContainer = document.getElementById('hero-epg-container');
+    const epgTitleEl = document.getElementById('hero-epg-title');
+    const epgTimeEl = document.getElementById('hero-epg-time');
+    const epgProgressWrap = document.getElementById('hero-epg-progress-wrap');
+    const epgProgressEl = document.getElementById('hero-epg-progress');
+    const upcomingSection = document.getElementById('details-upcoming-section');
+    const upcomingListEl = document.getElementById('upcoming-programs-list');
+    const noEpgText = I18n.t('livetv.noEpgInfo');
+
     const applyPreviewMeta = () => {
         if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
@@ -564,15 +598,6 @@ async function showChannelDetail(channel) {
         if (offlineMsg) {
             offlineMsg.classList.add('hidden');
         }
-
-        const epgContainer = document.getElementById('hero-epg-container');
-        const epgTitleEl = document.getElementById('hero-epg-title');
-        const epgTimeEl = document.getElementById('hero-epg-time');
-        const epgProgressWrap = document.getElementById('hero-epg-progress-wrap');
-        const epgProgressEl = document.getElementById('hero-epg-progress');
-        const upcomingSection = document.getElementById('details-upcoming-section');
-        const upcomingListEl = document.getElementById('upcoming-programs-list');
-        const noEpgText = I18n.t('livetv.noEpgInfo');
 
         if (epgContainer) {
             epgContainer.classList.remove('hidden');
@@ -660,7 +685,7 @@ async function showChannelDetail(channel) {
                 });
             }
         }
-    }, 900);
+    }, 500);
 }
 
 /**
@@ -766,10 +791,37 @@ function setupEventListeners() {
     const listColumn = document.getElementById('channels-list') || document.querySelector('.livetv-list-column');
     if (listColumn) {
         listColumn.onscroll = () => {
-            if (isAdjustingChannelWindow) return;
-            if (listColumn.scrollTop + listColumn.clientHeight >= listColumn.scrollHeight - 300) {
+            if (isAdjustingChannelWindow || scrollRafPending) return;
+            scrollRafPending = true;
+            requestAnimationFrame(() => {
+                scrollRafPending = false;
+                if (isAdjustingChannelWindow) return;
+                if (listColumn.scrollTop + listColumn.clientHeight >= listColumn.scrollHeight - 300) {
+                    renderNextChunk();
+                } else if (windowStartIndex > 0 && listColumn.scrollTop <= 250) {
+                    renderPrevChunk();
+                }
+            });
+        };
+    }
+
+    const channelsListEl = document.getElementById('channels-list');
+    if (channelsListEl) {
+        channelsListEl.onclick = (e) => {
+            const row = e.target.closest('.channel-list-item');
+            const meta = row ? rowMetaMap.get(row) : null;
+            if (meta && meta.channel) {
+                playChannel(meta.channel);
+            }
+        };
+        channelsListEl.onfocusin = (e) => {
+            const row = e.target.closest('.channel-list-item');
+            const meta = row ? rowMetaMap.get(row) : null;
+            if (!meta) return;
+            showChannelDetail(meta.channel);
+            if (meta.index >= renderedCount - 5) {
                 renderNextChunk();
-            } else if (windowStartIndex > 0 && listColumn.scrollTop <= 250) {
+            } else if (meta.index <= windowStartIndex + 3 && windowStartIndex > 0) {
                 renderPrevChunk();
             }
         };
@@ -790,7 +842,8 @@ function createChannelRow(channel, index, focusedUrl) {
     item.tabIndex = 0;
     item.dataset.url = channel.url;
 
-    const iconUrl = isSafeMediaUrl(channel.logo) ? channel.logo : 'images/livetv.svg';
+    const rawLogo = channel.logo;
+    const iconUrl = (isSafeMediaUrl(rawLogo) && !failedLogoUrls.has(rawLogo)) ? rawLogo : 'images/livetv.svg';
 
     item.innerHTML = `
         <div class="channel-card__logo-wrap channel-list-logo-container">
@@ -801,25 +854,15 @@ function createChannelRow(channel, index, focusedUrl) {
         </div>
     `;
     const logoImg = item.querySelector('.channel-list-logo');
-    if (logoImg) {
+    if (logoImg && iconUrl !== 'images/livetv.svg') {
         logoImg.onerror = () => {
             logoImg.onerror = null;
+            failedLogoUrls.add(rawLogo);
             logoImg.src = 'images/livetv.svg';
         };
     }
 
-    item.onfocus = () => {
-        showChannelDetail(channel);
-        if (index >= renderedCount - 5) {
-            renderNextChunk();
-        } else if (index <= windowStartIndex + 3 && windowStartIndex > 0) {
-            renderPrevChunk();
-        }
-    };
-
-    item.onclick = () => {
-        playChannel(channel);
-    };
+    rowMetaMap.set(item, { channel, index });
 
     return { item, isFocusedTarget: focusedUrl === channel.url };
 }

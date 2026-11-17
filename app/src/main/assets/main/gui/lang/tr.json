@@ -273,7 +273,7 @@
     "tryingVia": "{source} üzerinden deneniyor..."
   },
   "playlists": {
-    "title": "Oynatma Listelerim",
+    "title": "Oynatma Listeleri",
     "sidebarTitle": "Listeler",
     "createShort": "+ Oluştur",
     "create": "Yeni Oynatma Listesi Oluştur",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Oynatma Listesinden kaldır",
     "clearHistory": "Geçmişi Temizle",
     "clearHistoryTitle": "Son İzlenenleri Temizle",
-    "clearHistoryMessage": "Son izlenenler geçmişinizi temizlemek istediğinizden emin misiniz?"
+    "clearHistoryMessage": "Son izlenenler geçmişinizi temizlemek istediğinizden emin misiniz?",
+    "itemSingle": "1 öğe",
+    "itemPlural": "{count} öğe",
+    "browseContent": "İçeriğe Göz At",
+    "options": "Seçenekler",
+    "addToOtherPlaylist": "Başka Oynatma Listesine Ekle"
   },
   "row": {
     "trending": "Trendler",

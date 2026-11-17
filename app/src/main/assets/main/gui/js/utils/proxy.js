@@ -25,7 +25,9 @@ export function proxyUrl(url) {
             return `/proxy?url=${encodeURIComponent(url)}`;
         }
         if (typeof window !== 'undefined' && (window.AndroidUpdate || window.AndroidSettings)) {
-            return `http://localhost/proxy?url=${encodeURIComponent(url)}`;
+            return window.location && window.location.protocol && window.location.protocol.startsWith('http')
+                ? `/proxy?url=${encodeURIComponent(url)}`
+                : `http://localhost/proxy?url=${encodeURIComponent(url)}`;
         }
     }
     return url;

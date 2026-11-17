@@ -273,7 +273,7 @@
     "tryingVia": "Mencoba melalui {source}..."
   },
   "playlists": {
-    "title": "Daftar Putar Saya",
+    "title": "Playlist",
     "sidebarTitle": "Daftar Putar",
     "createShort": "+ Buat Daftar",
     "create": "Buat Daftar Putar Baru",
@@ -302,7 +302,12 @@
     "removeFromPlaylist": "Hapus dari Daftar Putar",
     "clearHistory": "Hapus Riwayat",
     "clearHistoryTitle": "Hapus Terakhir Ditonton",
-    "clearHistoryMessage": "Apakah Anda yakin ingin menghapus riwayat tontonan terakhir Anda?"
+    "clearHistoryMessage": "Apakah Anda yakin ingin menghapus riwayat tontonan terakhir Anda?",
+    "itemSingle": "1 item",
+    "itemPlural": "{count} item",
+    "browseContent": "Jelajahi Konten",
+    "options": "Opsi",
+    "addToOtherPlaylist": "Tambahkan ke Playlist Lain"
   },
   "row": {
     "trending": "Sedang Tren",

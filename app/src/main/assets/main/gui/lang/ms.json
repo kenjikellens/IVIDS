@@ -267,7 +267,7 @@
     "tryingVia": "Mencuba melalui {source}..."
   },
   "playlists": {
-    "title": "My Playlists",
+    "title": "Senarai Main",
     "sidebarTitle": "Playlists",
     "createShort": "+ Create Playlist",
     "create": "Create New Playlist",
@@ -296,7 +296,12 @@
     "removeFromPlaylist": "Remove from Playlist",
     "clearHistory": "Kosongkan Sejarah",
     "clearHistoryTitle": "Kosongkan Tontonan Terkini",
-    "clearHistoryMessage": "Adakah anda pasti mahu mengosongkan sejarah tontonan terkini anda?"
+    "clearHistoryMessage": "Adakah anda pasti mahu mengosongkan sejarah tontonan terkini anda?",
+    "itemSingle": "1 item",
+    "itemPlural": "{count} item",
+    "browseContent": "Layari Kandungan",
+    "options": "Pilihan",
+    "addToOtherPlaylist": "Tambah ke Senarai Main Lain"
   },
   "row": {
     "trending": "Trending Now",

@@ -1775,8 +1775,8 @@ class SettingsManager {
 
             const moveBtn = document.createElement('button');
             moveBtn.type = 'button';
-            moveBtn.className = 'btn btn--secondary btn--square edit-trigger provider-move-btn focusable';
-            moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+            moveBtn.className = 'btn btn--ghost btn--circle edit-trigger provider-move-btn focusable';
+            moveBtn.innerHTML = '<img src="svg/drag-handle.svg" class="setting-edit-icon" alt="Move" />';
             if (this.movingSourceOrderId === tier.id) {
                 moveBtn.classList.add('active-moving');
             }
@@ -1850,8 +1850,8 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn--secondary btn--square edit-trigger provider-move-btn focusable';
-            moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+            moveBtn.className = 'btn btn--ghost btn--circle edit-trigger provider-move-btn focusable';
+            moveBtn.innerHTML = '<img src="svg/drag-handle.svg" class="setting-edit-icon" alt="Move" />';
             moveBtn.title = 'Move';
             if (this.movingProviderId === provider.id) {
                 moveBtn.classList.add('active-moving');
@@ -1880,7 +1880,7 @@ class SettingsManager {
 
             if (provider.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn--secondary btn--square edit-trigger provider-delete-btn focusable';
+                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
                 deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
                 deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {
@@ -1946,8 +1946,8 @@ class SettingsManager {
             actions.className = 'provider-actions';
 
             const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn--secondary btn--square edit-trigger provider-move-btn focusable';
-            moveBtn.innerHTML = '<img src="svg/move.svg" class="setting-edit-icon" alt="Move" />';
+            moveBtn.className = 'btn btn--ghost btn--circle edit-trigger provider-move-btn focusable';
+            moveBtn.innerHTML = '<img src="svg/drag-handle.svg" class="setting-edit-icon" alt="Move" />';
             moveBtn.title = 'Move';
             if (this.movingM3uId === playlist.id) {
                 moveBtn.classList.add('active-moving');
@@ -1976,7 +1976,7 @@ class SettingsManager {
 
             if (playlist.isCustom) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn--secondary btn--square edit-trigger provider-delete-btn focusable';
+                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
                 deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
                 deleteBtn.title = 'Delete';
                 deleteBtn.onclick = (e) => {
@@ -2017,6 +2017,7 @@ class SettingsManager {
         let listContainer = item.parentElement;
 
         const onPointerMove = (e) => {
+            if (e.pointerType !== 'mouse') e.preventDefault();
             const deltaY = e.clientY - startClientY;
             if (!isDragging) {
                 if (Math.abs(deltaY) > 4) {
@@ -2090,14 +2091,17 @@ class SettingsManager {
         };
 
         const onPointerDown = (e) => {
-            if (e.button !== 0) return;
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
             if (e.target.closest('input, .provider-delete-btn')) return;
+            const isHandleTouch = Boolean(e.target.closest('.provider-move-btn')) || !item.querySelector('input');
+            if (e.pointerType !== 'mouse' && !isHandleTouch) return;
+            if (e.pointerType !== 'mouse') e.preventDefault();
 
             startClientY = e.clientY;
             dragOffset = 0;
             listContainer = item.parentElement;
 
-            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointermove', onPointerMove, { passive: false });
             window.addEventListener('pointerup', onPointerUp);
             window.addEventListener('pointercancel', onPointerUp);
         };
