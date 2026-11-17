@@ -298,7 +298,7 @@ export const SpatialNav = {
 
     /**
      * Executes the back action by running registered back stack handlers in LIFO order.
-     * Also handles sidebar focus navigation when sidebar has active focus.
+     * Skips D-pad focus-recentering steps during touch/mobile interaction so Back navigates immediately.
      * Falls back to invoking onBack when the back action is not fully consumed.
      * @returns {boolean} True if the back action was handled, false otherwise.
      */
@@ -314,11 +314,12 @@ export const SpatialNav = {
             }
         }
 
+        const isTouchOrMobile = this.isMouseInteraction || this.isPortrait();
         const current = document.querySelector('.focused');
 
-        // If focused on sidebar, return focus to main content and prevent page navigation
+        // If focused on sidebar in D-pad mode, return focus to main content and prevent page navigation
         const sidebar = document.getElementById('sidebar-container');
-        if (sidebar && current && sidebar.contains(current)) {
+        if (!isTouchOrMobile && sidebar && current && sidebar.contains(current)) {
             const mainView = this.getMainView();
             if (mainView) {
                 const firstFocusable = mainView.querySelector(this.focusableSelector);
@@ -331,8 +332,8 @@ export const SpatialNav = {
             return true;
         }
 
-        // Delegate to active page logic handleBack
-        if (this.currentPageLogic && typeof this.currentPageLogic.handleBack === 'function') {
+        // Delegate to active page logic handleBack in D-pad mode (skip focus-only jumps on touch/mobile)
+        if (!isTouchOrMobile && this.currentPageLogic && typeof this.currentPageLogic.handleBack === 'function') {
             try {
                 if (this.currentPageLogic.handleBack()) {
                     return true;

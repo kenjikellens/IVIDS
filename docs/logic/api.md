@@ -34,9 +34,11 @@ The application supports a pre-configured provider array managed in `DEFAULT_PLA
 ### 2. Auto-Migration Engine
 If a user's stored settings contain legacy or decommissioned domains (e.g. `vidsrc.xyz`, `vidsrc.me`), `getPlayerConfig()` automatically migrates playback settings to `vidlink.pro` persistently in `localStorage`.
 
-### 3. Direct Embed & Native Live TV Playback
-- **Direct Embed Player**: Embed providers (`VidLink`, `Videasy`, `VidSrc`, etc.) load directly into an `<iframe>` container with 0ms initialization delay.
-- **Native Live TV Player**: Live TV streams render natively inside HTML5 `<video>` tags with HLS support.
+### 3. VOD Stream Resolution Pipeline (`VodStreamResolver`)
+- **Configurable Source Order**: `DEFAULT_PLAYBACK_SOURCE_ORDER` defaults to `['direct_http', 'embed_servers', 'debrid_primary']` (or `['direct_http', 'debrid_primary', 'embed_servers']` when a Debrid key is configured).
+- **Direct HTTP (`HttpStreamProvider`)**: Queries API-keyless Stremio HTTP addons (default `https://addon.notorrent2.workers.dev`) via `/api/debrid/streams` on PC `run_pc.py` or same-origin `/proxy?url=...` on Android WebView (`https://appassets.androidplatform.net`).
+- **Real-Debrid / Stremio Debrid**: `RealDebridClient` and `StremioDebridProvider` resolve cached torrent/debrid streams when an API key is configured.
+- **Direct Embed & Native Live TV Playback**: Embed providers (`VidLink`, `Videasy`, `VidSrc`, etc.) load inside `<iframe>` fallback containers, while native VOD & Live TV streams render inside HTML5 `<video>` tags with `hls.js` support.
 
 ---
 
@@ -49,4 +51,4 @@ To minimize GPU memory overhead on Smart TVs while delivering crisp poster art:
 
 ---
 
-*Single Source of Truth v0.4.5*
+*Single Source of Truth v0.6.4*

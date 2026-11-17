@@ -27,7 +27,8 @@ export class RealDebridClient {
         if (this._envStatusCache !== null) return this._envStatusCache;
         if (isLocalhostEnv()) {
             try {
-                const res = await fetch(`/api/debrid/status?token=${encodeURIComponent(this.userApiKey)}`);
+                const headers = this.userApiKey ? { 'X-RD-Token': this.userApiKey } : {};
+                const res = await fetch('/api/debrid/status', { headers });
                 if (res.ok) {
                     const data = await res.json();
                     this._envStatusCache = {

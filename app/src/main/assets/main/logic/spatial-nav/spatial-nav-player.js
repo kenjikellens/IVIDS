@@ -1,17 +1,5 @@
 import { SpatialNav } from '../../gui/js/spatial-nav.js';
-
-/**
- * Checks if a DOM element is currently rendered and visible in the viewport.
- *
- * @param {HTMLElement|null} el - Element to inspect.
- * @returns {boolean} True when visible.
- */
-function isElementVisible(el) {
-    if (!el) return false;
-    if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
-    if (el.classList.contains('hidden') || el.style.display === 'none' || el.style.visibility === 'hidden') return false;
-    return true;
-}
+import { isElementVisible } from './spatial-nav-helpers.js';
 
 /**
  * Checks whether the VOD HUD overlay is currently visible (`show` class).
@@ -283,7 +271,7 @@ export const spatialNavPlayer = {
     /**
      * Layered Back key handling:
      * 1. Step back inside Settings sidebar or close sidebar if at root.
-     * 2. Hide overlay if visible.
+     * 2. Hide overlay if visible in D-pad mode (skip on touch/mobile so Back exits player directly).
      * 3. Return false so Router navigates back out of player.
      *
      * @returns {boolean} True if consumed locally.
@@ -296,7 +284,8 @@ export const spatialNavPlayer = {
             }
         }
 
-        if (isOverlayVisible()) {
+        const isTouchOrMobile = SpatialNav.isMouseInteraction || SpatialNav.isPortrait();
+        if (!isTouchOrMobile && isOverlayVisible()) {
             if (typeof window.playerHideHud === 'function') {
                 window.playerHideHud();
                 return true;

@@ -1,34 +1,5 @@
 import { SpatialNav } from '../../gui/js/spatial-nav.js';
-
-/**
- * Checks if a DOM element is currently visible, rendered, and not hidden.
- * @param {HTMLElement|null} el - The element to check.
- * @returns {boolean} True if the element is visible.
- */
-function isElementVisible(el) {
-    if (!el) return false;
-    if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
-    if (el.classList.contains('hidden') || el.style.display === 'none' || el.style.visibility === 'hidden') return false;
-    return true;
-}
-
-/**
- * Retrieves the currently active or first focusable navigation item in the global sidebar.
- * @param {string} [routeHint='search'] - Preferred route data attribute match.
- * @returns {HTMLElement|null} The target sidebar element.
- */
-function getActiveSidebarItem(routeHint = 'search') {
-    const sidebar = document.getElementById('sidebar-container');
-    if (!sidebar || !isElementVisible(sidebar)) return null;
-    if (routeHint) {
-        const hint = sidebar.querySelector(`.nav-item[data-route="${routeHint}"].focusable`);
-        if (hint && isElementVisible(hint)) return hint;
-    }
-    const active = sidebar.querySelector('.nav-item.is-active.focusable, .nav-item.active.focusable');
-    if (active && isElementVisible(active)) return active;
-    const first = sidebar.querySelector('.nav-item.focusable');
-    return (first && isElementVisible(first)) ? first : null;
-}
+import { isElementVisible, getActiveSidebarItem } from './spatial-nav-helpers.js';
 
 /**
  * Retrieves all visible, interactive poster card buttons within the search results grid.

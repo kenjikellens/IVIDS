@@ -57,7 +57,7 @@ class I18n {
         }
 
         try {
-            const response = await fetch(`lang/${lang}.json?t=${Date.now()}`);
+            const response = await fetch(`lang/${lang}.json?v=20261116`);
             if (!response.ok) throw new Error(`Failed to load ${lang}.json`);
 
             this.translations = await response.json();

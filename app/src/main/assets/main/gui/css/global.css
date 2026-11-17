@@ -6,7 +6,7 @@
    SECTION 1: DESIGN TOKENS, CORE UTILITIES & BASE RESET
    ========================================================================== */
 
-/* Root design system tokens for TV, desktop, and responsive scaling. */
+/* Root design system tokens for TV, desktop, and landscape responsive scaling. */
 :root {
     color-scheme: dark;
     --ui-scale: 1.0;
@@ -14,8 +14,8 @@
     --app-content-padding-y: clamp(16px, 2vw, 30px);
     --app-sidebar-expanded-width: clamp(190px, 14vw, 220px);
     --app-sidebar-width: clamp(58px, 4vw, 68px);
-    --background-color: #000000;
-    --background-elevated: #0f0f0f;
+    --background-color: #101010;
+    --background-elevated: #171717;
     --card-bg: var(--surface-color);
     --focus-border-color: #ffffff;
     --focus-ring: none;
@@ -31,12 +31,12 @@
     --row-min-height: calc(var(--poster-height) + 44px);
     --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.36);
     --shadow-panel: 0 18px 48px rgba(0, 0, 0, 0.48);
-    --surface-color: #171717;
-    --surface-muted: #2a2a2a;
-    --surface-soft: #202020;
+    --surface-color: #1c1c1c;
+    --surface-muted: #2e2e2e;
+    --surface-soft: #252525;
     --text-color: #f4f4f4;
-    --text-dim: #707070;
-    --text-muted: #a7a7a7;
+    --text-dim: #7a7a7a;
+    --text-muted: #adadad;
 }
 
 /* Universal box-sizing reset and tap highlight removal. */
@@ -50,7 +50,7 @@ html { background: var(--background-color); zoom: var(--ui-scale, 1.0); }
 
 /* Viewport container constrained to fit physical screen dimensions inversely relative to root zoom. */
 body {
-    background: #000000;
+    background: var(--background-color);
     color: var(--text-color);
     font-family: "Twemoji Country Flags", Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif;
     height: calc(100vh / var(--ui-scale, 1.0));
@@ -1010,16 +1010,16 @@ input, textarea, select { font: inherit; }
 }
 .media-backdrop img, .details-backdrop img, .playlist-backdrop img { height: 100%; object-fit: cover; opacity: 0.22; width: 100%; }
 
-/* Linear gradient mask darkening background for high text contrast and seamless bottom fade. */
+/* Linear gradient mask darkening background for high text contrast and seamless bottom fade into landscape canvas. */
 .media-backdrop__overlay, .backdrop-overlay {
-    background: linear-gradient(90deg, rgba(5, 5, 5, 0.94) 0%, rgba(5, 5, 5, 0.76) 45%, rgba(5, 5, 5, 0.3) 100%), linear-gradient(0deg, var(--background-color) 0%, rgba(5, 5, 5, 0.6) 40%, transparent 100%);
+    background: linear-gradient(90deg, rgba(16, 16, 16, 0.92) 0%, rgba(16, 16, 16, 0.74) 45%, rgba(16, 16, 16, 0.28) 100%), linear-gradient(0deg, var(--background-color) 0%, rgba(16, 16, 16, 0.58) 40%, transparent 100%);
     inset: 0;
     position: absolute;
 }
 
-/* Subtle ambient dark-grey and theme-accent overlay when no backdrop image is available. */
+/* Ambient slate and theme-accent overlay when no backdrop image is available. */
 .media-backdrop--empty .media-backdrop__overlay, .backdrop-overlay-empty {
-    background: radial-gradient(ellipse 75% 60% at 74% 20%, rgba(var(--primary-rgb), 0.14) 0%, rgba(var(--primary-rgb), 0.04) 48%, transparent 78%), linear-gradient(180deg, rgba(8, 8, 8, 0.72) 0%, var(--background-color) 100%);
+    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 46%, transparent 76%), linear-gradient(180deg, rgba(18, 18, 18, 0.65) 0%, var(--background-color) 100%);
 }
 
 /* Centered circular media action play indicator on trailers and cards. */
@@ -1163,18 +1163,24 @@ input, textarea, select { font: inherit; }
 .modal__close-btn:hover, .modal__close-btn:focus, .modal__close-btn.focused { color: #ffffff; outline: none; }
 
 /* Circular back button in modal header */
-.modal__back-btn { align-items: center; background: transparent; border: 2px solid transparent; border-radius: 50% !important; color: #ffffff; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: 18px !important; min-height: 38px; min-width: 38px; padding: 0; position: absolute !important; right: auto !important; top: 18px !important; width: 38px; z-index: 20; }
-.modal__back-btn:hover { background: rgba(255, 255, 255, 0.12) !important; color: #ffffff; }
-.modal__back-btn:focus, .modal__back-btn:focus-visible, .modal__back-btn.focused { background: rgba(255, 255, 255, 0.14) !important; border-color: #ffffff; color: #ffffff; outline: none; }
-.modal__back-btn:active { background: rgba(255, 255, 255, 0.2) !important; }
+/* Modal back button - Circular top-left return trigger */
+.modal .modal__back-btn, .modal__back-btn { align-items: center; background: transparent; border: 2px solid transparent; border-radius: 50%; color: #ffffff; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: 18px; min-height: 38px; min-width: 38px; padding: 0; position: absolute; right: auto; top: 18px; width: 38px; z-index: 20; }
+/* Modal back button hover - Subtle circular highlight */
+.modal .modal__back-btn:hover, .modal__back-btn:hover { background: rgba(255, 255, 255, 0.12); color: #ffffff; }
+/* Modal back button focus - White border outline for D-pad navigation */
+.modal .modal__back-btn:focus, .modal .modal__back-btn:focus-visible, .modal .modal__back-btn.focused, .modal__back-btn:focus, .modal__back-btn:focus-visible, .modal__back-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
+/* Modal back button active - Pressed circular highlight */
+.modal .modal__back-btn:active, .modal__back-btn:active { background: rgba(255, 255, 255, 0.2); }
 /* SVG icon inside modal back button */
 .modal-back-icon { display: block; filter: brightness(0) invert(1); height: 20px; opacity: 0.9; pointer-events: none; width: 20px; }
 .modal__back-btn:hover .modal-back-icon, .modal__back-btn:focus .modal-back-icon { opacity: 1; }
 
 /* Circular refresh button in modal header */
-#version-selector-modal .modal__refresh-btn, #version-selector-refresh-btn, .modal .modal__refresh-btn { align-items: center; background: transparent; border: 0; border-radius: 50% !important; color: #aaaaaa; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: auto !important; min-height: 38px; min-width: 38px; padding: 0; position: absolute !important; right: 18px !important; top: 18px !important; width: 38px; z-index: 50 !important; }
-.modal__refresh-btn:hover, .modal__refresh-btn:focus, .modal__refresh-btn.focused { background: rgba(255, 255, 255, 0.12) !important; color: #ffffff; outline: none; }
-.modal__refresh-btn:active { background: rgba(255, 255, 255, 0.2) !important; }
+#version-selector-modal .modal__refresh-btn, #version-selector-refresh-btn, .modal .modal__refresh-btn { align-items: center; background: transparent; border: 0; border-radius: 50%; color: #aaaaaa; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: auto; min-height: 38px; min-width: 38px; padding: 0; position: absolute; right: 18px; top: 18px; width: 38px; z-index: 50; }
+/* Modal refresh button focus - Subtle highlight on hover or remote focus */
+.modal .modal__refresh-btn:hover, .modal .modal__refresh-btn:focus, .modal .modal__refresh-btn.focused, .modal__refresh-btn:hover, .modal__refresh-btn:focus, .modal__refresh-btn.focused { background: rgba(255, 255, 255, 0.12); color: #ffffff; outline: none; }
+/* Modal refresh button active - Stronger pressed surface tint */
+.modal .modal__refresh-btn:active, .modal__refresh-btn:active { background: rgba(255, 255, 255, 0.2); }
 /* SVG icon inside modal refresh button */
 .modal-refresh-icon { display: block; filter: brightness(0) invert(1); height: 20px; opacity: 0.9; pointer-events: none; width: 20px; }
 .modal__refresh-btn:hover .modal-refresh-icon, .modal__refresh-btn:focus .modal-refresh-icon { opacity: 1; }
@@ -1219,32 +1225,41 @@ input, textarea, select { font: inherit; }
 /* Clean zero-gap list containers for modal selections with divider lines. */
 .playlist-selection-list { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
 /* Flat list option with divider line and zero radius inside modals. */
-.playlist-selection-list .playlist-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0 !important; box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 500; justify-content: space-between; min-height: 52px; padding: 14px 18px; text-align: left; width: 100%; }
+.playlist-selection-list .playlist-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0; box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 500; justify-content: space-between; min-height: 52px; padding: 14px 18px; text-align: left; width: 100%; }
 /* Top border for first option in modal lists. */
 .playlist-selection-list .playlist-item:first-child { border-top: 1px solid #222222; }
 /* Keeps language heading wrapper layout-neutral outside TV landscape presentation. */
 .language-modal__heading, .language-modal__heading-copy { display: contents; }
-/* Two-column landscape language popup: title on the left beside scrollable language rows, back button pinned top-left. */
+/* Two-column landscape language popup: centered language heading beside scrollable language rows, back button pinned top-left. */
 @media (orientation: landscape) and (min-width: 1024px) and (min-height: 501px) {
-    /* Two-column modal layout keeping title on left beside the scrollable language list. */
-    html body #language-modal.modal .modal__dialog { align-items: stretch !important; display: grid !important; gap: 36px !important; grid-template-columns: minmax(220px, 0.36fr) minmax(0, 0.64fr) !important; grid-template-rows: minmax(0, 1fr) !important; max-height: 84vh !important; max-width: 960px !important; padding: 36px 40px !important; width: min(92vw, 960px) !important; }
-    /* Left column aligns language heading comfortably clear of top-left corner back button. */
-    html body #language-modal .language-modal__heading { align-items: flex-start !important; display: flex !important; flex-direction: column !important; grid-column: 1 !important; grid-row: 1 !important; justify-content: flex-start !important; min-width: 0; padding-top: 48px; text-align: left; }
+    /* Two-column modal layout keeping centered title on left beside the scrollable language list. */
+    html body #language-modal.modal .modal__dialog { align-items: stretch; display: grid; gap: 36px; grid-template-columns: minmax(220px, 0.36fr) minmax(0, 0.64fr); grid-template-rows: minmax(0, 1fr); max-height: 84vh; max-width: 960px; padding: 36px 40px; width: min(92vw, 960px); }
+    /* Left column centers language heading cleanly while leaving top-left corner clear for back button. */
+    html body #language-modal .language-modal__heading { align-items: center; display: flex; flex-direction: column; grid-column: 1; grid-row: 1; justify-content: center; min-width: 0; padding-top: 0; text-align: center; }
     /* Keep language modal back button identically pinned top-left like all other dialogs. */
-    html body #language-modal .language-modal__heading .modal__back-btn { left: 18px !important; position: absolute !important; right: auto !important; top: 18px !important; }
+    html body #language-modal .language-modal__heading .modal__back-btn { left: 18px; position: absolute; right: auto; top: 18px; }
     /* Left heading copy container. */
-    html body #language-modal .language-modal__heading-copy { display: flex !important; flex-direction: column !important; }
-    html body #language-modal #language-modal-title { font-size: clamp(30px, 2.8vw, 42px) !important; line-height: 1.1; margin: 0 !important; padding: 0 !important; text-align: left !important; }
+    html body #language-modal .language-modal__heading-copy { align-items: center; display: flex; flex-direction: column; }
+    /* Language modal title - Large centered heading in two-column desktop/TV dialog */
+    html body #language-modal #language-modal-title { font-size: clamp(30px, 2.8vw, 42px); line-height: 1.1; margin: 0; padding: 0; text-align: center; }
     /* Scrollable single-column language list in right column. */
-    html body #language-modal.modal .modal__body { box-sizing: border-box !important; flex: 1 1 auto !important; grid-column: 2 !important; grid-row: 1 !important; max-height: min(70vh, 660px) !important; min-height: 0 !important; overflow-y: auto !important; padding: 4px 10px 4px 0 !important; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
+    html body #language-modal.modal .modal__body { box-sizing: border-box; flex: 1 1 auto; grid-column: 2; grid-row: 1; max-height: min(70vh, 660px); min-height: 0; overflow-y: auto; padding: 4px 10px 4px 0; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
     /* Single-column list rows in right column. */
-    html body #language-modal #language-selection-grid { box-sizing: border-box !important; display: flex !important; flex-direction: column !important; gap: 6px !important; grid-template-columns: none !important; padding: 2px !important; width: 100% !important; }
-    html body #language-modal.modal .language-stepper-container { display: none !important; }
-    /* Language row items matching uniform modal card border and focus styles. */
-    html body #language-modal .language-card { align-items: center !important; background: rgba(255, 255, 255, 0.06) !important; border: 2px solid rgba(255, 255, 255, 0.12) !important; border-radius: var(--radius-md) !important; box-sizing: border-box !important; min-height: 50px !important; padding: 10px 16px !important; width: 100% !important; }
-    html body #language-modal .language-card:focus-visible, html body #language-modal .language-card.focused { background: rgba(255, 255, 255, 0.14) !important; border-color: #ffffff !important; outline: none !important; }
-    html body #language-modal .language-card.is-active { background: rgba(var(--primary-rgb), 0.14) !important; border-color: var(--primary-color) !important; color: var(--primary-color) !important; }
-    html body #language-modal .language-card.is-active:focus-visible, html body #language-modal .language-card.is-active.focused { border-color: #ffffff !important; outline: none !important; }
+    html body #language-modal #language-selection-grid { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; grid-template-columns: none; padding: 2px; width: 100%; }
+    /* Mobile language stepper - Hidden on wide desktop/TV two-column language modal */
+    html body #language-modal.modal .language-stepper-container { display: none; }
+    /* Language row items matching uniform modal card border, transition, and focus styles. */
+    html body #language-modal .language-card { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md); box-sizing: border-box; min-height: 50px; padding: 10px 16px; transition: background-color 150ms ease, border-color 150ms ease; width: 100%; }
+    /* Language modal card hover - Standard translucent hover matching secondary modal controls */
+    html body #language-modal .language-card:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.35); }
+    /* Language modal card focus - Crisp white outline for keyboard/D-pad navigation */
+    html body #language-modal .language-card:focus-visible, html body #language-modal .language-card.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; outline: none; }
+    /* Language modal active card - Primary brand tint and border */
+    html body #language-modal .language-card.is-active { background: rgba(var(--primary-rgb), 0.14); border-color: var(--primary-color); color: var(--primary-color); }
+    /* Language modal active card hover - Elevated primary tint on hover */
+    html body #language-modal .language-card.is-active:hover { background: rgba(var(--primary-rgb), 0.24); border-color: var(--primary-color); }
+    /* Language modal active + focused card - Preserves white D-pad focus outline */
+    html body #language-modal .language-card.is-active:focus-visible, html body #language-modal .language-card.is-active.focused { border-color: #ffffff; outline: none; }
 }
 
 /* Landscape/TV vertical modal options stack fallback for non-language selectors like colors */
@@ -1252,7 +1267,7 @@ input, textarea, select { font: inherit; }
 /* Landscape/TV modal option card with subtle surface, border, and focus outline */
 .language-card { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md); box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 600; gap: 14px; justify-content: space-between; min-height: 52px; padding: 12px 18px; text-align: left; transition: background-color 150ms ease, border-color 150ms ease; width: 100%; }
 /* Landscape/TV modal option card hover highlight */
-.language-card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.25); }
+.language-card:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.35); }
 /* Landscape/TV modal option card remote D-pad focus indicator */
 .language-card:focus, .language-card:focus-visible, .language-card.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; outline: none; }
 /* Landscape/TV modal option card active selection state */
@@ -1326,11 +1341,11 @@ input, textarea, select { font: inherit; }
 .network-status-overlay.connected { color: var(--primary-color); }
 .toast-blink-icon { animation: toast-pulse-opacity 1.5s infinite ease-in-out; }
 
-/* Main vertical navigation rail container with smooth width expansion on TV and hover. */
+/* Main vertical navigation rail container with rich dark slate surface and smooth width expansion on TV and hover. */
 .nav-rail, .navbar {
     align-items: stretch;
-    background: #000000;
-    border-right: none;
+    background: rgba(12, 12, 12, 0.96);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -1541,12 +1556,12 @@ input, textarea, select { font: inherit; }
 .settings-header h1,
 .account-header h1 { margin-bottom: 28px; }
 
-/* Unified dark surface section container for Settings and Account groups. */
+/* Elevated surface section container giving clear separation for Settings and Account cards against landscape background. */
 .settings-section, .account-section {
-    background: rgba(255, 255, 255, 0.04);
-    border: none;
+    background: var(--surface-color);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-md);
-    box-shadow: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
     margin-bottom: 28px;
     padding: 24px 28px;
 }
@@ -2010,8 +2025,8 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .debrid-field-group { display: flex; flex-direction: column; gap: 8px; text-align: left; width: 100%; }
 .debrid-field-label { color: rgba(255, 255, 255, 0.85); font-size: 13.5px; font-weight: 700; }
 
-/* Settings item rows, value badges, and stepper controls. */
-.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.04); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
+/* Settings item rows - Distinct subtle separator inside elevated landscape setting cards. */
+.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
 .setting-item:first-of-type { border-top: 0; }
 .setting-info { min-width: 0; }
 .setting-label { color: #ffffff; font-size: 19px; font-weight: 700; margin-bottom: 4px; }

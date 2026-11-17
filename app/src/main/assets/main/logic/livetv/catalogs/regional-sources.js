@@ -34,6 +34,14 @@ export const REGIONAL_CATALOG = [
         priority: 9
     },
     {
+        id: 'iptvorg_master_nl',
+        name: 'Netherlands Master Streams',
+        url: 'https://raw.githubusercontent.com/iptv-org/iptv/master/streams/nl.m3u',
+        category: 'Netherlands',
+        country: 'netherlands',
+        priority: 11
+    },
+    {
         id: 'lang_dutch',
         name: 'Dutch Language Channels',
         url: 'https://iptv-org.github.io/iptv/languages/nld.m3u',
@@ -58,6 +66,14 @@ export const REGIONAL_CATALOG = [
         category: 'Belgium',
         country: 'belgium',
         priority: 9
+    },
+    {
+        id: 'iptvorg_master_be',
+        name: 'Belgium Master Streams',
+        url: 'https://raw.githubusercontent.com/iptv-org/iptv/master/streams/be.m3u',
+        category: 'Belgium',
+        country: 'belgium',
+        priority: 11
     },
 
     // Spain

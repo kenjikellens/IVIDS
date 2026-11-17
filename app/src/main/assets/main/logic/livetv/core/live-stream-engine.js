@@ -48,8 +48,28 @@ export class LiveStreamEngine {
     }
 
     /**
+     * Extracts the upstream hostname from either a direct stream URL or a local `/proxy?url=...` path.
+     * Used to identify dead DNS hosts across stream stages without mutating channel data.
+     *
+     * @param {string} targetUrl - Direct or proxied stream URL.
+     * @returns {string} Lowercase hostname or empty string when unparseable.
+     */
+    static _extractUpstreamHost(targetUrl) {
+        try {
+            let candidate = String(targetUrl || '').trim();
+            if (candidate.includes('/proxy?')) {
+                const parsedProxy = new URL(candidate, 'http://localhost');
+                candidate = parsedProxy.searchParams.get('url') || candidate;
+            }
+            return (new URL(candidate).hostname || '').toLowerCase();
+        } catch {
+            return '';
+        }
+    }
+
+    /**
      * Loads and plays a channel using the Multi-Stage Smart Connection Pipeline.
-     * Automatically tries direct HLS and proxied HLS routes plus any fallback URLs before declaring offline.
+     * Automatically skips already-known unreachable hosts during previews and stops redundant direct fallbacks after proxy 502/404 responses.
      *
      * @param {Object|string} channelOrUrl - Channel instance/object or raw stream URL.
      * @param {Object} [customHeaders] - Optional custom HTTP headers.
@@ -90,9 +110,14 @@ export class LiveStreamEngine {
             });
         }
 
-        for (let i = 0; i < candidateUrls.length; i++) {
+        const orderedCandidates = candidateUrls.filter(u => !LiveStreamEngine._deadHosts.has(LiveStreamEngine._extractUpstreamHost(u)));
+        const effectiveCandidates = orderedCandidates.length > 0
+            ? orderedCandidates
+            : (this.isPreview ? [] : candidateUrls);
+
+        for (let i = 0; i < effectiveCandidates.length; i++) {
             if (genId !== this.generationId) return false;
-            const candidateUrl = candidateUrls[i];
+            const candidateUrl = effectiveCandidates[i];
             const headers = {
                 ...(StreamOptimizer.getRequiredHeaders(candidateUrl) || {}),
                 ...(channel.headers || {}),
@@ -103,9 +128,12 @@ export class LiveStreamEngine {
             for (let r = 0; r < routeOrder.length; r++) {
                 if (genId !== this.generationId) return false;
                 const endpointUrl = routeOrder[r];
-                const started = await this._attemptSingleEndpoint(endpointUrl, channel, genId);
-                if (started) {
+                const attempt = await this._attemptSingleEndpoint(endpointUrl, channel, genId);
+                if (attempt.ok) {
                     return true;
+                }
+                if (attempt.skipDirectFallback) {
+                    break;
                 }
             }
         }
@@ -163,16 +191,17 @@ export class LiveStreamEngine {
 
     /**
      * Attempts playback of a single resolved endpoint URL with a watchdog timeout and automatic media error recovery.
+     * Records dead upstream DNS hosts on 502 responses so subsequent direct-fallback attempts can be skipped cleanly.
      *
      * @param {string} endpointUrl - Direct or proxied URL to load.
      * @param {Object} channel - Channel metadata object.
      * @param {number} genId - Active generation token.
-     * @returns {Promise<boolean>} True if video playback started successfully.
+     * @returns {Promise<{ok: boolean, skipDirectFallback: boolean}>} Attempt status object.
      */
     _attemptSingleEndpoint(endpointUrl, channel, genId) {
         return new Promise((resolve) => {
             if (genId !== this.generationId || !this.video) {
-                resolve(false);
+                resolve({ ok: false, skipDirectFallback: false });
                 return;
             }
 
@@ -182,20 +211,20 @@ export class LiveStreamEngine {
             let mediaRecoveryAttempted = false;
             const timeoutMs = this.isPreview ? 5000 : 7000;
 
-            const finish = (success, qualityLabel = 'HD') => {
+            const finish = (success, qualityLabel = 'HD', skipDirectFallback = false) => {
                 if (settled) return;
                 settled = true;
                 this._clearWatchdog();
 
                 if (genId !== this.generationId) {
-                    resolve(false);
+                    resolve({ ok: false, skipDirectFallback: true });
                     return;
                 }
 
                 if (success && this.onPlaying) {
                     this.onPlaying(channel, qualityLabel);
                 }
-                resolve(success);
+                resolve({ ok: success, skipDirectFallback });
             };
 
             this.watchdogTimer = setTimeout(() => {
@@ -305,8 +334,16 @@ export class LiveStreamEngine {
                         return;
                     }
 
+                    const statusCode = data?.response?.code;
+                    const isProxied = endpointUrl.includes('/proxy?');
+                    const skipFallback = Boolean(isProxied && (statusCode === 502 || statusCode === 504 || statusCode === 404 || statusCode === 403));
+                    if (isProxied && (statusCode === 502 || statusCode === 504)) {
+                        const deadHost = LiveStreamEngine._extractUpstreamHost(endpointUrl);
+                        if (deadHost) LiveStreamEngine._deadHosts.add(deadHost);
+                    }
+
                     video.removeEventListener('playing', onVideoPlaying);
-                    finish(false);
+                    finish(false, 'HD', skipFallback);
                 });
 
                 hls.loadSource(endpointUrl);
@@ -550,3 +587,6 @@ export class LiveStreamEngine {
         this.video = null;
     }
 }
+
+/** Session cache of upstream hostnames that returned 502/504 DNS or gateway failures. */
+LiveStreamEngine._deadHosts = new Set();

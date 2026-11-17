@@ -30,31 +30,31 @@ Core tokens are declared in `:root` inside `global.css`. Accent colors adapt dyn
 1. **Percentage-Based Sizing**: Sizing for primary view containers prefers `%`, `vw`, and `vh` over static pixel bounds to allow fluid scaling across TV and mobile display aspect ratios.
 2. **Typography**: Uses `vh` and `clamp()` expressions (e.g. `font-size: clamp(14px, 2vh, 18px)`) to guarantee legibility on big-screen TVs without breaking layout density on phone screens.
 3. **Safe Area & WindowInsets Handling**:
-   - On Android devices, system bars (3-button navigation & status bar) are handled natively in [MainActivity.java](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java#L423-L428) via `ViewCompat.setOnApplyWindowInsetsListener`.
-   - On mobile CSS, layout containers respect viewport bounds:
+   - On Android devices, edge-to-edge rendering is enabled in [MainActivity.java](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java) via `WindowCompat.setDecorFitsSystemWindows(getWindow(), false)`, letting Chromium `viewport-fit=cover` and CSS `env(safe-area-inset-*)` handle system bars and camera cutouts natively.
+   - On mobile CSS ([global-mobile.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global-mobile.css)), layout containers and fullscreen player overlays respect viewport insets:
      ```css
      #app #sidebar-container, #app .navbar {
          padding-bottom: env(safe-area-inset-bottom, 0px);
      }
      ```
+   - Mobile fullscreen player HUD controls (`.tv-back-btn`, `.tv-settings-btn`, `.vod-skip-btn`, `.vod-play-btn`) use transparent, borderless YouTube-style icon targets with `drop-shadow` contrast in `global-mobile.css`, while desktop/TV retains rounded button surfaces and focus rings in `global.css`.
 
 ---
 
 ## 🛑 Hover & Focus Animation Standards
 
 - **Strict Movement Rule**: Focus and hover state indicators MUST NEVER use `transform: scale()` or `translate()` movements. Moving elements during focus navigation cause browser layout recalculations and jank on smart TVs.
-- **Standard Focus Indicator**: Focus states are signaled exclusively using a **thicker white border** (`border: 3px solid #ffffff`) or high-contrast glow (`box-shadow: 0 0 12px rgba(255, 255, 255, 0.4)`).
+- **Standard Focus Indicator**: Focus states are signaled exclusively using a **thicker white border** (`outline: 2px solid #ffffff;` or `border-color: #ffffff;`).
 
 ---
 
-## 🔘 Button Component Hierarchy (`.btn`)
+## 🔘 OOCSS Component Hierarchy (`.btn`, `.card`, `.modal`)
 
-All interactive buttons follow a standardized class structure:
+All interactive components follow the OOCSS/BEM modular system in `global.css`:
 
-- `.btn`: Base class establishing height, cursor, flex alignment, and transition properties.
-- `.btn-primary`: Theme accent button utilizing `var(--primary-color)`.
-- `.btn-secondary`: Translucent dark button (`rgba(255, 255, 255, 0.08)`) with subtle borders.
-- `.btn-danger`: High-visibility red button for destructive actions (e.g., deleting profiles or playlists).
+- **Buttons**: Base `.btn` with sizes (`.btn--sm`, `.btn--md`, `.btn--lg`, `.btn--circle-md`, `.btn--circle-lg`, `.btn--circle-xl`) and variants (`.btn--primary`, `.btn--secondary`, `.btn--danger`, `.btn--ghost`).
+- **Cards & Grids**: `.card` (`.card--interactive`, `.card--poster`, `.card--widescreen`, `.card--row`, `.card--panel`), `.media-rail` (horizontal carousels), and `.media-grid` (`.media-grid--posters`, `.media-grid--cast`).
+- **Navigation & Modals**: `.nav-rail` / `.nav-item`, `.modal` / `.modal__dialog` (`.modal__dialog--sm` through `.modal__dialog--xl`), and `.chip` / `.badge` tokens.
 
 ---
 
@@ -65,4 +65,4 @@ All interactive buttons follow a standardized class structure:
 
 ---
 
-*Single Source of Truth v0.4.5*
+*Single Source of Truth v0.6.4*

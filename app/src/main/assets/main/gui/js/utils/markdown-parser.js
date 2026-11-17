@@ -106,8 +106,11 @@ function inlineFormatting(text) {
 
     // Anchors/Hyperlinks [text](url)
     result = result.replace(/\[(.*?)\]\((.*?)\)/g, (match, linkText, url) => {
-        // Prevent javascript: URLs and only allow HTTP/S or relative links
-        const safeUrl = /^(https?:\/\/|\/|\.)/i.test(url) ? url : '#';
+        // Prevent javascript: URLs, strip quotes to block attribute breakout, and only allow HTTP/S or relative links
+        const rawUrl = String(url || '').trim();
+        const safeUrl = /^(https?:\/\/|\/|\.)/i.test(rawUrl)
+            ? rawUrl.replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+            : '#';
         return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
     });
 

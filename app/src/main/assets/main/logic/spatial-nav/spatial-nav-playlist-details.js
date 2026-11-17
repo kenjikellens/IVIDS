@@ -1,5 +1,6 @@
 import { SpatialNav } from '../../gui/js/spatial-nav.js';
 import { Router } from '../../gui/js/router.js';
+import { isElementVisible, getActiveSidebarItem } from './spatial-nav-helpers.js';
 import {
     getActiveMoveIndex,
     setActiveMoveIndex,
@@ -11,32 +12,8 @@ import {
 } from '../../gui/pages/playlist-details.js';
 
 /**
- * Checks if a DOM element is currently visible, rendered, and not hidden.
- * @param {HTMLElement|null} el - The element to check.
- * @returns {boolean} True if the element is visible.
- */
-function isElementVisible(el) {
-    if (!el) return false;
-    if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
-    if (el.classList.contains('hidden') || el.style.display === 'none' || el.style.visibility === 'hidden') return false;
-    return true;
-}
-
-/**
- * Retrieves the currently active or first focusable navigation item in the global sidebar.
- * @returns {HTMLElement|null} The target sidebar element.
- */
-function getActiveSidebarItem() {
-    const sidebar = document.getElementById('sidebar-container');
-    if (!sidebar || !isElementVisible(sidebar)) return null;
-    const active = sidebar.querySelector('.nav-item.is-active.focusable, .nav-item.active.focusable');
-    if (active && isElementVisible(active)) return active;
-    const first = sidebar.querySelector('.nav-item.focusable');
-    return (first && isElementVisible(first)) ? first : null;
-}
-
-/**
  * Resolves the primary focusable top-bar control (Options button or Back button).
+ *
  * @returns {HTMLElement|null} The target top-bar button.
  */
 function getPrimaryActionBtn() {

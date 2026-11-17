@@ -41,8 +41,9 @@ export class StremioDebridProvider {
         let rawStreams = [];
         try {
             if (isLocalhostEnv()) {
-                const apiUrl = `/api/debrid/streams?addonBase=${encodeURIComponent(this.addonBaseUrl)}&type=${encodeURIComponent(stremioType)}&id=${encodeURIComponent(streamId)}&token=${encodeURIComponent(this.rdClient?.userApiKey || '')}`;
-                const res = await fetch(apiUrl);
+                const apiUrl = `/api/debrid/streams?addonBase=${encodeURIComponent(this.addonBaseUrl)}&type=${encodeURIComponent(stremioType)}&id=${encodeURIComponent(streamId)}`;
+                const token = this.rdClient?.userApiKey || '';
+                const res = await fetch(apiUrl, token ? { headers: { 'X-RD-Token': token } } : undefined);
                 if (res.ok) {
                     const data = await res.json();
                     rawStreams = Array.isArray(data?.streams) ? data.streams : [];

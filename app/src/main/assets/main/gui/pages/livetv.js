@@ -549,9 +549,9 @@ function filterAndRenderChannels(resetFocus = false) {
 }
 
 /**
- * Updates the right-hand preview column with the selected channel's minimal prompt and EPG details,
- * and triggers debounced Multi-Stage Smart HLS preview playback via LiveStreamEngine.
- * 
+ * Updates the right-hand preview column with the selected channel's EPG details and stream preview.
+ * Mutates #hero-active-content, EPG progress controls, upcoming shows list, and previewEngine state.
+ *
  * @param {object} channel - The selected channel object to preview.
  */
 async function showChannelDetail(channel) {

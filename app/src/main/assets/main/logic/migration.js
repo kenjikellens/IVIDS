@@ -83,7 +83,7 @@ export async function runMigration() {
             console.log('Migration: No custom profiles found. Migrating to anonymous namespace.');
             
             if (legacyHistory) PersistentStorage.setItem('ivids-anon-recentlyWatched', legacyHistory);
-            if (legacyPlaylists) PersistentStorage.setItem('ivids-anon-playlists', legacyPlaylists);
+            if (legacyPlaylists) PersistentStorage.setItem('ivids-anon-user_playlists', legacyPlaylists);
             if (legacySettings) PersistentStorage.setItem('ivids-anon-settings', legacySettings);
 
             // Clean up profiles

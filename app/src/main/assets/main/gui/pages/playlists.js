@@ -7,6 +7,7 @@ import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 
 /**
  * Formats a localized item count string for playlist cards.
+ *
  * @param {number} count - Number of items in the playlist.
  * @returns {string} Localized count label.
  */

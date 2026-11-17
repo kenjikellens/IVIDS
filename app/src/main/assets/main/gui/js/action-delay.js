@@ -31,11 +31,12 @@ export class ActionDelayManager {
         this.delay = this.loadDelay();
         this.isDispatching = false;
         this.activeTimer = null;
+        this._listenerAttached = false;
         this.init();
     }
 
     /**
-     * Loads the saved delay setting from persistent storage (default: 100ms).
+     * Loads the saved delay setting from persistent storage (default: 0ms for instant tap responsiveness).
      * @returns {number} The response delay in milliseconds.
      */
     loadDelay() {
@@ -53,7 +54,7 @@ export class ActionDelayManager {
         } catch (e) {
             console.error('Error loading delayAction setting:', e);
         }
-        return 100;
+        return 0;
     }
 
     /**
@@ -62,7 +63,7 @@ export class ActionDelayManager {
      */
     setDelay(newDelay) {
         const num = parseInt(newDelay, 10);
-        this.delay = (!isNaN(num) && [0, 100, 250, 500].includes(num)) ? num : 100;
+        this.delay = (!isNaN(num) && [0, 100, 250, 500].includes(num)) ? num : 0;
     }
 
     /**
@@ -74,9 +75,11 @@ export class ActionDelayManager {
     }
 
     /**
-     * Attaches global capturing click event listener to the document.
+     * Attaches global capturing click event listener to the document once.
      */
     init() {
+        if (this._listenerAttached) return;
+        this._listenerAttached = true;
         document.addEventListener('click', (e) => this.handleClickCapture(e), true);
     }
 

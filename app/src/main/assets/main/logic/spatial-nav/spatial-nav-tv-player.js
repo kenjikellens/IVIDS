@@ -1,16 +1,5 @@
 import { SpatialNav } from '../../gui/js/spatial-nav.js';
-
-/**
- * Checks if a DOM element is currently visible, rendered, and not hidden.
- * @param {HTMLElement|null} el - The element to check.
- * @returns {boolean} True if the element is visible.
- */
-function isElementVisible(el) {
-    if (!el) return false;
-    if (el.offsetWidth === 0 || el.offsetHeight === 0) return false;
-    if (el.classList.contains('hidden') || el.style.display === 'none' || el.style.visibility === 'hidden') return false;
-    return true;
-}
+import { isElementVisible } from './spatial-nav-helpers.js';
 
 /**
  * Checks if the TV player controls overlay is currently visible.

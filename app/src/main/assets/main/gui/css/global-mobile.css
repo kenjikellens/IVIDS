@@ -340,10 +340,40 @@
 #app .channel-card, #app .channel-list-item { height: auto; min-height: 46px; padding: 8px 12px; }
 /* Compact EPG and channel title strip padding on mobile. */
 #app .epg-panel, #app .epg-card { max-height: 92px; padding: 8px 12px; }
-/* Mobile fullscreen Live TV player compact 4-item OSD and 360px overflow safety. */
-#app .tv-overlay { padding: calc(12px + env(safe-area-inset-top, 12px)) 14px calc(16px + env(safe-area-inset-bottom, 12px)); }
-/* Touch-friendly >=44px top Back and Settings buttons on mobile. */
+/* Mobile fullscreen Live TV player compact 4-item OSD and 360px overflow safety with landscape notch insets. */
+#app .tv-overlay { padding: calc(12px + env(safe-area-inset-top, 12px)) calc(14px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 12px)) calc(14px + env(safe-area-inset-left, 0px)); }
+/* Mobile player top and bottom HUD buttons - YouTube-style transparent borderless tap targets with icon drop-shadow only. */
+#app .tv-overlay .tv-back-btn,
+#app .tv-overlay .tv-settings-btn,
+#app .tv-overlay .vod-skip-btn,
+#app .tv-overlay .vod-play-btn { background: transparent; border: none; box-shadow: none; outline: none; }
+/* Mobile player top Back and Settings buttons - Touch-friendly 44px hit targets without background or border. */
 #app .tv-back-btn, #app .tv-settings-btn { height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
+/* Mobile player HUD button interaction states - Keeps buttons transparent and borderless on hover, focus, and active tap. */
+#app .tv-overlay .tv-back-btn:hover,
+#app .tv-overlay .tv-back-btn:focus,
+#app .tv-overlay .tv-back-btn.focused,
+#app .tv-overlay .tv-settings-btn:hover,
+#app .tv-overlay .tv-settings-btn:focus,
+#app .tv-overlay .tv-settings-btn.focused,
+#app .tv-overlay .vod-skip-btn:hover,
+#app .tv-overlay .vod-skip-btn:focus,
+#app .tv-overlay .vod-skip-btn.focused,
+#app .tv-overlay .vod-play-btn:hover,
+#app .tv-overlay .vod-play-btn:focus,
+#app .tv-overlay .vod-play-btn.focused { background: transparent; border: none; box-shadow: none; outline: none; }
+/* Mobile player HUD button active tap feedback - Subtle icon opacity dim without background box. */
+#app .tv-overlay .tv-back-btn:active,
+#app .tv-overlay .tv-settings-btn:active,
+#app .tv-overlay .vod-skip-btn:active,
+#app .tv-overlay .vod-play-btn:active { background: transparent; border: none; opacity: 0.7; }
+/* Mobile player HUD button icons - Crisp drop-shadow for YouTube-style contrast over bright video frames. */
+#app .tv-overlay .tv-back-btn .btn__icon,
+#app .tv-overlay .tv-settings-btn .btn__icon,
+#app .tv-overlay .vod-skip-btn .btn__icon,
+#app .tv-overlay .vod-play-btn .btn__icon,
+#app .tv-overlay .tv-back-btn img,
+#app .tv-overlay .tv-settings-btn img { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85)); }
 /* Docked right-edge Stream Options sidebar with safe-area padding on mobile. */
 #app .tv-settings-panel { bottom: 0; height: 100%; left: auto; max-height: 100%; padding: calc(14px + env(safe-area-inset-top, 12px)) 12px calc(18px + env(safe-area-inset-bottom, 12px)); right: 0; top: 0; width: min(270px, 80vw); }
 /* Touch-friendly >=44px Stream Options sidebar rows and back header on mobile. */
@@ -492,31 +522,33 @@ html body .modal__close, .modal__close {
 /* Top-left back button for mobile sub-pages: invisible round button showing only the arrow, circular highlight on click. */
 html body .modal__back-btn, body .modal__back-btn, .modal__back-btn {
     align-items: center;
-    background: transparent !important;
-    border: none !important;
-    border-radius: 50% !important;
-    box-shadow: none !important;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
     cursor: pointer;
     display: inline-flex;
     height: 44px;
     justify-content: center;
-    left: 12px !important;
+    left: 12px;
     min-height: 44px;
     min-width: 44px;
     padding: 0;
-    position: absolute !important;
-    top: calc(env(safe-area-inset-top, 44px) + 8px) !important;
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 44px) + 8px);
     transition: background-color 140ms ease;
     width: 44px;
-    z-index: 50 !important;
+    z-index: 50;
 }
+/* Mobile modal back button active - Subtle touch feedback without layout transform */
 html body .modal__back-btn:active, body .modal__back-btn:active {
-    background: rgba(255, 255, 255, 0.14) !important;
-    transform: none !important;
+    background: rgba(255, 255, 255, 0.14);
+    transform: none;
 }
+/* Mobile modal back button focus - Highlight for touch/accessibility navigation */
 html body .modal__back-btn:focus-visible, body .modal__back-btn.focused {
-    background: rgba(255, 255, 255, 0.16) !important;
-    outline: none !important;
+    background: rgba(255, 255, 255, 0.16);
+    outline: none;
 }
 
 /* Icon image inside mobile sub-page back button */
@@ -568,8 +600,10 @@ html body .modal__footer .btn, .modal__footer .btn {
 body .modal__footer .btn { border-radius: 14px; min-height: 48px; }
 body .modal__footer .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: #ffffff; }
 body .modal__footer .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
-body .modal__footer .btn, body .modal__back-btn { transition: background-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); }
-body .modal__footer .btn:active, body .modal__back-btn:active { filter: brightness(0.92); transform: scale(0.96); }
+/* Mobile modal footer and back buttons - Clean opacity/brightness tap transition without forbidden scale transforms. */
+body .modal__footer .btn, body .modal__back-btn { transition: background-color 0.14s ease, filter 0.14s ease; }
+/* Mobile modal button active state - Subtle dim without layout displacement. */
+body .modal__footer .btn:active, body .modal__back-btn:active { filter: brightness(0.92); }
 
 /* Hide bottom action footer in sub-pages on mobile for auto-apply/back navigation */
 html body #language-modal .modal__footer, body #language-modal .modal__footer, #language-modal .modal__footer,
@@ -847,24 +881,34 @@ body .provider-actions .provider-delete-btn {
 body #changes-modal .modal__close, body .modal__close-btn { display: none !important; }
 
 /* Language selection and modal options list with simple divider lines and zero border-radius. */
-body .language-selection-grid { display: flex !important; flex-direction: column !important; gap: 0 !important; grid-template-columns: none !important; padding: 0 !important; width: 100% !important; }
+body .language-selection-grid { display: flex; flex-direction: column; gap: 0; grid-template-columns: none; padding: 0; width: 100%; }
 body .language-stepper-container { display: none; }
 /* Opaque sticky wrapper ensuring scrolling language cards slide behind search bar cleanly without bleed-through */
 body .language-search-wrapper { background: #050505; box-sizing: border-box; padding: 4px 0 12px; position: sticky; top: 0; width: 100%; z-index: 10; }
 body .language-search-wrapper:has(> .hidden) { display: none; }
 /* Input field for filtering available languages */
-body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px !important; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0; padding: 0 18px; position: static; width: 100%; }
+body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0; padding: 0 18px; position: static; width: 100%; }
 body .language-search:focus { border-color: var(--primary-color); outline: none; }
-body .language-card { align-items: center; background: transparent !important; border: 0 !important; border-bottom: 1px solid #1c1c1c !important; border-radius: 0 !important; box-shadow: none !important; color: #ffffff; cursor: pointer; display: flex !important; gap: 14px; justify-content: space-between; min-height: 52px; min-width: 0; padding: 14px 12px !important; text-align: left; width: 100% !important; box-sizing: border-box; }
-body .language-card:first-child { border-top: 1px solid #1c1c1c !important; }
-body .language-card:active { background: rgba(255, 255, 255, 0.08) !important; }
-body .language-card.is-active { background: transparent !important; color: var(--primary-color) !important; }
-body .language-card.is-active .language-card__name { color: var(--primary-color) !important; font-weight: 700; }
-body .language-card:focus-visible, body .language-card.focused { background: transparent !important; border-color: transparent !important; border-radius: 0 !important; outline: none !important; }
+/* Mobile language card row - Edge-to-edge borderless row with subtle bottom divider */
+body .language-card { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1c1c1c; border-radius: 0; box-shadow: none; color: #ffffff; cursor: pointer; display: flex; gap: 14px; justify-content: space-between; min-height: 52px; min-width: 0; padding: 14px 12px; text-align: left; width: 100%; box-sizing: border-box; }
+/* Mobile first language row - Top divider matching bottom rows */
+body .language-card:first-child { border-top: 1px solid #1c1c1c; }
+/* Mobile language row active tap state - Brief surface highlight */
+body .language-card:active { background: rgba(255, 255, 255, 0.08); }
+/* Mobile active language row - Highlights active choice with primary brand color */
+body .language-card.is-active { background: transparent; color: var(--primary-color); }
+/* Mobile active language label - Bold primary color text */
+body .language-card.is-active .language-card__name { color: var(--primary-color); font-weight: 700; }
+/* Mobile language card focus - Suppresses TV focus outline on touchscreens */
+body .language-card:focus-visible, body .language-card.focused { background: transparent; border-color: transparent; border-radius: 0; outline: none; }
+/* Mobile language flag emoji container */
 body .language-card__flag { flex: 0 0 auto; font-size: 22px; width: 30px; }
+/* Mobile language display name - Truncates overflowing long names */
 body .language-card__name { flex: 1; font-size: 15.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-body .language-card__check { color: var(--primary-color); display: inline-block !important; flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
-body .language-card.is-active .language-card__check { opacity: 1 !important; }
+/* Mobile language checkmark indicator - Hidden until active */
+body .language-card__check { color: var(--primary-color); display: inline-block; flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
+/* Mobile language active checkmark - Visible when row has active state */
+body .language-card.is-active .language-card__check { opacity: 1; }
 
 body .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; flex-shrink: 0; height: 22px; margin-right: 14px; width: 22px; }
 
@@ -879,6 +923,10 @@ body .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); bor
         padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
         padding-left: env(safe-area-inset-left, 0px);
         padding-right: env(safe-area-inset-right, 0px);
+    }
+    /* Fullscreen player view in landscape - Removes bottom navigation padding when sidebar is hidden. */
+    #app:has(.video-container) #main-view {
+        padding: 0;
     }
     #app .nav-rail, #app .navbar, #app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar {
         gap: 8px;
@@ -901,10 +949,13 @@ body .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); bor
     }
 }
 
-/* Pure OLED black mobile surface tokens matching the #000000 desktop/modal base. */
-:root { --mobile-surface: #000000; --mobile-panel: #0a0a0a; --mobile-border: #222222; --mobile-muted: #a1a1a1; --mobile-ink: #111111; }
+/* Pure OLED black mobile surface tokens matching deep mobile canvas; accent colors stay in user-selected swatches. */
+:root { --background-color: #000000; --background-elevated: #0a0a0a; --mobile-surface: #000000; --mobile-panel: #0a0a0a; --mobile-border: #222222; --mobile-muted: #a1a1a1; --mobile-ink: #111111; }
+/* Mobile viewport canvas - Sets true deep dark background across html, body, and app root. */
 html, body, #app { background-color: var(--mobile-surface); }
+/* Mobile scrollable content viewport - Preserves vertical pull containment. */
 #main-view { height: 100dvh; overscroll-behavior-y: contain; }
+/* Mobile bottom navigation rail - Deep OLED dark bar matching the mobile page canvas. */
 #app .nav-rail, #app .navbar { background: #000000; border-top-color: #1c1c1c; display: flex; gap: 0; justify-content: space-around; padding-left: calc(6px + env(safe-area-inset-left, 0px)); padding-right: calc(6px + env(safe-area-inset-right, 0px)); }
 #app #sidebar-container .nav-rail #nav-links > .nav-item { -webkit-tap-highlight-color: transparent; background: transparent; border: 2px solid transparent; border-radius: 10px; box-shadow: none; box-sizing: border-box; flex: initial; height: 48px; margin: 0; max-width: none; min-height: 48px; min-width: 0; outline: none; padding: 0; touch-action: manipulation; transition: background-color 140ms ease, opacity 140ms ease, transform 160ms cubic-bezier(0.2, 0, 0, 1); width: 100%; }
 /* YouTube-style bottom navigation without grey background boxes. */

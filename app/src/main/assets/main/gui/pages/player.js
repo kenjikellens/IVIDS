@@ -6,9 +6,9 @@ import { SpatialNav } from '../js/spatial-nav.js';
 import { VodStreamResolver } from '../../logic/vod/vod-stream-resolver.js';
 import { proxyUrl } from '../js/utils/proxy.js';
 import { escapeHtml } from '../js/utils/sanitize.js';
+import { StreamOptionsDrawer } from '../js/utils/stream-options-drawer.js';
 
-let hudTimeout = null;
-let mouseMoveHandler = null;
+let activeHudController = null;
 let popstateHandler = null;
 let playerBackHandler = null;
 
@@ -221,13 +221,9 @@ function exitPlayer(params) {
  * Releases all event listeners, decoders, subtitle blobs, and global player window hooks.
  */
 window.playerCleanups = function() {
-    if (hudTimeout) {
-        clearTimeout(hudTimeout);
-        hudTimeout = null;
-    }
-    if (mouseMoveHandler) {
-        window.removeEventListener('mousemove', mouseMoveHandler);
-        mouseMoveHandler = null;
+    if (activeHudController) {
+        activeHudController.destroy();
+        activeHudController = null;
     }
     if (popstateHandler) {
         window.removeEventListener('popstate', popstateHandler);
@@ -680,6 +676,152 @@ function startEmbedPlayback(url) {
 }
 
 /**
+ * Manages player HUD visibility, auto-hide timeout, orientation-resize wakeups, timeline scrubbing,
+ * transport button bindings, and surface tap toggling across native and embed playback modes.
+ */
+class PlayerHudController {
+    /**
+     * Constructs a HUD controller wired to player DOM elements, drawer state checks, and playback callbacks.
+     *
+     * @param {Object} opts - Element references and action callbacks.
+     */
+    constructor(opts) {
+        this.overlay = opts.overlay;
+        this.videoEl = opts.videoEl;
+        this.settingsBtn = opts.settingsBtn;
+        this.isSettingsOpen = opts.isSettingsOpen;
+        this.closeSettings = opts.closeSettings;
+        this.getPlaybackMode = opts.getPlaybackMode;
+        this.hudTimeout = null;
+        this._mouseMoveHandler = () => this.show(false);
+        this._resizeHandler = () => this.show(false);
+    }
+
+    /**
+     * Cancels any pending HUD auto-hide timer without changing overlay visibility.
+     */
+    clearTimer() {
+        if (this.hudTimeout) {
+            clearTimeout(this.hudTimeout);
+            this.hudTimeout = null;
+        }
+    }
+
+    /**
+     * Schedules the 4-second auto-hide timer unless the settings drawer is open, paused, or running in embed mode.
+     */
+    resetTimer() {
+        this.clearTimer();
+        if (this.isSettingsOpen()) return;
+        this.hudTimeout = setTimeout(() => {
+            const isPausedNative = this.getPlaybackMode() === 'native' && this.videoEl && this.videoEl.paused;
+            if (this.isSettingsOpen() || isPausedNative || this.getPlaybackMode() === 'embed') return;
+            this.hide();
+        }, 4000);
+    }
+
+    /**
+     * Reveals `#player-hud`, optionally directs SpatialNav focus to Play/Pause or Settings, and restarts auto-hide.
+     *
+     * @param {boolean} [shouldFocus=false] - Focuses primary transport button when opened via remote key.
+     */
+    show(shouldFocus = false) {
+        if (this.overlay) this.overlay.classList.add('show');
+        if (shouldFocus) {
+            const playPause = document.getElementById('play-pause-btn');
+            const focusTarget = (playPause && !document.getElementById('vod-overlay-bottom')?.classList.contains('hidden'))
+                ? playPause
+                : this.settingsBtn;
+            if (focusTarget) SpatialNav.setFocus(focusTarget);
+        }
+        this.resetTimer();
+    }
+
+    /**
+     * Hides `#player-hud` in native playback mode and blurs any child element holding focus.
+     */
+    hide() {
+        if (this.isSettingsOpen() || this.getPlaybackMode() === 'embed') return;
+        if (this.overlay) this.overlay.classList.remove('show');
+        if (document.activeElement && this.overlay?.contains(document.activeElement)) {
+            document.activeElement.blur();
+        }
+    }
+
+    /**
+     * Toggles overlay visibility or dismisses an open Stream Options drawer when tapping the video surface.
+     */
+    handleSurfaceTap() {
+        if (this.isSettingsOpen()) {
+            this.closeSettings(false);
+            return;
+        }
+        if (this.getPlaybackMode() === 'embed') return;
+        if (this.overlay && this.overlay.classList.contains('show')) this.hide();
+        else this.show(false);
+    }
+
+    /**
+     * Binds transport buttons, progress bar pointer scrubbing, surface tap toggles, and window mouse/resize wakeups.
+     *
+     * @param {Function} onSeek - Callback invoked with seek delta in seconds.
+     * @param {Function} onTogglePlayPause - Callback invoked when Play/Pause is pressed.
+     */
+    bindControls(onSeek, onTogglePlayPause) {
+        const bindTransport = (id, fn) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.onclick = (e) => {
+                e.stopPropagation();
+                fn();
+                this.resetTimer();
+            };
+        };
+        bindTransport('player-rewind-30', () => onSeek(-30));
+        bindTransport('player-rewind-10', () => onSeek(-10));
+        bindTransport('play-pause-btn', () => onTogglePlayPause());
+        bindTransport('player-forward-10', () => onSeek(10));
+        bindTransport('player-forward-30', () => onSeek(30));
+
+        const progressBar = document.getElementById('player-progress-bar');
+        if (progressBar) {
+            const scrubToX = (clientX) => {
+                const rect = progressBar.getBoundingClientRect();
+                if (!rect.width || !this.videoEl || !Number.isFinite(this.videoEl.duration) || this.videoEl.duration <= 0) return;
+                const pos = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+                this.videoEl.currentTime = pos * this.videoEl.duration;
+                const fill = document.getElementById('player-progress-fill');
+                if (fill) fill.style.width = `${pos * 100}%`;
+            };
+            let scrubbing = false;
+            progressBar.onpointerdown = (e) => { e.stopPropagation(); scrubbing = true; scrubToX(e.clientX); };
+            progressBar.onpointermove = (e) => { if (scrubbing) scrubToX(e.clientX); };
+            progressBar.onpointerup = () => { scrubbing = false; };
+            progressBar.onpointercancel = () => { scrubbing = false; };
+            progressBar.onclick = (e) => { e.stopPropagation(); scrubToX(e.clientX); this.resetTimer(); };
+        }
+
+        if (this.videoEl) this.videoEl.onclick = () => this.handleSurfaceTap();
+        if (this.overlay) {
+            this.overlay.onclick = (e) => {
+                if (e.target === this.overlay) this.handleSurfaceTap();
+            };
+        }
+        window.addEventListener('mousemove', this._mouseMoveHandler);
+        window.addEventListener('resize', this._resizeHandler);
+    }
+
+    /**
+     * Releases HUD timers and global mousemove/resize listeners when tearing down the player view.
+     */
+    destroy() {
+        this.clearTimer();
+        window.removeEventListener('mousemove', this._mouseMoveHandler);
+        window.removeEventListener('resize', this._resizeHandler);
+    }
+}
+
+/**
  * Initializes the Live TV-matched VOD player with top-left Back, top-right Settings sidebar
  * (Quality, Subtitles, Audio, Server Settings), and minimal bottom transport controls.
  *
@@ -733,73 +875,35 @@ export async function init(params) {
         const settingsOptionsEl = document.getElementById('player-settings-options');
         const videoEl = document.getElementById('native-video-player');
 
-        let activeSubmenu = null;
-        let lastCategoryKey = null;
         let nextEpisodeTarget = null;
         let vodState = null;
+        let settingsDrawer = null;
 
         /** Checks whether the Stream Options popup modal is open. */
-        const isSettingsOpen = () => Boolean(settingsPanel && settingsPanel.classList.contains('is-open'));
-
-        /** Resets the 4s overlay auto-hide timer (stays open when paused or drawer open). */
-        const resetOverlayTimer = () => {
-            if (hudTimeout) clearTimeout(hudTimeout);
-            if (isSettingsOpen()) return;
-            hudTimeout = setTimeout(() => {
-                const isPausedNative = activePlaybackMode === 'native' && videoEl && videoEl.paused;
-                if (isSettingsOpen() || isPausedNative || activePlaybackMode === 'embed') {
-                    return;
-                }
-                hideOverlay();
-            }, 4000);
-        };
-
-        /** Reveals the HUD overlay and focuses Play/Pause or Settings when requested. */
-        const showOverlay = (shouldFocus = false) => {
-            if (overlay) overlay.classList.add('show');
-            if (shouldFocus) {
-                const playPause = document.getElementById('play-pause-btn');
-                const focusTarget = (playPause && !document.getElementById('vod-overlay-bottom')?.classList.contains('hidden'))
-                    ? playPause
-                    : settingsBtn;
-                if (focusTarget) SpatialNav.setFocus(focusTarget);
-            }
-            resetOverlayTimer();
-        };
-
-        /** Hides the HUD overlay and returns keyboard focus safely off buttons. */
-        const hideOverlay = () => {
-            if (isSettingsOpen() || activePlaybackMode === 'embed') return;
-            if (overlay) overlay.classList.remove('show');
-            if (document.activeElement && overlay?.contains(document.activeElement)) {
-                document.activeElement.blur();
-            }
-        };
+        const isSettingsOpen = () => Boolean(settingsDrawer && settingsDrawer.isOpen());
 
         /** Closes the Stream Options popup modal cleanly. */
-        const closeSettingsPanel = (restoreFocus = false) => {
-            if (!settingsPanel) return;
-            activeSubmenu = null;
-            settingsPanel.classList.remove('is-open', 'active');
-            if (restoreFocus && settingsBtn) SpatialNav.setFocus(settingsBtn);
-            resetOverlayTimer();
-        };
+        const closeSettingsPanel = (restoreFocus = false) => settingsDrawer?.close(restoreFocus);
+
+        activeHudController = new PlayerHudController({
+            overlay,
+            videoEl,
+            settingsBtn,
+            isSettingsOpen,
+            closeSettings: closeSettingsPanel,
+            getPlaybackMode: () => activePlaybackMode
+        });
+
+        const showOverlay = (shouldFocus = false) => activeHudController.show(shouldFocus);
+        const hideOverlay = () => activeHudController.hide();
+        const resetOverlayTimer = () => activeHudController.resetTimer();
 
         /** Steps up one level inside Stream Options or closes the modal if already at root. */
         const navigateSettingsBack = () => {
-            if (!isSettingsOpen()) return false;
-            if (activeSubmenu) {
-                const prevCat = activeSubmenu;
-                activeSubmenu = null;
-                renderSettingsPanel();
-                const catBtn = settingsOptionsEl?.querySelector(`.setting-item[data-submenu="${prevCat}"]`)
-                    || settingsOptionsEl?.querySelector('.setting-item.focusable');
-                if (catBtn) SpatialNav.setFocus(catBtn);
-                resetOverlayTimer();
-                return true;
-            }
-            closeSettingsPanel(true);
-            return true;
+            if (!settingsDrawer) return false;
+            const handled = settingsDrawer.navigateBack();
+            if (handled) resetOverlayTimer();
+            return handled;
         };
 
         /** Collects dynamic categories for Quality, Subtitles, Audio, Server Settings, and Next Episode. */
@@ -1027,104 +1131,35 @@ export async function init(params) {
             return categories;
         };
 
-        /** Renders either the root category list or selected submenu inside `#player-settings-panel`. */
-        const renderSettingsPanel = () => {
-            if (!settingsOptionsEl) return;
-            const categories = getSidebarCategories();
-            if (activeSubmenu && !categories.some(c => c.key === activeSubmenu && !c.isDirectAction)) {
-                activeSubmenu = null;
-            }
-            const activeCategory = activeSubmenu ? categories.find(c => c.key === activeSubmenu) : null;
+        settingsDrawer = new StreamOptionsDrawer({
+            panelEl: settingsPanel,
+            titleEl: settingsTitleEl,
+            optionsEl: settingsOptionsEl,
+            backBtnEl: settingsBackBtn,
+            anchorBtnEl: settingsBtn,
+            getCategories: getSidebarCategories,
+            getRootTitle: () => t('livetv.streamOptions', 'Stream Options'),
+            useModalClass: true,
+            itemBaseClass: 'setting-item',
+            onOpen: () => {
+                activeHudController.clearTimer();
+                if (overlay) overlay.classList.add('show');
+            },
+            onClose: () => resetOverlayTimer()
+        });
 
-            if (settingsTitleEl) {
-                settingsTitleEl.textContent = activeCategory
-                    ? activeCategory.label
-                    : t('livetv.streamOptions', 'Stream Options');
-            }
-
-            if (!activeCategory) {
-                settingsOptionsEl.innerHTML = categories.map(cat => (
-                    `<button type="button" class="setting-item focusable universal-onclick" data-submenu="${escapeHtml(cat.key)}">` +
-                        `<span class="setting-info"><span class="setting-label">${escapeHtml(cat.label)}</span></span>` +
-                        `<span class="setting-control">` +
-                            `<span class="current-value-display">${escapeHtml(cat.currentValue || '')}</span>` +
-                            `<span class="edit-trigger" aria-hidden="true"></span>` +
-                        `</span>` +
-                    `</button>`
-                )).join('');
-
-                if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
-
-                settingsOptionsEl.querySelectorAll('.setting-item[data-submenu]').forEach(btn => {
-                    btn.onclick = (e) => {
-                        e.stopPropagation();
-                        const key = btn.dataset.submenu;
-                        const match = categories.find(c => c.key === key);
-                        if (match?.isDirectAction && typeof match.onPick === 'function') {
-                            match.onPick();
-                            return;
-                        }
-                        activeSubmenu = key;
-                        lastCategoryKey = key;
-                        renderSettingsPanel();
-                        const target = settingsOptionsEl.querySelector('.setting-item.is-active')
-                            || settingsOptionsEl.querySelector('.setting-item.focusable');
-                        if (target) SpatialNav.setFocus(target);
-                    };
-                });
-                return;
-            }
-
-            settingsOptionsEl.innerHTML = activeCategory.options.map((opt, idx) => (
-                `<button type="button" class="setting-item focusable universal-onclick ${opt.isActive ? 'is-active' : ''}" data-opt-idx="${idx}">` +
-                    `<span class="setting-info"><span class="setting-label">${escapeHtml(opt.label)}</span></span>` +
-                    `<span class="setting-control">${opt.isActive ? '<span class="tv-opt-checkmark" aria-hidden="true">&#10003;</span>' : ''}</span>` +
-                `</button>`
-            )).join('');
-
-            if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
-
-            settingsOptionsEl.querySelectorAll('.setting-item[data-opt-idx]').forEach(btn => {
-                btn.onclick = (e) => {
-                    e.stopPropagation();
-                    const idx = Number(btn.dataset.optIdx);
-                    const picked = activeCategory.options[idx];
-                    if (picked && typeof picked.onPick === 'function') {
-                        picked.onPick();
-                    }
-                    renderSettingsPanel();
-                    const refBtn = settingsOptionsEl.querySelector(`.setting-item[data-opt-idx="${idx}"]`);
-                    if (refBtn) SpatialNav.setFocus(refBtn);
-                };
-            });
-        };
+        /** Re-renders Stream Options drawer when dynamic tracks or servers update. */
+        const renderSettingsPanel = () => settingsDrawer.render();
 
         /** Toggles the Stream Options popup modal open/closed. */
-        const toggleSettingsPanel = () => {
-            if (!settingsPanel) return;
-            if (isSettingsOpen()) {
-                closeSettingsPanel(true);
-                return;
-            }
-            if (hudTimeout) clearTimeout(hudTimeout);
-            if (overlay) overlay.classList.add('show');
-            activeSubmenu = null;
-            renderSettingsPanel();
-            settingsPanel.classList.add('is-open', 'active');
-            const firstOpt = (lastCategoryKey && settingsPanel.querySelector(`.setting-item[data-submenu="${lastCategoryKey}"]`))
-                || settingsPanel.querySelector('.setting-item.focusable');
-            if (firstOpt) SpatialNav.setFocus(firstOpt);
-        };
+        const toggleSettingsPanel = () => settingsDrawer.toggle();
 
-        // Bind guaranteed non-bubbling Back button -> direct player exit
         if (backBtn) {
             backBtn.onclick = (e) => {
                 e.stopPropagation();
                 exitPlayer(params);
             };
         }
-
-        // Bind Settings gear + drawer back arrow
         if (settingsBtn) {
             settingsBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -1139,50 +1174,13 @@ export async function init(params) {
         }
         if (settingsPanel) {
             settingsPanel.onclick = (e) => {
-                if (e.target === settingsPanel) {
-                    closeSettingsPanel(true);
-                } else {
-                    e.stopPropagation();
-                }
+                if (e.target === settingsPanel) closeSettingsPanel(true);
+                else e.stopPropagation();
             };
         }
 
-        // Bind bottom transport bar: strictly -30s, -10s, Play/Pause, +10s, +30s
-        const bindTransport = (id, fn) => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.onclick = (e) => {
-                e.stopPropagation();
-                fn();
-                resetOverlayTimer();
-            };
-        };
-        bindTransport('player-rewind-30', () => seekBy(-30));
-        bindTransport('player-rewind-10', () => seekBy(-10));
-        bindTransport('play-pause-btn', () => togglePlayPause());
-        bindTransport('player-forward-10', () => seekBy(10));
-        bindTransport('player-forward-30', () => seekBy(30));
+        activeHudController.bindControls(seekBy, togglePlayPause);
 
-        // Bind thin scrub timeline pointer scrubbing
-        const progressBar = document.getElementById('player-progress-bar');
-        if (progressBar) {
-            const scrubToX = (clientX) => {
-                const rect = progressBar.getBoundingClientRect();
-                if (!rect.width || !videoEl || !Number.isFinite(videoEl.duration) || videoEl.duration <= 0) return;
-                const pos = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-                videoEl.currentTime = pos * videoEl.duration;
-                const fill = document.getElementById('player-progress-fill');
-                if (fill) fill.style.width = `${pos * 100}%`;
-            };
-            let scrubbing = false;
-            progressBar.onpointerdown = (e) => { e.stopPropagation(); scrubbing = true; scrubToX(e.clientX); };
-            progressBar.onpointermove = (e) => { if (scrubbing) scrubToX(e.clientX); };
-            progressBar.onpointerup = () => { scrubbing = false; };
-            progressBar.onpointercancel = () => { scrubbing = false; };
-            progressBar.onclick = (e) => { e.stopPropagation(); scrubToX(e.clientX); resetOverlayTimer(); };
-        }
-
-        // Status error panel actions
         const statusBack = document.getElementById('player-status-back');
         if (statusBack) statusBack.onclick = (e) => { e.stopPropagation(); exitPlayer(params); };
         const statusSettings = document.getElementById('player-status-settings');
@@ -1193,30 +1191,6 @@ export async function init(params) {
                 Router.loadPage('settings');
             };
         }
-
-        // Overlay backdrop tap + mousemove behavior matching tv-player.js
-        const surfaceTapHandler = () => {
-            if (isSettingsOpen()) {
-                closeSettingsPanel(false);
-                return;
-            }
-            if (activePlaybackMode === 'embed') return;
-            if (overlay && overlay.classList.contains('show')) {
-                hideOverlay();
-            } else {
-                showOverlay(false);
-            }
-        };
-        if (videoEl) {
-            videoEl.onclick = surfaceTapHandler;
-        }
-        if (overlay) {
-            overlay.onclick = (e) => {
-                if (e.target === overlay) surfaceTapHandler();
-            };
-        }
-        mouseMoveHandler = () => showOverlay(false);
-        window.addEventListener('mousemove', mouseMoveHandler);
 
         // Expose window hooks for spatialNavPlayer
         window.playerShowHud = showOverlay;

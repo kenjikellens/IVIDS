@@ -24,8 +24,9 @@ Welcome to the modular documentation for IVIDS. This hub replaces the monolithic
 - [Project File List](file_list.md) — Auto-updated inventory of all source files in the project.
 
 ## Workflow & Standards
-- [Development Guides](../.agents/workflows/guides.md) — How to add pages, translations, and components.
-- [AI Agent Standards](../.agents/rules/agent-standards.md) — Mandatory protocols for coding agents.
+- [Project Agent Standards](../.agents/AGENTS.md) — Core rules, OOCSS standards, git/release guardrails, and interactive skills.
+- [UI & Styling Rules](../.agents/rules/ui-and-styling.md) — Unified stylesheets, spatial nav focus, and OOCSS tokens.
+- [Architecture & i18n Rules](../.agents/rules/workflow-and-architecture.md) — OOP plans, Mermaid diagrams, and i18n automation.
 
 ---
-*Single Source of Truth v0.4.5*
+*Single Source of Truth v0.6.4*

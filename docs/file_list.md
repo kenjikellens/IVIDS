@@ -17,6 +17,8 @@ app/src/main/assets/main/gui/images/disconnected.svg
 app/src/main/assets/main/gui/images/edit.svg
 app/src/main/assets/main/gui/images/error.svg
 app/src/main/assets/main/gui/images/filter.svg
+app/src/main/assets/main/gui/images/forward-10.svg
+app/src/main/assets/main/gui/images/forward-30.svg
 app/src/main/assets/main/gui/images/home.svg
 app/src/main/assets/main/gui/images/icon.ico
 app/src/main/assets/main/gui/images/icon.svg
@@ -24,11 +26,16 @@ app/src/main/assets/main/gui/images/info.svg
 app/src/main/assets/main/gui/images/livetv.svg
 app/src/main/assets/main/gui/images/lock.svg
 app/src/main/assets/main/gui/images/mail.svg
+app/src/main/assets/main/gui/images/more.svg
+app/src/main/assets/main/gui/images/move-vertical.svg
 app/src/main/assets/main/gui/images/movies.svg
 app/src/main/assets/main/gui/images/pause.svg
 app/src/main/assets/main/gui/images/placeholder-playlist.svg
 app/src/main/assets/main/gui/images/play.svg
 app/src/main/assets/main/gui/images/playlists.svg
+app/src/main/assets/main/gui/images/plus.svg
+app/src/main/assets/main/gui/images/replay-10.svg
+app/src/main/assets/main/gui/images/replay-30.svg
 app/src/main/assets/main/gui/images/search.svg
 app/src/main/assets/main/gui/images/series.svg
 app/src/main/assets/main/gui/images/settings.svg
@@ -38,6 +45,7 @@ app/src/main/assets/main/gui/images/star.svg
 app/src/main/assets/main/gui/images/subtitles.svg
 app/src/main/assets/main/gui/images/trash.svg
 app/src/main/assets/main/gui/index.html
+app/src/main/assets/main/gui/js/action-delay.js
 app/src/main/assets/main/gui/js/app.js
 app/src/main/assets/main/gui/js/category-renderer.js
 app/src/main/assets/main/gui/js/dom-recycler.js
@@ -48,6 +56,7 @@ app/src/main/assets/main/gui/js/hls.min.js
 app/src/main/assets/main/gui/js/i18n.js
 app/src/main/assets/main/gui/js/lazy-loader.js
 app/src/main/assets/main/gui/js/loader.js
+app/src/main/assets/main/gui/js/ripple.js
 app/src/main/assets/main/gui/js/router.js
 app/src/main/assets/main/gui/js/skeleton-renderer.js
 app/src/main/assets/main/gui/js/spatial-nav.js
@@ -58,6 +67,9 @@ app/src/main/assets/main/gui/js/updater.js
 app/src/main/assets/main/gui/js/utils/debounce.js
 app/src/main/assets/main/gui/js/utils/markdown-parser.js
 app/src/main/assets/main/gui/js/utils/proxy.js
+app/src/main/assets/main/gui/js/utils/sanitize.js
+app/src/main/assets/main/gui/js/utils/source-list-editor.js
+app/src/main/assets/main/gui/js/utils/stream-options-drawer.js
 app/src/main/assets/main/gui/js/utils/ui-helper.js
 app/src/main/assets/main/gui/js/version-manager.js
 app/src/main/assets/main/gui/lang/ar.json
@@ -122,6 +134,7 @@ app/src/main/assets/main/gui/pages/settings.js
 app/src/main/assets/main/gui/pages/tv-player.html
 app/src/main/assets/main/gui/pages/tv-player.js
 app/src/main/assets/main/gui/svg/check-circle.svg
+app/src/main/assets/main/gui/svg/drag-handle.svg
 app/src/main/assets/main/gui/svg/error.svg
 app/src/main/assets/main/gui/svg/info.svg
 app/src/main/assets/main/gui/svg/loader.svg
@@ -146,7 +159,6 @@ app/src/main/assets/main/logic/livetv/providers/base-provider.js
 app/src/main/assets/main/logic/livetv/providers/m3u-provider.js
 app/src/main/assets/main/logic/livetv/providers/sports-provider.js
 app/src/main/assets/main/logic/livetv/providers/xtream-provider.js
-app/src/main/assets/main/logic/livetv/sources.js
 app/src/main/assets/main/logic/livetv/working-channels.json
 app/src/main/assets/main/logic/livetv/xtream-api.js
 app/src/main/assets/main/logic/m3u-parser.js
@@ -155,8 +167,10 @@ app/src/main/assets/main/logic/persistent-storage.js
 app/src/main/assets/main/logic/playlists.js
 app/src/main/assets/main/logic/recentlyWatched.js
 app/src/main/assets/main/logic/regional-categories.js
+app/src/main/assets/main/logic/spatial-nav/browse-spatial-nav.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-account.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-details.js
+app/src/main/assets/main/logic/spatial-nav/spatial-nav-helpers.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-home.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-livetv.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-login.js
@@ -168,9 +182,16 @@ app/src/main/assets/main/logic/spatial-nav/spatial-nav-search.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-series.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-settings.js
 app/src/main/assets/main/logic/spatial-nav/spatial-nav-tv-player.js
+app/src/main/assets/main/logic/vod/http-stream-provider.js
+app/src/main/assets/main/logic/vod/real-debrid-client.js
+app/src/main/assets/main/logic/vod/stremio-debrid-provider.js
+app/src/main/assets/main/logic/vod/vod-stream-resolver.js
 app/src/main/config.xml
 app/src/main/ic_launcher-playstore.png
 app/src/main/icon.png
+app/src/main/java/com/kenjigames/ivids/AdHostFilter.java
+app/src/main/java/com/kenjigames/ivids/AndroidStreamProxy.java
+app/src/main/java/com/kenjigames/ivids/LocalAssetHandler.java
 app/src/main/java/com/kenjigames/ivids/MainActivity.java
 app/src/main/java/com/kenjigames/ivids/SettingsBridge.java
 app/src/main/java/com/kenjigames/ivids/UpdateManager.java

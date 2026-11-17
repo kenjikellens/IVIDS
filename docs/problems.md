@@ -8,60 +8,48 @@ This document tracks known issues, architectural discrepancies, performance bott
 
 ### 1.1 Android System Navigation Bar Overlay (Clipped Mobile Navbar)
 - **Status**: FIXED
-- **Location**: [MainActivity.java](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java)
+- **Location**: [MainActivity.java](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java)
 - **Description**: On mobile devices with 3-button system navigation (Back, Home, Recents), the bottom navigation bar rendered underneath the soft buttons.
-- **Resolution**: Wrapped `mWebView` inside a `FrameLayout` root container in `MainActivity.java` and attached `ViewCompat.setOnApplyWindowInsetsListener` to dynamically update `mWebView.LayoutParams` margins (`systemBars`). This forces the HTML viewport height to resize properly on Android 15+ (API 35) edge-to-edge mode.
+- **Resolution**: Enabled `WindowCompat.setDecorFitsSystemWindows(getWindow(), false)` with CSS `env(safe-area-inset-*)` padding in `global-mobile.css`.
+
+### 1.2 Android APK Startup CORS Block & Same-Origin `/proxy`
+- **Status**: FIXED
+- **Location**: [MainActivity.java](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java), [proxy.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/js/utils/proxy.js), [stream-optimizer.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/logic/livetv/core/stream-optimizer.js)
+- **Description**: Loading `file:///android_asset/main/gui/index.html` with `setAllowFileAccessFromFileURLs(false)` caused Chromium WebView to block ES modules (`app.js`, `loader.js`) and SVGs with `file://` CORS errors, stalling on the splash screen.
+- **Resolution**: Served bundled assets from `https://appassets.androidplatform.net/assets/` and routed `/proxy` same-origin so ES modules, Free HTTP (`HttpStreamProvider`), and Live TV streams load without `file://` or stripped-`Referer` errors.
+
+### 1.3 Mobile & TV Remote Back Navigation + Landscape Player HUD
+- **Status**: FIXED
+- **Location**: [MainActivity.java](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/java/com/kenjigames/ivids/MainActivity.java), [spatial-nav.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/js/spatial-nav.js), [spatial-nav-player.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/logic/spatial-nav/spatial-nav-player.js), [player.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/pages/player.js), [global-mobile.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global-mobile.css)
+- **Description**: `SpatialNav.back()` consumed Back presses on touch devices for invisible D-pad focus recentering, and `WebView`/embed iframes could swallow `KEYCODE_BACK`/`KEYCODE_ESCAPE` from TV remotes.
+- **Resolution**: Intercepted `KEYCODE_BACK`/`KEYCODE_ESCAPE` in `MainActivity.dispatchKeyEvent`, skipped D-pad focus-recentering on touch/mobile in `SpatialNav.back()`, updated mobile player HUD buttons to borderless YouTube-style icons, and refreshed HUD visibility on `resize`.
 
 ---
 
-## 2. Active Technical Debt & Architectural Issues
+## 2. Performance & Rendering Bottlenecks
 
-### 2.1 Dual i18n Translation Systems (`language-manager.js` vs `i18n.js`)
-- **Location**: [i18n.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/i18n.js) & [language-manager.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/logic/language-manager.js)
-- **Problem**: The codebase contains two separate internationalization mechanisms:
-  - `language-manager.js`: Uses static inline JS dictionary objects.
-  - `i18n.js`: Uses dynamic JSON fetching (`lang/*.json`) with `i18next` key formatting.
-- **Impact**: Code duplication, increased bundle size, and maintenance confusion when adding new translation keys.
-- **Recommended Action**: Deprecate `language-manager.js` completely and consolidate all i18n logic into `i18n.js`.
-
-### 2.2 `transform: scale()` Animations on Hover/Focus (UI Rule Violation & Performance Jank)
-- **Location**: [global.css](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/css/global.css) (`.focusable-card:hover`, `.focusable-card:focus`, `.focusable-card.focused`)
-- **Problem**: CSS cards use `transform: scale(1.04)` on hover and D-pad focus.
-- **Impact**: Violates project UI guidelines prohibiting `scale`/`translate` hover effects. Causes browser layout recalcs and frame drops during rapid TV D-pad navigation.
-- **Recommended Action**: Replace `scale()` with a high-contrast white border (`border: 3px solid #fff`) or outline animation.
-
-### 2.3 Excessive Synchronous `localStorage` I/O in Live TV Zapping
-- **Location**: [livetv.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/pages/livetv.js) (`updateStoredChannelStatus`)
-- **Problem**: Every channel zap or stream status event triggers synchronous `localStorage.getItem`, `JSON.parse`, array filtration, and `localStorage.setItem`.
-- **Impact**: Blocks the main thread UI loop during zapping, causing dropped frames on lower-end Android TV hardware.
-- **Recommended Action**: Implement an in-memory `Map` cache and debounce `localStorage` writes (flush to disk 1.5s after user stops zapping).
-
----
-
-## 3. Performance & Rendering Bottlenecks
-
-### 3.1 JavaScript-Driven DOM Recycling vs Native CSS `content-visibility`
-- **Location**: [dom-recycler.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/dom-recycler.js)
+### 2.1 JavaScript-Driven DOM Recycling vs Native CSS `content-visibility`
+- **Location**: [dom-recycler.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/js/dom-recycler.js)
 - **Problem**: Uses `IntersectionObserver` to manually toggle `display: none` / visibility on list elements offscreen.
 - **Impact**: High JavaScript main thread execution and garbage collection during rapid scrolling of long poster grids or Live TV channels.
 - **Recommended Action**: Utilize native Chromium `content-visibility: auto` with `contain-intrinsic-size` on card grids to offload rendering optimization directly to the browser layout engine.
 
-### 3.2 Native Image Lazy Loading Optimization
-- **Location**: [lazy-loader.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/app/src/main/assets/main/gui/js/lazy-loader.js)
+### 2.2 Native Image Lazy Loading Optimization
+- **Location**: [lazy-loader.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/js/lazy-loader.js)
 - **Problem**: Custom `IntersectionObserver` logic manages image lazy loading manually.
 - **Impact**: Unnecessary script execution when standard HTML5 `loading="lazy"` attribute is natively supported in WebView / Chromium.
 - **Recommended Action**: Add `loading="lazy"` to poster `<img>` tags and reduce custom lazy loader footprint.
 
 ---
 
-## 4. Security & Electron Main Process Improvements
+## 3. Security & Electron Main Process Improvements
 
-### 4.1 Node.js `http`/`https` Request Migration to Electron `net.request`
-- **Location**: [main.js](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/main.js)
+### 3.1 Node.js `http`/`https` Request Migration to Electron `net.request`
+- **Location**: [main.js](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/main.js)
 - **Problem**: `main.js` uses legacy Node `http`/`https` modules with manual redirect handling and has `webSecurity: false` enabled.
 - **Impact**: Bypasses Chromium proxy configurations, lower connection pooling efficiency, and security risk.
 - **Recommended Action**: Refactor API routing to Electron's native `net.request` API and proxy CORS headers to enable `webSecurity: true`.
 
 ---
 
-*Document updated: July 2026*
+*Document updated: November 2026*

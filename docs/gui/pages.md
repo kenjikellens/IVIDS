@@ -66,12 +66,12 @@ This document details all 13 pages, their purpose, key components, and user flow
   - Play button linking directly to the streaming player, and "+" action button to add/remove from playlists.
 
 ### 9. Player (`player.html` / `player.js`)
-- **Purpose**: High-performance streaming interface for movies and episodes.
+- **Purpose**: Multi-tier streaming interface for movies and episodes.
 - **Key Features**:
-  - Embeds the third-party provider inside a sandboxed `<iframe>`.
-  - Server selector popup overlay allowing users to change playback sources (e.g. VidLink, Videasy, VidSrc.cc) dynamically.
+  - Resolves playback sources via `VodStreamResolver` in configurable tier order (`direct_http` Free HTTP via `HttpStreamProvider`, `embed_servers`, and `debrid_primary` via `RealDebridClient` / `StremioDebridProvider`).
+  - Supports native HTML5 / `hls.js` playback with custom HUD controls (`-30s`, `-10s`, Play/Pause, `+10s`, `+30s`, seek bar, subtitles, and audio/quality options) as well as sandboxed `<iframe>` embed fallback.
   - Progress tracking: Stores current timestamp in `recentlyWatched` to resume playback.
-  - Overlays with TV-friendly back/close buttons.
+  - Responsive HUD: Auto-hides after 4s, re-reveals on tap or screen rotation, and uses borderless YouTube-style icon controls on mobile (`global-mobile.css`).
 
 ### 10. TV Player (`tv-player.html` / `tv-player.js`)
 - **Purpose**: High-performance HLS/M3U8 player for Live TV streams.

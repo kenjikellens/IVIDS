@@ -49,8 +49,8 @@ public class UpdateManager {
     private final WebView mWebView;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
-    private String mDownloadUrl = null;
-    private String mLatestVersion = null;
+    private volatile String mDownloadUrl = null;
+    private volatile String mLatestVersion = null;
 
     /**
      * Constructs a new UpdateManager instance.
@@ -303,39 +303,36 @@ public class UpdateManager {
     }
 
     /**
-     * Saves a version marker file alongside the downloaded APK.
+     * Saves a version marker file alongside the downloaded APK using try-with-resources.
      * Used to verify that a cached APK matches the intended update target version.
-     * 
+     *
      * @param version The version string to store (e.g., "v0.6.1").
      */
     private void saveVersionMarker(String version) {
-        try {
-            File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
-            File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
-            FileOutputStream fos = new FileOutputStream(markerFile);
+        File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+        File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
+        try (FileOutputStream fos = new FileOutputStream(markerFile)) {
             fos.write(version.getBytes("UTF-8"));
-            fos.close();
         } catch (Exception e) {
             Log.e(TAG, "Error saving version marker", e);
         }
     }
 
     /**
-     * Reads the stored version marker to identify which version the cached APK belongs to.
-     * 
+     * Reads the stored version marker using try-with-resources to identify the cached APK version.
+     *
      * @return The version string of the cached APK, or null if no marker exists.
      */
     private String getVersionMarker() {
-        try {
-            File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
-            File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
-            if (markerFile.exists()) {
-                FileInputStream fis = new FileInputStream(markerFile);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
-                String version = reader.readLine();
-                reader.close();
-                return version != null ? version.trim() : null;
-            }
+        File downloadDir = new File(mActivity.getExternalCacheDir(), "updates");
+        File markerFile = new File(downloadDir, VERSION_MARKER_FILE);
+        if (!markerFile.exists()) {
+            return null;
+        }
+        try (FileInputStream fis = new FileInputStream(markerFile);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(fis, "UTF-8"))) {
+            String version = reader.readLine();
+            return version != null ? version.trim() : null;
         } catch (Exception e) {
             Log.e(TAG, "Error reading version marker", e);
         }
@@ -579,16 +576,16 @@ public class UpdateManager {
                 int count;
                 long total = 0;
                 int fileLength = conn.getContentLength();
+                int lastProgress = -1;
                 while ((count = is.read(data)) != -1) {
                     total += count;
-                    // publishing the progress....
+                    // Throttle UI thread progress callbacks to changed integer percentages only
                     if (fileLength > 0) {
                         final int progress = Math.max(0, Math.min(100, (int) (total * 100 / fileLength)));
-                        mActivity.runOnUiThread(() -> {
-                            mWebView.evaluateJavascript(
-                                    "if(typeof onUpdateProgress === 'function') onUpdateProgress(" + progress + ");",
-                                    null);
-                        });
+                        if (progress != lastProgress) {
+                            lastProgress = progress;
+                            runJsOnUiThread("if(typeof onUpdateProgress === 'function') onUpdateProgress(" + progress + ");");
+                        }
                     }
                     fos.write(data, 0, count);
                 }
@@ -689,42 +686,51 @@ public class UpdateManager {
     }
 
     /**
+     * Evaluates JavaScript safely on the UI thread only if the Activity and WebView are still active.
+     *
+     * @param script JavaScript expression to execute in the WebView.
+     */
+    private void runJsOnUiThread(String script) {
+        mActivity.runOnUiThread(() -> {
+            if (!mActivity.isFinishing() && !mActivity.isDestroyed() && mWebView != null) {
+                mWebView.evaluateJavascript(script, null);
+            }
+        });
+    }
+
+    /**
      * Sends a JavaScript callback to the WebView notifying that a new update is available.
      * Escapes the version string as a safe JS literal before evaluating.
-     * 
+     *
      * @param version The version string of the new update.
      */
     private void notifyWebFoundUpdate(String version) {
         final String jsVersion = escapeJsString(version);
-        mActivity.runOnUiThread(() -> mWebView
-                .evaluateJavascript("if(typeof onUpdateFound === 'function') onUpdateFound(" + jsVersion + ");", null));
+        runJsOnUiThread("if(typeof onUpdateFound === 'function') onUpdateFound(" + jsVersion + ");");
     }
 
     /**
      * Sends a JavaScript callback to the WebView notifying that no new updates were found.
      */
     private void notifyWebNoUpdateFound() {
-        mActivity.runOnUiThread(() -> mWebView
-                .evaluateJavascript("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();", null));
+        runJsOnUiThread("if(typeof onNoUpdateFound === 'function') onNoUpdateFound();");
     }
 
     /**
      * Sends a JavaScript callback to the WebView to update the UI on the current stage of the update process.
      * Escapes the status key as a safe JS literal before evaluating.
-     * 
+     *
      * @param statusKey A string representing the current status (e.g., "downloading", "installing").
      */
     private void notifyWebUpdateStatus(String statusKey) {
         final String jsStatus = escapeJsString(statusKey);
-        mActivity.runOnUiThread(() -> mWebView.evaluateJavascript(
-                "if(typeof onUpdateStatus === 'function') onUpdateStatus(" + jsStatus + ");", null));
+        runJsOnUiThread("if(typeof onUpdateStatus === 'function') onUpdateStatus(" + jsStatus + ");");
     }
 
     /**
      * Sends a JavaScript callback to the WebView notifying that an error occurred during the update process.
      */
     private void notifyWebUpdateError() {
-        mActivity.runOnUiThread(() -> mWebView
-                .evaluateJavascript("if(typeof onUpdateCheckError === 'function') onUpdateCheckError();", null));
+        runJsOnUiThread("if(typeof onUpdateCheckError === 'function') onUpdateCheckError();");
     }
 }

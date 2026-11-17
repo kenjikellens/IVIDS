@@ -1,5 +1,6 @@
 import { SpatialNav } from './spatial-nav.js';
 import I18n from './i18n.js';
+import { escapeHtml } from './utils/sanitize.js';
 
 export class ErrorHandler {
     /**
@@ -66,7 +67,7 @@ export class ErrorHandler {
                 try {
                     const fallbackDiv = document.createElement('div');
                     fallbackDiv.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;background:rgba(255,0,0,0.9);color:#fff;padding:15px;z-index:99999;border-radius:5px;font-family:sans-serif;font-size:14px;';
-                    fallbackDiv.innerHTML = `<strong>Error Fallback:</strong> ${message}`;
+                    fallbackDiv.innerHTML = `<strong>Error Fallback:</strong> ${escapeHtml(message)}`;
                     document.documentElement.appendChild(fallbackDiv);
                     setTimeout(() => fallbackDiv.remove(), 8000);
                 } catch (domErr) {
@@ -140,7 +141,7 @@ export class ErrorHandler {
             try {
                 const fallbackDiv = document.createElement('div');
                 fallbackDiv.style.cssText = 'position:fixed;top:10px;left:10px;right:10px;background:rgba(255,0,0,0.9);color:#fff;padding:15px;z-index:99999;border-radius:5px;font-family:sans-serif;font-size:14px;';
-                fallbackDiv.innerHTML = `<strong>Critical Error:</strong> ${message}`;
+                fallbackDiv.innerHTML = `<strong>Critical Error:</strong> ${escapeHtml(message)}`;
                 document.documentElement.appendChild(fallbackDiv);
                 setTimeout(() => fallbackDiv.remove(), 8000);
             } catch (domErr) {

@@ -98,10 +98,6 @@ export class HeroSlider {
                     }
                 });
             }
-            if (false) {
-            slide.style.backgroundImage = `linear-gradient(to right, rgba(5,5,5,0.7), rgba(5,5,5,0)), url(${cachedUrl})`;
-            slide.dataset.loaded = 'true';
-            }
         }
 
         if (!this._prefetchedIndices.has(slideIndex)) {

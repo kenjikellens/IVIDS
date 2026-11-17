@@ -9,6 +9,8 @@ import { Api, DEFAULT_PLAYBACK_SOURCE_ORDER, DEFAULT_DEBRID_CONFIG, getDefaultPl
 import { RealDebridClient } from '../../logic/vod/real-debrid-client.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
 import { VersionManager } from '../js/version-manager.js';
+import { escapeHtml } from '../js/utils/sanitize.js';
+import { SourceListEditor } from '../js/utils/source-list-editor.js';
 
 
 let settingsManagerInstance = null;
@@ -275,7 +277,6 @@ class SettingsManager {
         this.applySettingsGlobally();
     }
 
-    /** Updates the interface scale, previews it immediately, and optionally persists it. */
     /**
      * Determines whether the active client viewport is in mobile touch portrait layout.
      * @returns {boolean} True if matching mobile viewport bounds.
@@ -284,6 +285,7 @@ class SettingsManager {
         return Boolean(window.matchMedia?.('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)').matches);
     }
 
+    /** Updates the interface scale, previews it immediately, and optionally persists it. */
     setUiScale(value, persist = false) {
         const normalizedScale = Math.max(0.5, Math.min(2, Math.round(Number(value) * 10) / 10));
         this.settings.uiScale = normalizedScale.toFixed(1);
@@ -1019,9 +1021,9 @@ class SettingsManager {
                 relCard.innerHTML = `
                     <div class="version-chip-content">
                         <div class="version-chip-header">
-                            <span class="version-date-label">${rel.tag_name}${date ? ' • ' + date : ''}</span>
+                            <span class="version-date-label">${escapeHtml(rel.tag_name)}${date ? ' • ' + escapeHtml(date) : ''}</span>
                         </div>
-                        <span class="language-card__name">${rel.name || rel.tag_name}</span>
+                        <span class="language-card__name">${escapeHtml(rel.name || rel.tag_name)}</span>
                     </div>
                     <span class="language-card__check" aria-hidden="true">✓</span>
                 `;
@@ -1514,7 +1516,7 @@ class SettingsManager {
         const token = ++this.languageModalPreviewToken;
         let copyPromise = this.languageModalCopyCache.get(languageCode);
         if (!copyPromise) {
-            copyPromise = fetch(`lang/${languageCode}.json?t=${Date.now()}`)
+            copyPromise = fetch(`lang/${languageCode}.json?v=20261116`)
                 .then(response => {
                     if (!response.ok) throw new Error(`Unable to load ${languageCode} translations`);
                     return response.json();
@@ -1740,481 +1742,114 @@ class SettingsManager {
 
     /**
      * Renders the draggable/D-pad-reorderable top-level source tier priority list inside #source-order-modal.
+     * Delegates DOM creation and drag/focus handling to SourceListEditor.
      */
     renderSourceOrderList() {
-        const listContainer = document.getElementById('source-order-list');
-        if (!listContainer) return;
-
         const labels = {
             embed_servers: window.i18n?.t('settings.tierEmbedServers') || 'Embed Servers (1–7)',
             debrid_primary: window.i18n?.t('settings.tierDebridPrimary') || 'Primary Debrid',
             direct_http: window.i18n?.t('settings.tierDirectHttp') || 'Direct HTTP (Free)'
         };
-
-        listContainer.innerHTML = '';
-        const items = this.pendingSettings.playbackSourceOrderItems || [];
-
-        items.forEach((tier, idx) => {
-            const item = document.createElement('div');
-            item.className = 'provider-item';
-            if (this.movingSourceOrderId === tier.id) {
-                item.classList.add('moving');
-            }
-            item.dataset.id = tier.id;
-
-            const header = document.createElement('div');
-            header.className = 'provider-header';
-            const title = document.createElement('span');
-            title.className = 'provider-title';
-            title.textContent = `${idx + 1}. ${labels[tier.id] || tier.id}`;
-            header.appendChild(title);
-            item.appendChild(header);
-
-            const actions = document.createElement('div');
-            actions.className = 'provider-actions';
-
-            const moveBtn = document.createElement('button');
-            moveBtn.type = 'button';
-            moveBtn.className = 'btn btn--ghost btn--circle edit-trigger provider-move-btn focusable';
-            moveBtn.innerHTML = '<img src="svg/drag-handle.svg" class="setting-edit-icon" alt="Move" />';
-            if (this.movingSourceOrderId === tier.id) {
-                moveBtn.classList.add('active-moving');
-            }
-
-            moveBtn.onclick = (e) => {
-                e.stopPropagation();
-                if (moveBtn._justDragged) return;
-                if (this.movingSourceOrderId === null) {
-                    this.movingSourceOrderId = tier.id;
-                    this.movingOriginalList = this.pendingSettings.playbackSourceOrderItems.map(p => ({ ...p }));
-                    this.renderSourceOrderList();
-                    const activeBtn = document.querySelector(`.provider-item[data-id="${tier.id}"] .provider-move-btn`);
-                    if (activeBtn) activeBtn.focus();
-                } else if (this.movingSourceOrderId === tier.id) {
-                    this.movingSourceOrderId = null;
-                    this.movingOriginalList = null;
-                    this.renderSourceOrderList();
-                    const activeBtn = document.querySelector(`.provider-item[data-id="${tier.id}"] .provider-move-btn`);
-                    if (activeBtn) activeBtn.focus();
-                }
-            };
-
-            actions.appendChild(moveBtn);
-            this.attachDragHandlers(item, moveBtn, 'playbackSourceOrderItems', tier.id);
-            item.appendChild(actions);
-            listContainer.appendChild(item);
+        this._getSourceListEditor().renderList({
+            containerId: 'source-order-list',
+            listKey: 'playbackSourceOrderItems',
+            movingProp: 'movingSourceOrderId',
+            editableUrl: false,
+            formatTitle: (tier, idx) => `${idx + 1}. ${labels[tier.id] || tier.id}`
         });
-
-        if (window.SpatialNav && typeof window.SpatialNav.ensureTabindex === 'function') {
-            window.SpatialNav.ensureTabindex();
-        }
     }
 
     /**
-     * Renders the prioritized list of player providers in the modal body.
-     * Attaches oninput/change value listeners and click event routes for moves and deletions.
+     * Renders the prioritized list of player providers in the modal body via SourceListEditor.
+     * Supports inline embed URL inputs, drag/D-pad reordering, and deletion of custom entries.
      */
     renderPlayerProviders() {
-        const listContainer = document.getElementById('player-providers-list');
-        if (!listContainer) return;
-
-        listContainer.innerHTML = '';
-        const providers = this.pendingSettings.playerProviders || [];
-
-        providers.forEach((provider, idx) => {
-            const item = document.createElement('div');
-            item.className = 'provider-item';
-            if (this.movingProviderId === provider.id) {
-                item.classList.add('moving');
-            }
-            item.dataset.id = provider.id;
-
-            const header = document.createElement('div');
-            header.className = 'provider-header';
-            const title = document.createElement('span');
-            title.className = 'provider-title';
-            title.textContent = provider.name || `Provider ${idx + 1}`;
-            header.appendChild(title);
-            item.appendChild(header);
-
-            const input = document.createElement('input');
-            input.type = 'url';
-            input.className = 'form-input focusable';
-            input.value = provider.url || '';
-            input.placeholder = 'https://example.com/embed';
-            input.oninput = (e) => {
-                provider.url = e.target.value;
-            };
-
-            const actions = document.createElement('div');
-            actions.className = 'provider-actions';
-
-            const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn--ghost btn--circle edit-trigger provider-move-btn focusable';
-            moveBtn.innerHTML = '<img src="svg/drag-handle.svg" class="setting-edit-icon" alt="Move" />';
-            moveBtn.title = 'Move';
-            if (this.movingProviderId === provider.id) {
-                moveBtn.classList.add('active-moving');
-            }
-
-            moveBtn.onclick = (e) => {
-                e.stopPropagation();
-                if (moveBtn._justDragged) return;
-                if (this.movingProviderId === null) {
-                    this.movingProviderId = provider.id;
-                    this.movingOriginalList = this.pendingSettings.playerProviders.map(p => ({ ...p }));
-                    this.renderPlayerProviders();
-                    const activeBtn = document.querySelector(`.provider-item[data-id="${provider.id}"] .provider-move-btn`);
-                    if (activeBtn) activeBtn.focus();
-                } else if (this.movingProviderId === provider.id) {
-                    this.movingProviderId = null;
-                    this.movingOriginalList = null;
-                    this.renderPlayerProviders();
-                    const activeBtn = document.querySelector(`.provider-item[data-id="${provider.id}"] .provider-move-btn`);
-                    if (activeBtn) activeBtn.focus();
-                }
-            };
-
-            actions.appendChild(moveBtn);
-            this.attachDragHandlers(item, moveBtn, 'playerProviders', provider.id);
-
-            if (provider.isCustom) {
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
-                deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
-                deleteBtn.title = 'Delete';
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    this.pendingSettings.playerProviders.splice(idx, 1);
-                    this.renderPlayerProviders();
-                    const addBtn = document.getElementById('add-provider-btn');
-                    if (addBtn) {
-                        addBtn.focus();
-                        if (window.SpatialNav) window.SpatialNav.setFocus(addBtn);
-                    }
-                };
-                actions.appendChild(deleteBtn);
-            }
-
-            item.appendChild(input);
-            item.appendChild(actions);
-            listContainer.appendChild(item);
+        this._getSourceListEditor().renderList({
+            containerId: 'player-providers-list',
+            listKey: 'playerProviders',
+            movingProp: 'movingProviderId',
+            editableUrl: true,
+            urlPlaceholder: 'https://example.com/embed',
+            addBtnId: 'add-provider-btn',
+            formatTitle: (provider, idx) => provider.name || `Provider ${idx + 1}`
         });
-
-        if (window.SpatialNav && typeof window.SpatialNav.ensureTabindex === 'function') {
-            window.SpatialNav.ensureTabindex();
-        }
     }
 
     /**
-     * Renders the prioritized list of Live TV M3U playlists in the modal body.
-     * Attaches oninput/change value listeners and click event routes for moves and deletions.
+     * Renders the prioritized list of Live TV M3U playlists in the modal body via SourceListEditor.
+     * Supports inline playlist URL editing, reordering, and custom entry deletion.
      */
     renderM3uPlaylists() {
-        const listContainer = document.getElementById('m3u-playlists-list');
-        if (!listContainer) return;
-
-        listContainer.innerHTML = '';
-        const playlists = this.pendingSettings.m3uPlaylists || [];
-
-        playlists.forEach((playlist, idx) => {
-            const item = document.createElement('div');
-            item.className = 'provider-item';
-            if (this.movingM3uId === playlist.id) {
-                item.classList.add('moving');
-            }
-            item.dataset.id = playlist.id;
-
-            const header = document.createElement('div');
-            header.className = 'provider-header';
-            const title = document.createElement('span');
-            title.className = 'provider-title';
-            title.textContent = playlist.name || `Playlist ${idx + 1}`;
-            header.appendChild(title);
-            item.appendChild(header);
-
-            const input = document.createElement('input');
-            input.type = 'url';
-            input.className = 'form-input focusable';
-            input.value = playlist.url || '';
-            input.placeholder = 'https://example.com/playlist.m3u';
-            input.oninput = (e) => {
-                playlist.url = e.target.value;
-            };
-
-            const actions = document.createElement('div');
-            actions.className = 'provider-actions';
-
-            const moveBtn = document.createElement('button');
-            moveBtn.className = 'btn btn--ghost btn--circle edit-trigger provider-move-btn focusable';
-            moveBtn.innerHTML = '<img src="svg/drag-handle.svg" class="setting-edit-icon" alt="Move" />';
-            moveBtn.title = 'Move';
-            if (this.movingM3uId === playlist.id) {
-                moveBtn.classList.add('active-moving');
-            }
-
-            moveBtn.onclick = (e) => {
-                e.stopPropagation();
-                if (moveBtn._justDragged) return;
-                if (this.movingM3uId === null) {
-                    this.movingM3uId = playlist.id;
-                    this.movingOriginalList = this.pendingSettings.m3uPlaylists.map(p => ({ ...p }));
-                    this.renderM3uPlaylists();
-                    const activeBtn = document.querySelector(`.provider-item[data-id="${playlist.id}"] .provider-move-btn`);
-                    if (activeBtn) activeBtn.focus();
-                } else if (this.movingM3uId === playlist.id) {
-                    this.movingM3uId = null;
-                    this.movingOriginalList = null;
-                    this.renderM3uPlaylists();
-                    const activeBtn = document.querySelector(`.provider-item[data-id="${playlist.id}"] .provider-move-btn`);
-                    if (activeBtn) activeBtn.focus();
-                }
-            };
-
-            actions.appendChild(moveBtn);
-            this.attachDragHandlers(item, moveBtn, 'm3uPlaylists', playlist.id);
-
-            if (playlist.isCustom) {
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn--secondary btn--circle edit-trigger provider-delete-btn focusable';
-                deleteBtn.innerHTML = '<img src="svg/trash.svg" class="setting-edit-icon" alt="Delete" />';
-                deleteBtn.title = 'Delete';
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    this.pendingSettings.m3uPlaylists.splice(idx, 1);
-                    this.renderM3uPlaylists();
-                    const addBtn = document.getElementById('add-m3u-btn');
-                    if (addBtn) {
-                        addBtn.focus();
-                        if (window.SpatialNav) window.SpatialNav.setFocus(addBtn);
-                    }
-                };
-                actions.appendChild(deleteBtn);
-            }
-
-            item.appendChild(input);
-            item.appendChild(actions);
-            listContainer.appendChild(item);
+        this._getSourceListEditor().renderList({
+            containerId: 'm3u-playlists-list',
+            listKey: 'm3uPlaylists',
+            movingProp: 'movingM3uId',
+            editableUrl: true,
+            urlPlaceholder: 'https://example.com/playlist.m3u',
+            addBtnId: 'add-m3u-btn',
+            formatTitle: (playlist, idx) => playlist.name || `Playlist ${idx + 1}`
         });
-
-        if (window.SpatialNav && typeof window.SpatialNav.ensureTabindex === 'function') {
-            window.SpatialNav.ensureTabindex();
-        }
     }
 
     /**
-     * Attaches mouse/touch pointer drag handlers to reorder provider or playlist items with the cursor.
-     * Allows seamless click-and-drag reordering with mouse while preserving click/Enter for TV remote navigation.
-     * @param {HTMLElement} item - The item container DOM element.
-     * @param {HTMLElement} moveBtn - The move button handle.
-     * @param {string} key - 'playerProviders' or 'm3uPlaylists'.
-     * @param {string} id - The unique ID of the provider or playlist.
+     * Lazily constructs and caches the SourceListEditor collaborator for priority modal lists.
+     * @returns {SourceListEditor} Configured editor instance bound to this SettingsManager.
      */
-    attachDragHandlers(item, moveBtn, key, id) {
-        let isDragging = false;
-        let startClientY = 0;
-        let dragOffset = 0;
-        let listContainer = item.parentElement;
-
-        const onPointerMove = (e) => {
-            if (e.pointerType !== 'mouse') e.preventDefault();
-            const deltaY = e.clientY - startClientY;
-            if (!isDragging) {
-                if (Math.abs(deltaY) > 4) {
-                    isDragging = true;
-                    item.classList.add('moving', 'dragging');
-                    item.style.pointerEvents = 'none';
-                }
-            }
-
-            if (isDragging) {
-                item.style.transform = `translateY(${deltaY + dragOffset}px)`;
-
-                const targetEl = document.elementFromPoint(e.clientX, e.clientY);
-                const sibling = targetEl ? targetEl.closest('.provider-item') : null;
-
-                if (sibling && sibling !== item && sibling.parentElement === listContainer) {
-                    const list = this.pendingSettings[key];
-                    const fromIdx = list.findIndex(p => p.id === id);
-                    const toIdx = list.findIndex(p => p.id === sibling.dataset.id);
-
-                    if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
-                        const oldRect = item.getBoundingClientRect();
-                        const temp = list[fromIdx];
-                        list[fromIdx] = list[toIdx];
-                        list[toIdx] = temp;
-
-                        if (fromIdx < toIdx) {
-                            sibling.after(item);
-                        } else {
-                            sibling.before(item);
-                        }
-
-                        const newRect = item.getBoundingClientRect();
-                        dragOffset += (oldRect.top - newRect.top);
-                        item.style.transform = `translateY(${deltaY + dragOffset}px)`;
-                    }
-                }
-            }
-        };
-
-        const onPointerUp = () => {
-            window.removeEventListener('pointermove', onPointerMove);
-            window.removeEventListener('pointerup', onPointerUp);
-            window.removeEventListener('pointercancel', onPointerUp);
-
-            if (isDragging) {
-                isDragging = false;
-                item.classList.remove('dragging');
-                item.style.transform = '';
-                item.style.pointerEvents = '';
-
-                moveBtn._justDragged = true;
-                setTimeout(() => {
-                    delete moveBtn._justDragged;
-                }, 120);
-
-                if (key === 'playerProviders') {
-                    this.renderPlayerProviders();
-                } else if (key === 'playbackSourceOrderItems') {
-                    this.renderSourceOrderList();
-                } else {
-                    this.renderM3uPlaylists();
-                }
-
-                const newBtn = document.querySelector(`.provider-item[data-id="${id}"] .provider-move-btn`);
-                if (newBtn) {
-                    newBtn.focus();
-                    if (window.SpatialNav) window.SpatialNav.setFocus(newBtn);
-                }
-            }
-        };
-
-        const onPointerDown = (e) => {
-            if (e.pointerType === 'mouse' && e.button !== 0) return;
-            if (e.target.closest('input, .provider-delete-btn')) return;
-            const isHandleTouch = Boolean(e.target.closest('.provider-move-btn')) || !item.querySelector('input');
-            if (e.pointerType !== 'mouse' && !isHandleTouch) return;
-            if (e.pointerType !== 'mouse') e.preventDefault();
-
-            startClientY = e.clientY;
-            dragOffset = 0;
-            listContainer = item.parentElement;
-
-            window.addEventListener('pointermove', onPointerMove, { passive: false });
-            window.addEventListener('pointerup', onPointerUp);
-            window.addEventListener('pointercancel', onPointerUp);
-        };
-
-        moveBtn.addEventListener('pointerdown', onPointerDown);
-        item.addEventListener('pointerdown', onPointerDown);
+    _getSourceListEditor() {
+        if (!this._sourceListEditor) this._sourceListEditor = new SourceListEditor(this);
+        return this._sourceListEditor;
     }
 
     /**
-     * Swaps the position of an item in the pending settings array with its neighbor to adjust its priority.
-     * Smoothly animates the two swapping elements in the DOM before updating data and focus.
-     * @param {string} key - The settings key (playerProviders or m3uPlaylists).
-     * @param {string} id - The ID of the item to move.
-     * @param {number} direction - The index delta (-1 for up, 1 for down).
+     * Swaps an item in pendingSettings[key] with its neighbor during D-pad reordering via SourceListEditor.
+     * Dispatches re-render callback corresponding to the modified settings list key.
+     *
+     * @param {string} key - Settings array key (playerProviders, playbackSourceOrderItems, or m3uPlaylists).
+     * @param {string} id - Unique item identifier.
+     * @param {number} direction - Index delta (-1 for up, +1 for down).
      */
     moveItem(key, id, direction) {
-        if (this._isAnimatingMove) return;
-
-        const list = this.pendingSettings[key];
-        const index = list.findIndex(p => p.id === id);
-        if (index === -1) return;
-
-        const targetIndex = index + direction;
-        if (targetIndex < 0 || targetIndex >= list.length) return;
-
-        const containerMap = {
-            playerProviders: 'player-providers-list',
-            playbackSourceOrderItems: 'source-order-list',
-            m3uPlaylists: 'm3u-playlists-list'
+        const rerenders = {
+            playerProviders: () => this.renderPlayerProviders(),
+            playbackSourceOrderItems: () => this.renderSourceOrderList(),
+            m3uPlaylists: () => this.renderM3uPlaylists()
         };
-        const containerId = containerMap[key] || 'm3u-playlists-list';
-        const container = document.getElementById(containerId);
-        if (!container) return;
+        this._getSourceListEditor().moveItem(key, id, direction, rerenders[key] || rerenders.m3uPlaylists);
+    }
 
-        const items = Array.from(container.querySelectorAll('.provider-item'));
-        const currentItem = items[index];
-        const targetItem = items[targetIndex];
-
-        if (!currentItem || !targetItem) return;
-
-        this._isAnimatingMove = true;
-
-        // Calculate exact distance to slide based on element heights and gaps
-        const currentRect = currentItem.getBoundingClientRect();
-        const targetRect = targetItem.getBoundingClientRect();
-        const deltaCurrent = targetRect.top - currentRect.top;
-        const deltaTarget = currentRect.top - targetRect.top;
-
-        // Animate both elements simultaneously with smooth bezier transition
-        currentItem.style.transition = 'transform 200ms cubic-bezier(0.2, 0, 0, 1)';
-        targetItem.style.transition = 'transform 200ms cubic-bezier(0.2, 0, 0, 1)';
-        currentItem.style.zIndex = '30';
-        targetItem.style.zIndex = '10';
-
-        currentItem.style.transform = `translateY(${deltaCurrent}px)`;
-        targetItem.style.transform = `translateY(${deltaTarget}px)`;
-
-        // Swap the data in pendingSettings
-        const temp = list[index];
-        list[index] = list[targetIndex];
-        list[targetIndex] = temp;
-
-        setTimeout(() => {
-            if (key === 'playerProviders') {
-                this.renderPlayerProviders();
-            } else if (key === 'playbackSourceOrderItems') {
-                this.renderSourceOrderList();
-            } else {
-                this.renderM3uPlaylists();
-            }
-
-            this._isAnimatingMove = false;
-
-            const btn = document.querySelector(`.provider-item[data-id="${id}"] .provider-move-btn`);
-            if (btn) {
-                btn.focus();
-                if (window.SpatialNav) window.SpatialNav.setFocus(btn);
-            }
-        }, 205);
+    /**
+     * Applies accent color RGB tokens, document language, and UI scale CSS variables to a target document.
+     * Eliminates duplicated style mutation logic between local and parent-frame theme synchronization.
+     *
+     * @param {Document} targetDoc - Document whose root element style variables are updated.
+     */
+    _applyThemeVariablesToDocument(targetDoc) {
+        const hex = (this.settings.accentColor || '#46d369').replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        targetDoc.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
+        targetDoc.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+        targetDoc.documentElement.setAttribute('lang', this.settings.language);
+        targetDoc.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
     }
 
     /**
      * Applies styling rules locally to document viewport variables.
      */
     applySettings() {
-        document.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
-        const hex = this.settings.accentColor.replace('#', '');
-        const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
-        document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
-        document.documentElement.setAttribute('lang', this.settings.language);
-        document.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
+        this._applyThemeVariablesToDocument(document);
     }
 
     /**
-     * Secure parent style overrides protected inside try-catch scopes to prevent Live Server crashes.
+     * Applies theme CSS variables to the parent iframe host when permitted, falling back safely to document.
      */
     applySettingsGlobally() {
         try {
-            const mainDoc = window.parent?.document || document;
-            mainDoc.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
-            const hex = this.settings.accentColor.replace('#', '');
-            const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
-            mainDoc.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
-            mainDoc.documentElement.setAttribute('lang', this.settings.language);
-            mainDoc.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
+            this._applyThemeVariablesToDocument(window.parent?.document || document);
         } catch (e) {
             console.log('Cross-origin iframe parent access restricted, applying configurations to local document viewport only.');
-            document.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
-            const hex = this.settings.accentColor.replace('#', '');
-            const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
-            document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
-            document.documentElement.setAttribute('lang', this.settings.language);
-            document.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
+            this._applyThemeVariablesToDocument(document);
         }
     }
 

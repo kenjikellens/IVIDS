@@ -12,7 +12,7 @@ These rules are active on every turn (`trigger: always_on`) to enforce quality, 
 ## 2. Interactive Workflows & Skills (`.agents/skills/`)
 Step-by-step procedural runbooks invoked via slash commands or recommended when relevant:
 
-1. **[/version-and-release-update](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/version-and-release-update/SKILL.md)**: Protocol for bumping semantic versions, running parallel builds (`IVIDS.exe` and `IVIDS.apk`), tagging the commit, pushing tags, and publishing a verified GitHub Release.
+1. **[/build-and-release](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/build-and-release/SKILL.md)**: Protocol for bumping semantic versions, running parallel builds (`IVIDS.exe` and `IVIDS.apk`), tagging the commit, pushing tags, and publishing a verified GitHub Release.
 2. **[/add-page](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/add-page/SKILL.md)**: End-to-end walkthrough for creating new views (HTML template, JS controller, `global.css`, `sidebar.html`, `router.js`, and i18n keys).
 3. **[/update-translations](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/update-translations/SKILL.md)**: Batch translation workflow to sync translation keys across all language files in `gui/lang/` using Python scripts in `scratch/`.
 4. **[/oocss-refactor](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/.agents/skills/oocss-refactor/SKILL.md)**: Phased protocol for refactoring CSS components to Object-Oriented CSS (OOCSS), updating HTML/JS templates in synchronized batches, and purging redundant container overrides.

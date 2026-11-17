@@ -4,6 +4,7 @@ import { EpgManager } from '../../logic/livetv/epg-manager.js';
 import { Toast } from '../js/toast.js';
 import { LiveStreamEngine } from '../../logic/livetv/core/live-stream-engine.js';
 import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
+import { StreamOptionsDrawer } from '../js/utils/stream-options-drawer.js';
 import I18n from '../js/i18n.js';
 
 let overlayTimeout;
@@ -68,8 +69,7 @@ export async function init(params) {
     const settingsBackBtn = document.getElementById('tv-settings-back');
     const settingsTitleEl = document.getElementById('tv-settings-title');
     const settingsOptionsEl = document.getElementById('tv-settings-options');
-    let activeSubmenu = null;
-    let lastCategoryKey = null;
+    let settingsDrawer = null;
     const zappingHud = document.getElementById('tv-zapping-hud');
     const zappingName = document.getElementById('zapping-channel-name');
     const retryBtn = document.getElementById('tv-retry-btn');
@@ -104,46 +104,22 @@ export async function init(params) {
         channelLogo.src = safeUrl;
     }
 
-    /**
-     * Checks whether the Stream Options panel is currently visible.
-     * @returns {boolean} True if #tv-settings-panel is open.
-     */
+    /** Checks whether the Stream Options panel is currently visible. */
     function isSettingsPanelOpen() {
-        return Boolean(settingsPanel && !settingsPanel.classList.contains('hidden'));
+        return Boolean(settingsDrawer && settingsDrawer.isOpen());
     }
 
-    /**
-     * Closes the Stream Options sidebar, resets submenu depth, and optionally restores focus.
-     * @param {boolean} [restoreFocus=false] - Whether to return spatial focus to #tv-settings-btn.
-     */
+    /** Closes the Stream Options sidebar, resets submenu depth, and optionally restores focus. */
     function closeSettingsPanel(restoreFocus = false) {
-        if (!settingsPanel) return;
-        activeSubmenu = null;
-        settingsPanel.classList.add('hidden');
-        if (restoreFocus && settingsBtn) {
-            SpatialNav.setFocus(settingsBtn);
-        }
-        resetOverlayTimer();
+        settingsDrawer?.close(restoreFocus);
     }
 
-    /**
-     * Returns from a Stream Options submenu back to the root category menu, or closes if at root.
-     * @returns {boolean} True after stepping back or closing the sidebar.
-     */
+    /** Returns from a Stream Options submenu back to the root category menu, or closes if at root. */
     function navigateSettingsBack() {
-        if (!isSettingsPanelOpen()) return false;
-        if (activeSubmenu) {
-            const prevCat = activeSubmenu;
-            activeSubmenu = null;
-            renderSettingsPanel();
-            const catBtn = settingsOptionsEl?.querySelector(`.tv-opt-btn[data-submenu="${prevCat}"]`)
-                || settingsOptionsEl?.querySelector('.tv-opt-btn.focusable');
-            if (catBtn) SpatialNav.setFocus(catBtn);
-            resetOverlayTimer();
-            return true;
-        }
-        closeSettingsPanel(true);
-        return true;
+        if (!settingsDrawer) return false;
+        const handled = settingsDrawer.navigateBack();
+        if (handled) resetOverlayTimer();
+        return handled;
     }
 
     /**
@@ -168,11 +144,12 @@ export async function init(params) {
                 key: 'quality',
                 label: I18n.t('livetv.quality'),
                 currentValue: currentLabel,
-                options: [{ value: -1, label: I18n.t('livetv.auto'), isActive: opts.currentQuality === -1 }]
+                options: [{ value: -1, label: I18n.t('livetv.auto'), isActive: opts.currentQuality === -1, onPick: () => playerEngine?.setQualityLevel(-1) }]
                     .concat(opts.qualities.map(q => ({
                         value: q.index,
                         label: q.label,
-                        isActive: opts.currentQuality === q.index
+                        isActive: opts.currentQuality === q.index,
+                        onPick: () => playerEngine?.setQualityLevel(q.index)
                     })))
             });
         }
@@ -191,7 +168,8 @@ export async function init(params) {
                 options: localizedAudio.map(a => ({
                     value: a.index,
                     label: a.label,
-                    isActive: a.isActive
+                    isActive: a.isActive,
+                    onPick: () => playerEngine?.setAudioTrack(a.index)
                 }))
             });
         }
@@ -210,11 +188,12 @@ export async function init(params) {
                 key: 'subtitle',
                 label: I18n.t('livetv.subtitles'),
                 currentValue: currentLabel,
-                options: [{ value: -1, label: I18n.t('livetv.off'), isActive: opts.currentSubtitleTrack === -1 }]
+                options: [{ value: -1, label: I18n.t('livetv.off'), isActive: opts.currentSubtitleTrack === -1, onPick: () => playerEngine?.setSubtitleTrack(-1) }]
                     .concat(localizedSubs.map(s => ({
                         value: s.index,
                         label: s.label,
-                        isActive: s.isActive
+                        isActive: s.isActive,
+                        onPick: () => playerEngine?.setSubtitleTrack(s.index)
                     })))
             });
         }
@@ -233,91 +212,41 @@ export async function init(params) {
             options: aspectModes.map((mode, idx) => ({
                 value: idx,
                 label: aspectLabelKeys[mode] ? I18n.t(aspectLabelKeys[mode]) : mode,
-                isActive: currentAspectIndex === idx
+                isActive: currentAspectIndex === idx,
+                onPick: () => {
+                    currentAspectIndex = Math.max(0, Math.min(aspectModes.length - 1, idx));
+                    if (video) video.style.objectFit = aspectModes[currentAspectIndex];
+                }
             }))
         });
 
         return categories;
     }
 
-    /**
-     * Renders either the root category list or the selected submenu inside the right sidebar.
-     */
+    settingsDrawer = new StreamOptionsDrawer({
+        panelEl: settingsPanel,
+        titleEl: settingsTitleEl,
+        optionsEl: settingsOptionsEl,
+        backBtnEl: settingsBackBtn,
+        anchorBtnEl: settingsBtn,
+        getCategories: getAvailableCategories,
+        getRootTitle: () => I18n.t('livetv.streamOptions'),
+        useModalClass: false,
+        itemBaseClass: 'tv-opt-btn',
+        onOpen: () => clearTimeout(overlayTimeout),
+        onClose: () => resetOverlayTimer(),
+        onRender: (activeCategory) => {
+            if (settingsBackBtn) {
+                const backLabel = activeCategory ? I18n.t('details.back') : I18n.t('livetv.close');
+                settingsBackBtn.setAttribute('aria-label', backLabel);
+                settingsBackBtn.setAttribute('title', backLabel);
+            }
+        }
+    });
+
+    /** Renders Stream Options drawer content. */
     function renderSettingsPanel() {
-        if (!settingsOptionsEl) return;
-        const categories = getAvailableCategories();
-
-        if (activeSubmenu && !categories.some(c => c.key === activeSubmenu)) {
-            activeSubmenu = null;
-        }
-
-        const activeCategory = activeSubmenu ? categories.find(c => c.key === activeSubmenu) : null;
-        if (settingsTitleEl) {
-            settingsTitleEl.textContent = activeCategory
-                ? activeCategory.label
-                : I18n.t('livetv.streamOptions');
-        }
-        if (settingsBackBtn) {
-            const backLabel = activeCategory ? I18n.t('details.back') : I18n.t('livetv.close');
-            settingsBackBtn.setAttribute('aria-label', backLabel);
-            settingsBackBtn.setAttribute('title', backLabel);
-        }
-
-        if (!activeCategory) {
-            settingsOptionsEl.innerHTML = categories.map(cat => (
-                `<button type="button" class="tv-opt-btn tv-opt-btn--category focusable universal-onclick" data-submenu="${cat.key}">` +
-                    `<span class="tv-opt-label">${escapeHtml(cat.label)}</span>` +
-                    `<span class="tv-opt-value">${escapeHtml(cat.currentValue)}</span>` +
-                    `<span class="tv-opt-chevron" aria-hidden="true">&#8250;</span>` +
-                `</button>`
-            )).join('');
-
-            if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
-
-            settingsOptionsEl.querySelectorAll('.tv-opt-btn--category').forEach((btn) => {
-                btn.onclick = (e) => {
-                    e.stopPropagation();
-                    const key = btn.dataset.submenu;
-                    activeSubmenu = key;
-                    lastCategoryKey = key;
-                    renderSettingsPanel();
-                    const target = settingsOptionsEl.querySelector('.tv-opt-btn.is-active')
-                        || settingsOptionsEl.querySelector('.tv-opt-btn.focusable');
-                    if (target) SpatialNav.setFocus(target);
-                };
-            });
-            return;
-        }
-
-        settingsOptionsEl.innerHTML = activeCategory.options.map(opt => (
-            `<button type="button" class="tv-opt-btn focusable universal-onclick ${opt.isActive ? 'is-active' : ''}" data-kind="${activeCategory.key}" data-value="${opt.value}">` +
-                `<span class="tv-opt-label">${escapeHtml(opt.label)}</span>` +
-                (opt.isActive ? `<span class="tv-opt-checkmark" aria-hidden="true">&#10003;</span>` : '') +
-            `</button>`
-        )).join('');
-
-        if (settingsPanel) SpatialNav.ensureTabindex(settingsPanel);
-
-        settingsOptionsEl.querySelectorAll('.tv-opt-btn').forEach((btn) => {
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                const kind = btn.dataset.kind;
-                const val = Number(btn.dataset.value);
-                if (kind === 'quality' && playerEngine) {
-                    playerEngine.setQualityLevel(val);
-                } else if (kind === 'audio' && playerEngine) {
-                    playerEngine.setAudioTrack(val);
-                } else if (kind === 'subtitle' && playerEngine) {
-                    playerEngine.setSubtitleTrack(val);
-                } else if (kind === 'aspect') {
-                    currentAspectIndex = Math.max(0, Math.min(aspectModes.length - 1, val));
-                    if (video) video.style.objectFit = aspectModes[currentAspectIndex];
-                }
-                renderSettingsPanel();
-                const nextFocus = settingsOptionsEl.querySelector(`.tv-opt-btn[data-kind="${kind}"][data-value="${val}"]`);
-                if (nextFocus) SpatialNav.setFocus(nextFocus);
-            };
-        });
+        settingsDrawer.render();
     }
 
     /**
@@ -341,24 +270,9 @@ export async function init(params) {
         if (target) SpatialNav.setFocus(target);
     }
 
-    /**
-     * Opens or closes the Stream Options sidebar starting at the root category list.
-     */
+    /** Opens or closes the Stream Options sidebar starting at the root category list. */
     function toggleSettingsPanel() {
-        if (!settingsPanel) return;
-        if (isSettingsPanelOpen()) {
-            closeSettingsPanel(true);
-            return;
-        }
-        clearTimeout(overlayTimeout);
-        activeSubmenu = null;
-        renderSettingsPanel();
-        settingsPanel.classList.remove('hidden');
-        const firstOpt = (lastCategoryKey && settingsPanel.querySelector(`.tv-opt-btn[data-submenu="${lastCategoryKey}"]`))
-            || settingsPanel.querySelector('.tv-opt-btn.focusable');
-        if (firstOpt) {
-            SpatialNav.setFocus(firstOpt);
-        }
+        settingsDrawer.toggle();
     }
 
     /**

@@ -19,6 +19,28 @@ export class EpgManager {
     static FETCH_TIMEOUT_MS = 12000;
     static EPG_BASE_URL = 'https://iptv-org.github.io/epg/guides';
 
+    static MAX_GUIDE_CACHE = 4;
+    static MAX_CHANNEL_PROGRAM_CACHE = 150;
+
+    /**
+     * Inserts a value into a Map while enforcing a bounded LRU capacity to prevent unbounded memory growth.
+     * Mutates the target Map by deleting the oldest entry when maxEntries is exceeded.
+     *
+     * @param {Map} map - Target cache Map.
+     * @param {string} key - Cache key.
+     * @param {*} value - Cached payload.
+     * @param {number} maxEntries - Maximum retained entries.
+     */
+    static _setBoundedCache(map, key, value, maxEntries) {
+        if (map.has(key)) {
+            map.delete(key);
+        } else if (map.size >= maxEntries) {
+            const oldestKey = map.keys().next().value;
+            map.delete(oldestKey);
+        }
+        map.set(key, value);
+    }
+
     /**
      * Loads iptv-org guide metadata and builds channel-id to XMLTV source mappings.
      * Integrates CORS proxy wrapper when running on localhost.
@@ -221,7 +243,7 @@ export class EpgManager {
         const candidateIds = this.getCandidateChannelIds(normalizedTvgId, guide);
         const programs = this.parsePrograms(xml, candidateIds);
         programs.sort((a, b) => a.startDate - b.startDate);
-        this.channelProgramCache.set(normalizedTvgId, { programs, timestamp: Date.now() });
+        this._setBoundedCache(this.channelProgramCache, normalizedTvgId, { programs, timestamp: Date.now() }, this.MAX_CHANNEL_PROGRAM_CACHE);
         return programs;
     }
 
@@ -282,7 +304,7 @@ export class EpgManager {
                 return this.readResponseBody(response, url);
             })
             .then(xml => {
-                this.guideCache.set(url, { xml, timestamp: Date.now() });
+                this._setBoundedCache(this.guideCache, url, { xml, timestamp: Date.now() }, this.MAX_GUIDE_CACHE);
                 return xml;
             })
             .catch(error => {

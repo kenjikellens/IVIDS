@@ -27,8 +27,8 @@ public class SettingsBridge {
      * @param context The application context used to obtain SharedPreferences.
      */
     public SettingsBridge(Context context) {
-        this.mContext = context;
-        this.mPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.mContext = context.getApplicationContext();
+        this.mPrefs = this.mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     /**

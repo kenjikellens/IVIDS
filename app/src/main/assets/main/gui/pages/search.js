@@ -6,6 +6,7 @@ import { getLoaderHtml } from '../js/loader.js';
 import { lazyLoader } from '../js/lazy-loader.js';
 import { debounce } from '../js/utils/debounce.js';
 import { manageModal, createPosterElement } from '../js/utils/ui-helper.js';
+import { escapeHtml } from '../js/utils/sanitize.js';
 
 
 let currentFilters = {
@@ -765,12 +766,15 @@ function renderRecentSearches() {
         return;
     }
     row.classList.remove('hidden');
-    list.innerHTML = recent.map(q => `
-        <div class="chip chip--recent recent-item focusable universal-onclick" tabindex="0" data-query="${q}">
-            <span class="recent-item-text">${q}</span>
+    list.innerHTML = recent.map(q => {
+        const safeQuery = escapeHtml(q);
+        return `
+        <div class="chip chip--recent recent-item focusable universal-onclick" tabindex="0" data-query="${safeQuery}">
+            <span class="recent-item-text">${safeQuery}</span>
             <span class="recent-delete-btn" title="Delete search">&times;</span>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     list.querySelectorAll('.recent-item').forEach(item => {
         item.onclick = (e) => {

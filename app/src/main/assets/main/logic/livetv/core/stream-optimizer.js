@@ -156,7 +156,10 @@ export class StreamOptimizer {
         const requiredHeaders = StreamOptimizer.getRequiredHeaders(optimized);
         const mergedHeaders = { ...requiredHeaders, ...customHeaders };
 
+        const isAppAssetsHost = typeof window !== 'undefined' && window.location && window.location.hostname === 'appassets.androidplatform.net';
         const basePrefix = StreamOptimizer.isAndroidWebView()
+            && !StreamOptimizer.isLocalhost()
+            && !isAppAssetsHost
             && typeof window !== 'undefined'
             && window.location
             && window.location.protocol === 'file:'

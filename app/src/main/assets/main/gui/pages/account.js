@@ -96,7 +96,14 @@ export async function init() {
             
             // Reapply primary/accent color to default settings if any, or reload
             const savedSettings = localStorage.getItem('ivids-settings');
-            const globalSettings = savedSettings ? JSON.parse(savedSettings) : {};
+            let globalSettings = {};
+            if (savedSettings) {
+                try {
+                    globalSettings = JSON.parse(savedSettings) || {};
+                } catch (parseErr) {
+                    console.warn('Account: Failed to parse ivids-settings during sign out:', parseErr);
+                }
+            }
             if (globalSettings.accentColor) {
                 document.documentElement.style.setProperty('--primary-color', globalSettings.accentColor);
             } else {

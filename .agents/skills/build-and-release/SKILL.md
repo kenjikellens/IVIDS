@@ -1,9 +1,9 @@
 ---
-name: version-and-release-update
+name: build-and-release
 description: Standardized step-by-step protocol to bump version numbers, compile Windows EXE and Android APK binaries, tag the release, and publish a live GitHub Release.
 ---
 
-# Version and Release Update Workflow
+# Build and Release Workflow
 
 This document defines the strict, standardized protocol for launching new release builds, compiling the Android installation package, and configuring distribution binaries for IVIDS.
 
