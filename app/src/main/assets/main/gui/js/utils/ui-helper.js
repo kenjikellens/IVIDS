@@ -393,3 +393,24 @@ export function loadBackgroundWithLoader(targetEl, imageUrl) {
         loader.remove();
     });
 }
+
+/**
+ * Applies --primary-color, --primary-rgb, and WCAG-contrasted --primary-foreground tokens
+ * to the target document root based on relative luminance.
+ * @param {string} accentHex - Six-digit hex accent color (e.g. '#46d369').
+ * @param {Document} [targetDoc=document] - Target document whose :root receives the theme variables.
+ */
+export function applyAccentColorTheme(accentHex, targetDoc = document) {
+    if (!accentHex || !targetDoc?.documentElement) return;
+    const hex = String(accentHex).replace('#', '').trim();
+    if (!/^[0-9a-fA-F]{6}$/.test(hex)) return;
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    const foreground = luminance > 0.55 ? '#000000' : '#ffffff';
+    const rootStyle = targetDoc.documentElement.style;
+    rootStyle.setProperty('--primary-color', `#${hex}`);
+    rootStyle.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+    rootStyle.setProperty('--primary-foreground', foreground);
+}

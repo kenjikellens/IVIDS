@@ -431,7 +431,8 @@ async function renderAllFilters(filtersObj) {
             countries.sort((a, b) => a.english_name.localeCompare(b.english_name));
             countryList.innerHTML = '';
 
-            const allOpt = document.createElement('div');
+            const allOpt = document.createElement('button');
+            allOpt.type = 'button';
             allOpt.className = 'chip chip--option focusable universal-onclick ' + (!filtersObj.originCountry ? 'is-selected selected' : '');
             allOpt.dataset.value = '';
             allOpt.dataset.i18n = 'search.allCountries';
@@ -439,7 +440,8 @@ async function renderAllFilters(filtersObj) {
             countryList.appendChild(allOpt);
 
             countries.forEach(c => {
-                const opt = document.createElement('div');
+                const opt = document.createElement('button');
+                opt.type = 'button';
                 opt.className = 'chip chip--option focusable universal-onclick ' + (filtersObj.originCountry === c.iso_3166_1 ? 'is-selected selected' : '');
                 opt.dataset.value = c.iso_3166_1;
                 opt.textContent = c.english_name;

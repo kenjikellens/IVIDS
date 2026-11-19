@@ -1,7 +1,7 @@
 console.log('Settings.js: Script loaded');
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Toast } from '../js/toast.js';
-import { manageModal } from '../js/utils/ui-helper.js';
+import { manageModal, applyAccentColorTheme } from '../js/utils/ui-helper.js';
 import { parseMarkdown } from '../js/utils/markdown-parser.js';
 import { createLoaderElement } from '../js/loader.js';
 import { getActiveAccountId, getNamespacedKey } from '../../logic/account-helper.js';
@@ -1668,14 +1668,12 @@ class SettingsManager {
         if (key === 'language' && window.i18n) {
             window.i18n.setLanguage(value);
         } else if (key === 'accentColor') {
-            document.documentElement.style.setProperty('--primary-color', value);
-            const hex = value.replace('#', '');
-            const r = parseInt(hex.substring(0, 2), 16), g = parseInt(hex.substring(2, 4), 16), b = parseInt(hex.substring(4, 6), 16);
-            document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+            applyAccentColorTheme(value, document);
             try {
-                const mainDoc = window.parent?.document || document;
-                mainDoc.documentElement.style.setProperty('--primary-color', value);
-                mainDoc.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+                const mainDoc = window.parent?.document;
+                if (mainDoc && mainDoc !== document) {
+                    applyAccentColorTheme(value, mainDoc);
+                }
             } catch (e) {}
         }
     }
@@ -1824,12 +1822,7 @@ class SettingsManager {
      * @param {Document} targetDoc - Document whose root element style variables are updated.
      */
     _applyThemeVariablesToDocument(targetDoc) {
-        const hex = (this.settings.accentColor || '#46d369').replace('#', '');
-        const r = parseInt(hex.substring(0, 2), 16);
-        const g = parseInt(hex.substring(2, 4), 16);
-        const b = parseInt(hex.substring(4, 6), 16);
-        targetDoc.documentElement.style.setProperty('--primary-color', this.settings.accentColor);
-        targetDoc.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+        applyAccentColorTheme(this.settings.accentColor || '#46d369', targetDoc);
         targetDoc.documentElement.setAttribute('lang', this.settings.language);
         targetDoc.documentElement.style.setProperty('--ui-scale', this.settings.uiScale || '1.0');
     }

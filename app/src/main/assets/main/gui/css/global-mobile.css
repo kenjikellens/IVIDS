@@ -598,7 +598,7 @@ html body .modal__footer .btn, .modal__footer .btn {
     width: 100%;
 }
 body .modal__footer .btn { border-radius: 14px; min-height: 48px; }
-body .modal__footer .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: #ffffff; }
+body .modal__footer .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: var(--primary-foreground); }
 body .modal__footer .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
 /* Mobile modal footer and back buttons - Clean opacity/brightness tap transition without forbidden scale transforms. */
 body .modal__footer .btn, body .modal__back-btn { transition: background-color 0.14s ease, filter 0.14s ease; }
@@ -856,7 +856,7 @@ body .provider-actions .provider-delete-btn {
 
 /* Comfortable mobile touch geometry for shared buttons and controls. */
 #app .btn { -webkit-tap-highlight-color: transparent; border-radius: 14px; box-shadow: none; font-size: 15px; font-weight: 650; min-height: 48px; padding: 12px 18px; transition: background-color 0.14s ease, border-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); user-select: none; }
-#app .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: #ffffff; }
+#app .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: var(--primary-foreground); }
 #app .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
 #app .btn--ghost { background: transparent; border-color: transparent; box-shadow: none; color: rgba(255, 255, 255, 0.82); }
 #app .btn:active { filter: brightness(0.92); opacity: 1; transform: none; }
@@ -1012,13 +1012,13 @@ body #item-context-modal .settings-container,
 body #add-to-other-playlist-modal .settings-container { padding: 8px 0 0; }
 body .setting-item--danger .setting-label { color: #ff5c66; }
 
-/* Suppress TV spatial-nav persistent focus outlines on mobile touch viewports. */
-#app .btn:focus-visible, #app .btn.focused,
-#app .settings-container .setting-item:focus-visible, #app .settings-container .setting-item.focused,
-#app .ui-scale-control .scale-adjust-btn:focus-visible, #app .ui-scale-control .scale-adjust-btn.focused,
-#app .profile-actions .btn:focus-visible, #app .profile-actions .btn.focused,
-#app .form-toggle:focus-visible, #app .form-toggle.focused,
-body .modal .focusable:focus-visible, body .modal .focusable.focused {
+/* Suppress TV spatial-nav persistent .focused outlines on mobile touchscreens while preserving keyboard :focus-visible. */
+#app .btn.focused,
+#app .settings-container .setting-item.focused,
+#app .ui-scale-control .scale-adjust-btn.focused,
+#app .profile-actions .btn.focused,
+#app .form-toggle.focused,
+body .modal .focusable.focused {
     border-color: transparent !important;
     outline: none !important;
     box-shadow: none !important;
@@ -1092,7 +1092,7 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 #update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
 #update-check-modal .update-modal-heading { color: #f1f1f1; font-size: 19px; font-weight: 600; margin: 16px 0 6px; }
 #update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
-#update-check-modal .update-version-badge { background: rgba(70, 211, 105, 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
+#update-check-modal .update-version-badge { background: rgba(var(--primary-rgb), 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
 
 
 /* Mobile: Centered version fetch error and retry button */
@@ -1244,7 +1244,7 @@ body #app-info-modal .modal__footer .btn {
 #app .profile-name-text { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 #app .profile-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; width: 100%; }
 #app .profile-actions .btn { align-items: center; border-radius: var(--radius-sm); box-sizing: border-box; display: inline-flex; font-size: 14.5px; font-weight: 700; justify-content: center; min-height: 46px; padding: 0 18px; width: 100%; }
-#app .profile-actions .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: #000000; }
+#app .profile-actions .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: var(--primary-foreground); }
 #app .profile-actions .btn--secondary { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
 #app .profile-actions .btn--danger { background: #e63946; border: 1px solid #e63946; color: #ffffff; }
 

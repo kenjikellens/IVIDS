@@ -7,7 +7,7 @@ import { Toast, NetworkStatusOverlay } from './toast.js';
 import { Api } from '../../logic/api.js';
 import { getNamespacedKey } from '../../logic/account-helper.js';
 import { PersistentStorage } from '../../logic/persistent-storage.js';
-import { manageModal } from './utils/ui-helper.js';
+import { manageModal, applyAccentColorTheme } from './utils/ui-helper.js';
 import { NETWORK_CONFIG } from '../../logic/constants.js';
 import { imageCache } from '../../logic/image-cache.js';
 import { cacheManager } from '../../logic/cache-manager.js';
@@ -449,12 +449,7 @@ class AppBootstrapper {
             const settings = { ...globalSettings, ...userSettings };
 
             if (settings.accentColor) {
-                const hex = settings.accentColor.replace('#', '');
-                const r = parseInt(hex.substring(0, 2), 16);
-                const g = parseInt(hex.substring(2, 4), 16);
-                const b = parseInt(hex.substring(4, 6), 16);
-                document.documentElement.style.setProperty('--primary-color', settings.accentColor);
-                document.documentElement.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+                applyAccentColorTheme(settings.accentColor);
             }
             if (settings.language) document.documentElement.setAttribute('lang', settings.language);
             if (settings.uiScale) document.documentElement.style.setProperty('--ui-scale', settings.uiScale);

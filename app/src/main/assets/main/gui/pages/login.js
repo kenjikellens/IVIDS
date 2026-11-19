@@ -1,5 +1,6 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
+import { applyAccentColorTheme } from '../js/utils/ui-helper.js';
 import { login, register } from '../../logic/crypto.js';
 import { clearActiveAccountCache } from '../../logic/account-helper.js';
 
@@ -263,7 +264,7 @@ function hydrateSession({ pushId, username, email, info }) {
     localStorage.setItem(`${ns}-watch-progress`, JSON.stringify(info.watchProgress || {}));
 
     if (info.settings?.accentColor) {
-        document.documentElement.style.setProperty('--primary-color', info.settings.accentColor);
+        applyAccentColorTheme(info.settings.accentColor);
     }
 }
 

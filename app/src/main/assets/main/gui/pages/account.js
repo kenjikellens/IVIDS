@@ -1,5 +1,6 @@
 import { Router } from '../js/router.js';
 import { SpatialNav } from '../js/spatial-nav.js';
+import { applyAccentColorTheme } from '../js/utils/ui-helper.js';
 import { getActiveAccount, clearActiveAccountCache } from '../../logic/account-helper.js';
 // Import session clearing logic to reset cloud credentials on logout
 import { clearSession } from '../../logic/crypto.js';
@@ -104,11 +105,7 @@ export async function init() {
                     console.warn('Account: Failed to parse ivids-settings during sign out:', parseErr);
                 }
             }
-            if (globalSettings.accentColor) {
-                document.documentElement.style.setProperty('--primary-color', globalSettings.accentColor);
-            } else {
-                document.documentElement.style.setProperty('--primary-color', '#46d369'); // default green accent
-            }
+            applyAccentColorTheme(globalSettings.accentColor || '#46d369');
             
             // Reset Router's current page to force reload the account view
             Router.currentPage = null;

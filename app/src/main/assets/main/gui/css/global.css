@@ -23,6 +23,7 @@
     --poster-height: calc(var(--poster-width) * 1.5);
     --poster-width: clamp(120px, 10.5vw, 154px);
     --primary-color: #46d369;
+    --primary-foreground: #000000;
     --primary-rgb: 70, 211, 105;
     --radius-lg: 5px;
     --radius-md: 5px;
@@ -70,13 +71,11 @@ input, textarea, select { font: inherit; }
 /* Sidebar host container with smooth width transition. */
 #sidebar-container { flex: 0 0 var(--app-sidebar-width); height: 100%; transition: width 0.25s ease, flex-basis 0.25s ease; width: var(--app-sidebar-width); z-index: 2000; will-change: width, flex-basis; }
 
-/* Primary vertical scroll viewport container with bottom edge fade mask. */
+/* Primary vertical scroll viewport container. */
 #main-view {
     background: var(--background-color);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
     flex: 1;
     height: 100%;
-    mask-image: linear-gradient(to bottom, black 0%, black 94%, transparent 100%);
     min-width: 0;
     overflow: hidden auto;
     position: relative;
@@ -87,8 +86,8 @@ input, textarea, select { font: inherit; }
 /* Utility rule hiding hidden elements, scrollbars, and inactive fullscreen chrome. */
 #app.fullscreen-layout #sidebar-container, .hidden, [hidden], .btn.hidden, .mobile-back-btn, #main-view::-webkit-scrollbar, *::-webkit-scrollbar, .hero::after, .details-page::after, .details-page::before, .episodes-list:empty, .recent-searches-row.hidden, .server-list::-webkit-scrollbar { display: none !important; }
 
-/* Fullscreen content viewport occupying full screen width without fade masks. */
-#app.fullscreen-layout #main-view { -webkit-mask-image: none; margin-left: 0; mask-image: none; padding: 0; width: 100%; }
+/* Fullscreen content viewport occupying full screen width. */
+#app.fullscreen-layout #main-view { margin-left: 0; padding: 0; width: 100%; }
 
 /* Expanded sidebar container width override when pinned open. */
 #app.sidebar-always-expanded #sidebar-container { flex: 0 0 var(--app-sidebar-expanded-width); width: var(--app-sidebar-expanded-width); }
@@ -812,7 +811,7 @@ input, textarea, select { font: inherit; }
 .chip.is-selected, .chip.is-active, .chip.selected, .chip.active {
     background: var(--primary-color);
     border-color: transparent;
-    color: #050505;
+    color: var(--primary-foreground);
     font-weight: 800;
 }
 .chip.is-selected:focus, .chip.is-selected.focused, .chip.is-active:focus, .chip.is-active.focused,
@@ -841,7 +840,7 @@ input, textarea, select { font: inherit; }
 
 /* Filter chip modifier with checkmark indicator when selected. */
 .chip--filter.is-selected::before, .chip--filter.selected::before {
-    color: #050505;
+    color: var(--primary-foreground);
     content: '\2713';
     display: inline-block;
     font-size: 16px;
@@ -895,7 +894,7 @@ input, textarea, select { font: inherit; }
     text-transform: uppercase;
     white-space: nowrap;
 }
-.badge--primary { background-color: var(--primary-color); color: #050505; }
+.badge--primary { background-color: var(--primary-color); color: var(--primary-foreground); }
 .badge--outline, .version-badge { background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #ffffff; }
 
 /* ==========================================================================
@@ -1452,7 +1451,7 @@ input, textarea, select { font: inherit; }
 .hero-slides-track { height: 100%; left: 0; pointer-events: none; position: absolute; top: 0; width: 100%; z-index: 1; }
 .hero-slide {
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-position: center top;
     background-size: cover;
     box-sizing: border-box;
@@ -2176,13 +2175,22 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 }
 
 /* Chromium native off-screen rendering optimization for poster cards. */
-.recyclable-card, .poster-card { contain-intrinsic-size: 150px 70px; content-visibility: auto; }
+.recyclable-card, .poster-card { contain-intrinsic-size: var(--poster-width) var(--poster-height); content-visibility: auto; }
 
 /* Keyframe animations. */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes hudFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes toast-pulse-opacity { 0% { opacity: 0.7; } 50% { opacity: 0.4; } 100% { opacity: 0.7; } }
 @keyframes ivids-loader-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Reduced-motion safeguards preserving state visibility without animations on desktop and TV. */
+@media (prefers-reduced-motion: reduce) {
+    #main-view { scroll-behavior: auto; }
+    .hero-slide, .hero-content, .nav-rail, .navbar, .nav-item, .nav-item__label, .nav-item span,
+    .btn, .card, .toast, .modal, .dropdown-chevron { transition: none; }
+    .row { animation: none; opacity: 1; }
+    .toast-blink-icon, .ripple-wave { animation: none; }
+}
 
 /* Media query for large laptops and 1080p displays. */
 @media (min-aspect-ratio: 3/4) and (max-width: 1440px) {
