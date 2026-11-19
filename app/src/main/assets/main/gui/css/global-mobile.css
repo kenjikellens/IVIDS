@@ -1006,10 +1006,10 @@ body .modal .focusable.focused {
 /* Full-width YouTube-style touch rows matching Player Settings modal across settings and context modals. */
 #app .settings-container .setting-item,
 body .modal .settings-container .setting-item,
-body #advanced-settings-modal .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; text-align: left; }
+body #advanced-settings-modal .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid var(--mobile-border); border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; text-align: left; }
 #app .settings-container .setting-item:first-of-type,
 body .modal .settings-container .setting-item:first-of-type,
-body #advanced-settings-modal .setting-item:first-of-type { border-top: 1px solid #1a1a1a; }
+body #advanced-settings-modal .setting-item:first-of-type { border-top: 1px solid var(--mobile-border); }
 #app .settings-container .setting-item:active,
 body .modal .settings-container .setting-item:active,
 body #advanced-settings-modal .setting-item:active { background: rgba(255, 255, 255, 0.08); }
@@ -1018,10 +1018,10 @@ body .modal .settings-container .setting-info,
 body #advanced-settings-modal .setting-info { flex: 1 1 auto; min-width: 0; padding-right: 12px; }
 #app .settings-container .setting-label,
 body .modal .settings-container .setting-label,
-body #advanced-settings-modal .setting-label { color: #f1f1f1; font-size: 16px; font-weight: 400; line-height: 1.35; margin: 0; }
+body #advanced-settings-modal .setting-label { color: var(--mobile-text); font-size: 16px; font-weight: 400; line-height: 1.35; margin: 0; }
 #app .settings-container .setting-description,
 body .modal .settings-container .setting-description,
-body #advanced-settings-modal .setting-description { color: #888888; display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; }
+body #advanced-settings-modal .setting-description { color: var(--mobile-muted); display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; }
 
 /* Subtitle/value display and chevron indicators matching Player Settings style. */
 #app .settings-container .setting-control,
@@ -1029,7 +1029,7 @@ body .modal .settings-container .setting-control,
 body #advanced-settings-modal .setting-control { align-items: center; display: inline-flex; flex: 0 0 auto; gap: 6px; justify-content: flex-end; }
 #app .settings-container .current-value-display,
 body .modal .settings-container .current-value-display,
-body #advanced-settings-modal .current-value-display { align-items: center; background: transparent; border: 0; color: #888888; display: inline-flex; font-size: 14px; font-weight: 400; height: 24px; line-height: 1; margin-right: 4px; padding: 0; }
+body #advanced-settings-modal .current-value-display { align-items: center; background: transparent; border: 0; color: var(--mobile-muted); display: inline-flex; font-size: 14px; font-weight: 400; height: 24px; line-height: 1; margin-right: 4px; padding: 0; }
 #app .settings-container .color-preview-circle { border-radius: 50%; height: 16px; width: 16px; margin-right: 4px; display: inline-block; }
 #app .settings-container .setting-item .edit-trigger,
 body .modal .settings-container .setting-item .edit-trigger,
@@ -1103,31 +1103,29 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 
 /* Mobile: Version selector refresh button in dialog top-right header */
 html body #version-selector-modal .modal__refresh-btn,
-html body #version-selector-refresh-btn,
 body #version-selector-modal .modal__refresh-btn,
-body #version-selector-refresh-btn,
 body .modal__refresh-btn {
     align-items: center;
-    background: transparent !important;
-    border: none !important;
-    border-radius: 50% !important;
-    box-shadow: none !important;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
     cursor: pointer;
     display: inline-flex;
     height: 44px;
     justify-content: center;
-    left: auto !important;
+    left: auto;
     min-height: 44px;
     min-width: 44px;
     padding: 0;
-    position: absolute !important;
-    right: 12px !important;
-    top: calc(env(safe-area-inset-top, 44px) + 8px) !important;
+    position: absolute;
+    right: 12px;
+    top: calc(env(safe-area-inset-top, 44px) + 8px);
     width: 44px;
-    z-index: 50 !important;
+    z-index: 50;
 }
 body .modal__refresh-btn:active {
-    background: rgba(255, 255, 255, 0.14) !important;
+    background: rgba(255, 255, 255, 0.14);
 }
 .modal-refresh-icon {
     display: block;
@@ -1227,8 +1225,8 @@ body #app-info-modal .modal__footer .btn {
 #app .profile-actions .btn--secondary { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
 #app .profile-actions .btn--danger { background: #e63946; border: 1px solid #e63946; color: #ffffff; }
 
-/* Login screen keeps its form within the phone width on the pure black #000000 canvas. */
-#app .login-page-wrapper { align-items: flex-start; background: #000000; box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
+/* Login screen keeps its form within the phone width on the pure black mobile surface canvas. */
+#app .login-page-wrapper { align-items: flex-start; background: var(--mobile-surface); box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
 #app .login-card-container { max-width: 460px; width: 100%; }
 #app .login-panel { background: transparent; border: 0; border-radius: 0; box-shadow: none; max-height: none; overflow: visible; padding: 64px 0 12px; width: 100%; }
 #app #login-circle-back { background: transparent; border: 0; border-radius: 50%; height: 44px; left: 0; min-height: 44px; min-width: 44px; top: 0; width: 44px; }
@@ -1239,11 +1237,11 @@ body #app-info-modal .modal__footer .btn {
 #app .tab-bar--fill { border-bottom-color: #343434; gap: 18px; margin-bottom: 20px; }
 #app .tab-bar--fill .btn { color: #aaaaaa; font-size: 15px; font-weight: 600; min-height: 48px; }
 #app .tab-bar--fill .btn.is-active, #app .tab-bar--fill .btn.active { border-bottom-color: #ffffff; color: #ffffff; }
-#app .login-panel .form-input { background: #191919; border: 1px solid #353535; border-radius: 12px; color: #ffffff; font-size: 16px; height: 52px; min-height: 52px; padding: 0 15px; width: 100%; }
+#app .login-panel .form-input { background: #191919; border: 1px solid #353535; border-radius: var(--mobile-radius-md); color: #ffffff; font-size: 16px; height: 52px; min-height: 52px; padding: 0 15px; width: 100%; }
 #app .login-panel .form-input:focus { background: #202020; border-color: #ffffff; }
 #app .login-panel .form-label { color: #e2e2e2; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
 #app .login-footer { align-items: stretch; gap: 10px; margin-top: 22px; }
-#app #login-submit { background: #ffffff; border: 1px solid #ffffff; border-radius: 12px; color: #111111; font-size: 15px; font-weight: 700; min-height: 52px; width: 100%; }
+#app #login-submit { background: #ffffff; border: 1px solid #ffffff; border-radius: var(--mobile-radius-md); color: var(--mobile-ink); font-size: 15px; font-weight: 700; min-height: 52px; width: 100%; }
 #app #login-back { display: none; }
 
 @media (orientation: landscape) and (max-height: 500px) {
