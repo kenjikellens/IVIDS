@@ -128,31 +128,21 @@ export const spatialNavPlaylists = {
         // 2. Modal Focus Trap / Dialog Navigation: Create Playlist Dialog
         const inCreateModal = current.closest('#create-playlist-modal') !== null;
         if (inCreateModal) {
+            const backBtn = document.getElementById('create-playlist-back-btn');
             const input = document.getElementById('new-playlist-name');
-            const cancelBtn = document.getElementById('cancel-create-btn');
             const confirmBtn = document.getElementById('confirm-create-btn');
-            const isStacked = cancelBtn && confirmBtn && Math.abs(cancelBtn.getBoundingClientRect().top - confirmBtn.getBoundingClientRect().top) > 10;
 
-            if (current.id === 'new-playlist-name') {
-                if (direction === 'down') {
-                    if (isStacked && cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
-                    if (confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
-                    if (cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
-                }
+            if (current.id === 'create-playlist-back-btn') {
+                if (direction === 'down' && input && isElementVisible(input)) return input;
                 return current;
             }
-            if (current.id === 'cancel-create-btn') {
-                if (direction === 'up' && input && isElementVisible(input)) return input;
-                if (direction === 'right' && !isStacked && confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
-                if (direction === 'down' && isStacked && confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
+            if (current.id === 'new-playlist-name') {
+                if (direction === 'up' && backBtn && isElementVisible(backBtn)) return backBtn;
+                if (direction === 'down' && confirmBtn && isElementVisible(confirmBtn)) return confirmBtn;
                 return current;
             }
             if (current.id === 'confirm-create-btn') {
-                if (direction === 'up') {
-                    if (isStacked && cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
-                    if (input && isElementVisible(input)) return input;
-                }
-                if (direction === 'left' && !isStacked && cancelBtn && isElementVisible(cancelBtn)) return cancelBtn;
+                if (direction === 'up' && input && isElementVisible(input)) return input;
                 return current;
             }
             return current;
@@ -182,7 +172,7 @@ export const spatialNavPlaylists = {
             }
         }
 
-        // 4. Playlist Cards Vertical List: Left -> Sidebar, Up/Down between cards, Right trapped
+        // 4. Playlist Cards Vertical List: Left -> Sidebar, Up/Down between cards, Portrait bottom -> Bottom Nav
         const inGrid = current.closest('#playlists-grid') !== null || current.classList.contains('playlist-card');
         if (inGrid) {
             if (direction === 'left') {
@@ -203,7 +193,12 @@ export const spatialNavPlaylists = {
                 return current;
             }
             if (direction === 'down') {
-                return findAdjacentGridCard(current, 'down') || current;
+                const below = findAdjacentGridCard(current, 'down');
+                if (below) return below;
+                if (SpatialNav.isPortrait && SpatialNav.isPortrait()) {
+                    return getActiveSidebarItem() || current;
+                }
+                return current;
             }
         }
 
@@ -218,9 +213,9 @@ export const spatialNavPlaylists = {
     handleBack: () => {
         const modal = document.getElementById('create-playlist-modal');
         if (modal && isElementVisible(modal)) {
-            const cancelBtn = document.getElementById('cancel-create-btn');
-            if (cancelBtn) {
-                cancelBtn.click();
+            const backBtn = document.getElementById('create-playlist-back-btn');
+            if (backBtn) {
+                backBtn.click();
                 return true;
             }
         }

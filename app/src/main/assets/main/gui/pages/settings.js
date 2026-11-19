@@ -1648,8 +1648,12 @@ class SettingsManager {
         this.pendingSettings[key] = value;
 
         if (el && el.parentElement) {
-            el.parentElement.querySelectorAll('.chip--option, .option-chip').forEach(chip => chip.classList.remove('is-active', 'active'));
+            el.parentElement.querySelectorAll('.chip--option, .option-chip, .language-card').forEach(chip => {
+                chip.classList.remove('is-active', 'active');
+                chip.setAttribute('aria-pressed', 'false');
+            });
             el.classList.add('is-active', 'active');
+            el.setAttribute('aria-pressed', 'true');
         }
 
         if (key === 'updateMode') {

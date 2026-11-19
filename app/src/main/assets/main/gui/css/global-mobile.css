@@ -397,18 +397,26 @@
 /* Compact top-right zapping indicator on mobile. */
 #app .tv-zapping-hud { min-width: 0; max-width: calc(100vw - 28px); right: 14px; top: calc(12px + env(safe-area-inset-top, 12px)); }
 
-/* Single column grid flow for custom playlists grid on mobile. */
-#app .media-grid--widescreen, #app .playlists-grid { gap: 12px; grid-template-columns: 1fr; }
-/* Vertical stack of horizontal playlist cards on mobile with cover, centered title/count, and right item list. */
-#app .playlists-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-#app .playlist-card { gap: 10px; height: 92px; padding: 8px 10px 8px 8px; }
-#app .playlist-card__title { font-size: 17px; }
-#app .playlist-card__count { font-size: 13px; }
-/* Hide right-hand scrolling items box on mobile for a clean 2-column touch row. */
-#app .playlist-card__items-box { display: none; }
-#app .playlist-card__item-line { font-size: 11px; }
-/* Compact mobile playlist header with inline create button and touch-friendly item rows. */
-#app .playlists-container .page-header { align-items: center; flex-direction: row; justify-content: space-between; }
+/* Clean 2-column visual 16:9 card grid for playlists on portrait phones. */
+#app .media-grid--widescreen, #app .playlists-grid { gap: 18px 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Compact mobile Playlists header with inline title/count and circular '+' button. */
+#app .playlists-container .page-header,
+#app .playlists-header { align-items: center; border-bottom: 1px solid var(--mobile-border); flex-direction: row; gap: 12px; justify-content: space-between; margin-bottom: 16px; padding-bottom: 14px; }
+#app .playlists-header__count { font-size: 13px; }
+/* Collapse Create Playlist button to a crisp 44px circular trigger on portrait phones. */
+#app .playlists-create-btn { border-radius: 50%; gap: 0; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
+#app .playlists-create-btn__label { display: none; }
+/* Minimalist visual playlist tile adjustments for mobile touchscreens. */
+#app .playlist-card { gap: 7px; }
+#app .playlist-card__media { border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--mobile-radius-sm); box-shadow: none; }
+#app .playlist-card:hover .playlist-card__media,
+#app .playlist-card:focus .playlist-card__media,
+#app .playlist-card.focused .playlist-card__media { border-color: rgba(255, 255, 255, 0.1); box-shadow: none; }
+#app .playlist-card:focus-visible .playlist-card__media { border-color: #ffffff; }
+#app .playlist-card:active .playlist-card__media { opacity: 0.8; }
+#app .playlist-cover__empty-icon { height: 24px; width: 24px; }
+#app .playlist-card__title { font-size: 14.5px; font-weight: 700; }
+#app .playlist-card__count { font-size: 12.5px; font-weight: 500; }
 /* Mobile elevated summary card and items container for playlist details. */
 #app #playlist-details-view.details-page { padding-top: calc(56px + env(safe-area-inset-top, 0px)); }
 /* Clean borderless mobile header for Playlist Details with title/count and full-width action row. */
@@ -1008,7 +1016,8 @@ body #item-context-modal .modal__dialog,
 body #add-to-other-playlist-modal .modal__dialog { padding-left: 0; padding-right: 0; }
 body #advanced-settings-modal .modal__title,
 body #item-context-modal .modal__title,
-body #add-to-other-playlist-modal .modal__title { box-sizing: border-box; margin: 0 0 8px; padding-left: 52px; padding-right: 52px; width: 100%; }
+body #add-to-other-playlist-modal .modal__title,
+body #create-playlist-modal .modal__title { box-sizing: border-box; margin: 0 0 8px; padding-left: 52px; padding-right: 52px; width: 100%; }
 body #advanced-settings-modal .modal__body,
 body #item-context-modal .modal__body,
 body #add-to-other-playlist-modal .modal__body { padding: 0; width: 100%; }

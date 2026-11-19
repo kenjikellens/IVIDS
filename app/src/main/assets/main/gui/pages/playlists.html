@@ -1,12 +1,16 @@
 <div class="playlists-container">
-    <header class="page-header">
-        <h1 class="page-title" data-i18n="playlists.title">Playlists</h1>
-        <button id="create-playlist-btn" class="btn btn--secondary btn--circle-md focusable universal-onclick" type="button" title="Create New Playlist" aria-label="Create New Playlist">
-            <img src="images/plus.svg" alt="" class="btn__icon">
+    <header class="page-header playlists-header">
+        <div class="playlists-header__meta">
+            <h1 class="page-title" data-i18n="playlists.title">Playlists</h1>
+            <span id="playlists-total-count" class="playlists-header__count"></span>
+        </div>
+        <button id="create-playlist-btn" class="btn btn--secondary playlists-create-btn focusable universal-onclick" type="button" aria-label="Create New Playlist">
+            <img src="images/plus.svg" alt="" class="btn__icon" aria-hidden="true">
+            <span class="playlists-create-btn__label" data-i18n="playlists.create_new">Create New Playlist</span>
         </button>
     </header>
 
-    <div id="playlists-grid" class="playlists-list">
+    <div id="playlists-grid" class="playlists-grid">
         <!-- Playlists will be injected here -->
     </div>
 </div>
@@ -14,12 +18,15 @@
 <!-- Create Playlist Modal -->
 <div id="create-playlist-modal" class="modal">
     <div class="modal__dialog modal__dialog--sm">
+        <button id="create-playlist-back-btn" type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+            <img src="images/back.svg" class="modal-back-icon" alt="" aria-hidden="true">
+        </button>
         <h2 class="modal__title" data-i18n="playlists.create_new">Create New Playlist</h2>
         <div class="modal__body form-group">
-            <input type="text" id="new-playlist-name" class="form-input focusable" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder" maxlength="30">
+            <input type="text" id="new-playlist-name" class="form-input focusable" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder" maxlength="30" autocomplete="off">
+            <span id="new-playlist-char-count" class="form-input-counter" aria-live="polite">0 / 30</span>
         </div>
-        <div class="modal__footer btn-group btn-group--fill">
-            <button id="cancel-create-btn" class="btn btn--secondary focusable universal-onclick" type="button" data-i18n="common.cancel">Cancel</button>
+        <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
             <button id="confirm-create-btn" class="btn btn--primary focusable universal-onclick" type="button" data-i18n="common.create">Create</button>
         </div>
     </div>
