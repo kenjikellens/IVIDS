@@ -54,6 +54,14 @@ export const init = async (params = {}) => {
         createBtn.setAttribute('aria-label', createLabel);
         createBtn.setAttribute('title', createLabel);
     }
+    const nameInput = document.getElementById('new-playlist-name');
+    if (nameInput && window.i18n) {
+        nameInput.setAttribute('aria-label', window.i18n.t('playlists.namePlaceholder'));
+    }
+    const backBtn = document.getElementById('create-playlist-back-btn');
+    if (backBtn && window.i18n) {
+        backBtn.setAttribute('aria-label', window.i18n.t('common.close'));
+    }
 
     render();
     attachListeners();
@@ -184,12 +192,22 @@ function createPlaylistCard(playlist) {
     if (coverImg && imageUrl) {
         attachImageWithLoader(coverImg, coverContainer, imageUrl, () => {
             coverImg.remove();
-            coverContainer?.classList.add('playlist-cover--empty');
+            if (coverContainer) {
+                coverContainer.classList.add('playlist-cover--empty');
+                if (!coverContainer.querySelector('.playlist-cover__empty-icon')) {
+                    const fallbackIcon = document.createElement('img');
+                    fallbackIcon.src = 'images/playlists.svg';
+                    fallbackIcon.alt = '';
+                    fallbackIcon.className = 'playlist-cover__empty-icon';
+                    fallbackIcon.setAttribute('aria-hidden', 'true');
+                    coverContainer.appendChild(fallbackIcon);
+                }
+            }
         });
     }
     card.querySelectorAll('.playlist-mosaic-img').forEach(img => {
         img.addEventListener('error', () => {
-            img.classList.add('hidden');
+            img.classList.add('playlist-mosaic-img--failed');
         }, { once: true });
     });
 

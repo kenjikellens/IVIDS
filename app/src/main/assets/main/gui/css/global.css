@@ -1705,7 +1705,7 @@ input, textarea, select { font: inherit; }
 .playlists-header__meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 /* Tabular playlist total count subtitle positioned beneath the Playlists page heading. */
 .playlists-header__count { color: var(--text-muted); font-size: 14px; font-variant-numeric: tabular-nums; font-weight: 600; }
-/* Primary Create New Playlist CTA button in the Playlists overview header. */
+/* Create New Playlist button in the Playlists overview header. */
 .playlists-create-btn { flex-shrink: 0; gap: 10px; }
 /* Live character count readout aligned beneath the playlist name input inside modals. */
 .form-input-counter { align-self: flex-end; color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 600; margin-top: -8px; }
@@ -1722,6 +1722,8 @@ input, textarea, select { font: inherit; }
 /* Cover and mosaic artwork images scaled cleanly to fill their 16:9 slots. */
 .playlist-cover > .playlist-cover-img,
 .playlist-cover-mosaic .playlist-mosaic-img { display: block; height: 100%; object-fit: cover; width: 100%; }
+/* Keeps failed mosaic tiles invisible without collapsing their 2x2 grid quadrant. */
+.playlist-cover-mosaic .playlist-mosaic-img--failed { opacity: 0; visibility: hidden; }
 /* Minimalist visual playlist grid tile: clean 16:9 artwork frame above title and item count. */
 .playlist-card { background: transparent; border: 0; border-radius: 0; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 10px; min-width: 0; outline: none; padding: 0; text-align: left; width: 100%; }
 .playlist-card:focus, .playlist-card:focus-visible, .playlist-card.focused { outline: none; }
