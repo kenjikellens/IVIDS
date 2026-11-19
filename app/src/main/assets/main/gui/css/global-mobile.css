@@ -1056,7 +1056,7 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 #app .settings-container #app-info-btn { background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; color: #f1f1f1; font-size: 16px; font-weight: 400; justify-content: space-between; min-height: 52px; padding: 16px 0; width: 100%; display: flex; align-items: center; }
 #app .settings-container #app-info-btn:active { background: rgba(255, 255, 255, 0.08); }
 #app .settings-container #app-info-btn .btn__icon { display: none; }
-#app .settings-container #app-info-btn .btn__chevron { color: #666666; font-size: 18px; display: inline-block; }
+#app .settings-container #app-info-btn .btn__chevron { display: inline-block; height: 14px; opacity: 0.5; width: 14px; }
 
 /* Mobile layout: hide desktop dropdown and show mobile entry row */
 #app .advanced-dropdown-wrapper,

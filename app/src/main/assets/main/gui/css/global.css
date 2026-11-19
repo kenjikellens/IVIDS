@@ -1572,8 +1572,8 @@ input, textarea, select { font: inherit; }
 /* Small dropdown toggle button under Live TV */
 .advanced-dropdown-btn { font-size: 14.5px; font-weight: 600; gap: 8px; padding: 10px 22px; }
 
-/* Rotating dropdown arrow inside toggle button */
-.dropdown-chevron { display: inline-block; font-size: 11px; margin-left: 6px; transition: transform 0.2s ease; }
+/* Rotating dropdown arrow icon inside toggle button */
+.dropdown-chevron { display: inline-block; height: 14px; margin-left: 6px; transition: transform 0.2s ease; width: 14px; }
 
 /* Inverted chevron when dropdown container is open */
 .advanced-dropdown-btn[aria-expanded="true"] .dropdown-chevron { transform: rotate(180deg); }
@@ -2039,7 +2039,7 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 /* Stepper adjust buttons (+ and -) matching the exact dimensions and tactile styling of settings buttons. */
 .ui-scale-control .scale-adjust-btn { font-size: 24px; font-weight: 700; line-height: 1; }
 /* Trailing chevron indicator for full-width action buttons. */
-.btn__chevron { color: #a8a8a8; font-size: 26px; font-weight: 300; line-height: 1; margin-left: auto; }
+.btn__chevron { height: 16px; margin-left: auto; opacity: 0.7; width: 16px; }
 .setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
 .setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
 .loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
