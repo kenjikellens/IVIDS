@@ -89,14 +89,16 @@ export const spatialNavPlaylists = {
 
     /**
      * Retrieves the default focus element when loading the playlists page.
-     * Prefers the 'Create Playlist' button or falls back to the first playlist card.
+     * Prefers the first playlist card, falling back to the empty-state CTA or header Create button.
      * @returns {HTMLElement|null} The initial focus target element.
      */
     getDefaultFocus: () => {
-        const createBtn = document.getElementById('create-playlist-btn');
-        if (createBtn && isElementVisible(createBtn)) return createBtn;
         const firstCard = document.querySelector('#playlists-grid .card.focusable, #playlists-grid .playlist-card.focusable, #playlists-grid .focusable');
         if (firstCard && isElementVisible(firstCard)) return firstCard;
+        const emptyCreateBtn = document.getElementById('empty-create-playlist-btn');
+        if (emptyCreateBtn && isElementVisible(emptyCreateBtn)) return emptyCreateBtn;
+        const createBtn = document.getElementById('create-playlist-btn');
+        if (createBtn && isElementVisible(createBtn)) return createBtn;
         return null;
     },
 

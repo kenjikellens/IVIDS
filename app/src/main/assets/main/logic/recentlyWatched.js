@@ -183,3 +183,30 @@ export function removeFromRecentlyWatched(id) {
         console.error('Error removing from recently watched:', e);
     }
 }
+
+/**
+ * Reorders an item within the recently watched list and persists the updated order.
+ * @param {number} fromIndex - Current zero-based index.
+ * @param {number} toIndex - Target zero-based index.
+ * @returns {boolean} True if the item was moved.
+ */
+export function moveRecentlyWatchedItem(fromIndex, toIndex) {
+    try {
+        const currentId = getActiveAccountId();
+        const namespacedKey = getNamespacedKey(STORAGE_KEY);
+        const recentlyWatched = getRecentlyWatched();
+        if (fromIndex < 0 || fromIndex >= recentlyWatched.length || toIndex < 0 || toIndex >= recentlyWatched.length) {
+            return false;
+        }
+        const [moved] = recentlyWatched.splice(fromIndex, 1);
+        recentlyWatched.splice(toIndex, 0, moved);
+        _recentlyWatchedCache = recentlyWatched;
+        _cacheOwnerId = currentId;
+        _rebuildMap();
+        PersistentStorage.setItem(namespacedKey, JSON.stringify(recentlyWatched));
+        return true;
+    } catch (e) {
+        console.error('Error moving recently watched item:', e);
+        return false;
+    }
+}

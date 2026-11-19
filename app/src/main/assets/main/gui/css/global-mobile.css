@@ -411,14 +411,37 @@
 #app .playlists-container .page-header { align-items: center; flex-direction: row; justify-content: space-between; }
 /* Mobile elevated summary card and items container for playlist details. */
 #app #playlist-details-view.details-page { padding-top: calc(56px + env(safe-area-inset-top, 0px)); }
-#app .playlist-header-card { background: rgba(255, 255, 255, 0.04); border: none; border-radius: var(--radius-md); padding: 16px; width: 100%; }
+/* Clean borderless mobile header for Playlist Details with title/count and full-width action row. */
+#app .playlist-details-header { align-items: stretch; border-bottom: 1px solid var(--mobile-border); display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; padding-bottom: 16px; width: 100%; }
+#app .playlist-details-header__left { align-items: center; display: flex; gap: 12px; min-width: 0; }
+#app .playlist-details-header__title { font-size: 22px; }
+#app .playlist-header-actions { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+#app .playlist-header-actions:has(#play-all-btn.hidden) { grid-template-columns: 1fr; }
 #app .playlist-items-section { background: transparent; border: none; padding: 0; width: 100%; }
 #app .playlist-item-row { gap: 8px; margin-bottom: 10px; }
 #app .playlist-item-actions { gap: 6px; }
 #app .playlist-item-actions .btn--circle { height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
-/* Mobile uses compact overflow context menu button instead of separate move and delete buttons. */
-#app .playlist-action-move, #app .playlist-action-delete { display: none; }
-#app .playlist-action-more { display: inline-flex; }
+/* Mobile removes below-poster Settings icon; users reorder via press-and-drag and delete via long-press popup. */
+#app .playlist-poster-tile { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+#app .playlist-poster-settings-slot { display: none; }
+/* Compact native-style mobile bottom popup for playlist item long-press (Delete + Cancel only). */
+html body #item-context-modal.modal, body #item-context-modal.modal { align-items: flex-end; justify-content: flex-end; }
+html body #item-context-modal .modal__dialog, body #item-context-modal .modal__dialog {
+    background: #121212;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px 18px 0 0;
+    flex: 0 0 auto;
+    height: auto;
+    max-height: 55vh;
+    padding: 18px 0 calc(env(safe-area-inset-bottom, 16px) + 12px);
+    transform: translateY(100%);
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html body #item-context-modal.is-open .modal__dialog, html body #item-context-modal.show .modal__dialog,
+body #item-context-modal.is-open .modal__dialog, body #item-context-modal.show .modal__dialog { transform: translateY(0); }
+body #item-context-modal #context-move-btn { display: none; }
+body #item-context-modal .modal__back-btn { top: 10px; }
+body #item-context-modal .modal__title { border-bottom: 1px solid var(--mobile-border); font-size: 16px; margin: 0 0 4px; padding: 0 48px 12px; }
 
 /* Mobile container top padding overrides to accommodate phone top status bar and notch areas. */
 #app .playlists-container, #app .settings-container, #app .account-container, #app .page-container {

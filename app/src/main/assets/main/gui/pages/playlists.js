@@ -81,8 +81,8 @@ function render() {
 }
 
 /**
- * Attaches focus/hover-gated vertical ping-pong scrolling on playlist item lists that overflow their box height.
- * Respects prefers-reduced-motion and avoids simultaneous infinite animations at rest.
+ * Starts smooth vertical ping-pong scrolling on playlist item lists that overflow their box height.
+ * Respects prefers-reduced-motion.
  * @param {HTMLElement} grid - The playlists container element.
  */
 function initPlaylistItemTickers(grid) {
@@ -90,45 +90,31 @@ function initPlaylistItemTickers(grid) {
     requestAnimationFrame(() => {
         if (!grid) return;
         const measurements = [];
-        grid.querySelectorAll('.playlist-card').forEach(card => {
-            const box = card.querySelector('.playlist-card__items-box');
-            if (!box || box.clientHeight <= 0) return;
+        grid.querySelectorAll('.playlist-card__items-box').forEach(box => {
+            if (box.clientHeight <= 0) return;
             const track = box.querySelector('.playlist-card__items-track');
             if (!track || typeof track.animate !== 'function') return;
             const overflow = track.scrollHeight - box.clientHeight;
             if (overflow > 2) {
-                measurements.push({ card, track, overflow });
+                measurements.push({ track, overflow });
             }
         });
-        measurements.forEach(({ card, track, overflow }) => {
-            let activeAnim = null;
-            const startTicker = () => {
-                if (activeAnim) return;
-                const durationMs = Math.max(3500, Math.round(overflow * 45) + 1800);
-                activeAnim = track.animate(
-                    [
-                        { transform: 'translateY(0px)', offset: 0 },
-                        { transform: 'translateY(0px)', offset: 0.14 },
-                        { transform: `translateY(-${overflow}px)`, offset: 0.86 },
-                        { transform: `translateY(-${overflow}px)`, offset: 1 }
-                    ],
-                    {
-                        duration: durationMs,
-                        iterations: Infinity,
-                        direction: 'alternate',
-                        easing: 'ease-in-out'
-                    }
-                );
-            };
-            const stopTicker = () => {
-                if (!activeAnim) return;
-                activeAnim.cancel();
-                activeAnim = null;
-            };
-            card.addEventListener('mouseenter', startTicker);
-            card.addEventListener('focus', startTicker);
-            card.addEventListener('mouseleave', stopTicker);
-            card.addEventListener('blur', stopTicker);
+        measurements.forEach(({ track, overflow }) => {
+            const durationMs = Math.max(3500, Math.round(overflow * 45) + 1800);
+            track.animate(
+                [
+                    { transform: 'translateY(0px)', offset: 0 },
+                    { transform: 'translateY(0px)', offset: 0.14 },
+                    { transform: `translateY(-${overflow}px)`, offset: 0.86 },
+                    { transform: `translateY(-${overflow}px)`, offset: 1 }
+                ],
+                {
+                    duration: durationMs,
+                    iterations: Infinity,
+                    direction: 'alternate',
+                    easing: 'ease-in-out'
+                }
+            );
         });
     });
 }
@@ -147,16 +133,23 @@ function createPlaylistCard(playlist) {
     card.setAttribute('role', 'button');
     card.dataset.id = playlist.id;
 
-    // Use strictly the first item with a backdrop/poster as the single cover image
+    // Use 4-tile mosaic when 4+ items have artwork, otherwise single 16:9 cover
+    const artItems = (playlist.items || []).filter(item => item.backdrop_path || item.poster_path);
+    const mosaicUrls = artItems.length >= 4
+        ? artItems.slice(0, 4).map(item => {
+            const sz = item.backdrop_path ? Api.getRecommendedStillSize() : Api.getRecommendedPosterSize();
+            const u = Api.getImageUrl(item.backdrop_path || item.poster_path, sz);
+            return (u && isSafeMediaUrl(u)) ? u : '';
+        }).filter(Boolean)
+        : [];
+
     let imageUrl = '';
-    if (playlist.items && playlist.items.length > 0) {
-        const firstWithArt = playlist.items.find(item => item.backdrop_path || item.poster_path);
-        if (firstWithArt) {
-            const coverSize = firstWithArt.backdrop_path ? Api.getRecommendedBackdropSize() : Api.getRecommendedPosterSize();
-            const candidate = Api.getImageUrl(firstWithArt.backdrop_path || firstWithArt.poster_path, coverSize);
-            if (candidate && isSafeMediaUrl(candidate)) {
-                imageUrl = candidate;
-            }
+    if (mosaicUrls.length < 4 && artItems.length > 0) {
+        const firstWithArt = artItems[0];
+        const coverSize = firstWithArt.backdrop_path ? Api.getRecommendedBackdropSize() : Api.getRecommendedPosterSize();
+        const candidate = Api.getImageUrl(firstWithArt.backdrop_path || firstWithArt.poster_path, coverSize);
+        if (candidate && isSafeMediaUrl(candidate)) {
+            imageUrl = candidate;
         }
     }
 
@@ -167,7 +160,10 @@ function createPlaylistCard(playlist) {
         : (playlist.name || '');
     const safeName = escapeHtml(rawName);
 
-    const coverContent = imageUrl ? `<img class="playlist-cover-img" alt="${safeName}" loading="lazy">` : '';
+    const hasMosaic = mosaicUrls.length === 4;
+    const coverContent = hasMosaic
+        ? `<div class="playlist-cover-mosaic">${mosaicUrls.map(u => `<img class="playlist-mosaic-img" src="${escapeHtml(u)}" alt="" loading="lazy">`).join('')}</div>`
+        : (imageUrl ? `<img class="playlist-cover-img" alt="${safeName}" loading="lazy">` : '');
 
     const items = Array.isArray(playlist.items) ? playlist.items : [];
     const emptyLabel = window.i18n ? window.i18n.t('playlists.emptyPlaylist') : 'This playlist is empty.';
@@ -177,7 +173,7 @@ function createPlaylistCard(playlist) {
 
     card.innerHTML = `
         <div class="playlist-card__media">
-            <div class="playlist-cover${imageUrl ? '' : ' playlist-cover--empty'}">
+            <div class="playlist-cover${(imageUrl || hasMosaic) ? '' : ' playlist-cover--empty'}">
                 ${coverContent}
             </div>
         </div>

@@ -1,28 +1,27 @@
 <div class="page-container">
     <div id="playlist-details-view" class="playlists-container">
-        <div class="page-header">
-            <div class="tv-overlay-top">
-                <div class="tv-controls-left">
-                    <button id="back-btn" class="btn btn--secondary btn--circle-md focusable tv-back-btn universal-onclick" type="button" title="Back" aria-label="Back">
-                        <img src="images/back.svg" alt="" class="btn__icon">
-                    </button>
-                    <div class="tv-info">
-                        <h1 id="playlist-title">Playlist Name</h1>
-                        <span id="playlist-count" class="tv-epg-info">0 items</span>
-                    </div>
-                </div>
-                <div class="playlist-header-actions btn-group">
-                    <button id="play-all-btn" class="btn btn--primary btn--sm focusable universal-onclick hidden" type="button" data-i18n="playlists.playAll">Play All</button>
-                    <button id="playlist-options-btn" class="btn btn--secondary btn--circle-md focusable tv-settings-btn universal-onclick" type="button" title="Options" aria-label="Options">
-                        <img src="images/settings.svg" alt="" class="btn__icon">
-                    </button>
+        <header class="playlist-details-header">
+            <div class="playlist-details-header__left">
+                <button id="back-btn" class="btn btn--secondary btn--circle-md focusable tv-back-btn universal-onclick" type="button" title="Back" aria-label="Back">
+                    <img src="images/back.svg" alt="" class="btn__icon">
+                </button>
+                <div class="playlist-details-header__meta">
+                    <h1 id="playlist-title" class="playlist-details-header__title">Playlist Name</h1>
+                    <span id="playlist-count" class="playlist-details-header__count">0 items</span>
                 </div>
             </div>
-        </div>
+            <div class="playlist-header-actions btn-group">
+                <button id="play-all-btn" class="btn btn--primary focusable universal-onclick hidden" type="button" data-i18n="playlists.playAll">Play All</button>
+                <button id="playlist-options-btn" class="btn btn--secondary focusable universal-onclick" type="button">
+                    <img src="images/settings.svg" alt="" class="btn__icon">
+                    <span data-i18n="playlists.options">Options</span>
+                </button>
+            </div>
+        </header>
 
         <div class="playlist-items-section">
-            <div id="playlist-items-container" class="episodes-list">
-                <!-- Items injected via JS -->
+            <div id="playlist-items-container" class="media-grid media-grid--posters">
+                <!-- Poster items injected via JS -->
             </div>
         </div>
     </div>
@@ -81,31 +80,15 @@
 
     <!-- Item Context Modal matching Player Stream Options styling on Mobile -->
     <div id="item-context-modal" class="modal">
-        <div class="modal__dialog modal__dialog--md">
+        <div class="modal__dialog modal__dialog--sm">
             <button id="context-back-btn" type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
                 <img src="images/back.svg" class="modal-back-icon" alt="Back">
             </button>
             <h2 id="context-item-title" class="modal__title modal__title--truncate">Movie Title</h2>
             <div class="modal__body modal__body--scroll">
                 <div class="settings-container">
-                    <button id="context-play-btn" class="setting-item focusable universal-onclick" type="button">
-                        <span class="setting-info"><span class="setting-label" data-i18n="player.play">Play Content</span></span>
-                        <span class="setting-control"><span class="edit-trigger" aria-hidden="true"></span></span>
-                    </button>
-                    <button id="context-details-btn" class="setting-item focusable universal-onclick" type="button">
-                        <span class="setting-info"><span class="setting-label" data-i18n="player.moreInfo">View Info Details</span></span>
-                        <span class="setting-control"><span class="edit-trigger" aria-hidden="true"></span></span>
-                    </button>
-                    <button id="context-move-up-btn" class="setting-item focusable universal-onclick" type="button">
-                        <span class="setting-info"><span class="setting-label" data-i18n="playlists.moveUp">Move Item Up</span></span>
-                        <span class="setting-control"><span class="edit-trigger" aria-hidden="true"></span></span>
-                    </button>
-                    <button id="context-move-down-btn" class="setting-item focusable universal-onclick" type="button">
-                        <span class="setting-info"><span class="setting-label" data-i18n="playlists.moveDown">Move Item Down</span></span>
-                        <span class="setting-control"><span class="edit-trigger" aria-hidden="true"></span></span>
-                    </button>
-                    <button id="context-add-to-playlist-btn" class="setting-item focusable universal-onclick" type="button">
-                        <span class="setting-info"><span class="setting-label" data-i18n="playlists.addToOtherPlaylist">Add to Another Playlist</span></span>
+                    <button id="context-move-btn" class="setting-item focusable universal-onclick" type="button">
+                        <span class="setting-info"><span class="setting-label" data-i18n="playlists.moveItem">Move Item</span></span>
                         <span class="setting-control"><span class="edit-trigger" aria-hidden="true"></span></span>
                     </button>
                     <button id="context-remove-btn" class="setting-item setting-item--danger focusable universal-onclick" type="button">
@@ -119,7 +102,7 @@
 
     <!-- Add to Another Playlist Modal matching Player Stream Options styling -->
     <div id="add-to-other-playlist-modal" class="modal">
-        <div class="modal__dialog modal__dialog--md">
+        <div class="modal__dialog modal__dialog--sm">
             <button id="other-playlist-back-btn" type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
                 <img src="images/back.svg" class="modal-back-icon" alt="Back">
             </button>

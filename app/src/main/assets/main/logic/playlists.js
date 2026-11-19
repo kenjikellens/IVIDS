@@ -1,5 +1,5 @@
 // logic/playlists.js
-import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched, clearRecentlyWatched } from './recentlyWatched.js';
+import { getRecentlyWatched, addToRecentlyWatched, removeFromRecentlyWatched, clearRecentlyWatched, moveRecentlyWatchedItem } from './recentlyWatched.js';
 import { Toast } from '../gui/js/toast.js';
 import { getActiveAccountId, getNamespacedKey } from './account-helper.js';
 import { PersistentStorage } from './persistent-storage.js';
@@ -237,7 +237,7 @@ export const Playlists = {
     },
 
     moveItem(playlistId, fromIndex, toIndex) {
-        if (playlistId === HISTORY_ID) return false;
+        if (playlistId === HISTORY_ID) return moveRecentlyWatchedItem(fromIndex, toIndex);
 
         this.getPlaylists();
         const playlist = _playlistsCache.find(p => p.id === playlistId);

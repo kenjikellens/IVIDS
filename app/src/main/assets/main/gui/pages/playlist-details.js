@@ -3,8 +3,9 @@ import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
 import { Toast } from '../js/toast.js';
-import { manageModal, loadBackgroundWithLoader } from '../js/utils/ui-helper.js';
-import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
+import { lazyLoader } from '../js/lazy-loader.js';
+import { manageModal, createPosterElement } from '../js/utils/ui-helper.js';
+import { escapeHtml } from '../js/utils/sanitize.js';
 
 
 let currentPlaylistId = null;
@@ -51,6 +52,100 @@ export function moveItemInActivePlaylist(fromIndex, toIndex) {
 }
 
 /**
+ * Smoothly animates poster tile position changes inside the grid using FLIP (First-Last-Invert-Play).
+ * Respects prefers-reduced-motion and skips the tile currently being dragged by a pointer.
+ * @param {HTMLElement|null} container - The #playlist-items-container grid element.
+ * @param {Function} mutateDom - Callback that performs the synchronous DOM tile reorder.
+ */
+function animateGridReorder(container, mutateDom) {
+    if (!container) {
+        mutateDom();
+        return;
+    }
+    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tiles = Array.from(container.children);
+    const beforeRects = reducedMotion ? null : new Map(tiles.map(t => [t, t.getBoundingClientRect()]));
+
+    mutateDom();
+
+    if (reducedMotion || !beforeRects) return;
+
+    tiles.forEach(tileEl => {
+        if (tileEl.classList.contains('dragging')) return;
+        const prev = beforeRects.get(tileEl);
+        if (!prev) return;
+        const next = tileEl.getBoundingClientRect();
+        const dx = prev.left - next.left;
+        const dy = prev.top - next.top;
+        if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+
+        if (tileEl._flipAnim) {
+            try { tileEl._flipAnim.cancel(); } catch (_) { /* ignore */ }
+        }
+        if (typeof tileEl.animate === 'function') {
+            tileEl._flipAnim = tileEl.animate(
+                [
+                    { transform: `translate3d(${dx}px, ${dy}px, 0)` },
+                    { transform: 'translate3d(0, 0, 0)' }
+                ],
+                { duration: 220, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+            );
+            tileEl._flipAnim.onfinish = () => { tileEl._flipAnim = null; };
+            tileEl._flipAnim.oncancel = () => { tileEl._flipAnim = null; };
+        }
+    });
+}
+
+/**
+ * Reorders an item in storage and relocates its existing poster tile in-place with smooth FLIP motion.
+ * Keeps the selected poster visually elevated and focused while surrounding posters glide into position.
+ * @param {number} fromIndex - Current zero-based index of the moving poster.
+ * @param {number} toIndex - Target zero-based index in the grid.
+ * @returns {HTMLElement|null} The focused poster button inside the relocated tile, or null on failure.
+ */
+export function moveTileInDom(fromIndex, toIndex) {
+    if (fromIndex === toIndex) return null;
+    if (!Playlists.moveItem(currentPlaylistId, fromIndex, toIndex)) return null;
+
+    activeMoveIndex = toIndex;
+    const container = document.getElementById('playlist-items-container');
+    const tiles = container ? Array.from(container.children) : [];
+    const movingTile = tiles[fromIndex];
+    const targetTile = tiles[toIndex];
+
+    if (movingTile && targetTile) {
+        animateGridReorder(container, () => {
+            if (fromIndex < toIndex) targetTile.after(movingTile);
+            else targetTile.before(movingTile);
+        });
+        return movingTile.querySelector('.card--poster.focusable');
+    }
+
+    render({ skipFocusFirst: true });
+    const updatedTiles = document.querySelectorAll('#playlist-items-container .playlist-poster-tile');
+    return updatedTiles[toIndex]?.querySelector('.card--poster.focusable') || null;
+}
+
+/**
+ * Exits active keyboard/D-pad Move Mode, removes elevated styling and sibling dimming, and keeps focus on the moved poster.
+ */
+export function exitMoveMode() {
+    if (activeMoveIndex === null) return;
+    const prevIndex = activeMoveIndex;
+    activeMoveIndex = null;
+    clearMoveModeBackHandler();
+
+    const container = document.getElementById('playlist-items-container');
+    if (container) container.classList.remove('is-reordering');
+
+    const tiles = document.querySelectorAll('#playlist-items-container .playlist-poster-tile');
+    tiles.forEach(t => t.classList.remove('moving-active'));
+
+    const targetPoster = tiles[prevIndex]?.querySelector('.card--poster.focusable');
+    if (targetPoster) SpatialNav.setFocus(targetPoster);
+}
+
+/**
  * Pops any active Move Mode back handler from SpatialNav cleanly.
  */
 export function clearMoveModeBackHandler() {
@@ -69,6 +164,25 @@ export function reRenderList(options = {}) {
 }
 
 /**
+ * Registers the live page controller on window so cache-busted spatial-nav imports share exact module state.
+ */
+function syncPageBridge() {
+    window.__ividsPlaylistDetails = {
+        getActiveMoveIndex,
+        setActiveMoveIndex,
+        getPlaylistItemsCount,
+        moveItemInActivePlaylist,
+        moveTileInDom,
+        toggleMoveMode,
+        exitMoveMode,
+        reRenderList,
+        clearMoveModeBackHandler,
+        closePlaylistOptionsPanel,
+        navigatePlaylistOptionsBack
+    };
+}
+
+/**
  * Initializes the Playlist Details page controller.
  * Establishes params, fetches the appropriate list entry, and paints the initial screen.
  * 
@@ -78,6 +192,7 @@ export const init = async (params) => {
     console.log('Initializing Playlist Details', params);
     activeMoveIndex = null;
     clearMoveModeBackHandler();
+    syncPageBridge();
     if (params && params.id) {
         currentPlaylistId = params.id;
         render();
@@ -153,6 +268,7 @@ function render({ skipFocusFirst = false } = {}) {
                 fragment.appendChild(el);
             });
             container.appendChild(fragment);
+            container.querySelectorAll('.card--poster').forEach(btn => lazyLoader.loadImage(btn));
         }
     }
 
@@ -173,7 +289,7 @@ function render({ skipFocusFirst = false } = {}) {
 
 /**
  * Toggles move reordering mode for a given playlist item index.
- * Registers or removes spatial navigation back handlers accordingly.
+ * Highlights the selected poster in place without DOM teardown and binds the Back handler to exit cleanly.
  * 
  * @param {number} index - Index of the item to move.
  */
@@ -182,238 +298,338 @@ function toggleMoveMode(index) {
         clearTimeout(moveFocusTimerId);
         moveFocusTimerId = null;
     }
-    if (activeMoveIndex === index) {
-        activeMoveIndex = null;
-        clearMoveModeBackHandler();
-        render({ skipFocusFirst: true });
-        moveFocusTimerId = setTimeout(() => {
-            moveFocusTimerId = null;
-            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"]`);
-            if (btn) SpatialNav.setFocus(btn);
-        }, 10);
-    } else {
-        activeMoveIndex = index;
-        clearMoveModeBackHandler();
-        render({ skipFocusFirst: true });
 
-        activeMoveBackHandler = () => {
-            if (activeMoveIndex !== null) {
-                const prevIndex = activeMoveIndex;
-                activeMoveIndex = null;
-                clearMoveModeBackHandler();
-                render({ skipFocusFirst: true });
-                moveFocusTimerId = setTimeout(() => {
-                    moveFocusTimerId = null;
-                    const btn = document.querySelector(`.playlist-action-btn[data-index="${prevIndex}"]`);
-                    if (btn) SpatialNav.setFocus(btn);
-                }, 10);
-                return true;
-            }
-            return false;
-        };
-        SpatialNav.pushBackHandler(activeMoveBackHandler);
-
-        moveFocusTimerId = setTimeout(() => {
-            moveFocusTimerId = null;
-            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"]`);
-            if (btn) SpatialNav.setFocus(btn);
-        }, 10);
+    if (activeMoveIndex !== null && activeMoveIndex === index) {
+        exitMoveMode();
+        return;
     }
+
+    activeMoveIndex = index;
+    clearMoveModeBackHandler();
+    SpatialNav.clearFocusTrap();
+
+    const container = document.getElementById('playlist-items-container');
+    if (container) container.classList.add('is-reordering');
+
+    const tiles = document.querySelectorAll('#playlist-items-container .playlist-poster-tile');
+    tiles.forEach((tileEl, idx) => {
+        tileEl.classList.toggle('moving-active', idx === index);
+        tileEl.classList.remove('is-settings-visible');
+        const gearBtn = tileEl.querySelector('.playlist-poster-settings-btn');
+        if (gearBtn) gearBtn.classList.add('hidden');
+    });
+
+    activeMoveBackHandler = () => {
+        if (activeMoveIndex !== null) {
+            exitMoveMode();
+            return true;
+        }
+        return false;
+    };
+    SpatialNav.pushBackHandler(activeMoveBackHandler);
+
+    const targetPoster = tiles[index]?.querySelector('.card--poster.focusable');
+    if (targetPoster) SpatialNav.setFocus(targetPoster);
 }
 
 /**
- * Constructs a focusable item row resembling the episode listings.
- * Contains the movie details card and circular Move and Delete action buttons.
- * 
+ * Constructs a focusable poster tile with a 1-second dwell-triggered Settings button below it.
+ *
  * @param {object} item - Movie or Series object details.
  * @param {number} index - Current position index.
  * @param {number} total - Total entries in the list.
- * @returns {HTMLDivElement} Configured item row element.
+ * @returns {HTMLDivElement} Configured poster tile element.
  */
 function createItemElement(item, index, total) {
-    const row = document.createElement('div');
-    row.className = 'playlist-item-row';
+    const tile = document.createElement('div');
+    tile.className = 'playlist-poster-tile';
     if (activeMoveIndex === index) {
-        row.classList.add('moving-active');
+        tile.classList.add('moving-active');
     }
 
-    const cardWrapper = document.createElement('div');
-    cardWrapper.className = 'playlist-item-card-wrapper';
-
-    const itemCard = document.createElement('div');
-    itemCard.className = 'card card--row card--interactive episode-item disney-episode-item focusable universal-onclick';
-    itemCard.tabIndex = 0;
-    itemCard.setAttribute('role', 'button');
-    itemCard.dataset.id = item.id;
-    itemCard.dataset.type = item.media_type;
-
-    const imageSize = item.backdrop_path ? Api.getRecommendedStillSize() : Api.getRecommendedPosterSize();
-    const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path, imageSize);
-    const isMoving = activeMoveIndex === index;
-
-    itemCard.innerHTML = `
-        <div class="card__thumb card__thumb--sm"></div>
-        <div class="card__body">
-            <div class="episode-header">
-                <span class="episode-number">${index + 1}</span>
-                <span class="card__title">${escapeHtml(item.title || item.name || '')}</span>
-                ${isMoving ? '<span class="move-mode-hint">↑↓</span>' : ''}
-            </div>
-        </div>
-    `;
-
-    // Click on item card navigates to content details
-    if (isSafeMediaUrl(imageUrl)) loadBackgroundWithLoader(itemCard.querySelector('.card__thumb'), imageUrl);
-    itemCard.onclick = () => {
-        Router.loadPage('details', { id: item.id, type: item.media_type });
+    const getLiveIndex = () => {
+        const container = tile.parentElement;
+        return container ? Array.from(container.children).indexOf(tile) : index;
     };
-    itemCard.onkeydown = (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
+
+    let posterBtn = createPosterElement(item, item.media_type);
+    if (!posterBtn) {
+        posterBtn = document.createElement('button');
+        posterBtn.type = 'button';
+        posterBtn.className = 'card card--poster card--interactive poster-wrapper focusable focusable-card universal-onclick playlist-poster-fallback';
+        posterBtn.dataset.id = item.id;
+        posterBtn.dataset.type = item.media_type;
+        posterBtn.innerHTML = `<span class="playlist-poster-fallback__title">${escapeHtml(item.title || item.name || '')}</span>`;
+        posterBtn.onclick = () => {
             Router.loadPage('details', { id: item.id, type: item.media_type });
+        };
+    }
+
+    posterBtn.onclick = (e) => {
+        if (posterBtn._justDragged) {
+            e.preventDefault();
+            return;
+        }
+        if (activeMoveIndex !== null) {
+            e.preventDefault();
+            exitMoveMode();
+            return;
+        }
+        try {
+            Router.loadPage('details', { id: item.id, type: item.media_type });
+        } catch (navError) {
+            console.error('Error navigating to details:', navError);
         }
     };
 
-    const actionsWrapper = document.createElement('div');
-    actionsWrapper.className = 'card__actions playlist-item-actions';
+    const settingsSlot = document.createElement('div');
+    settingsSlot.className = 'playlist-poster-settings-slot';
 
-    // Mobile overflow context menu button
-    const moreBtn = document.createElement('button');
-    moreBtn.className = 'btn btn--secondary btn--circle-lg playlist-action-more focusable universal-onclick';
-    moreBtn.type = 'button';
-    moreBtn.dataset.index = index;
-    moreBtn.title = window.i18n ? window.i18n.t('common.options') : 'Options';
-    moreBtn.innerHTML = `<img src="images/more.svg" class="btn__icon" alt="" aria-hidden="true">`;
-    moreBtn.onclick = (e) => {
+    const settingsBtn = document.createElement('button');
+    settingsBtn.type = 'button';
+    settingsBtn.className = 'btn btn--secondary btn--circle-sm playlist-poster-settings-btn focusable universal-onclick hidden';
+    settingsBtn.dataset.index = index;
+    const optTitle = window.i18n ? window.i18n.t('common.options') : 'Options';
+    settingsBtn.title = optTitle;
+    settingsBtn.ariaLabel = optTitle;
+    settingsBtn.innerHTML = `<img src="images/settings.svg" class="btn__icon" alt="" aria-hidden="true">`;
+    settingsBtn.onclick = (e) => {
         e.stopPropagation();
-        openItemContextModal(item, index, total);
+        openItemContextModal(item, getLiveIndex(), false);
     };
 
-    // Circular Move button
-    const moveBtn = document.createElement('button');
-    moveBtn.type = 'button';
-    moveBtn.className = 'btn btn--secondary btn--circle-lg playlist-action-btn playlist-action-move focusable universal-onclick';
-    if (activeMoveIndex === index) {
-        moveBtn.classList.add('is-active', 'active');
-    }
-    moveBtn.dataset.index = index;
-    moveBtn.title = window.i18n ? window.i18n.t('playlists.moveItem') : "Move Item";
-    moveBtn.innerHTML = `<img src="images/move-vertical.svg" class="btn__icon" alt="" aria-hidden="true">`;
-
-    moveBtn.onclick = (e) => {
-        e.stopPropagation();
-        toggleMoveMode(index);
+    let dwellTimerId = null;
+    const scheduleReveal = () => {
+        if (activeMoveIndex !== null || !settingsBtn.classList.contains('hidden') || dwellTimerId) return;
+        dwellTimerId = setTimeout(() => {
+            dwellTimerId = null;
+            if (activeMoveIndex !== null) return;
+            settingsBtn.classList.remove('hidden');
+            tile.classList.add('is-settings-visible');
+        }, 1000);
+    };
+    const hideSettings = () => {
+        if (dwellTimerId) {
+            clearTimeout(dwellTimerId);
+            dwellTimerId = null;
+        }
+        settingsBtn.classList.add('hidden');
+        tile.classList.remove('is-settings-visible');
     };
 
-    // Circular Delete button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.type = 'button';
-    deleteBtn.className = 'btn btn--secondary btn--circle-lg playlist-action-delete focusable universal-onclick';
-    deleteBtn.dataset.index = index;
-    deleteBtn.title = window.i18n ? window.i18n.t('playlists.deleteItem') : "Remove Item";
-    deleteBtn.innerHTML = `<img src="images/trash.svg" class="btn__icon" alt="" aria-hidden="true">`;
-
-    deleteBtn.onclick = (e) => {
-        e.stopPropagation();
-        const title = window.i18n ? window.i18n.t('playlists.removeItemTitle') : 'Remove Item';
-        const msg = window.i18n ? window.i18n.t('playlists.removeItemMessage') : 'Are you sure you want to remove this item from the playlist?';
-        showConfirmationModal(
-            title,
-            msg,
-            () => {
-                Playlists.removeFromPlaylist(currentPlaylistId, item.id);
-                render();
-                Toast.show(item.title || item.name || title, { type: 'info', duration: 2000 });
+    tile.addEventListener('mouseenter', scheduleReveal);
+    tile.addEventListener('focusin', scheduleReveal);
+    tile.addEventListener('mouseleave', () => {
+        if (!tile.contains(document.activeElement)) hideSettings();
+    });
+    tile.addEventListener('focusout', () => {
+        setTimeout(() => {
+            if (!tile.contains(document.activeElement) && !tile.matches(':hover')) {
+                hideSettings();
             }
-        );
-    };
+        }, 0);
+    });
 
-    cardWrapper.appendChild(itemCard);
-    actionsWrapper.appendChild(moreBtn);
-    actionsWrapper.appendChild(moveBtn);
-    actionsWrapper.appendChild(deleteBtn);
+    settingsSlot.appendChild(settingsBtn);
+    tile.appendChild(posterBtn);
+    tile.appendChild(settingsSlot);
+    attachPosterPointerController(tile, posterBtn, item);
 
-    row.appendChild(cardWrapper);
-    row.appendChild(actionsWrapper);
-
-    return row;
+    return tile;
 }
 
 /**
- * Opens the mobile/context item action modal for playing, inspecting, reordering, or removing a playlist item.
+ * Attaches live 2D press-and-hold pointer drag-and-drop (mouse and touch) plus mobile long-press
+ * popup handling onto a playlist poster tile without breaking vertical touch scrolling.
+ * @param {HTMLElement} tile - The .playlist-poster-tile container.
+ * @param {HTMLElement} posterBtn - The inner .card--poster button element.
+ * @param {object} item - Playlist media entry bound to this tile.
+ */
+function attachPosterPointerController(tile, posterBtn, item) {
+    let isDragging = false;
+    let holdArmed = false;
+    let longPressFired = false;
+    let holdTimer = null;
+    let longPressTimer = null;
+    let startX = 0;
+    let startY = 0;
+    let offsetX = 0;
+    let offsetY = 0;
+    let pointerType = 'mouse';
+
+    const getTileIndex = () => {
+        const container = tile.parentElement;
+        return container ? Array.from(container.children).indexOf(tile) : -1;
+    };
+
+    const clearTimers = () => {
+        if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+        if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+    };
+
+    const startDrag = () => {
+        if (isDragging) return;
+        isDragging = true;
+        clearTimers();
+        tile.classList.add('dragging');
+        tile.style.pointerEvents = 'none';
+        if (tile.parentElement) tile.parentElement.classList.add('is-reordering');
+    };
+
+    const cleanupListeners = () => {
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+    };
+
+    const onPointerMove = (e) => {
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const dist = Math.hypot(dx, dy);
+
+        if (pointerType !== 'mouse') {
+            if (!holdArmed && !isDragging) {
+                if (dist > 10) {
+                    clearTimers();
+                    cleanupListeners();
+                }
+                return;
+            }
+            if (holdArmed && !isDragging && dist > 8) {
+                startDrag();
+            }
+            if (isDragging) e.preventDefault();
+        } else if (!isDragging && dist > 8) {
+            startDrag();
+        }
+
+        if (!isDragging) return;
+
+        tile.style.transform = `translate3d(${dx + offsetX}px, ${dy + offsetY}px, 0)`;
+        const hitEl = document.elementFromPoint(e.clientX, e.clientY);
+        const sibling = hitEl ? hitEl.closest('.playlist-poster-tile') : null;
+        const container = tile.parentElement;
+
+        if (sibling && sibling !== tile && sibling.parentElement === container) {
+            const fromIdx = getTileIndex();
+            const toIdx = Array.from(container.children).indexOf(sibling);
+            if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
+                const oldRect = tile.getBoundingClientRect();
+                Playlists.moveItem(currentPlaylistId, fromIdx, toIdx);
+                animateGridReorder(container, () => {
+                    if (fromIdx < toIdx) sibling.after(tile);
+                    else sibling.before(tile);
+                });
+                const newRect = tile.getBoundingClientRect();
+                offsetX += (oldRect.left - newRect.left);
+                offsetY += (oldRect.top - newRect.top);
+                tile.style.transform = `translate3d(${dx + offsetX}px, ${dy + offsetY}px, 0)`;
+            }
+        }
+    };
+
+    const onPointerUp = () => {
+        clearTimers();
+        cleanupListeners();
+
+        if (longPressFired) {
+            longPressFired = false;
+            return;
+        }
+        if (!isDragging) return;
+
+        const finalIndex = getTileIndex();
+        isDragging = false;
+        holdArmed = false;
+        tile.classList.remove('dragging');
+        tile.style.transform = '';
+        tile.style.pointerEvents = '';
+        if (tile.parentElement) tile.parentElement.classList.remove('is-reordering');
+
+        posterBtn._justDragged = true;
+        setTimeout(() => { delete posterBtn._justDragged; }, 160);
+
+        render({ skipFocusFirst: true });
+        if (finalIndex >= 0) {
+            const tiles = document.querySelectorAll('#playlist-items-container .playlist-poster-tile');
+            const droppedPoster = tiles[finalIndex]?.querySelector('.card--poster.focusable');
+            if (droppedPoster) SpatialNav.setFocus(droppedPoster);
+        }
+    };
+
+    posterBtn.addEventListener('contextmenu', (e) => {
+        if (SpatialNav.isPortrait && SpatialNav.isPortrait()) {
+            e.preventDefault();
+        }
+    });
+
+    posterBtn.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        if (activeMoveIndex !== null) return;
+
+        pointerType = e.pointerType || 'mouse';
+        startX = e.clientX;
+        startY = e.clientY;
+        offsetX = 0;
+        offsetY = 0;
+        isDragging = false;
+        holdArmed = false;
+        longPressFired = false;
+        clearTimers();
+
+        if (pointerType !== 'mouse') {
+            holdTimer = setTimeout(() => {
+                holdArmed = true;
+            }, 220);
+            longPressTimer = setTimeout(() => {
+                if (isDragging) return;
+                longPressFired = true;
+                clearTimers();
+                cleanupListeners();
+                posterBtn._justDragged = true;
+                setTimeout(() => { delete posterBtn._justDragged; }, 250);
+                if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+                    navigator.vibrate(18);
+                }
+                const idx = getTileIndex();
+                if (idx >= 0) openItemContextModal(item, idx, true);
+            }, 500);
+        }
+
+        window.addEventListener('pointermove', onPointerMove, { passive: false });
+        window.addEventListener('pointerup', onPointerUp);
+        window.addEventListener('pointercancel', onPointerUp);
+    });
+}
+
+/**
+ * Opens the item action modal to enter Move Mode (desktop/TV) or remove the item from the playlist.
  * @param {object} item - Playlist media entry.
  * @param {number} index - Current zero-based index in the playlist.
- * @param {number} total - Total item count in the playlist.
+ * @param {boolean} [mobileLongPress=false] - True when triggered via mobile touch long-press.
  */
-function openItemContextModal(item, index, total) {
+function openItemContextModal(item, index, mobileLongPress = false) {
     const modal = document.getElementById('item-context-modal');
     const titleEl = document.getElementById('context-item-title');
-    const playBtn = document.getElementById('context-play-btn');
-    const detailsBtn = document.getElementById('context-details-btn');
-    const moveUpBtn = document.getElementById('context-move-up-btn');
-    const moveDownBtn = document.getElementById('context-move-down-btn');
-    const addToOtherBtn = document.getElementById('context-add-to-playlist-btn');
+    const moveBtn = document.getElementById('context-move-btn');
     const removeBtn = document.getElementById('context-remove-btn');
     const backBtn = document.getElementById('context-back-btn');
 
-    if (!modal || !titleEl || !playBtn || !detailsBtn || !moveUpBtn || !moveDownBtn || !removeBtn || !backBtn) {
+    if (!modal || !titleEl || !moveBtn || !removeBtn || !backBtn) {
         console.error('Context modal elements not found');
         return;
     }
 
-    const otherPlaylists = Playlists.getPlaylists().filter(p => !p.isSystem && p.id !== currentPlaylistId);
-    if (addToOtherBtn) {
-        addToOtherBtn.classList.toggle('hidden', otherPlaylists.length === 0);
-    }
+    const isMobile = mobileLongPress === true || Boolean(SpatialNav.isPortrait && SpatialNav.isPortrait());
+    moveBtn.classList.toggle('hidden', isMobile);
 
     titleEl.textContent = item.title || item.name || '';
-    moveUpBtn.classList.toggle('hidden', index <= 0);
-    moveDownBtn.classList.toggle('hidden', index >= total - 1);
+    const initialFocus = isMobile ? backBtn : moveBtn;
+    const closeModal = manageModal(modal, initialFocus);
 
-    const closeModal = manageModal(modal, playBtn);
-
-    if (addToOtherBtn && otherPlaylists.length > 0) {
-        addToOtherBtn.onclick = () => {
-            closeModal();
-            openAddToOtherPlaylistModal(item, otherPlaylists);
-        };
-    }
-
-    playBtn.onclick = () => {
+    moveBtn.onclick = () => {
         closeModal();
-        Router.loadPage('player', {
-            id: item.id,
-            type: item.media_type,
-            season: item.season || 1,
-            episode: item.episode || 1
-        });
-    };
-
-    detailsBtn.onclick = () => {
-        closeModal();
-        Router.loadPage('details', { id: item.id, type: item.media_type });
-    };
-
-    let currentIndex = index;
-    const syncMoveButtons = () => {
-        moveUpBtn.classList.toggle('hidden', currentIndex <= 0);
-        moveDownBtn.classList.toggle('hidden', currentIndex >= total - 1);
-    };
-
-    moveUpBtn.onclick = () => {
-        if (currentIndex <= 0) return;
-        Playlists.moveItem(currentPlaylistId, currentIndex, currentIndex - 1);
-        currentIndex -= 1;
-        syncMoveButtons();
-        render({ skipFocusFirst: true });
-    };
-
-    moveDownBtn.onclick = () => {
-        if (currentIndex >= total - 1) return;
-        Playlists.moveItem(currentPlaylistId, currentIndex, currentIndex + 1);
-        currentIndex += 1;
-        syncMoveButtons();
-        render({ skipFocusFirst: true });
+        toggleMoveMode(index);
     };
 
     removeBtn.onclick = () => {
