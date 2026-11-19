@@ -2,6 +2,7 @@ import { Playlists } from '../../logic/playlists.js';
 import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
+import { Toast } from '../js/toast.js';
 import { manageModal, attachImageWithLoader } from '../js/utils/ui-helper.js';
 import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 
@@ -48,11 +49,20 @@ function render() {
 
     if (playlists.length === 0) {
         const emptyText = window.i18n ? window.i18n.t('playlists.empty') : 'No playlists found. Create one!';
+        const createText = window.i18n ? window.i18n.t('playlists.create_new') : 'Create New Playlist';
         grid.innerHTML = `
             <div class="empty-state playlists-empty-state">
                 <p class="empty-state__text">${escapeHtml(emptyText)}</p>
+                <button id="empty-create-playlist-btn" class="btn btn--primary focusable universal-onclick" type="button" data-i18n="playlists.create_new">${escapeHtml(createText)}</button>
             </div>
         `;
+        const emptyCreateBtn = document.getElementById('empty-create-playlist-btn');
+        if (emptyCreateBtn) {
+            emptyCreateBtn.onclick = () => document.getElementById('create-playlist-btn')?.click();
+        }
+        setTimeout(() => {
+            SpatialNav.focusFirst();
+        }, 100);
         return;
     }
 
@@ -71,38 +81,54 @@ function render() {
 }
 
 /**
- * Starts smooth vertical ping-pong scrolling on playlist item lists that overflow their box height.
+ * Attaches focus/hover-gated vertical ping-pong scrolling on playlist item lists that overflow their box height.
+ * Respects prefers-reduced-motion and avoids simultaneous infinite animations at rest.
  * @param {HTMLElement} grid - The playlists container element.
  */
 function initPlaylistItemTickers(grid) {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     requestAnimationFrame(() => {
         if (!grid) return;
         const measurements = [];
-        grid.querySelectorAll('.playlist-card__items-box').forEach(box => {
-            if (box.clientHeight <= 0) return;
+        grid.querySelectorAll('.playlist-card').forEach(card => {
+            const box = card.querySelector('.playlist-card__items-box');
+            if (!box || box.clientHeight <= 0) return;
             const track = box.querySelector('.playlist-card__items-track');
             if (!track || typeof track.animate !== 'function') return;
             const overflow = track.scrollHeight - box.clientHeight;
             if (overflow > 2) {
-                measurements.push({ track, overflow });
+                measurements.push({ card, track, overflow });
             }
         });
-        measurements.forEach(({ track, overflow }) => {
-            const durationMs = Math.max(3500, Math.round(overflow * 45) + 1800);
-            track.animate(
-                [
-                    { transform: 'translateY(0px)', offset: 0 },
-                    { transform: 'translateY(0px)', offset: 0.14 },
-                    { transform: `translateY(-${overflow}px)`, offset: 0.86 },
-                    { transform: `translateY(-${overflow}px)`, offset: 1 }
-                ],
-                {
-                    duration: durationMs,
-                    iterations: Infinity,
-                    direction: 'alternate',
-                    easing: 'ease-in-out'
-                }
-            );
+        measurements.forEach(({ card, track, overflow }) => {
+            let activeAnim = null;
+            const startTicker = () => {
+                if (activeAnim) return;
+                const durationMs = Math.max(3500, Math.round(overflow * 45) + 1800);
+                activeAnim = track.animate(
+                    [
+                        { transform: 'translateY(0px)', offset: 0 },
+                        { transform: 'translateY(0px)', offset: 0.14 },
+                        { transform: `translateY(-${overflow}px)`, offset: 0.86 },
+                        { transform: `translateY(-${overflow}px)`, offset: 1 }
+                    ],
+                    {
+                        duration: durationMs,
+                        iterations: Infinity,
+                        direction: 'alternate',
+                        easing: 'ease-in-out'
+                    }
+                );
+            };
+            const stopTicker = () => {
+                if (!activeAnim) return;
+                activeAnim.cancel();
+                activeAnim = null;
+            };
+            card.addEventListener('mouseenter', startTicker);
+            card.addEventListener('focus', startTicker);
+            card.addEventListener('mouseleave', stopTicker);
+            card.addEventListener('blur', stopTicker);
         });
     });
 }
@@ -117,6 +143,8 @@ function initPlaylistItemTickers(grid) {
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'card card--interactive playlist-card focusable focusable-card universal-onclick';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
     card.dataset.id = playlist.id;
 
     // Use strictly the first item with a backdrop/poster as the single cover image
@@ -172,6 +200,12 @@ function createPlaylistCard(playlist) {
     card.addEventListener('click', () => {
         Router.loadPage('playlist-details', { id: playlist.id });
     });
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            Router.loadPage('playlist-details', { id: playlist.id });
+        }
+    });
 
     return card;
 }
@@ -224,11 +258,16 @@ function attachListeners() {
     if (confirmBtn) {
         confirmBtn.addEventListener('click', () => {
             const name = input.value.trim();
-            if (name) {
-                Playlists.createPlaylist(name);
-                closeModal();
-                render();
+            if (!name) {
+                const msg = window.i18n ? window.i18n.t('playlists.namePlaceholder') : 'Playlist Name';
+                Toast.show(msg, { type: 'warning', duration: 2200 });
+                input?.focus();
+                return;
             }
+            Playlists.createPlaylist(name);
+            closeModal();
+            render();
+            Toast.show(name, { type: 'success', duration: 2000 });
         });
     }
 

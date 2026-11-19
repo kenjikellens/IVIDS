@@ -116,10 +116,12 @@ function teardownNativeMedia() {
         activeManifestBlobUrl = null;
     }
 
+    const progressBar = document.getElementById('player-progress-bar');
     const fill = document.getElementById('player-progress-fill');
     const curTime = document.getElementById('player-current-time');
     const durTime = document.getElementById('player-duration');
     if (fill) fill.style.width = '0%';
+    if (progressBar) progressBar.setAttribute('aria-valuenow', '0');
     if (curTime) curTime.textContent = '00:00';
     if (durTime) durTime.textContent = '00:00';
 }
@@ -168,6 +170,8 @@ function bindNativeVideoListeners(videoEl) {
             if (pct !== lastPct) {
                 lastPct = pct;
                 fill.style.width = `${pct}%`;
+                const progressBar = document.getElementById('player-progress-bar');
+                if (progressBar) progressBar.setAttribute('aria-valuenow', String(Math.round(pct)));
             }
         }
         if (curSec !== lastFormattedSec) {
@@ -792,6 +796,7 @@ class PlayerHudController {
                 this.videoEl.currentTime = pos * this.videoEl.duration;
                 const fill = document.getElementById('player-progress-fill');
                 if (fill) fill.style.width = `${pos * 100}%`;
+                progressBar.setAttribute('aria-valuenow', String(Math.round(pos * 100)));
             };
             let scrubbing = false;
             progressBar.onpointerdown = (e) => { e.stopPropagation(); scrubbing = true; scrubToX(e.clientX); };

@@ -7,6 +7,7 @@ import {
     getPlaylistItemsCount,
     moveItemInActivePlaylist,
     reRenderList,
+    clearMoveModeBackHandler,
     closePlaylistOptionsPanel,
     navigatePlaylistOptionsBack
 } from '../../gui/pages/playlist-details.js';
@@ -58,7 +59,7 @@ export const spatialNavPlaylistDetails = {
         if (!current) return null;
 
         // 0. Modal Focus Trap: Keep D-pad navigation inside active modals
-        const activeModal = current.closest('#confirmation-modal, #edit-playlist-modal, #item-context-modal');
+        const activeModal = current.closest('#confirmation-modal, #edit-playlist-modal, #item-context-modal, #add-to-other-playlist-modal');
         if (activeModal) {
             const modalFocusables = Array.from(activeModal.querySelectorAll('.focusable')).filter(isElementVisible);
             const idx = modalFocusables.indexOf(current);
@@ -98,10 +99,10 @@ export const spatialNavPlaylistDetails = {
                 if (moveIndex > 0) {
                     moveItemInActivePlaylist(moveIndex, moveIndex - 1);
                     setActiveMoveIndex(moveIndex - 1);
-                    reRenderList();
+                    reRenderList({ skipFocusFirst: true });
                     setTimeout(() => {
                         const newBtn = document.querySelector(`.playlist-action-btn[data-index="${moveIndex - 1}"]`);
-                        if (newBtn) newBtn.focus();
+                        if (newBtn) SpatialNav.setFocus(newBtn);
                     }, 10);
                 }
                 return current;
@@ -110,17 +111,18 @@ export const spatialNavPlaylistDetails = {
                 if (moveIndex < total - 1) {
                     moveItemInActivePlaylist(moveIndex, moveIndex + 1);
                     setActiveMoveIndex(moveIndex + 1);
-                    reRenderList();
+                    reRenderList({ skipFocusFirst: true });
                     setTimeout(() => {
                         const newBtn = document.querySelector(`.playlist-action-btn[data-index="${moveIndex + 1}"]`);
-                        if (newBtn) newBtn.focus();
+                        if (newBtn) SpatialNav.setFocus(newBtn);
                     }, 10);
                 }
                 return current;
             } else if (direction === 'left' || direction === 'right') {
                 // Cancel Move Mode and let spatial nav navigate normally
                 setActiveMoveIndex(null);
-                reRenderList();
+                clearMoveModeBackHandler();
+                reRenderList({ skipFocusFirst: true });
                 return null;
             }
         }
@@ -139,9 +141,11 @@ export const spatialNavPlaylistDetails = {
             return null;
         }
 
-        // 2b. Top Bar: Back Button <-> Options Button
+        // 2b. Top Bar: Back Button <-> Play All <-> Options Button
         if (current.id === 'back-btn') {
             if (direction === 'right') {
+                const playAllBtn = document.getElementById('play-all-btn');
+                if (playAllBtn && isElementVisible(playAllBtn)) return playAllBtn;
                 const optionsBtn = document.getElementById('playlist-options-btn');
                 if (optionsBtn && isElementVisible(optionsBtn)) return optionsBtn;
                 return null;
@@ -157,8 +161,29 @@ export const spatialNavPlaylistDetails = {
             return null;
         }
 
+        if (current.id === 'play-all-btn') {
+            if (direction === 'left') {
+                const backBtn = document.getElementById('back-btn');
+                if (backBtn && isElementVisible(backBtn)) return backBtn;
+                return getActiveSidebarItem();
+            }
+            if (direction === 'right') {
+                const optionsBtn = document.getElementById('playlist-options-btn');
+                if (optionsBtn && isElementVisible(optionsBtn)) return optionsBtn;
+                return null;
+            }
+            if (direction === 'down') {
+                const firstItem = document.querySelector('#playlist-items-container .episode-item.focusable, #playlist-items-container .focusable');
+                if (firstItem && isElementVisible(firstItem)) return firstItem;
+                return null;
+            }
+            return null;
+        }
+
         if (current.id === 'playlist-options-btn') {
             if (direction === 'left') {
+                const playAllBtn = document.getElementById('play-all-btn');
+                if (playAllBtn && isElementVisible(playAllBtn)) return playAllBtn;
                 const backBtn = document.getElementById('back-btn');
                 if (backBtn && isElementVisible(backBtn)) return backBtn;
                 return getActiveSidebarItem();
@@ -270,7 +295,8 @@ export const spatialNavPlaylistDetails = {
         const moveIndex = getActiveMoveIndex();
         if (moveIndex !== null) {
             setActiveMoveIndex(null);
-            reRenderList();
+            clearMoveModeBackHandler();
+            reRenderList({ skipFocusFirst: true });
             return true;
         }
 
@@ -284,13 +310,12 @@ export const spatialNavPlaylistDetails = {
         // 3. Dismiss any open modal
         const openModal = document.querySelector('.modal.is-open, .modal.active, .modal[style*="display: flex"], .modal[style*="display: block"]');
         if (openModal && isElementVisible(openModal)) {
-            const cancelBtn = openModal.querySelector('.btn--secondary, #modal-cancel-btn, #edit-playlist-cancel-btn, #context-cancel-btn');
+            const cancelBtn = openModal.querySelector('#modal-cancel-btn, #edit-playlist-cancel-btn, #context-back-btn, #other-playlist-back-btn, .modal__back-btn, .btn--secondary:not(#edit-playlist-confirm-btn)');
             if (cancelBtn) {
                 cancelBtn.click();
                 return true;
             }
-            openModal.style.display = 'none';
-            openModal.classList.remove('is-open', 'active');
+            openModal.classList.remove('is-open', 'active', 'show');
             return true;
         }
 

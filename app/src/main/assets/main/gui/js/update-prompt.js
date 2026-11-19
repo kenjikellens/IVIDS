@@ -44,7 +44,7 @@ export class UpdatePrompt {
                             <div class="update-branch-title"></div>
                             <div class="update-release-name"></div>
                         </div>
-                        <div id="update-experimental-warning" class="update-experimental-warning" style="display: none;">
+                        <div id="update-experimental-warning" class="update-experimental-warning hidden">
                             <img src="images/error.svg" class="warning-icon" alt="" aria-hidden="true">
                             <div class="warning-content">
                                 <span class="warning-title"></span>
@@ -199,10 +199,8 @@ export class UpdatePrompt {
                 const wText = warningBox.querySelector('.warning-text');
                 if (wTitle) wTitle.textContent = this.translate('settings.branchWarningTitle', 'Experimentele Ontwikkelingsversie');
                 if (wText) wText.textContent = this.translate('settings.branchWarningDesc', "Let op: Dit is een live ontwikkelingsversie rechtstreeks vanaf de 'main' branch. Deze build kan onstabiel zijn of onvoltooide functies bevatten.");
-                warningBox.style.display = 'flex';
-            } else {
-                warningBox.style.display = 'none';
             }
+            warningBox.classList.toggle('hidden', !isBranch);
         }
 
         if (isBranch) {

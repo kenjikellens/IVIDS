@@ -426,6 +426,8 @@
     padding: calc(16px + env(safe-area-inset-top, 24px)) var(--app-content-padding-x) calc(72px + env(safe-area-inset-bottom, 16px));
     width: 100%;
 }
+/* Prevent double padding when .page-container wraps .playlists-container on Playlist Details. */
+#app .page-container:has(> .playlists-container) { padding: 0; }
 #app .page-header { align-items: flex-start; flex-direction: column; gap: 12px; }
 
 /* Mobile Settings and Account surface overrides (specific row/profile layouts live in dedicated sections below). */
@@ -958,12 +960,12 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .form-toggle::before { background: #333333; border-radius: 999px; content: ""; height: 30px; left: 6px; position: absolute; top: 9px; transition: background-color 140ms ease; width: 52px; }
 #app .form-toggle__slider { height: 24px; left: 9px; top: 12px; transition: left 160ms cubic-bezier(0.2, 0, 0, 1), background-color 140ms ease; width: 24px; }
 #app .form-toggle:has(input:checked)::before { background-color: var(--primary-color) !important; }
-#app .form-toggle:has(input:checked) .form-toggle__slider { background-color: #000000 !important; left: 31px; }
+#app .form-toggle:has(input:checked) .form-toggle__slider { background-color: var(--primary-foreground) !important; left: 31px; }
 #app .form-toggle:focus-visible, #app .form-toggle.focused { outline: 2px solid var(--primary-color); outline-offset: 2px; }
 
 /* Tactile hero play button on mobile with visible label and icon. */
-#app .hero-buttons #play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: #111111; display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
-#app .hero-buttons #play-btn .mobile-play-icon { display: inline-block !important; fill: #111111; height: 18px; pointer-events: none; width: 18px; }
+#app .hero-buttons #play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: var(--mobile-ink); display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
+#app .hero-buttons #play-btn .mobile-play-icon { display: inline-block !important; filter: brightness(0); height: 18px; pointer-events: none; width: 18px; }
 #app .hero-buttons #play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
 
 /* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */

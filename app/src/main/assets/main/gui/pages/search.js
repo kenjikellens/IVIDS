@@ -773,7 +773,7 @@ function renderRecentSearches() {
         return `
         <div class="chip chip--recent recent-item focusable universal-onclick" tabindex="0" data-query="${safeQuery}">
             <span class="recent-item-text">${safeQuery}</span>
-            <span class="recent-delete-btn" title="Delete search">&times;</span>
+            <button type="button" class="recent-delete-btn" title="Delete search" aria-label="Delete search">&times;</button>
         </div>
     `;
     }).join('');

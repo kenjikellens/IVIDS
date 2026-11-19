@@ -2,6 +2,7 @@ import { Playlists } from '../../logic/playlists.js';
 import { Router } from '../js/router.js';
 import { Api } from '../../logic/api.js';
 import { SpatialNav } from '../js/spatial-nav.js';
+import { Toast } from '../js/toast.js';
 import { manageModal, loadBackgroundWithLoader } from '../js/utils/ui-helper.js';
 import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 
@@ -9,6 +10,10 @@ import { escapeHtml, isSafeMediaUrl } from '../js/utils/sanitize.js';
 let currentPlaylistId = null;
 
 let activeMoveIndex = null;
+let activeMoveBackHandler = null;
+let activeOptionsBackHandler = null;
+let focusFirstTimerId = null;
+let moveFocusTimerId = null;
 
 /**
  * Returns the current active reordering index, if any.
@@ -46,10 +51,21 @@ export function moveItemInActivePlaylist(fromIndex, toIndex) {
 }
 
 /**
- * Re-renders the playlist details screen content.
+ * Pops any active Move Mode back handler from SpatialNav cleanly.
  */
-export function reRenderList() {
-    render();
+export function clearMoveModeBackHandler() {
+    if (activeMoveBackHandler) {
+        SpatialNav.popBackHandler(activeMoveBackHandler);
+        activeMoveBackHandler = null;
+    }
+}
+
+/**
+ * Re-renders the playlist details screen content.
+ * @param {object} [options] - Render options such as { skipFocusFirst: true }.
+ */
+export function reRenderList(options = {}) {
+    render(options);
 }
 
 /**
@@ -61,6 +77,7 @@ export function reRenderList() {
 export const init = async (params) => {
     console.log('Initializing Playlist Details', params);
     activeMoveIndex = null;
+    clearMoveModeBackHandler();
     if (params && params.id) {
         currentPlaylistId = params.id;
         render();
@@ -73,8 +90,10 @@ export const init = async (params) => {
 /**
  * Re-fetches the current playlist details state, sets ambient backdrop art,
  * renders child item cards, and triggers layout translations.
+ * @param {object} [options] - Render configuration.
+ * @param {boolean} [options.skipFocusFirst=false] - Skip resetting focus to the top element.
  */
-function render() {
+function render({ skipFocusFirst = false } = {}) {
     const playlist = Playlists.getPlaylist(currentPlaylistId);
     if (!playlist) {
         console.error('Playlist not found');
@@ -116,11 +135,17 @@ function render() {
         container.innerHTML = '';
 
         if (playlist.items.length === 0) {
+            const homeLabel = window.i18n ? window.i18n.t('nav.home') : 'Home';
             container.innerHTML = `
                 <div class="empty-state playlists-empty-state">
                     <p data-i18n="playlists.emptyPlaylist" class="empty-state__text">This playlist is empty.</p>
+                    <button id="empty-browse-btn" class="btn btn--primary focusable universal-onclick" type="button" data-i18n="nav.home">${escapeHtml(homeLabel)}</button>
                 </div>
             `;
+            const emptyBrowseBtn = document.getElementById('empty-browse-btn');
+            if (emptyBrowseBtn) {
+                emptyBrowseBtn.onclick = () => Router.loadPage('home');
+            }
         } else {
             const fragment = document.createDocumentFragment();
             playlist.items.forEach((item, index) => {
@@ -137,10 +162,13 @@ function render() {
     const mainView = document.getElementById('main-view');
     if (window.i18n) window.i18n.applyTranslations(mainView || document);
 
-    // Re-init spatial nav after DOM settles
-    setTimeout(() => {
-        SpatialNav.focusFirst();
-    }, 50);
+    if (!skipFocusFirst) {
+        if (focusFirstTimerId) clearTimeout(focusFirstTimerId);
+        focusFirstTimerId = setTimeout(() => {
+            focusFirstTimerId = null;
+            SpatialNav.focusFirst();
+        }, 50);
+    }
 }
 
 /**
@@ -150,33 +178,45 @@ function render() {
  * @param {number} index - Index of the item to move.
  */
 function toggleMoveMode(index) {
+    if (moveFocusTimerId) {
+        clearTimeout(moveFocusTimerId);
+        moveFocusTimerId = null;
+    }
     if (activeMoveIndex === index) {
         activeMoveIndex = null;
-        render();
-        // Shift focus back to the move button of the item
-        setTimeout(() => {
-            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"], .btn--circle[data-index="${index}"]`);
-            if (btn) btn.focus();
+        clearMoveModeBackHandler();
+        render({ skipFocusFirst: true });
+        moveFocusTimerId = setTimeout(() => {
+            moveFocusTimerId = null;
+            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"]`);
+            if (btn) SpatialNav.setFocus(btn);
         }, 10);
     } else {
         activeMoveIndex = index;
-        render();
+        clearMoveModeBackHandler();
+        render({ skipFocusFirst: true });
 
-        const moveBackHandler = () => {
+        activeMoveBackHandler = () => {
             if (activeMoveIndex !== null) {
+                const prevIndex = activeMoveIndex;
                 activeMoveIndex = null;
-                render();
-                SpatialNav.popBackHandler(moveBackHandler);
+                clearMoveModeBackHandler();
+                render({ skipFocusFirst: true });
+                moveFocusTimerId = setTimeout(() => {
+                    moveFocusTimerId = null;
+                    const btn = document.querySelector(`.playlist-action-btn[data-index="${prevIndex}"]`);
+                    if (btn) SpatialNav.setFocus(btn);
+                }, 10);
                 return true;
             }
             return false;
         };
-        SpatialNav.pushBackHandler(moveBackHandler);
+        SpatialNav.pushBackHandler(activeMoveBackHandler);
 
-        // Shift focus back to the move button of the item
-        setTimeout(() => {
-            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"], .btn--circle[data-index="${index}"]`);
-            if (btn) btn.focus();
+        moveFocusTimerId = setTimeout(() => {
+            moveFocusTimerId = null;
+            const btn = document.querySelector(`.playlist-action-btn[data-index="${index}"]`);
+            if (btn) SpatialNav.setFocus(btn);
         }, 10);
     }
 }
@@ -203,19 +243,21 @@ function createItemElement(item, index, total) {
     const itemCard = document.createElement('div');
     itemCard.className = 'card card--row card--interactive episode-item disney-episode-item focusable universal-onclick';
     itemCard.tabIndex = 0;
+    itemCard.setAttribute('role', 'button');
     itemCard.dataset.id = item.id;
     itemCard.dataset.type = item.media_type;
 
     const imageSize = item.backdrop_path ? Api.getRecommendedStillSize() : Api.getRecommendedPosterSize();
     const imageUrl = Api.getImageUrl(item.backdrop_path || item.poster_path, imageSize);
-    const thumbStyle = '';
+    const isMoving = activeMoveIndex === index;
 
     itemCard.innerHTML = `
-        <div class="card__thumb card__thumb--sm"${thumbStyle}></div>
+        <div class="card__thumb card__thumb--sm"></div>
         <div class="card__body">
             <div class="episode-header">
                 <span class="episode-number">${index + 1}</span>
                 <span class="card__title">${escapeHtml(item.title || item.name || '')}</span>
+                ${isMoving ? '<span class="move-mode-hint">↑↓</span>' : ''}
             </div>
         </div>
     `;
@@ -224,6 +266,12 @@ function createItemElement(item, index, total) {
     if (isSafeMediaUrl(imageUrl)) loadBackgroundWithLoader(itemCard.querySelector('.card__thumb'), imageUrl);
     itemCard.onclick = () => {
         Router.loadPage('details', { id: item.id, type: item.media_type });
+    };
+    itemCard.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            Router.loadPage('details', { id: item.id, type: item.media_type });
+        }
     };
 
     const actionsWrapper = document.createElement('div');
@@ -243,7 +291,8 @@ function createItemElement(item, index, total) {
 
     // Circular Move button
     const moveBtn = document.createElement('button');
-    moveBtn.className = 'btn btn--secondary btn--circle-lg playlist-action-btn playlist-action-move focusable';
+    moveBtn.type = 'button';
+    moveBtn.className = 'btn btn--secondary btn--circle-lg playlist-action-btn playlist-action-move focusable universal-onclick';
     if (activeMoveIndex === index) {
         moveBtn.classList.add('is-active', 'active');
     }
@@ -258,7 +307,8 @@ function createItemElement(item, index, total) {
 
     // Circular Delete button
     const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'btn btn--secondary btn--circle-lg playlist-action-delete focusable';
+    deleteBtn.type = 'button';
+    deleteBtn.className = 'btn btn--secondary btn--circle-lg playlist-action-delete focusable universal-onclick';
     deleteBtn.dataset.index = index;
     deleteBtn.title = window.i18n ? window.i18n.t('playlists.deleteItem') : "Remove Item";
     deleteBtn.innerHTML = `<img src="images/trash.svg" class="btn__icon" alt="" aria-hidden="true">`;
@@ -273,6 +323,7 @@ function createItemElement(item, index, total) {
             () => {
                 Playlists.removeFromPlaylist(currentPlaylistId, item.id);
                 render();
+                Toast.show(item.title || item.name || title, { type: 'info', duration: 2000 });
             }
         );
     };
@@ -343,16 +394,26 @@ function openItemContextModal(item, index, total) {
         Router.loadPage('details', { id: item.id, type: item.media_type });
     };
 
+    let currentIndex = index;
+    const syncMoveButtons = () => {
+        moveUpBtn.classList.toggle('hidden', currentIndex <= 0);
+        moveDownBtn.classList.toggle('hidden', currentIndex >= total - 1);
+    };
+
     moveUpBtn.onclick = () => {
-        Playlists.moveItem(currentPlaylistId, index, index - 1);
-        closeModal();
-        render();
+        if (currentIndex <= 0) return;
+        Playlists.moveItem(currentPlaylistId, currentIndex, currentIndex - 1);
+        currentIndex -= 1;
+        syncMoveButtons();
+        render({ skipFocusFirst: true });
     };
 
     moveDownBtn.onclick = () => {
-        Playlists.moveItem(currentPlaylistId, index, index + 1);
-        closeModal();
-        render();
+        if (currentIndex >= total - 1) return;
+        Playlists.moveItem(currentPlaylistId, currentIndex, currentIndex + 1);
+        currentIndex += 1;
+        syncMoveButtons();
+        render({ skipFocusFirst: true });
     };
 
     removeBtn.onclick = () => {
@@ -365,6 +426,7 @@ function openItemContextModal(item, index, total) {
             () => {
                 Playlists.removeFromPlaylist(currentPlaylistId, item.id);
                 render();
+                Toast.show(item.title || item.name || title, { type: 'info', duration: 2000 });
             }
         );
     };
@@ -404,6 +466,7 @@ function openAddToOtherPlaylistModal(item, targetPlaylists) {
         btn.onclick = () => {
             Playlists.addToPlaylist(targetPlaylists[idx].id, item);
             closeModal();
+            Toast.show(targetPlaylists[idx].name || '', { type: 'success', duration: 2000 });
         };
     });
 
@@ -434,15 +497,30 @@ function openEditPlaylistModal(playlist) {
 
     confirmBtn.onclick = () => {
         const val = inputEl.value.trim();
-        if (val) {
-            Playlists.renamePlaylist(currentPlaylistId, val);
-            closeModal();
-            render();
+        if (!val) {
+            const msg = window.i18n ? window.i18n.t('playlists.namePlaceholder') : 'Playlist Name';
+            Toast.show(msg, { type: 'warning', duration: 2200 });
+            inputEl.focus();
+            return;
         }
+        Playlists.renamePlaylist(currentPlaylistId, val);
+        closeModal();
+        render();
+        Toast.show(val, { type: 'success', duration: 2000 });
     };
 
     cancelBtn.onclick = () => {
         closeModal();
+    };
+
+    inputEl.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            confirmBtn.click();
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            closeModal();
+        }
     };
 }
 
@@ -540,9 +618,15 @@ export function navigatePlaylistOptionsBack() {
  */
 export function closePlaylistOptionsPanel(restoreFocus = false) {
     const panel = document.getElementById('playlist-options-panel');
+    const backdrop = document.getElementById('playlist-options-backdrop');
     resetOptionsToRoot();
+    if (activeOptionsBackHandler) {
+        SpatialNav.popBackHandler(activeOptionsBackHandler);
+        activeOptionsBackHandler = null;
+    }
     const optionsBtn = document.getElementById('playlist-options-btn');
     if (panel) panel.classList.add('hidden');
+    if (backdrop) backdrop.classList.add('hidden');
     if (restoreFocus && optionsBtn) {
         SpatialNav.setFocus(optionsBtn);
     }
@@ -561,8 +645,13 @@ function attachListeners(playlist) {
     const editInfoBtn = document.getElementById('edit-info-btn');
     const optionsBtn = document.getElementById('playlist-options-btn');
     const optionsPanel = document.getElementById('playlist-options-panel');
+    const optionsBackdrop = document.getElementById('playlist-options-backdrop');
     const optionsCloseBtn = document.getElementById('playlist-options-close');
     const optionsEmptyEl = document.getElementById('playlist-options-empty');
+
+    if (optionsBackdrop) {
+        optionsBackdrop.onclick = () => closePlaylistOptionsPanel(true);
+    }
 
     if (optionsBtn && optionsPanel) {
         optionsBtn.onclick = (e) => {
@@ -571,6 +660,15 @@ function attachListeners(playlist) {
             if (isHidden) {
                 resetOptionsToRoot();
                 optionsPanel.classList.remove('hidden');
+                if (optionsBackdrop) optionsBackdrop.classList.remove('hidden');
+                if (activeOptionsBackHandler) {
+                    SpatialNav.popBackHandler(activeOptionsBackHandler);
+                }
+                activeOptionsBackHandler = () => {
+                    navigatePlaylistOptionsBack();
+                    return true;
+                };
+                SpatialNav.pushBackHandler(activeOptionsBackHandler);
                 const firstOpt = optionsPanel.querySelector('#playlist-options-list .tv-opt-btn.focusable:not(.hidden)');
                 if (firstOpt) {
                     SpatialNav.setFocus(firstOpt);
@@ -624,12 +722,13 @@ function attachListeners(playlist) {
     if (clearBtn) {
         if (playlist.isSystem) {
             clearBtn.onclick = () => {
+                closePlaylistOptionsPanel(false);
                 const title = window.i18n ? window.i18n.t('playlists.clearHistoryTitle') : 'Clear Recently Watched';
-                const confirmLabel = window.i18n ? window.i18n.t('playlists.clearHistory') : 'Clear History';
-                openOptionsConfirmSubmenu(title, confirmLabel, () => {
-                    closePlaylistOptionsPanel(false);
+                const msg = window.i18n ? window.i18n.t('playlists.clearHistoryMessage') : title;
+                showConfirmationModal(title, msg, () => {
                     Playlists.clearPlaylist(currentPlaylistId);
                     render();
+                    Toast.show(title, { type: 'info', duration: 2000 });
                 });
             };
         }
@@ -638,11 +737,12 @@ function attachListeners(playlist) {
     if (!playlist.isSystem) {
         if (deleteBtn) {
             deleteBtn.onclick = () => {
+                closePlaylistOptionsPanel(false);
                 const title = window.i18n ? window.i18n.t('playlists.deleteConfirmTitle') : 'Delete Playlist';
-                const confirmLabel = window.i18n ? window.i18n.t('playlists.confirmDelete') : 'Delete';
-                openOptionsConfirmSubmenu(title, confirmLabel, () => {
-                    closePlaylistOptionsPanel(false);
+                const msg = window.i18n ? window.i18n.t('playlists.deleteConfirmMessage') : title;
+                showConfirmationModal(title, msg, () => {
                     Playlists.deletePlaylist(currentPlaylistId);
+                    Toast.show(playlist.name || title, { type: 'info', duration: 2000 });
                     Router.loadPage('playlists');
                 });
             };

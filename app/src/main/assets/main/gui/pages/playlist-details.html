@@ -11,9 +11,12 @@
                         <span id="playlist-count" class="tv-epg-info">0 items</span>
                     </div>
                 </div>
-                <button id="playlist-options-btn" class="btn btn--secondary btn--circle-md focusable tv-settings-btn universal-onclick" type="button" title="Options" aria-label="Options">
-                    <img src="images/settings.svg" alt="" class="btn__icon">
-                </button>
+                <div class="playlist-header-actions btn-group">
+                    <button id="play-all-btn" class="btn btn--primary btn--sm focusable universal-onclick hidden" type="button" data-i18n="playlists.playAll">Play All</button>
+                    <button id="playlist-options-btn" class="btn btn--secondary btn--circle-md focusable tv-settings-btn universal-onclick" type="button" title="Options" aria-label="Options">
+                        <img src="images/settings.svg" alt="" class="btn__icon">
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -24,6 +27,8 @@
         </div>
     </div>
 
+    <div id="playlist-options-backdrop" class="options-backdrop hidden" aria-hidden="true"></div>
+
     <!-- Right-Edge Playlist Options Sidebar reusing Player Options classes -->
     <aside id="playlist-options-panel" class="tv-settings-panel hidden">
         <button id="playlist-options-close" type="button" class="tv-settings-header focusable universal-onclick">
@@ -31,25 +36,19 @@
             <span id="playlist-options-title" class="tv-settings-title" data-i18n="playlists.options">Options</span>
         </button>
         <div id="playlist-options-list" class="tv-settings-options">
-            <button id="play-all-btn" type="button" class="tv-opt-btn focusable universal-onclick">
-                <span class="tv-opt-label" data-i18n="playlists.playAll">Play All</span>
-                <span class="tv-opt-chevron">&rsaquo;</span>
-            </button>
             <button id="edit-info-btn" type="button" class="tv-opt-btn focusable universal-onclick">
                 <span class="tv-opt-label" data-i18n="playlists.editInfo">Edit Info</span>
-                <span class="tv-opt-chevron">&rsaquo;</span>
+                <img src="images/arrow.svg" class="tv-opt-chevron" alt="" aria-hidden="true">
             </button>
             <button id="clear-playlist-btn" type="button" class="tv-opt-btn focusable universal-onclick hidden">
                 <span class="tv-opt-label" data-i18n="playlists.clearHistory">Clear History</span>
-                <span class="tv-opt-chevron">&rsaquo;</span>
+                <img src="images/arrow.svg" class="tv-opt-chevron" alt="" aria-hidden="true">
             </button>
             <button id="delete-playlist-btn" type="button" class="tv-opt-btn focusable universal-onclick">
                 <span class="tv-opt-label" data-i18n="playlists.delete">Delete Playlist</span>
-                <span class="tv-opt-chevron">&rsaquo;</span>
+                <img src="images/arrow.svg" class="tv-opt-chevron" alt="" aria-hidden="true">
             </button>
-            <div id="playlist-options-empty" class="tv-opt-btn hidden">
-                <span class="tv-opt-label" data-i18n="playlists.emptyPlaylist">This playlist is empty.</span>
-            </div>
+            <p id="playlist-options-empty" class="tv-opt-empty hidden" data-i18n="playlists.emptyPlaylist">This playlist is empty.</p>
         </div>
         <div id="playlist-options-submenu" class="tv-settings-options hidden"></div>
     </aside>
@@ -60,8 +59,8 @@
             <h2 class="modal__title" data-i18n="playlists.removeItemTitle">Remove Item</h2>
             <p class="modal__desc" data-i18n="playlists.removeItemMessage">Are you sure you want to remove this item from the playlist?</p>
             <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
-                <button id="modal-confirm-btn" class="btn btn--danger focusable universal-onclick" data-i18n="playlists.deleteItem">Remove</button>
-                <button id="modal-cancel-btn" class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="playlists.cancel">Cancel</button>
+                <button id="modal-confirm-btn" type="button" class="btn btn--danger focusable universal-onclick" data-i18n="playlists.deleteItem">Remove</button>
+                <button id="modal-cancel-btn" type="button" class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="playlists.cancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -71,11 +70,11 @@
         <div class="modal__dialog modal__dialog--md">
             <h2 class="modal__title" data-i18n="playlists.editInfo">Edit Info</h2>
             <div class="modal__body">
-                <input id="edit-playlist-name-input" class="form-input focusable" type="text" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder">
+                <input id="edit-playlist-name-input" class="form-input focusable" type="text" maxlength="30" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder">
             </div>
             <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
-                <button id="edit-playlist-confirm-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="common.save">Save</button>
-                <button id="edit-playlist-cancel-btn" class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="playlists.cancel">Cancel</button>
+                <button id="edit-playlist-confirm-btn" type="button" class="btn btn--primary focusable universal-onclick" data-i18n="common.save">Save</button>
+                <button id="edit-playlist-cancel-btn" type="button" class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="playlists.cancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -131,4 +130,3 @@
         </div>
     </div>
 </div>
-</body>

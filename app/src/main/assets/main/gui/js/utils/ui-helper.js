@@ -142,6 +142,19 @@ export function manageModal(modal, focusTarget = null, onClose = null) {
     // Move to body to escape parent stacking context or overflow bounds
     document.body.appendChild(modal);
 
+    // Ensure dialog ARIA semantics on opened modal overlays
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    const modalTitle = modal.querySelector('.modal__title');
+    if (modalTitle) {
+        if (!modalTitle.id && modal.id) {
+            modalTitle.id = `${modal.id}-title`;
+        }
+        if (modalTitle.id) {
+            modal.setAttribute('aria-labelledby', modalTitle.id);
+        }
+    }
+
     // Force inline display settings to override any stylesheet conflicts
     modal.style.setProperty('display', 'flex', 'important');
     modal.style.setProperty('visibility', 'visible', 'important');
@@ -409,8 +422,10 @@ export function applyAccentColorTheme(accentHex, targetDoc = document) {
     const b = parseInt(hex.substring(4, 6), 16);
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     const foreground = luminance > 0.55 ? '#000000' : '#ffffff';
+    const iconFilter = foreground === '#000000' ? 'brightness(0)' : 'brightness(0) invert(1)';
     const rootStyle = targetDoc.documentElement.style;
     rootStyle.setProperty('--primary-color', `#${hex}`);
     rootStyle.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
     rootStyle.setProperty('--primary-foreground', foreground);
+    rootStyle.setProperty('--primary-icon-filter', iconFilter);
 }

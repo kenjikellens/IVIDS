@@ -61,6 +61,11 @@ export class StreamOptionsDrawer {
         this.activeSubmenu = null;
         if (typeof this.onOpen === 'function') this.onOpen();
         this.render();
+        this.panelEl.setAttribute('role', 'dialog');
+        this.panelEl.setAttribute('aria-modal', 'true');
+        if (this.titleEl?.id) {
+            this.panelEl.setAttribute('aria-labelledby', this.titleEl.id);
+        }
         if (this.useModalClass) {
             this.panelEl.classList.add('is-open', 'active');
         } else {

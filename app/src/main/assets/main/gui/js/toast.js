@@ -107,16 +107,11 @@ export class Toast {
 
         const toast = document.createElement('div');
         toast.className = `toast toast-${safeType}`;
+        toast.setAttribute('role', safeType === 'error' ? 'alert' : 'status');
+        toast.setAttribute('aria-live', safeType === 'error' ? 'assertive' : 'polite');
 
-        // Dynamic Icon generation based on type
-        let iconHtml = '';
-        if (safeType === 'error' || safeType === 'warning') {
-            iconHtml = '<div class="toast-icon-mask"></div>';
-        } else if (safeType === 'info') {
-            iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
-        } else {
-            iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        }
+        // Dynamic Icon generation via CSS-masked external SVG assets
+        const iconHtml = '<div class="toast-icon-mask" aria-hidden="true"></div>';
 
         toast.innerHTML = `
             <div class="toast-icon">${iconHtml}</div>
@@ -265,38 +260,14 @@ export class NetworkStatusOverlay {
 
         this.element.className = 'network-status-overlay'; // Reset styles
 
-        const wifiArches = `
-            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-        `;
-
         if (state === 'lost') {
-            this.element.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toast-blink-icon">
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                    ${wifiArches}
-                    <line x1="12" y1="20" x2="12.01" y2="20" stroke-width="4"></line>
-                </svg>
-            `;
+            this.element.innerHTML = '<div class="network-status-icon toast-blink-icon" aria-hidden="true"></div>';
             this.element.classList.add('lost', 'visible');
         } else if (state === 'slow') {
-            this.element.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toast-blink-icon">
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                    ${wifiArches}
-                    <line x1="12" y1="20" x2="12.01" y2="20" stroke-width="4"></line>
-                </svg>
-            `;
+            this.element.innerHTML = '<div class="network-status-icon toast-blink-icon" aria-hidden="true"></div>';
             this.element.classList.add('slow', 'visible');
         } else if (state === 'connected') {
-            this.element.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    ${wifiArches}
-                    <line x1="12" y1="20" x2="12.01" y2="20" stroke-width="4"></line>
-                    <polyline points="17 19 19 21 23 17"></polyline>
-                </svg>
-            `;
+            this.element.innerHTML = '<div class="network-status-icon" aria-hidden="true"></div>';
             this.element.classList.add('connected', 'visible');
 
             this.connectedTimeout = setTimeout(() => {

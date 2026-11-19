@@ -119,6 +119,11 @@ export const Sidebar = {
             const isTarget = link.dataset.route === pageName;
             link.classList.toggle('is-active', isTarget);
             link.classList.toggle('active', isTarget);
+            if (isTarget) {
+                link.setAttribute('aria-current', 'page');
+            } else {
+                link.removeAttribute('aria-current');
+            }
         });
     }
 };
