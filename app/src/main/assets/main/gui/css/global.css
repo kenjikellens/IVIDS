@@ -36,7 +36,7 @@
     --surface-muted: #2e2e2e;
     --surface-soft: #252525;
     --text-color: #f4f4f4;
-    --text-dim: #7a7a7a;
+    --text-dim: #929292;
     --text-muted: #adadad;
 }
 
@@ -1642,12 +1642,12 @@ input, textarea, select { font: inherit; }
 #details-page-loader { min-height: 70vh; z-index: 20; }
 /* Relative positioning for details poster container so poster-loader centers accurately. */
 .details-poster-container { position: relative; }
-.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border-radius: 5px; min-width: 20rem; width: 25vw; }
+.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border-radius: 5px; min-width: 0; width: clamp(180px, 24vw, 340px); }
 .details-poster-container.is-loading.is-widescreen { aspect-ratio: 16 / 9; }
 .details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; }
 .details-info { flex: 1; max-width: 50%; }
-.details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 20rem; width: 25vw; }
-.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 50%, transparent 75%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.16); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); min-width: 20rem; width: 25vw; }
+.details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 0; width: clamp(180px, 24vw, 340px); }
+.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 50%, transparent 75%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.16); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); min-width: 0; width: clamp(180px, 24vw, 340px); }
 .details-poster-container.is-empty.is-widescreen { aspect-ratio: 16 / 9; }
 .details-meta { align-items: center; color: #aaaaaa; display: flex; font-size: 18px; gap: 15px; margin-bottom: 20px; }
 .details-genres { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
@@ -1704,7 +1704,7 @@ input, textarea, select { font: inherit; }
 /* Vertically stacked track animated up and down when playlist items overflow the card height. */
 .playlist-card__items-track { display: flex; flex-direction: column; gap: 3px; will-change: transform; }
 /* Single small media title row inside the right-side playlist preview list. */
-.playlist-card__item-line { color: var(--text-muted); font-size: 12.5px; font-weight: 500; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.playlist-card__item-line { color: var(--text-muted); font-size: 14px; font-weight: 500; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .playlist-card__item-line--empty { opacity: 0.65; }
 .playlist-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
 /* Clean layout and background for Playlist Details matching Settings and Account views. */
@@ -1899,14 +1899,14 @@ input, textarea, select { font: inherit; }
 .details-epg-section { display: flex; flex-direction: column; flex-shrink: 0; gap: 6px; width: 100%; }
 .details-upcoming-section { border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex: 1; flex-direction: column; gap: 2px; min-height: 0; padding-top: 6px; width: 100%; }
 .epg-show-title { color: #ffffff; font-size: 13.5px; font-weight: 600; min-width: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
-.epg-time { color: var(--text-muted); flex-shrink: 0; font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 600; }
+.epg-time { color: var(--text-muted); flex-shrink: 0; font-size: 13.5px; font-variant-numeric: tabular-nums; font-weight: 600; }
 .epg-progress-bar-container { background: rgba(255, 255, 255, 0.12); border-radius: 3px; height: 3px; overflow: hidden; width: 100%; }
 .epg-progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; }
 .upcoming-programs-list { display: flex; flex: 1; flex-direction: column; gap: 2px; min-height: 0; overflow-y: auto; width: 100%; }
 /* Clean borderless upcoming EPG row without card-in-card borders. */
 .upcoming-program-row { align-items: baseline; display: flex; gap: 10px; padding: 2px 0; }
-.upcoming-program-time { color: var(--text-muted); flex-shrink: 0; font-size: 11.5px; font-variant-numeric: tabular-nums; font-weight: 600; }
-.upcoming-program-title { color: rgba(255, 255, 255, 0.8); font-size: 12px; font-weight: 500; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.upcoming-program-time { color: var(--text-muted); flex-shrink: 0; font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 600; }
+.upcoming-program-title { color: rgba(255, 255, 255, 0.8); font-size: 13.5px; font-weight: 500; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .loading-center { align-items: center; background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-lg); color: var(--text-muted); display: flex; font-size: 17px; justify-content: center; min-height: 200px; width: 100%; }
 
 /* Live TV initial placeholder panel. */
@@ -2092,7 +2092,7 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .login-subtitle-text { color: var(--text-muted); font-size: 14px; margin: 0; }
 .login-pin-row { align-items: baseline; display: flex; justify-content: space-between; margin-bottom: 6px; width: 100%; }
 .login-pin-row label { margin-bottom: 0; }
-.login-pin-hint { color: var(--text-dim); font-size: 12px; font-weight: 600; }
+.login-pin-hint { color: var(--text-dim); font-size: 13.5px; font-weight: 600; }
 .login-footer { align-items: center; display: flex; flex-direction: column; gap: 8px; margin-top: 14px; width: 100%; }
 
 /* App update prompt modal and developer version selector. */
@@ -2124,9 +2124,9 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .version-option-list { display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 4px 0 8px; width: 100%; }
 .version-option-list .chip--option { justify-content: flex-start; min-height: 60px; padding: 12px 18px; text-align: left; width: 100%; }
 .version-chip-content { align-items: flex-start; display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; width: 100%; }
-.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
+.version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 13px; font-weight: 600; letter-spacing: 0.03em; }
 .version-chip-title { color: #ffffff; font-size: 14px; font-weight: 700; margin-top: 2px; text-align: left; }
-.version-chip-desc { color: rgba(255, 255, 255, 0.65); font-size: 12px; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+.version-chip-desc { color: rgba(255, 255, 255, 0.65); font-size: 13.5px; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 #version-list-loader { align-items: center; display: flex; inset: auto; justify-content: center; margin: 0 auto; min-height: 220px; position: relative; width: 100%; }
 .version-applied-icon { flex-shrink: 0; height: 28px; margin-left: auto; width: 28px; }
 

@@ -7,6 +7,18 @@
     --poster-width: clamp(110px, 27vw, 128px);
     --app-content-padding-x: 4%;
     --app-content-padding-y: 3%;
+    --background-color: #000000;
+    --background-elevated: #0a0a0a;
+    --mobile-surface: #000000;
+    --mobile-panel: #0a0a0a;
+    --mobile-border: #1a1a1a;
+    --mobile-border-strong: #242424;
+    --mobile-muted: #9a9a9a;
+    --mobile-text: #f1f1f1;
+    --mobile-ink: #111111;
+    --mobile-radius-sm: 10px;
+    --mobile-radius-md: 12px;
+    --mobile-radius-lg: 14px;
 }
 
 /* Block layout reset for mobile viewport. */
@@ -416,32 +428,14 @@
 }
 #app .page-header { align-items: flex-start; flex-direction: column; gap: 12px; }
 
-/* Mobile Settings and Account typography and section card overrides. */
-#app .page-title, #app .settings-header h1, #app .account-header h1 { font-size: clamp(24px, 6vw, 30px); }
-#app .settings-section, #app .account-section { border-radius: var(--radius-md); margin-bottom: 16px; padding: 16px; }
-#app .settings-section .section-title { font-size: 15px; gap: 10px; margin-bottom: 4px; }
-#app .setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: row; gap: 12px; justify-content: space-between; padding: 12px 0; }
-#app .setting-item:first-of-type { border-top: none; }
-#app .setting-info { flex: 1 1 auto; min-width: 0; }
-#app .setting-label { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
-#app .setting-description { color: var(--text-muted); font-size: 12.5px; line-height: 1.35; }
-#app .setting-control { align-items: center; display: flex; flex: 0 0 auto; flex-shrink: 0; gap: 8px; justify-content: flex-end; width: auto; }
+/* Mobile Settings and Account surface overrides (specific row/profile layouts live in dedicated sections below). */
+#app .page-title, #app .account-header h1 { font-size: clamp(24px, 6vw, 30px); }
+#app .account-section { border-radius: var(--radius-md); margin-bottom: 16px; padding: 16px; }
 #app #manual-check-container { align-items: center; text-align: center; }
 #app #manual-check-container .setting-control { justify-content: center; }
-#app .current-value-display { border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; height: 40px; max-width: 150px; overflow: hidden; padding: 0 12px; text-overflow: ellipsis; white-space: nowrap; }
-#app .btn--square, #app .edit-trigger, #app .setting-btn { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
+#app .btn--square, #app .setting-btn { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
 #app .setting-edit-icon { height: 18px; width: 18px; }
-#app .form-toggle { border-radius: 999px; cursor: pointer; flex-shrink: 0; height: 32px; width: 58px; }
-#app .form-toggle__slider { height: 22px; left: 2px; top: 2px; transition: left 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease; width: 22px; }
-#app .form-toggle:has(input:checked) .form-toggle__slider { left: 28px; }
 #app .color-preview-circle, #app #current-color-display { border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 50%; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); flex-shrink: 0; height: 32px; width: 32px; }
-
-/* Account profile layout on mobile. */
-#app .profile-display { align-items: center; flex-direction: column; gap: 20px; text-align: center; }
-#app .profile-avatar.large { flex: 0 0 100px; font-size: 40px; height: 100px; width: 100px; }
-#app .profile-name-text { font-size: 24px; margin-bottom: 12px; text-align: center; }
-#app .profile-actions { justify-content: center; width: 100%; }
-#app .login-panel { padding: 24px 20px; }
 
 /* Full-screen mobile sub-page backdrop and container for settings modals */
 html body .modal, body .modal, .modal {
@@ -617,40 +611,42 @@ html body #version-selector-modal .modal__footer, body #version-selector-modal .
 
 /* Provider item container inside mobile sub-page */
 /* Clean flat mobile reorder rows matching Settings list aesthetic instead of stacked grey boxes. */
-body .provider-item,
-.provider-item {
+body .modal .provider-item,
+body .provider-item {
     align-items: center;
-    background: transparent !important;
-    border: 0 !important;
-    border-bottom: 1px solid #1a1a1a !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--mobile-border);
+    border-radius: 0;
+    box-shadow: none;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 8px 10px;
     justify-content: space-between;
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
     min-height: 56px;
-    padding: 12px 4px !important;
+    padding: 12px 4px;
     width: 100%;
 }
-body .provider-item:first-child,
-.provider-item:first-child {
-    border-top: 1px solid #1a1a1a !important;
+body .modal .provider-item:first-child,
+body .provider-item:first-child {
+    border-top: 1px solid var(--mobile-border);
 }
 /* Playback Order rows (no URL input) support direct full-row touch drag. */
-body .provider-item:not(:has(input)),
-.provider-item:not(:has(input)) {
+body .modal .provider-item:not(:has(input)),
+body .provider-item:not(:has(input)) {
     flex-wrap: nowrap;
     touch-action: none;
 }
-body .provider-item.moving, body .provider-item.dragging,
-.provider-item.moving, .provider-item.dragging {
-    background: #141414 !important;
-    border-bottom: 1px solid rgba(var(--primary-rgb), 0.5) !important;
-    border-top: 1px solid rgba(var(--primary-rgb), 0.5) !important;
+body .modal .provider-item.moving, body .modal .provider-item.moving:hover, body .modal .provider-item.moving:focus, body .modal .provider-item.moving.focused,
+body .modal .provider-item.dragging {
+    background: #141414;
+    border: 0;
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.5);
+    border-top: 1px solid rgba(var(--primary-rgb), 0.5);
+    box-shadow: none;
 }
 /* Provider item header container placed inline left of actions. */
 .provider-header {
@@ -665,7 +661,7 @@ body .provider-item.moving, body .provider-item.dragging,
 }
 /* Provider item title and server label */
 .provider-title {
-    color: #f1f1f1;
+    color: var(--mobile-text);
     font-size: 15.5px;
     font-weight: 500;
     letter-spacing: -0.01em;
@@ -686,8 +682,8 @@ body .provider-item.moving, body .provider-item.dragging,
 /* URL input placed cleanly underneath header+actions on provider/M3U rows. */
 body .provider-item .form-input {
     background: #0d0d0d;
-    border: 1px solid #242424;
-    border-radius: 10px;
+    border: 1px solid var(--mobile-border-strong);
+    border-radius: var(--mobile-radius-sm);
     flex: 1 0 100%;
     font-size: 14px;
     height: 44px;
@@ -696,29 +692,28 @@ body .provider-item .form-input {
     padding: 0 12px;
 }
 /* Borderless 6-dot drag grip replacing the square 2-arrow box button on mobile touchscreens. */
-html body .provider-actions .provider-move-btn,
-body .provider-actions .provider-move-btn,
-.provider-actions .provider-move-btn {
+body .modal .provider-actions .provider-move-btn,
+body .provider-actions .provider-move-btn {
     align-items: center;
-    background: transparent !important;
-    border: 0 !important;
-    border-radius: 50% !important;
-    box-shadow: none !important;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: none;
     cursor: grab;
     display: inline-flex;
-    height: 44px !important;
+    height: 44px;
     justify-content: center;
-    min-height: 44px !important;
-    min-width: 44px !important;
-    padding: 0 !important;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
     touch-action: none;
-    width: 44px !important;
+    width: 44px;
 }
 .provider-move-btn .setting-edit-icon {
     display: none !important;
 }
 .provider-move-btn::after {
-    background-color: #888888;
+    background-color: var(--mobile-muted);
     content: "";
     display: inline-block;
     height: 22px;
@@ -732,16 +727,17 @@ body .provider-actions .provider-move-btn,
     background-color: #ffffff;
 }
 /* Clean borderless trash icon button next to custom provider rows on mobile. */
+body .modal .provider-actions .provider-delete-btn,
 body .provider-actions .provider-delete-btn {
-    background: transparent !important;
-    border: 0 !important;
-    border-radius: 50% !important;
-    box-shadow: none !important;
-    height: 44px !important;
-    min-height: 44px !important;
-    min-width: 44px !important;
-    padding: 0 !important;
-    width: 44px !important;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: none;
+    height: 44px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    width: 44px;
 }
 
 /* Responsive full-width language stepper for mobile sub-page */
@@ -806,14 +802,6 @@ body .provider-actions .provider-delete-btn {
     width: 18px;
 }
 
-/* Mobile active chip styling replacing solid neon green with dark-glass glow */
-.chip.is-selected, .chip.is-active, .chip.selected, .chip.active {
-    background: rgba(var(--primary-rgb), 0.2);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.25);
-    color: #ffffff;
-    font-weight: 800;
-}
 .chip--filter.is-selected::before, .chip--filter.selected::before {
     color: var(--primary-color);
 }
@@ -823,13 +811,6 @@ body .provider-actions .provider-delete-btn {
 .setting-stepper-icon, .setting-edit-icon {
     filter: brightness(0) invert(1);
 }
-
-/* Mobile button touch targets and geometry. */
-#app .btn { border-radius: var(--radius-md); font-size: 14px; gap: 8px; min-height: 44px; padding: 10px 20px; }
-#app .btn--sm, #app .btn-small { font-size: 13px; min-height: 36px; padding: 6px 14px; }
-#app .btn--circle, #app .btn-circle { border-radius: 50%; height: 38px; min-height: 38px; min-width: 38px; padding: 0; width: 38px; }
-#app .btn--circle-lg { border-radius: 50%; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
-#app .btn--circle-xl { border-radius: 50%; height: 56px; min-height: 56px; min-width: 56px; padding: 0; width: 56px; }
 
 /* Tactile active touch feedback for interactive mobile elements without movement or transforms. */
 #app .btn:active,
@@ -855,7 +836,7 @@ body .provider-actions .provider-delete-btn {
 #app .details-actions .btn, #app .profile-actions .btn, #app .livetv-top-bar .search-box, .form-input { width: 100%; }
 
 /* Comfortable mobile touch geometry for shared buttons and controls. */
-#app .btn { -webkit-tap-highlight-color: transparent; border-radius: 14px; box-shadow: none; font-size: 15px; font-weight: 650; min-height: 48px; padding: 12px 18px; transition: background-color 0.14s ease, border-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); user-select: none; }
+#app .btn { -webkit-tap-highlight-color: transparent; border-radius: var(--mobile-radius-lg); box-shadow: none; font-size: 15px; font-weight: 650; gap: 8px; min-height: 48px; padding: 12px 18px; transition: background-color 0.14s ease, border-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); user-select: none; }
 #app .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: var(--primary-foreground); }
 #app .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
 #app .btn--ghost { background: transparent; border-color: transparent; box-shadow: none; color: rgba(255, 255, 255, 0.82); }
@@ -949,14 +930,12 @@ body .language-card .color-dot { border: 2px solid rgba(255, 255, 255, 0.3); bor
     }
 }
 
-/* Pure OLED black mobile surface tokens matching deep mobile canvas; accent colors stay in user-selected swatches. */
-:root { --background-color: #000000; --background-elevated: #0a0a0a; --mobile-surface: #000000; --mobile-panel: #0a0a0a; --mobile-border: #222222; --mobile-muted: #a1a1a1; --mobile-ink: #111111; }
 /* Mobile viewport canvas - Sets true deep dark background across html, body, and app root. */
 html, body, #app { background-color: var(--mobile-surface); }
 /* Mobile scrollable content viewport - Preserves vertical pull containment. */
 #main-view { height: 100dvh; overscroll-behavior-y: contain; }
 /* Mobile bottom navigation rail - Deep OLED dark bar matching the mobile page canvas. */
-#app .nav-rail, #app .navbar { background: #000000; border-top-color: #1c1c1c; display: flex; gap: 0; justify-content: space-around; padding-left: calc(6px + env(safe-area-inset-left, 0px)); padding-right: calc(6px + env(safe-area-inset-right, 0px)); }
+#app .nav-rail, #app .navbar { background: var(--mobile-surface); border-top-color: var(--mobile-border); display: flex; gap: 0; justify-content: space-around; padding-left: calc(6px + env(safe-area-inset-left, 0px)); padding-right: calc(6px + env(safe-area-inset-right, 0px)); }
 #app #sidebar-container .nav-rail #nav-links > .nav-item { -webkit-tap-highlight-color: transparent; background: transparent; border: 2px solid transparent; border-radius: 10px; box-shadow: none; box-sizing: border-box; flex: initial; height: 48px; margin: 0; max-width: none; min-height: 48px; min-width: 0; outline: none; padding: 0; touch-action: manipulation; transition: background-color 140ms ease, opacity 140ms ease, transform 160ms cubic-bezier(0.2, 0, 0, 1); width: 100%; }
 /* YouTube-style bottom navigation without grey background boxes. */
 #app #sidebar-container .nav-rail .nav-item.active, #app #sidebar-container .nav-rail .nav-item.is-active { background: transparent; border-color: transparent; }
@@ -990,13 +969,13 @@ html, body, #app { background-color: var(--mobile-surface); }
 /* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */
 #app .settings-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
 #app .settings-header { margin-bottom: 12px; padding: 12px 18px 4px; text-align: left; }
-#app .settings-header h1 { color: #f1f1f1; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 2px; }
+#app .settings-header h1 { color: var(--mobile-text); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 2px; }
 #app .settings-header p { display: none; }
 
 /* Mobile settings grouped sections and category titles matching YouTube settings. */
 #app .settings-section { background: transparent; border: 0; border-radius: 0; box-shadow: none; margin: 0 0 16px; padding: 0; }
 #app .settings-section .section-title,
-body #advanced-settings-modal .section-title { border: 0; color: #888888; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
+body #advanced-settings-modal .section-title { border: 0; color: var(--mobile-muted); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin: 0; padding: 16px 18px 8px; text-transform: uppercase; }
 #app .settings-section .section-title__icon,
 body #advanced-settings-modal .section-title__icon { display: none; }
 body #advanced-settings-modal .modal__dialog,
