@@ -299,6 +299,11 @@ export async function init(params) {
                 }
             };
 
+            const countryBackBtn = document.getElementById('country-back-btn');
+            const countryCancelBtn = document.getElementById('country-cancel-btn');
+            if (countryBackBtn) countryBackBtn.onclick = closeCountryModal;
+            if (countryCancelBtn) countryCancelBtn.onclick = closeCountryModal;
+
             countryModal.onclick = (e) => {
                 const item = e.target.closest('.chip--option, .select-item');
                 if (item) {
@@ -467,7 +472,7 @@ async function renderAllFilters(filtersObj) {
             certContainer.querySelectorAll('input').forEach(radio => {
                 radio.onchange = () => {
                     filtersObj.certification = radio.value;
-                    document.querySelectorAll('#cert-filters .filter-chip').forEach(l => l.classList.remove('selected'));
+                    document.querySelectorAll('#cert-filters .chip--filter').forEach(l => l.classList.remove('selected', 'is-selected'));
                     radio.closest('.chip--filter, .filter-chip').classList.add('selected');
                 };
             });
@@ -771,29 +776,32 @@ function renderRecentSearches() {
     list.innerHTML = recent.map(q => {
         const safeQuery = escapeHtml(q);
         return `
-        <div class="chip chip--recent recent-item focusable universal-onclick" tabindex="0" data-query="${safeQuery}">
-            <span class="recent-item-text">${safeQuery}</span>
-            <button type="button" class="recent-delete-btn" title="Delete search" aria-label="Delete search">&times;</button>
+        <div class="chip chip--recent recent-item-group">
+            <button type="button" class="recent-item focusable universal-onclick" data-query="${safeQuery}">
+                <span class="recent-item-text">${safeQuery}</span>
+            </button>
+            <button type="button" class="recent-delete-btn focusable universal-onclick" data-query="${safeQuery}" title="Delete search" aria-label="Delete search ${safeQuery}">&times;</button>
         </div>
     `;
     }).join('');
 
     list.querySelectorAll('.recent-item').forEach(item => {
-        item.onclick = (e) => {
+        item.onclick = () => {
             const query = item.dataset.query;
-            const isDelete = e.target.closest('.recent-delete-btn') !== null;
-            if (isDelete) {
-                e.stopPropagation();
-                removeRecentSearch(query);
-            } else {
-                const input = document.getElementById('search-input');
-                if (input) {
-                    input.value = query;
-                    const clearBtn = document.getElementById('search-clear-btn');
-                    if (clearBtn) clearBtn.classList.toggle('hidden', query.trim().length === 0);
-                    performSearch(query, true);
-                }
+            const input = document.getElementById('search-input');
+            if (input) {
+                input.value = query;
+                const clearBtn = document.getElementById('search-clear-btn');
+                if (clearBtn) clearBtn.classList.toggle('hidden', query.trim().length === 0);
+                performSearch(query, true);
             }
+        };
+    });
+
+    list.querySelectorAll('.recent-delete-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            removeRecentSearch(btn.dataset.query);
         };
     });
 }

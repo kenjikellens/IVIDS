@@ -166,14 +166,16 @@
     "debridEnvReady": "Kopia .env",
     "debridNotConfigured": "Nie ustawiono",
     "tierDirectHttp": "Bezpośredni HTTP (Darmowy)",
-    "directHttpAddon": "URL darmowego dodatku HTTP"
+    "directHttpAddon": "URL darmowego dodatku HTTP",
+    "urlRequired": "Wprowadź prawidłowy adres URL przed zapisaniem."
   },
   "common": {
     "close": "Zamknij",
     "apply": "Zastosuj",
     "cancel": "Anuluj",
     "create": "Tworzyć",
-    "save": "Ratować"
+    "save": "Ratować",
+    "options": "Opcje"
   },
   "home": {
     "welcome": "Witaj w IVIDS",

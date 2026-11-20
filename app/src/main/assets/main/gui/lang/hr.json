@@ -160,14 +160,16 @@
     "debridEnvReady": ".env kopija",
     "debridNotConfigured": "Nije postavljeno",
     "tierDirectHttp": "Izravni HTTP (Besplatno)",
-    "directHttpAddon": "URL besplatnog HTTP dodatka"
+    "directHttpAddon": "URL besplatnog HTTP dodatka",
+    "urlRequired": "Unesite valjani URL prije spremanja."
   },
   "common": {
     "close": "Close",
     "apply": "Apply",
     "cancel": "Cancel",
     "create": "Create",
-    "save": "Save"
+    "save": "Save",
+    "options": "Opcije"
   },
   "home": {
     "welcome": "Welcome to IVIDS",

@@ -166,14 +166,16 @@
     "debridEnvReady": "Резерв .env",
     "debridNotConfigured": "Не задано",
     "tierDirectHttp": "Прямой HTTP (Бесплатно)",
-    "directHttpAddon": "URL бесплатного HTTP-аддона"
+    "directHttpAddon": "URL бесплатного HTTP-аддона",
+    "urlRequired": "Пожалуйста, введите действительный URL-адрес перед сохранением."
   },
   "common": {
     "close": "Закрыть",
     "apply": "Применить",
     "cancel": "Отмена",
     "create": "Создавать",
-    "save": "Сохранять"
+    "save": "Сохранять",
+    "options": "Параметры"
   },
   "home": {
     "welcome": "Добро пожаловать в IVIDS",

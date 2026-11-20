@@ -166,14 +166,16 @@
     "debridEnvReady": "Dự phòng .env",
     "debridNotConfigured": "Chưa đặt",
     "tierDirectHttp": "HTTP trực tiếp (Miễn phí)",
-    "directHttpAddon": "URL tiện ích HTTP miễn phí"
+    "directHttpAddon": "URL tiện ích HTTP miễn phí",
+    "urlRequired": "Vui lòng nhập URL hợp lệ trước khi lưu."
   },
   "common": {
     "close": "Đóng",
     "apply": "Áp dụng",
     "cancel": "Hủy",
     "create": "Tạo nên",
-    "save": "Cứu"
+    "save": "Cứu",
+    "options": "Tùy chọn"
   },
   "home": {
     "welcome": "Chào mừng bạn đến với IVIDS",

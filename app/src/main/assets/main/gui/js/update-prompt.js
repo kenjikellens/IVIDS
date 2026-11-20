@@ -32,7 +32,7 @@ export class UpdatePrompt {
                         <div class="update-icon-container">
                             <div class="update-icon-mask"></div>
                         </div>
-                        <h2 class="modal__title update-title"></h2>
+                        <h2 class="modal__title"></h2>
                     </div>
                     <div class="modal__body modal__body--scroll update-info-block">
                         <div class="version-badge-container">
@@ -53,7 +53,7 @@ export class UpdatePrompt {
                         </div>
                         <div class="update-more-info-container" id="update-more-info-container">
                             <button id="update-more-info-btn" class="btn btn--secondary btn--block focusable universal-onclick" type="button">
-                                <span>Meer informatie</span>
+                                <span data-i18n="settings.moreInfo">${this.translate('settings.moreInfo', 'More Information')}</span>
                             </button>
                         </div>
                     </div>
@@ -76,11 +76,11 @@ export class UpdatePrompt {
             this.changelogModalElement = document.createElement('div');
             this.changelogModalElement.id = 'update-changelog-modal';
             this.changelogModalElement.className = 'modal update-changelog-modal-overlay';
-            this.changelogModalElement.style.cssText = 'display: none; z-index: 100005;';
+            this.changelogModalElement.hidden = true;
             this.changelogModalElement.innerHTML = `
                 <div class="modal__dialog modal__dialog--lg">
                     <button id="update-changelog-back-btn" class="modal__back-btn btn btn--ghost btn--circle focusable universal-onclick" aria-label="Back" type="button">
-                        <img src="images/back.svg" class="modal-back-icon" alt="Back">
+                        <img src="images/back.svg" class="btn__icon" alt="Back">
                     </button>
                     <h2 id="update-changelog-modal-title" class="modal__title"></h2>
                     <div class="modal__body modal__body--scroll update-changelog-scroll">
@@ -168,7 +168,7 @@ export class UpdatePrompt {
 
         const currentVer = await this.getLocalVersion();
 
-        const titleEl = this.modalElement.querySelector('.update-title');
+        const titleEl = this.modalElement.querySelector('.modal__title');
         const branchTitleEl = this.modalElement.querySelector('.update-branch-title');
         const releaseNameEl = this.modalElement.querySelector('.update-release-name');
         const currentBadgeEl = this.modalElement.querySelector('.version-badge.current');
@@ -197,8 +197,8 @@ export class UpdatePrompt {
             if (isBranch) {
                 const wTitle = warningBox.querySelector('.warning-title');
                 const wText = warningBox.querySelector('.warning-text');
-                if (wTitle) wTitle.textContent = this.translate('settings.branchWarningTitle', 'Experimentele Ontwikkelingsversie');
-                if (wText) wText.textContent = this.translate('settings.branchWarningDesc', "Let op: Dit is een live ontwikkelingsversie rechtstreeks vanaf de 'main' branch. Deze build kan onstabiel zijn of onvoltooide functies bevatten.");
+                if (wTitle) wTitle.textContent = this.translate('settings.branchWarningTitle', 'Experimental Development Build');
+                if (wText) wText.textContent = this.translate('settings.branchWarningDesc', "Warning: This is a live development build directly from the 'main' branch. It may be unstable or contain unfinished features.");
             }
             warningBox.classList.toggle('hidden', !isBranch);
         }
@@ -206,25 +206,25 @@ export class UpdatePrompt {
         if (isBranch) {
             titleEl.textContent = this.translate('settings.branchBuild', 'Live Branch Build');
         } else if (isManual) {
-            titleEl.textContent = `${this.translate('settings.installVersionTitle', 'Versie')} ${version} ${this.translate('common.install', 'installeren')}`;
+            titleEl.textContent = `${this.translate('settings.installVersionTitle', 'Install Version')} ${version}`;
         } else {
             titleEl.textContent = this.translate('settings.updateNotification', 'New Version Available!');
         }
         if (branchTitleEl) {
             branchTitleEl.textContent = this.translate('settings.branch', 'Branch');
         }
-        dismissBtn.textContent = isManual ? this.translate('common.cancel', 'Annuleren') : this.translate('settings.later', 'Later');
-        confirmBtn.textContent = isManual ? this.translate('settings.installNow', 'Nu installeren') : this.translate('settings.updateNow', 'Install Now');
+        dismissBtn.textContent = isManual ? this.translate('common.cancel', 'Cancel') : this.translate('settings.later', 'Later');
+        confirmBtn.textContent = isManual ? this.translate('settings.installNow', 'Install Now') : this.translate('settings.updateNow', 'Install Now');
 
         currentBadgeEl.textContent = currentVer;
         remoteBadgeEl.textContent = release.tag_name;
         releaseNameEl.textContent = release.name || 'Prerelease Update';
 
-        // Bind 'Meer informatie' button to open dedicated Markdown changelog modal
+        // Bind 'More Information' button to open dedicated Markdown changelog modal
         const moreInfoBtn = document.getElementById('update-more-info-btn');
         if (moreInfoBtn) {
             const moreInfoSpan = moreInfoBtn.querySelector('span');
-            if (moreInfoSpan) moreInfoSpan.textContent = this.translate('settings.moreInfo', 'Meer informatie');
+            if (moreInfoSpan) moreInfoSpan.textContent = this.translate('settings.moreInfo', 'More Information');
             moreInfoBtn.onclick = () => {
                 this.openChangelog(release, parsedBody);
             };
@@ -267,6 +267,7 @@ export class UpdatePrompt {
         if (!this.changelogModalElement) return;
 
         this.modalElement.style.display = 'none';
+        this.changelogModalElement.hidden = false;
         this.changelogModalElement.style.display = 'flex';
         this.changelogModalElement.classList.add('visible', 'is-open');
 
@@ -282,7 +283,7 @@ export class UpdatePrompt {
             contentEl.innerHTML = parsedBody;
         }
         if (closeBtn) {
-            closeBtn.textContent = this.translate('common.close', 'Sluiten');
+            closeBtn.textContent = this.translate('common.close', 'Close');
             closeBtn.onclick = () => this.closeChangelog();
         }
         if (backBtn) {
@@ -302,6 +303,7 @@ export class UpdatePrompt {
 
         this.changelogModalElement.classList.remove('visible', 'is-open');
         this.changelogModalElement.style.display = 'none';
+        this.changelogModalElement.hidden = true;
 
         this.modalElement.style.display = 'flex';
         this.modalElement.classList.add('visible', 'is-open');
@@ -340,7 +342,7 @@ export class UpdatePrompt {
         const progressContainer = document.getElementById('update-progress-container');
         const progressBar = document.getElementById('update-progress-bar');
         const progressText = document.getElementById('update-progress-text');
-        const titleEl = this.modalElement.querySelector('.update-title');
+        const titleEl = this.modalElement.querySelector('.modal__title');
         const moreInfoContainer = document.getElementById('update-more-info-container');
         if (moreInfoContainer) moreInfoContainer.style.display = 'none';
 
@@ -585,6 +587,7 @@ export class UpdatePrompt {
         if (this.changelogModalElement) {
             this.changelogModalElement.classList.remove('visible', 'is-open');
             this.changelogModalElement.style.display = 'none';
+            this.changelogModalElement.hidden = true;
         }
 
         if (!this.modalElement) return;

@@ -45,7 +45,7 @@ function findNextInModal(current, direction, modal) {
 
     // 2. Accent Color Modal (Grid of color chips + footer buttons)
     if (modal.id === 'color-modal') {
-        const chips = Array.from(modal.querySelectorAll('.chip--color.focusable')).filter(isElementVisible);
+        const chips = Array.from(modal.querySelectorAll('.language-card.focusable')).filter(isElementVisible);
         const applyBtn = modal.querySelector('.modal__footer .btn--primary');
         const cancelBtn = modal.querySelector('.modal__footer .btn--secondary');
         const chipIdx = chips.indexOf(current);
@@ -72,7 +72,7 @@ function findNextInModal(current, direction, modal) {
 
         if (current === applyBtn) {
             if (direction === 'up') {
-                const activeChip = modal.querySelector('.chip--color.is-active, .chip--color.active') || chips[chips.length - 1];
+                const activeChip = modal.querySelector('.language-card.is-active, .language-card.active') || chips[chips.length - 1];
                 return activeChip || chips[0];
             }
             if (direction === 'down') return cancelBtn;
@@ -87,7 +87,7 @@ function findNextInModal(current, direction, modal) {
 
     // 3. Update Mode Modal (2-column chip grid + footer buttons)
     if (modal.id === 'update-mode-modal') {
-        const chips = Array.from(modal.querySelectorAll('.chip--option.focusable')).filter(isElementVisible);
+        const chips = Array.from(modal.querySelectorAll('.language-card.focusable')).filter(isElementVisible);
         const applyBtn = modal.querySelector('.modal__footer .btn--primary');
         const cancelBtn = modal.querySelector('.modal__footer .btn--secondary');
         const chipIdx = chips.indexOf(current);
@@ -111,7 +111,7 @@ function findNextInModal(current, direction, modal) {
 
         if (current === applyBtn) {
             if (direction === 'up') {
-                const activeChip = modal.querySelector('.chip--option.is-active, .chip--option.active') || chips[chips.length - 1];
+                const activeChip = modal.querySelector('.language-card.is-active, .language-card.active') || chips[chips.length - 1];
                 return activeChip || chips[0];
             }
             if (direction === 'down') return cancelBtn;
@@ -126,7 +126,7 @@ function findNextInModal(current, direction, modal) {
 
     // 4. Version Selector Modal (Vertical list of release build chips + cancel button)
     if (modal.id === 'version-selector-modal') {
-        const cards = Array.from(modal.querySelectorAll('#version-options .chip--option.focusable')).filter(isElementVisible);
+        const cards = Array.from(modal.querySelectorAll('#version-options .language-card.focusable')).filter(isElementVisible);
         const cancelBtn = modal.querySelector('.modal__footer .btn--secondary');
         const cardIdx = cards.indexOf(current);
 

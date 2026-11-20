@@ -166,14 +166,16 @@
     "debridEnvReady": ".env-backup",
     "debridNotConfigured": "Ikke angivet",
     "tierDirectHttp": "Direkte HTTP (Gratis)",
-    "directHttpAddon": "Gratis HTTP addon-URL"
+    "directHttpAddon": "Gratis HTTP addon-URL",
+    "urlRequired": "Indtast venligst en gyldig URL før du gemmer."
   },
   "common": {
     "close": "Luk",
     "apply": "Anvend",
     "cancel": "Annuller",
     "create": "Skabe",
-    "save": "Spare"
+    "save": "Spare",
+    "options": "Indstillinger"
   },
   "home": {
     "welcome": "Velkommen til IVIDS",

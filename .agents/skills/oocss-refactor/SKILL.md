@@ -1,213 +1,123 @@
 ---
 name: oocss-refactor
-description: Standardized step-by-step protocol for refactoring CSS components to Object-Oriented CSS (OOCSS), updating HTML/JS templates in synchronized batches, and eliminating redundant rules to optimize performance.
+description: Step-by-step protocol for merging duplicate page-specific CSS classes and #id rules into shared OOCSS base classes + BEM modifiers, migrating every HTML/JS reference, and deleting the old rules from both global.css (landscape/TV) and global-mobile.css (mobile) without ever merging the two viewport skins.
 ---
 
-# Object-Oriented CSS (OOCSS) Step-by-Step Refactoring Workflow
+# OOCSS Refactor Protocol (IVIDS)
 
-This workflow defines the standardized, repeatable protocol for systematically refactoring the styling and markup of the IVIDS application into **Object-Oriented CSS (OOCSS)**.
+This skill executes the **CSS Class Reuse Contract** in [AGENTS.md §4](file:///c:/Users/kenji/AndroidStudioProjects/IVIDS/.agents/AGENTS.md). Read §4 first; this skill is the procedure, §4 is the law.
 
-Refactoring MUST be executed **step-by-step, one component family per batch** (e.g. Buttons $\to$ Posters/Cards $\to$ Modals $\to$ Form Controls $\to$ Navigation $\to$ Rails/Grids). Each batch includes simultaneously refactoring the CSS rules, updating **all** related HTML templates and dynamic JavaScript renderers, and purging obsolete container overrides.
-
----
-
-## 🎯 Core Goals & Benefits
-
-1. **Drastic Code Reduction**: Eliminates dozens of duplicated container overrides (e.g., `.modal-footer .btn`, `.error-actions .btn`) by using reusable modifier classes and composable container objects.
-2. **Accelerated Rendering Performance**: Replaces deep descendant selectors ($O(depth)$ tree traversal) with direct single-class matching ($O(1)$ lookup in Chromium), delivering faster Style Recalculation on Android TV and Tizen.
-3. **Strict OOP Modularity**: Clear separation of **Structure from Skin** and **Container from Content**.
-4. **Preserved TV Standards**: Strict compliance with `.focusable` spatial navigation, standard thick white focus borders, and prohibition of hover/focus transforms (`scale`, `translateX`, `translateY`).
+**Goal**: every component that looks and behaves the same uses the SAME classes in HTML and JS, is styled ONCE per viewport file, and all old page-specific classes / `#id` rules are deleted.
 
 ---
 
-## 🏗️ The OOP Architecture Contract
+## 1. Ground Rules
 
-Every component family is structured into 5 distinct OOP layers:
+| Rule | Meaning |
+| :--- | :--- |
+| **Same component = same class** | Hero play, Details play and Login submit are all `btn btn--primary` with `btn__icon` + `btn__label`. Never `.details-play-btn` or `#play-btn {}`. |
+| **Name by WHAT, never WHERE** | `.empty-state`, not `.playlists-empty-state`; `.badge`, not `.update-version-badge`; `.page-title`, not `.settings-header h1`. |
+| **IDs are JS hooks only** | No `#id { ... }` styling rules. |
+| **Two files, two skins, one class name** | `global.css` = Landscape / Desktop / TV skin. `global-mobile.css` = Mobile portrait skin. Same class names, intentionally different looks (e.g. `.btn--primary` translucent green on TV, solid white on mobile). NEVER merge, copy or "unify" skins across the two files. |
+| **Unify within a file** | Inside one file, components that share a look share ONE grouped base selector; modifiers hold only differences. |
+| **No context overrides** | No `.modal__footer .btn`, `.login-panel .form-input`. Use a modifier (`.btn--block`) or a container object (`.btn-group--fill`). |
+| **Icons follow text** | Icons are masks with `background-color: currentColor`; states change `color` on the component only. |
+| **TV standards** | Every interactive element keeps `focusable`; focus = white border `#ffffff`; no `scale`/`translate` on hover/focus; no inline styles; no `!important` unless overriding external player markup. |
 
-| Layer | OOP Role | Naming Convention | Examples (Buttons) |
+---
+
+## 2. The 5 OOCSS Layers
+
+| Layer | Holds | Naming | Example |
 | :--- | :--- | :--- | :--- |
-| **1. Base Class** | Abstract Structural Superclass (Display, geometry, alignment, typography reset, transitions). No colors or themes. | `.<component>` | `.btn`, `.card`, `.modal` |
-| **2. Structural Subclasses** | Size, shape, and layout specializations. | `.<component>--<size>`, `.<component>--<shape>` | `.btn--sm`, `.btn--lg`, `.btn--circle`, `.btn--block` |
-| **3. Skin Variants** | Visual themes (Backgrounds, border colors, shadows, text colors). | `.<component>--<theme>` | `.btn--primary`, `.btn--secondary`, `.btn--danger`, `.btn--ghost` |
-| **4. State Modifiers** | Interactive and behavioral states (Focus, active, disabled). | `:<pseudo>`, `.<component>.is-<state>` | `.btn:focus`, `.btn.focused`, `.btn.is-active`, `.btn.is-disabled` |
-| **5. Container Objects** | Composite layout objects governing arrangements of children (Decouples container from content). | `.<component>-<layout>` | `.btn-group`, `.btn-group--fill`, `.btn-group--vertical` |
+| **Base** | Everything shared: display, alignment, padding, radius, typography, background, border, transitions | `.<component>` | `.btn`, `.card`, `.badge` |
+| **Elements** | Fixed children of the component | `.<component>__<part>` | `.btn__icon`, `.btn__label`, `.modal__title` |
+| **Modifiers** | ONLY the properties that differ (size, shape, skin) | `.<component>--<variant>` | `.btn--sm`, `.btn--circle`, `.btn--primary` |
+| **States** | Interaction state, in order `default → active → hover → focus` | `:hover`, `:focus`, `.focused`, `.is-active` | `.btn--primary:focus, .btn--primary.focused` |
+| **Containers** | Layout of children, never restyle children | `.<component>-<layout>` | `.btn-group`, `.btn-group--fill` |
 
 ---
 
----
-
-## ⚠️ MANDATORY ZERO-OMISSION PRE-AUDIT RULE
-
-> [!CAUTION]
-> **STRICT ZERO-OMISSION INVARIANT**: Before modifying ANY files or writing any code, the agent MUST produce an **exhaustive, 100% complete implementation plan** listing EVERY single item that will be touched:
-> - **Every CSS class and selector** (base, subclasses, skins, containers, legacy aliases to be removed).
-> - **Every file path** (HTML templates, JS controllers, CSS files).
-> - **Every line number and code snippet** where the component is used across the ENTIRE repository.
->
-> If even **A SINGLE file, class, or instance is missed** in the plan and discovered as an afterthought during execution (*"ah, we also need to change this..."*), the task preparation is officially considered **DEFECTIVE AND FAILED**. The plan MUST contain the entire universe of changes upfront with zero omissions.
-
----
-
-## 📋 The 6-Step Component Refactoring Protocol
-
-For every single component batch, execute these 6 steps in strict sequential order. **DO NOT start the next component batch until the current batch passes all checks!**
+## 3. Procedure (one component family per batch)
 
 ```mermaid
 flowchart TD
-    S0[Step 0: Exhaustive Repo-Wide Audit] --> S1[Step 1: Document 100% Complete Inventory in Plan]
-    S1 --> S2[Step 2: Obtain User Approval on Exhaustive Plan]
-    S2 --> S3[Step 3: Refactor CSS in global.css]
-    S3 --> S4[Step 4: Update All Cataloged HTML & JS Files]
-    S4 --> S5[Step 5: Purge Cataloged Container Overrides]
-    S5 --> S6[Step 6: Validate TV Focus, Layout & Mobile]
-    S6 --> Done[Batch Complete: Proceed to Next Component Family]
+    A["1. Audit: grep CSS + HTML + JS"] --> B["2. Inventory in implementation_plan.md"]
+    B --> C["3. User approval"]
+    C --> D["4. CSS: one base + modifiers per viewport file"]
+    D --> E["5. Migrate every HTML + JS reference"]
+    E --> F["6. Delete old classes and #id rules in BOTH files"]
+    F --> G["7. Verify: 0 hits + node -c + live check"]
+    G --> H["Next batch"]
 ```
 
-### Step 1: Exhaustive Repo-Wide Audit & Plan Itemization
-1. **Exhaustive CSS Audit**: Grep for every existing class, pseudo-class, and descendant selector for the target component in [app/src/main/assets/main/gui/css/global.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global.css) and [global-mobile.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global-mobile.css).
-2. **Exhaustive Markup Audit**: Search all `.html` templates under `app/src/main/assets/main/gui/pages/`, `components/`, and root for EVERY occurrence of the component.
-3. **Exhaustive Dynamic JS Audit**: Search all `.js` files under `app/src/main/assets/main/gui/pages/` and `js/` where dynamic HTML strings, template literals, or DOM creation APIs touch this component.
-4. **Itemize in Implementation Plan**: Explicitly document every file path, line number, and element in the plan. Verify that the sum of occurrences matches repo search results with 100% parity before requesting user review.
-5. **Identify Container Overrides**: Catalog every descendant selector (e.g., `.modal-footer .btn`, `.login-card .btn`, `.error-actions .btn`) that will be purged.
+### Step 1 — Audit (zero omissions)
+1. In `app/src/main/assets/main/gui/css/global.css` AND `global-mobile.css`, grep every class, `#id` rule and descendant override for the component family (e.g. everything that styles a play/primary button, icon, title, badge, row).
+2. Grep all `.html` (`gui/`, `gui/pages/`, `gui/components/`) and all `.js` (`gui/pages/`, `gui/js/`, `main/logic/`) for those names, including template literals, `className`, `classList` and `querySelector` strings.
+3. Group findings into: **duplicates of an existing base** (migrate), **true variants** (become a modifier), **truly new component** (new generic base — rare, must be justified).
 
-### Step 2: Design OOP Decomposition
-Map out the target component into the 5 OOCSS layers:
-- What belongs in the pure structural Base Class?
-- What are the sizing and shape subclasses?
-- What are the color/skin variants?
-- What are the states (especially D-pad focus indicator: thick white border)?
-- What composable container classes (e.g. `.component-group`) are needed to eliminate descendant hacks?
+### Step 2 — Inventory in the plan
+List every class/selector to delete, every file + line to migrate, and the target classes. Counts must match the grep results. Anything discovered later means the audit was incomplete — re-run Step 1 for that family.
 
-### Step 3: Refactor CSS in `global.css`
-1. **Centralized Location**: Write the new OOCSS rules inside [global.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global.css).
-2. **Mandatory Class Annotations**: Precede EVERY class definition with a single-line descriptive comment:
-   ```css
-   /* Base button component defining display geometry, alignment, typography reset, and transition timings. */
-   .btn { ... }
-   ```
-3. **No Forbidden Transforms**: NEVER use `transform: scale()`, `translateX()`, `translateY()`, or `translate3d()` for hover or focus states.
-4. **Standard Focus Indicator**: Focus states (`:focus`, `.focused`) MUST use the standard thicker white border:
-   ```css
-   /* Focus state for primary button skin variant rendering standardized thick white outline. */
-   .btn--primary:focus,
-   .btn--primary.focused {
-       background: rgba(var(--primary-rgb), 0.35);
-       border-color: #ffffff;
-       outline: none;
-   }
-   ```
-5. **Temporary Aliases**: Add grouped selector aliases (e.g., `.btn-primary, .btn--primary`) ONLY during the transitional step to ensure safety while templates are being updated.
+### Step 3 — User approval
+Large batches (5+ files) need approval per the global complexity rules before editing.
 
-### Step 4: Update All HTML Templates & Dynamic JS Renderers
-Directly update the markup across the application to adopt the new composed OOCSS classes:
-1. **HTML Views**: Update files in `app/src/main/assets/main/gui/pages/*.html` and `components/**/*.html`.
-   - *Old*: `<button class="btn btn-primary focusable">Apply</button>`
-   - *New*: `<button class="btn btn--primary focusable">Apply</button>`
-   - *Old container*: `<div class="modal-actions"><button class="btn btn-secondary focusable">Cancel</button></div>`
-   - *New container*: `<div class="btn-group btn-group--fill"><button class="btn btn--secondary btn--sm focusable">Cancel</button></div>`
-2. **JavaScript Controllers & Views**: Update dynamic template literals and DOM creation calls in `app/src/main/assets/main/gui/pages/*.js` and `app/src/main/assets/main/gui/js/*.js`.
-3. **Preserve Spatial Navigation**: ALWAYS ensure interactive elements retain the `focusable` class so `spatial-nav.js` can register them.
+### Step 4 — CSS
+1. Reuse the base from the catalog in AGENTS.md §4.5. Add a modifier only for real differences.
+2. Write the landscape skin once in `global.css` and, if mobile differs, the mobile skin once in `global-mobile.css` — same class names.
+3. Group identical bases into one selector list instead of repeating declarations.
+4. One-line comment above every new/changed rule; new base classes list their consumers.
 
-### Step 5: Purge Redundant Container Overrides & Clean Up CSS
-1. Once all HTML and JS files use the composed OOCSS classes, **delete the obsolete descendant selectors** from `global.css`:
-   - Delete `.modal-actions .btn`
-   - Delete `.modal-footer .btn`
-   - Delete `.vertical-modal-actions .btn`
-   - Delete `.horizontal-modal-actions .btn`
-   - Delete `.error-actions .btn`
-   - Delete `.btn-min-w` (replaced by `.btn--fixed-min`)
-   - Delete `.btn-full-center` (replaced by `.btn--block`)
-2. Remove temporary legacy aliases once markup is fully synchronized.
-3. Review [global-mobile.css](file:///c:/Users/kenji/Documents/PROJECTS/IVIDS/IVIDS/app/src/main/assets/main/gui/css/global-mobile.css) to ensure mobile overrides are clean and minimal.
+### Step 5 — Migrate markup
+Update every HTML template and JS renderer from the inventory to the shared classes. Keep `focusable`, ids used by JS, `data-i18n` and ARIA attributes. Update any JS `querySelector('.old-class')` to the new class.
 
-### Step 6: Validation & Verification Checklist
-Before declaring the batch complete:
-- [ ] **CSS Syntax & Comments**: Every new or modified class has a single-line comment.
-- [ ] **No Forbidden Transforms**: No `scale()`, `translate()` on hover/focus.
-- [ ] **White Border Focus**: All interactive variants show the standard `#ffffff` border on focus/hover.
-- [ ] **Spatial Navigation**: D-pad / keyboard arrow keys navigate seamlessly between all elements with the `focusable` class.
-- [ ] **Templates Verified**: Zero occurrences of deprecated legacy classes remain in `.html` or `.js`.
-- [ ] **Mobile Overrides**: Layout displays cleanly on mobile without horizontal overflow or clipped buttons.
-- [ ] **Git Diagnostic**: Run `git diff` to ensure only intended files were modified.
+### Step 6 — Delete
+Remove the old classes, `#id` style rules, context overrides and duplicate blocks from BOTH CSS files. Do not delete a legacy alias while any `.html`/`.js` still references it.
+
+### Step 7 — Verify
+- [ ] Repo-wide grep (`.html`, `.js`, `.css`) returns **0 hits** for every removed name.
+- [ ] `node -c` passes on every modified `.js` file.
+- [ ] No new page-prefixed class or `#id` rule was introduced; any new class is named and justified in the response.
+- [ ] Landscape (`1280x720`) and mobile (`390x844`) still show their OWN skins; D-pad focus shows the white border.
+- [ ] `task.md` updated.
 
 ---
 
-## 🗓️ Master Component Batch Roadmap
+## 4. Batch Roadmap
 
-Work through the component families in this precise order:
-
-```
-Batch 1: Button System (.btn, variants, sizes, shapes, .btn-group)
-   │
-   ▼
-Batch 2: Cards & Media Posters (.card, .poster-wrapper, .playlist-card, .episode-card)
-   │
-   ▼
-Batch 3: Modals & Dialog Overlays (.modal, .modal-dialog, .modal-header, .modal-footer)
-   │
-   ▼
-Batch 4: Forms & Input Controls (.input-group, .input-wrapper, input, select, .filter-chip)
-   │
-   ▼
-Batch 5: Navigation, Rails & Carousels (.navbar, .nav-item, .sidebar, .rail-track)
-   │
-   ▼
-Batch 6: Status, Badges & Feedback (.toast, .badge, .status-indicator, .spinner)
-```
+1. **Buttons** — `.btn` skins/sizes, `.btn__icon`, `.btn__label`, round back/refresh/retry buttons (`.btn--circle`).
+2. **Headings** — `.title-hero`, `.page-title`, `.section-title`, `.section-subtitle`, `.modal__title`.
+3. **List & selection rows** — settings, language, provider, app-info, Live TV rows (one row base per viewport file).
+4. **Forms & search** — `.form-control-wrapper`, `.form-input`, `.form-select`, tab bars.
+5. **Badges & empty/error states** — `.badge` (+ modifiers), `.empty-state` + `.empty-state__text`.
+6. **Cards, grids, rails & modals** — `.card--*`, `.media-grid--*`, `.media-rail`, `.modal__*`.
+7. **Tokens** — font sizes, radii (`--radius-*` landscape, `--mobile-radius-*` mobile), weights.
 
 ---
 
-## 🔍 Concrete Example: Batch 1 (Button System)
+## 5. Example — Play buttons
 
-### Before (Tightly coupled & duplicated):
+**Before** (three components that are really one):
 ```html
-<!-- HTML -->
-<div class="modal-actions">
-    <button class="btn btn-primary focusable">Save</button>
-    <button class="btn btn-secondary btn-small focusable">Cancel</button>
-</div>
+<button id="play-btn" class="play-icon-button focusable"><span class="mobile-play-icon"></span><span class="play-button-label">Play</span></button>
+<button id="details-play" class="details-play-icon-btn focusable"><span class="details-play-icon"></span><span class="details-play-label">Play</span></button>
 ```
 ```css
-/* CSS */
-.btn { align-items: center; border: 3px solid transparent; min-height: 44px; ... }
-.btn-primary { background: rgba(var(--primary-rgb), 0.25); color: #fff; }
-.btn-secondary { background: rgba(255, 255, 255, 0.08); color: #fff; }
-.btn-small { font-size: 13px; min-height: 36px; padding: 6px 16px; }
-/* Descendant container hacks */
-.modal-actions .btn { flex: 1; justify-content: center; margin: 0; min-width: 130px; }
-.error-actions .btn { min-width: 150px; }
+#play-btn { height: 48px; font-size: 15px; border-radius: 12px; }
+#details-play { min-height: 48px; font-size: 14px; border-radius: 12px; }
 ```
 
-### After (OOCSS Decoupled & Composable):
+**After** (one component, two viewport skins):
 ```html
-<!-- HTML -->
-<div class="btn-group btn-group--fill">
-    <button class="btn btn--primary btn--fixed-min focusable">Save</button>
-    <button class="btn btn--secondary btn--sm btn--fixed-min focusable">Cancel</button>
-</div>
+<button id="play-btn" class="btn btn--primary focusable"><span class="btn__icon"></span><span class="btn__label" data-i18n="common.play"></span></button>
+<button id="details-play" class="btn btn--primary focusable"><span class="btn__icon"></span><span class="btn__label" data-i18n="common.play"></span></button>
 ```
 ```css
-/* Base structural class */
-.btn { align-items: center; border: 3px solid transparent; display: inline-flex; justify-content: center; ... }
-
-/* Sizing subclasses */
-.btn--sm { font-size: 13px; min-height: 34px; padding: 6px 14px; }
-.btn--md { font-size: 15px; min-height: 44px; padding: 8px 22px; }
-
-/* Shape & layout subclasses */
-.btn--circle { border-radius: 50%; height: 36px; width: 36px; padding: 0; }
-.btn--block { display: flex; width: 100%; }
-.btn--fixed-min { min-width: 130px; }
-
-/* Skin variants */
+/* global.css — Landscape/TV primary button skin: translucent brand green, white focus border. */
 .btn--primary { background: rgba(var(--primary-rgb), 0.25); color: #ffffff; }
-.btn--primary:focus, .btn--primary.focused { border-color: #ffffff; outline: none; }
-.btn--secondary { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
-.btn--secondary:focus, .btn--secondary.focused { border-color: #ffffff; outline: none; }
+.btn--primary:focus, .btn--primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; outline: none; }
 
-/* Composable container classes (NO descendant hacks) */
-.btn-group { align-items: center; display: flex; gap: 12px; }
-.btn-group--fill .btn { flex: 1; min-width: 0; }
-.btn-group--vertical { flex-direction: column; width: 100%; }
+/* global-mobile.css — Mobile primary button skin: solid white with dark text. */
+#app .btn--primary, body .modal .btn--primary { background: #ffffff; border: 1px solid #ffffff; color: var(--mobile-ink); }
 ```
-
+Then delete `.play-icon-button`, `.mobile-play-icon`, `.play-button-label`, `.details-play-*`, `#play-btn {}` and `#details-play {}` from both files and confirm 0 hits.

@@ -160,14 +160,16 @@
     "debridEnvReady": ".env ব্যাকআপ",
     "debridNotConfigured": "সেট করা নেই",
     "tierDirectHttp": "সরাসরি HTTP (বিনামূল্যে)",
-    "directHttpAddon": "বিনামূল্যে HTTP অ্যাডঅন URL"
+    "directHttpAddon": "বিনামূল্যে HTTP অ্যাডঅন URL",
+    "urlRequired": "সংরক্ষণ করার আগে একটি বৈধ URL লিখুন।"
   },
   "common": {
     "close": "বন্ধ",
     "apply": "আবেদন করুন",
     "cancel": "বাতিল করুন",
     "create": "তৈরি করুন",
-    "save": "সংরক্ষণ করুন"
+    "save": "সংরক্ষণ করুন",
+    "options": "বিকল্পসমূহ"
   },
   "home": {
     "welcome": "IVIDS-এ স্বাগতম",

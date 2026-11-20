@@ -161,14 +161,16 @@
     "debridEnvReady": "Respaldo .env",
     "debridNotConfigured": "Sin configurar",
     "tierDirectHttp": "HTTP directo (Gratis)",
-    "directHttpAddon": "URL de addon HTTP gratuito"
+    "directHttpAddon": "URL de addon HTTP gratuito",
+    "urlRequired": "Por favor, introduce una URL válida antes de guardar."
   },
   "common": {
     "close": "Cerrar",
     "apply": "Aplicar",
     "cancel": "Cancelar",
     "create": "Crear",
-    "save": "Ahorrar"
+    "save": "Ahorrar",
+    "options": "Opciones"
   },
   "home": {
     "welcome": "Bienvenido a IVIDS",

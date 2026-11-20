@@ -160,14 +160,16 @@
     "debridEnvReady": ".env mentés",
     "debridNotConfigured": "Nincs beállítva",
     "tierDirectHttp": "Közvetlen HTTP (Ingyenes)",
-    "directHttpAddon": "Ingyenes HTTP kiegészítő URL"
+    "directHttpAddon": "Ingyenes HTTP kiegészítő URL",
+    "urlRequired": "Mentés előtt adjon meg egy érvényes URL-címet."
   },
   "common": {
     "close": "Close",
     "apply": "Apply",
     "cancel": "Cancel",
     "create": "Create",
-    "save": "Save"
+    "save": "Save",
+    "options": "Beállítások"
   },
   "home": {
     "welcome": "Welcome to IVIDS",

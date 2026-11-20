@@ -166,14 +166,16 @@
     "debridEnvReady": "Cadangan .env",
     "debridNotConfigured": "Belum diatur",
     "tierDirectHttp": "HTTP Langsung (Gratis)",
-    "directHttpAddon": "URL Addon HTTP Gratis"
+    "directHttpAddon": "URL Addon HTTP Gratis",
+    "urlRequired": "Harap masukkan URL yang valid sebelum menyimpan."
   },
   "common": {
     "close": "Tutup",
     "apply": "Terapkan",
     "cancel": "Batal",
     "create": "Membuat",
-    "save": "Menyimpan"
+    "save": "Menyimpan",
+    "options": "Opsi"
   },
   "home": {
     "welcome": "Selamat Datang di IVIDS",

@@ -6,7 +6,7 @@ import { isElementVisible, getActiveSidebarItem } from './spatial-nav-helpers.js
  * @returns {HTMLElement[]} Array of visible tab button elements.
  */
 function getVisibleTabs() {
-    const tabs = Array.from(document.querySelectorAll('#details-tabs .tab-btn'));
+    const tabs = Array.from(document.querySelectorAll('#details-tabs .btn'));
     return tabs.filter(tab => isElementVisible(tab));
 }
 
@@ -15,7 +15,7 @@ function getVisibleTabs() {
  * @returns {HTMLElement|null} The active tab button element.
  */
 function getActiveTabBtn() {
-    const active = document.querySelector('#details-tabs .tab-btn.is-active, #details-tabs .tab-btn.btn--primary');
+    const active = document.querySelector('#details-tabs .btn.is-active, #details-tabs .btn.btn--primary');
     if (active && isElementVisible(active)) return active;
     const visibleTabs = getVisibleTabs();
     return visibleTabs.length > 0 ? visibleTabs[0] : null;

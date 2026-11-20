@@ -160,14 +160,16 @@
     "debridEnvReady": "Αντίγραφο .env",
     "debridNotConfigured": "Μη ρυθμισμένο",
     "tierDirectHttp": "Άμεσο HTTP (Δωρεάν)",
-    "directHttpAddon": "URL δωρεάν πρόσθετου HTTP"
+    "directHttpAddon": "URL δωρεάν πρόσθετου HTTP",
+    "urlRequired": "Εισαγάγετε ένα έγκυρο URL πριν από την αποθήκευση."
   },
   "common": {
     "close": "Κοντά",
     "apply": "Εφαρμόζω",
     "cancel": "Ματαίωση",
     "create": "Δημιουργώ",
-    "save": "Εκτός"
+    "save": "Εκτός",
+    "options": "Επιλογές"
   },
   "home": {
     "welcome": "Καλώς ήρθατε στο IVIDS",

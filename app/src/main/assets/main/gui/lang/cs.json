@@ -166,14 +166,16 @@
     "debridEnvReady": "Záloha .env",
     "debridNotConfigured": "Nenastaveno",
     "tierDirectHttp": "Přímý HTTP (Zdarma)",
-    "directHttpAddon": "URL bezplatného HTTP doplňku"
+    "directHttpAddon": "URL bezplatného HTTP doplňku",
+    "urlRequired": "Před uložením zadejte platnou adresu URL."
   },
   "common": {
     "close": "Zavřít",
     "apply": "Použít",
     "cancel": "Zrušit",
     "create": "Vytvořit",
-    "save": "Uložit"
+    "save": "Uložit",
+    "options": "Možnosti"
   },
   "home": {
     "welcome": "Vítejte v IVIDS",

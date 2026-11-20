@@ -160,14 +160,16 @@
     "debridEnvReady": "Резерв .env",
     "debridNotConfigured": "Не задано",
     "tierDirectHttp": "Прямий HTTP (Безкоштовно)",
-    "directHttpAddon": "URL безкоштовного HTTP-додатка"
+    "directHttpAddon": "URL безкоштовного HTTP-додатка",
+    "urlRequired": "Будь ласка, введіть дійсну URL-адресу перед збереженням."
   },
   "common": {
     "close": "Close",
     "apply": "Apply",
     "cancel": "Cancel",
     "create": "Create",
-    "save": "Save"
+    "save": "Save",
+    "options": "Параметри"
   },
   "home": {
     "welcome": "Welcome to IVIDS",

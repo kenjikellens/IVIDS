@@ -160,14 +160,16 @@
     "debridEnvReady": "Sandaran .env",
     "debridNotConfigured": "Tiada",
     "tierDirectHttp": "HTTP Terus (Percuma)",
-    "directHttpAddon": "URL Tambahan HTTP Percuma"
+    "directHttpAddon": "URL Tambahan HTTP Percuma",
+    "urlRequired": "Sila masukkan URL yang sah sebelum menyimpan."
   },
   "common": {
     "close": "Close",
     "apply": "Apply",
     "cancel": "Cancel",
     "create": "Create",
-    "save": "Save"
+    "save": "Save",
+    "options": "Pilihan"
   },
   "home": {
     "welcome": "Welcome to IVIDS",

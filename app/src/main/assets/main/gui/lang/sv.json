@@ -166,14 +166,16 @@
     "debridEnvReady": ".env-backup",
     "debridNotConfigured": "Ej inställd",
     "tierDirectHttp": "Direkt HTTP (Gratis)",
-    "directHttpAddon": "Gratis HTTP-tillägg URL"
+    "directHttpAddon": "Gratis HTTP-tillägg URL",
+    "urlRequired": "Ange en giltig URL innan du sparar."
   },
   "common": {
     "close": "Stäng",
     "apply": "Använda",
     "cancel": "Avbryt",
     "create": "Skapa",
-    "save": "Spara"
+    "save": "Spara",
+    "options": "Alternativ"
   },
   "home": {
     "welcome": "Välkommen till IVIDS",

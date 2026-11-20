@@ -1,6 +1,6 @@
 <div class="details-page">
     <button id="details-back-btn" class="btn btn--secondary btn--circle focusable details-back-btn universal-onclick" title="Back" aria-label="Back">
-        <img src="images/back.svg" class="details-back-icon" alt="Back">
+        <img src="images/back.svg" class="btn__icon" alt="Back">
     </button>
     <!-- Cinematic Background backdrop -->
     <div class="media-backdrop details-backdrop" id="details-backdrop">
@@ -12,7 +12,7 @@
     <div class="details-layout is-loading">
         <div class="details-top">
             <div class="details-info">
-                <h1 class="title-hero details-title" id="details-title"></h1>
+                <h1 class="title-hero" id="details-title"></h1>
                 <div id="details-genres" class="details-genres"></div>
                 <div class="details-meta">
                     <span id="details-date"></span>
@@ -20,17 +20,17 @@
                 </div>
                 <p class="details-overview" id="details-overview"></p>
                 <div class="details-actions btn-group">
-                    <button class="btn btn--primary focusable play-icon-button details-play-icon-btn universal-onclick" id="details-play" type="button" aria-label="Play">
-                        <img src="images/play.svg" class="mobile-play-icon details-play-icon details-mobile-icon hidden" alt="" aria-hidden="true">
-                        <span class="details-play-label hidden" data-i18n="details.play" aria-hidden="true">Play</span>
+                    <button class="btn btn--primary focusable universal-onclick" id="details-play" type="button" aria-label="Play">
+                        <img src="images/play.svg" class="btn__icon btn__icon--mobile" alt="" aria-hidden="true">
+                        <span class="btn__label" data-i18n="details.play">Play</span>
                     </button>
                     <button class="btn btn--secondary focusable hidden universal-onclick" id="details-trailer">
-                        <img src="images/movies.svg" class="details-action-icon details-mobile-icon hidden" alt="">
-                        <span class="details-action-label" data-i18n="details.watchTrailer">Watch Trailer</span>
+                        <img src="images/movies.svg" class="btn__icon btn__icon--mobile" alt="" aria-hidden="true">
+                        <span class="btn__label" data-i18n="details.watchTrailer">Watch Trailer</span>
                     </button>
                     <button class="btn btn--secondary focusable universal-onclick" id="details-playlist">
-                        <img src="images/playlists.svg" class="details-action-icon details-mobile-icon hidden" alt="">
-                        <span class="details-action-label" data-i18n="details.addToPlaylist">Add to Playlist</span>
+                        <img src="images/playlists.svg" class="btn__icon btn__icon--mobile" alt="" aria-hidden="true">
+                        <span class="btn__label" data-i18n="details.addToPlaylist">Add to Playlist</span>
                     </button>
                 </div>
             </div>
@@ -49,7 +49,7 @@
         <div class="tab-panel details-bottom" id="panel-seasons">
             <div class="details-seasons" id="seasons-container">
                 <div class="seasons-dropdown-wrapper form-select-wrapper">
-                    <select id="seasons-dropdown" class="filter-select focusable"></select>
+                    <select id="seasons-dropdown" class="filter-select focusable" aria-label="Select Season"></select>
                 </div>
                 <div id="seasons-list" class="seasons-list-content">
                     <!-- Filled by JS with IVIDS .season-btn -->
@@ -71,11 +71,11 @@
         <div class="tab-panel hidden" id="panel-about">
             <div class="disney-about-content">
                 <div class="disney-about-left">
-                    <h4 class="section-title" data-i18n="details.synopsis">Synopsis</h4>
+                    <h2 class="section-title" data-i18n="details.synopsis">Synopsis</h2>
                     <p class="disney-about-description" id="about-description"></p>
                 </div>
                 <div class="disney-about-right">
-                    <h4 class="section-title" data-i18n="details.castAndCrew">Cast & Crew</h4>
+                    <h2 class="section-title" data-i18n="details.castAndCrew">Cast & Crew</h2>
                     <div class="media-grid media-grid--cast disney-cast-grid" id="about-cast">
                         <!-- Filled by JS -->
                     </div>

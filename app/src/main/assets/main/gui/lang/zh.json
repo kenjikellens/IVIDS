@@ -166,14 +166,16 @@
     "debridEnvReady": ".env 备份",
     "debridNotConfigured": "未设置",
     "tierDirectHttp": "直接 HTTP（免费）",
-    "directHttpAddon": "免费 HTTP 插件 URL"
+    "directHttpAddon": "免费 HTTP 插件 URL",
+    "urlRequired": "请在保存前输入有效的 URL。"
   },
   "common": {
     "close": "关闭",
     "apply": "应用",
     "cancel": "取消",
     "create": "创造",
-    "save": "节省"
+    "save": "节省",
+    "options": "选项"
   },
   "home": {
     "welcome": "欢迎来到 IVIDS",

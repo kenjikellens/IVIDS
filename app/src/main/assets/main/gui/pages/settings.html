@@ -1,6 +1,6 @@
 <div class="settings-container">
     <div class="settings-header">
-        <h1 data-i18n="settings.title">Settings</h1>
+        <h1 class="page-title" data-i18n="settings.title">Settings</h1>
     </div>
 
     <!-- Appearance Settings -->
@@ -127,7 +127,7 @@
                 </div>
                 <div class="setting-control">
                     <div id="current-source-order-display" class="current-value-display">—</div>
-                    <button id="edit-source-order-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
+                    <button id="edit-source-order-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button" title="Edit Playback Order" aria-label="Edit Playback Order">
                         <img src="images/edit.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>
@@ -153,7 +153,7 @@
                 </div>
                 <div class="setting-control">
                     <div id="current-debrid-display" class="current-value-display">—</div>
-                    <button id="edit-debrid-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
+                    <button id="edit-debrid-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button" title="Edit Debrid & Stremio" aria-label="Edit Debrid & Stremio">
                         <img src="images/edit.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>
@@ -241,7 +241,7 @@
     <div class="modal__dialog modal__dialog--md">
         <div class="language-modal__heading">
             <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-                <img src="images/back.svg" class="modal-back-icon" alt="Back">
+                <img src="images/back.svg" class="btn__icon" alt="Back">
             </button>
             <div class="language-modal__heading-copy">
                 <h2 id="language-modal-title" class="modal__title" data-i18n="settings.language">Language</h2>
@@ -250,19 +250,19 @@
         <div class="modal__body modal__body--scroll">
             <div class="language-search-wrapper">
                 <input id="language-search" class="form-input language-search focusable hidden" type="search"
-                    autocomplete="off" data-i18n="nav.search" placeholder="Search...">
+                    autocomplete="off" data-i18n="nav.search" placeholder="Search..." aria-label="Search languages">
             </div>
             <div id="language-selection-grid" class="language-selection-grid" aria-labelledby="language-modal-title"></div>
             <div class="language-stepper-container">
                 <button id="lang-prev-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn universal-onclick" aria-label="Previous Language">
-                    <img src="images/back.svg" class="setting-stepper-icon" alt="Previous">
+                    <img src="images/back.svg" class="btn__icon" alt="Previous">
                 </button>
                 <div id="lang-stepper-display" class="current-value-display language-stepper-value">
                     <span id="lang-stepper-flag" class="display-flag-span">🇺🇸</span>
                     <span id="lang-stepper-name">English</span>
                 </div>
                 <button id="lang-next-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn universal-onclick" aria-label="Next Language">
-                    <img src="images/arrow.svg" class="setting-stepper-icon" alt="Next">
+                    <img src="images/arrow.svg" class="btn__icon" alt="Next">
                 </button>
             </div>
         </div>
@@ -273,7 +273,7 @@
 <div id="color-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.accentColor">Accent Color</h2>
         <div class="modal__body modal__body--scroll">
@@ -322,7 +322,7 @@
 <div id="update-mode-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.updateMode">Update Mode</h2>
         <div class="modal__body modal__body--scroll">
@@ -349,10 +349,10 @@
 <div id="version-selector-modal" class="modal">
     <div class="modal__dialog modal__dialog--lg">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
-        <button id="version-selector-refresh-btn" class="modal__refresh-btn btn btn--ghost btn--circle focusable" aria-label="Refresh" type="button" title="Vernieuwen">
-            <img src="svg/retry.svg" class="modal-refresh-icon" alt="Refresh">
+        <button id="version-selector-refresh-btn" class="modal__refresh-btn btn btn--ghost btn--circle focusable" aria-label="Refresh" type="button" title="Refresh">
+            <img src="svg/retry.svg" class="btn__icon" alt="Refresh">
         </button>
         <h2 class="modal__title" data-i18n="settings.selectVersion">Select Version</h2>
         <div class="modal__body modal__body--scroll">
@@ -373,7 +373,7 @@
 <div id="player-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.playerProviders">Player Providers</h2>
         <div class="modal__body modal__body--scroll">
@@ -393,7 +393,7 @@
 <div id="m3u-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
         <div class="modal__body modal__body--scroll">
@@ -413,24 +413,24 @@
 <div id="app-info-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
-        <h2 class="modal__title" data-i18n="settings.appInfo">App-informatie</h2>
+        <h2 class="modal__title" data-i18n="settings.appInfo">App Info</h2>
         <div class="modal__body app-info-body">
             <div class="app-info-header">
                 <img src="images/icon.svg" class="app-info-logo" alt="IVIDS">
                 <div class="app-info-header-meta">
-                    <h3 class="app-info-app-title">IVIDS</h3>
+                    <h3 class="section-title">IVIDS</h3>
                     <div id="app-info-version-pill" class="badge badge--primary app-info-badge">v0.6.4</div>
                 </div>
             </div>
             <div class="app-info-details">
                 <div class="app-info-row">
-                    <span class="app-info-label" data-i18n="settings.appVersion">App-versie</span>
+                    <span class="app-info-label" data-i18n="settings.appVersion">App Version</span>
                     <span id="app-version-display" class="app-info-value">--</span>
                 </div>
                 <div class="app-info-row">
-                    <span class="app-info-label" data-i18n="settings.appDeveloper">Ontwikkelaar</span>
+                    <span class="app-info-label" data-i18n="settings.appDeveloper">Developer</span>
                     <span class="app-info-value">Kenji Games</span>
                 </div>
                 <div class="app-info-row">
@@ -440,7 +440,7 @@
             </div>
         </div>
         <div class="modal__footer">
-            <button class="btn btn--secondary btn--block focusable universal-onclick" data-i18n="common.close">Sluiten</button>
+            <button class="btn btn--secondary btn--block focusable universal-onclick" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>
@@ -449,7 +449,7 @@
 <div id="changes-modal" class="modal">
     <div class="modal__dialog modal__dialog--lg">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <button class="btn btn--ghost btn--circle modal__close focusable universal-onclick" aria-label="Close modal">&times;</button>
         <h2 id="changes-modal-title" class="modal__title" data-i18n="settings.changes">Changes</h2>
@@ -468,23 +468,23 @@
 <div id="update-check-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <button id="update-modal-close-x" class="modal__close-btn btn btn--ghost btn--circle focusable universal-onclick" aria-label="Close" type="button">✕</button>
-        <h2 class="modal__title" data-i18n="settings.checkNow">Controleren op updates</h2>
+        <h2 class="modal__title" data-i18n="settings.checkNow">Check for Updates</h2>
         <div class="modal__body update-modal-body">
             <div id="update-modal-spinner" class="loader-inline-container"></div>
             <div id="update-modal-icon-container" class="update-modal-icon hidden">
                 <img id="update-modal-status-icon" src="images/info.svg" alt="">
             </div>
-            <h3 id="update-modal-status-heading" class="update-modal-heading" data-i18n="settings.checking">Controleren...</h3>
+            <h3 id="update-modal-status-heading" class="section-title" data-i18n="settings.checking">Searching...</h3>
             <p id="update-modal-status-desc" class="update-modal-desc"></p>
             <div id="update-modal-version-badge" class="update-version-badge hidden"></div>
         </div>
         <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
-            <button id="update-modal-install-btn" class="btn btn--primary focusable hidden universal-onclick" type="button" data-i18n="settings.updateNow">Nu Installeren</button>
-            <button id="update-modal-retry-btn" class="btn btn--secondary focusable hidden universal-onclick" type="button" data-i18n="settings.checkNow">Opnieuw controleren</button>
-            <button id="update-modal-back-btn" class="btn btn--secondary focusable universal-onclick" type="button">✕ <span data-i18n="common.close">Sluiten</span></button>
+            <button id="update-modal-install-btn" class="btn btn--primary focusable hidden universal-onclick" type="button" data-i18n="settings.updateNow">Install Now</button>
+            <button id="update-modal-retry-btn" class="btn btn--secondary focusable hidden universal-onclick" type="button" data-i18n="settings.checkNow">Check for Updates</button>
+            <button id="update-modal-back-btn" class="btn btn--secondary focusable universal-onclick" type="button">✕ <span data-i18n="common.close">Close</span></button>
         </div>
     </div>
 </div>
@@ -493,7 +493,7 @@
 <div id="advanced-settings-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 id="advanced-settings-modal-title" class="modal__title" data-i18n="settings.advancedSettings">Advanced Settings</h2>
         <div class="modal__body" id="advanced-modal-body">
@@ -507,7 +507,7 @@
                 </div>
                 <div class="setting-control">
                     <div id="mobile-source-order-display" class="current-value-display">—</div>
-                    <button id="mobile-edit-source-order-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
+                    <button id="mobile-edit-source-order-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button" title="Edit Playback Order" aria-label="Edit Playback Order">
                         <img src="images/arrow.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>
@@ -533,7 +533,7 @@
                 </div>
                 <div class="setting-control">
                     <div id="mobile-debrid-display" class="current-value-display">—</div>
-                    <button id="mobile-edit-debrid-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button">
+                    <button id="mobile-edit-debrid-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" type="button" title="Edit Debrid & Stremio" aria-label="Edit Debrid & Stremio">
                         <img src="images/arrow.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>
@@ -572,11 +572,11 @@
 
             <div id="mobile-check-updates-row" class="setting-item universal-onclick">
                 <div class="setting-info">
-                    <div class="setting-label" data-i18n="settings.checkNow">Controleren op updates</div>
-                    <div class="setting-description" id="mobile-check-updates-subtitle" data-i18n="settings.checkNowDesc">Handmatig zoeken naar nieuwe app-versies</div>
+                    <div class="setting-label" data-i18n="settings.checkNow">Check for Updates</div>
+                    <div class="setting-description" id="mobile-check-updates-subtitle" data-i18n="settings.checkNowDesc">Manually search for new app versions</div>
                 </div>
                 <div class="setting-control">
-                    <button id="mobile-check-updates-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Controleren op updates" aria-label="Controleren op updates" type="button">
+                    <button id="mobile-check-updates-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Check for Updates" aria-label="Check for Updates" type="button">
                         <img src="images/arrow.svg" class="setting-edit-icon" alt="">
                     </button>
                 </div>
@@ -604,7 +604,7 @@
 <div id="delay-action-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.delayAction">Response Delay</h2>
         <div class="modal__body modal__body--scroll">
@@ -626,7 +626,7 @@
 <div id="source-order-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.sourceOrder">Playback Order</h2>
         <div class="modal__body modal__body--scroll">
@@ -643,7 +643,7 @@
 <div id="debrid-modal" class="modal">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
-            <img src="images/back.svg" class="modal-back-icon" alt="Back">
+            <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.debridConfig">Debrid &amp; Stremio</h2>
         <div class="modal__body modal__body--scroll">

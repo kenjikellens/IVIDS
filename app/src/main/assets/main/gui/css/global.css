@@ -37,7 +37,7 @@
     --surface-muted: #2e2e2e;
     --surface-soft: #252525;
     --text-color: #f4f4f4;
-    --text-dim: #929292;
+    --text-dim: #9e9e9e;
     --text-muted: #adadad;
 }
 
@@ -181,6 +181,8 @@ input, textarea, select { font: inherit; }
 .btn--primary:hover, .btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #ffffff; outline: none; }
 /* Focus state for primary button skin variant with standardized thick white border. */
 .btn--primary:focus, .btn--primary:focus-visible, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; color: #ffffff; outline: none; }
+/* Hides mobile-only button icons on desktop, landscape, and TV viewports. */
+.btn__icon--mobile { display: none; }
 
 /* Secondary skin variant styling buttons with soft neutral translucent fill and tactile border for TV affordance. */
 .btn--secondary, .btn-secondary { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.18); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35); color: #ffffff; }
@@ -476,46 +478,6 @@ input, textarea, select { font: inherit; }
     max-width: 400px;
 }
 
-/* Circular retry button beneath empty state message. */
-.extras-retry-btn {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.16);
-    border-radius: 50%;
-    box-sizing: border-box;
-    cursor: pointer;
-    display: inline-flex;
-    height: 48px;
-    justify-content: center;
-    min-height: 48px;
-    min-width: 48px;
-    padding: 0;
-    transition: background-color 150ms ease, border-color 150ms ease;
-    width: 48px;
-}
-
-/* Hover state for circular retry button. */
-.extras-retry-btn:hover, .extras-retry-btn:active {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-/* Focus state for circular retry button with standardized thick white outline. */
-.extras-retry-btn:focus, .extras-retry-btn.focused {
-    border-color: #ffffff;
-    outline: 2px solid #ffffff;
-}
-
-/* Standalone retry icon inside empty state action button. */
-.extras-retry-icon {
-    color: #ffffff;
-    display: block;
-    filter: brightness(0) invert(1);
-    height: 20px;
-    pointer-events: none;
-    width: 20px;
-}
-
 /* Card gradient overlay providing dark readability backing for widescreen card titles. */
 .card__overlay, .playlist-overlay {
     align-items: flex-start;
@@ -669,7 +631,7 @@ input, textarea, select { font: inherit; }
 }
 .form-input:not(.form-control-wrapper *):hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
 .form-input:not(.form-control-wrapper *):focus, .form-input:not(.form-control-wrapper *).focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; box-shadow: none; outline: none; }
-.form-input::placeholder { color: rgba(255, 255, 255, 0.38); }
+.form-input::placeholder { color: rgba(255, 255, 255, 0.58); }
 
 /* Compact form input modifier for modal dialogs and inline table rows. */
 .form-input--compact { font-size: 14px; height: 42px; padding: 0 12px; }
@@ -928,19 +890,20 @@ input, textarea, select { font: inherit; }
 .top-bar__actions { align-items: center; display: flex; gap: 8px; justify-content: flex-end; }
 
 /* High-impact fluid typography for hero banners and detail headlines. */
-.title-hero, .hero-title {
+.title-hero {
     color: #ffffff;
     font-family: inherit;
-    font-size: clamp(24px, 3.5vw, 42px);
-    font-weight: 900;
-    line-height: 1.15;
+    font-size: clamp(28px, 3.8vw, 48px);
+    font-weight: 800;
+    line-height: 1.12;
     margin-bottom: 14px;
+    max-width: 22ch;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
     width: 100%;
 }
 
-/* Unified primary page title heading across Playlists, Settings, and Account views. */
-.page-title, .settings-header h1, .account-header h1 {
+/* Unified primary page title heading across Playlists, Playlist Details, Settings, Account, and Login views. */
+.page-title {
     color: #ffffff;
     font-size: 40px;
     font-weight: 800;
@@ -976,7 +939,6 @@ input, textarea, select { font: inherit; }
 
 /* Fluid secondary explanatory subtitle text below titles. */
 .section-subtitle { color: var(--text-muted); font-size: clamp(13px, 1.2vw, 15px); font-weight: 500; line-height: 1.5; margin: 0; }
-.hero-title { font-size: clamp(32px, 4.2vw, 56px); line-height: 1.08; margin-bottom: 16px; max-width: 18ch; }
 .hero-desc {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
@@ -1115,7 +1077,7 @@ input, textarea, select { font: inherit; }
 .modal__header { align-items: center; display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%; }
 
 /* Primary heading typography standard for modal dialogs. */
-.modal__title, .update-title, .error-title {
+.modal__title {
     color: #ffffff;
     font-size: 26px;
     font-weight: 700;
@@ -1156,7 +1118,7 @@ input, textarea, select { font: inherit; }
 .modal__search { padding: 0 0 16px; width: 100%; }
 
 /* Action footer container providing spacing and layout for modal dialogs. */
-.modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 12px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; width: 100%; }
+.modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; width: 100%; }
 .modal__footer--center { justify-content: center; }
 .modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 0; width: 100%; }
 
@@ -1164,28 +1126,9 @@ input, textarea, select { font: inherit; }
 .modal__close-btn { align-items: center; background: transparent; border: 0; color: #aaaaaa; cursor: pointer; display: inline-flex; font-size: 18px; height: 36px; justify-content: center; position: absolute; right: 16px; top: 16px; width: 36px; z-index: 10; }
 .modal__close-btn:hover, .modal__close-btn:focus, .modal__close-btn.focused { color: #ffffff; outline: none; }
 
-/* Circular back button in modal header */
-/* Modal back button - Circular top-left return trigger */
-.modal .modal__back-btn, .modal__back-btn { align-items: center; background: transparent; border: 2px solid transparent; border-radius: 50%; color: #ffffff; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: 18px; min-height: 38px; min-width: 38px; padding: 0; position: absolute; right: auto; top: 18px; width: 38px; z-index: 20; }
-/* Modal back button hover - Subtle circular highlight */
-.modal .modal__back-btn:hover, .modal__back-btn:hover { background: rgba(255, 255, 255, 0.12); color: #ffffff; }
-/* Modal back button focus - White border outline for D-pad navigation */
-.modal .modal__back-btn:focus, .modal .modal__back-btn:focus-visible, .modal .modal__back-btn.focused, .modal__back-btn:focus, .modal__back-btn:focus-visible, .modal__back-btn.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
-/* Modal back button active - Pressed circular highlight */
-.modal .modal__back-btn:active, .modal__back-btn:active { background: rgba(255, 255, 255, 0.2); }
-/* SVG icon inside modal back button */
-.modal-back-icon { display: block; filter: brightness(0) invert(1); height: 20px; opacity: 0.9; pointer-events: none; width: 20px; }
-.modal__back-btn:hover .modal-back-icon, .modal__back-btn:focus .modal-back-icon { opacity: 1; }
-
-/* Circular refresh button in modal header */
-#version-selector-modal .modal__refresh-btn, #version-selector-refresh-btn, .modal .modal__refresh-btn { align-items: center; background: transparent; border: 0; border-radius: 50%; color: #aaaaaa; cursor: pointer; display: inline-flex; height: 38px; justify-content: center; left: auto; min-height: 38px; min-width: 38px; padding: 0; position: absolute; right: 18px; top: 18px; width: 38px; z-index: 50; }
-/* Modal refresh button focus - Subtle highlight on hover or remote focus */
-.modal .modal__refresh-btn:hover, .modal .modal__refresh-btn:focus, .modal .modal__refresh-btn.focused, .modal__refresh-btn:hover, .modal__refresh-btn:focus, .modal__refresh-btn.focused { background: rgba(255, 255, 255, 0.12); color: #ffffff; outline: none; }
-/* Modal refresh button active - Stronger pressed surface tint */
-.modal .modal__refresh-btn:active, .modal__refresh-btn:active { background: rgba(255, 255, 255, 0.2); }
-/* SVG icon inside modal refresh button */
-.modal-refresh-icon { display: block; filter: brightness(0) invert(1); height: 20px; opacity: 0.9; pointer-events: none; width: 20px; }
-.modal__refresh-btn:hover .modal-refresh-icon, .modal__refresh-btn:focus .modal-refresh-icon { opacity: 1; }
+/* Top-left and top-right circular header action buttons inside modal dialogs (inheriting .btn--ghost.btn--circle). */
+.modal .modal__back-btn, .modal__back-btn { height: 38px; left: 18px; min-height: 38px; min-width: 38px; position: absolute; right: auto; top: 18px; width: 38px; z-index: 20; }
+#version-selector-modal .modal__refresh-btn, #version-selector-refresh-btn, .modal .modal__refresh-btn { height: 38px; left: auto; min-height: 38px; min-width: 38px; position: absolute; right: 18px; top: 18px; width: 38px; z-index: 50; }
 /* Spinning animation class for refresh triggers */
 .spinning { animation: ivids-loader-spin 0.8s linear infinite; }
 
@@ -1206,8 +1149,6 @@ input, textarea, select { font: inherit; }
 .app-info-logo { height: 56px; width: 56px; }
 /* App info title container */
 .app-info-header-meta { align-items: center; display: flex; flex-direction: column; gap: 6px; }
-/* App info application title text */
-.app-info-app-title { color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
 /* Version pill badge in app info dialog */
 .app-info-badge { background: rgba(var(--primary-rgb), 0.16); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13px; font-weight: 700; padding: 3px 14px; }
 /* Clean app info details list - no nested heavy boxes */
@@ -1226,10 +1167,6 @@ input, textarea, select { font: inherit; }
 
 /* Clean zero-gap list containers for modal selections with divider lines. */
 .playlist-selection-list { display: flex; flex-direction: column; gap: 0; padding: 0; width: 100%; }
-/* Flat list option with divider line and zero radius inside modals. */
-.playlist-selection-list .playlist-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #222222; border-radius: 0; box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 500; justify-content: space-between; min-height: 52px; padding: 14px 18px; text-align: left; width: 100%; }
-/* Top border for first option in modal lists. */
-.playlist-selection-list .playlist-item:first-child { border-top: 1px solid #222222; }
 /* Keeps language heading wrapper layout-neutral outside TV landscape presentation. */
 .language-modal__heading, .language-modal__heading-copy { display: contents; }
 /* Two-column landscape language popup: centered language heading beside scrollable language rows, back button pinned top-left. */
@@ -1242,26 +1179,14 @@ input, textarea, select { font: inherit; }
     html body #language-modal .language-modal__heading .modal__back-btn { left: 18px; position: absolute; right: auto; top: 18px; }
     /* Left heading copy container. */
     html body #language-modal .language-modal__heading-copy { align-items: center; display: flex; flex-direction: column; }
-    /* Language modal title - Large centered heading in two-column desktop/TV dialog */
-    html body #language-modal #language-modal-title { font-size: clamp(30px, 2.8vw, 42px); line-height: 1.1; margin: 0; padding: 0; text-align: center; }
+    /* Language modal title centered inside two-column desktop/TV dialog. */
+    html body #language-modal .modal__title { margin: 0; padding: 0; }
     /* Scrollable single-column language list in right column. */
     html body #language-modal.modal .modal__body { box-sizing: border-box; flex: 1 1 auto; grid-column: 2; grid-row: 1; max-height: min(70vh, 660px); min-height: 0; overflow-y: auto; padding: 4px 10px 4px 0; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
     /* Single-column list rows in right column. */
     html body #language-modal #language-selection-grid { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; grid-template-columns: none; padding: 2px; width: 100%; }
     /* Mobile language stepper - Hidden on wide desktop/TV two-column language modal */
     html body #language-modal.modal .language-stepper-container { display: none; }
-    /* Language row items matching uniform modal card border, transition, and focus styles. */
-    html body #language-modal .language-card { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md); box-sizing: border-box; min-height: 50px; padding: 10px 16px; transition: background-color 150ms ease, border-color 150ms ease; width: 100%; }
-    /* Language modal card hover - Standard translucent hover matching secondary modal controls */
-    html body #language-modal .language-card:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.35); }
-    /* Language modal card focus - Crisp white outline for keyboard/D-pad navigation */
-    html body #language-modal .language-card:focus-visible, html body #language-modal .language-card.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; outline: none; }
-    /* Language modal active card - Primary brand tint and border */
-    html body #language-modal .language-card.is-active { background: rgba(var(--primary-rgb), 0.14); border-color: var(--primary-color); color: var(--primary-color); }
-    /* Language modal active card hover - Elevated primary tint on hover */
-    html body #language-modal .language-card.is-active:hover { background: rgba(var(--primary-rgb), 0.24); border-color: var(--primary-color); }
-    /* Language modal active + focused card - Preserves white D-pad focus outline */
-    html body #language-modal .language-card.is-active:focus-visible, html body #language-modal .language-card.is-active.focused { border-color: #ffffff; outline: none; }
 }
 
 /* Landscape/TV vertical modal options stack fallback for non-language selectors and item context menus. */
@@ -1301,7 +1226,6 @@ input, textarea, select { font: inherit; }
 /* Error modal specific icon and message overrides. */
 .error-icon-container { align-items: center; align-self: center; background: rgba(var(--primary-rgb), 0.14); border-radius: var(--radius-lg); display: flex; height: 50px; justify-content: center; margin-bottom: 14px; width: 50px; }
 .error-icon-mask { -webkit-mask-image: url('../images/error.svg'); -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain; background-color: var(--primary-color); height: 24px; mask-image: url('../images/error.svg'); mask-position: center; mask-repeat: no-repeat; mask-size: contain; width: 24px; }
-.error-title { color: #ffffff; font-size: 30px; font-weight: 900; margin-bottom: 14px; }
 .error-message-container { background: rgba(0, 0, 0, 0.34); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); margin-bottom: 26px; max-height: 260px; overflow-y: auto; padding: 18px; width: 100%; }
 .error-message { color: rgba(255, 255, 255, 0.78); font-size: 15px; line-height: 1.5; margin: 0; text-align: left; white-space: pre-wrap; word-break: break-word; }
 .error-actions { display: flex; gap: 12px; justify-content: center; width: 100%; }
@@ -1401,9 +1325,12 @@ input, textarea, select { font: inherit; }
     white-space: nowrap;
     width: calc(var(--app-sidebar-width) - 20px);
 }
-.nav-item:hover { background: rgba(255, 255, 255, 0.22); border-color: transparent; color: #ffffff; }
+/* Sidebar active page: white text + icon, no tint (rule order active -> hover -> focus; icon uses currentColor). */
+.nav-item.is-active, .nav-item.active { background: transparent; color: #ffffff; }
+/* Sidebar hover: green text + icon, no background, no border. */
+.nav-item:hover { background: transparent; border-color: transparent; color: var(--primary-color); }
+/* Sidebar D-pad/keyboard focus: white text + icon with white border, never green. */
 .nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.22); border-color: #ffffff; color: #ffffff; outline: none; }
-.nav-item.is-active, .nav-item.active { background: rgba(var(--primary-rgb), 0.16); color: #ffffff; }
 
 /* Masked icon container inside navigation item. */
 .nav-item__icon, .nav-icon {
@@ -1420,7 +1347,8 @@ input, textarea, select { font: inherit; }
     mask-size: contain;
     width: 24px;
 }
-.nav-item.is-active .nav-item__icon, .nav-item.active .nav-icon { background-color: var(--primary-color); }
+/* Active sidebar page icon: slightly larger (26px) and kept centered in the collapsed rail. */
+.nav-item:is(.is-active, .active) :is(.nav-item__icon, .nav-icon) { flex-basis: 26px; height: 26px; margin-left: calc((var(--app-sidebar-width) - 50px) / 2 - 1px); margin-right: 15px; width: 26px; }
 .nav-item__label, .nav-item span { opacity: 0; transition: opacity 0.25s ease; }
 #app.sidebar-always-expanded .nav-item, .nav-rail:hover .nav-item, .nav-rail:focus-within .nav-item, .navbar:hover .nav-item, .navbar:focus-within .nav-item { width: 100%; }
 #app.sidebar-always-expanded .nav-item__label, .nav-rail:hover .nav-item__label, .nav-rail:focus-within .nav-item__label,
@@ -1584,9 +1512,6 @@ input, textarea, select { font: inherit; }
 /* Centered container for the small desktop advanced settings dropdown button */
 .advanced-dropdown-wrapper { display: flex; justify-content: center; margin: 8px 0 24px; width: 100%; }
 
-/* Small dropdown toggle button under Live TV */
-.advanced-dropdown-btn { font-size: 14.5px; font-weight: 600; gap: 8px; padding: 10px 22px; }
-
 /* Rotating dropdown arrow icon inside toggle button */
 .dropdown-chevron { display: inline-block; height: 14px; margin-left: 6px; transition: transform 0.2s ease; width: 14px; }
 
@@ -1607,50 +1532,23 @@ input, textarea, select { font: inherit; }
     height: auto;
     min-height: 100vh;
     padding-bottom: 3rem;
-    padding-top: 4rem;
+    padding-top: 5.5rem;
     position: relative;
 }
-/* Circular floating back button positioned top-left for navigation. */
+/* Circular floating back button positioned top-left for navigation (inherits .btn.btn--secondary.btn--circle). */
 .details-back-btn {
-    align-items: center;
-    background: rgba(18, 18, 18, 0.75);
     backdrop-filter: blur(12px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    box-sizing: border-box;
-    cursor: pointer;
-    display: inline-flex;
+    background: rgba(18, 18, 18, 0.75);
     height: 44px;
-    justify-content: center;
     left: calc(var(--app-sidebar-width) + 24px);
     min-height: 44px;
     min-width: 44px;
-    padding: 0;
     position: fixed;
     top: 24px;
-    transition: background-color 150ms ease, border-color 150ms ease;
     width: 44px;
-    z-index: 100;
+    z-index: 200;
 }
-/* Hover state for circular details back button. */
-.details-back-btn:hover, .details-back-btn:active {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: rgba(255, 255, 255, 0.4);
-}
-/* Focus state for circular details back button with standardized thick white outline. */
-.details-back-btn:focus, .details-back-btn.focused {
-    border-color: #ffffff;
-    outline: 2px solid #ffffff;
-}
-/* Icon inside circular details back button. */
-.details-back-icon {
-    display: block;
-    filter: brightness(0) invert(1);
-    height: 20px;
-    pointer-events: none;
-    width: 20px;
-}
-.details-layout { display: flex; flex-direction: column; gap: 2.5rem; margin: 0 auto; max-width: 90rem; padding: 0 5%; position: relative; transition: opacity 0.2s ease; z-index: 10; }
+.details-layout { display: flex; flex-direction: column; gap: 2.5rem; margin: 0 auto; max-width: 90rem; padding: 0 5%; position: relative; scroll-margin-top: 88px; transition: opacity 0.2s ease; z-index: 10; }
 /* Hides unpopulated details layout while metadata is being fetched from API. */
 .details-layout.is-loading { opacity: 0; pointer-events: none; }
 /* Centers full-page loader inside details page during initial API metadata request. */
@@ -1659,7 +1557,7 @@ input, textarea, select { font: inherit; }
 .details-poster-container { position: relative; }
 .details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border-radius: 5px; min-width: 0; width: clamp(180px, 24vw, 340px); }
 .details-poster-container.is-loading.is-widescreen { aspect-ratio: 16 / 9; }
-.details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; }
+.details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; scroll-margin-top: 88px; }
 .details-info { flex: 1; max-width: 50%; }
 .details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 0; width: clamp(180px, 24vw, 340px); }
 .details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 50%, transparent 75%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.16); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); min-width: 0; width: clamp(180px, 24vw, 340px); }
@@ -1695,10 +1593,8 @@ input, textarea, select { font: inherit; }
 .empty-state__text { margin: 0; }
 /* Playlist badge icon sizing inside widescreen playlist cards. */
 .playlist-badge__icon { filter: brightness(0) invert(1); height: 16px; width: 16px; }
-/* Button icon sizing inside circular playlist item action buttons. */
+/* Button icon sizing inside action buttons. */
 .btn__icon { filter: brightness(0) invert(1); height: 18px; pointer-events: none; width: 18px; }
-/* Ensures icons inside solid primary accent buttons follow dynamic --primary-foreground contrast. */
-.btn--primary .btn__icon { filter: var(--primary-icon-filter); }
 /* Borderless Playlists overview header uniting title, live playlist count, and primary Create CTA. */
 .playlists-header { border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 24px; padding-bottom: 20px; }
 /* Left column stacking the Playlists page title above the live playlist count readout. */
@@ -1758,7 +1654,6 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 .playlist-header-card .details-info { flex: 1 1 auto; max-width: 100%; min-width: 0; }
-.playlist-header-card .details-title { font-size: 32px; font-weight: 800; margin: 0 0 8px; text-shadow: none; }
 .playlist-header-card .details-genres { color: var(--text-muted); font-size: 14px; font-weight: 600; gap: 8px; margin-bottom: 16px; }
 /* Collapse bottom margin on playlist item count when all header action buttons are hidden. */
 .playlist-header-card .details-genres:has(+ .details-actions.hidden) { margin-bottom: 0; }
@@ -1769,7 +1664,6 @@ input, textarea, select { font: inherit; }
 .playlist-details-header { align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 20px; justify-content: space-between; margin-bottom: 24px; padding-bottom: 20px; width: 100%; }
 .playlist-details-header__left { align-items: center; display: flex; flex: 1 1 auto; gap: 18px; min-width: 0; }
 .playlist-details-header__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.playlist-details-header__title { color: #ffffff; font-size: clamp(24px, 2.4vw, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .playlist-details-header__count { color: var(--text-muted); font-size: 14px; font-weight: 600; }
 /* Bottom items list card for Playlist Details matching Settings and Account sections. */
 .recommendations-section, .playlist-items-section {
@@ -1826,8 +1720,7 @@ input, textarea, select { font: inherit; }
 .search-box { margin-bottom: 0; min-width: 0; width: 100%; }
 /* Expands the search input box only inside the horizontal search-toolbar row. */
 .search-toolbar .search-box { flex: 1; }
-.search-icon, .filter-icon { height: 20px; margin-right: 8px; opacity: 0.85; width: 20px; }
-.trash-icon { height: 14px; width: 14px; }
+.search-icon { height: 20px; margin-right: 8px; opacity: 0.85; width: 20px; }
 .search-actions { display: flex; flex-shrink: 0; gap: 10px; justify-content: center; margin-bottom: 0; width: auto; }
 .recent-searches-row { align-items: center; display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; width: 100%; }
 .recent-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
@@ -1847,7 +1740,7 @@ input, textarea, select { font: inherit; }
 .select-options-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding: 0 4px 16px; }
 /* Standardized 2-column filter grid and section typography inside the search filter modal. */
 .filter-main-grid { display: grid; gap: 14px 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 14px; width: 100%; }
-#filter-modal .modal__body { display: flex; flex-direction: column; gap: 14px; }
+#filter-modal .modal__body { display: flex; flex: 1 1 auto; flex-direction: column; gap: 12px; max-height: 60vh; min-height: 0; overflow-x: hidden; overflow-y: auto; padding: 4px 6px 16px; }
 #filter-modal .form-group h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; margin: 0 0 8px; opacity: 0.72; text-transform: uppercase; }
 .group-header { align-items: center; display: flex; justify-content: space-between; }
 
@@ -1885,14 +1778,19 @@ input, textarea, select { font: inherit; }
 .livetv-categories-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 17%; }
 /* Vertical stack container for category and country rows. */
 .categories-list { box-sizing: border-box; contain: layout style; display: flex; flex-direction: column; gap: 6px; padding: 2px; width: 100%; }
-/* Category and country row item in the Live TV left column (isolated paint, instant focus). */
-.category-list-item { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; contain: layout style paint; cursor: pointer; display: flex; flex-shrink: 0; gap: 8px; height: 42px; justify-content: space-between; min-height: 42px; padding: 6px 12px; width: 100%; }
-/* Category row hover state. */
-.category-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
-/* Selected category row active state with primary brand highlight. */
+/* Shared Live TV selectable row card (categories, channels, stream options) - base surface, hover, active, and D-pad focus. */
+.category-list-item, .channel-card, .channel-list-item, .tv-opt-btn { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; min-height: 42px; padding: 6px 12px; width: 100%; }
+/* Live TV row card hover state. */
+.category-list-item:hover, .channel-card:hover, .channel-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
+.tv-opt-btn:hover { border-color: #ffffff; }
+/* Live TV row card selected/active state with primary brand highlight. */
 .category-list-item.active, .category-list-item.is-selected { background: rgba(var(--primary-rgb), 0.2); border-color: var(--primary-color); }
-/* Category row spatial navigation focus state. */
-.category-list-item:focus, .category-list-item.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+.tv-opt-btn.is-active { background: rgba(var(--primary-rgb), 0.18); border-color: var(--primary-color); }
+.tv-opt-btn.is-active:hover { border-color: #ffffff; }
+/* Live TV row card spatial navigation focus state. */
+.category-list-item:focus, .category-list-item.focused, .channel-card:focus, .channel-card.focused, .channel-list-item:focus, .channel-list-item.focused, .tv-opt-btn:focus, .tv-opt-btn.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+/* Category and country row item in the Live TV left column (isolated paint, instant focus). */
+.category-list-item { contain: layout style paint; flex-shrink: 0; gap: 8px; height: 42px; justify-content: space-between; }
 /* Category or country label text. */
 .category-list-name { color: #ffffff; font-size: 0.88rem; font-weight: 700; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 /* Channel count badge inside category row. */
@@ -1911,28 +1809,7 @@ input, textarea, select { font: inherit; }
 /* Channel items vertical stack container with layout containment. */
 .channels-list { box-sizing: border-box; contain: layout style; display: flex; flex: 1; flex-direction: column; gap: 6px; min-height: 0; overflow-y: auto; padding: 2px; width: 100%; }
 /* Compact OOCSS Channel card component for Live TV channel list (instant focus without transition drag). */
-.channel-card, .channel-list-item {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
-    box-sizing: border-box;
-    contain: layout style paint;
-    cursor: pointer;
-    display: flex;
-    flex-shrink: 0;
-    gap: 10px;
-    height: 42px;
-    margin: 0;
-    min-height: 42px;
-    padding: 6px 12px;
-    position: relative;
-    width: 100%;
-}
-/* Channel card hover state. */
-.channel-card:hover, .channel-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
-/* Channel card focused spatial navigation state. */
-.channel-card:focus, .channel-card.focused, .channel-list-item:focus, .channel-list-item.focused { background: rgba(255, 255, 255, 0.1); border-color: #ffffff; outline: none; }
+.channel-card, .channel-list-item { contain: layout style paint; flex-shrink: 0; gap: 10px; height: 42px; margin: 0; position: relative; }
 /* Channel logo glass surface container. */
 .channel-card__logo-wrap, .channel-list-logo-container { align-items: center; background: rgba(255, 255, 255, 0.06); border-radius: 6px; box-sizing: border-box; display: flex; flex-shrink: 0; height: 26px; justify-content: center; overflow: hidden; padding: 3px; width: 26px; }
 /* Channel logo image. */
@@ -1986,25 +1863,8 @@ input, textarea, select { font: inherit; }
 .tv-overlay.show { opacity: 1; pointer-events: auto; }
 /* Top bar hosting strictly top-left Back and top-right Settings buttons. */
 .tv-overlay-top { align-items: center; display: flex; justify-content: space-between; pointer-events: auto; width: 100%; }
-/* Live TV fullscreen player top Back and Settings circular buttons. */
-.tv-back-btn, .tv-settings-btn {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.55);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    cursor: pointer;
-    display: inline-flex;
-    height: 40px;
-    justify-content: center;
-    min-height: 40px;
-    min-width: 40px;
-    padding: 0;
-    pointer-events: auto;
-    transition: background-color 150ms ease, border-color 150ms ease;
-    width: 40px;
-}
-.tv-back-btn:hover, .tv-settings-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.45); }
-.tv-back-btn:focus, .tv-back-btn.focused, .tv-settings-btn:focus, .tv-settings-btn.focused { background: rgba(255, 255, 255, 0.24); border-color: #ffffff; outline: none; }
+/* Live TV and VOD fullscreen player circular overlay buttons (inherits .btn.btn--secondary.btn--circle-*). */
+.tv-back-btn, .tv-settings-btn, .vod-skip-btn { background: rgba(0, 0, 0, 0.55); border-color: rgba(255, 255, 255, 0.22); pointer-events: auto; }
 /* Minimal right-edge docked Stream Options sidebar matching app flat bordered list aesthetic. */
 .tv-settings-panel { background: rgba(10, 10, 10, 0.94); border-left: 1px solid rgba(255, 255, 255, 0.14); border-radius: 0; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-y: auto; padding: 16px 16px; pointer-events: auto; position: absolute; right: 0; top: 0; width: clamp(300px, 28vw, 390px); z-index: 30; }
 /* Minimal sidebar header/back button switching from submenu to root or closing sidebar. */
@@ -2018,11 +1878,7 @@ input, textarea, select { font: inherit; }
 /* Single-column vertical stack of menu rows inside Stream Options sidebar. */
 .tv-settings-options { display: flex; flex-direction: column; gap: 6px; width: 100%; }
 /* Minimal bordered list row inside Stream Options sidebar matching category/channel items. */
-.tv-opt-btn { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 0.88rem; font-weight: 700; gap: 10px; justify-content: space-between; min-height: 42px; padding: 8px 12px; text-align: left; width: 100%; }
-.tv-opt-btn:hover { border-color: #ffffff; }
-.tv-opt-btn.is-active { background: rgba(var(--primary-rgb), 0.18); border-color: var(--primary-color); }
-.tv-opt-btn.is-active:hover { border-color: #ffffff; }
-.tv-opt-btn:focus, .tv-opt-btn.focused { background: rgba(255, 255, 255, 0.1); border-color: #ffffff; outline: none; }
+.tv-opt-btn { color: #ffffff; font-size: 0.88rem; font-weight: 700; gap: 10px; justify-content: space-between; padding: 8px 12px; text-align: left; }
 /* Left-aligned option label inside Stream Options sidebar row. */
 .tv-opt-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Right-aligned subtle current value hint inside Root category rows. */
@@ -2072,10 +1928,7 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .vod-scrub-row .progress-bar:hover, .vod-scrub-row .progress-bar:focus, .vod-scrub-row .progress-bar.focused { height: 9px; outline: 2px solid #ffffff; outline-offset: 4px; }
 .vod-time-display { color: rgba(255, 255, 255, 0.9); font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 600; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75); white-space: nowrap; }
 .vod-transport-bar { align-items: center; display: flex; gap: 14px; justify-content: center; width: 100%; }
-.vod-skip-btn { align-items: center; background: rgba(0, 0, 0, 0.55); border: 2px solid rgba(255, 255, 255, 0.22); border-radius: 50%; cursor: pointer; display: inline-flex; height: 46px; justify-content: center; min-height: 46px; min-width: 46px; padding: 0; transition: background-color 150ms ease, border-color 150ms ease; width: 46px; }
 .vod-skip-btn .btn__icon { height: 24px; width: 24px; }
-.vod-skip-btn:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.45); }
-.vod-skip-btn:focus, .vod-skip-btn.focused { background: rgba(255, 255, 255, 0.24); border-color: #ffffff; outline: none; }
 /* Primary VOD Play/Pause circular button matching the Details Watch button theme fill. */
 .vod-play-btn { background: rgba(var(--primary-rgb), 0.25); border: 2px solid rgba(var(--primary-rgb), 0.5); border-radius: 50%; flex-shrink: 0; height: 54px; min-height: 54px; min-width: 54px; padding: 0; width: 54px; }
 .vod-play-btn .btn__icon { height: 22px; width: 22px; }
@@ -2106,7 +1959,6 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .ui-scale-control .scale-adjust-btn { font-size: 24px; font-weight: 700; line-height: 1; }
 /* Trailing chevron indicator for full-width action buttons. */
 .btn__chevron { height: 16px; margin-left: auto; opacity: 0.7; width: 16px; }
-.setting-stepper-icon { display: block; height: 18px; pointer-events: none; width: 18px; }
 .setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
 .loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
 
@@ -2117,7 +1969,6 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .provider-item.moving, .provider-item.moving:hover, .provider-item.moving:focus, .provider-item.moving.focused { background: #2c2c2c; border: 2px solid #ffffff; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88); outline: none; z-index: 20; }
 .provider-item.dragging { background: #333333; border: 2px solid #ffffff; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95); cursor: grabbing; opacity: 0.98; outline: none; user-select: none; z-index: 50; }
 .provider-actions { align-items: center; display: flex; gap: 8px; margin-left: auto; }
-.provider-actions .edit-trigger, .provider-actions .setting-btn { border-radius: 50%; height: 42px; min-height: 42px; min-width: 42px; padding: 0; width: 42px; }
 /* Borderless circular drag-handle control on Landscape/TV with white focus ring on focus/move. */
 .provider-actions .provider-move-btn { background: transparent; border: 2px solid transparent; box-shadow: none; cursor: grab; opacity: 0.78; }
 .provider-actions .provider-move-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.45); opacity: 1; }
@@ -2152,10 +2003,7 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .login-card-container { box-sizing: border-box; margin: 0 auto; position: relative; width: min(460px, 92vw); }
 .login-panel { background: #141414; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9); box-sizing: border-box; margin: 0 auto; max-height: 94vh; overflow-y: auto; padding: 28px 28px 24px; position: relative; width: 100%; }
 #login-circle-back { left: 20px; position: absolute; top: 20px; z-index: 10; }
-.login-back-icon { height: 18px; object-fit: contain; pointer-events: none; width: 18px; }
 .login-header { align-items: center; display: flex; flex-direction: column; justify-content: center; margin-bottom: 24px; text-align: center; }
-.login-title-text { color: #ffffff; font-size: 26px; font-weight: 800; margin: 0 0 6px; text-align: center; justify-content: center; }
-.login-subtitle-text { color: var(--text-muted); font-size: 14px; margin: 0; }
 .login-pin-row { align-items: baseline; display: flex; justify-content: space-between; margin-bottom: 6px; width: 100%; }
 .login-pin-row label { margin-bottom: 0; }
 .login-pin-hint { color: var(--text-dim); font-size: 13.5px; font-weight: 600; }
@@ -2198,8 +2046,6 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 
 /* Update more info button container */
 .update-more-info-container { box-sizing: border-box; margin: 10px 0 6px; width: 100%; }
-/* Update more info button */
-#update-more-info-btn { border-radius: 12px; font-size: 14.5px; font-weight: 600; min-height: 44px; width: 100%; }
 /* Update changelog dedicated modal scroll container */
 .update-changelog-scroll { box-sizing: border-box; max-height: 60vh; overflow-x: hidden; overflow-y: auto; padding: 8px 16px 20px; width: 100%; }
 .update-changelog-scroll::-webkit-scrollbar { width: 6px; }
@@ -2285,7 +2131,9 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
     }
     .hero { height: 46vh; min-height: 320px; padding-bottom: 30px; }
     .row-container { margin-bottom: 8px; }
-    .details-top { gap: 20px; }
+    .details-page { padding-top: 4.75rem; }
+    .details-top { gap: 24px; margin-bottom: 1.5rem; }
+    .details-hero-poster { width: clamp(150px, 18vw, 230px); }
     .details-backdrop { height: 46vh; }
 }
 

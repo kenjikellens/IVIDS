@@ -160,14 +160,16 @@
     "debridEnvReady": ".env-varmuus",
     "debridNotConfigured": "Ei asetettu",
     "tierDirectHttp": "Suora HTTP (Ilmainen)",
-    "directHttpAddon": "Ilmainen HTTP-lisäosan URL"
+    "directHttpAddon": "Ilmainen HTTP-lisäosan URL",
+    "urlRequired": "Anna kelvollinen URL-osoite ennen tallentamista."
   },
   "common": {
     "close": "Close",
     "apply": "Apply",
     "cancel": "Cancel",
     "create": "Create",
-    "save": "Save"
+    "save": "Save",
+    "options": "Asetukset"
   },
   "home": {
     "welcome": "Welcome to IVIDS",

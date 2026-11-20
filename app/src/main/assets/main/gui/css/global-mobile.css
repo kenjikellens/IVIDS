@@ -71,7 +71,7 @@
 }
 
 /* One shared mobile navigation row gives every destination an identical grid cell. */
-#app #sidebar-container #nav-links { display: grid; flex: 1 1 auto; gap: 0; grid-template-columns: repeat(7, minmax(0, 1fr)); margin: 0; min-width: 0; width: 100%; }
+#app #sidebar-container #nav-links { display: grid; flex: 1 1 auto; gap: 0; grid-template-columns: repeat(8, minmax(0, 1fr)); margin: 0; min-width: 0; width: 100%; }
 #app #sidebar-container #nav-utilities { display: none; }
 
 /* Layout and spacing override for bottom nav item. */
@@ -96,7 +96,7 @@
 
 /* Hides elements that should not render on mobile bottom navigation. */
 #app .nav-rail__header, #app .logo-container, #app .nav-item__label, #app .nav-item span,
-#app .nav-item::before, #app .nav-item[data-route="livetv"], #app .nav-item[data-route="music"] {
+#app .nav-item::before, #app .nav-item[data-route="music"] {
     display: none;
 }
 
@@ -104,19 +104,20 @@
 #app .nav-item[data-route="home"] { order: 1; }
 #app .nav-item[data-route="movies"] { order: 2; }
 #app .nav-item[data-route="series"] { order: 3; }
-#app .nav-item[data-route="search"] { order: 4; }
-#app .nav-item[data-route="playlists"] { order: 5; }
-#app .nav-item[data-route="account"] { order: 6; }
-#app .nav-item[data-route="settings"] { order: 7; }
+#app .nav-item[data-route="livetv"] { order: 4; }
+#app .nav-item[data-route="search"] { order: 5; }
+#app .nav-item[data-route="playlists"] { order: 6; }
+#app .nav-item[data-route="account"] { order: 7; }
+#app .nav-item[data-route="settings"] { order: 8; }
 
 /* Height and layout adjustments for the hero banner on mobile. */
 #app .hero { align-items: flex-end; height: 45vh; min-height: 320px; padding: 0 4% 5%; }
 #app .hero-slide { background-attachment: scroll; background-position: center top; background-size: cover; }
 #app .hero-content { margin: 0 auto; text-align: center; width: 100%; }
-/* Horizontally centers hero title text across mobile viewports. */
-#app #hero-title, #app .hero-title { display: block; margin-left: auto; margin-right: auto; max-width: 90%; text-align: center; }
+/* Horizontally centers hero display title text across mobile viewports. */
+#app .title-hero { display: block; font-size: clamp(22px, 5.8vw, 26px); font-weight: 800; line-height: 1.2; margin: 2px auto 6px; max-width: 92%; text-align: center; width: 100%; }
 #app .hero-buttons { display: flex; justify-content: center; margin-top: 4px; width: 100%; }
-#app .hero-buttons .btn { margin: 0 auto; max-width: 90%; padding: 10px 24px; width: fit-content; }
+#app .hero-buttons .btn { margin: 0 auto; max-width: 90%; min-width: 140px; padding: 10px 24px; width: fit-content; }
 
 /* Scrolling and gap adjustments for media rails. */
 #app .media-rail, #app .row-posters { gap: 10px; padding: 2% 4% 4%; }
@@ -135,6 +136,8 @@
     grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
 }
 /* Mobile standardized filter modal sections, triggers, and 2-column chip grids */
+#app #filter-modal .modal__body { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; padding: 4px 4px 20px; }
+#app #filter-modal .modal__footer { flex-shrink: 0; gap: 8px; padding-top: 12px; position: relative; z-index: 2; }
 #app .filter-main-grid { gap: 12px; grid-template-columns: 1fr; margin-bottom: 12px; }
 #app #filter-modal .form-group h3 { color: rgba(255, 255, 255, 0.65); font-size: 12px; font-weight: 700; letter-spacing: 0.05em; margin: 0 0 8px; text-transform: uppercase; }
 #app #filter-modal .form-select-trigger { border-radius: 12px; font-size: 15px; height: 48px; }
@@ -151,37 +154,16 @@
 }
 #app .details-layout { gap: 12px; margin: 0 auto; max-width: 600px; padding: 0 16px; position: relative; z-index: 1; }
 
-/* Mobile circular floating back button pinned to top-left with safe-area spacing. */
+/* Mobile circular floating back button pinned to top-left with safe-area spacing (inherits .btn--circle). */
 #app #details-back-btn,
 #app .details-back-btn {
-    align-items: center;
-    background: rgba(18, 18, 18, 0.72);
     backdrop-filter: blur(12px);
+    background: rgba(18, 18, 18, 0.72);
     border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 50%;
-    box-sizing: border-box;
-    cursor: pointer;
-    display: inline-flex;
-    height: 42px;
-    justify-content: center;
     left: 16px;
-    min-height: 42px;
-    min-width: 42px;
-    padding: 0;
     position: fixed;
     top: calc(14px + env(safe-area-inset-top, 0px));
-    width: 42px;
     z-index: 50;
-}
-#app .details-back-btn:active {
-    background: rgba(255, 255, 255, 0.18);
-}
-#app .details-back-icon {
-    display: block;
-    filter: brightness(0) invert(1);
-    height: 18px;
-    pointer-events: none;
-    width: 18px;
 }
 
 /* Mobile: Details and Playlist backdrop images hidden completely as requested. */
@@ -198,20 +180,13 @@
 /* Widescreen 16:9 hero cover proportions for playlist details on mobile. */
 #app .playlist-hero-cover { aspect-ratio: 16 / 9; max-height: 135px; max-width: 64vw; object-fit: cover; width: 210px; }
 #app .details-info { align-items: center; display: flex; flex-direction: column; max-width: 100%; order: 2; text-align: center; width: 100%; }
-#app #details-title, #app .details-info .details-title, #app .details-title { font-size: clamp(20px, 5.5vw, 24px); font-weight: 800; line-height: 1.25; margin: 2px auto; text-align: center; width: 100%; }
 #app .details-overview { display: none; }
 #app .details-meta, #app .details-genres { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 6px; }
 #app .details-meta span, #app .details-genres > * { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px; font-size: 11px; font-weight: 600; padding: 3px 9px; }
 
-/* Compact horizontal action buttons row. */
-#app .details-actions { align-items: center; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 8px; margin: 4px 0 10px; width: 100%; }
-#app #details-play { align-items: center; background: #ffffff; border: 0; border-radius: 12px; color: #111111; display: inline-flex; flex: 1 1 0; font-size: 14px; font-weight: 700; gap: 8px; height: 48px; justify-content: center; min-height: 48px; min-width: 0; padding: 0 14px; width: auto; }
-#app .details-play-icon { display: inline-block !important; filter: brightness(0); height: 16px; pointer-events: none; width: 16px; }
-#app .details-play-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 14px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: hidden; position: static; text-overflow: ellipsis; white-space: nowrap; }
-#app #details-trailer, #app #details-playlist { align-items: center; background: #1d1d1d; border: 1px solid #383838; border-radius: 12px; color: #f5f5f5; display: inline-flex; flex: 1 1 0; font-size: 13.5px; font-weight: 600; gap: 6px; height: 48px; justify-content: center; min-height: 48px; min-width: 0; padding: 0 10px; width: auto; }
-#app .details-actions .details-mobile-icon { display: inline-block !important; }
-#app .details-action-icon { filter: brightness(0) invert(1); flex: 0 0 16px; height: 16px; pointer-events: none; width: 16px; }
-#app .details-action-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Compact horizontal action buttons row with wrapping support to prevent label clipping. */
+#app .details-actions { align-items: stretch; display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; width: 100%; }
+#app .details-actions .btn { flex: 1 1 auto; min-width: max-content; width: auto; }
 
 /* Tabs header bar copied from landscape */
 #app .tab-bar,
@@ -284,9 +259,9 @@
 /* Touch-friendly compact season selector pill. */
 #app .details-seasons { align-items: center; backdrop-filter: none; background: transparent; border: none; display: flex; justify-content: flex-start; margin: 2px 0 8px; max-height: none; padding: 0; width: 100%; }
 #app .seasons-list-content { display: none; }
-#app .seasons-dropdown-wrapper { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 999px; box-sizing: border-box; display: inline-flex; height: 36px; max-width: 220px; min-height: 36px; position: relative; transition: background-color 150ms ease, border-color 150ms ease; width: auto; }
+#app .seasons-dropdown-wrapper { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 999px; box-sizing: border-box; display: inline-flex; height: 44px; max-width: 220px; min-height: 44px; position: relative; transition: background-color 150ms ease, border-color 150ms ease; width: auto; }
 #app .seasons-dropdown-wrapper::after { border-bottom: 2px solid rgba(255, 255, 255, 0.7); border-right: 2px solid rgba(255, 255, 255, 0.7); content: ''; height: 5px; pointer-events: none; position: absolute; right: 14px; top: calc(50% - 4px); transform: rotate(45deg); width: 5px; }
-#app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: 13.5px; font-weight: 700; height: 100%; min-height: 36px; outline: none; padding: 0 32px 0 16px; width: 100%; }
+#app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: 13.5px; font-weight: 700; height: 100%; min-height: 44px; outline: none; padding: 0 32px 0 16px; width: 100%; }
 
 /* Tab Panel Extra: copied from landscape mode card--row */
 #app .disney-episode-item,
@@ -321,12 +296,6 @@
 #app .extras-empty-state { align-items: center; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; justify-content: center; min-height: 240px; padding: 48px 16px 32px; text-align: center; width: 100%; }
 /* Centered greyish empty text. */
 #app .extras-empty-text { color: #888888; font-size: 14.5px; font-weight: 500; line-height: 1.4; margin: 0; max-width: 320px; }
-/* Circular retry action button in empty state. */
-#app .extras-retry-btn { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 50%; box-sizing: border-box; cursor: pointer; display: inline-flex; height: 48px; justify-content: center; min-height: 48px; min-width: 48px; padding: 0; transition: background-color 150ms ease, border-color 150ms ease; width: 48px; }
-#app .extras-retry-btn:hover, #app .extras-retry-btn:active { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.35); }
-#app .extras-retry-btn:focus, #app .extras-retry-btn.focused { border-color: #ffffff; outline: 2px solid #ffffff; }
-/* Retry icon inside circular button. */
-#app .extras-retry-icon { color: #ffffff; display: block; filter: brightness(0) invert(1); height: 20px; pointer-events: none; width: 20px; }
 
 /* Non-episode horizontal row cards fallback (e.g. playlist item rows on mobile). */
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
@@ -421,7 +390,6 @@
 /* Clean borderless mobile header for Playlist Details with title/count and full-width action row. */
 #app .playlist-details-header { align-items: stretch; border-bottom: 1px solid var(--mobile-border); display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; padding-bottom: 16px; width: 100%; }
 #app .playlist-details-header__left { align-items: center; display: flex; gap: 12px; min-width: 0; }
-#app .playlist-details-header__title { font-size: 22px; }
 #app .playlist-header-actions { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
 #app .playlist-header-actions:has(#play-all-btn.hidden) { grid-template-columns: 1fr; }
 #app .playlist-items-section { background: transparent; border: none; padding: 0; width: 100%; }
@@ -460,12 +428,12 @@ body #item-context-modal .modal__title { border-bottom: 1px solid var(--mobile-b
 #app .page-container:has(> .playlists-container) { padding: 0; }
 #app .page-header { align-items: flex-start; flex-direction: column; gap: 12px; }
 
-/* Mobile Settings and Account surface overrides (specific row/profile layouts live in dedicated sections below). */
-#app .page-title, #app .account-header h1 { font-size: clamp(24px, 6vw, 30px); }
+/* Unified mobile primary page heading across Playlists, Playlist Details, Settings, Account, and Login. */
+#app .page-title { color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin: 0; }
 #app .account-section { border-radius: var(--radius-md); margin-bottom: 16px; padding: 16px; }
 #app #manual-check-container { align-items: center; text-align: center; }
 #app #manual-check-container .setting-control { justify-content: center; }
-#app .btn--square, #app .setting-btn { border-radius: var(--radius-sm); flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; width: 40px; }
+#app .btn--square, #app .setting-btn { border-radius: var(--radius-sm); flex-shrink: 0; height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 #app .setting-edit-icon { height: 18px; width: 18px; }
 #app .color-preview-circle, #app #current-color-display { border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 50%; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); flex-shrink: 0; height: 32px; width: 32px; }
 
@@ -545,8 +513,9 @@ html body .modal__close, .modal__close {
     z-index: 10;
 }
 
-/* Top-left back button for mobile sub-pages: invisible round button showing only the arrow, circular highlight on click. */
-html body .modal__back-btn, body .modal__back-btn, .modal__back-btn {
+/* Top-left back button and top-right refresh button for mobile sub-pages. */
+html body .modal__back-btn, body .modal__back-btn, .modal__back-btn,
+html body #version-selector-modal .modal__refresh-btn, body #version-selector-modal .modal__refresh-btn, body .modal__refresh-btn {
     align-items: center;
     background: transparent;
     border: none;
@@ -556,7 +525,6 @@ html body .modal__back-btn, body .modal__back-btn, .modal__back-btn {
     display: inline-flex;
     height: 44px;
     justify-content: center;
-    left: 12px;
     min-height: 44px;
     min-width: 44px;
     padding: 0;
@@ -566,25 +534,12 @@ html body .modal__back-btn, body .modal__back-btn, .modal__back-btn {
     width: 44px;
     z-index: 50;
 }
-/* Mobile modal back button active - Subtle touch feedback without layout transform */
-html body .modal__back-btn:active, body .modal__back-btn:active {
-    background: rgba(255, 255, 255, 0.14);
-    transform: none;
-}
-/* Mobile modal back button focus - Highlight for touch/accessibility navigation */
-html body .modal__back-btn:focus-visible, body .modal__back-btn.focused {
-    background: rgba(255, 255, 255, 0.16);
-    outline: none;
-}
-
-/* Icon image inside mobile sub-page back button */
-.modal-back-icon {
-    display: block;
-    filter: brightness(0) invert(1);
-    height: 24px;
-    pointer-events: none;
-    width: 24px;
-}
+html body .modal__back-btn, body .modal__back-btn, .modal__back-btn { left: 12px; }
+html body #version-selector-modal .modal__refresh-btn, body #version-selector-modal .modal__refresh-btn, body .modal__refresh-btn { left: auto; right: 12px; }
+/* Mobile modal header icon button active and focus states. */
+html body .modal__back-btn:active, body .modal__back-btn:active, body .modal__refresh-btn:active { background: rgba(255, 255, 255, 0.14); transform: none; }
+html body .modal__back-btn:focus-visible, body .modal__back-btn.focused, body .modal__refresh-btn:focus-visible, body .modal__refresh-btn.focused { background: rgba(255, 255, 255, 0.16); outline: none; }
+html body .modal__back-btn .btn__icon, body .modal__back-btn .btn__icon, body .modal__refresh-btn .btn__icon { height: 22px; width: 22px; }
 
 /* Fluid scrollable content body in full-screen sub-page */
 html body .modal__body, .modal__body,
@@ -615,21 +570,15 @@ html body .modal__footer, .modal__footer {
     padding: 16px 0 0;
     width: 100%;
 }
+/* Full-width action buttons inside mobile modal footers. */
 html body .modal__footer .btn, .modal__footer .btn {
     flex: none;
-    font-size: 15px;
-    font-weight: 700;
-    min-height: 48px;
     min-width: 0;
     width: 100%;
 }
-body .modal__footer .btn { border-radius: 14px; min-height: 48px; }
-body .modal__footer .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: var(--primary-foreground); }
-body .modal__footer .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
-/* Mobile modal footer and back buttons - Clean opacity/brightness tap transition without forbidden scale transforms. */
-body .modal__footer .btn, body .modal__back-btn { transition: background-color 0.14s ease, filter 0.14s ease; }
-/* Mobile modal button active state - Subtle dim without layout displacement. */
-body .modal__footer .btn:active, body .modal__back-btn:active { filter: brightness(0.92); }
+/* Mobile modal back button tap transition and active dim. */
+body .modal__back-btn { transition: background-color 0.14s ease, filter 0.14s ease; }
+body .modal__back-btn:active { filter: brightness(0.92); }
 
 /* Hide bottom action footer in sub-pages on mobile for auto-apply/back navigation */
 html body #language-modal .modal__footer, body #language-modal .modal__footer, #language-modal .modal__footer,
@@ -642,29 +591,14 @@ html body #version-selector-modal .modal__footer, body #version-selector-modal .
 }
 
 /* Provider item container inside mobile sub-page */
-/* Clean flat mobile reorder rows matching Settings list aesthetic instead of stacked grey boxes. */
+/* Mobile reorder rows: unique wrap/gap/padding only (shared touch-row base lives in the settings section below). */
 body .modal .provider-item,
 body .provider-item {
-    align-items: center;
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid var(--mobile-border);
-    border-radius: 0;
-    box-shadow: none;
-    box-sizing: border-box;
-    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 8px 10px;
-    justify-content: space-between;
     margin-bottom: 0;
-    min-height: 56px;
     padding: 12px 4px;
-    width: 100%;
-}
-body .modal .provider-item:first-child,
-body .provider-item:first-child {
-    border-top: 1px solid var(--mobile-border);
 }
 /* Playback Order rows (no URL input) support direct full-row touch drag. */
 body .modal .provider-item:not(:has(input)),
@@ -813,34 +747,14 @@ body .provider-actions .provider-delete-btn {
     line-height: 1;
     margin-right: 4px;
 }
-.stepper-arrow-btn {
-    align-items: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    box-sizing: border-box;
-    display: inline-flex;
-    flex: 0 0 44px;
-    flex-shrink: 0;
-    height: 44px;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 0;
-    width: 44px;
-}
-.stepper-arrow-btn svg, .stepper-arrow-btn img {
-    height: 18px;
-    width: 18px;
-}
 
 .chip--filter.is-selected::before, .chip--filter.selected::before {
     color: var(--primary-color);
 }
 
-/* Mobile section title icons, edit triggers, and stepper icons rendered in consistent crisp white */
+/* Mobile section title icons and edit triggers rendered in consistent crisp white */
 .section-title__icon, .section-title-icon,
-.setting-stepper-icon, .setting-edit-icon {
+.setting-edit-icon {
     filter: brightness(0) invert(1);
 }
 
@@ -858,30 +772,43 @@ body .provider-actions .provider-delete-btn {
 }
 
 /* Toast notifications and version badges on mobile. */
-.toast-container, .toast-container.bottom-right, .toast-container.top-right { bottom: auto; left: 0; margin: 0 auto; max-width: 400px; right: 0; top: 20px; width: 90%; }
+.toast-container, .toast-container.bottom-right, .toast-container.top-right { bottom: auto; left: 0; margin: 0 auto; max-width: 400px; right: 0; top: 20px; width: 90%; z-index: 100010; }
 .toast { transform: translateY(-120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease; }
 .toast.visible { opacity: 1; transform: translateY(0); }
 .toast:not(.visible) { opacity: 0; transform: translateY(-120%); }
 #app .version-option-list { flex-direction: column; }
 .version-badge-container { align-items: center; flex-direction: column; gap: 6px; }
 .version-arrow { transform: rotate(90deg); }
-#app .details-actions .btn, #app .profile-actions .btn, #app .livetv-top-bar .search-box, .form-input { width: 100%; }
+#app .profile-actions .btn, #app .livetv-top-bar .search-box, .form-input { width: 100%; }
 
-/* Comfortable mobile touch geometry for shared buttons and controls. */
-#app .btn { -webkit-tap-highlight-color: transparent; border-radius: var(--mobile-radius-lg); box-shadow: none; font-size: 15px; font-weight: 650; gap: 8px; min-height: 48px; padding: 12px 18px; transition: background-color 0.14s ease, border-color 0.14s ease, filter 0.14s ease, transform 0.12s cubic-bezier(0.2, 0, 0, 1); user-select: none; }
-#app .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: none; color: var(--primary-foreground); }
-#app .btn--secondary { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; }
-#app .btn--ghost { background: transparent; border-color: transparent; box-shadow: none; color: rgba(255, 255, 255, 0.82); }
-#app .btn:active { filter: brightness(0.92); opacity: 1; transform: none; }
-#app .btn:focus-visible, #app .btn.focused { border-color: #ffffff; outline: 2px solid #ffffff; outline-offset: 2px; }
+/* Unified mobile touch geometry and skins for all buttons across views and modals. */
+#app .btn, body .modal .btn { -webkit-tap-highlight-color: transparent; border-radius: var(--mobile-radius-md); box-shadow: none; font-size: 15px; font-weight: 700; gap: 8px; min-height: 48px; padding: 10px 18px; transition: background-color 0.14s ease, border-color 0.14s ease, filter 0.14s ease; user-select: none; }
+/* Mobile primary button skin: solid white surface with dark ink across Hero, Details, Login, Account, and Modals. */
+#app .btn--primary, body .modal .btn--primary { background: #ffffff; border: 1px solid #ffffff; box-shadow: none; color: var(--mobile-ink); }
+/* Darkens SVG icons inside mobile white primary buttons. */
+#app .btn--primary .btn__icon, body .modal .btn--primary .btn__icon { filter: brightness(0); }
+/* Mobile secondary button skin: dark neutral surface with subtle border. */
+#app .btn--secondary, body .modal .btn--secondary { background: #1d1d1d; border: 1px solid #383838; box-shadow: none; color: #f5f5f5; }
+/* Mobile danger button skin for destructive actions. */
+#app .btn--danger, body .modal .btn--danger { background: #e63946; border: 1px solid #e63946; box-shadow: none; color: #ffffff; }
+/* Mobile ghost button skin. */
+#app .btn--ghost, body .modal .btn--ghost { background: transparent; border-color: transparent; box-shadow: none; color: rgba(255, 255, 255, 0.82); }
+/* Reveals mobile-only decorative button icons on portrait and compact touch viewports. */
+#app .btn__icon--mobile, body .modal .btn__icon--mobile { display: inline-block; flex: 0 0 18px; height: 18px; width: 18px; }
+/* Mobile button text label wrapping reset to prevent label clipping. */
+#app .btn__label, body .modal .btn__label { line-height: 1.2; overflow: visible; text-overflow: clip; white-space: normal; }
+#app .btn:active, body .modal .btn:active { filter: brightness(0.92); opacity: 1; transform: none; }
+#app .btn:focus-visible, #app .btn.focused, body .modal .btn:focus-visible, body .modal .btn.focused { border-color: #ffffff; outline: 2px solid #ffffff; outline-offset: 2px; }
 /* Circular icon button modifiers preserved after shared #app .btn rule to match Player buttons. */
 #app .btn--circle, #app .btn-circle,
 #app .btn--circle-md, #app .btn--circle-lg,
 #app .btn.playlists-create-btn,
-#app .tv-back-btn, #app .tv-settings-btn { border-radius: 50%; gap: 0; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
-#app .btn--circle-sm { border-radius: 50%; height: 32px; min-height: 32px; min-width: 32px; padding: 0; width: 32px; }
+#app .tv-back-btn, #app .tv-settings-btn,
+#app #login-circle-back,
+body .stepper-arrow-btn { border-radius: 50%; gap: 0; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
+#app .btn--circle-sm { border-radius: 50%; height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
 #app .btn--circle-xl { border-radius: 50%; height: 56px; min-height: 56px; min-width: 56px; padding: 0; width: 56px; }
-#app .btn--square, body .modal .btn--square { border-radius: var(--radius-sm); height: 42px; min-height: 42px; min-width: 42px; padding: 0; width: 42px; }
+#app .btn--square, body .modal .btn--square { border-radius: var(--radius-sm); height: 44px; min-height: 44px; min-width: 44px; padding: 0; width: 44px; }
 #app .btn--sm, #app .btn-small { min-height: 44px; }
 
 /* Poster cards keep a consistent portrait crop, dark edge, and soft lift on mobile. */
@@ -894,21 +821,18 @@ body .provider-actions .provider-delete-btn {
 
 body #changes-modal .modal__close, body .modal__close-btn { display: none !important; }
 
-/* Language selection and modal options list with simple divider lines and zero border-radius. */
-body .language-selection-grid { display: flex; flex-direction: column; gap: 0; grid-template-columns: none; padding: 0; width: 100%; }
+/* Language selection and modal options list with fixed search header and scrollable list container. */
+body #language-modal .modal__body { display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0 4px 16px; }
+body .language-selection-grid { -webkit-overflow-scrolling: touch; display: flex; flex: 1 1 auto; flex-direction: column; gap: 0; grid-template-columns: none; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: 0; width: 100%; }
 body .language-stepper-container { display: none; }
-/* Opaque sticky wrapper ensuring scrolling language cards slide behind search bar cleanly without bleed-through */
-body .language-search-wrapper { background: #050505; box-sizing: border-box; padding: 4px 0 12px; position: sticky; top: 0; width: 100%; z-index: 10; }
+/* Non-scrolling search header above the scrollable language list so rows never peek above it */
+body .language-search-wrapper { background: #000000; box-sizing: border-box; flex-shrink: 0; padding: 4px 0 12px; position: relative; top: auto; width: 100%; z-index: 10; }
 body .language-search-wrapper:has(> .hidden) { display: none; }
 /* Input field for filtering available languages */
 body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0; padding: 0 18px; position: static; width: 100%; }
 body .language-search:focus { border-color: var(--primary-color); outline: none; }
-/* Mobile language card row - Edge-to-edge borderless row with subtle bottom divider */
-body .language-card { align-items: center; background: transparent; border: 0; border-bottom: 1px solid #1c1c1c; border-radius: 0; box-shadow: none; color: #ffffff; cursor: pointer; display: flex; gap: 14px; justify-content: space-between; min-height: 52px; min-width: 0; padding: 14px 12px; text-align: left; width: 100%; box-sizing: border-box; }
-/* Mobile first language row - Top divider matching bottom rows */
-body .language-card:first-child { border-top: 1px solid #1c1c1c; }
-/* Mobile language row active tap state - Brief surface highlight */
-body .language-card:active { background: rgba(255, 255, 255, 0.08); }
+/* Mobile language card row - unique spacing/colors only (shared touch-row base lives in the settings section). */
+body .language-card { color: #ffffff; gap: 14px; min-width: 0; padding: 14px 12px; text-align: left; }
 /* Mobile active language row - Highlights active choice with primary brand color */
 body .language-card.is-active { background: transparent; color: var(--primary-color); }
 /* Mobile active language label - Bold primary color text */
@@ -994,15 +918,9 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app .form-toggle:has(input:checked) .form-toggle__slider { background-color: var(--primary-foreground) !important; left: 31px; }
 #app .form-toggle:focus-visible, #app .form-toggle.focused { outline: 2px solid var(--primary-color); outline-offset: 2px; }
 
-/* Tactile hero play button on mobile with visible label and icon. */
-#app .hero-buttons #play-btn { align-items: center; background: #ffffff; border: 0; border-radius: var(--radius-sm); color: var(--mobile-ink); display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; height: 46px; justify-content: center; min-height: 46px; min-width: 140px; padding: 0 22px; width: auto; }
-#app .hero-buttons #play-btn .mobile-play-icon { display: inline-block !important; filter: brightness(0); height: 18px; pointer-events: none; width: 18px; }
-#app .hero-buttons #play-btn .play-button-label { clip: auto; clip-path: none; color: #111111; display: inline-block; font-size: 15px; font-weight: 700; height: auto; line-height: 1; margin: 0; overflow: visible; position: static; white-space: nowrap; width: auto; }
-
 /* Settings page: Edge-to-edge YouTube-style list with clean typography and subtle dividers. */
 #app .settings-container { box-sizing: border-box; margin: 0 auto; max-width: 680px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 calc(84px + env(safe-area-inset-bottom, 0px)); width: 100%; }
 #app .settings-header { margin-bottom: 12px; padding: 12px 18px 4px; text-align: left; }
-#app .settings-header h1 { color: var(--mobile-text); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 2px; }
 #app .settings-header p { display: none; }
 
 /* Mobile settings grouped sections and category titles matching YouTube settings. */
@@ -1037,16 +955,33 @@ body .modal .focusable.focused {
     box-shadow: none !important;
 }
 
-/* Full-width YouTube-style touch rows matching Player Settings modal across settings and context modals. */
+/* Shared mobile edge-to-edge touch row (settings, languages, providers, app info): one base, divider, and tap state. */
 #app .settings-container .setting-item,
 body .modal .settings-container .setting-item,
-body #advanced-settings-modal .setting-item { align-items: center; background: transparent; border: 0; border-bottom: 1px solid var(--mobile-border); border-radius: 0; cursor: pointer; display: flex; justify-content: space-between; min-height: 56px; padding: 14px 20px; transition: background-color 100ms ease; width: 100%; box-sizing: border-box; text-align: left; }
+body #advanced-settings-modal .setting-item,
+body .modal .provider-item,
+body .provider-item,
+body .language-card,
+body #app-info-modal .app-info-row,
+#app .settings-container #app-info-btn { align-items: center; background: transparent; border: 0; border-bottom: 1px solid var(--mobile-border); border-radius: 0; box-shadow: none; box-sizing: border-box; cursor: pointer; display: flex; justify-content: space-between; min-height: 54px; transition: background-color 100ms ease; width: 100%; }
+/* Shared mobile touch row first-item top divider. */
 #app .settings-container .setting-item:first-of-type,
 body .modal .settings-container .setting-item:first-of-type,
-body #advanced-settings-modal .setting-item:first-of-type { border-top: 1px solid var(--mobile-border); }
+body #advanced-settings-modal .setting-item:first-of-type,
+body .modal .provider-item:first-child,
+body .provider-item:first-child,
+body .language-card:first-child,
+body #app-info-modal .app-info-row:first-child { border-top: 1px solid var(--mobile-border); }
+/* Shared mobile touch row tap feedback. */
 #app .settings-container .setting-item:active,
 body .modal .settings-container .setting-item:active,
-body #advanced-settings-modal .setting-item:active { background: rgba(255, 255, 255, 0.08); }
+body #advanced-settings-modal .setting-item:active,
+body .language-card:active,
+#app .settings-container #app-info-btn:active { background: rgba(255, 255, 255, 0.08); }
+/* Settings row unique padding and alignment. */
+#app .settings-container .setting-item,
+body .modal .settings-container .setting-item,
+body #advanced-settings-modal .setting-item { padding: 14px 20px; text-align: left; }
 #app .settings-container .setting-info,
 body .modal .settings-container .setting-info,
 body #advanced-settings-modal .setting-info { flex: 1 1 auto; min-width: 0; padding-right: 12px; }
@@ -1082,13 +1017,12 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 
 /* Clean, native-feeling circular UI scale stepper buttons. */
 #app .settings-container .ui-scale-control { background: transparent; border: 0; border-radius: 0; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
-#app .settings-container .ui-scale-control .scale-adjust-btn { background: #222222; border: 1px solid #333333; border-radius: 50%; color: #ffffff; font-size: 16px; font-weight: 600; height: 34px; min-height: 34px; min-width: 34px; width: 34px; }
+#app .settings-container .ui-scale-control .scale-adjust-btn { background: #222222; border: 1px solid #333333; border-radius: 50%; color: #ffffff; font-size: 16px; font-weight: 600; height: 44px; min-height: 44px; min-width: 44px; width: 44px; }
 #app .settings-container .ui-scale-control .scale-adjust-btn:active { background: #383838; }
 #app .settings-container .ui-scale-control .scale-adjust-btn::after { content: none; display: none; }
 
 #app .settings-section--app-info { margin-bottom: 18px; padding: 0 20px; }
-#app .settings-container #app-info-btn { background: transparent; border: 0; border-bottom: 1px solid #1a1a1a; border-radius: 0; color: #f1f1f1; font-size: 16px; font-weight: 400; justify-content: space-between; min-height: 52px; padding: 16px 0; width: 100%; display: flex; align-items: center; }
-#app .settings-container #app-info-btn:active { background: rgba(255, 255, 255, 0.08); }
+#app .settings-container #app-info-btn { color: #f1f1f1; font-size: 16px; font-weight: 400; padding: 16px 0; }
 #app .settings-container #app-info-btn .btn__icon { display: none; }
 #app .settings-container #app-info-btn .btn__chevron { display: inline-block; height: 14px; opacity: 0.5; width: 14px; }
 
@@ -1098,12 +1032,29 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 #app #advanced-settings-section { display: none !important; }
 #app #mobile-advanced-item { display: flex !important; }
 
-/* Prevent floating network status icon from colliding on mobile */
-.network-status-overlay { display: none !important; }
+/* Compact non-overlapping top network status banner on mobile */
+.network-status-overlay {
+    align-items: center;
+    background: rgba(18, 18, 18, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    bottom: auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    display: inline-flex;
+    height: 32px;
+    justify-content: center;
+    left: 50%;
+    padding: 0 12px;
+    right: auto;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    transform: translateX(-50%);
+    width: auto;
+    z-index: 100005;
+}
+.network-status-overlay .network-status-icon { height: 18px; width: 18px; }
 
 /* Dedicated Update Check Modal status alignment */
 #update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
-#update-check-modal .update-modal-heading { color: #f1f1f1; font-size: 19px; font-weight: 600; margin: 16px 0 6px; }
 #update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
 #update-check-modal .update-version-badge { background: rgba(var(--primary-rgb), 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
 
@@ -1135,40 +1086,6 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
     width: auto;
 }
 
-/* Mobile: Version selector refresh button in dialog top-right header */
-html body #version-selector-modal .modal__refresh-btn,
-body #version-selector-modal .modal__refresh-btn,
-body .modal__refresh-btn {
-    align-items: center;
-    background: transparent;
-    border: none;
-    border-radius: 50%;
-    box-shadow: none;
-    cursor: pointer;
-    display: inline-flex;
-    height: 44px;
-    justify-content: center;
-    left: auto;
-    min-height: 44px;
-    min-width: 44px;
-    padding: 0;
-    position: absolute;
-    right: 12px;
-    top: calc(env(safe-area-inset-top, 44px) + 8px);
-    width: 44px;
-    z-index: 50;
-}
-body .modal__refresh-btn:active {
-    background: rgba(255, 255, 255, 0.14);
-}
-.modal-refresh-icon {
-    display: block;
-    filter: brightness(0) invert(1);
-    height: 22px;
-    pointer-events: none;
-    width: 22px;
-}
-
 /* Mobile: Polished App Info modal dialog layout */
 body #app-info-modal .modal__dialog {
     display: flex;
@@ -1185,12 +1102,6 @@ body #app-info-modal .app-info-logo {
     height: 56px;
     margin-bottom: 2px;
     width: 56px;
-}
-/* Mobile: Application title heading in app info dialog */
-body #app-info-modal .app-info-app-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
 }
 /* Mobile: Version pill badge in app info dialog */
 body #app-info-modal .app-info-badge {
@@ -1210,19 +1121,7 @@ body #app-info-modal .app-info-details {
     width: 100%;
 }
 /* Mobile: Clean info row */
-body #app-info-modal .app-info-row {
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    min-height: 48px;
-    padding: 12px 4px;
-    width: 100%;
-}
-body #app-info-modal .app-info-row:first-child {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
+body #app-info-modal .app-info-row { padding: 12px 4px; }
 /* Mobile: Info label */
 body #app-info-modal .app-info-label {
     color: rgba(255, 255, 255, 0.7);
@@ -1235,18 +1134,10 @@ body #app-info-modal .app-info-value {
     font-size: 15px;
     font-weight: 600;
 }
-/* Mobile: Modal footer close button */
-body #app-info-modal .modal__footer .btn {
-    border-radius: 12px;
-    font-size: 15px;
-    min-height: 48px;
-    width: 100%;
-}
 
 /* Mobile: Account screen styled consistently with IVIDS card architecture. */
 #app .account-container { box-sizing: border-box; margin: 0 auto; max-width: 600px; padding: calc(16px + env(safe-area-inset-top, 24px)) 16px calc(84px + env(safe-area-inset-bottom, 16px)); width: 100%; }
 #app .account-header { margin-bottom: 16px; padding: 0 4px; text-align: left; }
-#app .account-header h1 { color: #ffffff; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
 #app .account-section { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); box-sizing: border-box; box-shadow: none; margin-bottom: 20px; padding: 20px 18px; width: 100%; }
 #app .account-section .section-title { border: none; color: #ffffff; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 16px; padding: 0; text-transform: none; }
 #app .profile-display { align-items: center; border: none; display: flex; gap: 18px; padding: 0; text-align: left; width: 100%; }
@@ -1254,20 +1145,14 @@ body #app-info-modal .modal__footer .btn {
 #app .profile-details { display: flex; flex: 1 1 auto; flex-direction: column; gap: 6px; min-width: 0; }
 #app .profile-name-text { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 #app .profile-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; width: 100%; }
-#app .profile-actions .btn { align-items: center; border-radius: var(--radius-sm); box-sizing: border-box; display: inline-flex; font-size: 14.5px; font-weight: 700; justify-content: center; min-height: 46px; padding: 0 18px; width: 100%; }
-#app .profile-actions .btn--primary { background: var(--primary-color); border: 1px solid var(--primary-color); color: var(--primary-foreground); }
-#app .profile-actions .btn--secondary { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); color: #ffffff; }
-#app .profile-actions .btn--danger { background: #e63946; border: 1px solid #e63946; color: #ffffff; }
 
 /* Login screen keeps its form within the phone width on the pure black mobile surface canvas. */
 #app .login-page-wrapper { align-items: flex-start; background: var(--mobile-surface); box-sizing: border-box; justify-content: center; min-height: 100dvh; overflow-y: auto; padding: calc(36px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px)); }
 #app .login-card-container { max-width: 460px; width: 100%; }
 #app .login-panel { background: transparent; border: 0; border-radius: 0; box-shadow: none; max-height: none; overflow: visible; padding: 64px 0 12px; width: 100%; }
-#app #login-circle-back { background: transparent; border: 0; border-radius: 50%; height: 44px; left: 0; min-height: 44px; min-width: 44px; top: 0; width: 44px; }
+#app #login-circle-back { background: transparent; border: 0; left: 0; top: 0; }
 #app #login-circle-back:active { background: rgba(255, 255, 255, 0.14); }
 #app .login-header { align-items: flex-start; margin: 0 0 28px; text-align: left; }
-#app .login-title-text { font-size: 28px; justify-content: flex-start; text-align: left; }
-#app .login-subtitle-text { color: var(--mobile-muted); font-size: 14px; text-align: left; }
 #app .tab-bar--fill { border-bottom-color: #343434; gap: 18px; margin-bottom: 20px; }
 #app .tab-bar--fill .btn { color: #aaaaaa; font-size: 15px; font-weight: 600; min-height: 48px; }
 #app .tab-bar--fill .btn.is-active, #app .tab-bar--fill .btn.active { border-bottom-color: #ffffff; color: #ffffff; }
@@ -1275,7 +1160,6 @@ body #app-info-modal .modal__footer .btn {
 #app .login-panel .form-input:focus { background: #202020; border-color: #ffffff; }
 #app .login-panel .form-label { color: #e2e2e2; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
 #app .login-footer { align-items: stretch; gap: 10px; margin-top: 22px; }
-#app #login-submit { background: #ffffff; border: 1px solid #ffffff; border-radius: var(--mobile-radius-md); color: var(--mobile-ink); font-size: 15px; font-weight: 700; min-height: 52px; width: 100%; }
 #app #login-back { display: none; }
 
 @media (orientation: landscape) and (max-height: 500px) {

@@ -160,14 +160,16 @@
     "debridEnvReady": ".env Backup",
     "debridNotConfigured": "Hindi nakaset",
     "tierDirectHttp": "Direktang HTTP (Libre)",
-    "directHttpAddon": "Libreng HTTP Addon URL"
+    "directHttpAddon": "Libreng HTTP Addon URL",
+    "urlRequired": "Mangyaring maglagay ng wastong URL bago i-save."
   },
   "common": {
     "close": "Close",
     "apply": "Apply",
     "cancel": "Cancel",
     "create": "Create",
-    "save": "Save"
+    "save": "Save",
+    "options": "Mga Opsyon"
   },
   "home": {
     "welcome": "Welcome to IVIDS",

@@ -6,7 +6,7 @@
                     <img src="images/back.svg" alt="" class="btn__icon">
                 </button>
                 <div class="playlist-details-header__meta">
-                    <h1 id="playlist-title" class="playlist-details-header__title">Playlist Name</h1>
+                    <h1 id="playlist-title" class="page-title">Playlist Name</h1>
                     <span id="playlist-count" class="playlist-details-header__count">0 items</span>
                 </div>
             </div>
@@ -69,7 +69,7 @@
         <div class="modal__dialog modal__dialog--md">
             <h2 class="modal__title" data-i18n="playlists.editInfo">Edit Info</h2>
             <div class="modal__body">
-                <input id="edit-playlist-name-input" class="form-input focusable" type="text" maxlength="30" placeholder="Playlist Name" data-i18n="playlists.namePlaceholder">
+                <input id="edit-playlist-name-input" class="form-input focusable" type="text" maxlength="30" placeholder="Playlist Name" aria-label="Playlist Name" data-i18n="playlists.namePlaceholder">
             </div>
             <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
                 <button id="edit-playlist-confirm-btn" type="button" class="btn btn--primary focusable universal-onclick" data-i18n="common.save">Save</button>
@@ -82,7 +82,7 @@
     <div id="item-context-modal" class="modal">
         <div class="modal__dialog modal__dialog--sm">
             <button id="context-back-btn" type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-                <img src="images/back.svg" class="modal-back-icon" alt="Back">
+                <img src="images/back.svg" class="btn__icon" alt="Back">
             </button>
             <h2 id="context-item-title" class="modal__title modal__title--truncate">Movie Title</h2>
             <div class="modal__body modal__body--scroll">
@@ -104,7 +104,7 @@
     <div id="add-to-other-playlist-modal" class="modal">
         <div class="modal__dialog modal__dialog--sm">
             <button id="other-playlist-back-btn" type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
-                <img src="images/back.svg" class="modal-back-icon" alt="Back">
+                <img src="images/back.svg" class="btn__icon" alt="Back">
             </button>
             <h2 class="modal__title" data-i18n="playlists.addToOtherPlaylist">Add to Another Playlist</h2>
             <div class="modal__body modal__body--scroll">

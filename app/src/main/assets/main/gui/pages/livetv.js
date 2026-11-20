@@ -788,6 +788,13 @@ function setupEventListeners() {
         };
     }
 
+    const openSettingsBtn = document.getElementById('livetv-open-settings-btn');
+    if (openSettingsBtn) {
+        openSettingsBtn.onclick = () => {
+            Router.loadPage('settings');
+        };
+    }
+
     const listColumn = document.getElementById('channels-list') || document.querySelector('.livetv-list-column');
     if (listColumn) {
         listColumn.onscroll = () => {
@@ -847,7 +854,7 @@ function createChannelRow(channel, index, focusedUrl) {
 
     item.innerHTML = `
         <div class="channel-card__logo-wrap channel-list-logo-container">
-            <img src="${escapeHtml(iconUrl)}" class="channel-card__logo channel-list-logo" loading="lazy" decoding="async">
+            <img src="${escapeHtml(iconUrl)}" alt="" class="channel-card__logo channel-list-logo" loading="lazy" decoding="async">
         </div>
         <div class="channel-card__meta channel-list-meta-container">
             <span class="channel-card__title channel-list-name">${escapeHtml(channel.name)}</span>

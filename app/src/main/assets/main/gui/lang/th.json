@@ -160,14 +160,16 @@
     "debridEnvReady": "สำรอง .env",
     "debridNotConfigured": "ยังไม่ตั้งค่า",
     "tierDirectHttp": "HTTP โดยตรง (ฟรี)",
-    "directHttpAddon": "URL แอดออน HTTP ฟรี"
+    "directHttpAddon": "URL แอดออน HTTP ฟรี",
+    "urlRequired": "กรุณากรอก URL ที่ถูกต้องก่อนบันทึก"
   },
   "common": {
     "close": "Close",
     "apply": "Apply",
     "cancel": "Cancel",
     "create": "Create",
-    "save": "Save"
+    "save": "Save",
+    "options": "ตัวเลือก"
   },
   "home": {
     "welcome": "Welcome to IVIDS",

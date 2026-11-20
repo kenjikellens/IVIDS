@@ -161,14 +161,16 @@
     "debridEnvReady": ".env-Backup",
     "debridNotConfigured": "Nicht festgelegt",
     "tierDirectHttp": "Direktes HTTP (Gratis)",
-    "directHttpAddon": "Kostenlose HTTP-Addon-URL"
+    "directHttpAddon": "Kostenlose HTTP-Addon-URL",
+    "urlRequired": "Bitte geben Sie vor dem Speichern eine gültige URL ein."
   },
   "common": {
     "close": "Schließen",
     "apply": "Anwenden",
     "cancel": "Abbrechen",
     "create": "Erstellen",
-    "save": "Speichern"
+    "save": "Speichern",
+    "options": "Optionen"
   },
   "home": {
     "welcome": "Willkommen bei IVIDS",

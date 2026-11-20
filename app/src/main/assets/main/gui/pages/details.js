@@ -72,26 +72,14 @@ export async function init(params) {
 }
 
 /**
- * Updates a details action label without removing its decorative icon.
+ * Updates a details action button's accessible and visible text label.
  * @param {HTMLButtonElement} button - Action button whose visible or accessible label changes.
  * @param {string} label - Translated label to expose for the action.
  */
 function setDetailsActionLabel(button, label) {
     button.setAttribute('aria-label', label);
-    configureDetailsActionIcons(button);
-    const labelElement = button.querySelector('.details-play-label, .details-action-label');
+    const labelElement = button.querySelector('.btn__label');
     if (labelElement) labelElement.textContent = label;
-}
-
-/**
- * Shows decorative action icons only while the mobile stylesheet layout is active.
- * This keeps the desktop and TV details buttons text-only.
- * @param {HTMLButtonElement} button - Details action button containing an optional mobile icon.
- */
-function configureDetailsActionIcons(button) {
-    const mobileLayout = Boolean(window.matchMedia?.('(max-aspect-ratio: 1/1), (max-height: 500px) and (pointer: coarse), (max-width: 950px) and (max-height: 500px)').matches);
-    button.querySelectorAll('.details-mobile-icon').forEach(icon => icon.classList.toggle('hidden', !mobileLayout));
-    button.querySelectorAll('.details-play-label').forEach(label => label.classList.toggle('hidden', mobileLayout));
 }
 
 /**
@@ -116,7 +104,6 @@ function render(item, type) {
         const playBtn = document.getElementById('details-play');
         const trailerBtn = document.getElementById('details-trailer');
         const playlistBtn = document.getElementById('details-playlist');
-        if (playlistBtn) configureDetailsActionIcons(playlistBtn);
 
         // Check for critical DOM elements
         if (!title || !playBtn) {
@@ -927,8 +914,8 @@ function renderExtrasEmptyState(container, contentId, mediaType) {
     emptyState.className = 'extras-empty-state';
     emptyState.innerHTML = `
         <p class="extras-empty-text">${I18n.t('details.noExtras')}</p>
-        <button type="button" class="btn btn--secondary btn--circle extras-retry-btn focusable universal-onclick" id="extras-retry-btn" title="${I18n.t('common.retry') || 'Retry'}" aria-label="${I18n.t('common.retry') || 'Retry'}">
-            <img src="svg/retry.svg" class="extras-retry-icon" alt="">
+        <button type="button" class="btn btn--secondary btn--circle-lg extras-retry-btn focusable universal-onclick" id="extras-retry-btn" title="${I18n.t('common.retry') || 'Retry'}" aria-label="${I18n.t('common.retry') || 'Retry'}">
+            <img src="svg/retry.svg" class="btn__icon" alt="">
         </button>
     `;
     container.appendChild(emptyState);

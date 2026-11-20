@@ -166,14 +166,16 @@
     "debridEnvReady": ".env 予備",
     "debridNotConfigured": "未設定",
     "tierDirectHttp": "ダイレクトHTTP（無料）",
-    "directHttpAddon": "無料HTTPアドオンURL"
+    "directHttpAddon": "無料HTTPアドオンURL",
+    "urlRequired": "保存する前に有効なURLを入力してください。"
   },
   "common": {
     "close": "閉じる",
     "apply": "適用",
     "cancel": "キャンセル",
     "create": "作成する",
-    "save": "保存"
+    "save": "保存",
+    "options": "オプション"
   },
   "home": {
     "welcome": "IVIDSへようこそ",

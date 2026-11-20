@@ -160,14 +160,16 @@
     "debridEnvReady": "Còpia .env",
     "debridNotConfigured": "No configurat",
     "tierDirectHttp": "HTTP directe (Gratuït)",
-    "directHttpAddon": "URL d'addon HTTP gratuït"
+    "directHttpAddon": "URL d'addon HTTP gratuït",
+    "urlRequired": "Introduïu un URL vàlid abans de desar."
   },
   "common": {
     "close": "Tancar",
     "apply": "Aplicar",
     "cancel": "Cancel·la",
     "create": "Crear",
-    "save": "Desa"
+    "save": "Desa",
+    "options": "Opcions"
   },
   "home": {
     "welcome": "Benvingut a IVIDS",

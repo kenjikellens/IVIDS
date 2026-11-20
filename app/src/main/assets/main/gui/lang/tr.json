@@ -166,14 +166,16 @@
     "debridEnvReady": ".env Yedeği",
     "debridNotConfigured": "Ayarlı değil",
     "tierDirectHttp": "Doğrudan HTTP (Ücretsiz)",
-    "directHttpAddon": "Ücretsiz HTTP Eklenti URL'si"
+    "directHttpAddon": "Ücretsiz HTTP Eklenti URL'si",
+    "urlRequired": "Kaydetmeden önce lütfen geçerli bir URL girin."
   },
   "common": {
     "close": "Kapat",
     "apply": "Uygula",
     "cancel": "İptal",
     "create": "Yaratmak",
-    "save": "Kaydetmek"
+    "save": "Kaydetmek",
+    "options": "Seçenekler"
   },
   "home": {
     "welcome": "IVIDS'e Hoş Geldiniz",

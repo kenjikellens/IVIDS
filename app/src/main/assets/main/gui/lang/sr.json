@@ -160,14 +160,16 @@
     "debridEnvReady": ".env rezerva",
     "debridNotConfigured": "Nije podešeno",
     "tierDirectHttp": "Директни HTTP (Бесплатно)",
-    "directHttpAddon": "URL бесплатног HTTP додатка"
+    "directHttpAddon": "URL бесплатног HTTP додатка",
+    "urlRequired": "Унесите важећу URL адресу пре чувања."
   },
   "common": {
     "close": "Цлосе",
     "apply": "Апплy",
     "cancel": "Цанцел",
     "create": "Цреате",
-    "save": "Саве"
+    "save": "Саве",
+    "options": "Опције"
   },
   "home": {
     "welcome": "Wелцоме то ИВИДС",

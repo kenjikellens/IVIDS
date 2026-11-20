@@ -160,14 +160,16 @@
     "debridEnvReady": "پشتیبان .env",
     "debridNotConfigured": "تنظیم نشده",
     "tierDirectHttp": "HTTP مستقیم (رایگان)",
-    "directHttpAddon": "نشانی افزونه HTTP رایگان"
+    "directHttpAddon": "نشانی افزونه HTTP رایگان",
+    "urlRequired": "لطفاً پیش از ذخیره، یک نشانی URL معتبر وارد کنید."
   },
   "common": {
     "close": "بستن",
     "apply": "درخواست کنید",
     "cancel": "لغو کنید",
     "create": "ایجاد کنید",
-    "save": "ذخیره کنید"
+    "save": "ذخیره کنید",
+    "options": "گزینه‌ها"
   },
   "home": {
     "welcome": "به IVIDS خوش آمدید",

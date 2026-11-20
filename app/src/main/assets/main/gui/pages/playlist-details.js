@@ -139,7 +139,11 @@ export function exitMoveMode() {
     if (container) container.classList.remove('is-reordering');
 
     const tiles = document.querySelectorAll('#playlist-items-container .playlist-poster-tile');
-    tiles.forEach(t => t.classList.remove('moving-active'));
+    tiles.forEach(t => {
+        t.classList.remove('moving-active');
+        const gearBtn = t.querySelector('.playlist-poster-settings-btn');
+        if (gearBtn) gearBtn.classList.remove('hidden');
+    });
 
     const targetPoster = tiles[prevIndex]?.querySelector('.card--poster.focusable');
     if (targetPoster) SpatialNav.setFocus(targetPoster);
@@ -387,7 +391,7 @@ function createItemElement(item, index, total) {
 
     const settingsBtn = document.createElement('button');
     settingsBtn.type = 'button';
-    settingsBtn.className = 'btn btn--secondary btn--circle-sm playlist-poster-settings-btn focusable universal-onclick hidden';
+    settingsBtn.className = 'btn btn--secondary btn--circle-sm playlist-poster-settings-btn focusable universal-onclick';
     settingsBtn.dataset.index = index;
     const optTitle = window.i18n ? window.i18n.t('common.options') : 'Options';
     settingsBtn.title = optTitle;
@@ -398,37 +402,7 @@ function createItemElement(item, index, total) {
         openItemContextModal(item, getLiveIndex(), false);
     };
 
-    let dwellTimerId = null;
-    const scheduleReveal = () => {
-        if (activeMoveIndex !== null || !settingsBtn.classList.contains('hidden') || dwellTimerId) return;
-        dwellTimerId = setTimeout(() => {
-            dwellTimerId = null;
-            if (activeMoveIndex !== null) return;
-            settingsBtn.classList.remove('hidden');
-            tile.classList.add('is-settings-visible');
-        }, 1000);
-    };
-    const hideSettings = () => {
-        if (dwellTimerId) {
-            clearTimeout(dwellTimerId);
-            dwellTimerId = null;
-        }
-        settingsBtn.classList.add('hidden');
-        tile.classList.remove('is-settings-visible');
-    };
-
-    tile.addEventListener('mouseenter', scheduleReveal);
-    tile.addEventListener('focusin', scheduleReveal);
-    tile.addEventListener('mouseleave', () => {
-        if (!tile.contains(document.activeElement)) hideSettings();
-    });
-    tile.addEventListener('focusout', () => {
-        setTimeout(() => {
-            if (!tile.contains(document.activeElement) && !tile.matches(':hover')) {
-                hideSettings();
-            }
-        }, 0);
-    });
+    tile.classList.add('is-settings-visible');
 
     settingsSlot.appendChild(settingsBtn);
     tile.appendChild(posterBtn);

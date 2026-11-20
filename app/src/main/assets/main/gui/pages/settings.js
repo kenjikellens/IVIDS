@@ -613,34 +613,12 @@ class SettingsManager {
         const installBtn = document.getElementById('update-modal-install-btn');
         const backBtn = document.getElementById('update-modal-back-btn');
 
-        if (modalSpinner) modalSpinner.style.display = 'none';
-        if (modalHeading) modalHeading.textContent = window.i18n?.t('settings.updateFound') || 'Update Available';
-        if (modalDesc) modalDesc.textContent = window.i18n?.t('settings.updateFoundDesc') || 'A new version of IVIDS is ready to install.';
-        if (modalBadge) {
-            modalBadge.textContent = 'v' + version;
-            modalBadge.classList.remove('hidden');
-        }
-        if (installBtn) {
-            installBtn.classList.remove('hidden');
-            installBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
-            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
-                window.SpatialNav.setFocus(installBtn);
-            }
-            installBtn.onclick = () => {
-                import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                    this.closeModal();
-                    UpdatePrompt.show(version);
-                }).catch(err => {
-                    console.error('Settings: Failed to load update-prompt.js', err);
-                    if (window.AndroidUpdate) {
-                        window.AndroidUpdate.downloadAndInstall();
-                    } else if (window.latestUpdateDownloadUrl) {
-                        window.open(window.latestUpdateDownloadUrl, '_blank');
-                    }
-                });
-            };
-        }
-        if (backBtn) backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
+        if (modalSpinner) modalSpinner.style.display = 'flex';
+        if (modalHeading) modalHeading.textContent = window.i18n?.t('settings.checking') || 'Searching...';
+        if (modalDesc) modalDesc.textContent = '';
+        if (modalBadge) modalBadge.classList.add('hidden');
+        if (installBtn) installBtn.classList.add('hidden');
+        if (backBtn) backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.cancel') || 'Cancel');
 
         const statusText = document.getElementById('update-status-text');
         if (statusText) {
@@ -715,7 +693,7 @@ class SettingsManager {
         if (installBtn) installBtn.classList.add('hidden');
         if (retryBtn) retryBtn.classList.add('hidden');
         if (backBtn) {
-            backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.cancel') || 'Annuleren');
+            backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.cancel') || 'Cancel');
             backBtn.onclick = () => this.closeModal();
             if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
                 window.SpatialNav.setFocus(backBtn);
@@ -1131,7 +1109,7 @@ class SettingsManager {
                             ${window.i18n?.t('settings.failedToFetchReleases') || 'Failed to fetch releases. Please check your internet connection.'}
                         </div>
                         <button id="version-retry-btn" class="btn btn--primary focusable universal-onclick" type="button">
-                            ${window.i18n?.t('error.retry') || 'Opnieuw proberen'}
+                            ${window.i18n?.t('error.retry') || 'Retry'}
                         </button>
                     </div>
                 `;
@@ -1436,13 +1414,7 @@ class SettingsManager {
                     e.preventDefault();
                     e.stopPropagation();
                 }
-                if (modalId === 'language-modal') {
-                    this.closeModal();
-                } else if (['color-modal', 'update-mode-modal', 'source-order-modal', 'player-modal', 'debrid-modal', 'm3u-modal', 'delay-action-modal'].includes(modalId)) {
-                    this.applyPending(key);
-                } else {
-                    this.closeModal();
-                }
+                this.closeModal();
             };
             backBtn.onclick = handleBack;
         }
@@ -1708,6 +1680,23 @@ class SettingsManager {
                 this.settings.playbackSourceOrder = getDefaultPlaybackSourceOrder(newValue);
             }
         }
+        if (key === 'playerProviders' || key === 'm3uPlaylists') {
+            const list = Array.isArray(newValue) ? newValue : [];
+            const invalidIndex = list.findIndex(item => !item || !String(item.url || '').trim());
+            if (invalidIndex !== -1) {
+                const msg = window.i18n?.t('settings.urlRequired') || 'Please enter a valid URL before saving.';
+                Toast.show(msg, { type: 'warning', duration: 2500 });
+                const listId = key === 'playerProviders' ? 'player-providers-list' : 'm3u-playlists-list';
+                const inputs = document.querySelectorAll(`#${listId} .form-input`);
+                const targetInput = inputs[invalidIndex];
+                if (targetInput) {
+                    targetInput.focus();
+                    if (window.SpatialNav) window.SpatialNav.setFocus(targetInput);
+                }
+                return;
+            }
+            newValue = list.map(item => ({ ...item, url: String(item.url).trim() }));
+        }
         this.settings[key] = newValue;
 
         if (key === 'playerProviders') {
@@ -1888,34 +1877,12 @@ class SettingsManager {
         const installBtn = document.getElementById('update-modal-install-btn');
         const backBtn = document.getElementById('update-modal-back-btn');
 
-        if (modalSpinner) modalSpinner.style.display = 'none';
-        if (modalHeading) modalHeading.textContent = window.i18n?.t('settings.updateFound') || 'Update Available';
-        if (modalDesc) modalDesc.textContent = window.i18n?.t('settings.updateFoundDesc') || 'A new version of IVIDS is ready to install.';
-        if (modalBadge) {
-            modalBadge.textContent = 'v' + version;
-            modalBadge.classList.remove('hidden');
-        }
-        if (installBtn) {
-            installBtn.classList.remove('hidden');
-            installBtn.textContent = window.i18n?.t('settings.updateNow') || 'Install Now';
-            if (window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
-                window.SpatialNav.setFocus(installBtn);
-            }
-            installBtn.onclick = () => {
-                import('../js/update-prompt.js').then(({ UpdatePrompt }) => {
-                    this.closeModal();
-                    UpdatePrompt.show(version);
-                }).catch(err => {
-                    console.error('Settings: Failed to load update-prompt.js', err);
-                    if (window.AndroidUpdate) {
-                        window.AndroidUpdate.downloadAndInstall();
-                    } else if (window.latestUpdateDownloadUrl) {
-                        window.open(window.latestUpdateDownloadUrl, '_blank');
-                    }
-                });
-            };
-        }
-        if (backBtn) backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
+        if (modalSpinner) modalSpinner.style.display = 'flex';
+        if (modalHeading) modalHeading.textContent = window.i18n?.t('settings.checking') || 'Searching...';
+        if (modalDesc) modalDesc.textContent = '';
+        if (modalBadge) modalBadge.classList.add('hidden');
+        if (installBtn) installBtn.classList.add('hidden');
+        if (backBtn) backBtn.innerHTML = '✕ ' + (window.i18n?.t('common.cancel') || 'Cancel');
 
         if (checkBtn) {
             checkBtn.style.display = 'inline-block';
@@ -1968,7 +1935,7 @@ class SettingsManager {
             }
         }
         if (noUpBackBtn) {
-            noUpBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
+            noUpBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Close');
             noUpBackBtn.onclick = () => this.closeModal();
             if (!noUpRetryBtn && window.SpatialNav && typeof window.SpatialNav.setFocus === 'function') {
                 window.SpatialNav.setFocus(noUpBackBtn);
@@ -2017,7 +1984,7 @@ class SettingsManager {
             }
         }
         if (errBackBtn) {
-            errBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Sluiten');
+            errBackBtn.innerHTML = '✕ ' + (window.i18n?.t('common.close') || 'Close');
             errBackBtn.onclick = () => this.closeModal();
         }
         if (loaderContainer) loaderContainer.style.display = 'none';

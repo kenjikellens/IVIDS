@@ -19,7 +19,7 @@ export class ErrorHandler {
                         <div class="error-icon-container">
                             <div class="error-icon-mask"></div>
                         </div>
-                        <h2 id="error-title" class="modal__title error-title">Error</h2>
+                        <h2 id="error-title" class="modal__title">Error</h2>
                         <div class="modal__body error-message-container">
                             <p id="error-message" class="modal__desc error-message"></p>
                         </div>

@@ -161,14 +161,16 @@
     "debridEnvReady": ".env Backup",
     "debridNotConfigured": "Niet ingesteld",
     "tierDirectHttp": "Direct HTTP (Gratis)",
-    "directHttpAddon": "Gratis HTTP Addon-URL"
+    "directHttpAddon": "Gratis HTTP Addon-URL",
+    "urlRequired": "Voer een geldige URL in voordat u opslaat."
   },
   "common": {
     "close": "Sluiten",
     "apply": "Toepassen",
     "cancel": "Annuleren",
     "create": "Maken",
-    "save": "Opslaan"
+    "save": "Opslaan",
+    "options": "Opties"
   },
   "home": {
     "welcome": "Welkom bij IVIDS",

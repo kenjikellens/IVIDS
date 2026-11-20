@@ -166,14 +166,16 @@
     "debridEnvReady": "نسخة .env",
     "debridNotConfigured": "غير مُعدّ",
     "tierDirectHttp": "بث HTTP مباشر (مجاني)",
-    "directHttpAddon": "رابط إضافة HTTP مجانية"
+    "directHttpAddon": "رابط إضافة HTTP مجانية",
+    "urlRequired": "يرجى إدخال عنوان URL صالح قبل الحفظ."
   },
   "common": {
     "close": "إغلاق",
     "apply": "تطبيق",
     "cancel": "إلغاء",
     "create": "يخلق",
-    "save": "يحفظ"
+    "save": "يحفظ",
+    "options": "الخيارات"
   },
   "home": {
     "welcome": "مرحباً بكم في IVIDS",

@@ -160,14 +160,16 @@
     "debridEnvReady": "גיבוי .env",
     "debridNotConfigured": "לא הוגדר",
     "tierDirectHttp": "HTTP ישיר (חינם)",
-    "directHttpAddon": "כתובת תוסף HTTP חינמי"
+    "directHttpAddon": "כתובת תוסף HTTP חינמי",
+    "urlRequired": "אנא הזן כתובת URL חוקית לפני השמירה."
   },
   "common": {
     "close": "סגור",
     "apply": "החל",
     "cancel": "בטל",
     "create": "צור",
-    "save": "שמור"
+    "save": "שמור",
+    "options": "אפשרויות"
   },
   "home": {
     "welcome": "ברוכים הבאים ל- IVIDS",
