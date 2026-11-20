@@ -256,7 +256,7 @@ function render({ skipFocusFirst = false } = {}) {
         if (playlist.items.length === 0) {
             const homeLabel = window.i18n ? window.i18n.t('nav.home') : 'Home';
             container.innerHTML = `
-                <div class="empty-state playlists-empty-state">
+                <div class="empty-state">
                     <p data-i18n="playlists.emptyPlaylist" class="empty-state__text">This playlist is empty.</p>
                     <button id="empty-browse-btn" class="btn btn--primary focusable universal-onclick" type="button" data-i18n="nav.home">${escapeHtml(homeLabel)}</button>
                 </div>

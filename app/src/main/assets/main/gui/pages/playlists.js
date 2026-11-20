@@ -88,7 +88,7 @@ function render(focusPlaylistId = null) {
         const emptyText = window.i18n ? window.i18n.t('playlists.empty') : 'No playlists found. Create one!';
         const createText = window.i18n ? window.i18n.t('playlists.create_new') : 'Create New Playlist';
         grid.innerHTML = `
-            <div class="empty-state playlists-empty-state">
+            <div class="empty-state">
                 <p class="empty-state__text">${escapeHtml(emptyText)}</p>
                 <button id="empty-create-playlist-btn" class="btn btn--primary focusable universal-onclick" type="button" data-i18n="playlists.create_new">${escapeHtml(createText)}</button>
             </div>

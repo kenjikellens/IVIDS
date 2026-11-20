@@ -911,9 +911,9 @@ function setupTabSwipe() {
 function renderExtrasEmptyState(container, contentId, mediaType) {
     container.innerHTML = '';
     const emptyState = document.createElement('div');
-    emptyState.className = 'extras-empty-state';
+    emptyState.className = 'empty-state empty-state--plain';
     emptyState.innerHTML = `
-        <p class="extras-empty-text">${I18n.t('details.noExtras')}</p>
+        <p class="empty-state__text">${I18n.t('details.noExtras')}</p>
         <button type="button" class="btn btn--secondary btn--circle-lg extras-retry-btn focusable universal-onclick" id="extras-retry-btn" title="${I18n.t('common.retry') || 'Retry'}" aria-label="${I18n.t('common.retry') || 'Retry'}">
             <img src="svg/retry.svg" class="btn__icon" alt="">
         </button>

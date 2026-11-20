@@ -1104,11 +1104,11 @@ class SettingsManager {
             console.error('Settings: Failed to load fresh releases from GitHub', err);
             if (!releasesContainer.children.length) {
                 releasesContainer.innerHTML = `
-                    <div class="version-error-center">
-                        <div class="version-fetch-error">
+                    <div class="empty-state empty-state--plain">
+                        <p class="empty-state__text">
                             ${window.i18n?.t('settings.failedToFetchReleases') || 'Failed to fetch releases. Please check your internet connection.'}
-                        </div>
-                        <button id="version-retry-btn" class="btn btn--primary focusable universal-onclick" type="button">
+                        </p>
+                        <button id="version-retry-btn" class="btn btn--primary btn--fixed-min focusable universal-onclick" type="button">
                             ${window.i18n?.t('error.retry') || 'Retry'}
                         </button>
                     </div>

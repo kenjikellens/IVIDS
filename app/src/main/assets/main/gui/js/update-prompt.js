@@ -36,9 +36,9 @@ export class UpdatePrompt {
                     </div>
                     <div class="modal__body modal__body--scroll update-info-block">
                         <div class="version-badge-container">
-                            <span class="badge badge--outline version-badge current"></span>
+                            <span class="badge badge--outline" data-version-role="current"></span>
                             <span class="version-arrow">→</span>
-                            <span class="badge badge--outline version-badge remote"></span>
+                            <span class="badge badge--pill" data-version-role="remote"></span>
                         </div>
                         <div class="update-branch-section">
                             <div class="update-branch-title"></div>
@@ -171,8 +171,8 @@ export class UpdatePrompt {
         const titleEl = this.modalElement.querySelector('.modal__title');
         const branchTitleEl = this.modalElement.querySelector('.update-branch-title');
         const releaseNameEl = this.modalElement.querySelector('.update-release-name');
-        const currentBadgeEl = this.modalElement.querySelector('.version-badge.current');
-        const remoteBadgeEl = this.modalElement.querySelector('.version-badge.remote');
+        const currentBadgeEl = this.modalElement.querySelector('[data-version-role="current"]');
+        const remoteBadgeEl = this.modalElement.querySelector('[data-version-role="remote"]');
         const confirmBtn = document.getElementById('update-download-btn');
         const dismissBtn = document.getElementById('update-dismiss-btn');
         const progressContainer = document.getElementById('update-progress-container');

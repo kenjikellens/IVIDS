@@ -130,11 +130,10 @@
 #app .search-actions { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
 #app .recent-searches-row { align-items: center; flex-direction: row; flex-wrap: nowrap; gap: 8px; overflow-x: auto; width: 100%; }
 #app .results-container { -webkit-mask-image: none; mask-image: none; padding: 4px 0 72px; }
-#app .media-grid--posters, #app .search-results-grid {
-    --poster-width: clamp(86px, 26vw, 108px);
-    gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
-}
+/* Mobile 3-column poster grid for Search and Playlist Details. */
+#app .media-grid--posters, #app .search-results-grid { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 12px 4%; }
+#app .media-grid--posters > .card--poster, #app .search-results-grid > .card--poster,
+#app .media-grid--posters > .poster-wrapper, #app .search-results-grid > .poster-wrapper { min-width: 0; width: 100%; }
 /* Mobile standardized filter modal sections, triggers, and 2-column chip grids */
 #app #filter-modal .modal__body { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; padding: 4px 4px 20px; }
 #app #filter-modal .modal__footer { flex-shrink: 0; gap: 8px; padding-top: 12px; position: relative; z-index: 2; }
@@ -188,9 +187,8 @@
 #app .details-actions { align-items: stretch; display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; width: 100%; }
 #app .details-actions .btn { flex: 1 1 auto; min-width: max-content; width: auto; }
 
-/* Tabs header bar copied from landscape */
-#app .tab-bar,
-#app #details-tabs {
+/* Mobile tab bar and tab buttons (shared across Details and Login). */
+#app .tab-bar {
     align-items: center;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
@@ -200,7 +198,6 @@
     padding-bottom: 8px;
     width: 100%;
 }
-#app #details-tabs .btn,
 #app .tab-bar .btn {
     align-items: center;
     border: 2px solid transparent;
@@ -210,7 +207,7 @@
     display: inline-flex;
     flex: 0 0 auto;
     font-family: inherit;
-    font-size: 15px;
+    font-size: var(--text-base);
     font-weight: 700;
     justify-content: center;
     min-height: 44px;
@@ -223,7 +220,6 @@
     white-space: nowrap;
     width: auto;
 }
-#app #details-tabs .btn.btn--secondary,
 #app .tab-bar .btn.btn--secondary {
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.18);
@@ -231,9 +227,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
     color: #ffffff;
 }
-#app #details-tabs .btn.btn--primary,
-#app #details-tabs .btn.is-active,
-#app #details-tabs .btn.active,
 #app .tab-bar .btn.btn--primary,
 #app .tab-bar .btn.is-active,
 #app .tab-bar .btn.active {
@@ -249,19 +242,19 @@
 #app .tab-panel:not(.hidden), #app .details-bottom:not(.hidden) { display: flex; flex-direction: column; gap: 16px; width: 100%; }
 #app .disney-about-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; width: 100%; }
 #app .disney-about-left, #app .disney-about-right { width: 100%; }
-#app .disney-about-description { color: #dddddd; font-size: 16px; line-height: 1.6; }
+#app .disney-about-description { color: #dddddd; font-size: var(--text-md); line-height: 1.6; }
 #app .media-grid--cast, #app .disney-cast-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); width: 100%; }
 #app .card--compact { background: rgba(255, 255, 255, 0.02); border: 2px solid transparent; border-radius: var(--radius-sm); overflow: hidden; padding-bottom: 0.5rem; text-align: center; }
 #app .disney-cast-img { aspect-ratio: 2 / 3; background-color: #1a1c22; background-image: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.25) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #16181e 100%); background-position: center; background-size: cover; border: none; border-radius: 0; margin: 0; position: relative; width: 100%; }
-#app .disney-cast-name { color: var(--text-color); font-size: 0.9rem; font-weight: 700; overflow: hidden; padding: 0.35rem 0.25rem 0.1rem; text-overflow: ellipsis; white-space: nowrap; }
-#app .disney-cast-character { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
+#app .disney-cast-name { color: var(--text-color); font-size: var(--text-base); font-weight: 700; overflow: hidden; padding: 0.35rem 0.25rem 0.1rem; text-overflow: ellipsis; white-space: nowrap; }
+#app .disney-cast-character { color: var(--text-muted); font-size: var(--text-sm); overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Touch-friendly compact season selector pill. */
 #app .details-seasons { align-items: center; backdrop-filter: none; background: transparent; border: none; display: flex; justify-content: flex-start; margin: 2px 0 8px; max-height: none; padding: 0; width: 100%; }
 #app .seasons-list-content { display: none; }
 #app .seasons-dropdown-wrapper { align-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 999px; box-sizing: border-box; display: inline-flex; height: 44px; max-width: 220px; min-height: 44px; position: relative; transition: background-color 150ms ease, border-color 150ms ease; width: auto; }
 #app .seasons-dropdown-wrapper::after { border-bottom: 2px solid rgba(255, 255, 255, 0.7); border-right: 2px solid rgba(255, 255, 255, 0.7); content: ''; height: 5px; pointer-events: none; position: absolute; right: 14px; top: calc(50% - 4px); transform: rotate(45deg); width: 5px; }
-#app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: 13.5px; font-weight: 700; height: 100%; min-height: 44px; outline: none; padding: 0 32px 0 16px; width: 100%; }
+#app #seasons-dropdown { -moz-appearance: none; -webkit-appearance: none; appearance: none; background: transparent; border: none; border-radius: 999px; color: #ffffff; cursor: pointer; font-size: var(--text-sm); font-weight: 700; height: 100%; min-height: 44px; outline: none; padding: 0 32px 0 16px; width: 100%; }
 
 /* Tab Panel Extra: copied from landscape mode card--row */
 #app .disney-episode-item,
@@ -285,17 +278,12 @@
 #app .disney-extra-item .card__title { color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #app .disney-extra-item .card__meta { color: var(--primary-color, #46d369); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 2px; text-transform: uppercase; }
 #app .disney-extra-item .card__desc { color: #888888; font-size: 12px; line-height: 1.3; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#app .disney-episode-item .episode-meta { align-items: center; color: #888888; display: flex; font-size: 11.5px; font-weight: 600; gap: 6px; margin-bottom: 3px; }
+#app .disney-episode-item .episode-meta { align-items: center; color: #888888; display: flex; font-size: var(--text-xs); font-weight: 600; gap: 6px; margin-bottom: 3px; }
 #app .disney-episode-item .episode-meta__item:not(:last-child)::after { color: rgba(255, 255, 255, 0.3); content: "•"; margin-left: 6px; }
-#app .disney-episode-item .card__desc { -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: #999999; display: -webkit-box; font-size: 12px; line-clamp: 2; line-height: 1.35; margin: 0; overflow: hidden; }
+#app .disney-episode-item .card__desc { -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: #999999; display: -webkit-box; font-size: var(--text-xs); line-clamp: 2; line-height: 1.35; margin: 0; overflow: hidden; }
 
 /* Extra scroll padding at bottom of episodes and extras containers. */
 #app #details-episodes, #app #extras-list { box-sizing: border-box; padding-bottom: 24px; }
-
-/* Empty state container for Extras & Trailers tab on mobile. */
-#app .extras-empty-state { align-items: center; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; justify-content: center; min-height: 240px; padding: 48px 16px 32px; text-align: center; width: 100%; }
-/* Centered greyish empty text. */
-#app .extras-empty-text { color: #888888; font-size: 14.5px; font-weight: 500; line-height: 1.4; margin: 0; max-width: 320px; }
 
 /* Non-episode horizontal row cards fallback (e.g. playlist item rows on mobile). */
 #app .card--row:not(.disney-episode-item):not(.disney-extra-item) { align-items: stretch; flex-direction: column; gap: 10px; padding: 10px; }
@@ -383,8 +371,8 @@
 #app .playlist-card:focus-visible .playlist-card__media { border-color: #ffffff; }
 #app .playlist-card:active .playlist-card__media { opacity: 0.8; }
 #app .playlist-cover__empty-icon { height: 24px; width: 24px; }
-#app .playlist-card__title { font-size: 14.5px; font-weight: 700; }
-#app .playlist-card__count { font-size: 12.5px; font-weight: 500; }
+#app .playlist-card__title { font-size: var(--text-base); font-weight: 700; }
+#app .playlist-card__count { font-size: var(--text-xs); font-weight: 500; }
 /* Mobile elevated summary card and items container for playlist details. */
 #app #playlist-details-view.details-page { padding-top: calc(56px + env(safe-area-inset-top, 0px)); }
 /* Clean borderless mobile header for Playlist Details with title/count and full-width action row. */
@@ -628,7 +616,7 @@ body .modal .provider-item.dragging {
 /* Provider item title and server label */
 .provider-title {
     color: var(--mobile-text);
-    font-size: 15.5px;
+    font-size: var(--text-base);
     font-weight: 500;
     letter-spacing: -0.01em;
     overflow: hidden;
@@ -645,13 +633,11 @@ body .modal .provider-item.dragging {
     order: 2;
     width: auto;
 }
-/* URL input placed cleanly underneath header+actions on provider/M3U rows. */
+/* URL input layout overrides inside mobile provider/M3U rows (inherits surface/border from .form-input). */
 body .provider-item .form-input {
-    background: #0d0d0d;
-    border: 1px solid var(--mobile-border-strong);
     border-radius: var(--mobile-radius-sm);
     flex: 1 0 100%;
-    font-size: 14px;
+    font-size: var(--text-sm);
     height: 44px;
     min-height: 44px;
     order: 3;
@@ -814,9 +800,11 @@ body .stepper-arrow-btn { border-radius: 50%; gap: 0; height: 44px; min-height: 
 /* Poster cards keep a consistent portrait crop, dark edge, and soft lift on mobile. */
 #app .card--poster, #app .poster-wrapper { aspect-ratio: 2 / 3; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6); height: auto; overflow: hidden; }
 #app .card--poster .card__media, #app .poster-wrapper .poster, #app .poster-wrapper .poster-img { aspect-ratio: 2 / 3; height: 100%; object-fit: cover; width: 100%; }
-#app .media-grid--posters, #app .search-results-grid { gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 12px 4%; }
-#app .media-grid--posters > .card--poster, #app .search-results-grid > .card--poster,
-#app .media-grid--posters > .poster-wrapper, #app .search-results-grid > .poster-wrapper { min-width: 0; width: 100%; }
+/* Unified mobile standalone form and search input (Login, Language search, Modals). */
+#app .form-input:not(.form-control-wrapper *),
+body .modal .form-input:not(.form-control-wrapper *) { background: #191919; border: 1px solid #353535; border-radius: var(--mobile-radius-md); box-sizing: border-box; color: #ffffff; font-size: var(--text-md); height: 48px; min-height: 48px; padding: 0 15px; width: 100%; }
+#app .form-input:not(.form-control-wrapper *):focus,
+body .modal .form-input:not(.form-control-wrapper *):focus { background: #202020; border-color: #ffffff; outline: none; }
 #app .card__badge, #app .poster-badge { backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 4px; font-size: 11px; padding: 2px 6px; position: absolute; right: 6px; top: 6px; }
 
 body #changes-modal .modal__close, body .modal__close-btn { display: none !important; }
@@ -828,9 +816,6 @@ body .language-stepper-container { display: none; }
 /* Non-scrolling search header above the scrollable language list so rows never peek above it */
 body .language-search-wrapper { background: #000000; box-sizing: border-box; flex-shrink: 0; padding: 4px 0 12px; position: relative; top: auto; width: 100%; z-index: 10; }
 body .language-search-wrapper:has(> .hidden) { display: none; }
-/* Input field for filtering available languages */
-body .language-search { background: #1a1a1a; border: 1px solid #333333; border-radius: 22px; box-sizing: border-box; color: #ffffff; flex: 0 0 44px; font-size: 15px; height: 44px; margin: 0; padding: 0 18px; position: static; width: 100%; }
-body .language-search:focus { border-color: var(--primary-color); outline: none; }
 /* Mobile language card row - unique spacing/colors only (shared touch-row base lives in the settings section). */
 body .language-card { color: #ffffff; gap: 14px; min-width: 0; padding: 14px 12px; text-align: left; }
 /* Mobile active language row - Highlights active choice with primary brand color */
@@ -842,7 +827,7 @@ body .language-card:focus-visible, body .language-card.focused { background: tra
 /* Mobile language flag emoji container */
 body .language-card__flag { flex: 0 0 auto; font-size: 22px; width: 30px; }
 /* Mobile language display name - Truncates overflowing long names */
-body .language-card__name { flex: 1; font-size: 15.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body .language-card__name { flex: 1; font-size: var(--text-base); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Mobile language checkmark indicator - Hidden until active */
 body .language-card__check { color: var(--primary-color); display: inline-block; flex: 0 0 auto; font-size: 18px; font-weight: 800; opacity: 0; }
 /* Mobile language active checkmark - Visible when row has active state */
@@ -909,7 +894,6 @@ html, body, #app { background-color: var(--mobile-surface); }
 #app #sidebar-container .nav-rail .nav-item:is(:focus-visible, :active, .is-pressed):not(.active):not(.is-active) .nav-item__icon { background-color: #ffffff; }
 #app:has(.login-page-wrapper) #sidebar-container { display: none; }
 #app:has(.login-page-wrapper) #main-view { padding-bottom: env(safe-area-inset-bottom, 0px); }
-#app .tab-btn.is-active, #app .tab-btn.active { background: #ffffff; border-color: #ffffff; color: #111111; }
 #app .chip.is-selected, #app .chip.is-active, #app .chip.selected, #app .chip.active { background: #252525; border-color: var(--primary-color); box-shadow: none; color: var(--primary-color); }
 #app .form-toggle { background: transparent; border: 0; height: 48px; overflow: visible; width: 64px; }
 #app .form-toggle::before { background: #333333; border-radius: 999px; content: ""; height: 30px; left: 6px; position: absolute; top: 9px; transition: background-color 140ms ease; width: 52px; }
@@ -1013,7 +997,7 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 /* Keep switches and scale steppers cleanly visible on the right. */
 #app .settings-container .setting-control:has(.form-toggle),
 #app .settings-container .setting-control.ui-scale-control { display: inline-flex !important; }
-#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; display: inline-flex !important; font-size: 13.5px; font-weight: 600; height: 34px; justify-content: center; min-width: 44px; text-align: center; }
+#app .settings-container .ui-scale-control .current-value-display { color: #ffffff; display: inline-flex !important; font-size: var(--text-sm); font-weight: 600; height: 34px; justify-content: center; min-width: 44px; text-align: center; }
 
 /* Clean, native-feeling circular UI scale stepper buttons. */
 #app .settings-container .ui-scale-control { background: transparent; border: 0; border-radius: 0; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
@@ -1055,36 +1039,8 @@ body #advanced-settings-modal .setting-item .edit-trigger::after { background-co
 
 /* Dedicated Update Check Modal status alignment */
 #update-check-modal .update-modal-body { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 28px 20px 20px; text-align: center; }
-#update-check-modal .update-modal-desc { color: #888888; font-size: 13.5px; line-height: 1.45; margin: 0; }
-#update-check-modal .update-version-badge { background: rgba(var(--primary-rgb), 0.12); border: 1px solid var(--primary-color); border-radius: 999px; color: var(--primary-color); font-size: 13.5px; font-weight: 700; margin-top: 14px; padding: 4px 14px; }
-
-
-/* Mobile: Centered version fetch error and retry button */
-.version-error-center {
-    align-items: center;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    justify-content: center;
-    min-height: 180px;
-    padding: 36px 16px;
-    text-align: center;
-    width: 100%;
-}
-.version-error-center .version-fetch-error {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 15px;
-    line-height: 1.5;
-    margin: 0;
-    max-width: 320px;
-    text-align: center;
-}
-.version-error-center .btn {
-    min-height: 48px;
-    min-width: 200px;
-    width: auto;
-}
+#update-check-modal .update-modal-desc { color: #888888; font-size: var(--text-sm); line-height: 1.45; margin: 0; }
+#update-check-modal .badge--pill { margin-top: 14px; }
 
 /* Mobile: Polished App Info modal dialog layout */
 body #app-info-modal .modal__dialog {
@@ -1102,16 +1058,6 @@ body #app-info-modal .app-info-logo {
     height: 56px;
     margin-bottom: 2px;
     width: 56px;
-}
-/* Mobile: Version pill badge in app info dialog */
-body #app-info-modal .app-info-badge {
-    background: rgba(var(--primary-rgb), 0.14);
-    border: 1px solid var(--primary-color);
-    border-radius: 999px;
-    color: var(--primary-color);
-    font-size: 13.5px;
-    font-weight: 700;
-    padding: 4px 16px;
 }
 /* Mobile: Clean details list without nested boxes */
 body #app-info-modal .app-info-details {
@@ -1154,11 +1100,9 @@ body #app-info-modal .app-info-value {
 #app #login-circle-back:active { background: rgba(255, 255, 255, 0.14); }
 #app .login-header { align-items: flex-start; margin: 0 0 28px; text-align: left; }
 #app .tab-bar--fill { border-bottom-color: #343434; gap: 18px; margin-bottom: 20px; }
-#app .tab-bar--fill .btn { color: #aaaaaa; font-size: 15px; font-weight: 600; min-height: 48px; }
+#app .tab-bar--fill .btn { color: #aaaaaa; font-size: var(--text-base); font-weight: 600; min-height: 48px; }
 #app .tab-bar--fill .btn.is-active, #app .tab-bar--fill .btn.active { border-bottom-color: #ffffff; color: #ffffff; }
-#app .login-panel .form-input { background: #191919; border: 1px solid #353535; border-radius: var(--mobile-radius-md); color: #ffffff; font-size: 16px; height: 52px; min-height: 52px; padding: 0 15px; width: 100%; }
-#app .login-panel .form-input:focus { background: #202020; border-color: #ffffff; }
-#app .login-panel .form-label { color: #e2e2e2; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+#app .login-panel .form-label { color: #e2e2e2; font-size: var(--text-sm); font-weight: 600; letter-spacing: 0; text-transform: none; }
 #app .login-footer { align-items: stretch; gap: 10px; margin-top: 22px; }
 #app #login-back { display: none; }
 
@@ -1170,11 +1114,10 @@ body #app-info-modal .app-info-value {
 /* Avoid motion when the system asks for reduced animations. */
 @media (prefers-reduced-motion: reduce) {
     html body .modal__dialog, body .modal__dialog { transform: none; transition: none; }
-    #app .btn, body .modal__footer .btn, body .modal__back-btn, body .language-card, #app .tab-bar--fill .btn { transition: none; }
-    #app .btn:active, body .modal__footer .btn:active, body .modal__back-btn:active, body .language-card:active, #app .tab-bar--fill .btn:active { transform: none; }
+    #app .btn, body .modal__footer .btn, body .modal__back-btn, body .language-card, #app .tab-bar .btn { transition: none; }
+    #app .btn:active, body .modal__footer .btn:active, body .modal__back-btn:active, body .language-card:active, #app .tab-bar .btn:active { transform: none; }
     #sidebar-container .nav-rail .nav-item { transition: none; }
     #sidebar-container .nav-rail .nav-item:active, #sidebar-container .nav-rail .nav-item.is-pressed { transform: none; }
-    #app #details-tabs .btn { transition: none; }
     .ripple-wave { animation: none !important; opacity: 0 !important; }
 }
 
