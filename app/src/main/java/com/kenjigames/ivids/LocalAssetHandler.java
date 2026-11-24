@@ -92,6 +92,12 @@ public final class LocalAssetHandler {
             InputStream is = mAppContext.getAssets().open(assetPath);
             String mimeType = getAssetMimeType(assetPath);
             String encoding = isTextMimeType(mimeType) ? "UTF-8" : null;
+            // Allow WebView memory/disk caching for static bundled assets while keeping HTML fresh.
+            if ("text/html".equals(mimeType)) {
+                headers.put("Cache-Control", "no-cache");
+            } else {
+                headers.put("Cache-Control", "public, max-age=31536000, immutable");
+            }
             return new WebResourceResponse(mimeType, encoding, 200, "OK", headers, is);
         } catch (IOException e) {
             return buildErrorResponse(404, "Not Found", headers);

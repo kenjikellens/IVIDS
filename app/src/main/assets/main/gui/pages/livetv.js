@@ -42,6 +42,8 @@ let detailUiDebounceTimer = null;
 let loadSourcesPromise = null;
 let liveTvPageBackHandler = null;
 let detailRequestId = 0;
+let isPageActive = false;
+let activeProgressCallback = null;
 
 /**
  * Detects Android TV / mobile or low-memory devices where auto-starting HLS preview streams on hover causes decoder crashes.
@@ -67,8 +69,24 @@ let isAdjustingChannelWindow = false;
 let scrollRafPending = false;
 const failedLogoUrls = new Set();
 const rowMetaMap = new WeakMap();
-const CHUNK_SIZE = 35;
-const MAX_RENDERED_NODES = 120;
+
+/**
+ * Returns the virtualized DOM batch size tuned to device memory constraints.
+ *
+ * @returns {number} Number of channel rows appended per chunk.
+ */
+function getChunkSize() {
+    return isLowRamAndroidDevice() ? 20 : 30;
+}
+
+/**
+ * Returns the maximum live channel row nodes retained inside #channels-list.
+ *
+ * @returns {number} Maximum rendered DOM nodes ceiling.
+ */
+function getMaxRenderedNodes() {
+    return isLowRamAndroidDevice() ? 48 : 90;
+}
 
 /**
  * Priority countries displayed near the top of the vertical Categories / Countries list.
@@ -119,8 +137,106 @@ export function formatPrimaryCategory(groupStr) {
 window.formatPrimaryCategory = formatPrimaryCategory;
 
 /**
+ * Resolves O(1) D-pad focus transitions between Live TV columns without SpatialNav geometry scans.
+ *
+ * @param {HTMLElement} current - Currently focused element.
+ * @param {string} direction - Navigation direction ('up', 'down', 'left', 'right').
+ * @returns {HTMLElement|null} Next focus target or null to fall back cleanly.
+ */
+function findNextLiveTvFocus(current, direction) {
+    if (!current || document.querySelector('.modal.is-open, .modal.active, .modal.show')) {
+        return null;
+    }
+
+    const catRow = current.closest('#categories-list .category-list-item');
+    if (catRow) {
+        if (direction === 'up' || direction === 'down') {
+            const sib = direction === 'down' ? catRow.nextElementSibling : catRow.previousElementSibling;
+            return (sib && sib.classList.contains('focusable')) ? sib : null;
+        }
+        if (direction === 'right') {
+            return document.querySelector('#channels-list .channel-list-item.focusable')
+                || document.getElementById('search-input');
+        }
+        if (direction === 'left') {
+            return document.querySelector('#sidebar-container .nav-item.is-active.focusable, #sidebar-container .nav-item.active.focusable')
+                || document.querySelector('#sidebar-container .focusable');
+        }
+        return null;
+    }
+
+    const chanRow = current.closest('#channels-list .channel-list-item');
+    if (chanRow) {
+        if (direction === 'down') {
+            const nextSib = chanRow.nextElementSibling;
+            return (nextSib && nextSib.classList.contains('focusable')) ? nextSib : null;
+        }
+        if (direction === 'up') {
+            const prevSib = chanRow.previousElementSibling;
+            if (prevSib && prevSib.classList.contains('focusable')) return prevSib;
+            return document.getElementById('search-input');
+        }
+        if (direction === 'left') {
+            return document.querySelector('#categories-list .category-list-item.is-selected.focusable')
+                || document.querySelector('#categories-list .category-list-item.focusable');
+        }
+        if (direction === 'right') {
+            return document.getElementById('livetv-preview-card');
+        }
+        return null;
+    }
+
+    if (current.id === 'search-input') {
+        if (direction === 'down') {
+            return document.querySelector('#channels-list .channel-list-item.focusable')
+                || document.getElementById('livetv-open-settings-btn');
+        }
+        if (direction === 'left') {
+            return document.querySelector('#categories-list .category-list-item.is-selected.focusable')
+                || document.querySelector('#categories-list .category-list-item.focusable');
+        }
+        if (direction === 'right') {
+            const clearBtn = document.getElementById('search-clear');
+            if (clearBtn && !clearBtn.classList.contains('hidden')) return clearBtn;
+            return document.getElementById('livetv-preview-card');
+        }
+    }
+
+    if (current.id === 'livetv-preview-card' && direction === 'left') {
+        return document.querySelector('#channels-list .channel-list-item.focusable')
+            || document.getElementById('search-input');
+    }
+
+    return null;
+}
+
+/**
+ * Triggers background loading of deferred global/language playlists on low-RAM devices
+ * when opening a genre category or performing a channel search.
+ */
+function triggerDeferredLoad() {
+    if (!sourceManager.hasDeferredProviders()) return;
+    sourceManager.loadDeferredProviders((updatedChannels) => {
+        if (!isPageActive) return;
+        allChannels = updatedChannels;
+        renderCategoriesList();
+        const prevCount = filteredChannels.length;
+        updateFilteredChannelsArray();
+        if (filteredChannels.length !== prevCount) {
+            const listEl = document.getElementById('channels-list');
+            if (listEl && listEl.children.length === 0) {
+                filterAndRenderChannels(false);
+            } else {
+                const empty = document.getElementById('no-channels-message');
+                if (empty) empty.classList.add('hidden');
+            }
+        }
+    });
+}
+
+/**
  * Initializes the 3-column Live TV page, resetting state variables, initializing the unified
- * LiveStreamEngine for the 16:9 preview, setting up event listeners, and starting progressive IPTV playlist loading.
+ * LiveStreamEngine on PC only, registering O(1) spatial navigation, and starting progressive IPTV loading.
  * 
  * @param {object} params - Routing parameters.
  */
@@ -129,38 +245,47 @@ export async function init(params) {
     I18n.applyTranslations();
     console.log('Live TV List UI initializing...');
 
+    isPageActive = true;
     searchQuery = '';
     activeCategoryKey = 'all';
     selectedChannel = null;
     cleanupPreview();
-    initPreviewEngine();
+    if (!isLowRamAndroidDevice()) {
+        initPreviewEngine();
+    }
 
     const originalLoadPage = Router.loadPage;
     const originalGoBack = Router.goBack;
 
     /**
-     * Restores the original Router methods and cleans up page timers and handlers.
+     * Restores the original Router methods and tears down all timers, EPG buffers, and subscribers.
      */
     const restoreRouter = () => {
+        isPageActive = false;
         Router.loadPage = originalLoadPage;
         Router.goBack = originalGoBack;
-        if (categoryFocusTimer) {
-            clearTimeout(categoryFocusTimer);
-            categoryFocusTimer = null;
+        if (activeProgressCallback) {
+            sourceManager.unsubscribeProgress(activeProgressCallback);
+            activeProgressCallback = null;
         }
-        if (progressiveRenderTimer) {
-            clearTimeout(progressiveRenderTimer);
-            progressiveRenderTimer = null;
-        }
-        if (detailUiDebounceTimer) {
-            clearTimeout(detailUiDebounceTimer);
-            detailUiDebounceTimer = null;
-        }
+        [categoryFocusTimer, progressiveRenderTimer, detailUiDebounceTimer, searchDebounceTimer, previewTimeout].forEach(t => {
+            if (t) clearTimeout(t);
+        });
+        categoryFocusTimer = null;
+        progressiveRenderTimer = null;
+        detailUiDebounceTimer = null;
+        searchDebounceTimer = null;
+        previewTimeout = null;
+        scrollRafPending = false;
+        SpatialNav.setPageLogic(null);
+        EpgManager.clearGuideCache();
         if (liveTvPageBackHandler) {
             SpatialNav.popBackHandler(liveTvPageBackHandler);
             liveTvPageBackHandler = null;
         }
     };
+
+    SpatialNav.setPageLogic({ findNext: findNextLiveTvFocus });
 
     /**
      * Wraps Router.loadPage to cleanup the preview player before navigating.
@@ -190,7 +315,6 @@ export async function init(params) {
     }
 
     if (window.i18n) window.i18n.applyTranslations();
-    EpgManager.init();
 
     setupEventListeners();
 
@@ -380,6 +504,9 @@ function renderCategoriesList() {
         `;
 
         const activateCategory = (moveFocusToChannels = false) => {
+            if (cat.key.startsWith('genre:')) {
+                triggerDeferredLoad();
+            }
             if (activeCategoryKey !== cat.key) {
                 activeCategoryKey = cat.key;
                 container.querySelectorAll('.category-list-item').forEach(el => {
@@ -442,7 +569,8 @@ async function loadAllSources() {
         }
 
         let initialRenderDone = sourceManager.cachedChannels.length > 0;
-        allChannels = await sourceManager.loadAllChannels(null, false, (progressChannels) => {
+        const onProgressUpdate = (progressChannels) => {
+            if (!isPageActive) return;
             allChannels = progressChannels;
             if (!initialRenderDone && allChannels.length > 0) {
                 initialRenderDone = true;
@@ -452,22 +580,29 @@ async function loadAllSources() {
             } else if (initialRenderDone && !progressiveRenderTimer) {
                 progressiveRenderTimer = setTimeout(() => {
                     progressiveRenderTimer = null;
+                    if (!isPageActive) return;
                     renderCategoriesList();
-                    const prevFilteredCount = filteredChannels.length;
                     updateFilteredChannelsArray();
-                    if (filteredChannels.length !== prevFilteredCount) {
+                    const container = document.getElementById('channels-list');
+                    const hasSkeletons = Boolean(container && container.querySelector('.is-skeleton'));
+                    if (container && (container.children.length === 0 || hasSkeletons)) {
                         filterAndRenderChannels(false);
-                    } else if (renderedCount < CHUNK_SIZE && filteredChannels.length > renderedCount) {
-                        const container = document.getElementById('channels-list');
-                        if (container && container.querySelector('.is-skeleton')) {
-                            filterAndRenderChannels(false);
-                        } else {
-                            renderNextChunk();
-                        }
+                    } else if (renderedCount < getChunkSize() && filteredChannels.length > renderedCount) {
+                        renderNextChunk();
                     }
-                }, 350);
+                }, 400);
             }
-        });
+        };
+        activeProgressCallback = onProgressUpdate;
+        try {
+            allChannels = await sourceManager.loadAllChannels(null, false, onProgressUpdate);
+        } finally {
+            sourceManager.unsubscribeProgress(onProgressUpdate);
+            if (activeProgressCallback === onProgressUpdate) {
+                activeProgressCallback = null;
+            }
+        }
+        if (!isPageActive) return;
 
         if (progressiveRenderTimer) {
             clearTimeout(progressiveRenderTimer);
@@ -505,8 +640,8 @@ function updateFilteredChannelsArray() {
 
     filteredChannels = baseBucket.filter(c => {
         const matchesName = (c.searchNameLower || (c.name ? c.name.toLowerCase() : '')).includes(q);
-        const matchesGroup = c.group && c.group.toLowerCase().includes(q);
-        return matchesName || matchesGroup;
+        const grpLower = c.searchGroupLower !== undefined ? c.searchGroupLower : (c.group ? c.group.toLowerCase() : '');
+        return matchesName || grpLower.includes(q);
     });
 }
 
@@ -578,7 +713,7 @@ async function showChannelDetail(channel) {
     const noEpgText = I18n.t('livetv.noEpgInfo');
 
     const applyPreviewMeta = () => {
-        if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
+        if (!isPageActive || reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
         const content = document.getElementById('hero-active-content');
         if (content) content.classList.remove('hidden');
@@ -630,7 +765,7 @@ async function showChannelDetail(channel) {
     const lowRamDevice = isLowRamAndroidDevice();
 
     previewTimeout = setTimeout(async () => {
-        if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
+        if (!isPageActive || reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
         if (!lowRamDevice) {
             if (!previewEngine) {
@@ -641,12 +776,14 @@ async function showChannelDetail(channel) {
             }
         }
 
-        const [epg, upcomingShows] = await Promise.all([
-            EpgManager.getCurrentProgram(channel.name, channel.group, channel.tvgId),
-            EpgManager.getUpcomingPrograms(channel.name, channel.group, 3, channel.tvgId)
-        ]);
+        const { current: epg, upcoming: upcomingShows } = await EpgManager.getChannelEpgBundle(
+            channel.name,
+            channel.group,
+            channel.tvgId,
+            3
+        );
 
-        if (reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
+        if (!isPageActive || reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
         if (epgContainer) {
             if (epg && epg.hasData) {
@@ -685,7 +822,7 @@ async function showChannelDetail(channel) {
                 });
             }
         }
-    }, 500);
+    }, lowRamDevice ? 650 : 500);
 }
 
 /**
@@ -771,6 +908,9 @@ function setupEventListeners() {
             if (clearBtn) {
                 clearBtn.classList.toggle('hidden', searchQuery.length === 0);
             }
+            if (searchQuery.trim().length > 0) {
+                triggerDeferredLoad();
+            }
             if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(() => {
                 filterAndRenderChannels(false);
@@ -850,7 +990,8 @@ function createChannelRow(channel, index, focusedUrl) {
     item.dataset.url = channel.url;
 
     const rawLogo = channel.logo;
-    const iconUrl = (isSafeMediaUrl(rawLogo) && !failedLogoUrls.has(rawLogo)) ? rawLogo : 'images/livetv.svg';
+    const useVectorOnly = isLowRamAndroidDevice();
+    const iconUrl = (!useVectorOnly && isSafeMediaUrl(rawLogo) && !failedLogoUrls.has(rawLogo)) ? rawLogo : 'images/livetv.svg';
 
     item.innerHTML = `
         <div class="channel-card__logo-wrap channel-list-logo-container">
@@ -875,8 +1016,22 @@ function createChannelRow(channel, index, focusedUrl) {
 }
 
 /**
+ * Releases remote image references on trimmed channel rows so Android WebView frees GPU textures immediately.
+ *
+ * @param {HTMLElement} row - Channel row DOM element being removed.
+ */
+function releaseRowMedia(row) {
+    const img = row.querySelector('img');
+    if (img) {
+        img.onerror = null;
+        img.removeAttribute('src');
+    }
+    row.remove();
+}
+
+/**
  * Prepends the previous batch of channel rows when scrolling or navigating upward while
- * enforcing MAX_RENDERED_NODES by trimming off-screen bottom rows.
+ * enforcing getMaxRenderedNodes() by trimming off-screen bottom rows.
  */
 function renderPrevChunk() {
     if (windowStartIndex <= 0) return;
@@ -884,7 +1039,9 @@ function renderPrevChunk() {
     const container = document.getElementById('channels-list');
     if (!container) return;
 
-    const newStart = Math.max(0, windowStartIndex - CHUNK_SIZE);
+    const chunkSize = getChunkSize();
+    const maxNodes = getMaxRenderedNodes();
+    const newStart = Math.max(0, windowStartIndex - chunkSize);
     const fragment = document.createDocumentFragment();
     for (let i = newStart; i < windowStartIndex; i++) {
         const { item } = createChannelRow(filteredChannels[i], i, null);
@@ -900,8 +1057,8 @@ function renderPrevChunk() {
     }
     windowStartIndex = newStart;
 
-    while (container.children.length > MAX_RENDERED_NODES && container.lastElementChild && !container.lastElementChild.classList.contains('focused')) {
-        container.lastElementChild.remove();
+    while (container.children.length > maxNodes && container.lastElementChild && !container.lastElementChild.classList.contains('focused')) {
+        releaseRowMedia(container.lastElementChild);
         renderedCount = Math.max(windowStartIndex, renderedCount - 1);
     }
     isAdjustingChannelWindow = false;
@@ -909,7 +1066,7 @@ function renderPrevChunk() {
 
 /**
  * Renders the next batch of clean channel rows in #channels-list while keeping total
- * rendered DOM nodes bounded to MAX_RENDERED_NODES.
+ * rendered DOM nodes bounded to getMaxRenderedNodes() without layout thrashing.
  *
  * @param {string|null} [preserveFocusedUrl=null] - Optional URL of the channel that should retain focus after re-render.
  */
@@ -922,8 +1079,10 @@ function renderNextChunk(preserveFocusedUrl = null) {
     const currentFocused = document.querySelector('#channels-list .focused');
     const focusedUrl = preserveFocusedUrl || (currentFocused && currentFocused.dataset.url);
 
+    const chunkSize = getChunkSize();
+    const maxNodes = getMaxRenderedNodes();
     const start = renderedCount;
-    const end = Math.min(start + CHUNK_SIZE, filteredChannels.length);
+    const end = Math.min(start + chunkSize, filteredChannels.length);
 
     const fragment = document.createDocumentFragment();
     let refocusTarget = null;
@@ -947,18 +1106,29 @@ function renderNextChunk(preserveFocusedUrl = null) {
 
     renderedCount = end;
 
-    if (container.children.length > MAX_RENDERED_NODES) {
-        isAdjustingChannelWindow = true;
+    if (container.children.length > maxNodes) {
+        const excess = container.children.length - maxNodes;
+        const toRemove = [];
         let removedHeight = 0;
-        while (container.children.length > MAX_RENDERED_NODES && container.firstElementChild && !container.firstElementChild.classList.contains('focused')) {
-            const first = container.firstElementChild;
-            removedHeight += first.offsetHeight;
-            first.remove();
-            windowStartIndex++;
+
+        // Batch DOM height reads before removing nodes to avoid interleaved synchronous reflows
+        let node = container.firstElementChild;
+        for (let i = 0; i < excess && node && !node.classList.contains('focused'); i++) {
+            toRemove.push(node);
+            removedHeight += node.offsetHeight;
+            node = node.nextElementSibling;
         }
-        if (removedHeight > 0) {
-            container.scrollTop = Math.max(0, container.scrollTop - removedHeight);
+
+        if (toRemove.length > 0) {
+            isAdjustingChannelWindow = true;
+            for (let i = 0; i < toRemove.length; i++) {
+                releaseRowMedia(toRemove[i]);
+                windowStartIndex++;
+            }
+            if (removedHeight > 0) {
+                container.scrollTop = Math.max(0, container.scrollTop - removedHeight);
+            }
+            isAdjustingChannelWindow = false;
         }
-        isAdjustingChannelWindow = false;
     }
 }

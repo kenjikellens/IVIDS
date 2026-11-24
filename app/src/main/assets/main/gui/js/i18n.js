@@ -63,6 +63,7 @@ class I18n {
             this.translations = await response.json();
             this.translationCache = {}; // Reset cache on language change
             this.currentLanguage = lang;
+            this.applyDocumentDirection(lang);
 
             // Apply translations to the page
             this.applyTranslations();
@@ -98,6 +99,19 @@ class I18n {
                 this.applyTranslations();
             }
         }
+    }
+
+    /**
+     * Synchronizes the document root lang and dir attributes for LTR and RTL scripts (Arabic, Hebrew, Persian).
+     * Updates document.documentElement so layout direction matches the active locale.
+     * @param {string} lang - Active ISO language code.
+     */
+    applyDocumentDirection(lang) {
+        if (typeof document === 'undefined' || !document.documentElement) return;
+        const code = String(lang || 'en').toLowerCase();
+        const isRtl = code === 'ar' || code === 'he' || code === 'fa';
+        document.documentElement.lang = code;
+        document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     }
 
     async setLanguage(lang) {

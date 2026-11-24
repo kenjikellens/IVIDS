@@ -15,25 +15,33 @@
     --app-sidebar-expanded-width: clamp(190px, 14vw, 220px);
     --app-sidebar-width: clamp(58px, 4vw, 68px);
     --background-color: #101010;
-    --background-elevated: #171717;
+    --background-elevated: #161616;
+    --border-default: rgba(255, 255, 255, 0.12);
+    --border-hover: rgba(255, 255, 255, 0.3);
+    --border-subtle: rgba(255, 255, 255, 0.08);
     --card-bg: var(--surface-color);
+    --danger-color: #b92b23;
+    --danger-hover: #d43830;
     --focus-border-color: #ffffff;
     --focus-ring: none;
     --focus-ring-strong: none;
+    --nav-inactive-color: rgba(255, 255, 255, 0.68);
     --poster-height: calc(var(--poster-width) * 1.5);
     --poster-width: clamp(120px, 10.5vw, 154px);
     --primary-color: #46d369;
     --primary-foreground: #000000;
     --primary-icon-filter: brightness(0);
     --primary-rgb: 70, 211, 105;
-    --radius-lg: 5px;
-    --radius-md: 5px;
-    --radius-sm: 5px;
-    --radius-xs: 5px;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-sm: 6px;
+    --radius-xs: 4px;
     --row-min-height: calc(var(--poster-height) + 44px);
     --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.36);
     --shadow-panel: 0 18px 48px rgba(0, 0, 0, 0.48);
     --surface-color: #1c1c1c;
+    --surface-interactive: rgba(255, 255, 255, 0.05);
+    --surface-interactive-hover: rgba(255, 255, 255, 0.11);
     --surface-muted: #2e2e2e;
     --surface-soft: #252525;
     --text-color: #f4f4f4;
@@ -46,7 +54,7 @@
     --text-lg: 18px;
     --text-xl: clamp(16px, 1.8vw, 22px);
     --text-2xl: 26px;
-    --text-page: 40px;
+    --text-page: 32px;
     --text-hero: clamp(28px, 3.8vw, 48px);
 }
 
@@ -70,6 +78,9 @@ body {
     overflow: hidden;
     width: calc(100vw / var(--ui-scale, 1.0));
 }
+
+/* Branded text selection matching primary accent without browser default blue. */
+::selection { background: rgba(var(--primary-rgb), 0.32); color: #ffffff; }
 
 /* Form element typography inheritance resets. */
 button { color: inherit; font: inherit; }
@@ -123,10 +134,10 @@ input, textarea, select { font: inherit; }
    SECTION 2: OOCSS BUTTON SYSTEM (.btn & .btn-group)
    ========================================================================== */
 
-/* Base button structural superclass defining geometry, 3px transparent border, alignment, and transitions. */
+/* Base button structural superclass defining geometry, borderless surface, alignment, and transitions (focus uses inset outline). */
 .btn {
     align-items: center;
-    border: 3px solid transparent;
+    border: 0;
     border-radius: var(--radius-md);
     box-sizing: border-box;
     cursor: pointer;
@@ -135,11 +146,14 @@ input, textarea, select { font: inherit; }
     font-size: 15px;
     font-weight: 700;
     gap: 8px;
+    isolation: isolate;
     justify-content: center;
     line-height: 1;
     min-height: 44px;
     outline: none;
+    overflow: hidden;
     padding: 8px 22px;
+    position: relative;
     text-align: center;
     text-decoration: none;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
@@ -148,7 +162,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Compact button sizing modifier with reduced padding and smaller typography. */
-.btn--sm, .btn-small { align-self: center; flex: none; font-size: 13px; min-height: 34px; padding: 6px 14px; width: fit-content; }
+.btn--sm { align-self: center; flex: none; font-size: 13px; min-height: 34px; padding: 6px 14px; width: fit-content; }
 
 /* Default standard button sizing modifier. */
 .btn--md { font-size: 15px; min-height: 44px; padding: 8px 22px; }
@@ -157,7 +171,7 @@ input, textarea, select { font: inherit; }
 .btn--lg { font-size: 17px; min-height: 52px; padding: 12px 28px; }
 
 /* Circular icon button modifier with unified 36px dimensions. */
-.btn--circle, .btn-circle { border-radius: 50%; flex-shrink: 0; height: 36px; min-height: 36px; min-width: 36px; padding: 0; width: 36px; }
+.btn--circle { border-radius: 50%; flex-shrink: 0; height: 36px; min-height: 36px; min-width: 36px; padding: 0; width: 36px; }
 
 /* Medium circular icon button modifier (40px) for media player transport controls. */
 .btn--circle-md { border-radius: 50%; flex-shrink: 0; height: 40px; min-height: 40px; min-width: 40px; padding: 0; width: 40px; }
@@ -179,48 +193,48 @@ input, textarea, select { font: inherit; }
 .btn--square { border-radius: var(--radius-sm); flex-shrink: 0; height: 46px; min-height: 46px; min-width: 46px; padding: 0; width: 46px; }
 
 /* Full-width block button modifier stretching across parent container width. */
-.btn--block, .btn-full-center { display: flex; justify-content: center; width: 100%; }
+.btn--block { display: flex; justify-content: center; width: 100%; }
 
 /* Fixed minimum-width button modifier ensuring localized labels fit consistently. */
-.btn--fixed-min, .btn-min-w { min-width: 130px; }
+.btn--fixed-min { min-width: 130px; }
 
 /* Primary skin variant styling buttons with brand theme translucent fill. */
-.btn--primary, .btn-primary { background: rgba(var(--primary-rgb), 0.25); border-color: transparent; color: #ffffff; font-weight: 800; }
-/* Hover state for primary button skin variant. */
-.btn--primary:hover, .btn-primary:hover { background: rgba(var(--primary-rgb), 0.35); border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for primary button skin variant with standardized thick white border. */
-.btn--primary:focus, .btn--primary:focus-visible, .btn--primary.focused, .btn-primary:focus, .btn-primary.focused { background: rgba(var(--primary-rgb), 0.35); border-color: #ffffff; color: #ffffff; outline: none; }
+.btn--primary { background: rgba(var(--primary-rgb), 0.24); border-color: transparent; color: #ffffff; font-weight: 800; }
+/* Hover state for primary button skin variant (background fill zooms smoothly via ::before, no hover border). */
+.btn--primary:hover { border-color: transparent; color: #ffffff; outline: none; }
+/* Focus state for primary button skin variant with standardized crisp white border. */
+.btn--primary:focus, .btn--primary:focus-visible, .btn--primary.focused { background: rgba(var(--primary-rgb), 0.38); border-color: #ffffff; color: #ffffff; outline: none; }
 /* Hides mobile-only button icons on desktop, landscape, and TV viewports. */
 .btn__icon--mobile { display: none; }
 
-/* Secondary skin variant styling buttons with soft neutral translucent fill and tactile border for TV affordance. */
-.btn--secondary, .btn-secondary { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.18); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35); color: #ffffff; }
-/* Hover state for secondary button skin variant. */
-.btn--secondary:hover, .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.35); color: #ffffff; outline: none; }
-/* Focus state for secondary button skin variant with standardized thick white border for TV. */
-.btn--secondary:focus, .btn--secondary:focus-visible, .btn--secondary.focused, .btn-secondary:focus, .btn-secondary.focused { background: rgba(255, 255, 255, 0.25); border-color: #ffffff; box-shadow: 0 0 14px rgba(255, 255, 255, 0.45); color: #ffffff; outline: none; }
+/* Secondary skin variant styling buttons with soft neutral translucent fill (borderless at rest and hover). */
+.btn--secondary { background: rgba(255, 255, 255, 0.09); border-color: transparent; box-shadow: none; color: #ffffff; }
+/* Hover state for secondary button skin variant (background fill zooms smoothly via ::before, no hover border). */
+.btn--secondary:hover { border-color: transparent; color: #ffffff; outline: none; }
+/* Focus state for secondary button skin variant with standardized crisp white border (no neon halo). */
+.btn--secondary:focus, .btn--secondary:focus-visible, .btn--secondary.focused { background: rgba(255, 255, 255, 0.2); border-color: #ffffff; box-shadow: none; color: #ffffff; outline: none; }
 
 /* Danger skin variant styling destructive action buttons with red fill. */
-.btn--danger, .btn-danger { background: #b92b23; border-color: transparent; color: #ffffff; }
-/* Hover state for danger button skin variant. */
-.btn--danger:hover, .btn-danger:hover { background: #d43830; border-color: transparent; color: #ffffff; outline: none; }
-/* Focus state for danger button skin variant with standardized thick white border. */
-.btn--danger:focus, .btn--danger:focus-visible, .btn--danger.focused, .btn-danger:focus, .btn-danger.focused { background: #d43830; border-color: #ffffff; color: #ffffff; outline: none; }
+.btn--danger { background: var(--danger-color); border-color: transparent; color: #ffffff; }
+/* Hover state for danger button skin variant (highlight zooms smoothly via ::before, no hover border). */
+.btn--danger:hover { border-color: transparent; color: #ffffff; outline: none; }
+/* Focus state for danger button skin variant with standardized crisp white border. */
+.btn--danger:focus, .btn--danger:focus-visible, .btn--danger.focused { background: var(--danger-hover); border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Ghost skin variant styling transparent background buttons with subtle highlight. */
 .btn--ghost { background: transparent; border-color: transparent; color: rgba(255, 255, 255, 0.8); }
-/* Hover state for ghost button skin variant. */
-.btn--ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: transparent; color: #ffffff; outline: none; }
+/* Hover state for ghost button skin variant (background fill zooms smoothly via ::before, no hover border). */
+.btn--ghost:hover { border-color: transparent; color: #ffffff; outline: none; }
 /* Focus state for ghost button skin variant with standardized thick white border. */
-.btn--ghost:focus, .btn--ghost:focus-visible, .btn--ghost.focused { background: rgba(255, 255, 255, 0.15); border-color: #ffffff; color: #ffffff; outline: none; }
+.btn--ghost:focus, .btn--ghost:focus-visible, .btn--ghost.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; color: #ffffff; outline: none; }
 
 /* Disabled state modifier applied to inactive or pending action buttons. */
 .btn:disabled, .btn.is-disabled { background: rgba(255, 255, 255, 0.06); cursor: not-allowed; opacity: 0.4; pointer-events: none; }
 
 /* Active state modifier applied to toggled or currently selected action buttons. */
-.btn.is-active, .btn.active { background: rgba(var(--primary-rgb), 0.35); border-color: var(--primary-color); color: #ffffff; }
-/* Preserves white focus border on active buttons when focused. */
-.btn.is-active:focus, .btn.is-active.focused, .btn.active:focus, .btn.active.focused { border-color: #ffffff; }
+.btn.is-active, .btn.active { background: rgba(var(--primary-rgb), 0.35); color: #ffffff; outline: 2px solid var(--primary-color); outline-offset: -2px; }
+/* Preserves white focus outline on active buttons when focused. */
+.btn.is-active:focus, .btn.is-active.focused, .btn.active:focus, .btn.active.focused { outline: 2px solid #ffffff; outline-offset: -2px; }
 
 /* Visual state modifier for buttons indicating item has already been added to collection. */
 .btn.is-added, .btn-added { color: rgba(255, 255, 255, 0.4); }
@@ -308,10 +322,10 @@ input, textarea, select { font: inherit; }
     z-index: 10;
 }
 
-/* Vertical 2:3 poster card component for horizontal rails and search grids (zero scale transform). */
+/* Vertical 2:3 poster card component for horizontal rails and search grids with smooth 4% PC/TV zoom-in/out. */
 .card--poster, .poster-wrapper {
     background: var(--surface-soft);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     border-radius: var(--radius-sm);
     contain: layout;
     cursor: pointer;
@@ -320,15 +334,18 @@ input, textarea, select { font: inherit; }
     overflow: hidden;
     padding: 0;
     position: relative;
-    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 200ms ease;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: border-color 180ms ease, background-color 180ms ease, box-shadow 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
     width: var(--poster-width);
 }
 
-/* Poster card hover and focus states applying crisp white highlight border without displacement. */
+/* Poster card hover and focus states applying crisp white highlight border and 4% scale. */
 .card--poster:hover, .card--poster:focus, .card--poster.focused, .poster-wrapper:hover, .poster-wrapper:focus, .poster-wrapper.focused {
     border-color: #ffffff;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
     outline: none;
+    transform: scale(1.04);
     z-index: 10;
 }
 
@@ -361,7 +378,7 @@ input, textarea, select { font: inherit; }
 .card--row {
     align-items: center;
     background: rgba(255, 255, 255, 0.04);
-    border: 2px solid transparent;
+    border: 2px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-md);
     cursor: pointer;
     display: flex;
@@ -373,11 +390,11 @@ input, textarea, select { font: inherit; }
     width: 100%;
 }
 
-/* Hover state for horizontal row cards with soft background highlight. */
-.card--row:hover { background: rgba(255, 255, 255, 0.08); border-color: transparent; outline: none; }
+/* Hover state for horizontal row cards with soft background and subtle border highlight. */
+.card--row:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.28); outline: none; }
 
 /* Focus state for horizontal row cards with solid white highlight border. */
-.card--row:focus, .card--row.focused { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; outline: none; }
+.card--row:focus, .card--row.focused { background: rgba(255, 255, 255, 0.1); border-color: #ffffff; outline: none; }
 
 /* Accent bottom indicator for watched media items. */
 .card--row.is-watched, .card--row.watched { border-bottom: 3px solid var(--primary-color); }
@@ -429,11 +446,11 @@ input, textarea, select { font: inherit; }
     filter: brightness(1.1);
 }
 
-/* Card 16:9 thumbnail container for episodes, extras, and playlist row cards. */
+/* Card 16:9 thumbnail container with neutral dark placeholder surface (no neon wash). */
 .card__thumb {
     aspect-ratio: 16 / 9;
-    background-color: #1a1c22;
-    background-image: radial-gradient(circle at 80% 25%, rgba(var(--primary-rgb), 0.26) 0%, transparent 65%), linear-gradient(135deg, #262932 0%, #17191f 100%);
+    background-color: #181a1f;
+    background-image: linear-gradient(135deg, #22242a 0%, #15171b 100%);
     background-position: center;
     background-size: cover;
     border-radius: var(--radius-sm);
@@ -571,10 +588,9 @@ input, textarea, select { font: inherit; }
 /* Validation message text wrapper inside forms. */
 .form-message { font-size: 13px; font-weight: 700; min-height: 18px; text-align: center; }
 
-/* Glassmorphic input wrapper container for text fields with leading or trailing icons. */
+/* Input wrapper container for text fields with leading or trailing icons (no GPU blur overhead on TV). */
 .form-control-wrapper {
     align-items: center;
-    backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.07);
     border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-md);
@@ -594,6 +610,7 @@ input, textarea, select { font: inherit; }
     background: transparent;
     border: 0;
     box-sizing: border-box;
+    caret-color: var(--primary-color);
     color: #ffffff;
     font-family: inherit;
     font-size: 18px;
@@ -621,11 +638,10 @@ input, textarea, select { font: inherit; }
 /* Compact form input modifier for modal dialogs and inline table rows. */
 .form-input--compact { font-size: 14px; height: 42px; padding: 0 12px; }
 
-/* Glassmorphic custom dropdown selector wrapper with chevron indicator. */
+/* Custom dropdown selector wrapper with chevron indicator (no GPU blur overhead on TV). */
 .form-select-wrapper {
     align-items: center;
-    backdrop-filter: blur(12px);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.06);
     border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-xs);
     box-sizing: border-box;
@@ -651,7 +667,7 @@ input, textarea, select { font: inherit; }
 }
 
 /* Native select element inside custom select wrapper stripped of browser defaults. */
-.form-select, .filter-select {
+.form-select {
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
@@ -667,7 +683,7 @@ input, textarea, select { font: inherit; }
     padding: 0 36px 0 18px;
     width: 100%;
 }
-.form-select option, .filter-select option { background: #111111; color: #ffffff; padding: 10px; }
+.form-select option { background: #111111; color: #ffffff; padding: 10px; }
 
 /* Modal select menu trigger button with flex alignment and chevron. */
 .form-select-trigger {
@@ -696,7 +712,7 @@ input, textarea, select { font: inherit; }
 /* Toggle switch pill container for boolean settings and preferences. */
 .form-toggle {
     background: rgba(255, 255, 255, 0.14);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     border-radius: 999px;
     box-sizing: border-box;
     cursor: pointer;
@@ -713,22 +729,22 @@ input, textarea, select { font: inherit; }
     border-radius: 50%;
     cursor: pointer;
     height: 24px;
-    left: 3px;
+    left: 4px;
     position: absolute;
-    top: 3px;
+    top: 4px;
     transition: left 0.2s ease, background-color 0.2s ease;
     width: 24px;
 }
 .form-toggle:hover { background-color: rgba(255, 255, 255, 0.22); }
 .form-toggle:has(input:checked) { background-color: var(--primary-color); }
-.form-toggle:has(input:checked) .form-toggle__slider { background-color: #050505; left: 31px; }
+.form-toggle:has(input:checked) .form-toggle__slider { background-color: #050505; left: 32px; }
 .form-toggle:focus, .form-toggle.focused { border-color: #ffffff; outline: none; }
 
 /* Base interactive selection chip component for filters, options, recent searches, and tags. */
 .chip {
     align-items: center;
     background: rgba(255, 255, 255, 0.06);
-    border: 2px solid transparent;
+    border: 2px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-md);
     box-sizing: border-box;
     color: #ffffff;
@@ -745,11 +761,11 @@ input, textarea, select { font: inherit; }
     text-align: center;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
-.chip:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
+.chip:hover { background: rgba(255, 255, 255, 0.13); border-color: rgba(255, 255, 255, 0.32); }
 .chip:focus, .chip.focused { background: rgba(255, 255, 255, 0.16); border-color: #ffffff; outline: none; }
 
 /* Universal nested icon sizing inside buttons and chips preventing sticky or stretched graphics. */
-.btn img, .setting-btn img, .stepper-arrow-btn img, .chip img, .btn__icon, .chip__icon {
+.btn img, .stepper-arrow-btn img, .chip img, .btn__icon, .chip__icon {
     display: block;
     flex-shrink: 0;
     height: 16px;
@@ -831,7 +847,7 @@ input, textarea, select { font: inherit; }
 /* Universal status pill badge component. */
 .badge {
     align-items: center;
-    border-radius: 4px;
+    border-radius: var(--radius-xs);
     box-sizing: border-box;
     display: inline-flex;
     font-size: 12px;
@@ -882,7 +898,8 @@ input, textarea, select { font: inherit; }
     font-family: inherit;
     font-size: var(--text-hero);
     font-weight: 800;
-    line-height: 1.12;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
     margin-bottom: 14px;
     max-width: 22ch;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
@@ -893,9 +910,9 @@ input, textarea, select { font: inherit; }
 .page-title {
     color: #ffffff;
     font-size: var(--text-page);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.02em;
-    line-height: 1.15;
+    line-height: 1.18;
     margin: 0;
 }
 
@@ -936,7 +953,7 @@ input, textarea, select { font: inherit; }
     line-clamp: 4;
     line-height: 1.55;
     margin: 0 0 24px 0;
-    max-width: 68ch;
+    max-width: 58ch;
     overflow: hidden;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.68);
 }
@@ -968,9 +985,9 @@ input, textarea, select { font: inherit; }
     position: absolute;
 }
 
-/* Ambient slate and theme-accent overlay when no backdrop image is available. */
+/* Neutral dark gradient fallback when no backdrop image is available (no neon wash). */
 .media-backdrop--empty .media-backdrop__overlay, .backdrop-overlay-empty {
-    background: radial-gradient(ellipse at 74% 22%, rgba(var(--primary-rgb), 0.35) 0%, rgba(var(--primary-rgb), 0.12) 46%, transparent 76%), linear-gradient(180deg, rgba(18, 18, 18, 0.65) 0%, var(--background-color) 100%);
+    background: linear-gradient(180deg, rgba(24, 24, 24, 0.72) 0%, var(--background-color) 100%);
 }
 
 /* Centered circular media action play indicator on trailers and cards. */
@@ -1058,19 +1075,21 @@ input, textarea, select { font: inherit; }
 .modal__dialog--md { max-width: 600px; width: min(600px, 92vw); }
 .modal__dialog--lg { max-width: 880px; width: min(880px, 94vw); }
 .modal__dialog--xl { max-width: 1200px; width: min(1200px, 94vw); }
-.modal--danger .modal__dialog { border: 1px solid rgba(230, 57, 70, 0.45); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 24px rgba(230, 57, 70, 0.15); }
+.modal--danger .modal__dialog { border: 1px solid rgba(230, 57, 70, 0.38); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92); }
 
 /* Header container row aligning title and optional top-right dismiss action. */
 .modal__header { align-items: center; display: flex; justify-content: space-between; margin-bottom: 16px; width: 100%; }
 
-/* Primary heading typography standard for modal dialogs. */
+/* Primary heading typography standard for modal dialogs with clearance for corner buttons. */
 .modal__title {
+    box-sizing: border-box;
     color: #ffffff;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
+    letter-spacing: -0.01em;
     margin-bottom: 16px;
     margin-top: 0;
-    padding: 0 0 4px;
+    padding: 0 48px 4px;
     text-align: center;
     width: 100%;
 }
@@ -1079,7 +1098,7 @@ input, textarea, select { font: inherit; }
 /* Top-right circular close button positioning inside modal dialogs. */
 .modal__close { font-size: 24px; position: absolute; right: 18px; top: 18px; z-index: 10; }
 
-/* Flexible content body container for modal options and forms. */
+/* Flexible content body container for modal options and forms with scale clearance. */
 .modal__body, .error-message-container, .update-body {
     display: flex;
     flex: 1 1 auto;
@@ -1087,12 +1106,12 @@ input, textarea, select { font: inherit; }
     gap: 16px;
     min-height: 0;
     overflow-y: auto;
-    padding: 0 0 10px;
+    padding: 6px 14px 12px;
     width: 100%;
 }
 
-/* Scrollable viewport modifier with branded track and thumb scrollbars. */
-.modal__body--scroll, .update-changelog { max-height: 56vh; overflow-x: hidden; overflow-y: auto; padding: 0 12px 12px; }
+/* Scrollable viewport modifier with branded track, thumb scrollbars, and horizontal scale clearance. */
+.modal__body--scroll, .update-changelog { max-height: 56vh; overflow-x: hidden; overflow-y: auto; padding: 6px 16px 14px; }
 .modal__body--scroll::-webkit-scrollbar, .update-changelog::-webkit-scrollbar, .livetv-list-column::-webkit-scrollbar, .livetv-preview-column::-webkit-scrollbar { width: 6px; }
 .modal__body--scroll::-webkit-scrollbar-track, .update-changelog::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 4px; }
 .modal__body--scroll::-webkit-scrollbar-thumb, .update-changelog::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.35); border-radius: 4px; }
@@ -1104,10 +1123,10 @@ input, textarea, select { font: inherit; }
 /* Search input container header inside selection modals. */
 .modal__search { padding: 0 0 16px; width: 100%; }
 
-/* Action footer container providing spacing and layout for modal dialogs. */
-.modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; width: 100%; }
+/* Action footer container providing spacing, layout, and scale clearance for modal buttons. */
+.modal__footer { border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; margin-top: 18px; padding: 16px 12px 4px; width: 100%; }
 .modal__footer--center { justify-content: center; }
-.modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 0; width: 100%; }
+.modal__footer--vertical { border-top: none; flex-direction: column; gap: 10px; margin-top: 14px; padding: 4px 12px; width: 100%; }
 
 /* Floating close button with 'X' in modal top-right corner. */
 .modal__close-btn { align-items: center; background: transparent; border: 0; color: #aaaaaa; cursor: pointer; display: inline-flex; font-size: 18px; height: 36px; justify-content: center; position: absolute; right: 16px; top: 16px; width: 36px; z-index: 10; }
@@ -1115,7 +1134,7 @@ input, textarea, select { font: inherit; }
 
 /* Top-left and top-right circular header action buttons inside modal dialogs (inheriting .btn--ghost.btn--circle). */
 .modal .modal__back-btn, .modal__back-btn { height: 38px; left: 18px; min-height: 38px; min-width: 38px; position: absolute; right: auto; top: 18px; width: 38px; z-index: 20; }
-#version-selector-modal .modal__refresh-btn, #version-selector-refresh-btn, .modal .modal__refresh-btn { height: 38px; left: auto; min-height: 38px; min-width: 38px; position: absolute; right: 18px; top: 18px; width: 38px; z-index: 50; }
+.modal .modal__refresh-btn, .modal__refresh-btn { height: 38px; left: auto; min-height: 38px; min-width: 38px; position: absolute; right: 18px; top: 18px; width: 38px; z-index: 50; }
 /* Spinning animation class for refresh triggers */
 .spinning { animation: ivids-loader-spin 0.8s linear infinite; }
 
@@ -1162,10 +1181,10 @@ input, textarea, select { font: inherit; }
     html body #language-modal .language-modal__heading-copy { align-items: center; display: flex; flex-direction: column; }
     /* Language modal title centered inside two-column desktop/TV dialog. */
     html body #language-modal .modal__title { margin: 0; padding: 0; }
-    /* Scrollable single-column language list in right column. */
-    html body #language-modal.modal .modal__body { box-sizing: border-box; flex: 1 1 auto; grid-column: 2; grid-row: 1; max-height: min(70vh, 660px); min-height: 0; overflow-y: auto; padding: 4px 10px 4px 0; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
-    /* Single-column list rows in right column. */
-    html body #language-modal #language-selection-grid { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; grid-template-columns: none; padding: 2px; width: 100%; }
+    /* Scrollable single-column language list in right column with horizontal scale clearance. */
+    html body #language-modal.modal .modal__body { box-sizing: border-box; flex: 1 1 auto; grid-column: 2; grid-row: 1; max-height: min(70vh, 660px); min-height: 0; overflow-y: auto; padding: 8px 16px; scroll-behavior: smooth; scroll-padding-block: 10px; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; scrollbar-width: thin; }
+    /* Single-column list rows in right column with clearance so scaled cards never clip. */
+    html body #language-modal #language-selection-grid { box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; grid-template-columns: none; padding: 6px 14px; width: 100%; }
     /* Mobile language stepper - Hidden on wide desktop/TV two-column language modal */
     html body #language-modal.modal .language-stepper-container { display: none; }
 }
@@ -1173,23 +1192,42 @@ input, textarea, select { font: inherit; }
 /* Landscape/TV vertical modal options stack fallback for non-language selectors and item context menus. */
 .language-selection-grid,
 #item-context-modal .settings-container,
-#add-to-other-playlist-modal .settings-container { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; width: 100%; }
-/* Landscape/TV modal option card with subtle surface, border, and focus outline */
+#add-to-other-playlist-modal .settings-container { display: flex; flex-direction: column; gap: 10px; padding: 6px 14px; width: 100%; }
+/* Shared landscape selectable row base (borderless so ::before fills 100% edge-to-edge; focus uses inset 2px white outline). */
 .language-card,
 #item-context-modal .setting-item,
-#add-to-other-playlist-modal .setting-item { align-items: center; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-md); box-sizing: border-box; color: #ffffff; cursor: pointer; display: flex; font-size: 15px; font-weight: 600; gap: 14px; justify-content: space-between; min-height: 52px; padding: 12px 18px; text-align: left; transition: background-color 150ms ease, border-color 150ms ease; width: 100%; }
-/* Landscape/TV modal option card hover highlight */
+#add-to-other-playlist-modal .setting-item,
+.category-list-item,
+.channel-card,
+.channel-list-item,
+.tv-opt-btn,
+.provider-item { background: var(--surface-interactive); border: 0; border-radius: var(--radius-md); box-sizing: border-box; color: #ffffff; cursor: pointer; isolation: isolate; overflow: hidden; position: relative; transition: background-color 140ms ease; }
+/* Shared landscape selectable row hover state (hover fill zooms 0%->100% via ::before). */
 .language-card:hover,
 #item-context-modal .setting-item:hover,
-#add-to-other-playlist-modal .setting-item:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.35); }
-/* Landscape/TV modal option card remote D-pad focus indicator */
+#add-to-other-playlist-modal .setting-item:hover,
+.category-list-item:hover,
+.channel-card:hover,
+.channel-list-item:hover,
+.tv-opt-btn:hover,
+.provider-item:hover { outline: none; }
+/* Shared landscape selectable row D-pad/keyboard focus surface. */
 .language-card:focus, .language-card:focus-visible, .language-card.focused,
 #item-context-modal .setting-item:focus, #item-context-modal .setting-item:focus-visible, #item-context-modal .setting-item.focused,
-#add-to-other-playlist-modal .setting-item:focus, #add-to-other-playlist-modal .setting-item:focus-visible, #add-to-other-playlist-modal .setting-item.focused { background: rgba(255, 255, 255, 0.14); border-color: #ffffff; outline: none; }
+#add-to-other-playlist-modal .setting-item:focus, #add-to-other-playlist-modal .setting-item:focus-visible, #add-to-other-playlist-modal .setting-item.focused,
+.category-list-item:focus, .category-list-item.focused,
+.channel-card:focus, .channel-card.focused,
+.channel-list-item:focus, .channel-list-item.focused,
+.tv-opt-btn:focus, .tv-opt-btn.focused,
+.provider-item:focus, .provider-item.focused { background: var(--surface-interactive-hover); }
+/* Landscape/TV modal option card unique layout geometry. */
+.language-card,
+#item-context-modal .setting-item,
+#add-to-other-playlist-modal .setting-item { align-items: center; display: flex; font-size: 15px; font-weight: 600; gap: 14px; justify-content: space-between; min-height: 52px; padding: 12px 18px; text-align: left; width: 100%; }
 /* Landscape/TV modal option card active selection state */
-.language-card.is-active { background: rgba(var(--primary-rgb), 0.14); border-color: var(--primary-color); color: var(--primary-color); font-weight: 700; }
+.language-card.is-active { background: rgba(var(--primary-rgb), 0.14); color: var(--primary-color); font-weight: 700; outline: 2px solid var(--primary-color); outline-offset: -2px; }
 /* Landscape/TV modal option card active state with remote D-pad focus */
-.language-card.is-active:focus, .language-card.is-active.focused { border-color: #ffffff; outline: none; }
+.language-card.is-active:focus, .language-card.is-active.focused { outline: 2px solid #ffffff; outline-offset: -2px; }
 /* Landscape/TV modal option card active text label color */
 .language-card.is-active .language-card__name { color: var(--primary-color); font-weight: 700; }
 /* Landscape/TV modal option card text label truncation */
@@ -1263,15 +1301,15 @@ input, textarea, select { font: inherit; }
 /* Main vertical navigation rail container with rich dark slate surface and smooth width expansion on TV and hover. */
 .nav-rail, .navbar {
     align-items: stretch;
-    background: rgba(12, 12, 12, 0.96);
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(12, 12, 12, 0.97);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 20px;
     height: 100%;
     overflow: hidden;
-    padding: 28px 10px;
+    padding: 24px 10px;
     position: relative;
     transition: width 0.25s ease;
     width: var(--app-sidebar-width);
@@ -1279,41 +1317,85 @@ input, textarea, select { font: inherit; }
 }
 #app.sidebar-always-expanded .nav-rail, #app.sidebar-always-expanded .navbar,
 .nav-rail:hover, .nav-rail:focus-within, .navbar:hover, .navbar:focus-within { width: var(--app-sidebar-expanded-width); }
-.nav-rail__header, .logo-container { align-items: center; box-sizing: border-box; display: flex; gap: 12px; margin-bottom: 12px; min-height: 44px; padding: 0 12px; white-space: nowrap; width: 100%; }
+/* Sidebar brand header optically aligned to the exact horizontal center of the collapsed icon column. */
+.nav-rail__header, .logo-container { align-items: center; box-sizing: border-box; display: flex; gap: 14px; margin-bottom: 8px; min-height: 44px; padding: 0 calc((var(--app-sidebar-width) - 44px) / 2); white-space: nowrap; width: 100%; }
 .nav-rail__logo, .logo-img { display: block; flex: 0 0 24px; height: 24px; object-fit: contain; width: 24px; }
-.nav-rail__brand, .logo-text { color: #ffffff; font-size: 22px; font-weight: 600; letter-spacing: -0.03em; opacity: 0; transition: opacity 0.25s ease; will-change: opacity; }
-.nav-rail__group, .nav-links { display: flex; flex-direction: column; gap: 5px; width: 100%; }
-.nav-rail__group--bottom, .nav-utilities { display: flex; flex-direction: column; gap: 5px; margin-top: auto; width: 100%; }
+.nav-rail__brand, .logo-text { color: #ffffff; font-size: 21px; font-weight: 700; letter-spacing: -0.02em; opacity: 0; transition: opacity 0.25s ease; will-change: opacity; }
+.nav-rail__group, .nav-links { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.nav-rail__group--bottom, .nav-utilities { display: flex; flex-direction: column; gap: 6px; margin-top: auto; width: 100%; }
 
-/* Navigation button item for sidebar routes. */
+/* Navigation button item for sidebar routes (borderless so ::before fills 100% edge-to-edge; focus uses inset 2px white outline). */
 .nav-item {
     align-items: center;
-    border: 3px solid transparent;
-    border-radius: var(--radius-sm);
+    border: 0;
+    border-radius: var(--radius-md);
     box-sizing: border-box;
-    color: rgba(255, 255, 255, 0.58);
+    color: var(--nav-inactive-color);
     display: flex;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
-    height: 40px;
+    height: 44px;
+    isolation: isolate;
     justify-content: flex-start;
     min-height: 0;
     overflow: hidden;
     padding: 0;
     position: relative;
     text-decoration: none;
-    transition: width 0.25s ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+    transition: width 0.25s ease, background-color 150ms ease, color 150ms ease;
     white-space: nowrap;
     width: calc(var(--app-sidebar-width) - 20px);
 }
-/* Sidebar active page: accent-colored bold text + icon, no tint (rule order active -> hover -> focus; icon uses currentColor). */
-.nav-item.is-active, .nav-item.active { background: transparent; color: var(--primary-color); font-weight: 700; }
-/* Sidebar hover: green text + icon, no background, no border. */
-.nav-item:hover { background: transparent; border-color: transparent; color: var(--primary-color); }
-/* Sidebar D-pad/keyboard focus: white text + icon with white border, never green. */
-.nav-item:focus, .nav-item.focused { background: rgba(255, 255, 255, 0.22); border-color: #ffffff; color: #ffffff; outline: none; }
+/* Sidebar opened/active page: brand accent green text + icon with soft ambient fill. */
+.nav-item.is-active, .nav-item.active { background: rgba(var(--primary-rgb), 0.1); color: var(--primary-color); font-weight: 700; }
+/* Sidebar hover on inactive items: crisp white text + icon with smooth 0%->100% hover zoom fill via ::before. */
+.nav-item:hover { background: transparent; color: #ffffff; }
+/* Sidebar hover on opened/active page: preserves brand accent green while zooming in subtle tint via ::before. */
+.nav-item:where(.is-active, .active):hover { background: rgba(var(--primary-rgb), 0.1); color: var(--primary-color); }
+/* Sidebar D-pad/keyboard focus: high-contrast inset white outline and white text + icon. */
+.nav-item:focus, .nav-item:focus-visible, .nav-item.focused { background: rgba(255, 255, 255, 0.14); color: #ffffff; }
+/* Sidebar D-pad/keyboard focus on opened/active page: white focus outline while keeping green active identity. */
+.nav-item:where(.is-active, .active):is(:focus, :focus-visible, .focused) { background: rgba(var(--primary-rgb), 0.18); color: var(--primary-color); }
 
-/* Masked icon container inside navigation item. */
+/* PC/TV centered 0% to 100% zoom-in/out hover fill layer (borderless parent guarantees 0px edge gap). */
+.nav-item::before,
+.btn::before,
+.language-card::before,
+.category-list-item::before,
+.channel-card::before,
+.channel-list-item::before,
+.tv-opt-btn::before,
+.provider-item::before {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    content: "";
+    inset: -2px;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    transform: scale(0);
+    transform-origin: center center;
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+    z-index: -1;
+}
+/* Active sidebar and primary/danger button hover zoom layer color tints. */
+.nav-item:where(.is-active, .active)::before { background: rgba(var(--primary-rgb), 0.12); }
+.btn--primary::before { background: rgba(var(--primary-rgb), 0.2); }
+.btn--danger::before { background: rgba(255, 255, 255, 0.12); }
+/* Expands hover zoom layer smoothly from 0% to 100% edge-to-edge on hover (retracts back to 0% on unhover). */
+.nav-item:hover::before,
+.btn:hover::before,
+.language-card:hover::before,
+.category-list-item:hover::before,
+.channel-card:hover::before,
+.channel-list-item:hover::before,
+.tv-opt-btn:hover::before,
+.provider-item:hover::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Masked icon container inside navigation item centered cleanly at fixed 24px geometry. */
 .nav-item__icon, .nav-icon {
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
@@ -1321,15 +1403,13 @@ input, textarea, select { font: inherit; }
     background-color: currentColor;
     flex: 0 0 24px;
     height: 24px;
-    margin-left: calc((var(--app-sidebar-width) - 50px) / 2);
-    margin-right: 16px;
+    margin-left: max(0px, calc((var(--app-sidebar-width) - 44px) / 2));
+    margin-right: 14px;
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: contain;
     width: 24px;
 }
-/* Active sidebar page icon: thicker and larger (28px) while kept centered in the collapsed rail. */
-.nav-item:is(.is-active, .active) :is(.nav-item__icon, .nav-icon) { filter: drop-shadow(0 0 0.75px currentColor); flex-basis: 28px; height: 28px; margin-left: calc((var(--app-sidebar-width) - 50px) / 2 - 2px); margin-right: 14px; width: 28px; }
 .nav-item__label, .nav-item span { opacity: 0; transition: opacity 0.25s ease; }
 #app.sidebar-always-expanded .nav-item, .nav-rail:hover .nav-item, .nav-rail:focus-within .nav-item, .navbar:hover .nav-item, .navbar:focus-within .nav-item { width: 100%; }
 #app.sidebar-always-expanded .nav-item__label, .nav-rail:hover .nav-item__label, .nav-rail:focus-within .nav-item__label,
@@ -1363,7 +1443,7 @@ input, textarea, select { font: inherit; }
 }
 .hero::before {
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
-    background: linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.6) 38%, rgba(5, 5, 5, 0) 75%);
+    background: linear-gradient(90deg, rgba(16, 16, 16, 0.96) 0%, rgba(16, 16, 16, 0.62) 40%, rgba(16, 16, 16, 0) 78%);
     content: "";
     inset: 0;
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0) 100%);
@@ -1427,11 +1507,8 @@ input, textarea, select { font: inherit; }
 .skeleton-error-container { align-items: center; display: flex; height: 100%; justify-content: center; width: 100%; }
 .skeleton-error-icon { height: 32px; opacity: 0.75; width: 32px; }
 
-/* Category row containers and carousel navigation handles. */
-.row { animation: fadeIn 0.35s ease-out forwards; opacity: 0; padding: 0; position: relative; z-index: 20; }
-.row:nth-child(2) { animation-delay: 0.08s; }
-.row:nth-child(3) { animation-delay: 0.14s; }
-.row:nth-child(5) { animation-delay: 0.26s; }
+/* Category row containers and carousel navigation handles (instant calm render without staggered delays). */
+.row { opacity: 1; padding: 0; position: relative; z-index: 20; }
 .row-container {
     align-items: center;
     contain: layout;
@@ -1474,21 +1551,24 @@ input, textarea, select { font: inherit; }
 .settings-container, .account-container { margin: 0 auto; max-width: 1060px; }
 .page-container { height: 100%; position: relative; }
 
-/* Unified page header bar and surface section panels. */
-.page-header { align-items: center; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 30px; }
-.settings-header h1,
-.account-header h1 { margin-bottom: 28px; }
+/* Unified page header bar and framed Settings/Account headers matching Playlists. */
+.page-header { align-items: center; display: flex; gap: 18px; justify-content: space-between; margin-bottom: 24px; }
+.settings-header,
+.account-header { border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 24px; padding-bottom: 18px; }
 
-/* Elevated surface section container giving clear separation for Settings and Account cards against landscape background. */
+/* Flat elevated surface section container giving calm separation for Settings and Account panels without heavy drop shadows. */
 .settings-section, .account-section {
-    background: var(--surface-color);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
-    margin-bottom: 28px;
-    padding: 24px 28px;
+    background: var(--background-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+    margin-bottom: 20px;
+    padding: 20px 24px;
 }
-.account-section { padding: 32px 36px; }
+/* Restrained section heading inside Settings cards for clear hierarchy without overpowering rows. */
+.settings-section > .section-title { border-bottom: 1px solid rgba(255, 255, 255, 0.07); color: rgba(255, 255, 255, 0.72); font-size: 13px; font-weight: 700; gap: 8px; letter-spacing: 0.04em; margin-bottom: 4px; padding-bottom: 12px; text-shadow: none; text-transform: uppercase; }
+.settings-section > .section-title .section-title__icon { height: 16px; opacity: 0.68; width: 16px; }
+.account-section { padding: 24px 28px; }
 
 /* Centered container for the small desktop advanced settings dropdown button */
 .advanced-dropdown-wrapper { display: flex; justify-content: center; margin: 8px 0 24px; width: 100%; }
@@ -1506,10 +1586,10 @@ input, textarea, select { font: inherit; }
    SECTION 8: DETAILS, PLAYLISTS & SEARCH PAGE LAYOUTS
    ========================================================================== */
 
-/* Details page layout and hero metadata columns. */
+/* Details page layout and hero metadata columns on clean neutral dark canvas. */
 .details-page {
+    background: var(--background-color);
     background-color: var(--background-color);
-    background: radial-gradient(ellipse 72% 58% at 76% 18%, rgba(var(--primary-rgb), 0.09) 0%, rgba(var(--primary-rgb), 0.025) 45%, transparent 78%), var(--background-color);
     height: auto;
     min-height: 100vh;
     padding-bottom: 3rem;
@@ -1519,16 +1599,19 @@ input, textarea, select { font: inherit; }
 /* Circular floating back button positioned top-left for navigation (inherits .btn.btn--secondary.btn--circle). */
 .details-back-btn {
     backdrop-filter: blur(12px);
-    background: rgba(18, 18, 18, 0.75);
+    background: rgba(18, 18, 18, 0.78);
     height: 44px;
     left: calc(var(--app-sidebar-width) + 24px);
     min-height: 44px;
     min-width: 44px;
     position: fixed;
     top: 24px;
+    transition: left 0.25s ease, background-color 150ms ease, border-color 150ms ease;
     width: 44px;
     z-index: 200;
 }
+/* Shifts Details back button cleanly when sidebar is pinned open. */
+#app.sidebar-always-expanded .details-back-btn { left: calc(var(--app-sidebar-expanded-width) + 24px); }
 .details-layout { display: flex; flex-direction: column; gap: 2.5rem; margin: 0 auto; max-width: 90rem; padding: 0 5%; position: relative; scroll-margin-top: 88px; transition: opacity 0.2s ease; z-index: 10; }
 /* Hides unpopulated details layout while metadata is being fetched from API. */
 .details-layout.is-loading { opacity: 0; pointer-events: none; }
@@ -1536,21 +1619,21 @@ input, textarea, select { font: inherit; }
 #details-page-loader { min-height: 70vh; z-index: 20; }
 /* Relative positioning for details poster container so poster-loader centers accurately. */
 .details-poster-container { position: relative; }
-.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border-radius: 5px; min-width: 0; width: clamp(180px, 24vw, 340px); }
+.details-poster-container.is-loading { aspect-ratio: 2 / 3; background: linear-gradient(145deg, #202228 0%, #14161a 100%); border-radius: var(--radius-sm); min-width: 0; width: clamp(180px, 24vw, 340px); }
 .details-poster-container.is-loading.is-widescreen { aspect-ratio: 16 / 9; }
-.details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2.5rem; scroll-margin-top: 88px; }
-.details-info { flex: 1; max-width: 50%; }
-.details-hero-poster { background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.12) 0%, transparent 65%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 0; width: clamp(180px, 24vw, 340px); }
-.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.04) 50%, transparent 75%), linear-gradient(145deg, #22252d 0%, #15171c 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.16); border-radius: 5px; box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); min-width: 0; width: clamp(180px, 24vw, 340px); }
+.details-top { align-items: center; display: flex; gap: 5vw; justify-content: space-between; margin-bottom: 2rem; scroll-margin-top: 88px; }
+.details-info { flex: 1; max-width: 54%; }
+.details-hero-poster { background: linear-gradient(145deg, #202228 0%, #14161a 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-sm); box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); height: auto; min-width: 0; width: clamp(180px, 24vw, 340px); }
+.details-poster-container.is-empty { aspect-ratio: 2 / 3; background: linear-gradient(145deg, #202228 0%, #14161a 100%); border: 0.1875rem solid rgba(255, 255, 255, 0.16); border-radius: var(--radius-sm); box-shadow: 0 0.625rem 2rem rgba(0, 0, 0, 0.5); min-width: 0; width: clamp(180px, 24vw, 340px); }
 .details-poster-container.is-empty.is-widescreen { aspect-ratio: 16 / 9; }
-.details-meta { align-items: center; color: #aaaaaa; display: flex; font-size: 18px; gap: 15px; margin-bottom: 20px; }
-.details-genres { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-.details-overview { color: #dddddd; font-size: var(--text-md); line-height: 1.6; margin-bottom: 30px; }
-.details-actions { display: flex; gap: 20px; }
+.details-meta { align-items: center; color: var(--text-muted); display: flex; font-size: 15px; font-weight: 600; gap: 12px; margin-bottom: 18px; }
+.details-genres { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.details-overview { color: rgba(255, 255, 255, 0.86); font-size: var(--text-md); line-height: 1.6; margin-bottom: 26px; max-width: 62ch; }
+.details-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .details-bottom { align-items: flex-start; display: flex; flex-direction: row; gap: 30px; margin: 0 auto; max-width: 1400px; width: 100%; }
 
 /* Seasons list sidebar and episode/playlist item headers. */
-.details-seasons { backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px; flex-shrink: 0; max-height: 600px; overflow-y: auto; padding: 20px; width: 250px; }
+.details-seasons { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); flex-shrink: 0; max-height: 600px; overflow-y: auto; padding: 20px; width: 250px; }
 .season-btn { justify-content: flex-start; text-align: left; width: 100%; }
 .seasons-dropdown-wrapper { display: none; width: 100%; }
 .seasons-list-content { display: flex; flex-direction: column; gap: 0.625rem; }
@@ -1562,7 +1645,7 @@ input, textarea, select { font: inherit; }
 .disney-about-content { display: flex; gap: 2.5rem; width: 100%; }
 .disney-about-left, .disney-about-right { flex: 1; min-width: 0; }
 .disney-about-description { color: #dddddd; font-size: var(--text-md); line-height: 1.6; }
-.disney-cast-img { aspect-ratio: 2 / 3; background-color: #1a1c22; background-image: radial-gradient(circle at 75% 25%, rgba(var(--primary-rgb), 0.25) 0%, transparent 65%), linear-gradient(145deg, #252830 0%, #16181e 100%); background-position: center; background-size: cover; position: relative; width: 100%; }
+.disney-cast-img { aspect-ratio: 2 / 3; background-color: #181a1f; background-image: linear-gradient(145deg, #22242a 0%, #15171b 100%); background-position: center; background-size: cover; position: relative; width: 100%; }
 .disney-cast-name { color: var(--text-color); font-size: var(--text-base); font-weight: 700; overflow: hidden; padding: 0.35rem 0.25rem 0.1rem; text-overflow: ellipsis; white-space: nowrap; }
 .disney-cast-character { color: var(--text-muted); font-size: var(--text-sm); overflow: hidden; padding: 0 0.25rem; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -1578,7 +1661,7 @@ input, textarea, select { font: inherit; }
 /* Button icon sizing inside action buttons. */
 .btn__icon { filter: brightness(0) invert(1); height: 18px; pointer-events: none; width: 18px; }
 /* Borderless Playlists overview header uniting title, live playlist count, and primary Create CTA. */
-.playlists-header { border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 24px; padding-bottom: 20px; }
+.playlists-header { border-bottom: none; margin-bottom: 24px; padding-bottom: 8px; }
 /* Left column stacking the Playlists page title above the live playlist count readout. */
 .playlists-header__meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 /* Tabular playlist total count subtitle positioned beneath the Playlists page heading. */
@@ -1587,12 +1670,10 @@ input, textarea, select { font: inherit; }
 .playlists-create-btn { flex-shrink: 0; gap: 10px; }
 /* Live character count readout aligned beneath the playlist name input inside modals. */
 .form-input-counter { align-self: flex-end; color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 600; margin-top: -8px; }
-/* Horizontal clearance so the Create Playlist modal title never overlaps the top-left Back button. */
-#create-playlist-modal .modal__title { box-sizing: border-box; padding-left: 44px; padding-right: 44px; }
 /* 16:9 cover surface container inside playlist overview cards. */
 .playlist-cover { background: linear-gradient(145deg, #20232a 0%, #14161b 100%); height: 100%; overflow: hidden; position: relative; width: 100%; }
-/* Four-tile cover grid with crisp 2px dividers for playlists with four or more artworks. */
-.playlist-cover-mosaic { background: #0d0f13; display: grid; gap: 2px; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); height: 100%; width: 100%; }
+/* Seamless four-tile cover grid for playlists with four or more artworks. */
+.playlist-cover-mosaic { background: #0d0f13; display: grid; gap: 0; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); height: 100%; width: 100%; }
 /* Centered dark fallback cover when a playlist has no artwork yet. */
 .playlist-cover--empty { align-items: center; background: linear-gradient(145deg, #1d2026 0%, #121419 100%); display: flex; justify-content: center; }
 /* Subtle centered playlist icon rendered inside empty playlist covers. */
@@ -1605,12 +1686,12 @@ input, textarea, select { font: inherit; }
 /* Minimalist visual playlist grid tile: clean 16:9 artwork frame above title and item count. */
 .playlist-card { background: transparent; border: 0; border-radius: 0; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 10px; min-width: 0; outline: none; padding: 0; text-align: left; width: 100%; }
 .playlist-card:focus, .playlist-card:focus-visible, .playlist-card.focused { outline: none; }
-/* 16:9 artwork frame carrying hover lift and crisp white D-pad focus border. */
-.playlist-card__media { aspect-ratio: 16 / 9; background: #14161b; border: 2px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); box-sizing: border-box; overflow: hidden; position: relative; transition: border-color 150ms ease, box-shadow 200ms ease; width: 100%; }
-.playlist-card:hover .playlist-card__media { border-color: rgba(255, 255, 255, 0.42); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.52); }
+/* Borderless 16:9 playlist artwork frame showing crisp white border strictly on D-pad focus. */
+.playlist-card__media { aspect-ratio: 16 / 9; background: #14161b; border: 2px solid transparent; border-radius: var(--radius-md); box-sizing: border-box; overflow: hidden; position: relative; transition: border-color 150ms ease; width: 100%; }
+.playlist-card:hover .playlist-card__media { border-color: rgba(255, 255, 255, 0.28); box-shadow: none; }
 .playlist-card:focus .playlist-card__media,
 .playlist-card:focus-visible .playlist-card__media,
-.playlist-card.focused .playlist-card__media { border-color: #ffffff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65); }
+.playlist-card.focused .playlist-card__media { border-color: #ffffff; box-shadow: none; }
 /* Clean caption column placed directly below the 16:9 artwork frame. */
 .playlist-card__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; overflow: hidden; padding: 0 2px; }
 /* Playlist title beneath the artwork cover. */
@@ -1641,9 +1722,9 @@ input, textarea, select { font: inherit; }
 .playlist-header-card .details-genres:has(+ .details-actions.hidden) { margin-bottom: 0; }
 .playlist-header-card .details-actions { flex-wrap: wrap; gap: 12px; }
 .playlist-header-card .details-poster-container { flex: 0 0 220px; width: 220px; }
-.playlist-hero-cover { aspect-ratio: 16 / 9; background-position: center; background-size: cover; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: var(--radius-sm); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); height: auto; min-width: 0; object-fit: cover; position: relative; width: 220px; }
+.playlist-hero-cover { aspect-ratio: 16 / 9; background-position: center; background-size: cover; border: none; border-radius: var(--radius-sm); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); height: auto; min-width: 0; object-fit: cover; position: relative; width: 220px; }
 /* Borderless Playlist Details header uniting back button, title/count, and right-aligned actions. */
-.playlist-details-header { align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 20px; justify-content: space-between; margin-bottom: 24px; padding-bottom: 20px; width: 100%; }
+.playlist-details-header { align-items: center; border-bottom: none; display: flex; gap: 20px; justify-content: space-between; margin-bottom: 24px; padding-bottom: 8px; width: 100%; }
 .playlist-details-header__left { align-items: center; display: flex; flex: 1 1 auto; gap: 18px; min-width: 0; }
 .playlist-details-header__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .playlist-details-header__count { color: var(--text-muted); font-size: 14px; font-weight: 600; }
@@ -1671,7 +1752,7 @@ input, textarea, select { font: inherit; }
 .playlist-poster-fallback { align-items: center; display: flex; justify-content: center; padding: 12px; text-align: center; }
 .playlist-poster-fallback__title { color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; }
 .playlist-poster-settings-slot { align-items: center; display: flex; height: 38px; justify-content: center; padding-top: 6px; width: 100%; }
-.playlist-poster-settings-btn { background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.16); height: 32px; min-height: 32px; min-width: 32px; opacity: 0.9; width: 32px; }
+.playlist-poster-settings-btn { background: rgba(255, 255, 255, 0.08); border: 2px solid transparent; height: 32px; min-height: 32px; min-width: 32px; opacity: 0.9; width: 32px; }
 .playlist-poster-settings-btn:hover, .playlist-poster-settings-btn:focus, .playlist-poster-settings-btn.focused { background: rgba(255, 255, 255, 0.18); border-color: #ffffff; opacity: 1; }
 .playlist-poster-settings-btn img { height: 15px; width: 15px; }
 /* Centered enlargement, deep drop shadow, and highlight on the poster currently being moved or dragged. */
@@ -1680,7 +1761,7 @@ input, textarea, select { font: inherit; }
 .playlist-poster-tile.moving-active .card--poster,
 .playlist-poster-tile.moving-active .card--poster:focus,
 .playlist-poster-tile.moving-active .card--poster.focused,
-.playlist-poster-tile.dragging .card--poster { border-color: #ffffff; box-shadow: 0 20px 60px 14px rgba(0, 0, 0, 0.98), 0 8px 28px 4px rgba(0, 0, 0, 0.92), 0 0 36px rgba(var(--primary-rgb), 0.35); transform: scale(1.1); z-index: 30; }
+.playlist-poster-tile.dragging .card--poster { border-color: #ffffff; box-shadow: 0 20px 56px rgba(0, 0, 0, 0.92); transform: scale(1.1); z-index: 30; }
 .playlist-poster-tile.dragging .card--poster { cursor: grabbing; }
 /* Overflow context menu trigger hidden on landscape/TV where direct move and delete buttons are shown. */
 .playlist-action-more { display: none; }
@@ -1760,17 +1841,19 @@ input, textarea, select { font: inherit; }
 .livetv-categories-column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-y: auto; width: 17%; }
 /* Vertical stack container for category and country rows. */
 .categories-list { box-sizing: border-box; contain: layout style; display: flex; flex-direction: column; gap: 6px; padding: 2px; width: 100%; }
-/* Shared Live TV selectable row card (categories, channels, stream options) - base surface, hover, active, and D-pad focus. */
-.category-list-item, .channel-card, .channel-list-item, .tv-opt-btn { align-items: center; background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); box-sizing: border-box; cursor: pointer; display: flex; min-height: 42px; padding: 6px 12px; width: 100%; }
-/* Live TV row card hover state. */
-.category-list-item:hover, .channel-card:hover, .channel-list-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); }
-.tv-opt-btn:hover { border-color: #ffffff; }
-/* Live TV row card selected/active state with primary brand highlight. */
-.category-list-item.active, .category-list-item.is-selected { background: rgba(var(--primary-rgb), 0.2); border-color: var(--primary-color); }
-.tv-opt-btn.is-active { background: rgba(var(--primary-rgb), 0.18); border-color: var(--primary-color); }
-.tv-opt-btn.is-active:hover { border-color: #ffffff; }
-/* Live TV row card spatial navigation focus state. */
-.category-list-item:focus, .category-list-item.focused, .channel-card:focus, .channel-card.focused, .channel-list-item:focus, .channel-list-item.focused, .tv-opt-btn:focus, .tv-opt-btn.focused { background: rgba(255, 255, 255, 0.12); border-color: #ffffff; outline: none; }
+/* Live TV selectable row layout geometry (borderless at rest/hover, crisp 2px white border strictly on D-pad focus). */
+.category-list-item, .channel-card, .channel-list-item, .tv-opt-btn { align-items: center; border-color: transparent; display: flex; min-height: 42px; padding: 6px 12px; width: 100%; }
+.category-list-item:hover, .channel-card:hover, .channel-list-item:hover, .tv-opt-btn:hover { border-color: transparent; }
+/* Live TV row card selected/active state with borderless translucent brand highlight. */
+.category-list-item.active, .category-list-item.is-selected { background: rgba(var(--primary-rgb), 0.16); border-color: transparent; color: var(--primary-color); }
+.category-list-item.active .category-list-name, .category-list-item.is-selected .category-list-name { color: var(--primary-color); }
+.tv-opt-btn.is-active { background: rgba(var(--primary-rgb), 0.16); border-color: transparent; color: var(--primary-color); }
+/* Live TV row card spatial navigation focus state keeping the crisp 2px white border. */
+.category-list-item:focus, .category-list-item.focused,
+.channel-card:focus, .channel-card.focused,
+.channel-list-item:focus, .channel-list-item.focused,
+.tv-opt-btn:focus, .tv-opt-btn.focused,
+.tv-opt-btn.is-active:focus, .tv-opt-btn.is-active.focused { background: var(--surface-interactive-hover); border-color: #ffffff; outline: none; }
 /* Category and country row item in the Live TV left column (isolated paint, instant focus). */
 .category-list-item { contain: layout style paint; flex-shrink: 0; gap: 8px; height: 42px; justify-content: space-between; }
 /* Category or country label text. */
@@ -1781,8 +1864,10 @@ input, textarea, select { font: inherit; }
 .livetv-list-column { display: flex; flex-direction: column; gap: 6px; height: 100%; min-height: 0; overflow: hidden; width: 25%; }
 /* Search input box at the top of the middle channel list column. */
 .livetv-search-box { box-sizing: border-box; flex-shrink: 0; margin-bottom: 0; padding: 2px 2px 0; width: 100%; }
-/* Compact search input wrapper inside the Live TV middle column aligned with category rows. */
-.livetv-search-box .form-control-wrapper { box-sizing: border-box; height: 42px; min-height: 42px; padding: 0 12px; }
+/* Compact borderless search input wrapper inside the Live TV middle column (white border strictly on focus). */
+.livetv-search-box .form-control-wrapper { border-color: transparent; box-sizing: border-box; height: 42px; min-height: 42px; padding: 0 12px; }
+.livetv-search-box .form-control-wrapper:hover { border-color: transparent; }
+.livetv-search-box .form-control-wrapper:focus-within, .livetv-search-box .form-control-wrapper.focused { border-color: #ffffff; }
 /* Compact search input typography inside the Live TV middle column. */
 .livetv-search-box .form-input { font-size: var(--text-sm); font-weight: 600; }
 /* Right channel video preview and EPG schedule column. */
@@ -1792,8 +1877,8 @@ input, textarea, select { font: inherit; }
 .channels-list { box-sizing: border-box; contain: layout style; display: flex; flex: 1; flex-direction: column; gap: 6px; min-height: 0; overflow-y: auto; padding: 2px; width: 100%; }
 /* Compact OOCSS Channel card component for Live TV channel list (instant focus without transition drag). */
 .channel-card, .channel-list-item { contain: layout style paint; flex-shrink: 0; gap: 10px; height: 42px; margin: 0; position: relative; }
-/* Channel logo glass surface container. */
-.channel-card__logo-wrap, .channel-list-logo-container { align-items: center; background: rgba(255, 255, 255, 0.06); border-radius: 6px; box-sizing: border-box; display: flex; flex-shrink: 0; height: 26px; justify-content: center; overflow: hidden; padding: 3px; width: 26px; }
+/* Channel logo surface container. */
+.channel-card__logo-wrap, .channel-list-logo-container { align-items: center; background: rgba(255, 255, 255, 0.06); border-radius: var(--radius-sm); box-sizing: border-box; display: flex; flex-shrink: 0; height: 26px; justify-content: center; overflow: hidden; padding: 3px; width: 26px; }
 /* Channel logo image. */
 .channel-card__logo, .channel-list-logo { max-height: 100%; max-width: 100%; object-fit: contain; }
 /* Channel metadata text stack. */
@@ -1803,8 +1888,8 @@ input, textarea, select { font: inherit; }
 
 /* Live TV EPG and preview video panel. */
 .hero-active-content { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; width: 100%; }
-/* 16:9 Widescreen video preview card. */
-.preview-card, .preview-card-video { aspect-ratio: 16 / 9; background: #000000; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); box-sizing: border-box; cursor: pointer; flex: 1 1 auto; max-height: 70%; min-height: 200px; overflow: hidden; position: relative; transition: border-color 150ms ease; width: 100%; }
+/* 16:9 Widescreen video preview card (borderless at rest, crisp white border on D-pad focus). */
+.preview-card, .preview-card-video { aspect-ratio: 16 / 9; background: #000000; border: 2px solid transparent; border-radius: var(--radius-lg); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); box-sizing: border-box; cursor: pointer; flex: 1 1 auto; max-height: 70%; min-height: 200px; overflow: hidden; position: relative; transition: border-color 150ms ease; width: 100%; }
 /* Widescreen video preview card spatial navigation focus state. */
 .preview-card:focus, .preview-card.focused, .preview-card-video:focus, .preview-card-video.focused { border-color: #ffffff; outline: none; }
 
@@ -1815,8 +1900,8 @@ input, textarea, select { font: inherit; }
 /* Active channel title displayed right underneath the video preview above program details. */
 .preview-channel-title { color: #ffffff; flex-shrink: 0; font-size: var(--text-md); font-weight: 800; line-height: 1.25; margin: 0 0 2px; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .preview-video-loading { align-items: center; background: rgba(0, 0, 0, 0.5); display: flex; height: 100%; justify-content: center; left: 0; position: absolute; top: 0; width: 100%; z-index: 2; }
-/* Clean, minimal EPG schedule panel displaying channel title above program info. */
-.epg-panel, .epg-card { background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 0 0 auto; flex-direction: column; gap: 6px; max-height: 28%; min-height: 0; overflow: hidden; padding: 10px 14px; }
+/* Clean, borderless EPG schedule panel displaying channel title above program info. */
+.epg-panel, .epg-card { background: rgba(255, 255, 255, 0.035); border: none; border-radius: var(--radius-lg); box-sizing: border-box; display: flex; flex: 0 0 auto; flex-direction: column; gap: 6px; max-height: 28%; min-height: 0; overflow: hidden; padding: 12px 16px; }
 /* Single-row EPG current show title and right-aligned time range. */
 .epg-header-row { align-items: baseline; display: flex; gap: 12px; justify-content: space-between; width: 100%; }
 .details-epg-section { display: flex; flex-direction: column; flex-shrink: 0; gap: 6px; width: 100%; }
@@ -1921,33 +2006,32 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
    SECTION 10: SETTINGS, ACCOUNT, LOGIN & APP UPDATE COMPONENTS
    ========================================================================== */
 
-/* Debrid configuration modal labeled input groups. */
-.debrid-field-group { display: flex; flex-direction: column; gap: 8px; text-align: left; width: 100%; }
-.debrid-field-label { color: rgba(255, 255, 255, 0.85); font-size: var(--text-sm); font-weight: 700; }
-
-/* Settings item rows - Distinct subtle separator inside elevated landscape setting cards. */
-.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 28px; justify-content: space-between; padding: 18px 0; }
+/* Settings item rows - Clean horizontal alignment with 8px side clearance. */
+.setting-item { align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; display: flex; gap: 24px; justify-content: space-between; margin: 0 -8px; padding: 14px 8px; }
 .setting-item:first-of-type { border-top: 0; }
 .setting-info { min-width: 0; }
-.setting-label { color: #ffffff; font-size: 19px; font-weight: 700; margin-bottom: 4px; }
-.setting-description { color: var(--text-muted); font-size: 15px; line-height: 1.45; }
+.setting-label { color: #ffffff; font-size: 16px; font-weight: 600; line-height: 1.3; margin-bottom: 2px; }
+.setting-description { color: var(--text-dim); font-size: 13px; line-height: 1.45; }
 .setting-control { align-items: center; display: flex; flex-shrink: 0; gap: 12px; justify-content: flex-end; }
-.current-value-display { align-items: center; background: rgba(255, 255, 255, 0.08); border: none; border-radius: var(--radius-sm); color: #ffffff; display: inline-flex; font-size: 16px; font-weight: 700; height: 46px; justify-content: center; min-width: 0; padding: 0 18px; text-align: center; }
-.color-preview-circle, #current-color-display { background: var(--primary-color); border: none; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); display: inline-block; flex-shrink: 0; font-size: 0; height: 36px; padding: 0; width: 36px; }
+/* Boxless calm value readout inside Settings rows (eliminating redundant box-next-to-box clutter). */
+.current-value-display { align-items: center; background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-muted); display: inline-flex; font-size: 14px; font-weight: 500; height: auto; justify-content: center; min-width: 0; padding: 0 4px; text-align: right; }
+/* Compact 38px geometry override for square triggers inside Settings rows (inherits unified .btn hover/focus). */
+.setting-item .btn--square { height: 38px; min-height: 38px; min-width: 38px; width: 38px; }
+.color-preview-circle, #current-color-display { background: var(--primary-color); border: 1px solid rgba(255, 255, 255, 0.24); border-radius: 50%; box-shadow: none; display: inline-block; flex-shrink: 0; font-size: 0; height: 24px; padding: 0; width: 24px; }
 .setting-item--ui-scale { align-items: center; }
-/* UI scale control container with aligned stepper buttons and output display. */
+/* UI scale control container with aligned stepper buttons and tabular percentage readout. */
 .ui-scale-control { align-items: center; background: transparent; border: 0; display: inline-flex; flex: 0 0 auto; gap: 8px; height: auto; padding: 0; }
-/* Stepper adjust buttons (+ and -) matching the exact dimensions and tactile styling of settings buttons. */
-.ui-scale-control .scale-adjust-btn { font-size: 24px; font-weight: 700; line-height: 1; }
+.ui-scale-control .current-value-display { color: #ffffff; font-variant-numeric: tabular-nums; font-weight: 600; min-width: 54px; padding: 0 4px; text-align: center; }
+/* Stepper adjust buttons (+ and -) proportioned cleanly with settings triggers. */
+.ui-scale-control .scale-adjust-btn { font-size: 20px; font-weight: 600; line-height: 1; }
 /* Trailing chevron indicator for full-width action buttons. */
 .btn__chevron { height: 16px; margin-left: auto; opacity: 0.7; width: 16px; }
-.setting-edit-icon { display: block; height: 20px; pointer-events: none; width: 20px; }
+.setting-edit-icon { display: block; height: 16px; opacity: 0.85; pointer-events: none; width: 16px; }
 .loader-inline-container { align-items: center; display: none; height: 34px; justify-content: center; width: 34px; }
 
-/* Streaming providers and M3U playlists reorderable rows. */
+/* Streaming providers and M3U playlists reorderable rows (surface, border, hover and focus inherited from shared row base). */
 .providers-list { display: flex; flex-direction: column; gap: 1.5%; margin-bottom: 2%; width: 100%; }
-.provider-item { align-items: center; background: #202020; border: none; border-radius: var(--radius-md); box-sizing: border-box; display: flex; gap: 12px; margin-bottom: 10px; padding: 10px 14px; position: relative; transition: background 0.2s ease, box-shadow 0.2s ease; width: 100%; }
-.provider-item:hover, .provider-item:focus, .provider-item.focused { background: #202020; border: none; box-shadow: none; outline: none; }
+.provider-item { align-items: center; display: flex; gap: 12px; margin-bottom: 10px; padding: 10px 14px; position: relative; width: 100%; }
 .provider-item.moving, .provider-item.moving:hover, .provider-item.moving:focus, .provider-item.moving.focused { background: #2c2c2c; border: 2px solid #ffffff; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.88); outline: none; z-index: 20; }
 .provider-item.dragging { background: #333333; border: 2px solid #ffffff; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95); cursor: grabbing; opacity: 0.98; outline: none; user-select: none; z-index: 50; }
 .provider-actions { align-items: center; display: flex; gap: 8px; margin-left: auto; }
@@ -1980,8 +2064,8 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .profile-name-text { color: #ffffff; font-size: 28px; font-weight: 700; margin: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .profile-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
 
-/* Login and registration screen layout. */
-.login-page-wrapper { align-items: center; background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.05) 0%, rgba(0, 0, 0, 0.98) 70%); box-sizing: border-box; display: flex; justify-content: center; min-height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); position: relative; }
+/* Login and registration screen layout on clean neutral canvas. */
+.login-page-wrapper { align-items: center; background: var(--background-color); box-sizing: border-box; display: flex; justify-content: center; min-height: 100%; padding: var(--app-content-padding-y) var(--app-content-padding-x); position: relative; }
 .login-card-container { box-sizing: border-box; margin: 0 auto; position: relative; width: min(460px, 92vw); }
 .login-panel { background: #141414; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9); box-sizing: border-box; margin: 0 auto; max-height: 94vh; overflow-y: auto; padding: 28px 28px 24px; position: relative; width: 100%; }
 #login-circle-back { left: 20px; position: absolute; top: 20px; z-index: 10; }
@@ -2009,12 +2093,12 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .update-experimental-warning .warning-text { color: rgba(255, 255, 255, 0.85); font-size: var(--text-sm); line-height: 1.45; margin: 0; }
 .update-footer-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 4px; width: 100%; }
 .update-progress-container { align-items: center; display: none; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%; }
-.update-progress-bar-bg { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 5px; height: 10px; overflow: hidden; position: relative; width: 100%; }
-.update-progress-bar { background: var(--primary-color); border-radius: 5px; bottom: 0; box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6); left: 0; position: absolute; top: 0; transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+.update-progress-bar-bg { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-xs); height: 8px; overflow: hidden; position: relative; width: 100%; }
+.update-progress-bar { background: var(--primary-color); border-radius: var(--radius-xs); bottom: 0; box-shadow: none; left: 0; position: absolute; top: 0; transition: width 0.2s ease; width: 0%; }
 .update-progress-text { color: var(--text-color, #ffffff); font-size: 14px; font-weight: 700; margin-top: 4px; }
 
 /* Version selector vertical list and option cards. */
-.version-option-list { display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 4px 0 8px; width: 100%; }
+.version-option-list { display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 6px 14px 10px; width: 100%; }
 .version-option-list .chip--option { justify-content: flex-start; min-height: 60px; padding: 12px 18px; text-align: left; width: 100%; }
 .version-chip-content { align-items: flex-start; display: flex; flex: 1; flex-direction: column; gap: 4px; min-width: 0; width: 100%; }
 .version-date-label { color: rgba(255, 255, 255, 0.5); font-size: 13px; font-weight: 600; letter-spacing: 0.03em; }
@@ -2042,7 +2126,7 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 .markdown-body p, .update-changelog-body p { line-height: 1.6; margin: 0 0 10px; }
 .markdown-body ul, .update-changelog-body ul { list-style-type: disc; margin: 0 0 12px; padding-left: 20px; }
 .markdown-body li, .update-changelog-body li { line-height: 1.5; margin-bottom: 4px; }
-.markdown-body code, .update-changelog-body code { background: rgba(255, 255, 255, 0.08); border-radius: 5px; font-family: monospace; font-size: var(--text-sm); padding: 2px 6px; word-break: break-all; }
+.markdown-body code, .update-changelog-body code { background: rgba(255, 255, 255, 0.08); border-radius: var(--radius-xs); font-family: monospace; font-size: var(--text-sm); padding: 2px 6px; word-break: break-all; }
 .markdown-body a, .update-changelog-body a { color: var(--primary-color); text-decoration: underline; }
 .markdown-body a:hover, .markdown-body a:focus, .update-changelog-body a:hover, .update-changelog-body a:focus { color: #ffffff; text-decoration: underline; }
 
@@ -2057,6 +2141,12 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
     outline: none;
 }
 .focusable:hover, .focusable-container:hover { outline: none; }
+
+/* Crisp inset 2px white focus outline for borderless zoom-hover buttons, sidebar items, and selectable rows. */
+:is(.btn, .nav-item, .language-card, .category-list-item, .channel-card, .channel-list-item, .tv-opt-btn, .provider-item):is(:focus, :focus-visible, .focused) {
+    outline: 2px solid #ffffff;
+    outline-offset: -2px;
+}
 
 /* Suppresses borders and outlines for inputs and selects nested within wrappers to prevent double focus rings. */
 .input-wrapper input, .input-wrapper button, .input-wrapper .focusable, .filter-select-wrapper select, .filter-select-wrapper .focusable {
@@ -2078,7 +2168,7 @@ iframe, #native-video-player { background: #000000; border: none; height: 100%; 
 @media (prefers-reduced-motion: reduce) {
     #main-view { scroll-behavior: auto; }
     .hero-slide, .hero-content, .nav-rail, .navbar, .nav-item, .nav-item__label, .nav-item span,
-    .btn, .card, .toast, .modal, .dropdown-chevron, .playlist-poster-tile, .playlist-poster-tile > .card--poster { transition: none; }
+    .btn, .btn::before, .nav-item::before, .card, .card--poster, .poster-wrapper, .language-card, .language-card::before, .chip--option, .toast, .modal, .dropdown-chevron, .playlist-poster-tile, .playlist-poster-tile > .card--poster { transition: none; }
     .row { animation: none; opacity: 1; }
     .toast-blink-icon, .ripple-wave { animation: none; }
 }

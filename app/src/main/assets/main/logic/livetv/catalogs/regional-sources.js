@@ -47,7 +47,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/languages/nld.m3u',
         category: 'Global',
         country: 'global',
-        priority: 11
+        priority: 11,
+        deferOnLowRam: true
     },
 
     // Belgium
@@ -99,7 +100,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/languages/spa.m3u',
         category: 'Global',
         country: 'global',
-        priority: 13
+        priority: 13,
+        deferOnLowRam: true
     },
 
     // France
@@ -125,7 +127,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/languages/fra.m3u',
         category: 'Global',
         country: 'global',
-        priority: 13
+        priority: 13,
+        deferOnLowRam: true
     },
 
     // Verified Regional FAST Playlists (Samsung TV Plus, Pluto TV, Plex)
@@ -257,7 +260,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/languages/deu.m3u',
         category: 'Global',
         country: 'global',
-        priority: 16
+        priority: 16,
+        deferOnLowRam: true
     },
 
     // Portugal
@@ -283,7 +287,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/languages/por.m3u',
         category: 'Global',
         country: 'global',
-        priority: 16
+        priority: 16,
+        deferOnLowRam: true
     },
 
     // Italy
@@ -309,7 +314,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/languages/ita.m3u',
         category: 'Global',
         country: 'global',
-        priority: 16
+        priority: 16,
+        deferOnLowRam: true
     },
 
     // United Kingdom
@@ -353,7 +359,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/languages/eng.m3u',
         category: 'Global',
         country: 'global',
-        priority: 18
+        priority: 18,
+        deferOnLowRam: true
     },
 
     // Global thematic playlists
@@ -371,7 +378,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/categories/movies.m3u',
         category: 'Movies',
         country: 'global',
-        priority: 25
+        priority: 25,
+        deferOnLowRam: true
     },
     {
         id: 'news_global',
@@ -379,7 +387,8 @@ export const REGIONAL_CATALOG = [
         url: 'https://iptv-org.github.io/iptv/categories/news.m3u',
         category: 'News',
         country: 'global',
-        priority: 25
+        priority: 25,
+        deferOnLowRam: true
     }
 ];
 

@@ -1347,9 +1347,9 @@ class SettingsManager {
         } else if (modalId === 'm3u-modal') {
             focusTarget = modal.querySelector('.form-input, .provider-url-input') || document.getElementById('add-m3u-btn');
         } else if (modalId === 'app-info-modal') {
-            focusTarget = modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary, .modal-footer .btn-secondary');
+            focusTarget = modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary');
         } else if (modalId === 'changes-modal') {
-            focusTarget = modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary, .modal-footer .btn-secondary') || modal.querySelector('.modal__close, .modal-close-x');
+            focusTarget = modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary') || modal.querySelector('.modal__close, .modal-close-x');
         } else if (modalId === 'update-check-modal') {
             focusTarget = document.getElementById('update-modal-back-btn') || document.getElementById('update-modal-close-x') || modal.querySelector('.modal__back-btn');
         }
@@ -1399,7 +1399,7 @@ class SettingsManager {
             }
         };
 
-        const cancelBtn = modal.querySelector('.cancel-icon-btn') || modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary, .modal-footer .btn-secondary') || modal.querySelector('.modal__footer .modal-btn.secondary, .modal-footer .modal-btn.secondary') || modal.querySelector('.modal__footer .action-btn.secondary, .modal-footer .action-btn.secondary');
+        const cancelBtn = modal.querySelector('.cancel-icon-btn') || modal.querySelector('.modal__footer .btn--secondary, .modal-footer .btn--secondary') || modal.querySelector('.modal__footer .modal-btn.secondary, .modal-footer .modal-btn.secondary') || modal.querySelector('.modal__footer .action-btn.secondary, .modal-footer .action-btn.secondary');
         if (cancelBtn) {
             cancelBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -1426,7 +1426,7 @@ class SettingsManager {
                 this.closeModal();
             };
         }
-        const applyBtn = modal.querySelector('.apply-icon-btn') || modal.querySelector('.modal__footer .btn--primary, .modal-footer .btn--primary, .modal-footer .btn-primary') || modal.querySelector('.modal__footer .modal-btn.primary, .modal-footer .modal-btn.primary') || modal.querySelector('.modal__footer .action-btn.primary, .modal-footer .action-btn.primary');
+        const applyBtn = modal.querySelector('.apply-icon-btn') || modal.querySelector('.modal__footer .btn--primary, .modal-footer .btn--primary') || modal.querySelector('.modal__footer .modal-btn.primary, .modal-footer .modal-btn.primary') || modal.querySelector('.modal__footer .action-btn.primary, .modal-footer .action-btn.primary');
         if (applyBtn) {
             applyBtn.onclick = (e) => {
                 e.stopPropagation();

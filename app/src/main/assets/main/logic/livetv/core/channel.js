@@ -58,6 +58,7 @@ export class Channel {
         this.fallbackUrls = Array.isArray(data.fallbackUrls) ? data.fallbackUrls.filter(Boolean) : [];
         this.logo = data.logo || '';
         this.group = (data.group || 'General').trim();
+        this.searchGroupLower = this.group.toLowerCase();
         this.groupTags = this._buildGroupTags(this.group, data.groupTags);
         this.tvgId = (data.tvgId || '').trim();
         this.sourceName = data.sourceName || 'IPTV';
@@ -224,17 +225,19 @@ export class Channel {
     }
 
     /**
-     * Normalizes a URL by stripping schemes, trailing slashes, and whitespace.
+     * Normalizes a URL by stripping schemes, trailing slashes, and whitespace without regex allocation.
      * 
      * @param {string} url - Target URL.
      * @returns {string} Normalized string for deduplication.
      */
     static normalizeUrl(url) {
         if (!url) return '';
-        return url.trim()
-            .toLowerCase()
-            .replace(/^https?:\/\//, '')
-            .replace(/\/+$/, '');
+        let norm = url.trim().toLowerCase();
+        if (norm.startsWith('https://')) norm = norm.slice(8);
+        else if (norm.startsWith('http://')) norm = norm.slice(7);
+        let end = norm.length;
+        while (end > 0 && norm.charCodeAt(end - 1) === 47) end--;
+        return end === norm.length ? norm : norm.slice(0, end);
     }
 
     /**

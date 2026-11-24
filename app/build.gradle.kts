@@ -17,6 +17,27 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    androidResources {
+        // Strip unused AndroidX/AppCompat locales (in-app i18n is served from assets/main/gui/lang/*.json).
+        localeFilters += listOf("en")
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    packaging {
+        resources {
+            excludes += listOf(
+                "META-INF/*.kotlin_module",
+                "META-INF/LICENSE*",
+                "META-INF/NOTICE*",
+                "DebugProbesKt.bin",
+                "kotlin/**"
+            )
+        }
+    }
+
     signingConfigs {
         create("release") {
             storeFile = file("../keystore.jks")
@@ -52,7 +73,6 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

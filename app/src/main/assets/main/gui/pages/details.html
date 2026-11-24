@@ -1,5 +1,5 @@
 <div class="details-page">
-    <button id="details-back-btn" class="btn btn--secondary btn--circle focusable details-back-btn universal-onclick" title="Back" aria-label="Back">
+    <button id="details-back-btn" type="button" class="btn btn--secondary btn--circle focusable details-back-btn universal-onclick" title="Back" aria-label="Back">
         <img src="images/back.svg" class="btn__icon" alt="Back">
     </button>
     <!-- Cinematic Background backdrop -->
@@ -24,11 +24,11 @@
                         <img src="images/play.svg" class="btn__icon btn__icon--mobile" alt="" aria-hidden="true">
                         <span class="btn__label" data-i18n="details.play">Play</span>
                     </button>
-                    <button class="btn btn--secondary focusable hidden universal-onclick" id="details-trailer">
+                    <button type="button" class="btn btn--secondary focusable hidden universal-onclick" id="details-trailer">
                         <img src="images/movies.svg" class="btn__icon btn__icon--mobile" alt="" aria-hidden="true">
                         <span class="btn__label" data-i18n="details.watchTrailer">Watch Trailer</span>
                     </button>
-                    <button class="btn btn--secondary focusable universal-onclick" id="details-playlist">
+                    <button type="button" class="btn btn--secondary focusable universal-onclick" id="details-playlist">
                         <img src="images/playlists.svg" class="btn__icon btn__icon--mobile" alt="" aria-hidden="true">
                         <span class="btn__label" data-i18n="details.addToPlaylist">Add to Playlist</span>
                     </button>
@@ -39,17 +39,17 @@
             </div>
         </div>
         <!-- Tabs header bar -->
-        <div class="tab-bar" id="details-tabs">
-            <button class="btn btn--secondary focusable hidden universal-onclick" id="tab-seasons" data-i18n="details.seasons">Seasons</button>
-            <button class="btn btn--secondary focusable universal-onclick" id="tab-extra" data-i18n="details.extra">Extra</button>
-            <button class="btn btn--secondary focusable universal-onclick" id="tab-about" data-i18n="details.about">About</button>
+        <div class="tab-bar" id="details-tabs" role="tablist">
+            <button type="button" role="tab" aria-selected="false" class="btn btn--secondary focusable hidden universal-onclick" id="tab-seasons" data-i18n="details.seasons">Seasons</button>
+            <button type="button" role="tab" aria-selected="false" class="btn btn--secondary focusable universal-onclick" id="tab-extra" data-i18n="details.extra">Extra</button>
+            <button type="button" role="tab" aria-selected="false" class="btn btn--secondary focusable universal-onclick" id="tab-about" data-i18n="details.about">About</button>
         </div>
         
         <!-- Tab Panel: Seasons (TV Show only) -->
         <div class="tab-panel details-bottom" id="panel-seasons">
             <div class="details-seasons" id="seasons-container">
                 <div class="seasons-dropdown-wrapper form-select-wrapper">
-                    <select id="seasons-dropdown" class="filter-select focusable" aria-label="Select Season"></select>
+                    <select id="seasons-dropdown" class="form-select focusable" aria-label="Select Season"></select>
                 </div>
                 <div id="seasons-list" class="seasons-list-content">
                     <!-- Filled by JS with IVIDS .season-btn -->
@@ -87,14 +87,14 @@
 </div>
 
 <!-- Add to Playlist Modal -->
-<div id="add-to-playlist-modal" class="modal">
+<div id="add-to-playlist-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
         <h2 class="modal__title" data-i18n="details.addToPlaylist">Add to Playlist</h2>
         <div id="playlist-selection-list" class="modal__body modal__body--scroll playlist-selection-list">
             <!-- Playlists to select will be injected here -->
         </div>
         <div class="modal__footer modal__footer--vertical btn-group btn-group--vertical">
-            <button id="add-to-playlist-cancel" class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="details.cancel">Cancel</button>
+            <button type="button" id="add-to-playlist-cancel" class="btn btn--secondary btn--sm focusable universal-onclick" data-i18n="details.cancel">Cancel</button>
         </div>
     </div>
 </div>

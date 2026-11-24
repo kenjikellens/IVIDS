@@ -3,7 +3,7 @@
         <div class="search-container-wrapper">
             <div id="recent-searches-row" class="recent-searches-row hidden">
                 <span class="recent-label" data-i18n="search.recent">Recent:</span>
-                <button id="clear-recents-btn" class="btn btn--secondary btn--sm clear-recents-btn focusable universal-onclick" title="Clear Recents">
+                <button type="button" id="clear-recents-btn" class="btn btn--secondary btn--sm clear-recents-btn focusable universal-onclick" title="Clear Recents">
                     <img src="images/trash.svg" class="btn__icon" alt="Clear">
                     <span data-i18n="search.clearRecents">Clear</span>
                 </button>
@@ -23,11 +23,11 @@
                 </div>
 
                 <div class="search-actions btn-group">
-                    <button id="search-btn" class="btn btn--primary focusable universal-onclick" title="Search">
+                    <button type="button" id="search-btn" class="btn btn--primary focusable universal-onclick" title="Search">
                         <img src="images/search.svg" class="btn__icon" alt="Search">
                         <span data-i18n="search.button">Search</span>
                     </button>
-                    <button id="filter-btn" class="btn btn--secondary focusable universal-onclick" title="Filters">
+                    <button type="button" id="filter-btn" class="btn btn--secondary focusable universal-onclick" title="Filters">
                         <img src="images/filter.svg" class="btn__icon" alt="Filters">
                         <span data-i18n="search.filters">Filters</span>
                         <span id="active-filter-badge" class="badge badge--primary hidden"></span>
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Filter Modal (Replaces Sidebar) -->
-    <div id="filter-modal" class="modal">
+    <div id="filter-modal" class="modal" role="dialog" aria-modal="true">
         <div class="modal__dialog modal__dialog--lg">
             <h2 class="modal__title" data-i18n="search.filters">Filters</h2>
 
@@ -79,7 +79,7 @@
                     <!-- Row 2: Sort & Country -->
                     <div class="form-group">
                         <h3 data-i18n="search.sortBy">Sort By</h3>
-                        <button id="sort-by-btn" class="form-select-trigger focusable universal-onclick">
+                        <button type="button" id="sort-by-btn" class="form-select-trigger focusable universal-onclick">
                             <span id="sort-by-label" data-i18n="search.popularity">Popularity</span>
                             <img src="images/arrow.svg" class="form-select-trigger__icon" alt="">
                         </button>
@@ -87,7 +87,7 @@
 
                     <div class="form-group">
                         <h3 data-i18n="search.country">Production Country</h3>
-                        <button id="country-select-btn" class="form-select-trigger focusable universal-onclick">
+                        <button type="button" id="country-select-btn" class="form-select-trigger focusable universal-onclick">
                             <span id="country-label" data-i18n="search.allCountries">All Countries</span>
                             <img src="images/arrow.svg" class="form-select-trigger__icon" alt="">
                         </button>
@@ -100,7 +100,7 @@
                         <h3 data-i18n="search.genres">Genres</h3>
                         <span id="genre-count" class="badge badge--primary"></span>
                     </div>
-                    <button id="genre-select-btn" class="form-select-trigger focusable universal-onclick">
+                    <button type="button" id="genre-select-btn" class="form-select-trigger focusable universal-onclick">
                         <span data-i18n="search.selectGenres">Select Genres</span>
                         <img src="images/arrow.svg" class="form-select-trigger__icon" alt="">
                     </button>
@@ -116,28 +116,28 @@
             </div>
 
             <div class="modal__footer btn-group btn-group--end">
-                <button id="clear-filters-btn" class="btn btn--danger focusable universal-onclick" data-i18n="search.clearFilters">Clear All</button>
-                <button id="cancel-filters-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="search.cancel">Cancel</button>
-                <button id="close-filters-btn" class="btn btn--primary focusable universal-onclick" data-i18n="search.apply">Apply</button>
+                <button type="button" id="clear-filters-btn" class="btn btn--danger focusable universal-onclick" data-i18n="search.clearFilters">Clear All</button>
+                <button type="button" id="cancel-filters-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="search.cancel">Cancel</button>
+                <button type="button" id="close-filters-btn" class="btn btn--primary focusable universal-onclick" data-i18n="search.apply">Apply</button>
             </div>
         </div>
     </div>
 
     <!-- Genre Selection Modal -->
-    <div id="genre-modal" class="modal">
+    <div id="genre-modal" class="modal" role="dialog" aria-modal="true">
         <div class="modal__dialog modal__dialog--md">
             <h2 class="modal__title" data-i18n="search.genres">Select Genres</h2>
             <div id="genre-filters" class="modal__body modal__body--scroll chip-grid chip-grid--3col">
                 <!-- Genres injected here -->
             </div>
             <div class="modal__footer btn-group btn-group--fill">
-                <button id="genre-done-btn" class="btn btn--primary focusable universal-onclick" data-i18n="search.done">Done</button>
+                <button type="button" id="genre-done-btn" class="btn btn--primary focusable universal-onclick" data-i18n="search.done">Done</button>
             </div>
         </div>
     </div>
 
     <!-- Custom Select Modals -->
-    <div id="sort-modal" class="modal">
+    <div id="sort-modal" class="modal" role="dialog" aria-modal="true">
         <div class="modal__dialog modal__dialog--sm">
             <h2 class="modal__title" data-i18n="search.sortBy">Sort By</h2>
             <div class="modal__body select-options-list" id="sort-options-list">
@@ -151,13 +151,13 @@
                 </button>
             </div>
             <div class="modal__footer btn-group btn-group--fill">
-                <button id="sort-cancel-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="search.cancel">Cancel</button>
-                <button id="sort-confirm-btn" class="btn btn--primary focusable universal-onclick" data-i18n="search.confirm">Confirm</button>
+                <button type="button" id="sort-cancel-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="search.cancel">Cancel</button>
+                <button type="button" id="sort-confirm-btn" class="btn btn--primary focusable universal-onclick" data-i18n="search.confirm">Confirm</button>
             </div>
         </div>
     </div>
 
-    <div id="country-modal" class="modal">
+    <div id="country-modal" class="modal" role="dialog" aria-modal="true">
         <div class="modal__dialog modal__dialog--lg">
             <button id="country-back-btn" type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
                 <img src="images/back.svg" class="btn__icon" alt="Back">

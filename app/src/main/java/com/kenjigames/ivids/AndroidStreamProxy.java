@@ -10,25 +10,45 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPInputStream;
 
 /**
  * Native Android stream proxy handling /proxy?url=... requests with SSRF protection, caller validation,
- * HTTP Range/206 forwarding for MP4 seeking, connection cleanup, and same-origin M3U8 rewriting.
+ * HTTP Range/206 forwarding for MP4 seeking, bounded DNS/dead-host caching, and same-origin M3U8 rewriting.
  */
 public final class AndroidStreamProxy {
 
     private static final String CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
     private static final String VLC_UA = "VLC/3.0.20 LibVLC/3.0.20";
+    private static final long DNS_CACHE_TTL_MS = 60_000L;
+    private static final long DEAD_HOST_TTL_MS = 300_000L;
+    private static final int MAX_HOST_CACHE_ENTRIES = 256;
+
+    private static final ConcurrentHashMap<String, CacheEntry> SAFE_DNS_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Long> DEAD_HOST_CACHE = new ConcurrentHashMap<>();
+
+    private static final class CacheEntry {
+        final boolean safe;
+        final long expiresAt;
+
+        CacheEntry(boolean safe, long expiresAt) {
+            this.safe = safe;
+            this.expiresAt = expiresAt;
+        }
+    }
 
     private AndroidStreamProxy() {}
 
@@ -140,6 +160,11 @@ public final class AndroidStreamProxy {
                 return false;
             }
 
+            Boolean cachedSafe = getCachedDnsSafety(hostLower);
+            if (cachedSafe != null) {
+                return cachedSafe;
+            }
+
             InetAddress[] addresses = InetAddress.getAllByName(hostLower);
             if (addresses == null || addresses.length == 0) {
                 return false;
@@ -161,9 +186,87 @@ public final class AndroidStreamProxy {
                     }
                 }
             }
+            cacheDnsSafety(hostLower, true);
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * Stores a bounded 60-second SSRF DNS validation decision so HLS segments skip repeated blocking lookups.
+     *
+     * @param hostLower - Normalized lowercase hostname.
+     * @param safe - Whether resolved addresses passed SSRF validation.
+     */
+    private static void cacheDnsSafety(String hostLower, boolean safe) {
+        if (SAFE_DNS_CACHE.size() >= MAX_HOST_CACHE_ENTRIES) {
+            SAFE_DNS_CACHE.clear();
+        }
+        SAFE_DNS_CACHE.put(hostLower, new CacheEntry(safe, System.currentTimeMillis() + DNS_CACHE_TTL_MS));
+    }
+
+    /**
+     * Checks cached SSRF DNS validation result within the 60-second TTL, pruning expired entries.
+     *
+     * @param hostLower - Normalized lowercase hostname.
+     * @return Boolean cached decision, or null on cache miss/expiration.
+     */
+    @Nullable
+    private static Boolean getCachedDnsSafety(String hostLower) {
+        CacheEntry entry = SAFE_DNS_CACHE.get(hostLower);
+        if (entry == null) return null;
+        if (System.currentTimeMillis() > entry.expiresAt) {
+            SAFE_DNS_CACHE.remove(hostLower, entry);
+            return null;
+        }
+        return entry.safe;
+    }
+
+    /**
+     * Checks whether a host recently failed with DNS/connect/timeout errors so WebView threads aren't stalled.
+     *
+     * @param hostLower - Normalized lowercase hostname.
+     * @return true if still inside the 5-minute negative cache window.
+     */
+    private static boolean isDeadHost(@Nullable String hostLower) {
+        if (hostLower == null || hostLower.isEmpty()) return false;
+        Long expiresAt = DEAD_HOST_CACHE.get(hostLower);
+        if (expiresAt == null) return false;
+        if (System.currentTimeMillis() > expiresAt) {
+            DEAD_HOST_CACHE.remove(hostLower, expiresAt);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Marks an unreachable hostname in the bounded negative host cache for 5 minutes.
+     *
+     * @param hostLower - Normalized lowercase hostname.
+     */
+    private static void markDeadHost(@Nullable String hostLower) {
+        if (hostLower == null || hostLower.isEmpty()) return;
+        if (DEAD_HOST_CACHE.size() >= MAX_HOST_CACHE_ENTRIES) {
+            DEAD_HOST_CACHE.clear();
+        }
+        DEAD_HOST_CACHE.put(hostLower, System.currentTimeMillis() + DEAD_HOST_TTL_MS);
+    }
+
+    /**
+     * Extracts a lowercase normalized hostname from a raw URL string for host caching.
+     *
+     * @param rawUrl - Candidate target URL.
+     * @return Lowercase hostname or null if unparseable.
+     */
+    @Nullable
+    private static String extractHostLower(@Nullable String rawUrl) {
+        if (rawUrl == null || rawUrl.isEmpty()) return null;
+        try {
+            String host = new URI(rawUrl.trim()).getHost();
+            return host != null ? host.trim().toLowerCase(Locale.ROOT) : null;
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -183,6 +286,10 @@ public final class AndroidStreamProxy {
         }
         if (!isSafeProxyUrl(targetUrl)) {
             return LocalAssetHandler.buildErrorResponse(403, "Forbidden", corsHeaders);
+        }
+        String initialHostLower = extractHostLower(targetUrl);
+        if (isDeadHost(initialHostLower)) {
+            return LocalAssetHandler.buildErrorResponse(502, "Host Unreachable", corsHeaders);
         }
 
         String referer = proxyUri.getQueryParameter("referer");
@@ -210,6 +317,7 @@ public final class AndroidStreamProxy {
         String winningOrig = origin;
         int statusCode = 502;
         boolean blockedRedirectSsrf = false;
+        boolean sawConnectionFailure = false;
 
         for (String[] prof : profiles) {
             try {
@@ -267,6 +375,12 @@ public final class AndroidStreamProxy {
                 winningUa = prof[0];
                 winningRef = prof[1];
                 winningOrig = prof[2];
+                sawConnectionFailure = false;
+                break;
+            } catch (UnknownHostException | ConnectException | SocketTimeoutException netEx) {
+                sawConnectionFailure = true;
+                if (conn != null) { conn.disconnect(); conn = null; }
+                // Unreachable/timed-out host cannot be fixed by retrying alternate User-Agent profiles
                 break;
             } catch (Exception e) {
                 if (conn != null) { conn.disconnect(); conn = null; }
@@ -278,6 +392,9 @@ public final class AndroidStreamProxy {
         }
         if (conn == null || statusCode >= 400) {
             if (conn != null) conn.disconnect();
+            if (conn == null && sawConnectionFailure) {
+                markDeadHost(initialHostLower);
+            }
             return LocalAssetHandler.buildErrorResponse(statusCode >= 400 ? statusCode : 502, "Upstream Error", corsHeaders);
         }
 
@@ -313,9 +430,11 @@ public final class AndroidStreamProxy {
                     ? "application/xml"
                     : contentType.split(";")[0].trim();
 
-            String contentLength = conn.getHeaderField("Content-Length");
-            if (contentLength != null && !contentLength.isEmpty()) {
-                corsHeaders.put("Content-Length", contentLength);
+            if (!isGzipEncoded) {
+                String contentLength = conn.getHeaderField("Content-Length");
+                if (contentLength != null && !contentLength.isEmpty()) {
+                    corsHeaders.put("Content-Length", contentLength);
+                }
             }
             String contentRange = conn.getHeaderField("Content-Range");
             if (contentRange != null && !contentRange.isEmpty()) {

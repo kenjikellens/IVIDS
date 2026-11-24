@@ -194,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mWebView);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        mWebView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
 
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -230,9 +229,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.d("WebView", consoleMessage.message() + " -- From line "
-                        + consoleMessage.lineNumber() + " of "
-                        + consoleMessage.sourceId());
+                if (BuildConfig.DEBUG) {
+                    Log.d("WebView", consoleMessage.message() + " -- From line "
+                            + consoleMessage.lineNumber() + " of "
+                            + consoleMessage.sourceId());
+                }
                 return true;
             }
         });
@@ -253,10 +254,25 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "Configuration changed (orientation/size update)");
     }
 
+    /**
+     * Pauses the WebView rendering and timers when the activity enters the background to save CPU and battery.
+     */
+    @Override
+    protected void onPause() {
+        if (mWebView != null) {
+            mWebView.onPause();
+        }
+        super.onPause();
+    }
+
+    /**
+     * Resumes WebView rendering and notifies the web application lifecycle hook when returning to foreground.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         if (mWebView != null) {
+            mWebView.onResume();
             mWebView.evaluateJavascript(
                     "if(typeof window.onAppResume === 'function') window.onAppResume();",
                     null
@@ -264,10 +280,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Releases UpdateManager executor threads and destroys the WebView cleanly to prevent activity memory leaks.
+     */
     @Override
     protected void onDestroy() {
         if (mUpdateManager != null) {
             mUpdateManager.shutdown();
+        }
+        if (mWebView != null) {
+            if (mWebView.getParent() instanceof android.view.ViewGroup) {
+                ((android.view.ViewGroup) mWebView.getParent()).removeView(mWebView);
+            }
+            mWebView.stopLoading();
+            mWebView.setWebChromeClient(null);
+            mWebView.setWebViewClient(new WebViewClient());
+            mWebView.removeAllViews();
+            mWebView.destroy();
+            mWebView = null;
         }
         super.onDestroy();
     }

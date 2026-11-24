@@ -529,10 +529,10 @@ function renderSeasons(seasons, seriesId) {
                 btn.onclick = () => {
                     try {
                         container.querySelectorAll('.season-btn').forEach(b => {
-                            b.classList.remove('btn--primary', 'btn-primary');
+                            b.classList.remove('btn--primary');
                             b.classList.add('btn--secondary');
                         });
-                        btn.classList.remove('btn--secondary', 'btn-secondary');
+                        btn.classList.remove('btn--secondary');
                         btn.classList.add('btn--primary');
 
                         if (dropdown) {
@@ -563,10 +563,10 @@ function renderSeasons(seasons, seriesId) {
                 const selectedVal = parseInt(e.target.value);
                 container.querySelectorAll('.season-btn').forEach(b => {
                     if (parseInt(b.dataset.seasonNumber) === selectedVal) {
-                        b.classList.remove('btn--secondary', 'btn-secondary');
+                        b.classList.remove('btn--secondary');
                         b.classList.add('btn--primary');
                     } else {
-                        b.classList.remove('btn--primary', 'btn-primary');
+                        b.classList.remove('btn--primary');
                         b.classList.add('btn--secondary');
                     }
                 });
@@ -578,7 +578,7 @@ function renderSeasons(seasons, seriesId) {
         try {
             const firstBtn = container.querySelector('.season-btn[data-season-number="1"]') || container.querySelector('.season-btn');
             if (firstBtn) {
-                firstBtn.classList.remove('btn--secondary', 'btn-secondary');
+                firstBtn.classList.remove('btn--secondary');
                 firstBtn.classList.add('btn--primary');
 
                 const selectedVal = parseInt(firstBtn.dataset.seasonNumber);
@@ -768,8 +768,9 @@ function switchTab(tabName) {
         });
         
         document.querySelectorAll('#details-tabs .btn, .tab-btn, .disney-tab-btn').forEach(btn => {
-            btn.classList.remove('is-active', 'active', 'btn--primary', 'btn-primary');
+            btn.classList.remove('is-active', 'active', 'btn--primary');
             btn.classList.add('btn--secondary');
+            btn.setAttribute('aria-selected', 'false');
         });
         
         const activePanel = document.getElementById(`panel-${tabName}`);
@@ -796,8 +797,9 @@ function switchTab(tabName) {
         
         const activeBtn = document.getElementById(`tab-${tabName}`);
         if (activeBtn) {
-            activeBtn.classList.remove('btn--secondary', 'btn-secondary');
+            activeBtn.classList.remove('btn--secondary');
             activeBtn.classList.add('is-active', 'active', 'btn--primary');
+            activeBtn.setAttribute('aria-selected', 'true');
         }
     } catch (e) {
         console.error('Error switching tabs:', e);
@@ -819,11 +821,11 @@ function getVisibleTabs() {
 
 /**
  * Returns the name of the currently active tab by checking which tab button
- * has the btn-primary class applied.
+ * has the btn--primary or is-active class applied.
  * @returns {string|null} The active tab name or null if none found.
  */
 function getActiveTab() {
-    const activeBtn = document.querySelector('#details-tabs .btn.btn--primary, #details-tabs .btn.is-active, .tab-btn.is-active, .tab-btn.btn--primary, .disney-tab-btn.btn--primary, .disney-tab-btn.btn-primary');
+    const activeBtn = document.querySelector('#details-tabs .btn.btn--primary, #details-tabs .btn.is-active, .tab-btn.is-active, .tab-btn.btn--primary, .disney-tab-btn.btn--primary');
     if (activeBtn && activeBtn.id) {
         return activeBtn.id.replace('tab-', '');
     }

@@ -16,6 +16,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import webbrowser
+import zlib
 from http.server import ThreadingHTTPServer
 
 # Unverified SSL context used strictly for third-party IPTV video stream CDNs with broken certs
@@ -1091,10 +1092,31 @@ class IVIDSHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                         body_parts.append(chunk)
                     body = b''.join(body_parts)
 
-                    # Decompress gzip files if needed
+                    # Stream-decompress gzip with a strict 25 MB decompressed cap to avoid memory spikes
                     if is_gzip:
                         try:
-                            body = gzip.decompress(body)
+                            max_decompressed_bytes = 25 * 1024 * 1024
+                            decompressor = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                            out_chunks = []
+                            out_size = 0
+                            offset = 0
+                            while offset < len(body):
+                                piece = body[offset:offset + 262144]
+                                offset += 262144
+                                remaining = max_decompressed_bytes - out_size + 1
+                                dec = decompressor.decompress(piece, remaining)
+                                out_size += len(dec)
+                                if out_size > max_decompressed_bytes:
+                                    self.send_error(413, 'Decompressed Payload Too Large')
+                                    return
+                                out_chunks.append(dec)
+                            tail = decompressor.flush(max_decompressed_bytes - out_size + 1)
+                            out_size += len(tail)
+                            if out_size > max_decompressed_bytes:
+                                self.send_error(413, 'Decompressed Payload Too Large')
+                                return
+                            out_chunks.append(tail)
+                            body = b''.join(out_chunks)
                             content_type = 'application/xml'
                         except Exception as e:
                             sys.stderr.write(f"[IVIDS] Failed to decompress gzip: {str(e)}\n")

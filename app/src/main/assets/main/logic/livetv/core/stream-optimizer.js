@@ -6,6 +6,17 @@
  * and proxy query string encoding for both PC localhost and Android APK WebView.
  */
 
+// Verified overrides for dead public upstream hosts mapped to working CDN streams
+const DEAD_HOST_OVERRIDES = [
+    // Canal+ (France) - dead / geo-blocked upstream streambox
+    { pattern: /tv\.streambox\.fr\/canal/i, target: 'http://92.114.85.87:8019/play/a003/index.m3u8' },
+    // RTBF La Une (Belgium) - dead 145.239.5.177 upstream -> working stream
+    { pattern: /145\.239\.5\.177\/329\/index\.m3u8/i, target: 'http://41.205.93.154/LA-UNE/index.m3u8' },
+    // RTBF Tipik (Belgium) - dead 193.111.198.85 upstream -> working stream
+    { pattern: /193\.111\.198\.85:8589\/stream\/mstv\/rtbftipik/i, target: 'http://41.205.93.154/TIPIK/index.m3u8' }
+];
+const TS_EXT_REGEX = /\.ts(\?|$|#)/i;
+
 export class StreamOptimizer {
     /**
      * Determines whether the current client runtime is hosted on a local proxy server.
@@ -50,16 +61,6 @@ export class StreamOptimizer {
         if (!url || typeof url !== 'string') return '';
         let trimmed = url.trim();
 
-        // 1. Automatic override of verified dead public upstream hosts to active streams
-        const DEAD_HOST_OVERRIDES = [
-            // Canal+ (France) - dead / geo-blocked upstream streambox
-            { pattern: /tv\.streambox\.fr\/canal/i, target: 'http://92.114.85.87:8019/play/a003/index.m3u8' },
-            // RTBF La Une (Belgium) - dead 145.239.5.177 upstream -> working stream
-            { pattern: /145\.239\.5\.177\/329\/index\.m3u8/i, target: 'http://41.205.93.154/LA-UNE/index.m3u8' },
-            // RTBF Tipik (Belgium) - dead 193.111.198.85 upstream -> working stream
-            { pattern: /193\.111\.198\.85:8589\/stream\/mstv\/rtbftipik/i, target: 'http://41.205.93.154/TIPIK/index.m3u8' }
-        ];
-
         for (let i = 0; i < DEAD_HOST_OVERRIDES.length; i++) {
             if (DEAD_HOST_OVERRIDES[i].pattern.test(trimmed)) {
                 trimmed = DEAD_HOST_OVERRIDES[i].target;
@@ -68,8 +69,8 @@ export class StreamOptimizer {
         }
 
         // Convert .ts extension to .m3u8 (e.g. Xtream /live/user/pass/12345.ts)
-        if (/\.ts(\?|$|#)/i.test(trimmed)) {
-            trimmed = trimmed.replace(/\.ts(\?|$|#)/i, '.m3u8$1');
+        if (TS_EXT_REGEX.test(trimmed)) {
+            trimmed = trimmed.replace(TS_EXT_REGEX, '.m3u8$1');
         }
 
         return trimmed;

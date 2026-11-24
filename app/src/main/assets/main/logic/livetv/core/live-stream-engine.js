@@ -45,6 +45,7 @@ export class LiveStreamEngine {
         this.generationId = 0;
         this.watchdogTimer = null;
         this.activeChannel = null;
+        this._activeAttemptCleanup = null;
     }
 
     /**
@@ -111,9 +112,14 @@ export class LiveStreamEngine {
         }
 
         const orderedCandidates = candidateUrls.filter(u => !LiveStreamEngine._deadHosts.has(LiveStreamEngine._extractUpstreamHost(u)));
-        const effectiveCandidates = orderedCandidates.length > 0
+        let effectiveCandidates = orderedCandidates.length > 0
             ? orderedCandidates
             : (this.isPreview ? [] : candidateUrls);
+
+        // Previews never cycle through backup mirrors so scrolling doesn't saturate low-RAM connections
+        if (this.isPreview && effectiveCandidates.length > 1) {
+            effectiveCandidates = effectiveCandidates.slice(0, 1);
+        }
 
         for (let i = 0; i < effectiveCandidates.length; i++) {
             if (genId !== this.generationId) return false;
@@ -123,7 +129,8 @@ export class LiveStreamEngine {
                 ...(channel.headers || {}),
                 ...(customHeaders || {})
             };
-            const routeOrder = this._buildRouteOrder(candidateUrl, headers);
+            const rawRouteOrder = this._buildRouteOrder(candidateUrl, headers);
+            const routeOrder = this.isPreview && rawRouteOrder.length > 1 ? rawRouteOrder.slice(0, 1) : rawRouteOrder;
 
             for (let r = 0; r < routeOrder.length; r++) {
                 if (genId !== this.generationId) return false;
@@ -215,6 +222,11 @@ export class LiveStreamEngine {
                 if (settled) return;
                 settled = true;
                 this._clearWatchdog();
+                if (this._activeAttemptCleanup) {
+                    const cleanupFn = this._activeAttemptCleanup;
+                    this._activeAttemptCleanup = null;
+                    try { cleanupFn(); } catch (_) {}
+                }
 
                 if (genId !== this.generationId) {
                     resolve({ ok: false, skipDirectFallback: true });
@@ -228,6 +240,7 @@ export class LiveStreamEngine {
             };
 
             this.watchdogTimer = setTimeout(() => {
+                this._cleanupCurrentAttempt();
                 finish(false);
             }, timeoutMs);
 
@@ -243,7 +256,7 @@ export class LiveStreamEngine {
                     && Boolean(channelHeaders['User-Agent'] || channelHeaders['Referer'] || channelHeaders['Origin']);
 
                 const hls = new window.Hls({
-                    enableWorker: !this.isPreview,
+                    enableWorker: typeof Worker !== 'undefined',
                     lowLatencyMode: !this.isPreview,
                     backBufferLength: this.isPreview ? 2 : (isAndroid ? 8 : 30),
                     maxBufferLength: this.isPreview ? 3 : (isAndroid ? 10 : 14),
@@ -275,6 +288,7 @@ export class LiveStreamEngine {
                     video.removeEventListener('playing', onVideoPlaying);
                     finish(true, detectedQuality);
                 };
+                this._activeAttemptCleanup = () => video.removeEventListener('playing', onVideoPlaying);
                 video.addEventListener('playing', onVideoPlaying);
 
                 hls.on(window.Hls.Events.MANIFEST_PARSED, (event, data) => {
@@ -383,6 +397,7 @@ export class LiveStreamEngine {
             video.removeEventListener('playing', onPlaying);
             video.removeEventListener('error', onError);
         };
+        this._activeAttemptCleanup = cleanupNativeListeners;
 
         video.addEventListener('playing', onPlaying);
         video.addEventListener('error', onError);
@@ -448,6 +463,11 @@ export class LiveStreamEngine {
      */
     _cleanupCurrentAttempt() {
         this._clearWatchdog();
+        if (this._activeAttemptCleanup) {
+            const cleanupFn = this._activeAttemptCleanup;
+            this._activeAttemptCleanup = null;
+            try { cleanupFn(); } catch (_) {}
+        }
         if (this.hls) {
             try {
                 this.hls.stopLoad();

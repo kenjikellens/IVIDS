@@ -16,7 +16,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-language-display" class="current-value-display">English</div>
-                <button id="edit-language-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Language">
+                <button type="button" id="edit-language-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Language">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -39,7 +39,7 @@
             </div>
             <div class="setting-control">
                 <div id="current-color-display" class="color-preview-circle"></div>
-                <button id="edit-color-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Color">
+                <button type="button" id="edit-color-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Color">
                     <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                 </button>
             </div>
@@ -140,7 +140,7 @@
                 </div>
                 <div class="setting-control">
                     <div id="current-player-display" class="current-value-display">—</div>
-                    <button id="edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Provider">
+                    <button type="button" id="edit-player-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Provider">
                         <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                     </button>
                 </div>
@@ -174,7 +174,7 @@
                 </div>
                 <div class="setting-control">
                     <div id="current-m3u-display" class="current-value-display">0 Playlists</div>
-                    <button id="edit-m3u-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Playlists">
+                    <button type="button" id="edit-m3u-btn" class="btn btn--secondary btn--square edit-trigger focusable universal-onclick" title="Edit Playlists">
                         <img src="images/edit.svg" class="setting-edit-icon" alt="Edit">
                     </button>
                 </div>
@@ -237,10 +237,10 @@
 </div>
 
 <!-- Language Modal -->
-<div id="language-modal" class="modal">
+<div id="language-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
         <div class="language-modal__heading">
-            <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+            <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
                 <img src="images/back.svg" class="btn__icon" alt="Back">
             </button>
             <div class="language-modal__heading-copy">
@@ -254,14 +254,14 @@
             </div>
             <div id="language-selection-grid" class="language-selection-grid" aria-labelledby="language-modal-title"></div>
             <div class="language-stepper-container">
-                <button id="lang-prev-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn universal-onclick" aria-label="Previous Language">
+                <button type="button" id="lang-prev-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn universal-onclick" aria-label="Previous Language">
                     <img src="images/back.svg" class="btn__icon" alt="Previous">
                 </button>
                 <div id="lang-stepper-display" class="current-value-display language-stepper-value">
                     <span id="lang-stepper-flag" class="display-flag-span">🇺🇸</span>
                     <span id="lang-stepper-name">English</span>
                 </div>
-                <button id="lang-next-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn universal-onclick" aria-label="Next Language">
+                <button type="button" id="lang-next-btn" class="btn btn--secondary btn--circle-lg edit-trigger focusable stepper-arrow-btn universal-onclick" aria-label="Next Language">
                     <img src="images/arrow.svg" class="btn__icon" alt="Next">
                 </button>
             </div>
@@ -270,9 +270,9 @@
 </div>
 
 <!-- Color Modal -->
-<div id="color-modal" class="modal">
+<div id="color-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+        <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.accentColor">Accent Color</h2>
@@ -311,17 +311,17 @@
             </div>
         </div>
         <div class="modal__footer btn-group btn-group--end">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
-            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
+            <button type="button" class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
+            <button type="button" class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
 
 
 <!-- Update Mode Modal -->
-<div id="update-mode-modal" class="modal">
+<div id="update-mode-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+        <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.updateMode">Update Mode</h2>
@@ -339,16 +339,16 @@
             </div>
         </div>
         <div class="modal__footer btn-group btn-group--end">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
-            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
+            <button type="button" class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
+            <button type="button" class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
 
 <!-- Version Selector Modal -->
-<div id="version-selector-modal" class="modal">
+<div id="version-selector-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--lg">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
+        <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable" aria-label="Back">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <button id="version-selector-refresh-btn" class="modal__refresh-btn btn btn--ghost btn--circle focusable" aria-label="Refresh" type="button" title="Refresh">
@@ -364,15 +364,15 @@
             </div>
         </div>
         <div class="modal__footer">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
+            <button type="button" class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
         </div>
     </div>
 </div>
 
 <!-- Player Providers Modal -->
-<div id="player-modal" class="modal">
+<div id="player-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+        <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.playerProviders">Player Providers</h2>
@@ -380,19 +380,19 @@
             <div id="player-providers-list" class="providers-list">
                 <!-- Dynamically populated provider items -->
             </div>
-            <button id="add-provider-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="settings.addProvider">Add Provider</button>
+            <button type="button" id="add-provider-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="settings.addProvider">Add Provider</button>
         </div>
         <div class="modal__footer btn-group btn-group--end">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
-            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
+            <button type="button" class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
+            <button type="button" class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
 
 <!-- M3U Playlists Modal -->
-<div id="m3u-modal" class="modal">
+<div id="m3u-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+        <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings_livetv.title">Live TV Playlists</h2>
@@ -400,19 +400,19 @@
             <div id="m3u-playlists-list" class="providers-list">
                 <!-- Dynamically populated playlist items -->
             </div>
-            <button id="add-m3u-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="settings.addM3uPlaylist">Add Playlist</button>
+            <button type="button" id="add-m3u-btn" class="btn btn--secondary focusable universal-onclick" data-i18n="settings.addM3uPlaylist">Add Playlist</button>
         </div>
         <div class="modal__footer btn-group btn-group--end">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
-            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
+            <button type="button" class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
+            <button type="button" class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
 
 <!-- App Info Modal -->
-<div id="app-info-modal" class="modal">
+<div id="app-info-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+        <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.appInfo">App Info</h2>
@@ -440,18 +440,18 @@
             </div>
         </div>
         <div class="modal__footer">
-            <button class="btn btn--secondary btn--block focusable universal-onclick" data-i18n="common.close">Close</button>
+            <button type="button" class="btn btn--secondary btn--block focusable universal-onclick" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>
 
 <!-- Changes Modal -->
-<div id="changes-modal" class="modal">
+<div id="changes-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--lg">
-        <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
+        <button type="button" class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
-        <button class="btn btn--ghost btn--circle modal__close focusable universal-onclick" aria-label="Close modal">&times;</button>
+        <button type="button" class="btn btn--ghost btn--circle modal__close focusable universal-onclick" aria-label="Close modal">&times;</button>
         <h2 id="changes-modal-title" class="modal__title" data-i18n="settings.changes">Changes</h2>
         <div class="modal__body modal__body--scroll">
             <div id="changes-modal-content" class="markdown-body">
@@ -459,13 +459,13 @@
             </div>
         </div>
         <div class="modal__footer modal__footer--center">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.close">Close</button>
+            <button type="button" class="btn btn--secondary focusable universal-onclick" data-i18n="common.close">Close</button>
         </div>
     </div>
 </div>
 
 <!-- Update Check Modal -->
-<div id="update-check-modal" class="modal">
+<div id="update-check-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
             <img src="images/back.svg" class="btn__icon" alt="Back">
@@ -490,7 +490,7 @@
 </div>
 
 <!-- Advanced Settings Modal (Mobile Popup Sub-page) -->
-<div id="advanced-settings-modal" class="modal">
+<div id="advanced-settings-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
             <img src="images/back.svg" class="btn__icon" alt="Back">
@@ -601,7 +601,7 @@
 </div>
 
 <!-- Response Delay Modal -->
-<div id="delay-action-modal" class="modal">
+<div id="delay-action-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
             <img src="images/back.svg" class="btn__icon" alt="Back">
@@ -616,14 +616,14 @@
             </div>
         </div>
         <div class="modal__footer btn-group btn-group--end">
-            <button class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
-            <button class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
+            <button type="button" class="btn btn--secondary focusable universal-onclick" data-i18n="common.cancel">Cancel</button>
+            <button type="button" class="btn btn--primary focusable universal-onclick" data-i18n="common.apply">Apply</button>
         </div>
     </div>
 </div>
 
 <!-- Source Priority Order Modal -->
-<div id="source-order-modal" class="modal">
+<div id="source-order-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
             <img src="images/back.svg" class="btn__icon" alt="Back">
@@ -640,27 +640,27 @@
 </div>
 
 <!-- Debrid & Stremio Configuration Modal -->
-<div id="debrid-modal" class="modal">
+<div id="debrid-modal" class="modal" role="dialog" aria-modal="true">
     <div class="modal__dialog modal__dialog--md">
         <button class="modal__back-btn btn btn--ghost btn--circle edit-trigger focusable universal-onclick" aria-label="Back" type="button">
             <img src="images/back.svg" class="btn__icon" alt="Back">
         </button>
         <h2 class="modal__title" data-i18n="settings.debridConfig">Debrid &amp; Stremio</h2>
         <div class="modal__body modal__body--scroll">
-            <div class="debrid-field-group">
-                <label class="debrid-field-label" for="debrid-api-key-input" data-i18n="settings.debridApiKey">Real-Debrid API Key</label>
+            <div class="form-group">
+                <label class="form-label" for="debrid-api-key-input" data-i18n="settings.debridApiKey">Real-Debrid API Key</label>
                 <div class="form-control-wrapper">
                     <input id="debrid-api-key-input" type="password" class="form-input focusable" autocomplete="off">
                 </div>
             </div>
-            <div class="debrid-field-group">
-                <label class="debrid-field-label" for="debrid-primary-addon-input" data-i18n="settings.debridPrimaryAddon">Primary Stremio Addon URL</label>
+            <div class="form-group">
+                <label class="form-label" for="debrid-primary-addon-input" data-i18n="settings.debridPrimaryAddon">Primary Stremio Addon URL</label>
                 <div class="form-control-wrapper">
                     <input id="debrid-primary-addon-input" type="url" class="form-input focusable" placeholder="https://torrentio.strem.fun">
                 </div>
             </div>
-            <div class="debrid-field-group">
-                <label class="debrid-field-label" for="direct-http-addon-input" data-i18n="settings.directHttpAddon">Free HTTP Addon URL</label>
+            <div class="form-group">
+                <label class="form-label" for="direct-http-addon-input" data-i18n="settings.directHttpAddon">Free HTTP Addon URL</label>
                 <div class="form-control-wrapper">
                     <input id="direct-http-addon-input" type="url" class="form-input focusable" placeholder="https://addon.notorrent2.workers.dev">
                 </div>

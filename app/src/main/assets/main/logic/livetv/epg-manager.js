@@ -13,14 +13,62 @@ export class EpgManager {
     static failedGuideCache = new Map();
     static FAILED_CACHE_TTL_MS = 30 * 60 * 1000;
     static guideFetchPromises = new Map();
+    static channelProgramPromises = new Map();
     static channelProgramCache = new Map();
     static initPromise = null;
     static initialized = false;
     static FETCH_TIMEOUT_MS = 12000;
     static EPG_BASE_URL = 'https://iptv-org.github.io/epg/guides';
 
-    static MAX_GUIDE_CACHE = 4;
+    static MAX_GUIDE_CACHE_PC = 2;
+    static MAX_GUIDE_CACHE_LOW_RAM = 1;
     static MAX_CHANNEL_PROGRAM_CACHE = 150;
+    static MAX_DECOMPRESSED_BYTES_PC = 20 * 1024 * 1024;
+    static MAX_DECOMPRESSED_BYTES_LOW_RAM = 8 * 1024 * 1024;
+
+    /**
+     * Detects Android TV, Android WebView, or low-memory devices where EPG XML memory must be tightly capped.
+     *
+     * @returns {boolean} True when running on Android or a low-memory device.
+     */
+    static isLowRamDevice() {
+        try {
+            if (typeof window !== 'undefined' && window.AndroidSettings && typeof window.AndroidSettings.isTV === 'function') {
+                return true;
+            }
+            if (typeof navigator !== 'undefined') {
+                if (/Android/i.test(navigator.userAgent || '')) return true;
+                if (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2) return true;
+            }
+        } catch (_) {}
+        return false;
+    }
+
+    /**
+     * Returns the maximum number of full XMLTV guide strings retained in memory for the current device class.
+     *
+     * @returns {number} Bounded guide cache capacity.
+     */
+    static getMaxGuideCache() {
+        return this.isLowRamDevice() ? this.MAX_GUIDE_CACHE_LOW_RAM : this.MAX_GUIDE_CACHE_PC;
+    }
+
+    /**
+     * Returns the maximum decompressed XMLTV payload size in bytes allowed before aborting stream read.
+     *
+     * @returns {number} Decompressed byte ceiling.
+     */
+    static getMaxDecompressedBytes() {
+        return this.isLowRamDevice() ? this.MAX_DECOMPRESSED_BYTES_LOW_RAM : this.MAX_DECOMPRESSED_BYTES_PC;
+    }
+
+    /**
+     * Releases heavy cached XMLTV guide strings when leaving Live TV while keeping lightweight parsed programs.
+     */
+    static clearGuideCache() {
+        this.guideCache.clear();
+        this.guideFetchPromises.clear();
+    }
 
     /**
      * Inserts a value into a Map while enforcing a bounded LRU capacity to prevent unbounded memory growth.
@@ -218,7 +266,52 @@ export class EpgManager {
     }
 
     /**
-     * Resolves guide metadata, fetches XMLTV when needed, and extracts programmes for a tvg-id.
+     * Returns both current and upcoming programme data from a single EPG lookup to avoid duplicate parses.
+     *
+     * @param {string} channelName - Display name retained for fallback context.
+     * @param {string} [channelGroup=''] - Group/category retained for API compatibility.
+     * @param {string} [tvgId=''] - XMLTV/iptv-org channel identifier.
+     * @param {number} [upcomingLimit=3] - Maximum number of upcoming programmes.
+     * @returns {Promise<{current: object, upcoming: Array}>} Combined current and upcoming EPG bundle.
+     */
+    static async getChannelEpgBundle(channelName, channelGroup = '', tvgId = '', upcomingLimit = 3) {
+        const programs = await this.getProgramsForChannel(tvgId);
+        const now = new Date();
+        const currentNode = programs.find(program => program.startDate <= now && program.endDate > now);
+
+        let current;
+        if (!currentNode) {
+            current = this.createFallbackProgram();
+        } else {
+            const totalMs = currentNode.endDate.getTime() - currentNode.startDate.getTime();
+            const elapsedMs = now.getTime() - currentNode.startDate.getTime();
+            const progress = totalMs > 0 ? Math.floor((elapsedMs / totalMs) * 100) : 0;
+            current = {
+                title: currentNode.title,
+                start: this.formatTime(currentNode.startDate),
+                end: this.formatTime(currentNode.endDate),
+                progress: Math.min(100, Math.max(0, progress)),
+                timeLeft: Math.max(0, Math.floor((currentNode.endDate.getTime() - now.getTime()) / 60000)),
+                hasData: true
+            };
+        }
+
+        const upcoming = programs
+            .filter(program => program.startDate > now)
+            .slice(0, upcomingLimit)
+            .map(program => ({
+                title: program.title,
+                start: this.formatTime(program.startDate),
+                end: this.formatTime(program.endDate),
+                hasData: true
+            }));
+
+        return { current, upcoming };
+    }
+
+    /**
+     * Resolves guide metadata, fetches XMLTV when needed, and extracts programmes for a tvg-id
+     * while deduplicating concurrent lookups for the same channel.
      *
      * @param {string} tvgId - XMLTV/iptv-org channel identifier.
      * @returns {Promise<Array>}
@@ -234,17 +327,28 @@ export class EpgManager {
             return cachedPrograms.programs;
         }
 
-        const guide = this.resolveGuide(normalizedTvgId);
-        if (!guide) return [];
+        if (this.channelProgramPromises.has(normalizedTvgId)) {
+            return this.channelProgramPromises.get(normalizedTvgId);
+        }
 
-        const xml = await this.fetchGuideXml(guide.urls);
-        if (!xml) return [];
+        const pending = (async () => {
+            const guide = this.resolveGuide(normalizedTvgId);
+            if (!guide) return [];
 
-        const candidateIds = this.getCandidateChannelIds(normalizedTvgId, guide);
-        const programs = this.parsePrograms(xml, candidateIds);
-        programs.sort((a, b) => a.startDate - b.startDate);
-        this._setBoundedCache(this.channelProgramCache, normalizedTvgId, { programs, timestamp: Date.now() }, this.MAX_CHANNEL_PROGRAM_CACHE);
-        return programs;
+            const xml = await this.fetchGuideXml(guide.urls);
+            if (!xml) return [];
+
+            const candidateIds = this.getCandidateChannelIds(normalizedTvgId, guide);
+            const programs = this.parsePrograms(xml, candidateIds);
+            programs.sort((a, b) => a.startDate - b.startDate);
+            this._setBoundedCache(this.channelProgramCache, normalizedTvgId, { programs, timestamp: Date.now() }, this.MAX_CHANNEL_PROGRAM_CACHE);
+            return programs;
+        })().finally(() => {
+            this.channelProgramPromises.delete(normalizedTvgId);
+        });
+
+        this.channelProgramPromises.set(normalizedTvgId, pending);
+        return pending;
     }
 
     /**
@@ -304,7 +408,11 @@ export class EpgManager {
                 return this.readResponseBody(response, url);
             })
             .then(xml => {
-                this._setBoundedCache(this.guideCache, url, { xml, timestamp: Date.now() }, this.MAX_GUIDE_CACHE);
+                if (!xml) {
+                    this.failedGuideCache.set(url, Date.now());
+                    return '';
+                }
+                this._setBoundedCache(this.guideCache, url, { xml, timestamp: Date.now() }, this.getMaxGuideCache());
                 return xml;
             })
             .catch(error => {
@@ -321,84 +429,261 @@ export class EpgManager {
     }
 
     /**
-     * Reads the response body as text, decompressing gzip content when the URL ends with .gz.
-     * Uses the browser-native DecompressionStream API for transparent decompression.
+     * Reads and decompresses an XMLTV response stream under a strict decoded byte ceiling to prevent OOM crashes.
+     * Handles both raw gzipped streams (via DecompressionStream) and proxy-decompressed text streams.
      *
      * @param {Response} response - The fetch Response object.
      * @param {string} url - The original URL, used to detect .gz extension.
-     * @returns {Promise<string>}
+     * @returns {Promise<string>} Decoded XML text or empty string if the byte ceiling is exceeded.
      */
     static async readResponseBody(response, url) {
-        const isGzip = url.toLowerCase().endsWith('.gz');
-        if (isGzip) {
+        const maxBytes = this.getMaxDecompressedBytes();
+        const isGzipUrl = url.toLowerCase().endsWith('.gz');
+        const chunks = [];
+        let totalBytes = 0;
+
+        if (!response.body || typeof response.body.getReader !== 'function') {
             const buffer = await response.arrayBuffer();
             const bytes = new Uint8Array(buffer);
-            if (bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b && typeof DecompressionStream !== 'undefined') {
+            if (isGzipUrl && bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b && typeof DecompressionStream !== 'undefined') {
                 try {
-                    const decompressedStream = new Blob([buffer]).stream().pipeThrough(new DecompressionStream('gzip'));
-                    const reader = decompressedStream.getReader();
+                    const reader = new Blob([buffer]).stream().pipeThrough(new DecompressionStream('gzip')).getReader();
                     const decoder = new TextDecoder('utf-8');
                     let result = '';
                     while (true) {
                         const { done, value } = await reader.read();
                         if (done) break;
+                        totalBytes += value.byteLength;
+                        if (totalBytes > maxBytes) {
+                            await reader.cancel().catch(() => {});
+                            return '';
+                        }
                         result += decoder.decode(value, { stream: true });
                     }
-                    result += decoder.decode();
-                    return result;
-                } catch (e) {
-                    return new TextDecoder('utf-8').decode(bytes);
+                    return result + decoder.decode();
+                } catch (_) {
+                    return '';
                 }
             }
+            if (bytes.byteLength > maxBytes) return '';
             return new TextDecoder('utf-8').decode(bytes);
         }
-        return response.text();
+
+        const reader = response.body.getReader();
+        let firstChunk = null;
+        try {
+            const firstRead = await reader.read();
+            if (firstRead.done || !firstRead.value) return '';
+            firstChunk = firstRead.value;
+        } catch (_) {
+            return '';
+        }
+
+        const hasGzipMagic = isGzipUrl && firstChunk.length >= 2 && firstChunk[0] === 0x1f && firstChunk[1] === 0x8b;
+        let streamToRead = null;
+
+        if (hasGzipMagic && typeof DecompressionStream !== 'undefined') {
+            let pumpedFirst = false;
+            const rawStream = new ReadableStream({
+                async pull(controller) {
+                    if (!pumpedFirst) {
+                        pumpedFirst = true;
+                        controller.enqueue(firstChunk);
+                        return;
+                    }
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        controller.close();
+                    } else {
+                        controller.enqueue(value);
+                    }
+                },
+                cancel() {
+                    return reader.cancel().catch(() => {});
+                }
+            });
+            streamToRead = rawStream.pipeThrough(new DecompressionStream('gzip')).getReader();
+        }
+
+        const decoder = new TextDecoder('utf-8');
+        if (streamToRead) {
+            try {
+                while (true) {
+                    const { done, value } = await streamToRead.read();
+                    if (done) break;
+                    totalBytes += value.byteLength;
+                    if (totalBytes > maxBytes) {
+                        await streamToRead.cancel().catch(() => {});
+                        return '';
+                    }
+                    chunks.push(decoder.decode(value, { stream: true }));
+                }
+                chunks.push(decoder.decode());
+                return chunks.join('');
+            } catch (_) {
+                return '';
+            }
+        }
+
+        totalBytes += firstChunk.byteLength;
+        if (totalBytes > maxBytes) {
+            await reader.cancel().catch(() => {});
+            return '';
+        }
+        chunks.push(decoder.decode(firstChunk, { stream: true }));
+
+        try {
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                totalBytes += value.byteLength;
+                if (totalBytes > maxBytes) {
+                    await reader.cancel().catch(() => {});
+                    return '';
+                }
+                chunks.push(decoder.decode(value, { stream: true }));
+            }
+            chunks.push(decoder.decode());
+            return chunks.join('');
+        } catch (_) {
+            return '';
+        }
     }
 
     /**
-     * Parses XMLTV programme elements from the XML document for matching candidate channel IDs.
-     * It shifts stale program dates to match the current day for seamless guide display.
+     * Extracts a named attribute value from an XML opening tag string without regex backtracking.
      *
-     * @param {string} xml - XMLTV document.
-     * @param {Set<string>} candidateIds - Acceptable channel IDs.
-     * @returns {Array}
+     * @param {string} tag - Opening XML tag substring.
+     * @param {string} attrName - Attribute name to read.
+     * @returns {string} Raw attribute value or empty string.
+     */
+    static _extractAttr(tag, attrName) {
+        const needleDouble = `${attrName}="`;
+        let start = tag.indexOf(needleDouble);
+        if (start !== -1) {
+            start += needleDouble.length;
+            const end = tag.indexOf('"', start);
+            return end !== -1 ? tag.slice(start, end) : '';
+        }
+        const needleSingle = `${attrName}='`;
+        start = tag.indexOf(needleSingle);
+        if (start !== -1) {
+            start += needleSingle.length;
+            const end = tag.indexOf("'", start);
+            return end !== -1 ? tag.slice(start, end) : '';
+        }
+        return '';
+    }
+
+    /**
+     * Decodes standard XML entities and numeric character references in extracted programme titles.
+     *
+     * @param {string} text - Raw XML text node content.
+     * @returns {string} Decoded plain text.
+     */
+    static _decodeXmlEntities(text) {
+        if (!text || !text.includes('&')) return text;
+        return text
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&apos;/g, "'")
+            .replace(/&#(\d+);/g, (_, num) => {
+                const code = Number.parseInt(num, 10);
+                return Number.isFinite(code) ? String.fromCodePoint(code) : _;
+            })
+            .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => {
+                const code = Number.parseInt(hex, 16);
+                return Number.isFinite(code) ? String.fromCodePoint(code) : _;
+            })
+            .replace(/&amp;/g, '&');
+    }
+
+    /**
+     * Scans XMLTV programme blocks without building a DOM tree, filtering out non-matching channels
+     * in microseconds and keeping peak memory flat on low-RAM Android TVs.
+     * Shifts stale program dates forward to match the current day for continuous guide display.
+     *
+     * @param {string} xml - XMLTV document string.
+     * @param {Set<string>} candidateIds - Normalized candidate channel IDs.
+     * @returns {Array} Parsed programme entries for matching channels.
      */
     static parsePrograms(xml, candidateIds) {
-        const doc = new DOMParser().parseFromString(xml, 'application/xml');
-        const parseError = doc.querySelector('parsererror');
-        if (parseError) return [];
+        if (!xml || !candidateIds || candidateIds.size === 0) return [];
 
-        const parsedPrograms = Array.from(doc.querySelectorAll('programme'))
-            .filter(node => candidateIds.has(this.normalizeTvgId(node.getAttribute('channel') || '')))
-            .map(node => {
-                const titleNode = node.querySelector('title');
-                const startDate = this.parseXmltvDate(node.getAttribute('start') || '');
-                const endDate = this.parseXmltvDate(node.getAttribute('stop') || '');
+        const parsedPrograms = [];
+        const len = xml.length;
+        let pos = 0;
 
-                if (!titleNode || !startDate || !endDate) return null;
+        while (pos < len) {
+            const progStart = xml.indexOf('<programme', pos);
+            if (progStart === -1) break;
 
-                return {
-                    title: titleNode.textContent.trim() || this.getNoEpgText(),
-                    startDate,
-                    endDate
-                };
-            })
-            .filter(Boolean);
+            const nextChar = xml[progStart + 10];
+            if (nextChar !== ' ' && nextChar !== '\t' && nextChar !== '\r' && nextChar !== '\n') {
+                pos = progStart + 10;
+                continue;
+            }
+
+            const tagEnd = xml.indexOf('>', progStart + 10);
+            if (tagEnd === -1) break;
+
+            const openTag = xml.slice(progStart, tagEnd + 1);
+            const rawChannel = this._extractAttr(openTag, 'channel');
+            const normChannel = this.normalizeTvgId(this._decodeXmlEntities(rawChannel));
+
+            if (!candidateIds.has(normChannel)) {
+                pos = tagEnd + 1;
+                continue;
+            }
+
+            const progClose = xml.indexOf('</programme>', tagEnd + 1);
+            if (progClose === -1) break;
+
+            const startDate = this.parseXmltvDate(this._extractAttr(openTag, 'start'));
+            const stopDate = this.parseXmltvDate(this._extractAttr(openTag, 'stop'));
+
+            if (startDate && stopDate) {
+                const body = xml.slice(tagEnd + 1, progClose);
+                const titleStart = body.indexOf('<title');
+                if (titleStart !== -1) {
+                    const titleTagEnd = body.indexOf('>', titleStart + 6);
+                    if (titleTagEnd !== -1) {
+                        const titleClose = body.indexOf('</title>', titleTagEnd + 1);
+                        if (titleClose !== -1) {
+                            const rawTitle = body.slice(titleTagEnd + 1, titleClose).trim();
+                            const decodedTitle = this._decodeXmlEntities(rawTitle) || this.getNoEpgText();
+                            parsedPrograms.push({
+                                title: decodedTitle,
+                                startDate,
+                                endDate: stopDate
+                            });
+                        }
+                    }
+                }
+            }
+
+            pos = progClose + 12;
+        }
 
         if (parsedPrograms.length > 0) {
-            const maxEndDate = new Date(Math.max(...parsedPrograms.map(p => p.endDate.getTime())));
-            const now = new Date();
-            if (maxEndDate < now) {
-                const minStartDate = new Date(Math.min(...parsedPrograms.map(p => p.startDate.getTime())));
-                const diffTime = now.getTime() - minStartDate.getTime();
-                const diffDays = Math.floor(diffTime / (24 * 60 * 60 * 1000));
-                const offsetMs = diffDays * 24 * 60 * 60 * 1000;
-
+            let maxEndMs = -Infinity;
+            let minStartMs = Infinity;
+            for (let i = 0; i < parsedPrograms.length; i++) {
+                const s = parsedPrograms[i].startDate.getTime();
+                const e = parsedPrograms[i].endDate.getTime();
+                if (e > maxEndMs) maxEndMs = e;
+                if (s < minStartMs) minStartMs = s;
+            }
+            const nowMs = Date.now();
+            if (maxEndMs < nowMs) {
+                const diffDays = Math.floor((nowMs - minStartMs) / 86400000);
+                const offsetMs = diffDays * 86400000;
                 if (offsetMs > 0) {
-                    parsedPrograms.forEach(p => {
-                        p.startDate = new Date(p.startDate.getTime() + offsetMs);
-                        p.endDate = new Date(p.endDate.getTime() + offsetMs);
-                    });
+                    for (let i = 0; i < parsedPrograms.length; i++) {
+                        parsedPrograms[i].startDate = new Date(parsedPrograms[i].startDate.getTime() + offsetMs);
+                        parsedPrograms[i].endDate = new Date(parsedPrograms[i].endDate.getTime() + offsetMs);
+                    }
                 }
             }
         }
