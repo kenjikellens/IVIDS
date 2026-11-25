@@ -116,9 +116,9 @@ export class LiveStreamEngine {
             ? orderedCandidates
             : (this.isPreview ? [] : candidateUrls);
 
-        // Previews never cycle through backup mirrors so scrolling doesn't saturate low-RAM connections
-        if (this.isPreview && effectiveCandidates.length > 1) {
-            effectiveCandidates = effectiveCandidates.slice(0, 1);
+        // Cap preview to primary + 1 backup mirror so focus opens streams reliably without long fallback chains
+        if (this.isPreview && effectiveCandidates.length > 2) {
+            effectiveCandidates = effectiveCandidates.slice(0, 2);
         }
 
         for (let i = 0; i < effectiveCandidates.length; i++) {
@@ -129,8 +129,7 @@ export class LiveStreamEngine {
                 ...(channel.headers || {}),
                 ...(customHeaders || {})
             };
-            const rawRouteOrder = this._buildRouteOrder(candidateUrl, headers);
-            const routeOrder = this.isPreview && rawRouteOrder.length > 1 ? rawRouteOrder.slice(0, 1) : rawRouteOrder;
+            const routeOrder = this._buildRouteOrder(candidateUrl, headers);
 
             for (let r = 0; r < routeOrder.length; r++) {
                 if (genId !== this.generationId) return false;

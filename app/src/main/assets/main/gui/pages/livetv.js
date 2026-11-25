@@ -250,9 +250,7 @@ export async function init(params) {
     activeCategoryKey = 'all';
     selectedChannel = null;
     cleanupPreview();
-    if (!isLowRamAndroidDevice()) {
-        initPreviewEngine();
-    }
+    initPreviewEngine();
 
     const originalLoadPage = Router.loadPage;
     const originalGoBack = Router.goBack;
@@ -747,8 +745,7 @@ async function showChannelDetail(channel) {
         if (upcomingSection) upcomingSection.classList.add('hidden');
         if (upcomingListEl) upcomingListEl.innerHTML = '';
 
-        const lowRamDevice = isLowRamAndroidDevice();
-        if (!lowRamDevice && previewEngine) {
+        if (previewEngine) {
             previewEngine.stop();
         }
     };
@@ -767,13 +764,11 @@ async function showChannelDetail(channel) {
     previewTimeout = setTimeout(async () => {
         if (!isPageActive || reqId !== detailRequestId || !selectedChannel || selectedChannel.url !== channel.url) return;
 
-        if (!lowRamDevice) {
-            if (!previewEngine) {
-                initPreviewEngine();
-            }
-            if (previewEngine) {
-                previewEngine.loadChannel(channel);
-            }
+        if (!previewEngine) {
+            initPreviewEngine();
+        }
+        if (previewEngine) {
+            previewEngine.loadChannel(channel);
         }
 
         const { current: epg, upcoming: upcomingShows } = await EpgManager.getChannelEpgBundle(
